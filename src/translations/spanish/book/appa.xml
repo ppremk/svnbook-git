@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- originated from English revision 10817 -->
+<appendix id="svn-ap-a">
+  <title>Subversion para usuarios de CVS</title>
+
+  <simplesect>
+
+    <para>Este apéndice es una guía para usuarios de CVS nuevos en
+      Subversion. Es esencial una lista de diferencias entre los dos
+      sistemas <quote>visto desde 10,000 pies de alto</quote><!--TODO:
+      viewed from 10,000 feet-->. Para cada sección, proporcionaremos
+      cuando sea posible enlaces<!--TODO:backreferences--> a los
+      capítulos relevantes.</para>
+
+    <para>Aunque el fín de Subversion es <!--TODO:is to take over the current
+      and future CVS user base-->asumir el control de la base actual
+      y futura de los usuarios de CVS, algunas nuevas características
+      y cambios de diseño fueron requeridos para arreglar ciertos
+      comportamientos <quote>rotos</quote> que tenía CVS. Esto
+      significa que, como usuario de CVS, puede necesitar romper
+      hábitos&mdash;unos que usted olvidó...<!--TODO:ones that you
+      forgot were odd to begin with-->.</para>
+
+  </simplesect>
+
+  <!-- ================================================================= -->
+  <!-- ======================== SECTION 1 ============================== -->
+  <!-- ================================================================= -->
+  <sect1 id="svn-ap-a-sect-1">
+    <title>Los números de revisión son diferentes ahora</title>
+
+    <para>En CVS, los números de revisión son por-fichero. Esto es porque
+      CVS usa RCS como motor de program<!--TODO:as a backend-->; cada
+      fichero tiene su correspondiente fichero RCS en el repositorio,
+      y el repositorio se representa<!--TODO:repository is roughly laid
+      out according to the structure--> aproximadamente según la
+      estructura de su árbol de proyecto.</para>
+
+    <para>En Subversion, el repositorio parece un solo sistema de
+      ficheros. Cada envío tiene como resultado<!--TODO:Each commit
+      results in an entirely new filesystem-->un nuevo árbol de
+      sistema de ficheros entero; en esencia, el repositorio es un
+      array de árboles. Cada uno de estos árboles se etiqueta con un
+      solo número de revisión. Cuando alguien habla sobre la
+      <quote>revisión 54</quote>, ellos están hablando sobre un
+      árbol particular (e indirectamente, la forma que el sistema
+      de ficheros tenía despues del envío
+      54<!--TODO:54th commit-->).</para>
+
+    <para>Técnicamente, no es válido hablar sobre la <quote>revisión
+      5 de <filename>foo.c</filename></quote>. En su lugar, uno diría
+      <quote><filename>foo.c</filename> como aparece en la revisión
+      5</quote>. También, tenga cuidado cuando haga supuestos sobre
+      la evolución de un fichero. En CVS, las revisiones 5 y 6 de
+      <filename>foo.c</filename> son siempre diferentes. En Subversion,
+      es más probable que <filename>foo.c</filename>
+      <emphasis>no</emphasis> haya cambiado entre las revisiones 5 y
+      6.</para>
+
+    <para>Para más detalles sobre este asunto, vea <xref
+    linkend="svn-ch-2-sect-3.2" />.</para>
+
+  </sect1>
+
+  <!-- ================================================================= -->
+  <!-- ======================== SECTION 2 ============================== -->
+  <!-- ================================================================= -->
+  <sect1 id="svn-ap-a-sect-2">
+    <title>Versiones de directorios</title>
+    
+    <para>Subversion sigue estructura de árbol<!--TODO:Subversion tracks
+      tree structures-->, no solo el contenido de ficheros. Es una de las
+      razones más grandes por las que Subversion fue escrito para
+      reemplazar CVS.</para>
+
+    <para>Esto es lo que significa para usted, como anterior usuario
+      de CVS:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Los comandos <command>svn add</command> y <command>svn
+          delete</command> trabajan ahora sobre directorios, tal como
+          trabajan sobre ficheros. Así que haga <command>svn copy</command>
+          y <command>svn move</command>. Sin embargo, estos comandos
+          <emphasis>no</emphasis> causan ningún tipo de cambio
+          inmediato en el repositorio. En su lugar, los objetos de la
+          copia de trabajo simplemente se planifican para la adición
+          o la eliminación. No sucede ningún cambio en el repositorio
+          hasta que ejecute <command>svn commit</command>.</para>
+      </listitem>
+      <listitem>
+        <para>Los directorios no serán contenedores estupidos nunca más;
+          tienen número de revisión como los ficheros. (O más
+          correctamente, es correcto hablar sobre <quote>directorio
+          <filename>foo/</filename> en la revisión 5</quote>.)</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Vamos<!--TODO:Let's talk... o es mejor decir "hablaremos"?-->
+      a hablar más sobre este último punto. El versionado de directorios
+      es un duro problema; porque queremos permitir <!--TODO:
+      mixed-revision working copies-->copias de trabajo con revisiones
+      mezcladas, hay algunas limitaciones en cómo podemos<!--TODO:
+      on how far we can abuse-->abusar de este modelo.</para>
+
+    <para>Desde un punto de vista teórico, definimos <quote>revisión
+      5 del directorio <filename>foo</filename></quote> para significar
+      una colección específica de directorios-entradas y características.
+      Ahora suponga que empezamos a añadir y a quitar ficheros de
+      <filename>foo</filename>, y luego envíamos el cambio. Sería una
+      mentira decir que todavía tenemos la revisión 5 de
+      <filename>foo</filename>. Sin embargo, si vemos <!--TODO:
+      if we bumped <filename>foo</filename>'s revision number-->el número
+      de revisión de <filename>foo</filename> despues del envío,
+      tambien sería esto una mentira; puede haber otros cambios en
+      <filename>foo</filename> que todavía no hayamos recibido, porque
+      no hemos actualizado todavia.</para>
+    
+    <para>Subversion trata este problema siguiendo silenciosamente
+      <!--TODO:by quietly tracking committed adds and deletes-->
+      las agregaciones y las eliminaciones enviadas en el área
+      <filename>.svn</filename>. Cuando usted ejecuta finalmente
+      <command>svn update</command>, todas las cuentas se fijan
+      <!--TODO:are settled--> con el repositorio, y el nuevo número
+      de revisión se fija correctamente. <emphasis>Por lo tanto,
+      solamente después de una actualización es verdaderamente
+      seguro decir que usted tiene una revisión <quote>perfecta</quote>
+      de un directorio.</emphasis> La mayoría del tiempo, su copia
+      de trabajo contendrá revisiones <quote>imperfectas</quote> del
+      directorio.</para>
+    
+    <para>Similarmente, un problema surge si usted intenta enviar
+      <!--TODO:property changes on a directory--> cambios de las
+      caracteristicas de un directorio. Normalmente, el envío
+      <!--TODO:would bump--> chocaría con  el número local de revisión
+      del directorio de trabajo. Pero otra vez, eso sería una mentira,
+      porque puede haber añadidos<!--TODO:adds or deletes--> o
+      eliminaciones que el directorio todavía no tiene, porque no ha
+      habido ninguna actualización. <emphasis>Por lo tanto, usted no
+      tiene<!--TODO:you are not allowed--> permiso para enviar
+      cambios-características<!--TODO:property-changes--> sobre un
+      directorio a menos que el directorio esté
+      actualizado.</emphasis></para>
+
+    <para>Para más discusión sobre las limitaciones del versionado de
+      directorios, vea <xref linkend="svn-ch-2-sect-3.4"/>.</para>
+
+  </sect1>
+
+
+  <!-- ================================================================= -->
+  <!-- ======================== SECTION 3 ============================== -->
+  <!-- ================================================================= -->
+  <sect1 id="svn-ap-a-sect-3">
+    <title>Más operaciones estando desconectado</title>
+    <!--More Disconnected Operations-->
+
+    <para>En años recientes, ha llegado a ser <!--TODO:outrageously cheap-->
+      muy barata y abundante, pero el ancho de banda de red no. Por lo
+      tanto, la copia de trabajo se Subversion ha sido optimizada alrededor
+      del recurso más escaso.</para>
+
+    <para>El directorio administrativo <filename>.svn</filename> tiene el
+      mismo proposito que el directorio <filename>CVS</filename>, excepto
+      que este también almacena copias <quote>pristinas</quote> de
+      solo-lectura de sus ficheros. Esto le permite hacer muchas cosas
+      desconectado:</para>
+    
+    <variablelist>
+      
+      <varlistentry>
+        <term><command>svn status</command></term>
+        <listitem>
+          <para>Le muestra cualquier cambio local que haya hecho (vea <xref
+              linkend="svn-ch-3-sect-4.3.1"/>)</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><command>svn diff</command></term>
+        <listitem>
+          <para>Le muestra los detalles de sus cambios (vea <xref
+              linkend="svn-ch-3-sect-4.3.2"/>)</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><command>svn revert</command></term>
+        <listitem>
+          <para>Borra sus cambios locales (vea <xref
+              linkend="svn-ch-3-sect-4.3.3"/>)</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+    <para>También, los ficheros prístinos almacenados permiten al cliente
+      de Subversion enviar las diferencias al repositorio<!--TODO:client
+      to send differences when committing-->, lo que CVS no puede
+      hacer.</para>
+
+    <para>El último subcomando en la lista es nuevo; este no solo borrará
+      las modificaciones locales, sino que desprogramará
+      <!--TODO: un-schedule-->las operaciones tales como adiciones y
+      eliminaciones. Es la manera preferida para revertir un fichero;
+      ejecutando <command>rm file; svn update</command> seguirá funcionando,
+      pero empaña el propósito de actualización<!--TODO:it blurs the
+      purpose of updating-->. Y, mientras nosotros estamos en este
+      asunto&hellip;
+
+    </para>
+
+  </sect1>
+
+  <!-- ================================================================= -->
+  <!-- ======================== SECTION 4 ============================== -->
+  <!-- ================================================================= -->
+  <sect1 id="svn-ap-a-sect-4">
+    <title>Distinciones entre estado (status) y actualización (update)</title>
+
+    <para>En Subversion, hemos intentado eliminar muchas de las confusiones
+      entre los comandos <command>cvs status</command> y
+      <command>cvs update</command>.</para>
+
+    <para>El comando <command>cvs status</command> tiene dos propositos:
+      primero, mostrarle al usuario cualquier modificación local en la
+      copia de trabajo, y segundo, mostrarle al usuario qué ficheros
+      están desactualizados. Desafortunadamente, debido a la dificil de
+      leer salida de estado<!--TODO:status output-->, muchos usuarios de
+      CVS no se aprobechan del todo de este comando. En cambio, han
+      desarrollado el habito de ejecutar <command>cvs update</command>
+      o <command>cvs update -n</command> para ver rapidamente sus
+      modificaciones. Si los usuarios olvidan usar la opción
+      <option>-n</option>, esto tiene el efecto secundario de combinar
+      cambios del repositorio que no están preparados<!--TODO:this has the
+      side effect of merging repository changes they may not be ready
+      to deal with-->.</para>
+
+    <para>Con Subversion, hemos intentado eliminar este desorden haciendo
+      la salida de <command>svn status</command> facil de leer para los
+      humanos y los programas de análisis sintacticos<!--TODO:parsers-->.
+      También, <command>svn update</command> solo imprime información
+      sobre los ficheros que están actualizados, <emphasis>no</emphasis>
+      sobre modificaciones locales.</para>
+
+    <para><command>svn status</command> imprime todos los ficheros que
+      tienen modificaciones locales. Por defecto, no se contacta con el
+      repositorio<!--TODO:the repository is not contacted...eso de "el
+      repositorio no es contactado" no queda muy bien-->. Mientras
+      este subcomando acepta un número justo de opciones, los siguientes
+      son los usados más comúnmente:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term><option>-u</option></term>
+        <listitem>
+          <para>Contacta con el repositorio para determinar, y después
+            mostrar, la información más desactualizada<!--TODO:
+            out-of-dateness information-->.</para>
+        </listitem>
+      </varlistentry>
+      
+      <varlistentry>
+        <term><option>-v</option></term>
+        <listitem>
+          <para>Show <emphasis>all</emphasis> entries under
+            version control.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-N</option></term>
+        <listitem>
+          <para>Run non-recursively (do not descend into
+            subdirectories).</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>The <command>status</command> command has two output
+      formats.  In the default <quote>short</quote> format, local
+      modifications look like this:</para>
+
+    <screen>
+% svn status
+M     ./foo.c
+M     ./bar/baz.c
+</screen>
+
+    <para>If you specify the <option>--show-updates</option>
+      (<option>-u</option>) switch, a longer output format is
+      used:</para>
+
+    <screen>
+% svn status -u
+M             1047    ./foo.c
+       *      1045    ./faces.html
+       *         -    ./bloo.png
+M             1050    ./bar/baz.c
+Status against revision:   1066
+</screen>
+
+    <para>In this case, two new columns appear.  The second column
+      contains an asterisk if the file or directory is out-of-date.
+      The third column shows the working-copy's revision number of the
+      item.  In the example above, the asterisk indicates that
+      <filename>faces.html</filename> would be patched if we updated,
+      and that <filename>bloo.png</filename> is a newly added file in
+      the repository.  (The <command>-</command> next to
+      <filename>bloo.png</filename> means that it doesn't yet exist in
+      the working copy.)</para>
+
+    <!-- ###TODO describe -u here as well as -uv. -u and -v use
+         different <quote>long</quote> formats and need to be
+         documented separately. Moreover, as you can combine -u and
+         -v, it needs to be explained what each of them does. As -u is
+         much more important than -v, and the example following that
+         paragraph *is* about -u, not -v, my patch concentrated on
+         that. -->
+
+    <para>Lastly, here's a quick summary of the most common status codes that
+      you may see:</para>
+
+    <screen>
+A    Resource is scheduled for Addition
+D    Resource is scheduled for Deletion
+M    Resource has local modifications
+C    Resource has conflicts (changes have not been completely merged
+       between the repository and working copy version)
+X    Resource is external to this working copy (comes from another
+       repository.  See <xref linkend="svn-ch-7-sect-2.3.6" />)
+?    Resource is not under version control
+!    Resource is missing or incomplete (removed by another tool than
+       Subversion)
+</screen>
+
+    <!-- ###TODO:  This paragraph should be moved elsewhere.  We are
+                   talking about status codes here, and not update.
+                   Although CVS uses update as a form of status... -->
+    <para>Subversion has combined the CVS <command>P</command> and
+      <command>U</command> codes into just <command>U</command>.  When
+      a merge or conflict occurs, Subversion simply prints
+      <command>G</command> or <command>C</command>, rather than a
+      whole sentence about it.</para>
+
+    <para>For a more detailed discussion of <command>svn
+    status</command>, see <xref linkend="svn-ch-3-sect-4.3.1" />.</para>
+
+
+  </sect1>
+
+  <!-- ================================================================= -->
+  <!-- ======================== SECTION 5 ============================= -->
+  <!-- ================================================================= -->
+  <sect1 id="svn-ap-a-sect-5">
+    <title>Branches and Tags</title>
+
+    <para>Subversion doesn't distinguish between filesystem space and
+      <quote>branch</quote> space; branches and tags are ordinary
+      directories within the filesystem.  This is probably the single
+      biggest mental hurdle a CVS user will need to climb.  Read all
+      about it in <xref linkend="svn-ch-4"/>.</para>
+
+
+    <warning>
+      <para>Since Subversion treats branches and tags as ordinary
+      directories, always remember to check out the
+      <literal>trunk</literal>
+      (<literal>http://svn.example.com/repos/calc/trunk/</literal>) of
+      your project, and not the project itself
+      (<literal>http://svn.example.com/repos/calc/</literal>).  If you
+      make the mistake of checking out the project itself, you'll wind
+      up with a working copy that contains a copy of your project for
+      every branch and tag you have.<footnote><para>That is, providing
+      you don't run out of disk space before your checkout
+      finishes.</para> </footnote></para>
+    </warning>
+
+  </sect1>
+
+
+  <!-- ================================================================= -->
+  <!-- ======================== SECTION 6 ============================== -->
+  <!-- ================================================================= -->
+  <sect1 id="svn-ap-a-sect-6">
+    <title>Metadata Properties</title>
+
+    <para>A new feature of Subversion is that you can attach arbitrary
+      metadata (or <quote>properties</quote>) to files and
+      directories.  Properties are arbitrary name/value pairs
+      associated with files and directories in your working
+      copy.</para>
+    
+    <para>To set or get a property name, use the <command>svn
+      propset</command> and <command>svn propget</command>
+      subcommands.  To list all properties on an object, use
+      <command>svn proplist</command>.</para>
+
+    <para>For more information, see <xref linkend="svn-ch-7-sect-2"/>.</para>
+
+  </sect1>
+
+  <!-- ================================================================= -->
+  <!-- ======================== SECTION 7 ============================== -->
+  <!-- ================================================================= -->
+  <sect1 id="svn-ap-a-sect-7">
+    <title>Conflict Resolution</title>
+
+    <para>CVS marks conflicts with in-line <quote>conflict
+      markers</quote>, and prints a <command>C</command> during an
+      update.  Historically, this has caused problems, because CVS
+      isn't doing enough.  Many users forget about (or don't see) the
+      <command>C</command> after it whizzes by on their terminal.
+      They often forget that the conflict-markers are even present,
+      and then accidentally commit files containing
+      conflict-markers.</para>
+
+    <para>Subversion solves this problem by making conflicts more
+      tangible.  It remembers that a file is in a state of conflict,
+      and won't allow you to commit your changes until you run
+      <command>svn resolved</command>.  See <xref
+      linkend="svn-ch-3-sect-4.4"/> for more details.</para>
+  </sect1>
+
+  <!-- ================================================================= -->
+  <!-- ======================== SECTION 8 ============================== -->
+  <!-- ================================================================= -->
+  <sect1 id="svn-ap-a-sect-8">
+    <title>Binary Files and Translation</title>
+
+    <para>In the most general sense, Subversion handles binary files
+      more gracefully than CVS does.  Because CVS uses RCS, it can
+      only store successive full copies of a changing binary file.
+      But internally, Subversion expresses differences between files
+      using a binary-differencing algorithm, regardless of whether they
+      contain textual or binary data.  That means that all files are
+      stored differentially (compressed) in the repository, and small
+      differences are always sent over the network.</para>
+    
+    <para>CVS users have to mark binary files with
+      <option>-kb</option> flags, to prevent data from being garbled
+      (due to keyword expansion and line-ending translations).  They
+      sometimes forget to do this.</para>
+
+    <para>Subversion takes the more paranoid route: first, it never
+      performs any kind of keyword or line-ending translation unless
+      you explicitly ask it do so (see <xref
+      linkend="svn-ch-7-sect-2.3.4"/> and <xref
+      linkend="svn-ch-7-sect-2.3.5"/> for more details).  By default,
+      Subversion treats all file data as literal byte strings, and
+      files are always stored in the repository in an untranslated
+      state.</para>
+
+    <para>Second, Subversion maintains an internal notion of whether a
+      file is <quote>text</quote> or <quote>binary</quote> data, but
+      this notion is <emphasis>only</emphasis> extant in the working
+      copy.  During an <command>svn update</command>, Subversion will
+      perform contextual merges on locally modified text files, but
+      will not attempt to do so for binary files.</para>
+
+    <para>To determine whether a contextual merge is possible,
+      Subversion examines the <literal>svn:mime-type</literal>
+      property.  If the file has no <literal>svn:mime-type</literal>
+      property, or has a mime-type that is textual (e.g.
+      <literal>text/*</literal>),
+      Subversion assumes it is text.  Otherwise, Subversion assumes
+      the file is binary.  Subversion also helps users by running a
+      binary-detection algorithm in the <command>svn import</command>
+      and <command>svn add</command> commands.  These commands will
+      make a good guess and then (possibly) set a binary
+      <literal>svn:mime-type</literal> property on the file being
+      added.  (If Subversion guesses wrong, the user can always remove
+      or hand-edit the property.)</para>
+
+  </sect1>
+
+  <!-- ================================================================= -->
+  <!-- ======================== SECTION 9 ============================== -->
+  <!-- ================================================================= -->
+  <sect1 id="svn-ap-a-sect-9">
+
+    <title>Versioned Modules</title>
+
+    <para>Unlike CVS, a Subversion working copy is aware that it has
+      checked out a module.  That means that if somebody changes the
+      definition of a module, then a call to <command>svn update</command>
+      will update the working copy appropriately.</para>
+
+    <para>Subversion defines modules as a list of directories within a
+      directory property:  see <xref linkend="svn-ch-7-sect-3"/>.</para>
+
+  </sect1>
+
+  <!-- ================================================================= -->
+  <!-- ======================== SECTION 10 ============================= -->
+  <!-- ================================================================= -->
+  <sect1 id="svn-ap-a-sect-10">
+
+    <title>Authentication</title>
+
+    <para>With CVS's pserver, you are required to <quote>login</quote>
+      to the server before any read or write operation&mdash;you even
+      have to login for anonymous operations.  With a Subversion
+      repository using Apache HTTPD as the server, you don't provide
+      any authentication credentials at the outset&mdash;if an
+      operation that you perform requires authentication, the server
+      will challenge you for your credentials (whether those
+      credentials are username and password, a client certificate, or
+      even both).  So if your repository is world-readable, you will
+      not be required to authenticate at all for read
+      operations.</para>
+
+    <para>As with CVS, Subversion still caches your credentials on
+      disk (in your <filename>~/.subversion/auth/</filename>
+      directory) unless you tell it not to by using the
+      <option>--no-auth-cache</option> switch.</para>
+
+
+
+  </sect1>
+
+  <!-- ================================================================= -->
+  <!-- ======================== SECTION 11 ============================= -->
+  <!-- ================================================================= -->
+  <sect1 id="svn-ap-a-sect-11">
+
+    <title>Converting a Repository from CVS to Subversion</title>
+
+    <para>Perhaps the most important way to familiarize CVS users with
+      Subversion is to let them continue to work on their projects
+      using the new system.  And while that can be somewhat
+      accomplished using a flat import into a Subversion repository of
+      an exported CVS repository, the more thorough solution involves
+      transferring not just the latest snapshot of their data, but all
+      the history behind it as well, from one system to another.  This
+      is an extremely difficult problem to solve that involves
+      deducing changesets in the absence of atomicity, and translating
+      between the systems' completely orthogonal branching policies,
+      among other complications.  Still, there are a handful of tools
+      claiming to at least partially support the ability to convert
+      existing CVS repositories into Subversion ones.</para>
+
+    <para>One such tool is cvs2svn (<systemitem
+      class="url">http://cvs2svn.tigris.org/</systemitem>), a Python
+      script originally created by members of Subversion's own
+      development community.  Others include Chia-liang Kao's
+      Subversion converter plugin to the VCP tool (<systemitem
+      class="url">http://svn.clkao.org/revml/branches/svn-perl/</systemitem>)
+      and Lev Serebryakov's RefineCVS (<systemitem
+      class="url">http://lev.serebryakov.spb.ru/refinecvs/</systemitem>).
+      These tools have various levels of completeness, and may make
+      entirely different decisions about how to handle your CVS
+      repository history.  Whichever tool you decide to use, be sure
+      to perform as much verification as you can stand on the
+      conversion results&mdash;after all, you've worked hard to build
+      that history!</para>
+
+    <para>For an updated collection of links to known converter tools,
+      visit the Links page of the Subversion website (<systemitem
+      class="url">http://subversion.tigris.org/project_links.html</systemitem>).</para>
+
+  </sect1>
+
+</appendix>
+
+<!--
+local variables: 
+sgml-parent-document: ("book.xml" "appendix")
+end:
+-->
