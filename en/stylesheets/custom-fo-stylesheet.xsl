@@ -2,6 +2,4 @@
 
   <!-- Here live locale-specific customizations to the FO base stylesheet -->
 
-  <xsl:param name="draft.mode">yes</xsl:param>
-
 </xsl:stylesheet>
