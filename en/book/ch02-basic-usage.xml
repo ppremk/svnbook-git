@@ -2077,18 +2077,18 @@ svn: File '/sandwich.txt' is out of date
       <variablelist>
 
         <varlistentry>
+          <term><command>svn diff</command></term>
+          <listitem>
+            <para>Shows line-level details of a particular change</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term><command>svn log</command></term>
           <listitem>
             <para>Shows you broad information: log messages with date
               and author information attached to revisions and which
               paths changed in each revision</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term><command>svn diff</command></term>
-          <listitem>
-            <para>Shows line-level details of a particular change</para>
           </listitem>
         </varlistentry>
 
@@ -2110,6 +2110,156 @@ svn: File '/sandwich.txt' is out of date
 
       </variablelist>
 
+
+    <!-- =============================================================== -->
+    <sect2 id="svn.tour.history.diff">
+      <title>Examining the Details of Historical Changes</title>
+
+      <para>We've already seen <command>svn diff</command>
+        before&mdash;it displays file differences in unified diff
+        format; we used it to show the local modifications made to
+        our working copy before committing to the repository.</para>
+
+      <para>In fact, it turns out that there are
+        <emphasis>three</emphasis> distinct uses of <command>svn
+        diff</command>:</para>
+
+      <itemizedlist>
+
+        <listitem>
+          <para>Examining local changes</para>
+        </listitem>
+
+        <listitem>
+          <para>Comparing your working copy to the repository</para>
+        </listitem>
+
+        <listitem>
+          <para>Comparing repository revisions</para>
+        </listitem>
+
+      </itemizedlist>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.tour.history.diff.local">
+        <title>Examining local changes</title>
+
+        <para>As we've seen, invoking <userinput>svn diff</userinput> with
+          no options will compare your working files to the cached
+          <quote>pristine</quote> copies in
+          the <filename>.svn</filename> area:</para>
+
+        <informalexample>
+          <screen>
+$ svn diff
+Index: rules.txt
+===================================================================
+--- rules.txt	(revision 3)
++++ rules.txt	(working copy)
+@@ -1,4 +1,5 @@
+ Be kind to others
+ Freedom = Responsibility
+ Everything in moderation
+-Chew with your mouth open
++Chew with your mouth closed
++Listen when others are speaking
+$
+</screen>
+        </informalexample>
+
+      </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.tour.history.diff.wcrepos">
+        <title>Comparing working copy to repository</title>
+
+        <para>If a single <option>--revision</option>
+          (<option>-r</option>) number is passed, your
+          working copy is compared to the specified revision in the
+          repository:</para>
+
+        <informalexample>
+          <screen>
+$ svn diff -r 3 rules.txt
+Index: rules.txt
+===================================================================
+--- rules.txt	(revision 3)
++++ rules.txt	(working copy)
+@@ -1,4 +1,5 @@
+ Be kind to others
+ Freedom = Responsibility
+ Everything in moderation
+-Chew with your mouth open
++Chew with your mouth closed
++Listen when others are speaking
+$
+</screen>
+        </informalexample>
+
+      </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.tour.history.diff.reposrepos">
+        <title>Comparing repository revisions</title>
+
+        <para>If two revision numbers, separated by a colon, are
+          passed via <option>--revision</option>
+          (<option>-r</option>), the two revisions are directly
+          compared:</para>
+
+        <informalexample>
+          <screen>
+$ svn diff -r 2:3 rules.txt
+Index: rules.txt
+===================================================================
+--- rules.txt	(revision 2)
++++ rules.txt	(revision 3)
+@@ -1,4 +1,4 @@
+ Be kind to others
+-Freedom = Chocolate Ice Cream
++Freedom = Responsibility
+ Everything in moderation
+ Chew with your mouth open
+$
+</screen>
+        </informalexample>
+
+        <para>A more convenient way of comparing one revision to the
+          previous revision is to use the <option>--change</option>
+          (<option>-c</option>) option:</para>
+
+        <informalexample>
+          <screen>
+$ svn diff -c 3 rules.txt
+Index: rules.txt
+===================================================================
+--- rules.txt	(revision 2)
++++ rules.txt	(revision 3)
+@@ -1,4 +1,4 @@
+ Be kind to others
+-Freedom = Chocolate Ice Cream
++Freedom = Responsibility
+ Everything in moderation
+ Chew with your mouth open
+$
+</screen>
+        </informalexample>
+
+        <para>Lastly, you can compare repository revisions even when
+          you don't have a working copy on your local machine, just by
+          including the appropriate URL on the command line:</para>
+
+        <informalexample>
+          <screen>
+$ svn diff -c 5 http://svn.example.com/repos/example/trunk/text/rules.txt
+&hellip;
+$
+</screen>
+        </informalexample>
+
+      </sect3>
+
+    </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.tour.history.log">
@@ -2280,156 +2430,6 @@ $
           -r 2 ^/</userinput>.</para>
 
       </sidebar>
-
-    </sect2>
-
-    <!-- =============================================================== -->
-    <sect2 id="svn.tour.history.diff">
-      <title>Examining the Details of Historical Changes</title>
-
-      <para>We've already seen <command>svn diff</command>
-        before&mdash;it displays file differences in unified diff
-        format; we used it to show the local modifications made to
-        our working copy before committing to the repository.</para>
-
-      <para>In fact, it turns out that there are
-        <emphasis>three</emphasis> distinct uses of <command>svn
-        diff</command>:</para>
-
-      <itemizedlist>
-
-        <listitem>
-          <para>Examining local changes</para>
-        </listitem>
-
-        <listitem>
-          <para>Comparing your working copy to the repository</para>
-        </listitem>
-
-        <listitem>
-          <para>Comparing repository revisions</para>
-        </listitem>
-
-      </itemizedlist>
-
-      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <sect3 id="svn.tour.history.diff.local">
-        <title>Examining local changes</title>
-
-        <para>As we've seen, invoking <userinput>svn diff</userinput> with
-          no options will compare your working files to the cached
-          <quote>pristine</quote> copies in
-          the <filename>.svn</filename> area:</para>
-
-        <informalexample>
-          <screen>
-$ svn diff
-Index: rules.txt
-===================================================================
---- rules.txt	(revision 3)
-+++ rules.txt	(working copy)
-@@ -1,4 +1,5 @@
- Be kind to others
- Freedom = Responsibility
- Everything in moderation
--Chew with your mouth open
-+Chew with your mouth closed
-+Listen when others are speaking
-$
-</screen>
-        </informalexample>
-
-      </sect3>
-
-      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <sect3 id="svn.tour.history.diff.wcrepos">
-        <title>Comparing working copy to repository</title>
-
-        <para>If a single <option>--revision</option>
-          (<option>-r</option>) number is passed, your
-          working copy is compared to the specified revision in the
-          repository:</para>
-
-        <informalexample>
-          <screen>
-$ svn diff -r 3 rules.txt
-Index: rules.txt
-===================================================================
---- rules.txt	(revision 3)
-+++ rules.txt	(working copy)
-@@ -1,4 +1,5 @@
- Be kind to others
- Freedom = Responsibility
- Everything in moderation
--Chew with your mouth open
-+Chew with your mouth closed
-+Listen when others are speaking
-$
-</screen>
-        </informalexample>
-
-      </sect3>
-
-      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <sect3 id="svn.tour.history.diff.reposrepos">
-        <title>Comparing repository revisions</title>
-
-        <para>If two revision numbers, separated by a colon, are
-          passed via <option>--revision</option>
-          (<option>-r</option>), the two revisions are directly
-          compared:</para>
-
-        <informalexample>
-          <screen>
-$ svn diff -r 2:3 rules.txt
-Index: rules.txt
-===================================================================
---- rules.txt	(revision 2)
-+++ rules.txt	(revision 3)
-@@ -1,4 +1,4 @@
- Be kind to others
--Freedom = Chocolate Ice Cream
-+Freedom = Responsibility
- Everything in moderation
- Chew with your mouth open
-$
-</screen>
-        </informalexample>
-
-        <para>A more convenient way of comparing one revision to the
-          previous revision is to use the <option>--change</option>
-          (<option>-c</option>) option:</para>
-
-        <informalexample>
-          <screen>
-$ svn diff -c 3 rules.txt
-Index: rules.txt
-===================================================================
---- rules.txt	(revision 2)
-+++ rules.txt	(revision 3)
-@@ -1,4 +1,4 @@
- Be kind to others
--Freedom = Chocolate Ice Cream
-+Freedom = Responsibility
- Everything in moderation
- Chew with your mouth open
-$
-</screen>
-        </informalexample>
-
-        <para>Lastly, you can compare repository revisions even when
-          you don't have a working copy on your local machine, just by
-          including the appropriate URL on the command line:</para>
-
-        <informalexample>
-          <screen>
-$ svn diff -c 5 http://svn.example.com/repos/example/trunk/text/rules.txt
-&hellip;
-$
-</screen>
-        </informalexample>
-
-      </sect3>
 
     </sect2>
 
