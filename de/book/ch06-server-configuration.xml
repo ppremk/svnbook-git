@@ -1,6 +1,6 @@
 <chapter id="svn.serverconfig">
  <!-- 
- 	<title>Server Configuration</title>
+  <title>Server Configuration</title>
 -->
 <title>Die Administration eines Subversion-Servers</title>
 
@@ -13,14 +13,14 @@
     perhaps, all over the world.</para>
 -->
 
-	<para>Der Zugriff auf ein Subversion-Projektarchiv kann problemlos 
-	von mehreren Clients, welche auf demselben Rechner wie 
-	Subversion laufen, gleichzeitig erfolgen &ndash; unter Verwendung der 
-	<literal>file://</literal>-Methode. Aber typischerweise läuft
-	der Subversion-Server auf einem separaten Rechner, und der Zugriff
-	erfolgt von Clients auf vielen verschiedenen Computern aus der ganzen
-	Firma &ndash; ja sogar der ganzen Welt.</para>
-	
+  <para>Der Zugriff auf ein Subversion-Projektarchiv kann problemlos 
+  von mehreren Clients, welche auf demselben Rechner wie 
+  Subversion laufen, gleichzeitig erfolgen &ndash; unter Verwendung der 
+  <literal>file://</literal>-Methode. Aber typischerweise läuft
+  der Subversion-Server auf einem separaten Rechner, und der Zugriff
+  erfolgt von Clients auf vielen verschiedenen Computern aus der ganzen
+  Firma &ndash; ja sogar der ganzen Welt.</para>
+  
 <!--
   <para>This chapter describes how to get your Subversion repository
     exposed outside its host machine for use by remote clients.  We
@@ -33,11 +33,11 @@
 
     <para>In diesem Kapitel erklären wir, wie Sie ihr Subversion-Projektarchiv
     für den Fernzugriff von Clients fit machen. Wir werden
-	ausführlich auf alle aktuell verfügbaren Servermechanismen von 
-	Subversion eingehen und über ihre Konfiguration und Verwendung reden.
-	Nach dem Lesen dieses Kapitels sollten Sie in der Lage sein, zu entscheiden,
-	welche Netzwerk-Konfiguration Ihren Bedürfnissen entspricht und wie
-	diese auf ihrem Server eingerichtet wird.</para>
+  ausführlich auf alle aktuell verfügbaren Servermechanismen von 
+  Subversion eingehen und über ihre Konfiguration und Verwendung reden.
+  Nach dem Lesen dieses Kapitels sollten Sie in der Lage sein, zu entscheiden,
+  welche Netzwerk-Konfiguration Ihren Bedürfnissen entspricht und wie
+  diese auf ihrem Server eingerichtet wird.</para>
 
   <!-- ================================================================= -->
   <!-- ================================================================= -->
@@ -46,8 +46,8 @@
 <!--
     <title>Overview</title>
 -->
-	<title>Überblick</title>
-	
+  <title>Überblick</title>
+  
 <!--
     <para>Subversion was designed with an abstract network layer.
       This means that a repository can be programmatically accessed by
@@ -57,15 +57,15 @@
       an infinite number of network implementations.  In practice,
       there are only two servers at the time of this writing.</para>
 -->
-	<para>Subversion wurde mit einer abstrakten
-	Netzwerkschicht entworfen. Dies bedeutet, dass auf ein 
-	Projektarchiv automatisiert von beliebigen Server-Prozessen zugegriffen
+  <para>Subversion wurde mit einer abstrakten
+  Netzwerkschicht entworfen. Dies bedeutet, dass auf ein 
+  Projektarchiv automatisiert von beliebigen Server-Prozessen zugegriffen
     werden kann, und die für Clients vorhandene <quote>Projektarchiv-Access</quote>-API
     (Programmierschnittstelle) erlaubt es Programmierern, Plugins 
-	zu entwickeln, die relevante Netzwerkprotokolle verstehen. Theoretisch ermöglicht 
-	dies Subversion, eine unbegrenzte Zahl an Netzwerkprotokollen zu verwenden.
-	Zum Zeitpunkt an dem dies geschrieben wird, gibt es aber nur zwei Server.</para>
-	
+  zu entwickeln, die relevante Netzwerkprotokolle verstehen. Theoretisch ermöglicht 
+  dies Subversion, eine unbegrenzte Zahl an Netzwerkprotokollen zu verwenden.
+  Zum Zeitpunkt an dem dies geschrieben wird, gibt es aber nur zwei Server.</para>
+  
 <!--
     <para>Apache is an extremely popular web server; using the
       <command>mod_dav_svn</command> module, Apache can access a
@@ -77,17 +77,17 @@
       authentication systems, and limited built-in web browsing of
       repositories.</para>
 -->
-	<para>Apache ist ein sehr beliebter Webserver, welcher mittels des
-	<command>mod_dav_svn</command>-Moduls auf Projektarchive zugreifen und 
-	diese für Clients verfügbar machen kann. Verwendet wird dabei das
-	WebDAV/DeltaV-Protokoll, welches eine Erweiterung von HTTP ist.
-	Da Apache ein stark erweiterbarer Webserver ist, bietet er
-	eine Menge an <quote>frei verfügbaren</quote> Funktionen/Modulen,
-	wie SSL-verschlüsselte Verbindungen, Logging, sowie die Integration diverser
-	Authentifikationssysteme von Drittanbietern und einen eingeschränkten
-	Web-Browser-gestützten Projektarchiv-Lesezugriff.</para>
-	
-<!--	
+  <para>Apache ist ein sehr beliebter Webserver, welcher mittels des
+  <command>mod_dav_svn</command>-Moduls auf Projektarchive zugreifen und 
+  diese für Clients verfügbar machen kann. Verwendet wird dabei das
+  WebDAV/DeltaV-Protokoll, welches eine Erweiterung von HTTP ist.
+  Da Apache ein stark erweiterbarer Webserver ist, bietet er
+  eine Menge an <quote>frei verfügbaren</quote> Funktionen/Modulen,
+  wie SSL-verschlüsselte Verbindungen, Logging, sowie die Integration diverser
+  Authentifikationssysteme von Drittanbietern und einen eingeschränkten
+  Web-Browser-gestützten Projektarchiv-Lesezugriff.</para>
+  
+<!--  
     <para>In the other corner is <command>svnserve</command>: a small,
       lightweight server program that speaks a custom protocol with
       clients.  Because its protocol is explicitly designed for
@@ -100,17 +100,17 @@
       starting out with Subversion.</para>
 -->
 
-	<para>In der anderen Ecke befindet sich <command>svnserve</command>:
-	ein kleiner, leichtgewichtiger Server, der ein einfaches Netzwerkprotokoll
-	für die Zugriffe der Clients verwendet. Da dieses Protokoll für die 
-	Verwendung mit Subversion entwickelt wurde und, im Gegensatz zu HTTP,
-	zustandsorientiert ist, bietet es einen deutlich schnelleren Netzwerkzugriff &ndash;
-	spart allerdings auch einige wichtige Funktionen aus. So bietet er eine 
-	SASL-basierte Verschlüsselung und Authentifikation, hat aber keine 
-	Logging-Funktionen oder eingebauten Web-Browser-Zugriff. Wie auch immer,
-	er ist extrem einfach einzurichten und für kleinere Teams, welche einfach
-	nur schnell mit Subversion "loslegen" wollen, die beste Wahl.</para>
-	
+  <para>In der anderen Ecke befindet sich <command>svnserve</command>:
+  ein kleiner, leichtgewichtiger Server, der ein einfaches Netzwerkprotokoll
+  für die Zugriffe der Clients verwendet. Da dieses Protokoll für die 
+  Verwendung mit Subversion entwickelt wurde und, im Gegensatz zu HTTP,
+  zustandsorientiert ist, bietet es einen deutlich schnelleren Netzwerkzugriff &ndash;
+  spart allerdings auch einige wichtige Funktionen aus. So bietet er eine 
+  SASL-basierte Verschlüsselung und Authentifikation, hat aber keine 
+  Logging-Funktionen oder eingebauten Web-Browser-Zugriff. Wie auch immer,
+  er ist extrem einfach einzurichten und für kleinere Teams, welche einfach
+  nur schnell mit Subversion "loslegen" wollen, die beste Wahl.</para>
+  
 <!--
     <para>A third option is to use <command>svnserve</command>
       tunneled over an SSH connection.  Even though this scenario
@@ -128,35 +128,35 @@
       has no meaning, since each user is accessing the repository
       database files directly.</para>
 -->
-	
-	<para>Ein dritte Möglichkeit ist, <command>svnserve</command> durch
-	SSH-Verbindungen zu tunneln. Auch wenn in diesem Fall weiterhin 
-	<command>svnserve</command> verwendet wird, so unterscheidet sich
-	die Funktionalität ziemlich von der normalen Nutzung von
-	<command>svnserve</command>. SSH wird zur Verschlüsselung der gesamten 
-	Kommunikation verwendet. Ebenso zur Authentifizierung, was die
-	Verwendung von realen Nutzerkonten auf dem Subversion-Server notwendig
-	macht (anders als beim einfachen <command>svnserve</command>, der seine
-	eigene Nutzerverwaltung hat). Des weiteren ist es notwendig &ndash; da jeder
-	angemeldete Nutzer einen eigenen <command>svnserve</command>-Prozess
-	startet &ndash; einer Gruppe von lokalen Nutzern (aus Sicht der Rechtevergabe)
-	vollen Zugriff auf das Projektarchiv via <literal>file://</literal> URLs zu
-	ermöglichen. Pfad-basierte Zugriffskontrolle schließt sich in diesem Fall aus,
-	da die Nutzer direkt auf die Datenbank-Dateien zugreifen.</para>
+  
+  <para>Ein dritte Möglichkeit ist, <command>svnserve</command> durch
+  SSH-Verbindungen zu tunneln. Auch wenn in diesem Fall weiterhin 
+  <command>svnserve</command> verwendet wird, so unterscheidet sich
+  die Funktionalität ziemlich von der normalen Nutzung von
+  <command>svnserve</command>. SSH wird zur Verschlüsselung der gesamten 
+  Kommunikation verwendet. Ebenso zur Authentifizierung, was die
+  Verwendung von realen Nutzerkonten auf dem Subversion-Server notwendig
+  macht (anders als beim einfachen <command>svnserve</command>, der seine
+  eigene Nutzerverwaltung hat). Des weiteren ist es notwendig &ndash; da jeder
+  angemeldete Nutzer einen eigenen <command>svnserve</command>-Prozess
+  startet &ndash; einer Gruppe von lokalen Nutzern (aus Sicht der Rechtevergabe)
+  vollen Zugriff auf das Projektarchiv via <literal>file://</literal> URLs zu
+  ermöglichen. Pfad-basierte Zugriffskontrolle schließt sich in diesem Fall aus,
+  da die Nutzer direkt auf die Datenbank-Dateien zugreifen.</para>
 
 <!--
     <para><xref linkend="svn.serverconfig.overview.tbl-1"/> provides a
       quick summary of the three typical server deployments.</para>
 -->
 
-	<para><xref linkend="svn.serverconfig.overview.tbl-1"/> zeigt eine kurze Zusammenfassung
-	der drei typischen Server-Konfigurationen.</para>
+  <para><xref linkend="svn.serverconfig.overview.tbl-1"/> zeigt eine kurze Zusammenfassung
+  der drei typischen Server-Konfigurationen.</para>
       
 
 
    <table id="svn.serverconfig.overview.tbl-1">
  <!-- <title>Comparison of subversion server options</title> -->
- 	  <title>Vergleich der Serveroptionen für Subversion</title>
+    <title>Vergleich der Serveroptionen für Subversion</title>
       <tgroup cols="4">
         <thead>
           <row>
@@ -165,7 +165,7 @@
             <entry>Apache + mod_dav_svn</entry>
             <entry>svnserve</entry>
        <!-- <entry>svnserve over SSH</entry> -->
-       		<entry>svnserve via SSH</entry>
+          <entry>svnserve via SSH</entry>
           </row>
         </thead>
         <tbody>
@@ -214,9 +214,9 @@
 
           <row>
        <!-- <entry>Encryption</entry> -->
-       		<entry>Verschlüsselung</entry>
+          <entry>Verschlüsselung</entry>
        <!-- <entry>Available via optional SSL</entry> -->
-       		<entry>optional mit SSL</entry>
+          <entry>optional mit SSL</entry>
        <!-- <entry>Available via optional SASL features</entry> -->
             <entry>optional mit der SASL-Funktionen</entry>
        <!-- <entry>Inherent in SSH connection</entry> -->
@@ -232,18 +232,18 @@
             <entry>Apache-seitiges Loggen aller HTTP-Anfragen,
             optionales <quote>High-Level</quote>-Loggen aller Client-Operationen</entry>
        <!-- <entry>No logging</entry> -->
-       		<entry>kein Loggen</entry>
+          <entry>kein Loggen</entry>
        <!-- <entry>No logging</entry> -->
-       		<entry>kein Loggen</entry>
+          <entry>kein Loggen</entry>
           </row>
 
           <row>
        <!-- <entry>Interoperability</entry> -->
             <entry>Interoperabilität</entry>
        <!-- <entry>Accessible by other WebDAV clients</entry> -->
-       		<entry>Zugriff durch andere WebDAV-Clients</entry>
+          <entry>Zugriff durch andere WebDAV-Clients</entry>
        <!-- <entry>Talks only to svn clients</entry> -->
-       		<entry>Verbindung nur mit svn-Clients möglich</entry>
+          <entry>Verbindung nur mit svn-Clients möglich</entry>
        <!-- <entry>Talks only to svn clients</entry> -->
             <entry>Verbindung nur mit svn-Clients möglich</entry>
           </row>
@@ -263,11 +263,11 @@
 
           <row>
        <!-- <entry>Master-slave server replication</entry> -->
-       		<entry>Master-Slave-Server Replikationen</entry>
+          <entry>Master-Slave-Server Replikationen</entry>
        <!-- <entry>Transparent write-proxying available from slave to master</entry> -->
             <entry>transparenter Schreib-Proxy vom Slave zum Master</entry> 
        <!-- <entry>Can only create read-only slave servers</entry> -->
-       		<entry>beschränkt auf nur lesbare Slave-Server</entry>
+          <entry>beschränkt auf nur lesbare Slave-Server</entry>
        <!-- <entry>Can only create read-only slave servers</entry> -->
             <entry>beschränkt auf nur lesbare Slave-Server</entry>
           </row>
@@ -275,7 +275,7 @@
 
           <row>
       <!--  <entry>Speed</entry> -->
-      		<entry>Geschwindigkeit</entry>
+          <entry>Geschwindigkeit</entry>
        <!-- <entry>Somewhat slower</entry> -->
             <entry>ein wenig langsamer</entry>
       <!--  <entry>Somewhat faster</entry> -->
@@ -322,18 +322,18 @@
       might <emphasis>not</emphasis> choose one.</para>
 -->
 
-	<title>Auswahl einer Serverkonfiguration</title>
-	
-	<para>Also dann, welchen Server sollten Sie nun verwenden? Welcher ist der beste?</para>
-	
-	<para>Auf diese Frage gibt es offensichtlich nicht die eine, richtige Antwort.
-	Denn jedes Team stellt andere Anforderungen, und die verschieden Server bieten unterschiedliche
-	Funktionen und Voraussetzungen. Das Subversion-Projekt selbst bevorzugt keinen der genannten Server
-	oder betrachtet einen als etwas <quote>offizieller</quote> als die anderen.</para>
-	
-	<para>Wir beleuchten nun die einzelnen Gründe, die für die eine oder andere Konstellation
-	sprechen, ebenso auch Gründe, welche vielleicht <emphasis>gegen</emphasis> 
-	eine der Möglichkeiten sprechen.</para>
+  <title>Auswahl einer Serverkonfiguration</title>
+  
+  <para>Also dann, welchen Server sollten Sie nun verwenden? Welcher ist der beste?</para>
+  
+  <para>Auf diese Frage gibt es offensichtlich nicht die eine, richtige Antwort.
+  Denn jedes Team stellt andere Anforderungen, und die verschieden Server bieten unterschiedliche
+  Funktionen und Voraussetzungen. Das Subversion-Projekt selbst bevorzugt keinen der genannten Server
+  oder betrachtet einen als etwas <quote>offizieller</quote> als die anderen.</para>
+  
+  <para>Wir beleuchten nun die einzelnen Gründe, die für die eine oder andere Konstellation
+  sprechen, ebenso auch Gründe, welche vielleicht <emphasis>gegen</emphasis> 
+  eine der Möglichkeiten sprechen.</para>
 
 
 
@@ -491,7 +491,7 @@
     </sect2>
 -->
 
-		      <title>svnserve über SSH</title>
+          <title>svnserve über SSH</title>
 
       <variablelist>
         <varlistentry>
@@ -636,7 +636,7 @@
         </varlistentry>
 
       </variablelist>
-	</sect2>
+  </sect2>
 
 
 
@@ -729,7 +729,7 @@
             </listitem> </itemizedlist>
 -->
 
-	<title>Empfehlungen</title>
+  <title>Empfehlungen</title>
 
       <para>Im Allgemeinen empfehlen die Autoren dieses Buches eine einfache
         <command>svnserve</command>-Installation für kleine Teams, denen an
@@ -844,7 +844,7 @@
       to your repositories.</para>
  -->     
       
-      	<title>svnserve, ein maßgefertigter Server</title>
+        <title>svnserve, ein maßgefertigter Server</title>
 
     <para>Das Programm <command>svnserve</command> ist ein leichtgewichtiger Server,
       welcher für die Kommunikation mit den Clients ein auf TCP/IP basierendes,
@@ -881,7 +881,7 @@
       </itemizedlist>
 -->
 
-	<title>Der Serverstart</title>
+  <title>Der Serverstart</title>
 
       <para>Es gibt mehrere Möglichkeiten, <command>svnserve</command>
       zu starten:
@@ -1586,9 +1586,9 @@ sally = undnocheins
           für mehrere Repositories verwenden; in diesem Fall sollten Sie
           die Datei an einem zentraleren Ort ablegen.
           Die Projektarchive, die sich die Benutzerdatei teilen, sollten so
-		  konfiguriert sein, dass sie derselben Authentifizierungsumgebung
-		  angehören, da die Benutzerliste 
-		  im Wesentlichen einen Authentifizierungs-Bereich definiert.
+      konfiguriert sein, dass sie derselben Authentifizierungsumgebung
+      angehören, da die Benutzerliste 
+      im Wesentlichen einen Authentifizierungs-Bereich definiert.
           Wo die Datei auch liegen mag, stellen Sie sicher, die Lese-
           und Schreibrechte entsprechend zu setzen. Falls Sie wissen,
           unter welchem Konto <command>svnserve</command> laufen wird,
@@ -1602,7 +1602,7 @@ sally = undnocheins
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.auth.general">
  <!--       <title>Set access controls</title> -->
- 			 <title>Setzen von Zugriffsbeschränkungen</title>
+       <title>Setzen von Zugriffsbeschränkungen</title>
 
 <!--
         <para>There are two more variables to set in the
@@ -1618,18 +1618,18 @@ sally = undnocheins
           read/write access to the repository.  For example:</para>
 -->
 
-		<para>
-		Es sind noch zwei weitere Variablen in der Datei <filename>svnserve.conf</filename>
-		zu setzten: Sie legen fest, was nicht authentifizierten (anonymen)
-		und authentifizierten Nutzern erlaubt ist. Die Variablen 
-		<literal>anon-access</literal> und <literal>auth-access</literal>
-		können auf die Werte <literal>none</literal>, <literal>read</literal>
+    <para>
+    Es sind noch zwei weitere Variablen in der Datei <filename>svnserve.conf</filename>
+    zu setzten: Sie legen fest, was nicht authentifizierten (anonymen)
+    und authentifizierten Nutzern erlaubt ist. Die Variablen 
+    <literal>anon-access</literal> und <literal>auth-access</literal>
+    können auf die Werte <literal>none</literal>, <literal>read</literal>
         oder <literal>write</literal> gesetzt werden. Wenn Sie den Wert auf 
         <literal>none</literal> setzen, so unterbinden Sie sowohl den Lese- als
         auch den Schreibzugriff &ndash; <literal>read</literal> erlaubt den Nur-Lese-Zugriff
         auf das Projektarchiv und  <literal>write</literal> gibt auf das gesamte Projektarchiv
         Lese- und Schreibzugriff. 
-		</para>
+    </para>
 
 <!--
         <screen>
@@ -1664,10 +1664,10 @@ auth-access = write
           access completely:</para>
 -->
 
-		<para>Tatsächlich sind die in diesem Beispiel gezeigten Einstellungen,
-		auch die Standardwerte der Variablen, falls Sie vergessen sollten, sie
-		zu setzten. Für den Fall, dass Sie noch zurückhaltender sein möchten, können Sie den anonymen
-		Zugriff auch komplett unterbinden:</para>
+    <para>Tatsächlich sind die in diesem Beispiel gezeigten Einstellungen,
+    auch die Standardwerte der Variablen, falls Sie vergessen sollten, sie
+    zu setzten. Für den Fall, dass Sie noch zurückhaltender sein möchten, können Sie den anonymen
+    Zugriff auch komplett unterbinden:</para>
 
 <!--
         <screen>
@@ -1705,13 +1705,13 @@ auth-access = write
         the <literal>authz-db</literal> variable to point to it:</para>
 -->
 
-		<para>Der Serverprozess versteht nicht nur diese <quote>pauschalen</quote>
-		Zugriffseinstellungen für ein Projektarchiv, sondern auch feiner
-		granulierte Zugriffsrechte auf einzelne Dateien und Verzeichnisse
-		innerhalb des Repositories. Um diese Funktion nutzen zu können, müssen Sie eine
-		Datei anlegen, welche die umfangreicheren Regeln enthält und anschließend die
-		Variable <literal>authz-db</literal> mit folgenden Wert setzten:
-		</para>
+    <para>Der Serverprozess versteht nicht nur diese <quote>pauschalen</quote>
+    Zugriffseinstellungen für ein Projektarchiv, sondern auch feiner
+    granulierte Zugriffsrechte auf einzelne Dateien und Verzeichnisse
+    innerhalb des Repositories. Um diese Funktion nutzen zu können, müssen Sie eine
+    Datei anlegen, welche die umfangreicheren Regeln enthält und anschließend die
+    Variable <literal>authz-db</literal> mit folgenden Wert setzten:
+    </para>
 
 
 <!--
@@ -1747,16 +1747,16 @@ authz-db = Auth-Datei
 
 -->
 
-		<para>
-		Wir werden die Syntax der <filename>Auth-Datei</filename>
-		noch später in diesem Kapitel besprechen, und zwar in
-		<xref linkend="svn.serverconfig.pathbasedauthz"/>. Beachten Sie,
-		dass die <literal>authz-db</literal>-Variable die Verwendung der
-		<literal>anon-access</literal>- und <literal>auth-access</literal>-Variablen 
+    <para>
+    Wir werden die Syntax der <filename>Auth-Datei</filename>
+    noch später in diesem Kapitel besprechen, und zwar in
+    <xref linkend="svn.serverconfig.pathbasedauthz"/>. Beachten Sie,
+    dass die <literal>authz-db</literal>-Variable die Verwendung der
+    <literal>anon-access</literal>- und <literal>auth-access</literal>-Variablen 
         nicht ausschließt &ndash; wenn alle diese Variablen gleichzeitig
-		gesetzt sind, so müssen auch <emphasis>alle</emphasis> diese Regeln 
-		erfolgreich greifen, bevor ein Zugriff erlaubt wird.
-		</para>
+    gesetzt sind, so müssen auch <emphasis>alle</emphasis> diese Regeln 
+    erfolgreich greifen, bevor ein Zugriff erlaubt wird.
+    </para>
       </sect3>
     </sect2>
 
@@ -1764,17 +1764,33 @@ authz-db = Auth-Datei
 
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.svnserve.sasl">
+<!--
       <title>Using <command>svnserve</command> with SASL</title>
+-->
+      <title><command>svnserve</command> mit SASL verwenden</title>
 
+<!--
       <para>For many teams, the built-in CRAM-MD5 authentication is
         all they need from <command>svnserve</command>.  However, if
         your server (and your Subversion clients) were built with the
         Cyrus Simple Authentication and Security Layer (SASL) library,
         you have a number of authentication and encryption
         options available to you.</para>
+-->
+      <para>Die meisten Teams benötigen lediglich die eingebaute
+        CRAM-MD5 Authentifizierung von <command>svnserve</command>.
+        Falls Ihr Server (und Ihre Subversion Clients) jedoch mit der
+        Cyrus Simple Authentication and Security Layer (SASL)
+        Bibliothek gebaut wurde, stehen Ihnen eine Reihe von
+        Authentifizierungs- und Verschlüsselungsoptionen zur
+        Verfügung.</para>
 
       <sidebar>
+<!--
         <title>What Is SASL?</title>
+-->
+        <title>Was ist SASL?</title>
+<!--
         <para>The Cyrus Simple Authentication and Security Layer is
           open source software written by Carnegie Mellon University.
           It adds generic authentication and encryption capabilities
@@ -1794,12 +1810,41 @@ authz-db = Auth-Datei
           Secure-Remote-Password (SRP), and others.  Certain
           mechanisms may or may not be available to you; be sure to
           check which modules are provided.</para>
+-->
+        <para>Cyrus Simple Authentication and Security Layer (einfache
+          Cyrus Authentifizierungs- und Sicherheitsschicht) ist
+          quelloffene Software, die von der Carnegie Mellon University
+          geschrieben wurde. Sie fügt beliebigen Netzprotokollen
+          allgemeine Authentifizierungs- und
+          Verschlüsselungsfähigkeiten hinzu, und seit Subversion 1.5
+          kann sowohl der <command>svnserve</command>-Server als auch
+          der <command>svn</command>-Client damit umgehen.
+          Möglicherweise steht sie Ihnen zur Verfügung. Falls Sie
+          Subversion selber bauen, müssen Sie mindestens Version 2.1
+          von SASL auf Ihrem System installiert haben und
+          sicherstellen, dass es während des Erstellungsprozesses
+          gefunden wird. Falls Sie ein fertiges Subversion-Binärpaket
+          verwenden, müssen Sie den Paketpfleger fragen, ob
+          SASL-Unterstützung einkompiliert wurde. SASL wird mit
+          einer Anzahl ergänzbarer Module geliefert, die
+          verschiedenartige Authentifizierungssysteme repräsentieren:
+          Kerberos (GSSAPI), NTLM, One-Time-Passwords (OTP),
+          DIGEST-MD5, LDAP, Secure-Remote-Password (SRP) u.a.
+          Bestimmte Mechanismen könnten für Sie verfügbar sein;
+          überprüfen Sie, welche Module mitgeliefert werden.</para>
 
+<!--
         <para>You can download Cyrus SASL (both code and
           documentation) from
           <ulink url="http://asg.web.cmu.edu/sasl/sasl-library.html"/>.</para>
+-->
+        <para>Sie können Cyrus SASL (sowohl den Code als auch die
+          Dokumentation) bei
+          <ulink url="http://asg.web.cmu.edu/sasl/sasl-library.html"/>
+          herunterladen.</para>
       </sidebar>
 
+<!--
       <para>Normally, when a subversion client connects to
         <command>svnserve</command>, the server sends a greeting that
         advertises a list of the capabilities it supports, and the
@@ -1816,21 +1861,51 @@ authz-db = Auth-Datei
         authentication mechanisms may also be available.  However,
         you'll need to explicitly configure SASL on the server side to
         advertise them.</para>
+-->
+      <para>Wenn ein Subversion-Client sich mit
+        <command>svnserve</command> verbindet, sendet der Server
+        normalerweise eine Begrüßung, die eine Auflistung der von ihm
+        unterstützten Fähigkeiten umfasst, woraufhin der Client mit
+        einer ähnlichen Liste von Fähigkeiten antwortet. Falls der
+        Server so konfiguriert wurde, dass er eine Authentifizierung
+        benötigt, sendet er eine Aufforderung, die die verfügbaren
+        Authentifizierungsmechanismen auflistet; der Client antwortet,
+        indem er einen der Mechanismen auswählt und die
+        Authentifizierung erfolgt dann mittels eines
+        Nachrichtenaustausches. Selbst falls keine SASL-Fähigkeiten
+        vorhanden sind, verstehen Client und Server von sich aus die
+        CRAM-MD5- und ANONYMOUS-Mechanismen (siehe <xref
+          linkend="svn.serverconfig.svnserve.auth"/>). Falls Client
+        und Server mit SASL gebaut wurden, könnten eine Anzahl
+        weiterer Authentifizierungsmechanismen verfügbar sein.
+        Trotzdem müssen Sie serverseitig ausdrücklich SASL
+        konfigurieren, um es anbieten zu können.</para>
 
       <sect3 id="svn.serverconfig.svnserve.sasl.authn">
+<!--
         <title>Authenticating with SASL</title>
+-->
+        <title>Authentifizierung mit SASL</title>
 
+<!--
         <para>To activate specific SASL mechanisms on the server,
           you'll need to do two things.  First, create
           a <literal>[sasl]</literal> section in your
           repository's <filename>svnserve.conf</filename> file with an
           initial key-value pair:</para>
+-->
+        <para>Um bestimmte SASL-Mechanismen auf dem Server zu
+          aktivieren, müssen Sie zwei Dinge tun. Erstellen Sie
+          zunächst einen Abschnitt <literal>[sasl]</literal> in der
+          Datei <filename>svnserve.conf</filename> Ihres
+          Projektarchivs mit einem Schlüssel-Wert-Paar:</para>
 
         <programlisting>
           [sasl]
           use-sasl = true
 </programlisting>
 
+<!--
         <para>Second, create a main SASL configuration file
           called <filename>svn.conf</filename> in a place where the
           SASL library can find it&mdash;typically in the directory
@@ -1841,7 +1916,19 @@ authz-db = Auth-Datei
           is <emphasis>not</emphasis>
           the <filename>svnserve.conf</filename> file that lives
           within a repository!)</para>
+-->
+        <para>Erstellen Sie zweitens eine
+          SASL-Hauptkonfigurationsdatei namens
+          <filename>svn.conf</filename> dort,  wo die SASL-Bibliothek
+          sie finden kann &ndash; typischerweise in dem Verzeichnis,
+          wo Sie müssen das Plugin-Verzeichnis auf Ihrem System
+          lokalisieren, etwa <filename>/usr/lib/sasl2/</filename> oder
+          <filename>/etc/sasl2/</filename>. (Beachten Sie, dass es
+          sich hierbei <emphasis>nicht</emphasis> um die Datei
+          <filename>svnserve.conf</filename> handelt, die innerhalb
+          eines Projektarchivs liegt!)</para>
 
+<!--
         <para>On a Windows server, you'll also have to edit the system
           registry (using a tool such as <command>regedit</command>)
           to tell SASL where to find things.  Create a registry key
@@ -1854,7 +1941,22 @@ authz-db = Auth-Datei
           <literal>ConfFile</literal> (whose value is a path to the
           parent directory containing
           the <filename>svn.conf</filename> file you created).</para>
+-->
+        <para>Auf einem Windows-Server müssen Sie außerdem die
+          Systemregistratur anpassen (mit einem Werkzeug wie
+          <command>regedit</command>), um SASL mitzuteilen, wo es
+          Dinge finden kann. Erstellen Sie einen Registraturschlüssel
+          namens <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\Carnegie
+          Mellon\Project Cyrus\SASL Library]</literal> und legen zwei
+          weitere Schlüssel hinein: einen  Schlüssel namens
+          <literal>SearchPath</literal> (dessen Wert ein Pfad zum
+          Verzeichnis bezeichnet, in dem die SASL
+          <filename>sasl*.dll</filename>-Plugin-Bibliotheken liegen)
+          und einen Schlüssel namens <literal>ConfFile</literal>
+          (dessen Wert ein Pfad zum Elternverzeichnis der von Ihnen
+          erstellten Datei <filename>svn.conf</filename> ist).</para>
 
+<!--
         <para>Because SASL provides so many different kinds of
           authentication mechanisms, it would be foolish (and far
           beyond the scope of this book) to try to describe every
@@ -1868,6 +1970,21 @@ authz-db = Auth-Datei
           example, if your <filename>subversion.conf</filename>
           (or <filename>svn.conf</filename>) file contains the
           following:</para>
+-->
+        <para>Da SASL so viele unterschiedliche Arten von
+          Authentifizierungsmechanismen zur Verfügung stellt, wäre es
+          töricht (und würde den Rahmen dieses Buches sprengen), wenn
+          wir versuchen würden, jede mögliche Server-Konfiguration zu
+          erläutern. Stattdessen empfehlen wir Ihnen, die Lektüre der
+          Dokumentation aus dem Unterverzeichnis
+          <filename>doc/</filename> des SASL Quelltextes. Sie
+          beschreibt detailliert jeden Mechanismus und die
+          entsprechende Konfiguration des Servers. Für die Erörterung
+          an dieser Stelle zeigen wir ein einfaches Beispiel der
+          Konfiguration des DIGEST-MD5 Mechanismus. Wenn Ihre Datei
+          <filename>subversion.conf</filename> (oder
+          <filename>svn.conf</filename>) beispielsweise folgenden
+          Inhalt hat:</para>
 
         <screen>
 pwcheck_method: auxprop
@@ -1876,6 +1993,7 @@ sasldb_path: /etc/my_sasldb
 mech_list: DIGEST-MD5
 </screen>
 
+<!--
         <para>you've told SASL to advertise the DIGEST-MD5
           mechanism to clients and to check user passwords against a
           private password database located
@@ -1883,11 +2001,20 @@ mech_list: DIGEST-MD5
           administrator can then use
           the <command>saslpasswd2</command> program to add or modify
           usernames and passwords in the database:</para>
+-->
+        <para>haben Sie SASL aufgefordert, Clients den DIGEST-MD5
+          Mechanismus anzubieten und Benutzerpasswörter mit einer
+          privaten Passwort-Datenbank in
+          <filename>/etc/my_sasldb</filename> abzugleichen. Ein
+          Systemadministrator kann dann mit dem Programm
+          <command>saslpasswd2</command> Benutzernamen und Passwörter
+          in der Datenbank eintragen oder bearbeiten:</para>
 
         <screen>
 $ saslpasswd2 -c -f /etc/my_sasldb -u realm username
 </screen>
 
+<!--
         <para>A few words of warning: first, make sure the
           <quote>realm</quote> argument
           to <command>saslpasswd2</command> matches the same realm
@@ -1900,13 +2027,37 @@ $ saslpasswd2 -c -f /etc/my_sasldb -u realm username
           the <command>svnserve</command> program has read access to
           the file (and possibly write access as well, if you're using
           a mechanism such as OTP).</para>
+-->
+        <para>Ein paar Worte zur Warnung: Stellen Sie zunächst sicherm
+          dass das Argument <quote>realm</quote> für
+          <command>saslpasswd2</command> demselben Bereich entspricht,
+          den Sie in der Datei <filename>svnserve.conf</filename>
+          Ihres Projektarchivs definiert haben; falls diese Werte nicht
+          übereinstimmen, wird die Authentifizierung fehlschlagen.
+          Darüberhinaus muss aufgrund einer Unzulänglichkeit in SASL
+          der gemeinsame Bereich aus einer Zeichenkette ohne
+          Leerzeichen bestehen. Falls Sie sich entscheiden, die
+          standardmäßige SASL-Passwort-Datenbank zu verwenden, sollten
+          Sie schließlich sicherstellen, dass das Programm
+          <command>svnserve</command> die Datei lesen (und
+          möglicherweise auch schreiben) kann, wenn Sie einen
+          Mechanismus wie OTP verwenden).</para>
 
+<!--
         <para>This is just one simple way of configuring SASL.  Many
           other authentication mechanisms are available, and passwords
           can be stored in other places such as in LDAP or a SQL
           database.  Consult the full SASL documentation for
           details.</para>
+-->
+        <para>Dies ist lediglich eine einfache Art, SASL zu
+          konfigurieren. Viele andere Authentifizierungsmechanismen
+          stehen zur Verfügung, und Passwörter können an anderer
+          Stelle gespeichert werden, etwa in LDAP oder in einer
+          SQL-Datenbank. Details hierzu finden Sie in der
+          Dokumentation zu SASL.</para>
 
+<!--
         <para>Remember that if you configure your server to only allow
           certain SASL authentication mechanisms, this forces all
           connecting clients to have SASL support as well.  Any
@@ -1918,12 +2069,30 @@ $ saslpasswd2 -c -f /etc/my_sasldb -u realm username
           authenticate, be sure to advertise the CRAM-MD5 mechanism as
           an option.  All clients are able to use CRAM-MD5, whether
           they have SASL capabilities or not.</para>
+-->
+        <para>Wenn Sie Ihren Server so konfigurieren, dass er nur
+          bestimmte SASL-Authentifizierungsmechanismen erlaubt, müssen
+          Sie beachten, dass damit auch alle Clients gezwungen sind,
+          SASL zu unterstützen. Kein Subversion-Client ohne
+          SASL-Unterstützung (u.a. alle Clients vor Version 1.5) kann
+          sich authentifizieren. Andererseits möchten Sie vielleicht
+          gerade diese Einschränkung (<quote>Meine Clients müssen
+            sämtlich Kerberos verwenden!</quote>). Wenn Sie jedoch
+          möchten, dass sich auch Nicht-SASL-Clients authentifizieren
+          können, stellen Sie sicher, dass optional der
+          CRAM-MD5-Mechanismus angeboten wird. Alle Clients können
+          CRAM-MD5 verwenden, egal, ob sie SASL verstehen oder
+          nicht.</para>
 
         </sect3>
 
       <sect3 id="svn.serverconfig.svnserve.sasl.encryption">
+<!--
         <title>SASL encryption</title>
+-->
+        <title>SASL Verschlüsselung</title>
 
+<!--
         <para>SASL is also able to perform data encryption if a
           particular mechanism supports it.  The built-in CRAM-MD5
           mechanism doesn't support encryption, but DIGEST-MD5 does,
@@ -1931,6 +2100,16 @@ $ saslpasswd2 -c -f /etc/my_sasldb -u realm username
           OpenSSL library.  To enable or disable different levels of
           encryption, you can set two values in your repository's
           <filename>svnserve.conf</filename> file:</para>
+-->
+        <para>SASL kann auch Daten verschlüsseln, sofern ein
+          bestimmter Mechanismus das unterstützt. Der eingebaute
+          CRAM-MD5-Mechanismus unterstützt keine Verschlüsselung,
+          jedoch DIGEST-MD5, und Mechanismen wie SRP erfordern sogar
+          die Verwendung der OpenSSL-Bibliothek. Um verschiedene
+          Verschlüsselungsstufen zu aktivieren oder abzustellen,
+          können Sie zwei Werte in der Datei
+          <filename>svnserve.conf</filename> Ihres Projektarchivs
+          einstellen:</para>
 
         <screen>
 [sasl]
@@ -1939,6 +2118,7 @@ min-encryption = 128
 max-encryption = 256
 </screen>
 
+<!--
         <para>The <literal>min-encryption</literal> and
           <literal>max-encryption</literal> variables control the
           level of encryption demanded by the server.  To disable
@@ -1952,7 +2132,21 @@ max-encryption = 256
           In our previous example, we require clients to do at least
           128-bit encryption, but no more than 256-bit
           encryption.</para>
-
+-->
+        <para>Die Variablen <literal>min-encryption</literal> und
+          <literal>max-encryption</literal> kontrollieren die vom
+          Server verlangte Verschlüsselungsstufe. Um Verschlüsselung
+          vollständig abzustellen, setzen Sie beide Werte auf 0. Um
+          die einfache Erstellung von Prüfsummen für Daten zu
+          ermöglichen (etwa, um Manipulationen zu verhindern und
+          Datenintegrität ohne Verschlüsselung zu garantieren), setzen
+          Sie beide Werte auf 1. Falls Sie Verschlüsselung erlauben,
+          jedoch nicht voraussetzen, setzen Sie den Minimalwert auf 0
+          und den Maximalwert auf irgendeine Bitlänge. Um unbedingte
+          Verschlüsselung zu verlangen,, setzen Sie beide Werte auf
+          Zahlen größer 1. Im vorangegangenen Beispiel verlangen wir,
+          dass Clients mindestens 128-Bit- aber höchstens
+          256-Bit-Verschlüsselung vornehmen.</para>
         </sect3>
 
       </sect2>
