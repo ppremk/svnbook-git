@@ -1,8 +1,8 @@
 <chapter id="svn.serverconfig">
- <!-- 
+<!-- 
   <title>Server Configuration</title>
 -->
-<title>Die Administration eines Subversion-Servers</title>
+  <title>Die Administration eines Subversion-Servers</title>
 
 <!--
   <para>A Subversion repository can be accessed simultaneously by
@@ -13,14 +13,14 @@
     perhaps, all over the world.</para>
 -->
 
-  <para>Der Zugriff auf ein Subversion-Projektarchiv kann problemlos 
-  von mehreren Clients, welche auf demselben Rechner wie 
-  Subversion laufen, gleichzeitig erfolgen &ndash; unter Verwendung der 
-  <literal>file://</literal>-Methode. Aber typischerweise läuft
-  der Subversion-Server auf einem separaten Rechner, und der Zugriff
-  erfolgt von Clients auf vielen verschiedenen Computern aus der ganzen
-  Firma &ndash; ja sogar der ganzen Welt.</para>
-  
+  <para>Der Zugriff auf ein Subversion-Projektarchiv kann problemlos
+    von mehreren Clients, welche auf demselben Rechner wie Subversion
+    laufen, gleichzeitig erfolgen &ndash; unter Verwendung der
+    <literal>file://</literal>-Methode. Aber typischerweise läuft der
+    Subversion-Server auf einem separaten Rechner, und der Zugriff
+    erfolgt von Clients auf vielen verschiedenen Computern aus der
+    ganzen Firma &ndash; ja sogar der ganzen Welt.</para>
+
 <!--
   <para>This chapter describes how to get your Subversion repository
     exposed outside its host machine for use by remote clients.  We
@@ -31,13 +31,14 @@
     setup on your host computer.</para>
 -->
 
-    <para>In diesem Kapitel erklären wir, wie Sie ihr Subversion-Projektarchiv
-    für den Fernzugriff von Clients fit machen. Wir werden
-  ausführlich auf alle aktuell verfügbaren Servermechanismen von 
-  Subversion eingehen und über ihre Konfiguration und Verwendung reden.
-  Nach dem Lesen dieses Kapitels sollten Sie in der Lage sein, zu entscheiden,
-  welche Netzwerk-Konfiguration Ihren Bedürfnissen entspricht und wie
-  diese auf ihrem Server eingerichtet wird.</para>
+  <para>In diesem Kapitel erklären wir, wie Sie ihr
+    Subversion-Projektarchiv für den Fernzugriff von Clients fit
+    machen. Wir werden ausführlich auf alle aktuell verfügbaren
+    Servermechanismen von Subversion eingehen und über ihre
+    Konfiguration und Verwendung reden.  Nach dem Lesen dieses
+    Kapitels sollten Sie in der Lage sein, zu entscheiden, welche
+    Netzwerk-Konfiguration Ihren Bedürfnissen entspricht und wie diese
+    auf ihrem Server eingerichtet wird.</para>
 
   <!-- ================================================================= -->
   <!-- ================================================================= -->
@@ -46,8 +47,8 @@
 <!--
     <title>Overview</title>
 -->
-  <title>Überblick</title>
-  
+    <title>Überblick</title>
+
 <!--
     <para>Subversion was designed with an abstract network layer.
       This means that a repository can be programmatically accessed by
@@ -57,15 +58,17 @@
       an infinite number of network implementations.  In practice,
       there are only two servers at the time of this writing.</para>
 -->
-  <para>Subversion wurde mit einer abstrakten
-  Netzwerkschicht entworfen. Dies bedeutet, dass auf ein 
-  Projektarchiv automatisiert von beliebigen Server-Prozessen zugegriffen
-    werden kann, und die für Clients vorhandene <quote>Projektarchiv-Access</quote>-API
-    (Programmierschnittstelle) erlaubt es Programmierern, Plugins 
-  zu entwickeln, die relevante Netzwerkprotokolle verstehen. Theoretisch ermöglicht 
-  dies Subversion, eine unbegrenzte Zahl an Netzwerkprotokollen zu verwenden.
-  Zum Zeitpunkt an dem dies geschrieben wird, gibt es aber nur zwei Server.</para>
-  
+    <para>Subversion wurde mit einer abstrakten Netzwerkschicht
+      entworfen. Dies bedeutet, dass auf ein Projektarchiv
+      automatisiert von beliebigen Server-Prozessen zugegriffen werden
+      kann, und die für Clients vorhandene
+      <quote>Projektarchiv-Access</quote>-API
+      (Programmierschnittstelle) erlaubt es Programmierern, Plugins zu
+      entwickeln, die relevante Netzwerkprotokolle verstehen.
+      Theoretisch ermöglicht dies Subversion, eine unbegrenzte Zahl an
+      Netzwerkprotokollen zu verwenden.  Zum Zeitpunkt an dem dies
+      geschrieben wird, gibt es aber nur zwei Server.</para>
+
 <!--
     <para>Apache is an extremely popular web server; using the
       <command>mod_dav_svn</command> module, Apache can access a
@@ -77,16 +80,18 @@
       authentication systems, and limited built-in web browsing of
       repositories.</para>
 -->
-  <para>Apache ist ein sehr beliebter Webserver, welcher mittels des
-  <command>mod_dav_svn</command>-Moduls auf Projektarchive zugreifen und 
-  diese für Clients verfügbar machen kann. Verwendet wird dabei das
-  WebDAV/DeltaV-Protokoll, welches eine Erweiterung von HTTP ist.
-  Da Apache ein stark erweiterbarer Webserver ist, bietet er
-  eine Menge an <quote>frei verfügbaren</quote> Funktionen/Modulen,
-  wie SSL-verschlüsselte Verbindungen, Logging, sowie die Integration diverser
-  Authentifikationssysteme von Drittanbietern und einen eingeschränkten
-  Web-Browser-gestützten Projektarchiv-Lesezugriff.</para>
-  
+    <para>Apache ist ein sehr beliebter Webserver, welcher mittels des
+      <command>mod_dav_svn</command>-Moduls auf Projektarchive
+      zugreifen und diese für Clients verfügbar machen kann. Verwendet
+      wird dabei das WebDAV/DeltaV-Protokoll, welches eine Erweiterung
+      von HTTP ist.  Da Apache ein stark erweiterbarer Webserver ist,
+      bietet er eine Menge an <quote>frei verfügbaren</quote>
+      Funktionen/Modulen, wie mittels SSL verschlüsselte Verbindungen,
+      Protokollierung, sowie die Integration diverser
+      Authentifizierungssysteme von Drittanbietern und einen
+      eingeschränkten Web-Browser-gestützten
+      Projektarchiv-Lesezugriff.</para>
+
 <!--  
     <para>In the other corner is <command>svnserve</command>: a small,
       lightweight server program that speaks a custom protocol with
@@ -100,17 +105,20 @@
       starting out with Subversion.</para>
 -->
 
-  <para>In der anderen Ecke befindet sich <command>svnserve</command>:
-  ein kleiner, leichtgewichtiger Server, der ein einfaches Netzwerkprotokoll
-  für die Zugriffe der Clients verwendet. Da dieses Protokoll für die 
-  Verwendung mit Subversion entwickelt wurde und, im Gegensatz zu HTTP,
-  zustandsorientiert ist, bietet es einen deutlich schnelleren Netzwerkzugriff &ndash;
-  spart allerdings auch einige wichtige Funktionen aus. So bietet er eine 
-  SASL-basierte Verschlüsselung und Authentifikation, hat aber keine 
-  Logging-Funktionen oder eingebauten Web-Browser-Zugriff. Wie auch immer,
-  er ist extrem einfach einzurichten und für kleinere Teams, welche einfach
-  nur schnell mit Subversion "loslegen" wollen, die beste Wahl.</para>
-  
+    <para>In der anderen Ecke befindet sich
+      <command>svnserve</command>: ein kleiner, leichtgewichtiger
+      Server, der ein einfaches Netzwerkprotokoll für die Zugriffe der
+      Clients verwendet. Da dieses Protokoll für die Verwendung mit
+      Subversion entwickelt wurde und, im Gegensatz zu HTTP,
+      zustandsorientiert ist, bietet es einen deutlich schnelleren
+      Netzwerkzugriff &ndash; spart allerdings auch einige wichtige
+      Funktionen aus. So bietet er eine SASL-basierte Verschlüsselung
+      und Authentifizierung, hat aber keine Protokollierungsfunktionen
+      oder eingebauten Web-Browser-Zugriff. Wie auch immer, er ist
+      extrem einfach einzurichten und für kleinere Teams, welche
+      einfach nur schnell mit Subversion "loslegen" wollen, die beste
+      Wahl.</para>
+
 <!--
     <para>A third option is to use <command>svnserve</command>
       tunneled over an SSH connection.  Even though this scenario
@@ -128,35 +136,39 @@
       has no meaning, since each user is accessing the repository
       database files directly.</para>
 -->
-  
-  <para>Ein dritte Möglichkeit ist, <command>svnserve</command> durch
-  SSH-Verbindungen zu tunneln. Auch wenn in diesem Fall weiterhin 
-  <command>svnserve</command> verwendet wird, so unterscheidet sich
-  die Funktionalität ziemlich von der normalen Nutzung von
-  <command>svnserve</command>. SSH wird zur Verschlüsselung der gesamten 
-  Kommunikation verwendet. Ebenso zur Authentifizierung, was die
-  Verwendung von realen Nutzerkonten auf dem Subversion-Server notwendig
-  macht (anders als beim einfachen <command>svnserve</command>, der seine
-  eigene Nutzerverwaltung hat). Des weiteren ist es notwendig &ndash; da jeder
-  angemeldete Nutzer einen eigenen <command>svnserve</command>-Prozess
-  startet &ndash; einer Gruppe von lokalen Nutzern (aus Sicht der Rechtevergabe)
-  vollen Zugriff auf das Projektarchiv via <literal>file://</literal> URLs zu
-  ermöglichen. Pfad-basierte Zugriffskontrolle schließt sich in diesem Fall aus,
-  da die Nutzer direkt auf die Datenbank-Dateien zugreifen.</para>
+
+    <para>Ein dritte Möglichkeit ist, <command>svnserve</command>
+      durch SSH-Verbindungen zu tunneln. Auch wenn in diesem Fall
+      weiterhin <command>svnserve</command> verwendet wird, so
+      unterscheidet sich die Funktionalität ziemlich von der normalen
+      Nutzung von <command>svnserve</command>. SSH wird zur
+      Verschlüsselung der gesamten Kommunikation verwendet. Ebenso zur
+      Authentifizierung, was die Verwendung von realen Nutzerkonten
+      auf dem Subversion-Server notwendig macht (anders als beim
+      einfachen <command>svnserve</command>, der seine eigene
+      Nutzerverwaltung hat).  Des weiteren ist es notwendig &ndash; da
+      jeder angemeldete Nutzer einen eigenen
+      <command>svnserve</command>-Prozess startet &ndash; einer Gruppe
+      von lokalen Nutzern (aus Sicht der Rechtevergabe) vollen Zugriff
+      auf das Projektarchiv via <literal>file://</literal> URLs zu
+      ermöglichen. Pfad-basierte Zugriffskontrolle schließt sich in
+      diesem Fall aus, da die Nutzer direkt auf die Datenbank-Dateien
+      zugreifen.</para>
 
 <!--
     <para><xref linkend="svn.serverconfig.overview.tbl-1"/> provides a
       quick summary of the three typical server deployments.</para>
 -->
 
-  <para><xref linkend="svn.serverconfig.overview.tbl-1"/> zeigt eine kurze Zusammenfassung
-  der drei typischen Server-Konfigurationen.</para>
-      
+    <para><xref linkend="svn.serverconfig.overview.tbl-1"/> zeigt eine
+      kurze Zusammenfassung der drei typischen
+      Server-Konfigurationen.</para>
 
 
-   <table id="svn.serverconfig.overview.tbl-1">
+
+    <table id="svn.serverconfig.overview.tbl-1">
  <!-- <title>Comparison of subversion server options</title> -->
-    <title>Vergleich der Serveroptionen für Subversion</title>
+      <title>Vergleich der Serveroptionen für Subversion</title>
       <tgroup cols="4">
         <thead>
           <row>
@@ -165,7 +177,7 @@
             <entry>Apache + mod_dav_svn</entry>
             <entry>svnserve</entry>
        <!-- <entry>svnserve over SSH</entry> -->
-          <entry>svnserve via SSH</entry>
+            <entry>svnserve via SSH</entry>
           </row>
         </thead>
         <tbody>
@@ -174,12 +186,13 @@
             <entry>Authentifizierungsmöglichkeiten</entry>
        <!-- <entry>HTTP(S) basic auth, X.509 certificates, LDAP, NTLM, or
               any other mechanism available to Apache httpd</entry> -->
-              <entry>HTTP(S) basic auth, X.509 Zertifikate, LDAP, NTLM,
-              oder jede andere für den Apache Webserver verfügbare Methode</entry>
+            <entry>HTTP(S) basic auth, X.509 Zertifikate, LDAP, NTLM,
+              oder jede andere für den Apache Webserver verfügbare
+              Methode</entry>
        <!-- <entry>CRAM-MD5 by default;  LDAP, NTLM, or any other mechanism
               available to SASL</entry> -->
-            <entry>CRAM-MD5 als Voreinstellung,  LDAP, NTLM
-            oder jede andere für SASL verfügbare Methode</entry>
+            <entry>CRAM-MD5 als Voreinstellung,  LDAP, NTLM oder jede
+              andere für SASL verfügbare Methode</entry>
             <entry>SSH</entry>
           </row>
 
@@ -188,10 +201,14 @@
             <entry>Nutzerkonfigurationen</entry>
        <!-- <entry>Private 'users' file, or other mechanisms
             available to Apache httpd (LDAP, SQL, etc.)</entry> -->
-            <entry>private <filename>users</filename> Datei oder jede andere für den Apache Webserver verfügbare Methode (LDAP, SQL, etc)</entry>
+            <entry>private Datei <filename>users</filename> oder jede
+              andere für den Apache Webserver verfügbare Methode
+              (LDAP, SQL, etc)</entry>
        <!-- <entry>Private 'users' file, or other mechanisms available
               to SASL (LDAP, SQL, etc.)</entry> -->
-            <entry>private <filename>users</filename> Datei, oder jede andere für SASL verfügbare Methode (LDAP, SQL, etc.)</entry> 
+            <entry>private Datei <filename>users</filename> oder jede
+              andere für SASL verfügbare Methode (LDAP, SQL,
+              etc.)</entry> 
        <!-- <entry>System accounts</entry> -->
             <entry>lokale Nutzerkonten auf dem Server</entry>
           </row>
@@ -201,22 +218,23 @@
             <entry>Autorisierungsmöglichkeiten</entry>
        <!-- <entry>Read/write access can be granted over the whole
               repository, or specified per path</entry> -->
-             <entry>Lese-/Schreibzugriff auf das komplette Projektarchiv
-             oder pfadbasierte Rechtevergabe</entry>
+            <entry>Lese-/Schreibzugriff auf das komplette
+              Projektarchiv oder pfadbasierte Rechtevergabe</entry>
         <!-- <entry>Read/write access can be granted over the whole
               repository, or specified per path</entry> -->
-              <entry>Lese-/Schreibzugriff auf das komplette Projektarchiv
-             oder pfadbasierte Rechtevergabe</entry>
+            <entry>Lese-/Schreibzugriff auf das komplette
+              Projektarchiv oder pfadbasierte Rechtevergabe</entry>
         <!-- <entry>Read/write access only grantable over the whole
               repository</entry> -->
-              <entry>Lese-/Schreibzugriff nur auf ganzes Projektarchiv einstellbar</entry>
+            <entry>Lese-/Schreibzugriff nur auf ganzes Projektarchiv
+              einstellbar</entry>
           </row>
 
           <row>
        <!-- <entry>Encryption</entry> -->
-          <entry>Verschlüsselung</entry>
+            <entry>Verschlüsselung</entry>
        <!-- <entry>Available via optional SSL</entry> -->
-          <entry>optional mit SSL</entry>
+            <entry>optional mit SSL</entry>
        <!-- <entry>Available via optional SASL features</entry> -->
             <entry>optional mit der SASL-Funktionen</entry>
        <!-- <entry>Inherent in SSH connection</entry> -->
@@ -225,25 +243,26 @@
 
           <row>
        <!-- <entry>Logging</entry> -->
-            <entry>Loggen</entry>
+            <entry>Protokollierung</entry>
        <!-- <entry>Full Apache logs of each HTTP request, with
             optional <quote>high-level</quote> logging of general
             client operations</entry> -->
-            <entry>Apache-seitiges Loggen aller HTTP-Anfragen,
-            optionales <quote>High-Level</quote>-Loggen aller Client-Operationen</entry>
+            <entry>Protokollierung aller HTTP-Anfragen seitens Apache,
+              optionale <quote>High-Level</quote>-Protokollierung
+              aller Client-Operationen</entry>
        <!-- <entry>No logging</entry> -->
-          <entry>kein Loggen</entry>
+            <entry>keine Protokollierung</entry>
        <!-- <entry>No logging</entry> -->
-          <entry>kein Loggen</entry>
+            <entry>keine Protokollierung</entry>
           </row>
 
           <row>
        <!-- <entry>Interoperability</entry> -->
             <entry>Interoperabilität</entry>
        <!-- <entry>Accessible by other WebDAV clients</entry> -->
-          <entry>Zugriff durch andere WebDAV-Clients</entry>
+            <entry>Zugriff durch andere WebDAV-Clients</entry>
        <!-- <entry>Talks only to svn clients</entry> -->
-          <entry>Verbindung nur mit svn-Clients möglich</entry>
+            <entry>Verbindung nur mit svn-Clients möglich</entry>
        <!-- <entry>Talks only to svn clients</entry> -->
             <entry>Verbindung nur mit svn-Clients möglich</entry>
           </row>
@@ -252,22 +271,26 @@
        <!-- <entry>Web viewing</entry> -->
             <entry>web-basierte Anzeige des Projektarchivs</entry>
        <!-- <entry>Limited built-in support, or via third-party tools
-              such as ViewVC</entry> -->
-              <entry>eingeschränkte Unterstützung, alternativ mittels Programmen von Drittanbietern,
-              wie etwa ViewVC, erweiterbar</entry>
+             such as ViewVC</entry> -->
+            <entry>eingeschränkte Unterstützung, alternativ mittels
+              Programmen von Drittanbietern, wie etwa ViewVC,
+              erweiterbar</entry>
        <!-- <entry>Only via third-party tools such as ViewVC</entry> -->
-            <entry>nur mittels Programmen von Drittanbietern, wie etwa ViewVC</entry>
+            <entry>nur mittels Programmen von Drittanbietern, wie etwa
+              ViewVC</entry>
        <!-- <entry>Only via third-party tools such as ViewVC</entry> -->
-            <entry>nur mittels Programmen von Drittanbietern, wie etwa ViewVC</entry>
+            <entry>nur mittels Programmen von Drittanbietern, wie etwa
+              ViewVC</entry>
           </row>
 
           <row>
        <!-- <entry>Master-slave server replication</entry> -->
-          <entry>Master-Slave-Server Replikationen</entry>
+            <entry>Master-Slave-Server Replikationen</entry>
        <!-- <entry>Transparent write-proxying available from slave to master</entry> -->
-            <entry>transparenter Schreib-Proxy vom Slave zum Master</entry> 
+            <entry>transparenter Schreib-Proxy vom Slave zum
+              Master</entry> 
        <!-- <entry>Can only create read-only slave servers</entry> -->
-          <entry>beschränkt auf nur lesbare Slave-Server</entry>
+            <entry>beschränkt auf nur lesbare Slave-Server</entry>
        <!-- <entry>Can only create read-only slave servers</entry> -->
             <entry>beschränkt auf nur lesbare Slave-Server</entry>
           </row>
@@ -275,7 +298,7 @@
 
           <row>
       <!--  <entry>Speed</entry> -->
-          <entry>Geschwindigkeit</entry>
+            <entry>Geschwindigkeit</entry>
        <!-- <entry>Somewhat slower</entry> -->
             <entry>ein wenig langsamer</entry>
       <!--  <entry>Somewhat faster</entry> -->
@@ -322,22 +345,22 @@
       might <emphasis>not</emphasis> choose one.</para>
 -->
 
-  <title>Auswahl einer Serverkonfiguration</title>
-  
-  <para>Also dann, welchen Server sollten Sie nun verwenden? Welcher ist der beste?</para>
-  
-  <para>Auf diese Frage gibt es offensichtlich nicht die eine, richtige Antwort.
-  Denn jedes Team stellt andere Anforderungen, und die verschieden Server bieten unterschiedliche
-  Funktionen und Voraussetzungen. Das Subversion-Projekt selbst bevorzugt keinen der genannten Server
-  oder betrachtet einen als etwas <quote>offizieller</quote> als die anderen.</para>
-  
-  <para>Wir beleuchten nun die einzelnen Gründe, die für die eine oder andere Konstellation
-  sprechen, ebenso auch Gründe, welche vielleicht <emphasis>gegen</emphasis> 
-  eine der Möglichkeiten sprechen.</para>
+    <title>Auswahl einer Serverkonfiguration</title>
 
+    <para>Also dann, welchen Server sollten Sie nun verwenden? Welcher
+      ist der beste?</para>
 
+    <para>Auf diese Frage gibt es offensichtlich nicht die eine,
+      richtige Antwort.  Denn jedes Team stellt andere Anforderungen,
+      und die verschieden Server bieten unterschiedliche Funktionen
+      und Voraussetzungen. Das Subversion-Projekt selbst bevorzugt
+      keinen der genannten Server oder betrachtet einen als etwas
+      <quote>offizieller</quote> als die anderen.</para>
 
-
+    <para>Wir beleuchten nun die einzelnen Gründe, die für die eine
+      oder andere Konstellation sprechen, ebenso auch Gründe, welche
+      vielleicht <emphasis>gegen</emphasis> eine der Möglichkeiten
+      sprechen.</para>
 
     <sect2 id="svn.serverconfig.choosing.svnserve">
 
@@ -393,8 +416,7 @@
     </sect2>
 -->
 
-
-<title>Der svnserve-Server</title>
+      <title>Der svnserve-Server</title>
 
       <variablelist>
         <varlistentry>
@@ -402,33 +424,43 @@
           <listitem>
             <itemizedlist>
 
-            <listitem><para>Das Aufsetzen geht schnell und einfach.</para></listitem>
+              <listitem><para>Das Aufsetzen geht schnell und
+                  einfach.</para></listitem>
 
-            <listitem><para>Das verwendete Netzwerkprotokoll ist zustandsorientiert
-            und merklich schneller als WebDAV.</para></listitem>
+              <listitem><para>Das verwendete Netzwerkprotokoll ist
+                  zustandsorientiert und merklich schneller als
+                  WebDAV.</para></listitem>
 
-            <listitem><para>Es müssen keine lokalen Nutzerkonten auf dem Server eingerichtet werden.</para></listitem>
+              <listitem><para>Es müssen keine lokalen Nutzerkonten auf
+                  dem Server eingerichtet werden.</para></listitem>
 
-            <listitem><para>Das Passwort wird nicht über das Netzwerk übertragen.</para></listitem>
+              <listitem><para>Das Passwort wird nicht über das
+                  Netzwerk übertragen.</para></listitem>
 
             </itemizedlist>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>Gründe, warum Sie svnserve eventuell nicht verwenden wollen:</term>
+          <term>Gründe, warum Sie svnserve eventuell nicht verwenden
+            wollen:</term>
           <listitem>
             <itemizedlist>
 
-            <listitem><para>Es gibt standardmäßig nur eine Authentifizierungsmethode,
-                das Netzwerkprotokoll ist unverschlüsselt und das Passwort wird
-                vom Server im Klartext gespeichert. (Mit SASL können diese Probleme zwar
-                umgangen werden, dies erfordert aber eine etwas aufwendigere Konfiguration.)</para></listitem>
+              <listitem><para>Es gibt standardmäßig nur eine
+                Authentifizierungsmethode, das Netzwerkprotokoll ist
+                unverschlüsselt und das Passwort wird vom Server im
+                Klartext gespeichert. (Mit SASL können diese Probleme
+                zwar umgangen werden, dies erfordert aber eine etwas
+                aufwendigere Konfiguration.)</para></listitem>
 
-            <listitem><para>Es wird nichts geloggt, auch keine Fehler.</para></listitem>
+              <listitem><para>Es wird nichts protokolliert, auch keine
+                Fehler.</para></listitem>
 
-            <listitem><para>Keinen eingebauten Webbrowser-gestützten Lesezugriff. (Wenn Sie dies 
-                wünschen, müssen Sie einen eigenständigen Webserver sowie Projektarchiv-Browser-Software
+              <listitem><para>Keinen eingebauten Web-Browser-gestützten
+                Lesezugriff. (Wenn Sie dies wünschen, müssen Sie einen
+                eigenständigen Webserver sowie
+                Projektarchiv-Browser-Software
                 installieren.)</para></listitem>
 
             </itemizedlist>
@@ -438,10 +470,10 @@
       </variablelist>
 
     </sect2>
-    
-    
-    
-    
+
+
+
+
     <sect2 id="svn.serverconfig.choosing.svn-ssh">
 <!--
       <title>svnserve over SSH</title>
@@ -491,7 +523,7 @@
     </sect2>
 -->
 
-          <title>svnserve über SSH</title>
+      <title>svnserve über SSH</title>
 
       <variablelist>
         <varlistentry>
@@ -499,31 +531,39 @@
           <listitem>
             <itemizedlist>
 
-            <listitem><para>Das verwendete Netzwerkprotokoll ist zustandsorientiert
-            und merklich schneller als WebDAV.</para></listitem>
+            <listitem><para>Das verwendete Netzwerkprotokoll ist
+              zustandsorientiert und merklich schneller als
+              WebDAV.</para></listitem>
 
-            <listitem><para>Sie können  bestehende Nutzerzugänge des SSH-Servers
-            verwenden.</para></listitem>
+            <listitem><para>Sie können  bestehende Nutzerzugänge des
+              SSH-Servers verwenden.</para></listitem>
 
-            <listitem><para>Der gesamte Netzwerkverkehr ist verschlüsselt.</para></listitem>
+            <listitem><para>Der gesamte Netzwerkverkehr ist
+              verschlüsselt.</para></listitem>
 
             </itemizedlist>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>Gründe, warum Sie auf diese Konstellation eventuell verzichten wollen:</term>
+          <term>Gründe, warum Sie auf diese Konstellation eventuell
+            verzichten wollen:</term>
           <listitem>
             <itemizedlist>
 
-            <listitem><para>Es steht nur eine Authentifizierungsmöglichkeit zur Verfügung.</para></listitem>
+            <listitem><para>Es steht nur eine
+              Authentifizierungsmöglichkeit zur
+              Verfügung.</para></listitem>
 
-            <listitem><para>Es wird nichts geloggt, auch keine Fehler.</para></listitem>
+            <listitem><para>Es wird nichts protokolliert, auch keine
+              Fehler.</para></listitem>
 
-            <listitem><para>Die verwendeten Nutzer müssen in derselben Nutzergruppe (auf dem Server) sein,
-            oder sich einen SSH-Key teilen.</para></listitem>
+            <listitem><para>Die verwendeten Nutzer müssen in derselben
+              Nutzergruppe (auf dem Server) sein, oder sich einen
+              SSH-Key teilen.</para></listitem>
 
-            <listitem><para>Bei unsachgemäßer Verwendung kann es zu Problemen mit den Dateirechten kommen.</para></listitem>
+            <listitem><para>Bei unsachgemäßer Verwendung kann es zu
+              Problemen mit den Dateirechten kommen.</para></listitem>
 
             </itemizedlist>
           </listitem>
@@ -532,7 +572,6 @@
       </variablelist>
 
     </sect2>
-
 
     <sect2 id="svn.serverconfig.choosing.apache">
 
@@ -600,22 +639,31 @@
           <listitem>
             <itemizedlist>
 
-              <listitem><para>Subversion hat damit Zugriff auf alle für
-              den Apache verfügbaren Authentifizierungsmethoden (und das sind viele).</para></listitem>
+              <listitem><para>Subversion hat damit Zugriff auf alle
+                für den Apache verfügbaren Authentifizierungsmethoden
+                (und das sind viele).</para></listitem>
 
-              <listitem><para>Es müssen auf dem Server keine Nutzerkonten angelegt werden.</para></listitem>
+              <listitem><para>Es müssen auf dem Server keine
+                Nutzerkonten angelegt werden.</para></listitem>
 
-              <listitem><para>Apache loggt nach Wunsch (fast) alles.</para></listitem>
+              <listitem><para>Apache protokolliert nach Wunsch (fast)
+                alles.</para></listitem>
 
-              <listitem><para>Der Netzwerkverkehr kann mittels SSL verschlüsselt werden.</para></listitem>
+              <listitem><para>Der Netzwerkverkehr kann mittels SSL
+                verschlüsselt werden.</para></listitem>
 
-              <listitem><para>In der Regel lässt sich das HTTP(S)-Protokoll problemlos durch Firewalls routen.</para></listitem>
+              <listitem><para>In der Regel lässt sich das
+                HTTP(S)-Protokoll problemlos durch Firewalls
+                routen.</para></listitem>
 
-              <listitem><para>Auf das Projektarchiv kann lesend auch via Webbrowser zugegriffen werden.</para></listitem>
+              <listitem><para>Auf das Projektarchiv kann lesend auch
+                via Web-Browser zugegriffen werden.</para></listitem>
 
-              <listitem><para>Das Projektarchiv lässt sich als Netzlaufwerk einhängen (mounten). Änderungen
-                  an den Dateien unterliegen trotzdem der Versionskontrolle. 
-                  (siehe <xref linkend="svn.webdav.autoversioning"/>.)</para></listitem>
+              <listitem><para>Das Projektarchiv lässt sich als
+                Netzlaufwerk einhängen (mounten). Änderungen an den
+                Dateien unterliegen trotzdem der Versionskontrolle.
+                (siehe <xref
+                  linkend="svn.webdav.autoversioning"/>.)</para></listitem>
 
             </itemizedlist>
           </listitem>
@@ -626,10 +674,13 @@
           <listitem>
             <itemizedlist>
 
-            <listitem><para>Er ist merklich langsamer als <command>svnserve</command>, da HTTP als 
-                zustandsloses Protokoll eine höhere Netzwerklast verursacht.</para></listitem>
+            <listitem><para>Er ist merklich langsamer als
+              <command>svnserve</command>, da HTTP als zustandsloses
+              Protokoll eine höhere Netzwerklast
+              verursacht.</para></listitem>
 
-            <listitem><para>Die Ersteinrichtung kann etwas schwierig sein.</para></listitem>
+            <listitem><para>Die Ersteinrichtung kann etwas schwierig
+              sein.</para></listitem>
 
             </itemizedlist>
           </listitem>
@@ -640,7 +691,7 @@
 
 
 
-    <sect2 id="svn.serverconfig.choosing.recommendations">
+  <sect2 id="svn.serverconfig.choosing.recommendations">
 
 <!--
       <title>Recommendations</title>
@@ -729,100 +780,104 @@
             </listitem> </itemizedlist>
 -->
 
-  <title>Empfehlungen</title>
+    <title>Empfehlungen</title>
 
-      <para>Im Allgemeinen empfehlen die Autoren dieses Buches eine einfache
-        <command>svnserve</command>-Installation für kleine Teams, denen an
-        einer schnellen und unkomplizierten  Nutzung von Subversion gelegen ist.
-        Dies ist die Variante, welche sich am einfachsten einrichten und administrieren lässt.
-        Sollte später Bedarf bestehen, so kann immer noch auf eine komplexere Servervariante
-        gewechselt werden.</para>
+    <para>Im Allgemeinen empfehlen die Autoren dieses Buches eine
+      einfache <command>svnserve</command>-Installation für kleine
+      Teams, denen an einer schnellen und unkomplizierten  Nutzung von
+      Subversion gelegen ist.  Dies ist die Variante, welche sich am
+      einfachsten einrichten und administrieren lässt.  Sollte später
+      Bedarf bestehen, so kann immer noch auf eine komplexere
+      Servervariante gewechselt werden.</para>
 
-      <para>Es folgen einige allgemeine Empfehlungen und Tipps, basierend auf
-        mehrjähriger Erfahrung in der Nutzerbetreuung:</para>
+    <para>Es folgen einige allgemeine Empfehlungen und Tipps,
+      basierend auf mehrjähriger Erfahrung in der
+      Nutzerbetreuung:</para>
 
-      <itemizedlist>
-        <listitem>
-          <para>
-            Falls Sie für ihr Team die einfachste Servervariante suchen,
-            dann kommen Sie mit einer Standard-<command>svnserve</command>-Installation
-            am schnellsten ans Ziel. Beachten Sie aber, dass der Inhalt ihres Projektarchivs
-            im Klartext über das Netzwerk übertragen wird. Wenn Sie nur innerhalb ihres
-            Firmennetzwerks oder eines VPNs arbeiten, so ist dies kein Beinbruch.
-            Ist ihr Projektarchiv allerdings vom Internet aus erreichbar, so sollten Sie
-            eventuell sicherstellen, dass darin keine sensiblen Daten vorhanden sind
-            (z.B. nur Open-Source Code o.ä.), oder Sie legen noch einmal Hand an und
-            verschlüsseln mittels SASL die Netzwerkverbindung zur ihrem Projektarchiv.
-            </para>
-        </listitem>
+    <itemizedlist>
+      <listitem>
+        <para>Falls Sie für ihr Team die einfachste Servervariante
+          suchen, dann kommen Sie mit einer Standardinstallation von
+          <command>svnserve</command> am schnellsten ans Ziel.
+          Beachten Sie aber, dass der Inhalt ihres Projektarchivs im
+          Klartext über das Netzwerk übertragen wird. Wenn Sie nur
+          innerhalb ihres Firmennetzwerks oder eines VPNs arbeiten, so
+          ist dies kein Beinbruch.  Ist ihr Projektarchiv allerdings
+          vom Internet aus erreichbar, so sollten Sie eventuell
+          sicherstellen, dass darin keine sensiblen Daten vorhanden
+          sind (z.B. nur quelloffenen Code o.ä.), oder Sie legen noch
+          einmal Hand an und verschlüsseln mittels SASL die
+          Netzwerkverbindung zur ihrem Projektarchiv.</para>
+      </listitem>
 
-        <listitem>
-          <para>
-            Wenn Sie bereits über Systeme zur Authentifizierung (LDAP,
-            Active Directory, NTLM, X.509 etc.) verfügen und Subversion in
-            diese integrieren möchten, so  bleibt Ihnen die Wahl zwischen einer
-            Apache-gestützten Variante oder eines mit SASL vermählten <command>svnserve</command>.
-            Stehen serverseitige Logs zur Aufzeichnung von Client-Aktivitäten und Serverfehlern
-            auf Ihrer Wunschliste, dann ist Apache die einzige Option.  
-            </para>
-        </listitem>
+      <listitem>
+        <para>Wenn Sie bereits über Systeme zur Authentifizierung
+          (LDAP, Active Directory, NTLM, X.509 etc.) verfügen und
+          Subversion in diese integrieren möchten, so  bleibt Ihnen
+          die Wahl zwischen einer Apache-gestützten Variante oder
+          eines mit SASL vermählten <command>svnserve</command>.
+          Stehen serverseitige Protokolldateien zur Aufzeichnung von
+          Client-Aktivitäten und Serverfehlern auf Ihrer Wunschliste,
+          dann ist Apache die einzige Option.</para>
+      </listitem>
 
-        <listitem>
-           <para>
-             Wenn Sie sich für die Verwendung von Apache oder eines
-             Standard-<command>svnserve</command> entschieden haben, 
-             dann legen Sie auf ihrem System einen einfachen <command>svn</command>-Nutzer
-             an und lassen den Serverprozess unter diesem Nutzer laufen.
-             Stellen Sie zudem sicher, dass das gesamte Verzeichnis mit dem Projektarchiv nur
-             diesem <command>svn</command>-Nutzer gehört. Damit wird der Zugriff auf ihr
-             Projektarchiv durch das Dateisystem des Serverbetriebssystems verwaltet, und 
-             nur der Serverprozess kann noch Änderungen daran vornehmen.
-             </para> </listitem>
+      <listitem>
+        <para>Wenn Sie sich für die Verwendung von Apache oder eines
+          Standard-<command>svnserve</command> entschieden haben, dann
+          legen Sie auf ihrem System einen einfachen
+          <command>svn</command>-Nutzer an und lassen den
+          Serverprozess unter diesem Nutzer laufen.  Stellen Sie
+          zudem sicher, dass das gesamte Verzeichnis mit dem
+          Projektarchiv nur diesem <command>svn</command>-Nutzer
+          gehört. Damit wird der Zugriff auf ihr Projektarchiv durch
+          das Dateisystem des Serverbetriebssystems verwaltet, und nur
+          der Serverprozess kann noch Änderungen daran
+          vornehmen.</para>
+      </listitem>
 
-        <listitem>
-          <para>
-            Wenn Sie bereits über eine aus SSH-Zugängen bestehende Infrastruktur
-            verfügen, und Ihre Nutzer auf dem Subversion-Server schon
-            lokale Zugänge haben, dann ist die Verwendung einer
-            <command>svnserve</command>-über-SSH-Lösung sinnvoll.
-            Wir empfehlen diese Variante allerdings nur sehr ungern.
-            Es ist im Allgemeinen sicherer, Ihren Nutzern nur durch 
-            <command>svnserve</command> oder Apache verwaltete Zugänge
-            den Zugriff auf Ihr Projektarchiv zu ermöglichen und eben nicht
-            mittels vollwertiger Nutzerzugänge auf dem Serversystem.
-            Falls der Wunsch nach einer starken Netzwerkverschlüsselung Sie
-            auf die Verwendung des SSH gebracht hat, dann empfehlen wir Ihnen
-            stattdessen die Verwendung von Apache und SSL, bzw. die Kombination
-            aus <command>svnserve</command> und SASL-Verschlüsselung.
-            </para> </listitem>
+      <listitem>
+        <para>Wenn Sie bereits über eine aus SSH-Zugängen bestehende
+          Infrastruktur verfügen, und Ihre Nutzer auf dem
+          Subversion-Server schon lokale Zugänge haben, dann ist die
+          Verwendung einer <command>svnserve</command>-über-SSH-Lösung
+          sinnvoll.  Wir empfehlen diese Variante allerdings nur sehr
+          ungern.  Es ist im Allgemeinen sicherer, Ihren Nutzern nur
+          durch <command>svnserve</command> oder Apache verwaltete
+          Zugänge den Zugriff auf Ihr Projektarchiv zu ermöglichen und
+          eben nicht mittels vollwertiger Nutzerzugänge auf dem
+          Serversystem.  Falls der Wunsch nach einer starken
+          Netzwerkverschlüsselung Sie auf die Verwendung des SSH
+          gebracht hat, dann empfehlen wir Ihnen stattdessen die
+          Verwendung von Apache und SSL, bzw. die Kombination aus
+          <command>svnserve</command> und SASL-Verschlüsselung.
+        </para>
+      </listitem>
 
-        <listitem>
-          <para>          
-            Lassen Sie sich bitte <emphasis>nicht</emphasis> von der Idee verführen,
-            allen Ihren Nutzern direkten Zugriff auf das Projektarchiv mittels der 
-            <literal>file://</literal>-Methode zu geben. Auch wenn der Zugriff
-            auf das Projektarchiv durch eine Netzwerkfreigabe erfolgt, bleibt es immmer
-            noch eine schlechte Idee.
-            Dadurch wird jeglicher Sicherheitspuffer zwischen dem Nutzer und dem Projektarchiv
-            entfernt: Ein Anwender kann ohne (oder auch mit) Absicht die Datenbank des Projektarchivs
-            beschädigen. 
-            Es wird zudem schwierig, das Projektarchiv offline zu nehmen um eine Inspektion
-            oder ein Upgrade durchzuführen. Zudem kann es Ihnen eine Menge Probleme mit
-            den Dateirechten einbringen (siehe <xref
-            linkend="svn.serverconfig.multimethod"/>). 
-            Beachten Sie bitte auch, dass dies einer der Gründe ist, warum wir vor der
-            Verwendung der <literal>svn+ssh://</literal>-Methode für den Projektarchiv-Zugriff
-            warnen. Vom Standpunkt der Sicherheit ist dies effektiv dasselbe wie
-            die Verwendung von <literal>file://</literal> für den Zugriff durch lokale 
-            Benutzer und kann zu denselben Problemen führen, wenn der Administrator nicht
-            alle Vorsicht walten lässt.
-             
-            </para>
-            </listitem> </itemizedlist>
-
-
+      <listitem>
+        <para>Lassen Sie sich bitte <emphasis>nicht</emphasis> von der
+          Idee verführen, allen Ihren Nutzern direkten Zugriff auf das
+          Projektarchiv mittels der <literal>file://</literal>-Methode
+          zu geben.  Auch wenn der Zugriff auf das Projektarchiv durch
+          eine Netzwerkfreigabe erfolgt, bleibt es immer noch eine
+          schlechte Idee.  Dadurch wird jeglicher Sicherheitspuffer
+          zwischen dem Nutzer und dem Projektarchiv entfernt: Ein
+          Anwender kann ohne (oder auch mit) Absicht die Datenbank des
+          Projektarchivs beschädigen.  Es wird zudem schwierig, das
+          Projektarchiv offline zu nehmen um eine Inspektion oder ein
+          Upgrade durchzuführen.  Zudem kann es Ihnen eine Menge
+          Probleme mit den Dateirechten einbringen (siehe <xref
+            linkend="svn.serverconfig.multimethod"/>).  Beachten Sie
+          bitte auch, dass dies einer der Gründe ist, warum wir vor
+          der Verwendung der <literal>svn+ssh://</literal>-Methode für
+          den Projektarchiv-Zugriff warnen. Vom Standpunkt der
+          Sicherheit ist dies effektiv dasselbe wie die Verwendung von
+          <literal>file://</literal> für den Zugriff durch lokale
+          Benutzer und kann zu denselben Problemen führen, wenn der
+          Administrator nicht alle Vorsicht walten lässt.
+        </para>
+      </listitem>
+      </itemizedlist>
     </sect2>
-
   </sect1>
 
   <!-- ================================================================= -->
@@ -843,23 +898,24 @@
       to the server, and how to configure appropriate access control
       to your repositories.</para>
  -->     
-      
-        <title>svnserve, ein maßgefertigter Server</title>
 
-    <para>Das Programm <command>svnserve</command> ist ein leichtgewichtiger Server,
-      welcher für die Kommunikation mit den Clients ein auf TCP/IP basierendes,
-      zustandsorientiertes Protokoll verwendet. Um sich mit dem Server zu
-      verbinden, verwenden die Clients entweder das <literal>svn://</literal>-
-      oder das <literal>svn+ssh://</literal>-Schema. In diesem Abschnitt behandeln
-      wir die unterschiedlichen Möglichkeiten, <command>svnserve</command>
-      einzusetzen, wie sich die Clients am Server authentifizieren und wie
-      die passenden Zugangsrechte zum Projektarchiv korrekt eingerichtet werden.
-      </para>
-      
-      
+    <title>svnserve, ein maßgefertigter Server</title>
+
+    <para>Das Programm <command>svnserve</command> ist ein
+      leichtgewichtiger Server, welcher für die Kommunikation mit den
+      Clients ein auf TCP/IP basierendes, zustandsorientiertes
+      Protokoll verwendet. Um sich mit dem Server zu verbinden,
+      verwenden die Clients entweder das <literal>svn://</literal>-
+      oder das <literal>svn+ssh://</literal>-Schema. In diesem
+      Abschnitt behandeln wir die unterschiedlichen Möglichkeiten,
+      <command>svnserve</command> einzusetzen, wie sich die Clients am
+      Server authentifizieren und wie die passenden Zugangsrechte zum
+      Projektarchiv korrekt eingerichtet werden.</para>
+
+
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.svnserve.invoking">
- 
+
 <!--
       <title>Invoking the Server</title>
 
@@ -881,28 +937,31 @@
       </itemizedlist>
 -->
 
-  <title>Der Serverstart</title>
+      <title>Der Serverstart</title>
 
       <para>Es gibt mehrere Möglichkeiten, <command>svnserve</command>
-      zu starten:
-      </para>
+        zu starten:</para>
 
       <itemizedlist>
-        <listitem><para><command>svnserve</command> als eigenständigen Dienst (engl. daemon)
-        starten und auf Anfragen von Clients reagieren lassen.</para></listitem>
-        <listitem><para><command>svnserve</command> bei Bedarf mit Hilfe
-        des Unix-Dienstes <command>inetd</command> starten, wenn auf einem 
-        festgelegten Port Anfragen eines svn-Clients ankommen.</para></listitem>
-        <listitem><para>Einen SSH-Server verwenden, um <command>svnserve</command>
-        fallweise über einen verschlüsselten SSH-Tunnel zu betreiben.</para></listitem>
-        <listitem><para><command>svnserve</command> als Microsoft-Windows-Dienst laufen lassen.</para></listitem>
+        <listitem><para><command>svnserve</command> als eigenständigen
+            Dienst (engl. daemon) starten und auf Anfragen von Clients
+            reagieren lassen.</para></listitem>
+        <listitem><para><command>svnserve</command> bei Bedarf mit
+            Hilfe des Unix-Dienstes <command>inetd</command> starten,
+            wenn auf einem festgelegten Port Anfragen eines
+            svn-Clients ankommen.</para></listitem>
+        <listitem><para>Einen SSH-Server verwenden, um
+            <command>svnserve</command> fallweise über einen
+            verschlüsselten SSH-Tunnel zu betreiben.</para></listitem>
+        <listitem><para><command>svnserve</command> als
+            Microsoft-Windows-Dienst laufen lassen.</para></listitem>
       </itemizedlist>
 
 
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.invoking.daemon">
-      
+
 <!--
         <title>svnserve as daemon</title>
 
@@ -931,7 +990,7 @@ $               # svnserve is now running, listening on port 3690
         to <command>svnserve</command>, which restricts it to
         exporting only repositories below that path.  For
         example:</para>
-      
+
       <screen>
 $ svnserve -d -r /var/svn
 &hellip;
@@ -950,47 +1009,52 @@ $ svn checkout svn://host.example.com/project1
 
 -->
 
+        <title>svnserve als Unix-Dienst</title>
 
-<title>svnserve als Unix-Dienst</title>
-
-        <para>Die einfachste Variante ist, <command>svnserve</command> als
-          eigenständigen (Unix-)Dienst laufen zu lassen. Verwenden Sie hierfür
-          die <option>-d</option> Option beim Aufruf:
-          </para>
+        <para>Die einfachste Variante ist, <command>svnserve</command>
+          als eigenständigen (Unix-)Dienst laufen zu lassen. Verwenden
+          Sie hierfür die <option>-d</option> Option beim Aufruf:
+        </para>
 
         <screen>
 $ svnserve -d
 $               # svnserve läuft nun als Dienst und lauscht auf Port 3690
 </screen>
 
-        <para>Wird <command>svnserve</command> als Dienst betrieben, 
-          können Sie mit den Optionen  <option>--listen-port</option> und
-          <option>--listen-host</option> festlegen, auf welchem Port und unter 
-          welchem Hostnamen er lauschen soll.</para>
+        <para>Wird <command>svnserve</command> als Dienst betrieben,
+          können Sie mit den Optionen  <option>--listen-port</option>
+          und <option>--listen-host</option> festlegen, auf welchem
+          Port und unter welchem Hostnamen er lauschen soll.</para>
 
-      <para>Wurde <command>svnserve</command> auf diese Weise erfolgreich gestartet,
-        stehen nun alle Projektarchive auf dem Server für Nutzer im Netzwerk zur Verfügung.
-        Für einen Zugriff muss ein Client den <emphasis>absoluten</emphasis> Pfad zum
-        Projektarchiv im URL angeben. Ist das Projektarchiv beispielsweise im Verzeichnis
-        <filename>/var/svn/project1</filename> gespeichert, so sieht ein entsprechender URL
-        für den Zugriff folgendermaßen aus: <uri>svn://host.example.com/var/svn/project1</uri>.
-        Um die Sicherheit zu erhöhen, kann <command>svnserve</command> beim Start mit
-        der Option <option>-r</option> auf ein bestimmtes Verzeichnis beschränkt werden, so dass nur noch
-        die darin liegenden Projektarchive im Netz verfügbar sind. Ein Beispiel:</para>
-      
-      <screen>
+        <para>Wurde <command>svnserve</command> auf diese Weise
+          erfolgreich gestartet, stehen nun alle Projektarchive auf
+          dem Server für Nutzer im Netzwerk zur Verfügung.  Für einen
+          Zugriff muss ein Client den <emphasis>absoluten</emphasis>
+          Pfad zum Projektarchiv im URL angeben. Ist das Projektarchiv
+          beispielsweise im Verzeichnis
+          <filename>/var/svn/project1</filename> gespeichert, so sieht
+          ein entsprechender URL für den Zugriff folgendermaßen aus:
+          <uri>svn://host.example.com/var/svn/project1</uri>.  Um die
+          Sicherheit zu erhöhen, kann <command>svnserve</command> beim
+          Start mit der Option <option>-r</option> auf ein bestimmtes
+          Verzeichnis beschränkt werden, so dass nur noch die darin
+          liegenden Projektarchive im Netz verfügbar sind. Ein
+          Beispiel:</para>
+
+        <screen>
 $ svnserve -d -r /var/svn
 &hellip;
 </screen>
 
-      <para>Mit der <option>-r</option>-Option wird festgelegt, welches
-        Verzeichnis vom <command>svnserve</command> bei Anfragen als
-        Wurzelverzeichnis (engl. root) verwendet wird. Ein Client muss
-        nun in seiner URL nur noch den Pfad relativ zum neuen Wurzelverzeichnis
-        angeben, was die URL erheblich verkürzt und
-        die Verzeichnisstruktur etwas verschleiert:</para>
+        <para>Mit der <option>-r</option>-Option wird festgelegt,
+          welches Verzeichnis vom <command>svnserve</command> bei
+          Anfragen als Wurzelverzeichnis (engl. root) verwendet wird.
+          Ein Client muss nun in seiner URL nur noch den Pfad relativ
+          zum neuen Wurzelverzeichnis angeben, was die URL erheblich
+          verkürzt und die Verzeichnisstruktur etwas
+          verschleiert:</para>
 
-      <screen>
+        <screen>
 $ svn checkout svn://host.example.com/project1
 &hellip;
 </screen>
@@ -1001,7 +1065,7 @@ $ svn checkout svn://host.example.com/project1
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.invoking.inetd">
-      
+
 <!--
         <title>svnserve via inetd</title>
 
@@ -1056,51 +1120,60 @@ svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
 -->
 
 
-<title>svnserve über inetd starten</title>
+        <title>svnserve über inetd starten</title>
 
-        <para>Wenn Sie <command>inetd</command> zum Starten des 
-          Prozesses verwenden wollen,
-          so übergeben Sie <command>svnserve</command> beim Aufruf
-          die Option <option>-i</option> (<option>--inetd</option>). Im folgenden Beispiel sehen
-          wir die Ausgaben beim Aufruf von <literal>svnserve -i</literal>
+        <para>Wenn Sie <command>inetd</command> zum Starten des
+          Prozesses verwenden wollen, so übergeben Sie
+          <command>svnserve</command> beim Aufruf die Option
+          <option>-i</option> (<option>--inetd</option>). Im folgenden
+          Beispiel sehen wir die Ausgaben beim Aufruf von
+          <literal>svnserve -i</literal>
           auf der Kommandozeile. Beachten Sie aber, dass dies nicht
-          der Weg ist, wie der Dienst normalerweise gestartet wird &ndash; eine genaue
-          Beschreibung, wie <command>svnserve</command> über <command>inetd</command> gestartet
-          wird, folgt anschließend.</para>
+          der Weg ist, wie der Dienst normalerweise gestartet wird
+          &ndash; eine genaue Beschreibung, wie
+          <command>svnserve</command> über <command>inetd</command>
+          gestartet wird, folgt anschließend.</para>
 
-      <screen>
+        <screen>
 $ svnserve -i
 ( success ( 1 2 ( ANONYMOUS ) ( edit-pipeline ) ) )
 </screen>
 
-      <para>Mit der <option>--inetd</option>-Option versucht <command>svnserve</command>
-        mit dem Subversion-Client unter Verwendung eines speziellen Protokolls via   
-       <filename>stdin</filename> und <filename>stdout</filename> zu sprechen.
-       Dies ist der normale Weg für ein Programm, welches über <command>inetd</command>
-       gestartet wurde. Die IANA (Internet Assigned Numbers Authority) hat für das 
-       Subversion-Protokoll den Port 3690 reserviert &ndash; auf einem Unix-ähnlichen System
-       fügen Sie einfach folgende Zeilen (wenn noch nicht vorhanden) in die Datei 
-       <filename>/etc/services</filename> ein:</para>
+        <para>Mit der <option>--inetd</option>-Option versucht
+          <command>svnserve</command> mit dem Subversion-Client unter
+          Verwendung eines speziellen Protokolls via
+          <filename>stdin</filename> und <filename>stdout</filename>
+          zu sprechen.  Dies ist der normale Weg für ein Programm,
+          welches über <command>inetd</command> gestartet wurde. Die
+          IANA (Internet Assigned Numbers Authority) hat für das
+          Subversion-Protokoll den Port 3690 reserviert &ndash; auf
+          einem Unix-ähnlichen System fügen Sie einfach folgende
+          Zeilen (wenn noch nicht vorhanden) in die Datei
+          <filename>/etc/services</filename> ein:</para>
 
-      <screen>
+        <screen>
 svn           3690/tcp   # Subversion
 svn           3690/udp   # Subversion
 </screen>
 
-      <para>Wenn Sie den klassischen Unix-<command>inetd</command>
-        verwenden, können Sie die folgende Zeile in die Datei <filename>/etc/inetd.conf</filename> einfügen:</para>
+        <para>Wenn Sie den klassischen Unix-<command>inetd</command>
+          verwenden, können Sie die folgende Zeile in die Datei
+          <filename>/etc/inetd.conf</filename> einfügen:</para>
 
-      <screen>
+        <screen>
 svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
 </screen>
 
-      <para>Stellen Sie sicher, dass <quote>svnowner</quote> der Nutzer ist,
-        welcher alle notwendigen Zugriffsrechte auf ihre Projektarchive hat.
-        Kommt nun eine Anfrage eines Subversion-Clients auf Port 3690 herein,
-        so wird <command>inetd</command> einen <command>svnserve</command>-Prozess
-        starten, um die Anfrage zu bedienen. Wahrscheinlich möchten Sie
-        noch die <option>-r</option>-Option zur oben genannten Zeile hinzufügen,
-        um einzuschränken, welche Projektarchive exportiert werden dürfen.</para>
+        <para>Stellen Sie sicher, dass <quote>svnowner</quote> der
+          Nutzer ist, welcher alle notwendigen Zugriffsrechte auf ihre
+          Projektarchive hat.  Kommt nun eine Anfrage eines
+          Subversion-Clients auf Port 3690 herein, so wird
+          <command>inetd</command> einen
+          <command>svnserve</command>-Prozess starten, um die Anfrage
+          zu bedienen. Wahrscheinlich möchten Sie noch die
+          <option>-r</option>-Option zur oben genannten Zeile
+          hinzufügen, um einzuschränken, welche Projektarchive
+          exportiert werden dürfen.</para>
 
       </sect3>
 
@@ -1108,7 +1181,7 @@ svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.invoking.tunnel">
-      
+
 <!--
         <title>svnserve over a tunnel</title>
 
@@ -1141,28 +1214,37 @@ svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
 -->
 
 
-<title>svnserve über einen Tunnel</title>
+        <title>svnserve über einen Tunnel</title>
 
-        <para>Eine dritte Möglichkeit ist, <command>svnserve</command> mittels
-          der <option>-t</option>-Option im Tunnel-Modus aufzurufen.
-          Bei diesem Aufruf wird vorausgesetzt, dass ein anderes Programm für
-          den Remote-Zugriff &ndash; etwa <command>rsh</command> oder <command>ssh</command> &ndash;
-          den Nutzer bereits erfolgreich authentifiziert hat, um nun einen privaten
-          <command>svnserve</command>-Prozess als <emphasis>dieser Nutzer</emphasis>
-          zu starten. (Beachten Sie, dass für Sie als Nutzer selten bis nie die
-          Notwendigkeit bestehen wird, <command>svnserve</command> mit der 
-          <option>-t</option>-Option von Hand auf der Kommandozeile aufzurufen &ndash; 
-          der SSH-Dienst wird dies in der Regel für Sie machen.) <command>svnserve</command>
-          wird sich nun normal verhalten (Abwicklung der Kommunikation über <filename>stdin</filename>
-          und <filename>stdout</filename>) und davon ausgehen, dass alle Daten mit Hilfe des Tunnels
-          zum Client weitergeleitet werden. Wird <command>svnserve</command> wie in diesem Fall
-          durch ein Tunnel-Programm aufgerufen, ist es notwendig, dass der aufrufende Nutzer volle Lese-
-          und Schreibrechte  auf die Dateien der Projektarchiv-Datenbank hat.
-          Es verhält sich dabei im Grunde genommen so, als wenn der Nutzer mit einem
-          <literal>file://</literal>-URL auf ein Projektarchiv zugreifen würde.</para>
+        <para>Eine dritte Möglichkeit ist, <command>svnserve</command>
+          mittels der <option>-t</option>-Option im Tunnel-Modus
+          aufzurufen.  Bei diesem Aufruf wird vorausgesetzt, dass ein
+          anderes Programm für den Remote-Zugriff &ndash; etwa
+          <command>rsh</command> oder <command>ssh</command> &ndash;
+          den Nutzer bereits erfolgreich authentifiziert hat, um nun
+          einen privaten
+          <command>svnserve</command>-Prozess als <emphasis>dieser
+            Nutzer</emphasis> zu starten. (Beachten Sie, dass für Sie
+          als Nutzer selten bis nie die Notwendigkeit bestehen wird,
+          <command>svnserve</command> mit der
+          <option>-t</option>-Option von Hand auf der Kommandozeile
+          aufzurufen &ndash; der SSH-Dienst wird dies in der Regel für
+          Sie machen.) <command>svnserve</command> wird sich nun
+          normal verhalten (Abwicklung der Kommunikation über
+          <filename>stdin</filename> und <filename>stdout</filename>)
+          und davon ausgehen, dass alle Daten mit Hilfe des Tunnels
+          zum Client weitergeleitet werden. Wird
+          <command>svnserve</command> wie in diesem Fall durch ein
+          Tunnel-Programm aufgerufen, ist es notwendig, dass der
+          aufrufende Nutzer volle Lese- und Schreibrechte  auf die
+          Dateien der Projektarchiv-Datenbank hat.  Es verhält sich
+          dabei im Grunde genommen so, als wenn der Nutzer mit einem
+          <literal>file://</literal>-URL auf ein Projektarchiv
+          zugreifen würde.</para>
 
-        <para>Wir werden diese Option noch genauer in diesem Kapitel behandeln, und zwar in <xref
-          linkend="svn.serverconfig.svnserve.sshauth"/>.</para>
+        <para>Wir werden diese Option noch genauer in diesem Kapitel
+          behandeln, und zwar in <xref
+            linkend="svn.serverconfig.svnserve.sshauth"/>.</para>
 
       </sect3>
 
@@ -1259,25 +1341,28 @@ C:\&gt; net start svn
 
     </sect2>
  -->
-    
- <title>svnserve als Dienst unter Windows</title>
 
-        <para>Gehört ihr Windows zur NT-Familie (2000, 2003, XP oder Vista),
-          so können Sie <command>svnserve</command> auch als normalen
-          Windows-Dienst laufen lassen. Dies ist wesentlich sinnvoller, als
-          die Option <option>--daemon</option> (<option>-d</option>) zu verwenden und ihn
-          als selbstständigen Dienst zu betreiben. Sie müssten dann immer eine
-          Konsole (cmd) öffnen, den passenden Befehl aufrufen und die Konsole
-          anschließend die ganze Zeit geöffnet lassen. Ein Windows-Dienst dagegen
-          läuft im Hintergrund, kann bereits beim Hochfahren
-          automatisch starten und lässt sich wie jeder andere Windows-Dienst
-          mit demselben Administrationsprogramm starten und stoppen.</para>
+        <title>svnserve als Dienst unter Windows</title>
 
-        <para>Es ist notwendig, den neuen Windows-Dienst unter Verwendung des
-          Kommandozeilenprogramms <command>SC.EXE</command> einzurichten.
-          Ähnlich der <command>inetd</command>-Konfigurationszeile
-          müssen Sie den genauen Aufruf für den Start von
-          <command>svnserve</command> festlegen:</para>
+        <para>Gehört ihr Windows zur NT-Familie (2000, 2003, XP oder
+          Vista), so können Sie <command>svnserve</command> auch als
+          normalen Windows-Dienst laufen lassen. Dies ist wesentlich
+          sinnvoller, als die Option <option>--daemon</option>
+          (<option>-d</option>) zu verwenden und ihn als
+          selbstständigen Dienst zu betreiben. Sie müssten dann immer
+          eine Konsole (cmd) öffnen, den passenden Befehl aufrufen und
+          die Konsole anschließend die ganze Zeit geöffnet lassen. Ein
+          Windows-Dienst dagegen läuft im Hintergrund, kann bereits
+          beim Hochfahren automatisch starten und lässt sich wie jeder
+          andere Windows-Dienst mit demselben Administrationsprogramm
+          starten und stoppen.</para>
+
+        <para>Es ist notwendig, den neuen Windows-Dienst unter
+          Verwendung des Kommandozeilenprogramms
+          <command>SC.EXE</command> einzurichten.  Ähnlich der
+          <command>inetd</command>-Konfigurationszeile müssen Sie den
+          genauen Aufruf für den Start von <command>svnserve</command>
+          festlegen:</para>
 
         <screen>
 C:\&gt; sc create svn
@@ -1290,22 +1375,29 @@ C:\&gt; sc create svn
         <para>Hiermit erzeugen Sie einen neuen Windows-Dienst mit dem
           Namen <quote>svn</quote>, welcher jedesmal das Programm
           <command>svnserve.exe</command> startet (und in diesem Fall
-          <filename>C:\repos</filename> als Wurzelverzeichnis verwendet).
-          In diesem Beispiel müssen jedoch einige wichtige Punkte beachtet werden.</para>
+          <filename>C:\repos</filename> als Wurzelverzeichnis
+          verwendet).  In diesem Beispiel müssen jedoch einige
+          wichtige Punkte beachtet werden.</para>
 
-        <para>Als erstes ist es wichtig, dass das Programm <command>svnserve.exe</command>
-          immer mit der Option <option>--service</option> aufgerufen wird.
-          Alle weiteren Optionen müssen in derselben Zeile folgen, allerdings
-          dürfen sich widersprechende Option nicht verwendet werden &ndash; wie etwa
-          <option>--daemon</option> (<option>-d</option>), <option>--tunnel</option> oder <option>--inetd</option> (<option>-i</option>).
-          Optionen wie <option>-r</option> oder <option>--listen-port</option> sind 
-          hingegen in Ordnung. Zweitens, seien Sie beim Aufruf von <command>SC.EXE</command>
-          mit Leerzeichen vorsichtig: Beim Schreiben der <literal>Schlüssel= Wert</literal>-Zeile
-          darf zwischen <literal>Schlüssel</literal> und <literal>=</literal> kein 
-          Leerzeichen stehen, vor <literal>Wert</literal> muss genau ein Leerzeichen stehen.
-          Seien Sie zuletzt auch bei der Verwendung von Leerzeichen innerhalb ihres 
-          Kommandozeilenaufrufes vorsichtig. Sollten Verzeichnisangaben etwa Leerzeichen
-          (oder andere zu schützende Zeichen) enthalten, so umschließen Sie sie mit
+        <para>Als erstes ist es wichtig, dass das Programm
+          <command>svnserve.exe</command> immer mit der Option
+          <option>--service</option> aufgerufen wird.  Alle weiteren
+          Optionen müssen in derselben Zeile folgen, allerdings dürfen
+          sich widersprechende Option nicht verwendet werden &ndash;
+          wie etwa <option>--daemon</option> (<option>-d</option>),
+          <option>--tunnel</option> oder <option>--inetd</option>
+          (<option>-i</option>).  Optionen wie <option>-r</option>
+          oder <option>--listen-port</option> sind hingegen in
+          Ordnung. Zweitens, seien Sie beim Aufruf von
+          <command>SC.EXE</command> mit Leerzeichen vorsichtig: Beim
+          Schreiben der <literal>Schlüssel= Wert</literal>-Zeile darf
+          zwischen <literal>Schlüssel</literal> und
+          <literal>=</literal> kein Leerzeichen stehen, vor
+          <literal>Wert</literal> muss genau ein Leerzeichen stehen.
+          Seien Sie zuletzt auch bei der Verwendung von Leerzeichen
+          innerhalb ihres Kommandozeilenaufrufes vorsichtig. Sollten
+          Verzeichnisangaben etwa Leerzeichen (oder andere zu
+          schützende Zeichen) enthalten, so umschließen Sie sie mit
           zusätzlichen doppelten Anführungszeichen:</para>
 
         <screen>
@@ -1316,32 +1408,35 @@ C:\&gt; sc create svn
         start= auto
 </screen>
 
-        <para>Beachten Sie bitte auch, dass das Wort <literal>binpath</literal>
-          etwas irreführend ist &ndash; sein Wert ist eine <emphasis>Kommandozeile</emphasis>
-          und nicht der Pfad zu einem Programm. Dies ist der Grund, warum
-          Sie vorhandene Leerzeichen mit doppelten Anführungszeichen schützen müssen.</para>
+        <para>Beachten Sie bitte auch, dass das Wort
+          <literal>binpath</literal> etwas irreführend ist &ndash;
+          sein Wert ist eine <emphasis>Kommandozeile</emphasis> und
+          nicht der Pfad zu einem Programm. Dies ist der Grund, warum
+          Sie vorhandene Leerzeichen mit doppelten Anführungszeichen
+          schützen müssen.</para>
 
-        <para>Ist der Dienst erstmal eingerichtet, können Sie ihn mit Hilfe
-          von grafischen Programmen (etwa der Microsoft Management Console)
-          stoppen, starten oder seinen Status abfragen. Alternativ steht ihnen
-          auch die Kommandozeile zur Verfügung:</para>
+        <para>Ist der Dienst erstmal eingerichtet, können Sie ihn mit
+          Hilfe von grafischen Programmen (etwa der Microsoft
+          Management Console) stoppen, starten oder seinen Status
+          abfragen. Alternativ steht ihnen auch die Kommandozeile zur
+          Verfügung:</para>
 
         <screen>
 C:\&gt; net stop svn
 C:\&gt; net start svn
 </screen>
 
-        <para>Der Dienst kann natürlich auch wieder deinstalliert werden, indem
-          Sie den Befehl <userinput>sc delete svn</userinput> aufrufen.
-          Stoppen Sie den Dienst aber vorher!
-          Das Programm <command>SC.EXE</command> kennt noch etliche andere nützliche
-          Optionen und Parameter, ein Aufruf von <userinput>sc /?</userinput> verrät
+        <para>Der Dienst kann natürlich auch wieder deinstalliert
+          werden, indem Sie den Befehl <userinput>sc delete
+            svn</userinput> aufrufen.  Stoppen Sie den Dienst aber
+          vorher!  Das Programm <command>SC.EXE</command> kennt noch
+          etliche andere nützliche Optionen und Parameter, ein Aufruf
+          von <userinput>sc /?</userinput> verrät
           ihnen, welche das sind.</para>
 
       </sect3>
 
     </sect2>
- 
 
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.svnserve.auth">
@@ -1423,72 +1518,86 @@ C:\&gt; net start svn
         how to use them.</para>
 -->
 
+      <title>Integrierte Authentifizierung und Autorisierung</title>
 
-<title>Integrierte Authentifikation und Autorisation</title>
-
-      <para>Wenn sich ein Subversion-Client mit einem <command>svnserve</command>-Prozess
-        verbindet, geschieht folgendes:</para>
+      <para>Wenn sich ein Subversion-Client mit einem
+        <command>svnserve</command>-Prozess verbindet, geschieht
+        folgendes:</para>
 
       <itemizedlist>
-        <listitem><para>Der Client wählt ein bestimmtes Projektarchiv.</para></listitem>
+        <listitem><para>Der Client wählt ein bestimmtes
+            Projektarchiv.</para></listitem>
 
-        <listitem><para>Der Server liest die zum Projektarchiv gehörende Datei <filename>conf/svnserve.conf</filename>
-        und führt die darin enthaltenen Regeln für die Authentifikation (Legitimation, Identitätsprüfung)
-        und die Autorisation (Berechtigungen, Befugnisse) aus.</para></listitem>
+        <listitem><para>Der Server liest die zum Projektarchiv
+            gehörende Datei <filename>conf/svnserve.conf</filename>
+            und führt die darin enthaltenen Regeln für die
+            Authentifizierung (Legitimation, Identitätsprüfung) und
+            die Autorisierung (Berechtigungen, Befugnisse)
+            aus.</para></listitem>
 
-        <listitem><para>Je nach festgelegten Regeln und Einstellungen geht es mit einem
-        der folgenden Punkte weiter:</para>
+        <listitem><para>Je nach festgelegten Regeln und Einstellungen
+            geht es mit einem der folgenden Punkte weiter:</para>
 
           <itemizedlist>
-            <listitem><para>Der Client kann seine Anfragen anonym, also ohne eine 
-              vorhergehende Authentifikationsanfrage, senden.</para></listitem>
+            <listitem><para>Der Client kann seine Anfragen anonym,
+                also ohne eine vorhergehende
+                Authentifizierungsanfrage, senden.</para></listitem>
 
-            <listitem><para>Der Client kann jederzeit eine Anmeldeaufforderung erhalten.</para></listitem>
+            <listitem><para>Der Client kann jederzeit eine
+                Anmeldeaufforderung erhalten.</para></listitem>
 
-            <listitem><para>Läuft die Verbindung über einen Tunnel, so erklärt der Client,
-              dass eine externe Anmeldung stattgefunden hat (meistens durch SSH).</para></listitem>
+            <listitem><para>Läuft die Verbindung über einen Tunnel, so
+                erklärt der Client, dass eine externe Anmeldung
+                stattgefunden hat (meistens durch
+                SSH).</para></listitem>
           </itemizedlist>
         </listitem>
 
       </itemizedlist>
 
-      <para>Der <command>svnserve</command>-Server beherrscht als Standardeinstellung
-        nur den CRAM-MD5-Anmeldedialog
-       <footnote>
-          <para>See RFC 2195.</para>
-        </footnote>.
-        Im Kern läuft dieser wie folgt ab:
-        Der Server sendet einen kleinen Datensatz als Anfrage an den Client. 
-        Dieser erzeugt mittels des MD5-Hash-Algorithmus einen 
-        Fingerprint/Hash des Passwortes zusammen mit dem Datensatz
-        und sendet diesen Fingerprint als Antwort zurück an den Server.
-        Der Server vollzieht nun dieselbe Operation mit dem Passwort und dem
-        Datensatz und vergleicht anschließend seinen Fingerprint mit dem 
-        des Clients. <emphasis>Während des gesamten Vorgangs wird das eigentliche Passwort
-        nie über das Netzwerk gesendet.</emphasis></para>
+      <para>Der <command>svnserve</command>-Server beherrscht als
+        Standardeinstellung nur den CRAM-MD5-Anmeldedialog
+        <footnote><para>See RFC 2195.</para></footnote>. Im Kern läuft
+        dieser wie folgt ab: Der Server sendet einen kleinen Datensatz
+        als Anfrage an den Client.  Dieser erzeugt mittels des
+        MD5-Hash-Algorithmus einen Fingerprint/Hash des Passwortes
+        zusammen mit dem Datensatz und sendet diesen Fingerprint als
+        Antwort zurück an den Server.  Der Server vollzieht nun
+        dieselbe Operation mit dem Passwort und dem Datensatz und
+        vergleicht anschließend seinen Fingerprint mit dem des
+        Clients. <emphasis>Während des gesamten Vorgangs wird das
+        eigentliche Passwort nie über das Netzwerk
+        gesendet.</emphasis></para>
 
       <para>Enthält ihr <command>svnserve</command>-Server Unterstützung für
         SASL, so beherrscht er nicht nur die CRAM-MD5-Anmeldung, sondern noch 
-        eine Menge anderer Verfahren zur Authentifikation.
-        Lesen Sie <xref linkend="svn.serverconfig.svnserve.sasl"/> weiter unten,
-        um zu lernen, wie die einzelnen Möglichkeiten zur Authentifikation
-        und Verschlüsselung in SASL eingerichtet werden.</para>
+        eine Menge anderer Verfahren zur Authentifizierung.  Lesen Sie
+        <xref linkend="svn.serverconfig.svnserve.sasl"/> weiter unten,
+        um zu lernen, wie die einzelnen Möglichkeiten zur
+        Authentifizierung und Verschlüsselung in SASL eingerichtet
+        werden.</para>
 
-      <para>Es ist selbstverständlich auch möglich, dass sich der Client
-        über ein eigenständiges Tunnel-Programm anmeldet, etwa <command>ssh</command>.
-        In einem solchem Fall stellt der Server nur fest, unter welchem Nutzerkonto
-        er gestartet wurde, und verwendet dieses für die weitere Anmeldung.
-        Mehr dazu im Kapitel <xref linkend="svn.serverconfig.svnserve.sshauth"/>.</para>
+      <para>Es ist selbstverständlich auch möglich, dass sich der
+        Client über ein eigenständiges Tunnel-Programm anmeldet, etwa
+        <command>ssh</command>.  In einem solchem Fall stellt der
+        Server nur fest, unter welchem Nutzerkonto er gestartet wurde,
+        und verwendet dieses für die weitere Anmeldung.
+        Mehr dazu im Kapitel <xref
+          linkend="svn.serverconfig.svnserve.sshauth"/>.</para>
 
-      <para>Wie Sie sicher bereits bemerkt haben, ist die Datei <filename>svnserve.conf</filename>
-        in jedem Projektarchiv die zentrale Anlaufstelle für alle Regeln im Rahmen der
-        Nutzeranmeldung und Rechtevergabe. Die Datei hat dasselbe Format wie die anderen
-        Konfigurationsdateien (siehe <xref linkend="svn.advanced.confarea"/>):
-        Die Abschnittsbezeichnungen sind von eckigen Klammern umschlossen 
-        (<literal>[</literal> und <literal>]</literal>), Kommentare werden mit Rauten
-        (<literal>#</literal>) eingeleitet, und jeder Abschnitt enthält spezielle Variablen,
-        denen Werte zugewiesen werden (<literal>variable = value</literal>).
-        Lassen Sie uns einen Blick in diese Dateien werfen, um zu sehen wie sie verwendet werden.</para>
+      <para>Wie Sie sicher bereits bemerkt haben, ist die Datei
+        <filename>svnserve.conf</filename> in jedem Projektarchiv die
+        zentrale Anlaufstelle für alle Regeln im Rahmen der
+        Nutzeranmeldung und Rechtevergabe. Die Datei hat dasselbe
+        Format wie die anderen Konfigurationsdateien (siehe <xref
+          linkend="svn.advanced.confarea"/>):
+        Die Abschnittsbezeichnungen sind von eckigen Klammern
+        umschlossen (<literal>[</literal> und <literal>]</literal>),
+        Kommentare werden mit Rauten (<literal>#</literal>)
+        eingeleitet, und jeder Abschnitt enthält spezielle Variablen,
+        denen Werte zugewiesen werden (<literal>variable =
+          value</literal>).  Lassen Sie uns einen Blick in diese
+        Dateien werfen, um zu sehen wie sie verwendet werden.</para>
 
 
 
@@ -1544,14 +1653,16 @@ sally = barpassword
       </sect3>
 -->
 
-<title>Erstellen einer Passwortdatei und festlegen der Authentifizierungsumgebung (Realm)</title>
+        <title>Erstellen einer Passwortdatei und festlegen der Authentifizierungsumgebung (Realm)</title>
 
-        <para>Zu Beginn enthält der Abschnitt <literal>[general]</literal> in
-          der Datei <filename>svnserve.conf</filename> alle Einstellungen, welche
-          für den Start notwendig sind. Lassen Sie uns anfangen und den Variablen 
-          Werte zuweisen: Wählen Sie den Namen der Datei, welche die Namen
-          ihrer Nutzer und deren Passwörter enthält, und entscheiden Sie sich 
-          für den Namen der Authentifizierungsumgebung:</para>
+        <para>Zu Beginn enthält der Abschnitt
+          <literal>[general]</literal> in der Datei
+          <filename>svnserve.conf</filename> alle Einstellungen,
+          welche für den Start notwendig sind. Lassen Sie uns anfangen
+          und den Variablen Werte zuweisen: Wählen Sie den Namen der
+          Datei, welche die Namen ihrer Nutzer und deren Passwörter
+          enthält, und entscheiden Sie sich für den Namen der
+          Authentifizierungsumgebung:</para>
 
         <screen>
 [general]
@@ -1559,16 +1670,19 @@ password-db = passwortdatei
 realm = Anmeldedomäne
 </screen>
 
-        <para>Den Namen des <literal>realm</literal> können Sie frei wählen.
-          Er teilt den Clients mit, an welcher <quote>Authentifizierungsumgebung</quote>
-          sie sich anmelden. Der Subversion-Client zeigt diesen Namen im
-          Anmeldedialog und verwendet ihn auch (zusammen mit dem Namen und Port des Servers)
-          als Schlüssel, welcher als Teil des Anmeldenachweises auf der Festplatte des 
-          Nutzers gespeichert wird 
-          (siehe dazu <xref linkend="svn.serverconfig.netmodel.credcache"/>).
-          Die Variable  <literal>password-db</literal> enthält den Namen der Passwortdatei,
-          die vom Aufbau her gleich ist und die Namen der Nutzer und deren Passwörter speichert.
-          Als Beispiel:</para>
+        <para>Den Namen des <literal>realm</literal> können Sie frei
+          wählen.  Er teilt den Clients mit, an welcher
+          <quote>Authentifizierungsumgebung</quote> sie sich anmelden.
+          Der Subversion-Client zeigt diesen Namen im Anmeldedialog
+          und verwendet ihn auch (zusammen mit dem Namen und Port des
+          Servers)
+          als Schlüssel, welcher als Teil des Anmeldenachweises auf
+          der Festplatte des Nutzers gespeichert wird (siehe dazu
+          <xref linkend="svn.serverconfig.netmodel.credcache"/>).  Die
+          Variable  <literal>password-db</literal> enthält den Namen
+          der Passwortdatei, die vom Aufbau her gleich ist und die
+          Namen der Nutzer und deren Passwörter speichert.  Als
+          Beispiel:</para>
 
         <screen>
 [users]
@@ -1576,25 +1690,24 @@ harry = geheimespasswort
 sally = undnocheins
 </screen>
 
-         <para> 
-          Der Wert von <literal>password-db</literal> kann
-          den absoluten oder relativen Pfad zur Benutzerdatei enthalten.
-          In der Regel, ist es am einfachsten diese Datei ebenfalls
-          im <filename>conf/</filename>-Verzeichnis des Projektarchivs
-          zu speichern &ndash; also dort, wo auch <filename>svnserve.conf</filename>
-          liegt. Andererseits möchten Sie vielleicht eine Passwortdatei 
-          für mehrere Repositories verwenden; in diesem Fall sollten Sie
-          die Datei an einem zentraleren Ort ablegen.
-          Die Projektarchive, die sich die Benutzerdatei teilen, sollten so
-      konfiguriert sein, dass sie derselben Authentifizierungsumgebung
-      angehören, da die Benutzerliste 
-      im Wesentlichen einen Authentifizierungs-Bereich definiert.
-          Wo die Datei auch liegen mag, stellen Sie sicher, die Lese-
-          und Schreibrechte entsprechend zu setzen. Falls Sie wissen,
-          unter welchem Konto <command>svnserve</command> laufen wird,
-          sollten Sie den Lesezugriff zur Benutzerdatei auf das
-          Notwendige beschränken.
-          </para>
+         <para> Der Wert von <literal>password-db</literal> kann den
+           absoluten oder relativen Pfad zur Benutzerdatei enthalten.
+           In der Regel, ist es am einfachsten diese Datei ebenfalls
+           im <filename>conf/</filename>-Verzeichnis des
+           Projektarchivs zu speichern &ndash; also dort, wo auch
+           <filename>svnserve.conf</filename> liegt. Andererseits
+           möchten Sie vielleicht eine Passwortdatei für mehrere
+           Repositories verwenden; in diesem Fall sollten Sie die
+           Datei an einem zentraleren Ort ablegen.  Die
+           Projektarchive, die sich die Benutzerdatei teilen, sollten
+           so konfiguriert sein, dass sie derselben
+           Authentifizierungsumgebung angehören, da die Benutzerliste
+           im Wesentlichen einen Authentifizierungs-Bereich definiert.
+           Wo die Datei auch liegen mag, stellen Sie sicher, die Lese-
+           und Schreibrechte entsprechend zu setzen. Falls Sie wissen,
+           unter welchem Konto <command>svnserve</command> laufen
+           wird, sollten Sie den Lesezugriff zur Benutzerdatei auf das
+           Notwendige beschränken.  </para>
 
       </sect3>
 
@@ -1602,7 +1715,7 @@ sally = undnocheins
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.auth.general">
  <!--       <title>Set access controls</title> -->
-       <title>Setzen von Zugriffsbeschränkungen</title>
+        <title>Setzen von Zugriffsbeschränkungen</title>
 
 <!--
         <para>There are two more variables to set in the
@@ -1618,18 +1731,19 @@ sally = undnocheins
           read/write access to the repository.  For example:</para>
 -->
 
-    <para>
-    Es sind noch zwei weitere Variablen in der Datei <filename>svnserve.conf</filename>
-    zu setzten: Sie legen fest, was nicht authentifizierten (anonymen)
-    und authentifizierten Nutzern erlaubt ist. Die Variablen 
-    <literal>anon-access</literal> und <literal>auth-access</literal>
-    können auf die Werte <literal>none</literal>, <literal>read</literal>
-        oder <literal>write</literal> gesetzt werden. Wenn Sie den Wert auf 
-        <literal>none</literal> setzen, so unterbinden Sie sowohl den Lese- als
-        auch den Schreibzugriff &ndash; <literal>read</literal> erlaubt den Nur-Lese-Zugriff
-        auf das Projektarchiv und  <literal>write</literal> gibt auf das gesamte Projektarchiv
-        Lese- und Schreibzugriff. 
-    </para>
+        <para>Es sind noch zwei weitere Variablen in der Datei
+          <filename>svnserve.conf</filename> zu setzten: Sie legen
+          fest, was nicht authentifizierten (anonymen) und
+          authentifizierten Nutzern erlaubt ist. Die Variablen
+          <literal>anon-access</literal> und
+          <literal>auth-access</literal> können auf die Werte
+          <literal>none</literal>, <literal>read</literal> oder
+          <literal>write</literal> gesetzt werden. Wenn Sie den Wert
+          auf <literal>none</literal> setzen, so unterbinden Sie
+          sowohl den Lese- als auch den Schreibzugriff &ndash;
+          <literal>read</literal> erlaubt den Nur-Lese-Zugriff auf das
+          Projektarchiv und  <literal>write</literal> gibt auf das
+          gesamte Projektarchiv Lese- und Schreibzugriff.  </para>
 
 <!--
         <screen>
@@ -1645,7 +1759,7 @@ auth-access = write
 </screen>
 -->
 
-    <screen>
+        <screen>
 [general]
 password-db = Benutzerdatei
 realm = Ihr realm
@@ -1664,10 +1778,11 @@ auth-access = write
           access completely:</para>
 -->
 
-    <para>Tatsächlich sind die in diesem Beispiel gezeigten Einstellungen,
-    auch die Standardwerte der Variablen, falls Sie vergessen sollten, sie
-    zu setzten. Für den Fall, dass Sie noch zurückhaltender sein möchten, können Sie den anonymen
-    Zugriff auch komplett unterbinden:</para>
+        <para>Tatsächlich sind die in diesem Beispiel gezeigten
+          Einstellungen, auch die Standardwerte der Variablen, falls
+          Sie vergessen sollten, sie zu setzten. Für den Fall, dass
+          Sie noch zurückhaltender sein möchten, können Sie den
+          anonymen Zugriff auch komplett unterbinden:</para>
 
 <!--
         <screen>
@@ -1705,13 +1820,15 @@ auth-access = write
         the <literal>authz-db</literal> variable to point to it:</para>
 -->
 
-    <para>Der Serverprozess versteht nicht nur diese <quote>pauschalen</quote>
-    Zugriffseinstellungen für ein Projektarchiv, sondern auch feiner
-    granulierte Zugriffsrechte auf einzelne Dateien und Verzeichnisse
-    innerhalb des Repositories. Um diese Funktion nutzen zu können, müssen Sie eine
-    Datei anlegen, welche die umfangreicheren Regeln enthält und anschließend die
-    Variable <literal>authz-db</literal> mit folgenden Wert setzten:
-    </para>
+        <para>Der Serverprozess versteht nicht nur diese
+          <quote>pauschalen</quote> Zugriffseinstellungen für ein
+          Projektarchiv, sondern auch feiner granulierte
+          Zugriffsrechte auf einzelne Dateien und Verzeichnisse
+          innerhalb des Repositories. Um diese Funktion nutzen zu
+          können, müssen Sie eine Datei anlegen, welche die
+          umfangreicheren Regeln enthält und anschließend die Variable
+          <literal>authz-db</literal> mit folgenden Wert setzten:
+        </para>
 
 
 <!--
@@ -1747,20 +1864,19 @@ authz-db = Auth-Datei
 
 -->
 
-    <para>
-    Wir werden die Syntax der <filename>Auth-Datei</filename>
-    noch später in diesem Kapitel besprechen, und zwar in
-    <xref linkend="svn.serverconfig.pathbasedauthz"/>. Beachten Sie,
-    dass die <literal>authz-db</literal>-Variable die Verwendung der
-    <literal>anon-access</literal>- und <literal>auth-access</literal>-Variablen 
-        nicht ausschließt &ndash; wenn alle diese Variablen gleichzeitig
-    gesetzt sind, so müssen auch <emphasis>alle</emphasis> diese Regeln 
-    erfolgreich greifen, bevor ein Zugriff erlaubt wird.
-    </para>
+        <para> Wir werden die Syntax der
+          <filename>Auth-Datei</filename> noch später in diesem
+          Kapitel besprechen, und zwar in <xref
+            linkend="svn.serverconfig.pathbasedauthz"/>. Beachten Sie,
+          dass die <literal>authz-db</literal>-Variable die Verwendung
+          der <literal>anon-access</literal>- und
+          <literal>auth-access</literal>-Variablen nicht ausschließt
+          &ndash; wenn alle diese Variablen gleichzeitig gesetzt sind,
+          so müssen auch <emphasis>alle</emphasis> diese Regeln
+          erfolgreich greifen, bevor ein Zugriff erlaubt wird.
+        </para>
       </sect3>
     </sect2>
-
-
 
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.svnserve.sasl">
@@ -2147,9 +2263,9 @@ max-encryption = 256
           Zahlen größer 1. Im vorangegangenen Beispiel verlangen wir,
           dass Clients mindestens 128-Bit- aber höchstens
           256-Bit-Verschlüsselung vornehmen.</para>
-        </sect3>
+      </sect3>
 
-      </sect2>
+    </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.svnserve.sshauth">
