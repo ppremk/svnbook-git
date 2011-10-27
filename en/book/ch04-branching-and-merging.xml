@@ -691,6 +691,36 @@ $
       <informalexample>
         <screen>
 $ svn merge ^/calc/trunk
+svn: E195020: Cannot merge into mixed-revision working copy [357:378]; try updating first
+</screen>
+      </informalexample>
+
+      <para>Well that was unexpected! What happened was that while
+        making changes to your branch over the past week you now have
+        a working copy that is at mixed-revisions
+        (see <xref linkend="svn.basic.in-action.mixedrevs"/>).  With
+        the release of Subversion 1.7 the merge command disables merges
+        into mixed-revision working copies by default.  Without going
+        into too much detail, this is because of limitations in the way
+        merges are tracked by the svn:mergeinfo property (see the
+        section called
+        <xref linkend="svn.branchmerge.basicmerging.mergeinfo"/>
+        for details).  These limitations mean that merges into
+        mixed-revision working copies can result in unexpected text
+        and tree conflicts.  The merge command option
+        <option>--allow-mixed-revisions</option> allows you to override
+        this prohibition, but you should only do that if you understand
+        the ramifications and have a good reason for doing so.  We
+        don't have any reason to do so here, so we update the working
+        copy and then reattempt the merge.</para>
+
+      <informalexample>
+        <screen>
+$ svn up
+Updating '.':
+At revision 380.
+
+$ svn merge ^/calc/trunk
 --- Merging r357 through r380 into '.':
 U    integer.c
 U    Makefile
