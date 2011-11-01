@@ -1031,6 +1031,92 @@ $
         receiving changes to <filename>/branches/mybranch</filename>
         from the specified trunk URL.</para>
 
+      <sidebar>
+        <title>Mergeinfo Inheritance</title>
+
+        <para>
+          When a path has the <literal>svn:mergeinfo</literal>
+          property set on it we say it has <quote>explicit</quote>
+          mergeinfo.  This explicit mergeinfo describes not only what
+          changes were merged into that particular directory, but also
+          all the children of that directory (because those children
+          inherit the mergeinfo of their parent path).  For example:
+        </para>
+
+        <informalexample>
+          <screen>
+# What explicit mergeinfo exists on a branch?
+$ svn propget svn:mergeinfo ^/branches/proj-X --recursive
+/trunk:651-652
+
+# What children does proj-X have?
+$ svn list --recursive ^/branches/proj-X
+doc/
+doc/INSTALL
+README
+src/main.c
+
+# Ask what revs were merged to a file with no explicit mergeinfo
+$ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
+651
+652
+          </screen>
+        </informalexample>
+
+        <para>Notice from our first subcommand that only the root of
+          <filename>/branches/proj-X</filename> has any explicit
+          mergeinfo.  However, when we use
+          <command>svn mergeinfo</command> to ask what was merged to
+          <filename>/branches/proj-X/src/main.c</filename> it reports
+          that the two revisions described in the explicit mergeinfo
+          on <filename>/branches/proj-X</filename> were merged.  This is
+          because <filename>/branches/proj-X/src/main.c</filename>, having
+          no explicit mergeinfo of its own, inherits the mergeinfo from
+          its nearest parent with explicit mergeinfo,
+          <filename>/branches/proj-X</filename>.</para>
+
+        <para>
+          There are two cases in which mergeinfo is not inherited.
+          First, if a path has explicit mergeinfo, then it never inherits
+          mergeinfo. Another way to think of this is that explicit
+          mergeinfo is always a complete record of the merges to a given
+          path, once it exists it overrides any mergeinfo that path might
+          otherwise inherit. The second way is when dealing with
+          non-inheritable mergeinfo, a special type of explicit mergeinfo
+          that applies <emphasis>only</emphasis> to the directory on which
+          the <literal>svn:mergeinfo</literal> property is set (and it's
+          only directories, non-inheritable mergeinfo is never set on
+          files). For example:</para>
+
+        <informalexample>
+          <screen>
+# The '*' decorator indicates non-inheritable mergeinfo
+$ svn propget svn:mergeinfo ^/branches/proj-X
+/trunk:651-652,758*
+
+# Revision 758 in non-inheritable, but still applies to the path it is set on
+$ svn mergeinfo ^/trunk ^/branches/proj-X
+651
+652
+758
+
+# Revision 758 is not reported as merged because it is non-inheritable
+# and applies only to ^/trunk
+$ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
+651
+652
+          </screen>
+        </informalexample>
+
+        <para>
+          You might never have to think about mergeinfo inheritance
+          or encounter non-inheritable mergeinfo in your own repository.
+          A discussion of the full ramifications of mergeinfo inheritance
+          are beyond the scope of this book.  If you have more questions
+          check out some of the references mentioned in
+          <xref linkend="svn.branchmerge.advanced.finalword"/></para>
+      </sidebar>
+
       <para>Another way to get a more precise preview of a merge
         operation is to use the <option>--dry-run</option>
         option:</para>
@@ -1717,10 +1803,11 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
       <sidebar>
         <title>Natural History and Implicit Mergeinfo</title>
 
-        <para>When a path has the <literal>svn:mergeinfo</literal>
-          property set on it we say it has <quote>explicit</quote>
-          mergeinfo.  Yes, this implies a path can
-          have <quote>implicit</quote> mergeinfo, too!  Implicit
+        <para>As we mentioned earlier when discussing mergeinfo
+          inheritance, a path that has the
+          <literal>svn:mergeinfo</literal> property set on it is said to
+          have <quote>explicit</quote> mergeinfo.  Yes, this implies a
+          path can have <quote>implicit</quote> mergeinfo, too!  Implicit
           mergeinfo, or <firstterm>natural history</firstterm>, is
           simply a path's own history (see
           <xref linkend="svn.tour.history" />) interpreted as merge
