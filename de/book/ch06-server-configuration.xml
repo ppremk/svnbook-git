@@ -2283,7 +2283,7 @@ max-encryption = 256
         of the project's users already have system accounts and the
         ability to <quote>SSH into</quote> the server machine.</para>
 -->
-      <para>Die Eingebaute Authentifizierung (und die
+      <para>Die eingebaute Authentifizierung (und die
         SASL-Unterstützung) von <command>svnserve</command> kann sehr
         praktisch sein, da es die Notwendigkeit echter Systemkonten
         vermeidet. Andererseits haben einige Administratoren bereits
@@ -2332,21 +2332,22 @@ baz
         of the new revision.</para>
 -->
       <para>In diesem Beispiel ruft der Subversion-Client einen
-        lokalen
-        <command>ssh</command> process, connecting to
-        <literal>host.example.com</literal>, authenticating as the
-        user <literal>harryssh</literal> (according to SSH user
-        configuration), then spawning a private
-        <command>svnserve</command> process on the remote machine
-        running as the user <literal>harryssh</literal>.  The
-        <command>svnserve</command> command is being invoked in tunnel
-        mode (<option>-t</option>), and its network protocol is being
-        <quote>tunneled</quote> over the encrypted connection by
-        <command>ssh</command>, the tunnel agent.
-        If the client performs a commit, the authenticated username
-        <literal>harryssh</literal> will be used as the author
-        of the new revision.</para>
+        lokalen <command>ssh</command>-Prozess auf, der sich mit
+        <literal>host.example.com</literal> verbindet, sich (gemäß der
+        SSH-Benutzerkonfiguration) als Benutzer
+        <literal>harryssh</literal> authentifiziert und dann auf dem
+        entfernten Rechner einen privaten
+        <command>svnserve</command>-Prozess unter der Benutzerkennung
+        <literal>harryssh</literal> startet. Der Befehl
+        <command>svnserve</command> wird im Tunnelmodus
+        (<option>-t</option>) aufgerufen und dessen Netzprotokoll wird
+        über die durch den Tunnelagenten <command>ssh</command>
+        verschlüsselte Verbindung <quote>getunnelt</quote>. Falls der
+        Client eine Übergabe macht, wird der authentifizierte
+        Benutzername <literal>harryssh</literal> als Autor der neuen
+        Revision verwendet.</para>
 
+<!--
       <para>The important thing to understand here is that the
         Subversion client is <emphasis>not</emphasis> connecting to a
         running <command>svnserve</command> daemon.  This method of
@@ -2355,7 +2356,17 @@ baz
         <command>ssh</command> to spawn a temporary
         <command>svnserve</command> process, which then terminates
         when the network connection is closed.</para>
+-->
+      <para>An dieser Stelle ist es wichtig, zu verstehen, dass der
+        Subversion-Client sich <emphasis>nicht</emphasis> mit einem
+        laufendenden <command>svnserve</command>-Dämonen verbindet.
+        Diese Zugriffsmethode benötigt keinen Dämonen und merkt auch
+        nicht, wenn einer vorhanden ist. Sie verlässt sich vollständig
+        auf die Fähigkeit von <command>ssh</command>, einen temporären
+        <command>svnserve</command>-Prozesses zu starten, der nach dem
+        Schließen der Netzverbindung beendet wird.</para>
 
+<!--
       <para>When using <literal>svn+ssh://</literal> URLs to access a
         repository, remember that it's the <command>ssh</command>
         program prompting for authentication, and
@@ -2371,7 +2382,27 @@ baz
         use a separate SSH password-caching tool such as
         <command>ssh-agent</command> on a Unix-like system, or
         <command>pageant</command> on Windows.</para>
+-->
+      <para>Denken Sie daran, dass beim Zugriff auf ein Projektarchiv
+        über URLs der Form <literal>svn+ssh://</literal> die Abfrage
+        zur Authentifikation von <command>ssh</command> kommt und
+        <emphasis>nicht</emphasis> vom <command>svn</command>-Client.
+        Das bedeutet, dass es keine automatische Passwortspeicherung
+        gibt (siehe <xref
+        linkend="svn.serverconfig.netmodel.credcache"/>).  Der
+        Subversion-Client stellt häufig mehrere Verbindungen mit dem
+        Projektarchiv her, wenngleich Benutzer das wegen der
+        zwischengespeicherten Passwörter normalerweise gar nicht
+        mitbekommen. Jedoch könnten Benutzer bei Verwendung von
+        <literal>svn+ssh://</literal>-URLs durch die wiederholten
+        Passwortanfragen für ausgehende Verbindungen von
+        <command>ssh</command> etwas genervt sein. Die Lösung besteht
+        darin, ein zusätzliches Passwort-Speicherungs-Werkzeug wie
+        etwa <command>ssh-agent</command> auf einem Unix-ähnlichen
+        System oder <command>pageant</command> auf Windows zu
+        verwenden.</para>
 
+<!--
       <para>When running over a tunnel, authorization is primarily
         controlled by operating system permissions to the repository's
         database files; it's very much the same as if Harry were
@@ -2392,7 +2423,31 @@ baz
             the repository database.</para>
         </footnote>
       </para>
+-->
+      <para>Bei der Verwendung eines Tunnels wird die Autorisierung
+        größtenteils durch die Betriebssystemberechtigungen auf die
+        Datenbankdateien des Projektarchivs gesteuert, als ob
+        Harry direkt über einen <literal>file://</literal>-URL auf das
+        Projektarchiv zugreifen würde. Falls mehrere Benutzer direkt
+        auf das Projektarchiv zugreifen sollen, möchten Sie sie
+        vielleicht in eine gemeinsame Gruppe zusammenfassen; Sie
+        sollten auch auf umasks achten (lesen Sie auf alle Fälle <xref
+        linkend="svn.serverconfig.multimethod"/> später in diesem
+        Kapitel). Doch selbst beim Tunneln können Sie immer noch die
+        Datei <filename>svnserve.conf</filename> zum Blockieren des
+        Zugriffs verwenden, indem Sie einfach <literal>auth-access =
+        read</literal> oder <literal>auth-access = none</literal>
+        setzen.
+        <footnote>
+          <para>Beachten Sie, dass die Verwendung irgendwelcher
+            durch <command>svnserve</command> sichergestellten
+            Zugriffskontrollen sinnlos ist, da der Benutzer ohnehin
+            direkten Zugriff auf die Projektarchiv-Datenbank
+            hat.</para>
+        </footnote>
+      </para>
 
+<!--
       <para>You'd think that the story of SSH tunneling would end
         here, but it doesn't.  Subversion allows you to create custom
         tunnel behaviors in your runtime <filename>config</filename>
@@ -2405,12 +2460,28 @@ baz
         In the <literal>[tunnels]</literal> section of your
         <filename>config</filename> file, simply define it like
         this:</para>
+-->
+      <para>Vielleicht glauben Sie, dass die Geschichte mit dem
+        SSH-Tunneln hier endet. Es ist aber nicht so. Subversion
+        erlaubt es Ihnen, selbstdefinierte Verhaltensweisen für das
+        Tunneln in Ihrer Laufzeit-Datei  <filename>config</filename>
+        zu definieren (siehe <xref linkend="svn.advanced.confarea"/>).
+        Nehmen wir beispielsweise an, dass Sie RSH statt SSH verwenden
+        möchten.
+        <footnote>
+          <para>Wir empfehlen das natürlich nicht, da RSH deutlich
+            unsicherer ist als SSH.</para>
+        </footnote>
+        Definieren Sie einfach im Abschnitt
+        <literal>[tunnels]</literal> Ihrer Datei
+        <filename>config</filename>:</para>
 
       <screen>
 [tunnels]
 rsh = rsh
 </screen>
 
+<!--
       <para>And now, you can use this new tunnel definition by using a
         URL scheme that matches the name of your new variable:
         <literal>svn+rsh://host/path</literal>.  When using the new
@@ -2421,12 +2492,27 @@ rsh = rsh
         will also include that in its command (<userinput>rsh
         username@host svnserve -t</userinput>).  But you can define new
         tunneling schemes to be much more clever than that:</para>
+-->
+      <para>Ab jetzt können Sie diese neue Tunneldefinition
+        verwenden, indem Sie ein URL-Schema benutzen, welches dem
+        Namen Ihrer neuen Vartiablen entspricht:
+        <literal>svn+rsh://host/path</literal>. Bei Verwendung des
+        neuen URL-Schemas führt der Subversion-Client im Hintergrund
+        eigentlich den Befehl <userinput>rsh host svnserve
+        -t</userinput> aus. Falls Sie einen Benutzernamen im URL
+        angeben (z.B.
+        <literal>svn+rsh://username@host/path</literal>), wird der
+        Client das auch mit in seinen Befehl übernehmen
+        (<userinput>rsh username@host svnserve -t</userinput>). Sie
+        können jedoch auch viel raffiniertere neue Tunnel-Schemata
+        definieren:</para>
 
       <screen>
 [tunnels]
 joessh = $JOESSH /opt/alternate/ssh -p 29934
 </screen>
 
+<!--
       <para>This example demonstrates a couple of things.  First, it
         shows how to make the Subversion client launch a very specific
         tunneling binary (the one located at
@@ -2436,7 +2522,18 @@ joessh = $JOESSH /opt/alternate/ssh -p 29934
         particular SSH binary with <option>-p 29934</option> as
         arguments&mdash;useful if you want the tunnel program to
         connect to a nonstandard port.</para>
+-->
+      <para>Dieses Beispiel verdeutlicht einige Dinge. Erstens zeigt
+        es, wie der Subversion-Client angewiesen wird, ein bestimmtes
+        Tunnelprogramm (<filename>/opt/alternate/ssh</filename>) mit
+        speziellen Optionen zu starten. In diesem Fall würde der
+        Zugriff auf einen URL wie <literal>svn+joessh://</literal> das
+        bestimmte SSH-Programm mit den Argumenten <option>-p
+        29934</option> aufrufen &ndash; was nützlich ist, wenn Sie
+        möchten, dass sich das Tunnelprogramm mit einem
+        Nicht-Standard-Port verbindet.</para>
 
+<!--
       <para>Second, it shows how to define a custom environment
         variable that can override the name of the tunneling program.
         Setting the <literal>SVN_SSH</literal> environment variable is
@@ -2450,6 +2547,21 @@ joessh = $JOESSH /opt/alternate/ssh -p 29934
         variable&mdash;<command>$JOESSH</command> would be executed
         instead of <userinput>/opt/alternate/ssh -p
         29934</userinput>.</para>
+-->
+      <para>Zweitens zeigt es, wie eine eigene Umgebungsvariable
+        definiert werden kann, die den Namen des Tunnelprogramms
+        überschreibt. Durch das Setzen der Umgebungsvariablen
+        <literal>SVN_SSH</literal> besteht eine bequeme Methode, den
+        Standard-SSH-Tunnelagenten zu ersetzen. Falls Sie jedoch für
+        unterschiedliche Server verschiedene Werte überschreiben
+        müssen, wobei jeder vielleicht einen anderen Port verwendet
+        oder unterschiedliche Optionen an SSH übergeben werden müssen,
+        können Sie die in diesem Beispiel vorgestellte Methode
+        verwenden. Falls wir nun die Umgebungsvariable
+        <literal>JOESSH</literal> setzten, würde deren Wert den
+        gesamten Wert der Tunnelvariablen überschreiben &ndash; statt
+        <userinput>/opt/alternate/ssh -p 29934</userinput> würde
+        <command>$JOESSH</command> ausgeführt.</para>
 
     </sect2>
 
