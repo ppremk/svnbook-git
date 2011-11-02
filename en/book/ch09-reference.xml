@@ -295,22 +295,54 @@ $ svn status myfile -qv
         <varlistentry id="svn.ref.svn.sw.extensions">
           <term><option>--extensions</option> (<option>-x</option>) <replaceable>ARG</replaceable></term>
           <listitem>
-            <para>Specifies an argument or arguments that Subversion
-              should pass to an external diff command.  This option is
-              valid only when used with the <command>svn
-              diff</command>, <command>svn merge</command>,
-              or <command>svn log --diff</command> commands, where the
-              <option>--diff-cmd</option> option was also used.  If
-              you wish to pass multiple arguments, you must enclose
-              all of them in quotes (e.g.,
-              <userinput>svn diff --diff-cmd /usr/bin/diff -x
-              "-b -E"</userinput>).</para>
+            <para>Specifies customizations which Subversion should
+              make when performing difference calculations.  Valid
+              extensions include:</para>
+            <variablelist>
+              <varlistentry>
+                <term><option>--ignore-space-change</option> (<option>-b</option>)</term>
+                <listitem>
+                  <para>Ignore changes in the amount of white space.</para>
+                </listitem>
+              </varlistentry>
+              <varlistentry>
+                <term><option>--ignore-all-space</option> (<option>-w</option>)</term>
+                <listitem>
+                  <para>Ignore all white space.</para>
+                </listitem>
+              </varlistentry>
+              <varlistentry>
+                <term><option>--ignore-eol-style</option></term>
+                <listitem>
+                  <para>Ignore changes in EOL (end-of-line) style.</para>
+                </listitem>
+              </varlistentry>
+              <varlistentry>
+                <term><option>--show-c-function</option> (<option>-p</option>)</term>
+                <listitem>
+                  <para>Show C function names in the diff output.</para>
+                </listitem>
+              </varlistentry>
+              <varlistentry>
+                <term><option>--unified</option> (<option>-u</option>)</term>
+                <listitem>
+                  <para>Show three lines of unified diff context.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+            <para>The default value of <replaceable>ARG</replaceable>
+              is <literal>-u</literal>.  If you wish to pass multiple
+              arguments, you must enclose all of them in quotes.</para>
+            <para>Note that when Subversion is configured to invoke an
+              external diff command, the value of
+              the <option>--extension</option> (<option>-x</option>)
+              option isn't restricted to the previously mentioned
+              options, but may be <emphasis>any</emphasis> additional
+              arguments which Subversion should pass to that command.
+              </para>
           </listitem>
-
-          <!-- ### TODO: Document -u -b -w and - -ignore-eol-style -->
-
         </varlistentry>
-      
+
         <varlistentry id="svn.ref.svn.sw.file">
           <term><option>--file</option> (<option>-F</option>) <replaceable>FILENAME</replaceable></term>
           <listitem>
@@ -667,7 +699,8 @@ $ svn log -r 1729:{2002-02-17}
           </listitem>
         </varlistentry>
         
-        <varlistentry id="svn.ref.svn.sw.revprop"> <term><option>--revprop</option></term>
+        <varlistentry id="svn.ref.svn.sw.revprop">
+          <term><option>--revprop</option></term>
           <listitem>
             <para>Operates on a revision property instead of a
               property specific to a file or directory.  This option
@@ -1007,28 +1040,6 @@ A  (bin)  otherdir/docs/baz.doc
 <xref linkend="svn.ref.svn.sw.xml" />
 </screen>
           </informalexample>
-<!--
-
-### TODO:
-  - -incremental            : give output suitable for concatenation
-  - -xml                    : output in XML
-  -x [- -extensions] arg    : Default: '-u'. When Subversion is invoking an
-                              external diff program, ARG is simply passed along
-                              to the program. But when Subversion is using its
-                              default internal diff implementation, or when
-                              Subversion is displaying blame annotations, ARG
-                              could be any of the following:
-                                -u (- -unified):
-                                   Output 3 lines of unified context.
-                                -b (- -ignore-space-change):
-                                   Ignore changes in the amount of white space.
-                                -w (- -ignore-all-space):
-                                   Ignore all white space.
-                                - -ignore-eol-style:
-                                   Ignore changes in EOL style
-  - -force                  : force operation to run
-
--->
         </refsect1>
 
         <refsect1>
@@ -6123,7 +6134,7 @@ $
 
       <variablelist>
         
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.bdb_log_keep">
           <term><option>--bdb-log-keep</option></term>
           <listitem>
             <para>(Berkeley DB-specific.) Disable automatic log removal
@@ -6133,7 +6144,7 @@ $
           </listitem>
         </varlistentry>
         
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.bdb_txn_nosync">
           <term><option>--bdb-txn-nosync</option></term>
           <listitem>
 
@@ -6146,14 +6157,14 @@ $
           </listitem>
         </varlistentry>
         
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.bypass_hooks">
           <term><option>--bypass-hooks</option></term>
           <listitem>
             <para>Bypass the repository hook system.</para>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.bypass_prop_validation">
           <term><option>--bypass-prop-validation</option></term>
           <listitem>
             <para>When loading a dump file, disable the logic which
@@ -6161,28 +6172,46 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.clean_logs">
           <term><option>--clean-logs</option></term>
           <listitem>
             <para>Remove unused Berkeley DB logs.</para>
           </listitem>
         </varlistentry>
 
-        <!-- TODO config-dir?  Only 'svnadmin create' accepts it, and -->
-        <!-- the underlying logic doesn't even use it.                -->
-
-        <varlistentry>
-          <term><option>--memory-cache-size</option>
-            (<option>-M</option>) <replaceable>ARG</replaceable></term>
+        <varlistentry id="svn.ref.svnadmin.sw.config_dir">
+          <!-- Only 'svnadmin create' accepts it, and the underlying
+               logic doesn't even use it.  Weird. -->
+          <term><option>--config-dir</option> <replaceable>DIR</replaceable></term>
           <listitem>
-            <para>Configures the size (in Megabytes) of the extra
-              in-memory cache used to minimize redundant operations.
-              The default value is <literal>16</literal>.  (This cache
-              is used for FSFS-backed repositories only.)</para>
+            <para>Instructs Subversion to read configuration
+              information from the specified directory instead of the
+              default location (<filename>.subversion</filename> in
+              the user's home directory).</para>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.deltas">
+          <term><option>--deltas</option></term>
+          <listitem>
+            <para>When creating a repository dump file, specify
+              changes in versioned properties and file contents as
+              deltas against their previous state.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="svn.ref.svnadmin.sw.fs_type">
+          <term><option>--fs-type</option> <replaceable>ARG</replaceable></term>
+          <listitem>
+            <para>When creating a repository,
+              use <replaceable>ARG</replaceable> as the requested
+              filesyste type.  <replaceable>ARG</replaceable> may be
+              either <literal>bdb</literal>
+              or <literal>fsfs</literal>.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="svn.ref.svnadmin.sw.force_uuid">
           <term><option>--force-uuid</option></term>
           <listitem>
             <para>By default, when loading data into a repository that
@@ -6193,7 +6222,7 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.ignore_uuid">
           <term><option>--ignore-uuid</option></term>
           <listitem>
             <para>By default, when loading data into an empty repository,
@@ -6203,7 +6232,7 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.incremental">
           <term><option>--incremental</option></term>
           <listitem>
             <para>Dump a revision only as a diff against the
@@ -6212,9 +6241,18 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--parent-dir
-          <replaceable>DIR</replaceable></option></term>
+        <varlistentry id="svn.ref.svnadmin.sw.memory_cache_size">
+          <term><option>--memory-cache-size</option> (<option>-M</option>) <replaceable>ARG</replaceable></term>
+          <listitem>
+            <para>Configures the size (in Megabytes) of the extra
+              in-memory cache used to minimize redundant operations.
+              The default value is <literal>16</literal>.  (This cache
+              is used for FSFS-backed repositories only.)</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="svn.ref.svnadmin.sw.parent_dir">
+          <term><option>--parent-dir</option> <replaceable>DIR</replaceable></term>
           <listitem>
             <para>When loading a dump file, root paths at
               <replaceable>DIR</replaceable> instead of
@@ -6222,7 +6260,7 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.pre_1.4_compatible">
           <term><option>--pre-1.4-compatible</option></term>
           <listitem>
             <para>When creating a new repository, use a format that is
@@ -6231,7 +6269,7 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.pre_1.5_compatible">
           <term><option>--pre-1.5-compatible</option></term>
           <listitem>
             <para>When creating a new repository, use a format that is
@@ -6240,7 +6278,7 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.pre_1.6_compatible">
           <term><option>--pre-1.6-compatible</option></term>
           <listitem>
             <para>When creating a new repository, use a format that is
@@ -6249,16 +6287,15 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--revision</option> (<option>-r</option>)
-          <replaceable>ARG</replaceable></term>
+        <varlistentry id="svn.ref.svnadmin.sw.revision">
+          <term><option>--revision</option> (<option>-r</option>) <replaceable>ARG</replaceable></term>
           <listitem>
             <para>Specify a particular revision to operate
               on.</para>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.quiet">
           <term><option>--quiet</option> (<option>-q</option>)</term>
           <listitem>
             <para>Do not show normal progress&mdash;show only
@@ -6266,7 +6303,7 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.use_post_commit_hook">
           <term><option>--use-post-commit-hook</option></term>
           <listitem>
             <para>When loading a dump file, runs the repository's
@@ -6275,7 +6312,7 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.use_post_revprop_change_hook">
           <term><option>--use-post-revprop-change-hook</option></term>
           <listitem>
             <para>When changing a revision property, runs the
@@ -6284,7 +6321,7 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.use_pre_commit_hook">
           <term><option>--use-pre-commit-hook</option></term>
           <listitem>
             <para>When loading a dump file, runs the repository's
@@ -6294,13 +6331,23 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnadmin.sw.use_pre_revprop_change_hook">
           <term><option>--use-pre-revprop-change-hook</option></term>
           <listitem>
             <para>When changing a revision property, runs the
               repository's <literal>pre-revprop-change</literal> hook before changing the
               revision property.  If the hook fails, aborts the
               modification and terminates.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="svn.ref.svnadmin.sw.wait">
+          <term><option>--wait</option></term>
+          <listitem>
+            <para>For operations which require exclusive repository
+              access, wait until the requisite repository lock has
+              been obtained instead of immediately erroring out when
+              it cannot be.</para>
           </listitem>
         </varlistentry>
 
@@ -6417,13 +6464,13 @@ Aborted
 
           <informalexample>
             <screen>
---bdb-log-keep
---bdb-txn-nosync
---config-dir DIR
---fs-type TYPE
---pre-1.4-compatible
---pre-1.5-compatible
---pre-1.6-compatible
+<xref linkend="svn.ref.svnadmin.sw.bdb_log_keep" />
+<xref linkend="svn.ref.svnadmin.sw.bdb_txn_nosync" />
+<xref linkend="svn.ref.svnadmin.sw.config_dir" />
+<xref linkend="svn.ref.svnadmin.sw.fs_type" />
+<xref linkend="svn.ref.svnadmin.sw.pre_1.4_compatible" />
+<xref linkend="svn.ref.svnadmin.sw.pre_1.5_compatible" />
+<xref linkend="svn.ref.svnadmin.sw.pre_1.6_compatible" />
 </screen>
           </informalexample>
         </refsect1>
@@ -6494,9 +6541,9 @@ $
 
           <informalexample>
             <screen>
---memory-cache-size
---quiet (-q)
---revision (-r) REV
+<xref linkend="svn.ref.svnadmin.sw.memory_cache_size" />
+<xref linkend="svn.ref.svnadmin.sw.quiet" />
+<xref linkend="svn.ref.svnadmin.sw.revision" />
 </screen>
           </informalexample>
         </refsect1>
@@ -6575,11 +6622,11 @@ $
 
           <informalexample>
             <screen>
---deltas
---incremental
---memory-cache-size
---quiet (-q)
---revision (-r) REV
+<xref linkend="svn.ref.svnadmin.sw.deltas" />
+<xref linkend="svn.ref.svnadmin.sw.incremental" />
+<xref linkend="svn.ref.svnadmin.sw.memory_cache_size" />
+<xref linkend="svn.ref.svnadmin.sw.quiet" />
+<xref linkend="svn.ref.svnadmin.sw.revision" />
 </screen>
           </informalexample>
         </refsect1>
@@ -6678,7 +6725,7 @@ $ svnadmin dump /var/svn/repos -r 21 --incremental &gt; incr.dump
 
           <informalexample>
             <screen>
---clean-logs
+<xref linkend="svn.ref.svnadmin.sw.clean_logs" />
 </screen>
           </informalexample>
 
@@ -6812,14 +6859,14 @@ $ svnadmin list-unused-dblogs /var/svn/repos | xargs rm
 
           <informalexample>
             <screen>
---bypass-prop-validation
---force-uuid
---ignore-uuid
---memory-cache-size
---parent-dir
---quiet (-q)
---use-post-commit-hook
---use-pre-commit-hook
+<xref linkend="svn.ref.svnadmin.sw.bypass_prop_validation" />
+<xref linkend="svn.ref.svnadmin.sw.force_uuid" />
+<xref linkend="svn.ref.svnadmin.sw.ignore_uuid" />
+<xref linkend="svn.ref.svnadmin.sw.memory_cache_size" />
+<xref linkend="svn.ref.svnadmin.sw.parent_dir" />
+<xref linkend="svn.ref.svnadmin.sw.quiet" />
+<xref linkend="svn.ref.svnadmin.sw.use_post_commit_hook" />
+<xref linkend="svn.ref.svnadmin.sw.use_pre_commit_hook" />
 </screen>
           </informalexample>
         </refsect1>
@@ -7038,7 +7085,7 @@ $ svnadmin lstxns /var/svn/repos/
           <title>Options</title>
           <informalexample>
             <screen>
---wait
+<xref linkend="svn.ref.svnadmin.sw.wait" />
 </screen>
           </informalexample>
         </refsect1>
@@ -7116,13 +7163,11 @@ The latest repos revision is 34.
         </refsect1>
         <refsect1>
           <title>Description</title>
-
           <para>Remove one or more locks from each <replaceable>LOCKED_PATH</replaceable>.</para>
         </refsect1>
 
         <refsect1>
-          <title>Options</title>
-          
+          <title>Options</title>          
           <para>None</para>
         </refsect1>
 
@@ -7175,7 +7220,7 @@ Removed lock on '/house.jpg.
 
           <informalexample>
             <screen>
---quiet (-q)
+<xref linkend="svn.ref.svnadmin.sw.quiet" />
 </screen>
           </informalexample>
         </refsect1>
@@ -7252,8 +7297,8 @@ $ svnadmin rmtxns /var/svn/repos/  `svnadmin lstxns /var/svn/repos/`
 
           <informalexample>
             <screen>
---bypass-hooks
---revision (-r) REV
+<xref linkend="svn.ref.svnadmin.sw.bypass_hooks" />
+<xref linkend="svn.ref.svnadmin.sw.revision" />
 </screen>
           </informalexample>
         </refsect1>
@@ -7308,9 +7353,9 @@ $ svnadmin setlog /var/svn/repos/ -r 19 msg
 
           <informalexample>
             <screen>
---revision (-r) ARG
---use-post-revprop-change-hook
---use-pre-revprop-change-hook
+<xref linkend="svn.ref.svnadmin.sw.revision" />
+<xref linkend="svn.ref.svnadmin.sw.use_post_revprop_change_hook" />
+<xref linkend="svn.ref.svnadmin.sw.use_pre_revprop_change_hook" />
 </screen>
           </informalexample>
         </refsect1>
@@ -7364,7 +7409,6 @@ $ svnadmin setrevprop /var/svn/repos -r 0 repository-photo sandwich.png
 
         <refsect1>
           <title>Options</title>
-
           <para>None</para>
 
         </refsect1>
@@ -7435,7 +7479,6 @@ $ svnadmin setuuid /var/svn/repos-new 2109a8dd-854f-0410-ad31-d604008985ab
 
         <refsect1>
           <title>Options</title>
-
           <para>None</para>
 
         </refsect1>
@@ -7501,9 +7544,9 @@ Upgrade completed.
 
           <informalexample>
             <screen>
---memory-cache-size
---quiet (-q)
---revision (-r) ARG
+<xref linkend="svn.ref.svnadmin.sw.memory_cache_size" />
+<xref linkend="svn.ref.svnadmin.sw.quiet" />
+<xref linkend="svn.ref.svnadmin.sw.revision" />
 </screen>
           </informalexample>
         </refsect1>
@@ -7562,7 +7605,7 @@ $ svnadmin verify /var/svn/repos/
 
       <variablelist>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnlook.sw.copy_info">
           <term><option>--copy-info</option></term>
           <listitem>
             <para>Causes <command>svnlook changed</command> to show
@@ -7570,7 +7613,82 @@ $ svnadmin verify /var/svn/repos/
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnlook.sw.diff_copy_from">
+          <term><option>--diff-copy-from</option></term>
+          <listitem>
+            <para>Print differences for copied items against the copy
+              source.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="svn.ref.svnlook.sw.extensions">
+          <term><option>--extensions</option> (<option>-x</option>) <replaceable>ARG</replaceable></term>
+          <listitem>
+            <para>Specifies customizations which Subversion should
+              make when performing difference calculations.  Valid
+              extensions include:</para>
+            <variablelist>
+              <varlistentry>
+                <term><option>--ignore-space-change</option> (<option>-b</option>)</term>
+                <listitem>
+                  <para>Ignore changes in the amount of white space.</para>
+                </listitem>
+              </varlistentry>
+              <varlistentry>
+                <term><option>--ignore-all-space</option> (<option>-w</option>)</term>
+                <listitem>
+                  <para>Ignore all white space.</para>
+                </listitem>
+              </varlistentry>
+              <varlistentry>
+                <term><option>--ignore-eol-style</option></term>
+                <listitem>
+                  <para>Ignore changes in EOL (end-of-line) style.</para>
+                </listitem>
+              </varlistentry>
+              <varlistentry>
+                <term><option>--show-c-function</option> (<option>-p</option>)</term>
+                <listitem>
+                  <para>Show C function names in the diff output.</para>
+                </listitem>
+              </varlistentry>
+              <varlistentry>
+                <term><option>--unified</option> (<option>-u</option>)</term>
+                <listitem>
+                  <para>Show three lines of unified diff context.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+            <para>The default value is <literal>-u</literal>.</para>
+            <para>Note that when Subversion is configured to invoke an
+              external diff command, the value of
+              the <option>--extension</option> (<option>-x</option>)
+              option isn't restricted to the previously mentioned
+              options, but may be <emphasis>any</emphasis> additional
+              arguments which Subversion should pass to that command.
+              If you wish to pass multiple arguments, you must enclose
+              all of them in quotes.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="svn.ref.svnlook.sw.full_paths">
+          <term><option>--full-paths</option></term>
+          <listitem>
+            <para>Causes <command>svnlook tree</command> to display
+              full paths instead of hierarchical, indented path
+              components.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="svn.ref.svnlook.sw.limit">
+          <term><option>--limit</option> (<option>-l</option>) <replaceable>ARG</replaceable></term>
+          <listitem>
+            <para>Limit output to a maximum number of
+              <replaceable>ARG</replaceable> items.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="svn.ref.svnlook.sw.no_diff_deleted">
           <term><option>--no-diff-deleted</option></term>
           <listitem>
             <para>Prevents <command>svnlook diff</command> from printing
@@ -7581,7 +7699,7 @@ $ svnadmin verify /var/svn/repos/
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnlook.sw.no_diff_added">
           <term><option>--no-diff-added</option></term>
         <listitem>
           <para>Prevents <command>svnlook diff</command> from printing
@@ -7592,16 +7710,22 @@ $ svnadmin verify /var/svn/repos/
           </listitem>
         </varlistentry>
         
-        <varlistentry>
-          <term><option>--revision</option>
-            (<option>-r</option>)</term>
+        <varlistentry id="svn.ref.svnlook.sw.non_recursive">
+          <term><option>--non-recursive</option> (<option>-N</option>)</term>
+          <listitem>
+            <para>Operate on a single directory only.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="svn.ref.svnlook.sw.revision">
+          <term><option>--revision</option> (<option>-r</option>)</term>
           <listitem>
             <para>Specifies a particular revision number that you wish
               to examine.</para>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnlook.sw.revprop">
           <term><option>--revprop</option></term>
           <listitem>
             <para>Operates on a revision property instead of a
@@ -7612,20 +7736,36 @@ $ svnadmin verify /var/svn/repos/
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--transaction</option>
-            (<option>-t</option>)</term>
+        <varlistentry id="svn.ref.svnlook.sw.transaction">
+          <term><option>--transaction</option> (<option>-t</option>)</term>
           <listitem>
             <para>Specifies a particular transaction ID that you wish to
               examine.</para>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnlook.sw.show_ids">
           <term><option>--show-ids</option></term>
           <listitem>
             <para>Shows the filesystem node revision IDs for each path in the filesystem
               tree.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="svn.ref.svnlook.sw.verbose">
+          <term><option>--verbose</option> (<option>-v</option>)</term>
+          <listitem>
+            <para>Be verbose.  When used with <command>svnlook
+              proplist</command>, for example, this causes Subversion
+              to display not just the list of properties, but their
+              values also.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="svn.ref.svnlook.sw.xml">
+          <term><option>--xml</option></term>
+          <listitem>
+            <para></para>
           </listitem>
         </varlistentry>
 
@@ -7669,8 +7809,8 @@ $ svnadmin verify /var/svn/repos/
 
           <informalexample>
             <screen>
---revision (-r) REV
---transaction (-t) TXN
+<xref linkend="svn.ref.svnlook.sw.revision" />
+<xref linkend="svn.ref.svnlook.sw.transaction" />
 </screen>
           </informalexample>
         </refsect1>
@@ -7720,8 +7860,8 @@ sally
 
           <informalexample>
             <screen>
---revision (-r) REV
---transaction (-t) TXN
+<xref linkend="svn.ref.svnlook.sw.revision" />
+<xref linkend="svn.ref.svnlook.sw.transaction" />
 </screen>
           </informalexample>
         </refsect1>
@@ -7830,9 +7970,9 @@ Contents:
 
           <informalexample>
             <screen>
---copy-info
---revision (-r) REV
---transaction (-t) TXN
+<xref linkend="svn.ref.svnlook.sw.copy_info" />
+<xref linkend="svn.ref.svnlook.sw.revision" />
+<xref linkend="svn.ref.svnlook.sw.transaction" />
 </screen>
           </informalexample>
         </refsect1>
@@ -7916,8 +8056,8 @@ D   trunk/vendors/baker/bread.txt
 
           <informalexample>
             <screen>
---revision (-r) REV
---transaction (-t) TXN
+<xref linkend="svn.ref.svnlook.sw.revision" />
+<xref linkend="svn.ref.svnlook.sw.transaction" />
 </screen>
           </informalexample>
         </refsect1>
@@ -7967,12 +8107,12 @@ $ svnlook date -r 40 /var/svn/repos/
 
           <informalexample>
             <screen>
---diff-copy-from
---no-diff-added
---no-diff-deleted
---revision (-r) REV
---transaction (-t) TXN
---extensions (-x) ARG
+<xref linkend="svn.ref.svnlook.sw.diff_copy_from" />
+<xref linkend="svn.ref.svnlook.sw.no_diff_added" />
+<xref linkend="svn.ref.svnlook.sw.no_diff_deleted" />
+<xref linkend="svn.ref.svnlook.sw.revision" />
+<xref linkend="svn.ref.svnlook.sw.transaction" />
+<xref linkend="svn.ref.svnlook.sw.extensions" />
 </screen>
           </informalexample>
         </refsect1>
@@ -8046,8 +8186,8 @@ Deleted: trunk/vendors/deli/pickle.txt
 
           <informalexample>
             <screen>
---revision (-r) REV
---transaction (-t) TXN
+<xref linkend="svn.ref.svnlook.sw.revision" />
+<xref linkend="svn.ref.svnlook.sw.transaction" />
 </screen>
           </informalexample>
         </refsect1>
@@ -8106,8 +8246,8 @@ trunk/vendors/deli/
 
           <informalexample>
             <screen>
---revision (-r) REV
---transaction (-t) TXN
+<xref linkend="svn.ref.svnlook.sw.revision" />
+<xref linkend="svn.ref.svnlook.sw.transaction" />
 </screen>
           </informalexample>
         </refsect1>
@@ -8197,9 +8337,9 @@ $
 
           <informalexample>
             <screen>
---limit (-l) NUM
---revision (-r) REV
---show-ids
+<xref linkend="svn.ref.svnlook.sw.limit" />
+<xref linkend="svn.ref.svnlook.sw.revision" />
+<xref linkend="svn.ref.svnlook.sw.show_ids" />
 </screen>
           </informalexample>
         </refsect1>
@@ -8264,8 +8404,8 @@ REVISION   PATH &lt;ID&gt;
 
           <informalexample>
             <screen>
---revision (-r) REV
---transaction (-t) TXN
+<xref linkend="svn.ref.svnlook.sw.revision" />
+<xref linkend="svn.ref.svnlook.sw.transaction" />
 </screen>
           </informalexample>
         </refsect1>
@@ -8374,8 +8514,8 @@ Rework the uppermost branches on the bald cypress in the foreground.
 
           <informalexample>
             <screen>
---revision (-r) REV
---transaction (-t) TXN
+<xref linkend="svn.ref.svnlook.sw.revision" />
+<xref linkend="svn.ref.svnlook.sw.transaction" />
 </screen>
           </informalexample>
         </refsect1>
@@ -8427,9 +8567,9 @@ Rearrange lunch.
 
           <informalexample>
             <screen>
---revision (-r) REV
---revprop
---transaction (-t) TXN
+<xref linkend="svn.ref.svnlook.sw.revision" />
+<xref linkend="svn.ref.svnlook.sw.revprop" />
+<xref linkend="svn.ref.svnlook.sw.transaction" />
 </screen>
           </informalexample>
         </refsect1>
@@ -8483,11 +8623,11 @@ mustard
 
           <informalexample>
             <screen>
---revision (-r) REV
---revprop
---transaction (-t) TXN
---verbose (-v)
---xml
+<xref linkend="svn.ref.svnlook.sw.revision" />
+<xref linkend="svn.ref.svnlook.sw.revprop" />
+<xref linkend="svn.ref.svnlook.sw.transaction" />
+<xref linkend="svn.ref.svnlook.sw.verbose" />
+<xref linkend="svn.ref.svnlook.sw.xml" />
 </screen>
           </informalexample>
         </refsect1>
@@ -8550,11 +8690,11 @@ $ svnlook -v proplist /var/svn/repos /trunk/README
 
           <informalexample>
             <screen>
---full-paths
---non-recursive (-N)
---revision (-r) REV
---show-ids
---transaction (-t) TXN
+<xref linkend="svn.ref.svnlook.sw.full_paths" />
+<xref linkend="svn.ref.svnlook.sw.non_recursive" />
+<xref linkend="svn.ref.svnlook.sw.revision" />
+<xref linkend="svn.ref.svnlook.sw.show_ids" />
+<xref linkend="svn.ref.svnlook.sw.transaction" />
 </screen>
           </informalexample>
         </refsect1>
@@ -8719,7 +8859,7 @@ $ svnlook youngest /var/svn/repos/
 
       <variablelist>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnsync.sw.allow_non_empty">
           <term><option>--allow-non-empty</option></term>
           <listitem>
             <para>Disables the verification (which <command>svnsync
@@ -8729,9 +8869,8 @@ $ svnlook youngest /var/svn/repos/
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--config-dir</option>
-            <replaceable>DIR</replaceable></term>
+        <varlistentry id="svn.ref.svnsync.sw.config_dir">
+          <term><option>--config-dir</option> <replaceable>DIR</replaceable></term>
           <listitem>
             <para>Instructs Subversion to read configuration
               information from the specified directory instead of the
@@ -8740,9 +8879,8 @@ $ svnlook youngest /var/svn/repos/
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--config-option</option>
-            <replaceable>FILE</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALUE</replaceable>]</term>
+        <varlistentry id="svn.ref.svnsync.sw.config_option">
+          <term><option>--config-option</option> <replaceable>FILE</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALUE</replaceable>]</term>
           <listitem>
             <para>Sets, for the duration of the command, the value of
               a runtime configuration
@@ -8763,7 +8901,7 @@ $ svnlook youngest /var/svn/repos/
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnsync.sw.disable_locking">
           <term><option>--disable-locking</option></term>
           <listitem>
             <para>Causes <command>svnsync</command> to bypass its own
@@ -8774,7 +8912,7 @@ $ svnlook youngest /var/svn/repos/
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnsync.sw.no_auth_cache">
           <term><option>--no-auth-cache</option></term>
           <listitem>
             <para>Prevents caching of authentication information
@@ -8783,7 +8921,7 @@ $ svnlook youngest /var/svn/repos/
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnsync.sw.non_interactive">
           <term><option>--non-interactive</option></term>
           <listitem>
             <para>In the case of an authentication failure or
@@ -8795,7 +8933,7 @@ $ svnlook youngest /var/svn/repos/
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnsync.sw.quiet">
           <term><option>--quiet</option> (<option>-q</option>)</term>
           <listitem>
             <para>Requests that the client print only essential
@@ -8803,9 +8941,8 @@ $ svnlook youngest /var/svn/repos/
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--revision</option> (<option>-r</option>)
-            <replaceable>ARG</replaceable></term>
+        <varlistentry id="svn.ref.svnsync.sw.revision">
+          <term><option>--revision</option> (<option>-r</option>) <replaceable>ARG</replaceable></term>
           <listitem>
             <para>Used by <command>svnsync copy-revprops</command> to
               specify a particular revision or revision range on which
@@ -8813,9 +8950,8 @@ $ svnlook youngest /var/svn/repos/
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--source-password</option>
-            <replaceable>PASSWD</replaceable></term>
+        <varlistentry id="svn.ref.svnsync.sw.source_password">
+          <term><option>--source-password</option> <replaceable>PASSWD</replaceable></term>
           <listitem>
             <para>Specifies the password for the Subversion server
               from which you are syncing.  If not provided, or if
@@ -8824,9 +8960,8 @@ $ svnlook youngest /var/svn/repos/
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--source-prop-encoding
-            <replaceable>ARG</replaceable></option></term>
+        <varlistentry id="svn.ref.svnsync.sw.source_prop_encoding ">
+          <term><option>--source-prop-encoding <replaceable>ARG</replaceable></option></term>
           <listitem>
             <para>Instructs <command>svnsync</command> to assume that
               translatable Subversion revision properties found in the
@@ -8837,9 +8972,8 @@ $ svnlook youngest /var/svn/repos/
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--source-username</option>
-            <replaceable>NAME</replaceable></term>
+        <varlistentry id="svn.ref.svnsync.sw.source_username">
+          <term><option>--source-username</option> <replaceable>NAME</replaceable></term>
           <listitem>
             <para>Specifies the username for the Subversion server
               from which you are syncing.  If not provided, or if
@@ -8848,7 +8982,7 @@ $ svnlook youngest /var/svn/repos/
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnsync.sw.steal_lock">
           <term><option>--steal-lock</option></term>
           <listitem>
             <para>Causes <command>svnsync</command> to steal, as
@@ -8862,9 +8996,8 @@ $ svnlook youngest /var/svn/repos/
           </listitem>
         </varlistentry>
         
-        <varlistentry>
-          <term><option>--sync-password</option>
-            <replaceable>PASSWD</replaceable></term>
+        <varlistentry id="svn.ref.svnsync.sw.sync_password">
+          <term><option>--sync-password</option> <replaceable>PASSWD</replaceable></term>
           <listitem>
             <para>Specifies the password for the Subversion server to
               which you are syncing.  If not provided, or if
@@ -8873,9 +9006,8 @@ $ svnlook youngest /var/svn/repos/
           </listitem>
         </varlistentry>
         
-        <varlistentry>
-          <term><option>--sync-username</option>
-            <replaceable>NAME</replaceable></term>
+        <varlistentry id="svn.ref.svnsync.sw.sync_username">
+          <term><option>--sync-username</option> <replaceable>NAME</replaceable></term>
           <listitem>
             <para>Specifies the username for the Subversion server to
               which you are syncing.  If not provided, or if
@@ -8884,7 +9016,7 @@ $ svnlook youngest /var/svn/repos/
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnsync.sw.trust_server_cert">
           <term><option>--trust-server-cert</option></term>
           <listitem>
             <para>Used with <option>--non-interactive</option> to accept
@@ -8969,20 +9101,20 @@ $ svnlook youngest /var/svn/repos/
 
           <informalexample>
             <screen>
---config-dir DIR
---config-option
---disable-locking
---no-auth-cache
---non-interactive
---quiet (-q)
---revision (-r)
---source-password ARG
---source-prop-encoding
---source-username ARG
---steal-lock
---sync-password ARG
---sync-username ARG
---trust-server-cert
+<xref linkend="svn.ref.svnsync.sw.config_dir" />
+<xref linkend="svn.ref.svnsync.sw.config_option" />
+<xref linkend="svn.ref.svnsync.sw.disable_locking" />
+<xref linkend="svn.ref.svnsync.sw.no_auth_cache" />
+<xref linkend="svn.ref.svnsync.sw.non_interactive" />
+<xref linkend="svn.ref.svnsync.sw.quiet" />
+<xref linkend="svn.ref.svnsync.sw.revision" />
+<xref linkend="svn.ref.svnsync.sw.source_password" />
+<xref linkend="svn.ref.svnsync.sw.source_prop_encoding" />
+<xref linkend="svn.ref.svnsync.sw.source_username" />
+<xref linkend="svn.ref.svnsync.sw.steal_lock" />
+<xref linkend="svn.ref.svnsync.sw.sync_password" />
+<xref linkend="svn.ref.svnsync.sw.sync_username" />
+<xref linkend="svn.ref.svnsync.sw.trust_server_cert" />
 </screen>
           </informalexample>
         </refsect1>
@@ -9073,15 +9205,15 @@ $
 
           <informalexample>
             <screen>
---config-dir DIR
---config-option
---no-auth-cache
---non-interactive
---source-password ARG
---source-username ARG
---sync-password ARG
---sync-username ARG
---trust-server-cert
+<xref linkend="svn.ref.svnsync.sw.config_dir" />
+<xref linkend="svn.ref.svnsync.sw.config_option" />
+<xref linkend="svn.ref.svnsync.sw.no_auth_cache" />
+<xref linkend="svn.ref.svnsync.sw.non_interactive" />
+<xref linkend="svn.ref.svnsync.sw.source_password" />
+<xref linkend="svn.ref.svnsync.sw.source_username" />
+<xref linkend="svn.ref.svnsync.sw.sync_password" />
+<xref linkend="svn.ref.svnsync.sw.sync_username" />
+<xref linkend="svn.ref.svnsync.sw.trust_server_cert" />
 </screen>
           </informalexample>
         </refsect1>
@@ -9173,20 +9305,20 @@ $
 
           <informalexample>
             <screen>
---allow-non-empty
---config-dir DIR
---config-option
---disable-locking
---no-auth-cache
---non-interactive
---quiet (-q)
---source-password ARG
---source-prop-encoding
---source-username ARG
---steal-lock
---sync-password ARG
---sync-username ARG
---trust-server-cert
+<xref linkend="svn.ref.svnsync.sw.allow_non_empty" />
+<xref linkend="svn.ref.svnsync.sw.config_dir" />
+<xref linkend="svn.ref.svnsync.sw.config_option" />
+<xref linkend="svn.ref.svnsync.sw.disable_locking" />
+<xref linkend="svn.ref.svnsync.sw.no_auth_cache" />
+<xref linkend="svn.ref.svnsync.sw.non_interactive" />
+<xref linkend="svn.ref.svnsync.sw.quiet" />
+<xref linkend="svn.ref.svnsync.sw.source_password" />
+<xref linkend="svn.ref.svnsync.sw.source_prop_encoding" />
+<xref linkend="svn.ref.svnsync.sw.source_username" />
+<xref linkend="svn.ref.svnsync.sw.steal_lock" />
+<xref linkend="svn.ref.svnsync.sw.sync_password" />
+<xref linkend="svn.ref.svnsync.sw.sync_username" />
+<xref linkend="svn.ref.svnsync.sw.trust_server_cert" />
 </screen>
           </informalexample>
         </refsect1>
@@ -9282,19 +9414,19 @@ $
 
           <informalexample>
             <screen>
---config-dir DIR
---config-option
---disable-locking
---no-auth-cache
---non-interactive
---quiet (-q)
---source-password ARG
---source-prop-encoding
---source-username ARG
---steal-lock
---sync-password ARG
---sync-username ARG
---trust-server-cert
+<xref linkend="svn.ref.svnsync.sw.config_dir" />
+<xref linkend="svn.ref.svnsync.sw.config_option" />
+<xref linkend="svn.ref.svnsync.sw.disable_locking" />
+<xref linkend="svn.ref.svnsync.sw.no_auth_cache" />
+<xref linkend="svn.ref.svnsync.sw.non_interactive" />
+<xref linkend="svn.ref.svnsync.sw.quiet" />
+<xref linkend="svn.ref.svnsync.sw.source_password" />
+<xref linkend="svn.ref.svnsync.sw.source_prop_encoding" />
+<xref linkend="svn.ref.svnsync.sw.source_username" />
+<xref linkend="svn.ref.svnsync.sw.steal_lock" />
+<xref linkend="svn.ref.svnsync.sw.sync_password" />
+<xref linkend="svn.ref.svnsync.sw.sync_username" />
+<xref linkend="svn.ref.svnsync.sw.trust_server_cert" />
 </screen>
           </informalexample>
         </refsect1>
@@ -9359,9 +9491,8 @@ $
 
       <variablelist>
 
-        <varlistentry>
-          <term><option>--config-dir</option>
-            <replaceable>DIR</replaceable></term>
+        <varlistentry id="svn.ref.svnrdump.sw.config_dir">
+          <term><option>--config-dir</option> <replaceable>DIR</replaceable></term>
           <listitem>
             <para>Instructs Subversion to read configuration
               information from the specified directory instead of the
@@ -9370,9 +9501,8 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--config-option</option>
-            <replaceable>FILE</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALUE</replaceable>]</term>
+        <varlistentry id="svn.ref.svnrdump.sw.config_option">
+          <term><option>--config-option</option> <replaceable>FILE</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALUE</replaceable>]</term>
           <listitem>
             <para>Sets, for the duration of the command, the value of
               a runtime configuration
@@ -9393,7 +9523,7 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnrdump.sw.incremental">
           <term><option>--incremental</option></term>
           <listitem>
             <para>Dump a revision or revision range only as a diff
@@ -9404,7 +9534,7 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnrdump.sw.no_auth_cache">
           <term><option>--no-auth-cache</option></term>
           <listitem>
             <para>Prevents caching of authentication information
@@ -9413,7 +9543,7 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnrdump.sw.non_interactive">
           <term><option>--non-interactive</option></term>
           <listitem>
             <para>In the case of an authentication failure or
@@ -9425,9 +9555,8 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--password</option>
-            <replaceable>PASSWD</replaceable></term>
+        <varlistentry id="svn.ref.svnrdump.sw.password">
+          <term><option>--password</option> <replaceable>PASSWD</replaceable></term>
           <listitem>
             <para>Specifies the password to use when authenticating
               against a Subversion server.  If not provided, or if
@@ -9436,7 +9565,7 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnrdump.sw.quiet">
           <term><option>--quiet</option> (<option>-q</option>)</term>
           <listitem>
             <para>Requests that the client print only essential
@@ -9444,9 +9573,8 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--revision</option> (<option>-r</option>)
-            <replaceable>ARG</replaceable></term>
+        <varlistentry id="svn.ref.svnrdump.sw.revision">
+          <term><option>--revision</option> (<option>-r</option>) <replaceable>ARG</replaceable></term>
           <listitem>
             <para>Used by <command>svnsync copy-revprops</command> to
               specify a particular revision or revision range on which
@@ -9454,7 +9582,7 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnrdump.sw.trust_server_cert">
           <term><option>--trust-server-cert</option></term>
           <listitem>
             <para>Used with <option>--non-interactive</option> to accept
@@ -9462,9 +9590,8 @@ $
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--username</option>
-            <replaceable>NAME</replaceable></term>
+        <varlistentry id="svn.ref.svnrdump.sw.username">
+          <term><option>--username</option> <replaceable>NAME</replaceable></term>
           <listitem>
             <para>Specifies the username to use when authenticating
               against a Subversion server.  If not provided, or if
@@ -9520,16 +9647,16 @@ $
 
           <informalexample>
             <screen>
---config-dir DIR
---config-option
---incremental
---no-auth-cache
---non-interactive
---password ARG
---quiet (-q)
---revision (-r) REV
---trust-server-cert
---username ARG
+<xref linkend="svn.ref.svnrdump.sw.config_dir" />
+<xref linkend="svn.ref.svnrdump.sw.config_option" />
+<xref linkend="svn.ref.svnrdump.sw.incremental" />
+<xref linkend="svn.ref.svnrdump.sw.no_auth_cache" />
+<xref linkend="svn.ref.svnrdump.sw.non_interactive" />
+<xref linkend="svn.ref.svnrdump.sw.password" />
+<xref linkend="svn.ref.svnrdump.sw.quiet" />
+<xref linkend="svn.ref.svnrdump.sw.revision" />
+<xref linkend="svn.ref.svnrdump.sw.trust_server_cert" />
+<xref linkend="svn.ref.svnrdump.sw.username" />
 </screen>
           </informalexample>
         </refsect1>
@@ -9633,14 +9760,14 @@ $
 
           <informalexample>
             <screen>
---config-dir DIR
---config-option
---no-auth-cache
---non-interactive
---password ARG
---quiet (-q)
---trust-server-cert
---username ARG
+<xref linkend="svn.ref.svnrdump.sw.config_dir" />
+<xref linkend="svn.ref.svnrdump.sw.config_option" />
+<xref linkend="svn.ref.svnrdump.sw.no_auth_cache" />
+<xref linkend="svn.ref.svnrdump.sw.non_interactive" />
+<xref linkend="svn.ref.svnrdump.sw.password" />
+<xref linkend="svn.ref.svnrdump.sw.quiet" />
+<xref linkend="svn.ref.svnrdump.sw.trust_server_cert" />
+<xref linkend="svn.ref.svnrdump.sw.username" />
 </screen>
           </informalexample>
         </refsect1>
@@ -9718,27 +9845,24 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
 
       <variablelist>
 
-        <varlistentry>
-          <term><option>--cache-fulltexts</option>
-            <replaceable>ARG</replaceable></term>
+        <varlistentry id="svn.ref.svnserve.sw.cache_fulltexts">
+          <term><option>--cache-fulltexts</option> <replaceable>ARG</replaceable></term>
           <listitem>
             <para>Toggles support for fulltext file content caching (in
               FSFS repositories only).</para>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--cache-txdeltas</option>
-            <replaceable>ARG</replaceable></term>
+        <varlistentry id="svn.ref.svnserve.sw.cache_txdeltas">
+          <term><option>--cache-txdeltas</option> <replaceable>ARG</replaceable></term>
           <listitem>
             <para>Toggles support for file content delta caching (in
               FSFS repositories only).</para>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--compression</option>
-            <replaceable>LEVEL</replaceable></term>
+        <varlistentry id="svn.ref.svnserve.sw.compression">
+          <term><option>--compression</option> <replaceable>LEVEL</replaceable></term>
           <listitem>
             <para>Specifies the level of compression used for wire
               transmissions as an integer beween 0 and 9, inclusive.
@@ -9749,7 +9873,7 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnserve.sw.daemon">
           <term><option>--daemon</option> (<option>-d</option>)</term>
           <listitem>
             <para>Causes <command>svnserve</command> to run in daemon
@@ -9760,7 +9884,7 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnserve.sw.foreground">
           <term><option>--foreground</option></term>
           <listitem>
             <para>When used together with <option>-d</option>,
@@ -9769,7 +9893,7 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnserve.sw.inetd">
           <term><option>--inetd</option> (<option>-i</option>)</term>
           <listitem>
             <para>Causes <command>svnserve</command> to use the
@@ -9778,16 +9902,15 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnserve.sw.help">
           <term><option>--help</option> (<option>-h</option>)</term>
           <listitem>
             <para>Displays a usage summary and exits.</para>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--listen-host</option>
-            <replaceable>HOST</replaceable></term>
+        <varlistentry id="svn.ref.svnserve.sw.listen_host">
+          <term><option>--listen-host</option> <replaceable>HOST</replaceable></term>
           <listitem>
             <para>Causes <command>svnserve</command> to listen on the
               interface specified by <replaceable>HOST</replaceable>,
@@ -9795,7 +9918,7 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnserve.sw.listen_once">
           <term><option>--listen-once</option> (<option>-X</option>)</term>
           <listitem>
             <para>Causes <command>svnserve</command> to accept one
@@ -9805,9 +9928,8 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--listen-port</option>
-            <replaceable>PORT</replaceable></term>
+        <varlistentry id="svn.ref.svnserve.sw.listen_port">
+          <term><option>--listen-port</option> <replaceable>PORT</replaceable></term>
           <listitem>
             <para>Causes <command>svnserve</command> to listen on
               <replaceable>PORT</replaceable> when run in daemon mode.
@@ -9816,9 +9938,8 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--log-file</option>
-            <replaceable>FILENAME</replaceable></term>
+        <varlistentry id="svn.ref.svnserve.sw.log_file">
+          <term><option>--log-file</option> <replaceable>FILENAME</replaceable></term>
           <listitem>
             <para>Instructs <command>svnserve</command> to create (if
               necessary) and use the file located
@@ -9830,9 +9951,8 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--memory-cache-size</option>
-            (<option>-M</option>) <replaceable>ARG</replaceable></term>
+        <varlistentry id="svn.ref.svnserve.sw.memory_cache_size">
+          <term><option>--memory-cache-size</option> (<option>-M</option>) <replaceable>ARG</replaceable></term>
           <listitem>
             <para>Configures the size (in Megabytes) of the extra
               in-memory cache used to minimize redundant operations.
@@ -9841,9 +9961,8 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--pid-file</option>
-            <replaceable>FILENAME</replaceable></term>
+        <varlistentry id="svn.ref.svnserve.sw.pid_file">
+          <term><option>--pid-file</option> <replaceable>FILENAME</replaceable></term>
           <listitem>
             <para>Causes <command>svnserve</command> to write its
               process ID to <replaceable>FILENAME</replaceable>, which
@@ -9852,7 +9971,7 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnserve.sw.prefer_ipv6">
           <term><option>--prefer-ipv6</option> (<option>-6</option></term>
           <listitem>
             <para>When resolving the listen hostname, prever an IPv6
@@ -9861,7 +9980,7 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnserve.sw.quiet">
           <term><option>--quiet</option></term>
           <listitem>
             <para>Disables progress notifications.  Error output will
@@ -9869,9 +9988,8 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--root</option> (<option>-r</option>)
-            <replaceable>ROOT</replaceable></term>
+        <varlistentry id="svn.ref.svnserve.sw.root">
+          <term><option>--root</option> (<option>-r</option>) <replaceable>ROOT</replaceable></term>
           <listitem>
             <para>Sets the virtual root for repositories served by
               <command>svnserve</command>.  The pathname in URLs
@@ -9881,7 +9999,7 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnserve.sw.threads">
           <term><option>--threads</option> (<option>-T</option>)</term>
           <listitem>
             <para>When running in daemon mode, causes
@@ -9892,7 +10010,7 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnserve.sw.tunnel">
           <term><option>--tunnel</option> (<option>-t</option>)</term>
           <listitem>
             <para>Causes <command>svnserve</command> to run in tunnel
@@ -9913,8 +10031,8 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--tunnel-user NAME</option></term>
+        <varlistentry id="svn.ref.svnserve.sw.tunnel_user">
+          <term><option>--tunnel-user</option> <replaceable>NAME</replaceable></term>
           <listitem>
             <para>Used in conjunction with the <option>--tunnel</option>
               option, tells <command>svnserve</command> to assume that
@@ -9926,7 +10044,7 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svnserve.sw.version">
           <term><option>--version</option></term>
           <listitem>
             <para>Displays version information and a list of repository
@@ -9962,7 +10080,7 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
 
       <variablelist>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svndumpfilter.sw.drop_empty_revs">
           <term><option>--drop-empty-revs</option></term>
           <listitem>
             <para>If filtering causes any revision to be empty (i.e.,
@@ -9971,7 +10089,7 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svndumpfilter.sw.pattern">
           <term><option>--pattern</option></term>
           <listitem>
             <para>Treat the path prefixes provided to the filtering
@@ -9980,7 +10098,7 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svndumpfilter.sw.renumber_revs">
           <term><option>--renumber-revs</option></term>
           <listitem>
             <para>Renumbers revisions that remain after
@@ -9988,7 +10106,7 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svndumpfilter.sw.skip_missing_merge_sources">
           <term><option>--skip-missing-merge-sources</option></term>
           <listitem>
             <para>Skips merge sources that have been removed as part of
@@ -9999,7 +10117,7 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="svn.ref.svndumpfilter.sw.preserve_revprops">
           <term><option>--preserve-revprops</option></term>
           <listitem>
             <para>If all nodes in a revision are removed by filtering
@@ -10014,9 +10132,8 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><option>--targets</option>
-            <replaceable>FILENAME</replaceable></term>
+        <varlistentry id="svn.ref.svndumpfilter.sw.targets">
+          <term><option>--targets</option> <replaceable>FILENAME</replaceable></term>
           <listitem>
             <para>Instructs <command>svndumpfilter</command> to read
               additional path prefixes&mdash;one per line&mdash;from
@@ -10029,7 +10146,7 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           </listitem>
         </varlistentry>
         
-        <varlistentry>
+        <varlistentry id="svn.ref.svndumpfilter.sw.quiet">
           <term><option>--quiet</option></term>
           <listitem>
             <para>Does not display filtering statistics.</para>
@@ -10077,13 +10194,13 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
 
           <informalexample>
             <screen>
---drop-empty-revs
---pattern
---preserve-revprops
---quiet
---renumber-revs
---skip-missing-merge-sources
---targets ARG
+<xref linkend="svn.ref.svndumpfilter.sw.drop_empty_revs" />
+<xref linkend="svn.ref.svndumpfilter.sw.pattern" />
+<xref linkend="svn.ref.svndumpfilter.sw.preserve_revprops" />
+<xref linkend="svn.ref.svndumpfilter.sw.quiet" />
+<xref linkend="svn.ref.svndumpfilter.sw.renumber_revs" />
+<xref linkend="svn.ref.svndumpfilter.sw.skip_missing_merge_sources" />
+<xref linkend="svn.ref.svndumpfilter.sw.targets" />
 </screen>
           </informalexample>
         </refsect1>
@@ -10177,13 +10294,13 @@ $
 
           <informalexample>
             <screen>
---drop-empty-revs
---pattern
---preserve-revprops
---quiet
---renumber-revs
---skip-missing-merge-sources
---targets ARG
+<xref linkend="svn.ref.svndumpfilter.sw.drop_empty_revs" />
+<xref linkend="svn.ref.svndumpfilter.sw.pattern" />
+<xref linkend="svn.ref.svndumpfilter.sw.preserve_revprops" />
+<xref linkend="svn.ref.svndumpfilter.sw.quiet" />
+<xref linkend="svn.ref.svndumpfilter.sw.renumber_revs" />
+<xref linkend="svn.ref.svndumpfilter.sw.skip_missing_merge_sources" />
+<xref linkend="svn.ref.svndumpfilter.sw.targets" />
 </screen>
           </informalexample>
         </refsect1>
@@ -10360,14 +10477,14 @@ $
 
         <variablelist>
     
-          <varlistentry>
+          <varlistentry id="svn.ref.svnversion.sw.no_newline">
             <term><option>--no-newline</option> (<option>-n</option>)</term>
             <listitem>
               <para>Omits the usual trailing newline from the output.</para>
             </listitem>
           </varlistentry>
     
-          <varlistentry>
+          <varlistentry id="svn.ref.svnversion.sw.committed">
             <term><option>--committed</option> (<option>-c</option>)</term>
             <listitem>
               <para>Uses the last-changed revisions rather than the
@@ -10375,14 +10492,14 @@ $
             </listitem>
           </varlistentry>
     
-          <varlistentry>
+          <varlistentry id="svn.ref.svnversion.sw.help">
             <term><option>--help</option> (<option>-h</option>)</term>
             <listitem>
               <para>Prints a help summary.</para>
             </listitem>
           </varlistentry>
     
-          <varlistentry>
+          <varlistentry id="svn.ref.svnversion.sw.quiet">
             <term><option>--quiet</option> (<option>-q</option>)</term>
             <listitem>
               <para>Requests that the program print only essential
@@ -10390,7 +10507,7 @@ $
             </listitem>
           </varlistentry>
         
-          <varlistentry>
+          <varlistentry id="svn.ref.svnversion.sw.version">
             <term><option>--version</option></term>
             <listitem>
               <para>Prints the version of <command>svnversion</command>
