@@ -2100,7 +2100,86 @@ $ svn commit -m "Block r3328 from being merged to the branch."
 </screen>
       </informalexample>
 
-      <para>This technique works, but it's also a little bit
+      <para>Since Subversion 1.7, <option>--record-only</option>
+        merges are transitive.  This means that, in addition to recording
+        mergeinfo describing the merge to be blocked, any
+        <literal>svn:mergeinfo</literal> property differences in the
+        merge source are also applied.  For example, let's say we want to
+        block the 'frazzle' feature from ever being merged from
+        <filename>^/trunk</filename> to our
+        <filename>^/branches/proj-X</filename> branch.  We know that all
+        the frazzle work was done on its own branch, which was
+        reintegrated to <filename>trunk</filename> in r1055:</para>
+      
+      <informalexample>
+        <screen>
+$ svn log -v ^/trunk -r 1055
+------------------------------------------------------------------------
+r1055 | francesca | 2011-09-22 07:40:06 -0400 (Thu, 22 Sep 2011) | 3 lines
+Changed paths:
+   M /trunk
+   M /trunk/src/frazzle.c
+
+Reintegrate the frazzle-feature-branch to trunk.
+        </screen>
+      </informalexample>
+
+      <para>Because r1055 was a reintegrate merge we know that mergeinfo
+        was recorded describing the merge:</para>
+
+      <informalexample>
+        <screen>
+$ svn diff ^/trunk -c 1055 --depth empty
+Index: .
+===================================================================
+--- .   (revision 1054)
++++ .   (revision 1055)
+
+Property changes on: .
+___________________________________________________________________
+Modified: svn:mergeinfo
+   Merged /branches/frazzle-feature-branch:r997-1003
+        </screen>
+      </informalexample>
+
+      <para>Now simply blocking merges of r1055 from
+        <filename>^/trunk</filename> isn't foolproof since someone could
+        merge r996:1003 directly from
+        <filename>^/branches/frazzle-feature-branch</filename>.
+        Fortunately the transitive nature of <option>--record-only</option>
+        merges in 1.7 prevents this; the <option>--record-only</option>
+        merge applies the <literal>svn:mergeinfo</literal> diff from
+        r1055, thus blocking merges directly from the frazzle branch
+        <emphasis>and</emphasis> as it has always done prior to 1.7, it
+        blocks merges of r1055 directly from
+        <filename>^/trunk</filename>:</para>
+
+      <informalexample>
+        <screen>
+$ cd branches/proj-X
+
+$ svn merge ^/trunk . -c 1055 --record-only
+--- Merging r1055 into '.':
+ G   .
+--- Recording mergeinfo for merge of r1055 into '.':
+ G   .
+
+$ svn diff --depth empty .
+Index: .
+===================================================================
+--- .   (revision 1070)
++++ .   (working copy)
+
+Property changes on: .
+___________________________________________________________________
+Modified: svn:mergeinfo
+   Merged /trunk:r1055
+   Merged /branches/frazzle-feature-branch:r997-1003
+        </screen>
+      </informalexample>
+
+      <para>Blocking changes with <option>--record-only</option>
+        works, but it's also a little bit
         dangerous.  The main problem is that we're not clearly
         differentiating between the ideas of <quote>I already have
         this change</quote> and <quote>I don't have this change, but
