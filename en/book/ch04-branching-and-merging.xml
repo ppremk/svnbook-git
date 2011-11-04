@@ -77,7 +77,7 @@
       in the repository.  If you don't, go back and read about revisions in
       <xref linkend="svn.basic.in-action.revs"/>.</para>
 
-    <para>For this chapter, we'll go back to the same example from
+    <para>For this chapter, we'll revisit the same example from
       <xref linkend="svn.basic"/>.  Remember that you and your
       collaborator, Sally, are sharing a repository that contains two
       projects, <filename>paint</filename> and
@@ -111,62 +111,69 @@
       start committing your changes bit by bit, you'll surely break
       things for Sally (and other team members as well).</para>
 
-    <para>One strategy is to crawl into a hole: you and Sally can stop
-      sharing information for a week or two.  That is, start gutting
-      and reorganizing all the files in your working copy, but don't
-      commit or update until you're completely finished with the task.
-      There are a number of problems with this, though.  First, it's
-      not very safe.  Most people like to save their work to the
-      repository frequently, should something bad accidentally happen
-      to their working copy.  Second, it's not very flexible.  If you
-      do your work on different computers (perhaps you have a working
-      copy of <filename>/calc/trunk</filename> on two different
-      machines), you'll need to manually copy your changes back and
-      forth or just do all the work on a single computer.  By that
-      same token, it's difficult to share your changes in progress
-      with anyone else.  A common software development <quote>best
-      practice</quote> is to allow your peers to review your work as
-      you go.  If nobody sees your intermediate commits, you lose
-      potential feedback and may end up going down the wrong path for
-      weeks before another person on your team notices.  Finally, when
-      you're finished with all your changes, you might find it very
-      difficult to remerge your final work with the rest of the
-      company's main body of code.  Sally (or others) may have made
-      many other changes in the repository that are difficult to
-      incorporate into your working copy&mdash;especially if you
-      run <command>svn update</command> after weeks of
-      isolation.</para>
+    <para>One strategy is to crawl into a hole: you can stop sharing
+      information for a week or two, gutting and reorganizing all the
+      files in your private working copy but not committing or
+      updating until you're completely finished with your task.  There
+      are a number of problems with this, though.  First, it's not
+      very safe.  Should something bad happen to your working copy or
+      computer, you risk losing all your changes.  Second, it's not
+      very flexible.  Unless you manually replicate your changes
+      across different working copies or computers, your stuck trying
+      to make your changes in a single working copy.  Similarly, it's
+      difficult to share your work-in-progress with anyone else.  A
+      common software development <quote>best practice</quote> is to
+      allow your peers to review your work as you go.  If nobody sees
+      your intermediate commits, you lose potential feedback and may
+      end up going down the wrong path for weeks before another person
+      on your team notices.  Finally, when you're finished with all
+      your changes, you might find it very difficult to merge your
+      completed work with the rest of the company's main body of code.
+      Sally (or others) may have made many other changes in the
+      repository that are difficult to incorporate into your working
+      copy when you eventually run <command>svn update</command> after
+      weeks of isolation.</para>
 
     <para>The better solution is to create your own branch, or line of
       development, in the repository.  This allows you to save your
-      half-broken work frequently without interfering with others, yet
-      you can still selectively share information with your
-      collaborators.  You'll see exactly how this works as we go.</para>
+      not-yet-completed work frequently without interfering with
+      others' changes and while still selectively sharing information
+      with your collaborators.  You'll see exactly how this works as
+      we continue.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.using.create">
       <title>Creating a Branch</title>
 
       <para>Creating a branch is very simple&mdash;you make a copy of
-        the project in the repository using the <command>svn
-        copy</command> command.  Subversion is able to copy not only 
-        single files, but whole directories as well.  In this case,
-        you want to make a copy of the
-        <filename>/calc/trunk</filename> directory.  Where should the
-        new copy live?  Wherever you wish&mdash;it's a matter of
-        project policy.  Let's say that your team has a policy of
-        creating branches in the <filename>/calc/branches</filename>
-        area of the repository, and you want to name your branch
-        <literal>my-calc-branch</literal>.  You'll want to create a
-        new directory,
-        <filename>/calc/branches/my-calc-branch</filename>, which
-        begins its life as a copy of
-        <filename>/calc/trunk</filename>.</para>
+        your project tree in the repository using the <command>svn
+        copy</command> command.  Since your project's source code is
+        rooted in the <filename>/calc/trunk</filename> directory, it's
+        that directory that you'll be copying.  Where should the new
+        copy live?  Wherever you wish.  The repository location in
+        which branches are stashed is left by Subversion as a matter
+        of project policy.  Finally, your branch will need a name to
+        distinguish it from other branches.  Once again, the name you
+        choose is unimportant to Subversion&mdash;you can use whatever
+        name works best for you and your team.</para>
+
+      <para>Let's assume that your team (like most) has a policy of
+        creating branches in the <filename>branches</filename>
+        directory that is a sibling of the project's trunk
+        (the <filename>/calc/branches</filename> directory in our
+        scenario).  Lacking inspiration, you settle
+        on <literal>my-calc-branch</literal> as the name you wish to
+        give your branch.  This means that you'll be creating a new
+        directory, <filename>/calc/branches/my-calc-branch</filename>,
+        which begins its life as a copy
+        of <filename>/calc/trunk</filename>.</para>
 
       <para>You may already have seen <command>svn copy</command> used
         to copy one file to another within a working copy.  But it can
-        also be used to do a <quote>remote</quote> copy entirely
-        within the repository.  Just copy one URL to another:</para>
+        also be used to do a <firstterm>remote
+        copy</firstterm>&mdash;a copy that immediately results in a
+        newly committed repository revision and for which no working
+        copy is required at all.  Just copy one URL to another:</para>
 
       <informalexample>
         <screen>
@@ -175,6 +182,7 @@ $ svn copy http://svn.example.com/repos/calc/trunk \
       -m "Creating a private branch of /calc/trunk."
 
 Committed revision 341.
+$
 </screen>
       </informalexample>
 
