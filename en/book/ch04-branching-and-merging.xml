@@ -1229,6 +1229,65 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
           <xref linkend="svn.branchmerge.advanced.finalword"/></para>
       </sidebar>
 
+      <para>With the release of Subversion 1.7, the
+        <command>svn mergeinfo</command> subcommand can also account for
+        subtree mergeinfo and non-inheritable mergeinfo.  It accounts for
+        subtree mergeinfo by use of the <option>--recursive</option> or
+        <option>--depth</option> options, while non-inheritable mergeinfo
+        is considered by default.</para>
+
+      <para>Let's say we have a branch with both subtree and
+        non-inheritable mergeinfo:</para>
+
+        <informalexample>
+          <screen>
+$ svn propget svn:mergeinfo --recursive -v
+# Non-inheritable mergeinfo
+Properties on '.':
+  svn:mergeinfo
+    /trunk:651-652,758*
+# Subtree mergeinfo
+Properties on 'doc/INSTALL':
+  svn:mergeinfo
+    /trunk/doc/INSTALL:651-652,958,1060
+</screen>
+        </informalexample>
+
+      <para>From the above mergeinfo we see that r758 has only been
+        merged into the root of the branch, but not any of the root's
+        children.  We also see that both r958 and r1060 have been
+        merged only to the <filename>doc/INSTALL</filename> file.
+        When we use <command>svn mergeinfo</command> with the
+        <option>--recursive</option> option to see what has been merged
+        from <filename>^/trunk</filename> to this branch, we see two
+        revisions are flagged with the <literal>*</literal> marker:</para>
+      
+        <informalexample>
+          <screen>
+$ svn mergeinfo --show-revs=merged ^/trunk . --recursive
+651
+652
+758*
+958*
+1060
+</screen>
+        </informalexample>
+
+      <para>The <literal>*</literal> indicates revisions that are only
+        <emphasis>partially</emphasis> merged to the targt in question
+        (the meaning is the same if we are checking for eligible
+        revisions).  What this means in this example is that if we tried
+        to merge r758 or r958 from <filename>^/trunk</filename> then more
+        changes would result. Likewise, because r1060 is
+        <emphasis>not</emphasis> flagged with a <literal>*</literal>,
+        we know that it only affects <filename>doc/INSTALL</filename>
+        and that trying to merge it would have no result.<footnote><para>
+        This is often termed an <quote>inoperative</quote> merge.  Though
+        in this example the merge of r1060 would do something: It would
+        update the mergeinfo on the root of the branch, but it would be
+        inoperative in the sense that no diff would be
+        applied.</para></footnote></para>
+
       <para>Another way to get a more precise preview of a merge
         operation is to use the <option>--dry-run</option>
         option:</para>
