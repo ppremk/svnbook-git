@@ -15,11 +15,15 @@
     <title>svn&mdash;Subversion Command-Line Client</title>
     
     <para><command>svn</command> is the official command-line client
-      of Subversion.  It offers no small number of subcommands and
-      options.  Subcommands and other non-option arguments must appear
-      in a specified order on the command line used to
-      invoke <command>svn</command>.  Options, on the other hand, may
-      appear anywhere on the command line (after the program name, of
+      of Subversion.  Its functionality is offered via a collection of
+      task-specific subcommands, most of which accept a number of
+      options for fine-grained control of the program's
+      behavior.</para>
+
+    <para>When using the <command>svn</command> program, subcommands
+      and other non-option arguments must appear in a specified order
+      on the command line.  Options, on the other hand, may appear
+      anywhere on the command line (after the program name, of
       course), and in general, their order is irrelevant.  For
       example, all of the following are valid ways to use <command>svn
       status</command>, and are interpreted in exactly the same
@@ -35,6 +39,11 @@ $ svn status myfile -qv
 </screen>
     </informalexample>
 
+    <para>The following sections describe each of the various
+      subcommands and options provided by the <command>svn</command>
+      command-line client program, including some examples of each
+      subcommand's typical uses.</para>
+
     <!-- =============================================================== -->
     <sect2 id="svn.ref.svn.sw">
       <title>svn Options</title> 
@@ -42,10 +51,11 @@ $ svn status myfile -qv
       <para>While Subversion has different options for its
         subcommands, all options exist in a single
         namespace&mdash;that is, each option is guaranteed to mean the
-        same thing regardless of the subcommand you use it with.  For
-        example, <option>--verbose</option> (<option>-v</option>)
-        always means <quote>verbose output,</quote> regardless of the
-        subcommand you use it with.</para>
+        roughly same thing regardless of the subcommand you use it
+        with.  For example, <option>--verbose</option>
+        (<option>-v</option>) always means <quote>verbose
+        output,</quote> regardless of the subcommand you use it
+        with.</para>
 
       <para>The <command>svn</command> command-line client usually
         exits quickly with an error if you pass it an option which
@@ -53,11 +63,42 @@ $ svn status myfile -qv
         Subversion 1.5, several of the options which apply to
         all&mdash;or nearly all&mdash;of the subcommands have been
         deemed acceptable by all subcommands, even if they have no
-        effect on some of them.  They appear grouped together in the
-        command-line client's usage messages as global options.  This
-        was done to assist folks who write scripts which wrap the
-        command-line client.  These global options are as
-        follows:</para>
+        effect on some of them.  (This change was made primarily to
+        improve the client's ability to called from custom wrapping
+        scripts.)  These options appear grouped together in the
+        command-line client's usage messages as global options, as can
+        be seen in the following bit of output:</para>
+
+      <informalexample>
+        <screen>
+$ svn help upgrade
+upgrade: Upgrade the metadata storage format for a working copy.
+usage: upgrade [WCPATH...]
+
+  Local modifications are preserved.
+
+Valid options:
+  -q [--quiet]             : print nothing, or only summary information
+
+Global options:
+  --username ARG           : specify a username ARG
+  --password ARG           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --trust-server-cert      : accept SSL server certificates from unknown
+                             certificate authorities without prompting (but only
+                             with '--non-interactive')
+  --config-dir ARG         : read user configuration files from directory ARG
+  --config-option ARG      : set user configuration option in the format:
+                                 FILE:SECTION:OPTION=[VALUE]
+                             For example:
+                                 servers:global:http-library=serf
+$
+</screen>
+      </informalexample>
+
+      <para><command>svn</command> subcommands recognize the following
+        global options:</para>
         
       <variablelist>
 
@@ -72,11 +113,15 @@ $ svn status myfile -qv
         </varlistentry>
 
         <varlistentry id="svn.ref.svn.sw.config_option">
-          <term><option>--config-option</option> <replaceable>FILE</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALUE</replaceable>]</term>
+          <term><option>--config-option</option> <replaceable>CONFSPEC</replaceable></term>
           <listitem>
             <para>Sets, for the duration of the command, the value of
               a runtime configuration
-              option.  <replaceable>FILE</replaceable>
+              option.  <replaceable>CONFSPEC</replaceable> is a string
+              which specifies the configuration option namespace, name
+              and value that you'd like to assign, formatted as
+              <replaceable>FILE</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALUE</replaceable>].
+              In this syntax, <replaceable>FILE</replaceable>
               and <replaceable>SECTION</replaceable> are the runtime
               configuration file (either <literal>config</literal>
               or <literal>servers</literal>) and the section thereof,
@@ -171,37 +216,45 @@ $ svn status myfile -qv
           <listitem>
             <para>Disables the verification&mdash;performed by default
               by <command>svn merge</command> as of Subversion
-              1.7&mdash;that the items at and under the target
-              directory of a merge operation are at a uniform
-              revision.  While merging into a single-revision working
-              copy target is the recommended best practice, this
-              option may be used to permit merges into mixed-revision
-              working copies as necessary.</para>
+              1.7&mdash;that the target of a merge operation and all
+              of its children are at a uniform revision.  While
+              merging into a single-revision working copy target is
+              the recommended best practice, this option may be used
+              to permit merges into mixed-revision working copies as
+              necessary.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svn.sw.auto_props">
           <term><option>--auto-props</option></term>
           <listitem>
-            <para>Enables auto-props, overriding the
-              <literal>enable-auto-props</literal> directive in the
-              <filename>config</filename> file.</para>
+            <para>Enables automatic property assignment (per runtime
+              configuration rules), overriding the
+              <literal>enable-auto-props</literal> runtime
+              configuration directive.</para>
           </listitem>
         </varlistentry>
         
         <varlistentry id="svn.ref.svn.sw.change">
           <term><option>--change</option> (<option>-c</option>) <replaceable>ARG</replaceable></term>
           <listitem>
-            <para>Used as a means to refer to a specific
-              <quote>change</quote> (a.k.a. a revision).  This option is
-              syntactic sugar for <quote>-r ARG-1:ARG</quote>. If you
-              wish to offer a range of revisions, some subcommands allow
-              you to provide a comma separated list of args, e.g.
-              <quote>-c ARG1,ARG2,ARG3</quote>.  Alternatively, you can
-              provide two arguments separated by a dash, e.g.
-              <quote>-c ARG1:ARG2</quote>.  This second form is
-              syntactically equivalent to <quote>--range ARG1:ARG2</quote>
-              but with ARG1 considered inclusive.</para>
+            <para>Perform the requested operation using a specific
+              <quote>change</quote>.  Generally speaking, this option
+              is syntactic sugar for <userinput>-r
+              <replaceable>ARG-1</replaceable>:<replaceable>ARG</replaceable></userinput>.
+              Some subcommands permit a comma-separated list of
+              revision number arguments (e.g., <userinput>-c
+              <replaceable>ARG1</replaceable>,<replaceable>ARG2</replaceable>,<replaceable>ARG3</replaceable></userinput>).
+              Alternatively, you can provide two arguments separated
+              by a dash (as
+              in <userinput>-c <replaceable>ARG1</replaceable>-<replaceable>ARG2</replaceable></userinput>)
+              to identify the range of revisions
+              between <replaceable>ARG1</replaceable>
+              and <replaceable>ARG2</replaceable>, inclusive.
+              Finally, if the revision argument is negated, the
+              implied revision range is reversed: <userinput>-c
+              -45</userinput> is equivalent to <userinput>-r
+              45:44</userinput>.</para>
           </listitem>
         </varlistentry>
 
@@ -8875,11 +8928,15 @@ $ svnlook youngest /var/svn/repos/
         </varlistentry>
 
         <varlistentry id="svn.ref.svnsync.sw.config_option">
-          <term><option>--config-option</option> <replaceable>FILE</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALUE</replaceable>]</term>
+          <term><option>--config-option</option> <replaceable>CONFSPEC</replaceable></term>
           <listitem>
             <para>Sets, for the duration of the command, the value of
               a runtime configuration
-              option.  <replaceable>FILE</replaceable>
+              option.  <replaceable>CONFSPEC</replaceable> is a string
+              which specifies the configuration option namespace, name
+              and value that you'd like to assign, formatted as
+              <replaceable>FILE</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALUE</replaceable>].
+              In this syntax, <replaceable>FILE</replaceable>
               and <replaceable>SECTION</replaceable> are the runtime
               configuration file (either <literal>config</literal>
               or <literal>servers</literal>) and the section thereof,
