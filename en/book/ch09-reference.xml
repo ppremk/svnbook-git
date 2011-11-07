@@ -299,19 +299,20 @@ $
             <para>Specifies an external program to use to show
               differences between files.  When <command>svn
               diff</command> is invoked without this option, it uses
-              Subversion's internal diff engine, which provides
+              Subversion's internal differencing engine, which provides
               unified diffs by default.  If you want to use an
-              external diff program, use <option>--diff-cmd</option>.
-              You can pass options to the diff program with the
+              external differencing program, use <option>--diff-cmd</option>.
+              You can then pass options to the specified program using the
               <option>--extensions</option> (<option>-x</option>)
-              option (more on that later in this section).</para>
+              option.</para>
           </listitem>
         </varlistentry>
       
         <varlistentry id="svn.ref.svn.sw.diff3_cmd">
           <term><option>--diff3-cmd</option> <replaceable>CMD</replaceable></term>
           <listitem>
-            <para>Specifies an external program to use to merge files.</para>
+            <para>Specifies an external 3-way differencing program
+              (used to merge line-based changes into files).</para>
           </listitem>
         </varlistentry>
       
@@ -337,10 +338,11 @@ $
         <varlistentry id="svn.ref.svn.sw.encoding">
           <term><option>--encoding</option> <replaceable>ENC</replaceable></term>
           <listitem>
-            <para>Tells Subversion that your commit message is encoded
-              in the charset provided.  The default is your operating
-              system's native locale, and you should specify the
-              encoding if your commit message is in any other
+            <para>Tells Subversion that your commit message is
+              composed using the character encoding provided.  The
+              default character encoding is derived from your
+              operating system's native locale; use this option if
+              your commit message is composed using any other
               encoding.</para>
           </listitem>
         </varlistentry>
@@ -399,11 +401,11 @@ $
           <term><option>--file</option> (<option>-F</option>) <replaceable>FILENAME</replaceable></term>
           <listitem>
             <para>Uses the contents of the named file for the
-              specified subcommand, though different subcommands do
+              specified subcommand.  Different subcommands do
               different things with this content.  For example,
               <command>svn commit</command> uses the content as a
-              commit log, whereas <command>svn propset</command> uses
-              it as a property value.</para>
+              commit log message, whereas <command>svn
+              propset</command> uses it as a property value.</para>
           </listitem>
         </varlistentry>
 
@@ -411,14 +413,14 @@ $
           <term><option>--force</option></term>
           <listitem>
             <para>Forces a particular command or operation to run.
-              Subversion will prevent you from performing some operations
-              in normal usage, but you can pass the
-              force option to tell Subversion <quote>I know what I'm
-              doing as well as the possible repercussions of doing it,
-              so let me at 'em.</quote>  This option is the
-              programmatic equivalent of doing your own electrical
-              work with the power on&mdash;if you don't know what
-              you're doing, you're likely to get a nasty shock.</para>
+              Subversion will prevent you from performing some
+              operations in normal usage, but you can pass this option
+              to tell Subversion <quote>I know what I'm doing as well
+              as the possible repercussions of doing it, so let me at
+              'em.</quote> This option is the programmatic equivalent
+              of doing your own electrical work with the power
+              on&mdash;if you don't know what you're doing, you're
+              likely to get a nasty shock.</para>
           </listitem>
         </varlistentry>
         
@@ -497,7 +499,7 @@ $
           <term><option>--incremental</option></term>
           <listitem>
             <para>Prints output in a format suitable for
-              concatenation.</para>
+              concatenation to prior similar output.</para>
           </listitem>
         </varlistentry>
       
@@ -514,7 +516,8 @@ $
         <varlistentry id="svn.ref.svn.sw.keep_changelists">
           <term><option>--keep-changelists</option></term>
           <listitem>
-            <para>Tells Subversion not to delete changelists after committing.</para>
+            <para>Tells Subversion not to remove the changelist assigments
+              from working copy items after committing.</para>
           </listitem>
         </varlistentry>
       
@@ -572,9 +575,9 @@ $ svn commit -m "They don't make Sunday."
         <varlistentry id="svn.ref.svn.sw.no_auto_props">
           <term><option>--no-auto-props</option></term>
           <listitem>
-            <para>Disables auto-props, overriding the
-              <literal>enable-auto-props</literal> directive in the
-              <filename>config</filename> file.</para>
+            <para>Disables automatic property setting, overriding the
+              <literal>enable-auto-props</literal> runtime
+              configuration directive.</para>
           </listitem>
         </varlistentry>
 
@@ -584,8 +587,8 @@ $ svn commit -m "They don't make Sunday."
             <para>Prevents Subversion from printing differences for
               deleted files.  The default behavior when you remove a
               file is for <command>svn diff</command> to print the
-              same differences that you would see if you had left
-              the file but removed all the content.</para>
+              same differences that you would see if you had kept
+              the file but removed all of its content.</para>
           </listitem>
         </varlistentry>
         
@@ -605,10 +608,11 @@ $ svn commit -m "They don't make Sunday."
         <varlistentry id="svn.ref.svn.sw.no_unlock">
           <term><option>--no-unlock</option></term>
           <listitem>
-            <para>Tells Subversion not to automatically unlock files (the default commit
-              behavior is to unlock all files listed as part of the
-              commit).  See <xref linkend="svn.advanced.locking"/> for
-              more information.</para>
+            <para>Tells Subversion not to automatically unlock files.
+              (The default commit behavior is to unlock all files
+              listed as part of the commit.)  See
+              <xref linkend="svn.advanced.locking"/> for more
+              information.</para>
           </listitem>
         </varlistentry>
 
@@ -670,9 +674,10 @@ $ svn commit -m "They don't make Sunday."
         <varlistentry id="svn.ref.svn.sw.record_only">
           <term><option>--record-only</option></term>
           <listitem>
-            <para>Marks revisions as merged, for use with
-              <option>--revision</option>
-              (<option>-r</option>).</para>
+            <para>Enables a special mode of <command>svn
+            merge</command> in which the specified merge operation is
+            recorded in the local merge tracking information, but is
+            not actually performed.</para>
           </listitem>
         </varlistentry>
         
@@ -680,7 +685,7 @@ $ svn commit -m "They don't make Sunday."
           <term><option>--recursive</option> (<option>-R</option>)</term>
           <listitem>
             <para>Makes a subcommand recurse into subdirectories.
-              Most subcommands recurse by default.</para>
+              (Most subcommands recurse by default.)</para>
           </listitem>
         </varlistentry>
         
@@ -688,7 +693,7 @@ $ svn commit -m "They don't make Sunday."
           <term><option>--reintegrate</option></term>
           <listitem>
             <para>Used with the <command>svn merge</command>
-              subcommand, merges all of the source URL's changes into
+              subcommand to merge all of the source URL's changes into
               the working copy.  See
               <xref linkend="svn.branchemerge.basicmerging.stayinsync"/>
               for details.</para>
@@ -709,10 +714,12 @@ $ svn commit -m "They don't make Sunday."
         </varlistentry>
         
         <varlistentry id="svn.ref.svn.sw.remove">
-          <term><option>--remove</option> <replaceable>ARG</replaceable></term>
+          <term><option>--remove</option></term>
           <listitem>
-            <para>Disassociates <replaceable>ARG</replaceable> from a
-              changelist</para>
+            <para>Used with <command>svn changelist</command> to
+              disassociate&mdash;rather than associate (which is the
+              default operation)&mdash;the target(s) from a
+              changelist.</para>
           </listitem>
         </varlistentry>
         
@@ -728,13 +735,12 @@ $ svn commit -m "They don't make Sunday."
         <varlistentry id="svn.ref.svn.sw.revision">
           <term><option>--revision</option> (<option>-r</option>) <replaceable>REV</replaceable></term>
           <listitem>
-            <para>Indicates that you're going to supply a revision (or
-              range of revisions) for a particular operation.  You can
-              provide revision numbers, keywords, or dates (in
-              curly braces) as arguments to the revision option.  If
-              you wish to offer a range of revisions, you can
-              provide two revisions separated by a colon.  For
-              example:</para>
+            <para>Specifies a revision (or range of revisions) on with
+              which to operate.  You can provide revision numbers,
+              keywords, or dates (in curly braces) as arguments to the
+              revision option.  If you wish to offer a range of
+              revisions, you can provide two revisions separated by a
+              colon.  For example:</para>
 
             <informalexample>
               <screen>
@@ -791,8 +797,12 @@ $ svn log -r 1729:{2002-02-17}
           <term><option>--show-revs</option> <replaceable>ARG</replaceable></term>
           <listitem>
             <para>Used to make <command>svn mergeinfo</command>
-              display either <literal>merged</literal>
-              or <literal>eligible</literal> revisions.</para>
+              display certain classes of merge tracking
+              information.  <replaceable>ARG</replaceable> may be
+              either <literal>merged</literal>
+              or <literal>eligible</literal>, indicating a desire to
+              see revisions either already merged or eligible for future
+              merge from the specified source URL, respectively.</para>
           </listitem>
         </varlistentry>
         
