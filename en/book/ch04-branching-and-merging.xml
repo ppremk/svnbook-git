@@ -461,10 +461,10 @@ Changed paths:
       terminology, the general act of replicating changes from one
       branch to another is called <firstterm>merging</firstterm>, and
       it is performed using various invocations of the <command>svn
-      merge</command> command.</para>
+      merge</command> subcommand.</para>
 
     <para>In the examples that follow, we're assuming that both your
-      Subversion client and server are running Subversion 1.5 (or
+      Subversion client and server are running Subversion 1.7 (or
       later).  If either client or server is older than version 1.5,
       things are more complicated: the system won't track changes
       automatically, forcing you to use painful manual methods to
@@ -476,6 +476,25 @@ Changed paths:
       already been merged and what hasn't.  For this reason,
       we <emphasis>strongly</emphasis> recommend that you make sure your
       client and server are at least at version 1.5.</para>
+
+    <sidebar id="svn.branchmerge.basicmerging.mergetracking">
+      <title>Merge Tracking</title>
+      <para>
+        <indexterm zone="svn.branchmerge.basicmerging.mergetracking">
+          <primary>merge tracking</primary>
+        </indexterm>
+        Subversion 1.5 introduced the
+        <firstterm>merge tracking</firstterm> feature to Subversion.
+        Prior to this feature keeping track of merges required cumbersome
+        manual procedures or the use of external tools. Subsequent
+        releases of Subversion introduced many enhancements and bug
+        fixes to merge tracking, which is why we recommend using the
+        most recent versions on both your server and client.  Keep in
+        mind that even if your server is running 1.5 or 1.6, you can still
+        use a 1.7 client.  This is particularly important as regards merge
+        tracking, because the overwhelming majority of fixes to it are on
+        the client side.</para>
+    </sidebar>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.changesets">
@@ -531,7 +550,7 @@ Changed paths:
       <para>Continuing with our running example, let's suppose that a
         week has passed since you started working on your private
         branch.  Your new feature isn't finished yet, but at the same
-        time you know that other people on your team have continued to
+        time you know that other people on your team continue to
         make important changes in the
         project's <filename>/trunk</filename>.  It's in your best
         interest to replicate those changes to your own branch, just
@@ -545,7 +564,7 @@ Changed paths:
       </tip>
 
       <para>Subversion is aware of the history of your branch and
-        knows when it divided away from the trunk.  To replicate the
+        knows when it split away from the trunk.  To replicate the
         latest, greatest trunk changes to your branch, first make sure
         your working copy of the branch
         is <quote>clean</quote>&mdash;that it has no local
@@ -688,7 +707,9 @@ $
           diff</command> wouldn't have mentioned it at
           all.  <command>svn diff</command> outputs only the limited
           patch format, so there are some ideas it simply can't
-          express.</para>
+          express.  Even Subversion's own <command>svn patch</command>
+          subcommand, while more flexible than patch program, still has
+          similar limitations.</para>
 
         <para>The <command>svn merge</command> command, however, can
           express changes in tree structure and properties by directly
@@ -706,7 +727,7 @@ $
 
       <para>Suppose that another week has passed.  You've committed
         more changes to your branch, and your comrades have continued
-        to improve the trunk as well.  Once again, you'd like to
+        to improve the trunk as well.  Once again, you want to
         replicate the latest trunk changes to your branch and bring
         yourself in sync.  Just run the same merge command
         again!</para>
@@ -730,12 +751,12 @@ svn: E195020: Cannot merge into mixed-revision working copy [357:378]; try updat
         <xref linkend="svn.branchmerge.basicmerging.mergeinfo"/>
         for details).  These limitations mean that merges into
         mixed-revision working copies can result in unexpected text
-        and tree conflicts.  The <command>svn merge</command> subcommand
-        option <option>--allow-mixed-revisions</option> allows you to
-        override this prohibition, but you should only do that if you
+        and tree conflicts.<footnote><para>The <command>svn merge</command>
+        subcommand option <option>--allow-mixed-revisions</option> allows
+        you to override this prohibition, but you should only do that if you
         understand the ramifications and have a good reason for doing so.
-        We don't have any reason to do so here, so we update the working
-        copy and then reattempt the merge.</para>
+        </para></footnote> We don't want any needless conflicts, so we
+        update the working copy and then reattempt the merge.</para>
 
       <informalexample>
         <screen>
@@ -756,9 +777,9 @@ $
 
       <para>Subversion knows which trunk changes you previously
         replicated to your branch, so it carefully replicates only
-        those changes you don't yet have.  And once again, you need
-        build, test, and <command>svn commit</command> the local
-        modifications to your branch.</para>
+        those changes you don't yet have.  And once again, you build,
+        test, and <command>svn commit</command> the local modifications
+        to your branch.</para>
 
       <sidebar id="svn.branchemerge.basicmerging.stayinsync.subtree">
         <title>Subtree Merges and Subtree Mergeinfo</title>
@@ -779,17 +800,17 @@ $
           <firstterm>subtree mergeinfo</firstterm>. There is nothing
           special about subtree merges or subtree mergeinfo, in fact
           there is really only one important point to keep in mind about
-          it: The complete record of merges to a branch may not be
-          contained solely in the mergeinfo on the branch root, we may have
-          to look to any subtree mergeinfo to get the full picture.
+          these concepts: The complete record of merges to a branch may
+          not be contained solely in the mergeinfo on the branch root, we
+          may have to look to any subtree mergeinfo to get a full accounting.
           Fortunately Subversion does this <quote>accounting</quote> for
           you and rarely will you need to concern yourself with it.  A
           brief example will help explain:</para>
 
         <informalexample>
           <screen>
-# We need to merge r958 from trunk to branches/proj-X/doc/INSTALL
-# but that revision also affects main.c, which we don't want to merge
+# We need to merge r958 from trunk to branches/proj-X/doc/INSTALL,
+# but that revision also affects main.c, which we don't want to merge:
 $ svn log --verbose --quiet -r 958 ^/
 ------------------------------------------------------------------------
 r958 | bruce | 2011-10-20 13:28:11 -0400 (Thu, 20 Oct 2011)
@@ -825,10 +846,10 @@ Properties on 'doc/INSTALL':
   svn:mergeinfo
     /trunk/doc/INSTALL:651-652,958
 
-# What if we then decide we do want all of r958? All we need do is
-# merge that revision to the root of the branch, Subversion notices
-# the subtree mergeinfo on INSTALL and doesn't try to merge any changes
-# to it, only the changes to main.c are merged:
+# What if we then decide we do want all of r958? Easy, all we need do is
+# repeat the merge of that revision, but this time to the root of the
+# branch, Subversion notices the subtree mergeinfo on INSTALL and doesn't
+# try to merge any changes to it, only the changes to main.c are merged:
 $ svn merge ^/subversion/trunk . -c 958
 --- Merging r958 into '.':
 U    src/main.c
@@ -969,8 +990,8 @@ Committed revision 391.
         The option is critical for reintegrating changes from a branch
         back into its original line of development&mdash;don't forget
         it!  It's needed because this sort of <quote>merge
-        back</quote> is a different sort of work than what you've been
-        doing up until now.  Previously, we had been
+        back</quote> is a different sort of work than what you've
+        done up until now.  Previously, we were
         asking <command>svn merge</command> to grab the <quote>next
         set</quote> of changes from one line of development (the
         trunk) and duplicate them to another (your branch).  This is
@@ -1164,9 +1185,9 @@ $
       </informalexample>
 
       <para>The <command>svn mergeinfo</command> command requires
-        a <quote>source</quote> URL (where the changes would come
+        a <quote>source</quote> URL (where the changes come
         from), and takes an optional <quote>target</quote> URL (where
-        the changes would merge to).  If no target URL is given,
+        the changes merge to).  If no target URL is given,
         it assumes that the current working directory is the
         target.  In the prior example, because we're querying our
         branch working copy, the command assumes we're interested in
@@ -1306,7 +1327,7 @@ $ svn mergeinfo --show-revs=merged ^/trunk . --recursive
         </informalexample>
 
       <para>The <literal>*</literal> indicates revisions that are only
-        <emphasis>partially</emphasis> merged to the targt in question
+        <emphasis>partially</emphasis> merged to the target in question
         (the meaning is the same if we are checking for eligible
         revisions).  What this means in this example is that if we tried
         to merge r758 or r958 from <filename>^/trunk</filename> then more
@@ -1367,23 +1388,6 @@ $ svn status
         the changes from your working copy and retry the command with
         different options.  The merge isn't final until you
         actually <command>svn commit</command> the results.</para>
-
-      <tip>
-        <para>While it's perfectly fine to experiment with merges by
-          running <command>svn merge</command> and <command>svn
-          revert</command> over and over, you may run into some
-          annoying (but easily bypassed) roadblocks.  For example, if
-          the merge operation adds a new file (i.e., schedules it for
-          addition), <command>svn revert</command> won't actually
-          remove the file; it simply unschedules the addition.  You're
-          left with an unversioned file.  If you then attempt to run
-          the merge again, you may get conflicts due to the
-          unversioned file <quote>being in the way.</quote> Solution?
-          After performing a revert, be sure to clean up the working
-          copy and remove unversioned files and directories.  The
-          output of <command>svn status</command> should be as clean
-          as possible, ideally showing no output.</para>
-      </tip>
 
     </sect2>
 
@@ -1882,8 +1886,8 @@ $ svn merge ^/calc/branches/some-branch
         </listitem>
       </orderedlist>
 
-      <para>Once these three arguments are specified, the two trees
-        are compared, and the differences are applied to the
+      <para>Once these three arguments are specified, then the two trees
+        are compared and the differences applied to the
         target working copy as local modifications.  When the command
         is done, the results are no different than if you had
         hand-edited the files or run various <command>svn
@@ -2006,15 +2010,16 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
       <sidebar>
         <title>Natural History and Implicit Mergeinfo</title>
 
-        <para>As we mentioned earlier when discussing mergeinfo
-          inheritance, a path that has the
+        <para>As we mentioned earlier when discussing
+          <xref linkend="svn.branchmerge.basicmerging.mergeinfo.inheritance"/>,
+          a path that has the
           <literal>svn:mergeinfo</literal> property set on it is said to
           have <quote>explicit</quote> mergeinfo.  Yes, this implies a
           path can have <quote>implicit</quote> mergeinfo, too!  Implicit
           mergeinfo, or <firstterm>natural history</firstterm>, is
           simply a path's own history (see
-          <xref linkend="svn.tour.history" />) interpreted as merge
-          tracking information.  While implicit mergeinfo is largely
+          <xref linkend="svn.tour.history" />) interpreted as mergeinfo.
+          While implicit mergeinfo is largely
           an implementation detail, it can be a useful abstraction for
           understanding merge tracking behavior.</para>
 
