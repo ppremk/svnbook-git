@@ -2084,7 +2084,7 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
 
       <para>To begin with, assume that your working copy has no
         local edits.  When you <command>svn update</command> to a
-        particular revision, the changes sent by the server will
+        particular revision, the changes sent by the server
         always apply <quote>cleanly</quote> to your working copy.
         The server produces the delta by comparing two trees: a
         virtual snapshot of your working copy, and the revision tree
@@ -2099,50 +2099,80 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
         even ones that are unrelated to the working copy!  This means
         there's large potential for human error.  Users will sometimes
         compare the wrong two trees, creating a delta that doesn't
-        apply cleanly.  <command>svn merge</command> will do its best
-        to apply as much of the delta as possible, but some parts may
-        be impossible.  Just as the Unix
-        <command>patch</command> command sometimes complains about
-        <quote>failed hunks,</quote> <command>svn merge</command> will
-        similarly complain about <quote>skipped
-        targets</quote>:</para>
+        apply cleanly. The <command>svn merge</command> subcommand does
+        its best to apply as much of the delta as possible, but some
+        parts may be impossible. A common sign that you merged the wrong
+        delta is unexpected tree conflicts:</para>
 
       <informalexample>
         <screen>
 $ svn merge -r 1288:1351 http://svn.example.com/myrepos/branch
-U    foo.c
-U    bar.c
-Skipped missing target: 'baz.c'
-U    glub.c
-U    sputter.h
+--- Merging r1289 through r1351 into '.':
+   C bar.c
+   C foo.c
+   C docs
+--- Recording mergeinfo for merge of r1289 through r1351 into '.':
+ U   .
+Summary of conflicts:
+  Tree conflicts: 3
 
-Conflict discovered in 'glorb.h'.
-Select: (p) postpone, (df) diff-full, (e) edit,
-        (mc) mine-conflict, (tc) theirs-conflict,
-        (s) show all options: 
+$ svn st
+!     C bar.c
+      >   local missing, incoming edit upon merge
+!     C foo.c
+      >   local missing, incoming edit upon merge
+!     C docs
+      >   local delete, incoming edit upon merge
 </screen>
       </informalexample>
 
       <para>In the previous example, it might be the case that
-        <filename>baz.c</filename> exists in both snapshots of the
-        branch being compared, and the resultant delta wants to
-        change the file's contents, but the file doesn't exist in
-        the working copy.  Whatever the case, the
-        <quote>skipped</quote> message means that the user is most
-        likely comparing the wrong two trees; it's the classic
+        <filename>bar.c</filename>, <filename>foo.c</filename>, and
+        <filename>docs</filename> all exist in both snapshots of the
+        branch being compared.  The resultant delta wants to change
+        the contents of the corresponding paths in your working copy,
+        but those paths don't exist in the working copy.  Whatever the
+        case, the preponderance of tree conflicts most likely means that
+        the user compared the wrong two trees; it's a classic
         sign of user error.  When this happens, it's easy to
         recursively revert all the changes created by the merge
         (<userinput>svn revert . --recursive</userinput>), delete any
         unversioned files or directories left behind after the
-        revert, and rerun <command>svn merge</command> with
-        different arguments.</para>
+        revert, and rerun <command>svn merge</command> with the
+        correct arguments.</para>
 
-      <para>Also notice that the preceding example shows a conflict
-        happening on <filename>glorb.h</filename>.  We already
-        stated that the working copy has no local edits: how can a
-        conflict possibly happen?  Again, because the user can use
-        <command>svn merge</command> to define and apply any old
-        delta to the working copy, that delta may contain textual
+      <para>Also keep in mind that a merge into a working copy with no
+        local edits can still produce text conflicts.</para>
+
+      <informalexample>
+        <screen>
+$ svn merge -c 1701 http://svn.example.com/myrepos/branchX --accept postpone
+--- Merging r1701 into '.':
+C     glub.c
+C     sputter.c
+--- Recording mergeinfo for merge of r1701 into '.':
+ U   .
+Summary of conflicts:
+  Text conflicts: 2
+
+C:\SVN\src-branch-1.7.x>svn st
+ M      .
+?       glub.c.merge-left.r1700
+?       glub.c.merge-right.r1701
+C       glub.c
+?       glub.c.working
+?       sputter.c.merge-left.r1700
+?       sputter.c.merge-right.r1701
+C       sputter.c
+?       sputter.c.working
+Summary of conflicts:
+  Text conflicts: 2
+</screen>
+      </informalexample>
+
+      <para>How can a conflict possibly happen?  Again, because the user
+        can request <command>svn merge</command> to define and apply any
+        old delta to the working copy, that delta may contain textual
         changes that don't cleanly apply to a working file, even if
         the file has no local modifications.</para>
 
@@ -2156,14 +2186,15 @@ Select: (p) postpone, (df) diff-full, (e) edit,
         <filename>filename.rNEWREV</filename>.  When <command>svn
         merge</command> produces a conflict, though, it creates three
         files named <filename>filename.working</filename>,
-        <filename>filename.left</filename>, and
-        <filename>filename.right</filename>.  In this case, the
-        terms <quote>left</quote> and <quote>right</quote> are
-        describing which side of the double-tree comparison the file
-        came from.  In any case, these differing names will help you
-        distinguish between conflicts that happened as a result of an
-        update and ones that happened as a result of a
-        merge.</para>
+        <filename>filename.merge-left.rOLDREV</filename>, and
+        <filename>filename.merge-right.rNEWREV</filename>.  In this case,
+        the terms <quote>merge-left</quote> and <quote>merge-right</quote>
+        are describing which side of the double-tree comparison the file
+        came from, <quote>rOLDREV</quote> describes the revision of the
+        left side, and <quote>rNEWREV</quote> the revision of the right
+        side. In any case, these differing names help you distinguish
+        between conflicts that happened as a result of an  update and
+        ones that happened as a result of a merge.</para>
 
     </sect2>
 
