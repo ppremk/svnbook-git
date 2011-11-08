@@ -950,10 +950,11 @@ $ svn log -r 1729:{2002-02-17}
     <sect2 id="svn.ref.svn.c">
       <title>svn Subcommands</title>
 
-      <para>Here are the various subcommands for the <command>svn</command> program.  For the sake of
-        brevity, we omit the global options (described in <xref
-        linkend="svn.ref.svn.sw" />) from the subcommand descriptions
-        which follow.</para>
+      <para>Here are the various subcommands for
+        the <command>svn</command> program.  For the sake of brevity,
+        we omit the global options (described in
+        <xref linkend="svn.ref.svn.sw" />) from the subcommand
+        descriptions which follow.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svn.c.add">
@@ -1037,20 +1038,25 @@ A         otherdir
 </screen>
           </informalexample>
 
-          <para>Normally, the command <userinput>svn add *</userinput>
-            will skip over any directories that are already under
-            version control.  Sometimes, however, you may want to add
-            every unversioned object in your working copy, including
-            those hiding deeper.  Passing the
-            <option>--force</option> option makes <command>svn
-            add</command> recurse into versioned directories:</para>
+          <para>Attempts to schedule the addition of an item which is
+            already versioned will fail by default.  This behavior
+            foils the most common scenario under which users attempt
+            this: when trying to get to Subversion to recursively
+            examine a versioned directory and add any unversioned
+            items inside of it.  To override the default behavior and
+            force Subversion to recurse into already-versioned
+            directories, pass the <option>--force</option>
+            option:</para>
 
           <informalexample>
             <screen>
-$ svn add * --force
-A         foo.c
-A         somedir/bar.c
-A  (bin)  otherdir/docs/baz.doc
+$ svn add versioned-dir
+svn: warning: W150002: '/home/cmpilato/projects/subversion/site' is already un\
+der version control
+$ svn add versioned-dir --force
+A         versioned-dir/foo.c
+A         versioned-dir/somedir/bar.c
+A  (bin)  versioned-dir/otherdir/docs/baz.doc
 &hellip;
 </screen>
           </informalexample>
