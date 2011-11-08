@@ -2793,7 +2793,7 @@ sys.exit(0)
         the <literal>svn:mergeinfo</literal> property is the only
         window the user has into the machinery.</para>
 
-      <para>Sometimes mergeinfo will appear on files that you didn't
+      <para>Sometimes mergeinfo will appear on paths that you didn't
         expect to be touched by an operation.  Sometimes mergeinfo
         won't be generated at all, when you expect it to.
         Furthermore, the management of mergeinfo metadata has a whole
@@ -2805,20 +2805,20 @@ sys.exit(0)
         even <quote>inheritance</quote> from parent to child
         directories.</para>
 
-      <para>In this book we've chosen to only briefly (if at all) cover
-        these detailed topics for a couple of reasons.  First, the level
-        of detail is absolutely overwhelming for a typical user.  Second,
-        the typical user <emphasis>shouldn't</emphasis> have to understand
-        these concepts; they mostly remain in the background as pesky
-        implementation details.  All that said, if you enjoy this sort
-        of thing, you can get a fantastic overview in a paper posted
-        at CollabNet's website: <ulink
+      <para>We've chosen to only briefly cover, if at all, these detailed
+        topics for a couple of reasons.  First, the level of detail is
+        absolutely overwhelming for a typical user.  Second, and more
+        importantly, the typical user <emphasis>shouldn't</emphasis> have
+        to understand these concepts; they should typically remain in the
+        background as pesky implementation details.  All that said, if you
+        enjoy this sort of thing, you can get a fantastic overview in a
+        paper posted at CollabNet's website: <ulink
         url="http://www.collab.net/community/subversion/articles/merge-info.html"
         />.</para>
 
-      <para>For now, if you want to steer clear of bugs and odd
-        behaviors in automatic merging, the CollabNet article
-        recommends that you stick to these simple best practices:</para>
+      <para>For now, if you want to steer clear of the complexities of
+        merge tracking, we recommend that you follow these simple best
+        practices:</para>
 
       <itemizedlist>
         <listitem>
@@ -2827,32 +2827,46 @@ sys.exit(0)
             <xref linkend="svn.branchmerge.basicmerging"/>.</para>
         </listitem>
         <listitem>
-          <para>For long-lived release branches (as described in
-            <xref linkend="svn.branchmerge.commonpatterns"/>),
-            perform merges only on the root of the branch, not on
-            subdirectories.</para>
-        </listitem>
-        <listitem>
-          <para>Never use the <option>--allow-mixed-revisions</option>
-            option to merge into working copies with a mixture of
-            working revision numbers.  Nor should your merge target
-            have <quote>switched</quote> subdirectories (as described
-            next in <xref linkend="svn.branchmerge.switchwc"/>). A
-            merge target should be a working copy which represents a
-            <emphasis>single</emphasis> location in the repository at
-            a single point in time.</para>
+          <para>Avoid subtree merges and subtree mergeinfo, perform
+            merges only on the root of your branches, not on
+            subdirectories or files (see <xref
+            linkend="svn.branchemerge.basicmerging.stayinsync.subtree"/>)
+            .</para>
         </listitem>
         <listitem>
           <para>Don't ever edit the <literal>svn:mergeinfo</literal>
             property directly; use <command>svn
-            merge</command> with the <option>--record-only</option> option to effect a desired change
-            to the metadata (as demonstrated in
+            merge</command> with the <option>--record-only</option> option
+            to effect a desired change to the metadata (as demonstrated in
             <xref linkend="svn.branchmerge.advanced.blockchanges"/>).</para>
         </listitem>
         <listitem>
-          <para>Always make sure you have complete read access to
-            all of your merge sources, and that your target working
-            copy has no sparse directories.</para>
+          <para>Your merge target should be a working copy which
+            represents the root of a <emphasis>complete</emphasis> tree
+            representing a <emphasis>single</emphasis> location in the
+            repository at a single point in time:
+            <itemizedlist>
+              <listitem>
+                <para>Don't use the <option>--allow-mixed-revisions</option>
+                option to merge into mixed-revision working copies.</para>
+              </listitem>
+              <listitem>
+                <para>Don't merge to targets with <quote>switched</quote>
+                subdirectories (as described next in
+                <xref linkend="svn.branchmerge.switchwc"/>).</para>
+              </listitem>
+              <listitem>
+                <para>Avoid merges to targets with sparse directories.
+                  Likewise, don't merge to depths other than
+                  <option>--depth=infinity</option></para>
+              </listitem>
+              <listitem>
+                <para>Be sure you have read access to all of the merge
+                  source and read/write access to all of the merge
+                  target.</para>
+              </listitem>
+            </itemizedlist>
+          </para>
         </listitem>
       </itemizedlist>
 
