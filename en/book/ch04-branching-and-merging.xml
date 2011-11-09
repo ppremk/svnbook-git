@@ -612,6 +612,81 @@ $
           for the <literal>svn:mergeinfo</literal> property.</para>
       </tip>
 
+      <sidebar>
+        <title>Keeping a Branch in Sync Without Merge Tracking</title>
+
+        <para>You may not always be able to use Subversion's merge
+          tracking feature, perhaps your server is using Subversion 1.4
+          or earlier.  In a case like this the <command>merge</command>
+          subcommand is <emphasis>not</emphasis> aware of the history of
+          your branch or when it split away from the trunk. To replicate
+          the most recent trunk changes you need to perform sync merges
+          the <quote>old-fashioned</quote> way, by specifying a starting
+          and ending revision.</para>
+
+        <para>Let's say you branched <filename>/trunk</filename> to 
+          <filename>/branches/foo-feature</filename> in revision
+          400:</para>
+
+        <informalexample>
+          <screen>
+$ svn log -v -r 400 ^/branches/foo-feature
+------------------------------------------------------------------------
+r400 | carol | 2011-11-09 10:51:27 -0500 (Wed, 09 Nov 2011) | 1 line
+Changed paths:
+A /branch/b2 (from /trunk:399)
+
+Create branch for the foo feature
+------------------------------------------------------------------------
+</screen>
+        </informalexample>
+
+        <para>When you are ready to sync your branch with the ongoing
+          changes from trunk, you specify the starting revision as the
+          revision of <filename>/trunk</filename> which the branch was
+          copied from and the ending revision as
+          <literal>HEAD</literal>:</para>
+
+        <informalexample>
+          <screen>
+$ svn merge ^/trunk -r399:HEAD
+--- Merging r400 through r556 into '.':
+A    include/foo.h
+U    src/main.c
+A    src/foo.c
+&hellip;
+</screen>
+        </informalexample>
+
+        <para>You'll need to track which revisions were merged to your
+          branch.  One of the simplest ways to do this is in the log
+          message for the commit of the merge:</para>
+
+        <informalexample>
+          <screen>
+$ svn ci -m "Sync the foo-feature branch with ^/trunk through r556."
+Sending        include/foo.h
+&hellip;
+Transmitting file data .
+Committed revision 557.
+</screen>
+        </informalexample>
+
+        <para>The next time you sync
+        <filename>/branches/foo-branch</filename> with
+        <filename>/trunk</filename> you repeat this process, except that
+        the starting revision is the <emphasis>youngest</emphasis>
+        revision your last sync brought in from trunk:</para>
+
+        <informalexample>
+          <screen>
+$ svn merge ^/trunk -r556:HEAD
+&hellip;
+</screen>
+        </informalexample>
+
+      </sidebar>
+
       <para>After running the prior example, your branch working copy
         now contains new local modifications, and these edits are
         duplications of all of the changes that have happened on the
