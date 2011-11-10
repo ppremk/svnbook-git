@@ -467,7 +467,10 @@ $
           <term><option>--ignore-ancestry</option></term>
           <listitem>
             <para>Tells Subversion to ignore ancestry when calculating
-              differences (rely on path contents alone).</para>
+              differences (rely on path contents alone).  Also disables
+              <xref linkend="svn.branchmerge.basicmerging.mergetracking"/>
+              when used with the <command>svn merge</command> subcommand.
+          </para>
           </listitem>
         </varlistentry>
       
@@ -3524,64 +3527,125 @@ $
         </refnamediv>
         <refsect1>
           <title>Synopsis</title>
-          <para><literal>svn merge sourceURL1[@N] sourceURL2[@M] [WCPATH]</literal></para>
-          <para><literal>svn merge sourceWCPATH1@N sourceWCPATH2@M [WCPATH]</literal></para>
-          <para><literal>svn merge [[-c M]... | [-r N:M]...] [SOURCE[@REV] [WCPATH]]</literal></para>
+          <para><literal>svn merge [-c M[,N...] | -r N:M ...] SOURCE[@REV] [TARGET_WCPATH]</literal></para>
+          <para><literal>svn merge --reintegrate SOURCE[@REV] [TARGET_WCPATH]</literal></para>
+          <para><literal>svn merge SOURCE1[@N] SOURCE2[@M] [TARGET_WCPATH]</literal></para>
         </refsect1>
         <refsect1>
           <title>Description</title>
 
-          <para>In the first form, the source URLs are specified at
-            revisions <replaceable>N</replaceable> and <replaceable>M</replaceable>.
-            These are the two sources to be compared.  The revisions
-            default to <literal>HEAD</literal> if omitted.</para>
-
-          <para>In the second form, the URLs corresponding to the
-            source working copy paths define the sources to be
-            compared.  The revisions must be specified.</para>
-
-          <para>In the third form, <replaceable>SOURCE</replaceable>
-            can be either a URL or a working copy path (in which case
-            its corresponding URL is used).  If not specified,
-            <replaceable>SOURCE</replaceable> will be the same as
-            <replaceable>WCPATH</replaceable>.
-            <replaceable>SOURCE</replaceable> in revision
-            <replaceable>REV</replaceable> is compared as it existed
-            between revisions <replaceable>N</replaceable> and
-            <replaceable>M</replaceable> for each revision range
-            provided.  If <replaceable>REV</replaceable> is not
-            specified, <literal>HEAD</literal> is assumed.</para>
-
-          <para><literal>-c M</literal> is equivalent to <literal>-r
-            &lt;M-1&gt;:M</literal>, and <literal>-c -M</literal> does
-            the reverse: <literal>-r M:&lt;M-1&gt;</literal>.  If no
-            revision ranges are specified, the default range of
-            <literal>1:HEAD</literal> is used.  Multiple
-            <literal>-c</literal> and/or <literal>-r</literal>
-            instances may be specified, and mixing of forward and
-            reverse ranges is allowed&mdash;the ranges are internally
-            compacted to their minimum representation before merging
-            begins (which may result in no-op).</para>
-
-          <para><replaceable>WCPATH</replaceable> is the working copy
-            path that will receive the changes.  If
-            <replaceable>WCPATH</replaceable> is omitted, a default
-            value of <quote><filename>.</filename></quote> is assumed,
+          <para>In all three forms
+            <replaceable>TARGET_WCPATH</replaceable> is
+            the working copy path that will receive the differences. If
+            <replaceable>TARGET_WCPATH</replaceable> is omitted, the
+            changes are applied to the current working directory,
             unless the sources have identical basenames that match a
-            file within <quote><filename>.</filename></quote>.  In
+            file within the current working directory.  In
             this case, the differences will be applied to that
             file.</para>
 
-          <para>Subversion will internally track metadata about
-            the merge operation only if the two sources are ancestrally
+          <para>In the first two forms, <replaceable>SOURCE</replaceable>
+            can be either a URL or a working copy path (in which case its
+            corresponding URL is used). If the peg revision
+            <replaceable>REV</replaceable> is not specified, then
+            <literal>HEAD</literal> is assumed.  In the third form the
+            same rules apply for
+            <replaceable>SOURCE1</replaceable>,
+            <replaceable>SOURCE2</replaceable>,
+            <replaceable>M</replaceable>, and <replaceable>N</replaceable>
+            with the only difference being that if either source is a
+            working copy path, then the peg revisions
+            <emphasis>must</emphasis> be explicitly stated.</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Sync and Cherrypick Merges</para>
+              <para>The first form, when used without either the
+                <option>-c</option> or <option>-r</option> options, is
+                called a <quote>sync</quote> merge and
+                <literal>-r 1:REV</literal> is implied. This variant is
+                used to merge all eligible changes to a branch from its
+                immediate ancestor branch, see
+                <xref linkend="svn.branchemerge.basicmerging.stayinsync"/>.
+              </para>
+              <para>When the first form is used with the
+                <option>-c</option> or <option>-r</option> options, this
+                is called a <quote>cherrypick</quote> merge and is used
+                to merge an explicitly defined set of changes from one
+                branch to another, see
+                <xref linkend="svn.branchmerge.cherrypicking"/></para>
+              <tip>
+                <para>Multiple <literal>-c</literal> and/or
+                  <literal>-r</literal> instances may be specified, and
+                  mixing of forward and reverse ranges is allowed&mdash;
+                  the ranges are internally compacted to their minimum
+                  representation before merging begins (which may result
+                  in a no-op merge or conflicts that cause the merge to
+                  stop before merging all of the requested revisions).</para>
+              </tip>
+              <para>In both variants of the first form,
+                <replaceable>SOURCE</replaceable> in revision
+                <replaceable>REV</replaceable> is compared as it existed
+                between revisions <replaceable>N</replaceable> and
+                <replaceable>M</replaceable> for each revision range
+                provided.</para>
+            </listitem>
+            <listitem>
+              <para>Reintegrate Merges</para>
+              <para>The second form is called a <quote>reintegrate
+                merge</quote> and is used to bring changes from a feature
+                branch (<replaceable>SOURCE</replaceable>)
+                back into the feature branch's immediate ancestor branch
+                (<replaceable>TARGET_WCPATH</replaceable>).</para>
+              <tip>
+                <para>Reintegrate merges support only this specialized
+                  use case and as such have a number of special
+                  requirements and limitations that the other two merge
+                  forms do not posses. See
+                  <xref linkend="svn.branchemerge.basicmerging.stayinsync"/>,
+                  <xref linkend="svn.branchemerge.basicmerging.reintegrate"/>,
+                  <xref linkend="svn.branchmerge.advanced.reintegratetwice"/>,
+                  and
+                  <xref linkend="svn.branchmerge.commonpatterns.feature"/>.
+                </para>
+              </tip>
+            </listitem>
+            <listitem>
+              <para>2-URL Merges</para>
+              <para>In the third form, called a <quote>2-URL Merge</quote>,
+                the difference between <replaceable>SOURCE1</replaceable>
+                at revision <replaceable>N</replaceable> and
+                <replaceable>SOURCE2</replaceable> at revision
+                <replaceable>M</replaceable> is generated and applied to
+                <replaceable>TARGET_WCPATH</replaceable>.  The revisions
+                default to <literal>HEAD</literal> if omitted.</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>If
+            <xref linkend="svn.branchmerge.basicmerging.mergetracking"/>
+            is active, then Subversion will internally track metadata
+            (i.e. the <literal>svn:mergeinfo</literal> property) about
+            merge operations when the two merge sources are ancestrally
             related&mdash;if the first source is an ancestor of the
-            second or vice versa.  This is guaranteed to be the case
-            when using the third form.  Unlike <command>svn
-            diff</command>, the merge command takes the ancestry of a
-            file into consideration when performing a merge operation.
-            This is very important when you're merging changes from
-            one branch into another and you've renamed a file on one
-            branch but not the other.</para>
+            second or vice versa&mdash;this is guaranteed to be the case
+            when using the first two forms.  Subversion will also take
+            preexisting merge metadata on the working copy target into
+            account when determining what revisions to merge and in an
+            effort to avoid repeat merges and needless conflicts it may
+            only merge a subset of the requested ranges.</para>
+
+          <tip>
+            <para><xref linkend="svn.branchmerge.basicmerging.mergetracking"/>
+              can be disabled by using the <option>--ignore-ancestry</option>
+              option.</para>
+          </tip>
+
+          <para>Unlike <command>svn diff</command>, the merge command
+            takes the ancestry of a file into consideration when
+            performing a merge operation. This is very important when
+            you're merging changes from one branch into another and you've
+            renamed a file on one branch but not the other.</para>
 
         </refsect1>
 
