@@ -1118,16 +1118,68 @@ A  (bin)  versioned-dir/otherdir/docs/baz.doc
             <screen>
 $ svn blame http://svn.red-bean.com/repos/test/readme.txt
      3      sally This is a README file.
-     5      harry You should read this.
+     5      harry Don't bother reading it.  The boss is a knucklehead.
+     3      sally 
+&hellip;
 </screen>
           </informalexample>
 
-          <para>Even if <command>svn blame</command> says that Harry
-            last modified <filename>readme.txt</filename> in revision
-            5, you'll have to examine exactly what the revision
-            changed to be sure that Harry changed
-            the <emphasis>context</emphasis> of the line&mdash;he may
-            have adjusted just the whitespace.</para>
+          <para>Now, just because <command>svn blame</command> says
+            that Harry last modified <filename>readme.txt</filename>
+            in revision 5, understand that this subcommand is by
+            default very picky about what constitutes a change.
+            Before clubbing Harry over the head for what appears to be
+            insubordination, first consider that perhaps the change he
+            made to the file might have been only to its specific
+            character content, not to its overall semantic meaning.
+            Perhaps his changes were the result of blindly running a
+            whitespace cleanup script on this file.  You might need
+            to examine the specific differences and related log
+            message to understand exactly what Harry did to this file
+            in revision 5.</para>
+
+          <informalexample>
+            <screen>
+$ svn log -c 5 http://svn.red-bean.com/repos/test/readme.txt
+------------------------------------------------------------------------
+r5 | harry | 2008-05-29 07:26:12 -0600 (Thu, 29 May 2008) | 1 line
+
+Commit the results of 'double-space-after-period.sh'.
+
+------------------------------------------------------------------------
+$ svn diff -c 5 http://svn.red-bean.com/repos/test/readme.txt
+Index: http://svn.red-bean.com/repos/test/readme.txt
+===================================================================
+--- http://svn.red-bean.com/repos/test/readme.txt	(revision 4)
++++ http://svn.red-bean.com/repos/test/readme.txt	(revision 5)
+@@ -1,5 +1,5 @@
+ This is a README file.
+-Don't bother reading it. The boss is a knucklehead.
++Don't bother reading it.  The boss is a knucklehead.
+  
+ INSTRUCTIONS
+ ============
+$
+</screen>
+          </informalexample>
+
+          <para>Sure enough, Harry only changed the whitespace in that
+            line.  Fortunately, the <option>--extensions</option>
+            (<option>-x</option>) option can help you better determine
+            the last time that a <emphasis>meaningful</emphasis>
+            change was made to a given line of text.  For example,
+            here's how you can see the annotation information while
+            disregarding mere whitespace changes:</para>
+
+          <informalexample>
+            <screen>
+$ svn blame -x -b http://svn.red-bean.com/repos/test/readme.txt
+     3      sally This is a README file.
+     4       jess Don't bother reading it.  The boss is a knucklehead.
+     3      sally 
+&hellip;
+</screen>
+          </informalexample>
 
           <para>If you use the <option>--xml</option> option, you can
             get XML output describing the blame annotations, but not
@@ -1153,11 +1205,16 @@ $ svn blame --xml http://svn.red-bean.com/repos/test/readme.txt
 &lt;commit
    revision="5"&gt;
 &lt;author&gt;harry&lt;/author&gt;
-&lt;date&gt;2008-05-29T03:26:12.293121Z&lt;/date&gt;
+&lt;date&gt;2008-05-29T13:26:12.293121Z&lt;/date&gt;
 &lt;/commit&gt;
+&lt;/entry&gt;
+&lt;entry
+   line-number="3"&gt;
+&hellip;
 &lt;/entry&gt;
 &lt;/target&gt;
 &lt;/blame&gt;
+$
 </screen>
           </informalexample>
 
