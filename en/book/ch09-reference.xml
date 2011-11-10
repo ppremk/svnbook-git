@@ -1674,11 +1674,11 @@ $
           <para>If, for some reason, an <command>svn update</command>
             fails due to a problem running an external diff program
             (e.g., user input or network failure), pass the
-            <option>--diff3-cmd</option> to allow cleanup to complete
-            any merging with your external diff program.  You can also
-            specify any configuration directory with the
-            <option>--config-dir</option> option, but you should need
-            these options extremely infrequently.</para>
+            <option>--diff3-cmd</option> to allow the cleanup process
+            to complete any required merging using your external diff
+            program.  You can also specify any configuration directory
+            with the <option>--config-dir</option> option, but you
+            should need these options extremely infrequently.</para>
 
         </refsect1>
 
@@ -2142,12 +2142,36 @@ Committed revision 15.
           <informalexample>
             <screen>
 $ svn delete over-there 
-svn: E195006: Use --force to override this restriction (local modifications ma
-y be lost)
-svn: E195006: '/home/sally/project/over-there' has local modifications -- comm
-it or revert them first
+svn: E195006: Use --force to override this restriction (local modifications m\
+ay be lost)
+svn: E195006: '/home/sally/project/over-there' has local modifications -- com\
+mit or revert them first
 $ svn delete --force over-there 
 D         over-there
+$
+</screen>
+          </informalexample>
+
+          <para>Use the <option>--keep-local</option> option to
+            override the default <command>svn delete</command>
+            behavior of also removing the target file that was
+            scheduled for versioned deletion.  This is helpful when
+            you realize that you've accidentally committed the
+            addition of a file that you need to keep around in your
+            working copy, but which shouldn't have been added to
+            version control.</para>
+
+          <informalexample>
+            <screen>
+$ svn delete --keep-local conf/program.conf
+D         conf/program.conf
+
+$ svn commit -m "Remove accidentally-added configuration file."
+Deleting       conf/program.conf
+Transmitting file data .
+Committed revision 21.
+$ svn status
+?       conf/program.conf
 $
 </screen>
           </informalexample>
@@ -2178,12 +2202,10 @@ $
         <refsect1>
           <title>Description</title>
 
-          <itemizedlist>
+          <para>Display the differences between two paths.  You can
+            use <command>svn diff</command> in the following ways:</para>
 
-            <listitem>
-              <para>Display the differences between two paths.  You can
-              use <command>svn diff</command> in the following ways:</para>
-            </listitem>
+          <itemizedlist>
 
             <listitem>
               <para>Use just <command>svn diff</command> to display local
@@ -5316,10 +5338,10 @@ $ svn status
               changes.</para>
 
             <para>If you provide no targets to <command>svn
-              revert</command>, it will do nothing&mdash;to protect
-              you from accidentally losing changes in your working
+              revert</command>, it will do nothing.  To protect you
+              from accidentally losing changes in your working
               copy, <command>svn revert</command> requires you to
-              provide at least one target.</para>
+              explicitly provide at least one target.</para>
           </warning>
 
         </refsect1>
