@@ -2584,9 +2584,9 @@ joessh = $JOESSH /opt/alternate/ssh -p 29934
       <para>Es ist möglich, nicht nur die Art und Weise zu
         steuern, auf die der Client <command>ssh</command> aufruft,
         sondern auch das Verhalten von <command>sshd</command> auf dem
-        Server. In diesem Abschnitt zeigen wir, wie der genaue von
+        Server. In diesem Abschnitt zeigen wir, wie der von
         <command>sshd</command> ausgeführte
-        <command>svnserve</command>-Befehl festgelegt wird und wie
+        <command>svnserve</command>-Befehl genau festgelegt wird sowie
         sich mehrere Benutzer ein einzelnes Systemkonto teilen
         können.</para>
 
@@ -2610,9 +2610,9 @@ joessh = $JOESSH /opt/alternate/ssh -p 29934
           welches Sie zum Starten von <command>svnserve</command>
           verwenden möchten. Stellen Sie sicher, dass für das Konto
           ein Paar bestehend aus einem öffentlichen und einem privaten
-          SSH-Schlüssel installiert ist und dass der Benutzer sich
+          SSH-Schlüssel installiert ist und dass sich der Benutzer
           über die Authentifizierung mit einem öffentlichen Schlüssel
-          anmelden kann. Die Passwortauthentifizierung wird nicht
+          anmelden kann. Die Authentifizierung mit Passwort wird nicht
           funktionieren, da sich alle folgenden SSH-Tricks um die
           Verwendung der SSH-Datei
           <filename>authorized_keys</filename> drehen.</para>
@@ -2677,16 +2677,26 @@ joessh = $JOESSH /opt/alternate/ssh -p 29934
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.sshtricks.fixedcmd">
+<!--
         <title>Controlling the invoked command</title>
+-->
+        <title>Steuerung des aufgerufenen Befehls</title>
 
+<!--
         <para>Because we can specify the executed server-side command,
           it's easy to name a specific <command>svnserve</command>
           binary to run and to pass it extra arguments:</para>
+-->
+        <para>Da wir den durch den Server ausgeführten Befehl angeben
+          können, ist es leicht, ein bestimmtes
+          <command>svnserve</command>-Programm zu benennen und ihm
+          zusätzliche Argumente mitzugeben:</para>
 
         <screen>
   command="/path/to/svnserve -t -r /virtual/root" TYPE KEY COMMENT
 </screen>
 
+<!--
         <para>In this example, <filename>/path/to/svnserve</filename>
           might be a custom wrapper script
           around <command>svnserve</command> which sets the umask (see
@@ -2698,30 +2708,66 @@ joessh = $JOESSH /opt/alternate/ssh -p 29934
           system, or simply to relieve the user of having to type an
           absolute path in the <literal>svn+ssh://</literal>
           URL.</para>
+-->
+        <para>In diesem Beispiel könnte es sich bei
+          <filename>/path/to/svnserve</filename> um ein
+          maßgeschneidertes Wrapper-Skript für
+          <command>svnserve</command> handeln, das die Umask setzt
+          (siehe <xref linkend="svn.serverconfig.multimethod"/>). Es
+          wird außerdem veranschaulicht, wie
+          <command>svnserve</command> in einem virtuellen
+          Wurzelverzeichnis verankert wird, so wie es oft gemacht
+          wird, wenn <command>svnserve</command> als Daemon-Prozess
+          läuft. Das könnte entweder geschehen, um den Zugriff auf
+          Teile des Systems einzuschränken oder um dem Benutzer die
+          Bürde abzunehmen, einen absoluten Pfad im URL
+          <literal>svn+ssh://</literal> angeben zu müssen.</para>
 
+<!--
         <para>It's also possible to have multiple users share a single
           account.  Instead of creating a separate system account for
           each user, generate a public/private key pair for each
           person.  Then place each public key into
           the <filename>authorized_users</filename> file, one per
-          line, and use the <option>--tunnel-user</option>
+          line, and use the <option>- -tunnel-user</option>
           option:</para>
+-->
+        <para>Es besteht weiterhin die Möglichkeit, dass sich mehrere
+          Benutzer ein einzelnes Konto teilen. Statt ein gesondertes
+          Konto für jeden Benutzer zu erstellen, generieren Sie für
+          jede Person jeweils ein Paar aus einem öffentlichen und
+          einem privaten Schlüssel. Tragen Sie dann jeden öffentlichen
+          Schlüssel in eine eigene Zeile der Datei
+          <filename>authorized_users</filename> ein und verwenden die
+          Option <option>--tunnel-user</option>:</para>
 
         <screen>
   command="svnserve -t --tunnel-user=harry" TYPE1 KEY1 harry@example.com
   command="svnserve -t --tunnel-user=sally" TYPE2 KEY2 sally@example.com
 </screen>
 
+<!--
         <para>This example allows both Harry and Sally to connect to
           the same account via public key authentication.  Each of
           them has a custom command that will be executed;
-          the <option>--tunnel-user</option> option 
+          the <option>- -tunnel-user</option> option 
           tells <command>svnserve</command> to assume that the named
           argument is the authenticated user.  Without
-          <option>--tunnel-user</option>, it would appear as though
+          <option>- -tunnel-user</option>, it would appear as though
           all commits were coming from the one shared system
           account.</para>
+-->
+        <para>Dieses Beispiel erlaubt sowohl Harry als auch Sally,
+          sich über die Authentifizierung durch einen öffentlichen
+          Schlüssel mit demselben Konto zu verbinden. Beide verfügen
+          über einen angepassten Befehl, der ausgeführt wird. Die
+          Option <option>--tunnel-user</option> teilt
+          <command>svnserve</command> mit, das benannte Argument als
+          den authentifizierten Benutzer zu akzeptieren.  Ohne
+          <option>--tunnel-user</option> sähe es so aus als kämen alle
+          Übergaben vom gemeinsamen Konto.</para>
 
+<!--
         <para>A final word of caution: giving a user access to the
           server via public-key in a shared account might still allow
           other forms of SSH access, even if you've set
@@ -2732,18 +2778,39 @@ joessh = $JOESSH /opt/alternate/ssh -p 29934
           To give the user as little permission as possible, you may
           want to specify a number of restrictive options immediately
           after the <literal>command</literal>:</para>
+-->
+        <para>Ein letztes Wort zur Warnung: Die Zugangsberechtigung
+          für einen Benutzer über einen öffentlichen Schlüssel und ein
+          gemeinsames Konto könnte noch weitere SSH-Zugänge erlauben,
+          selbst wenn Sie einen Wert für <literal>command</literal> in
+          in <filename>authorized_keys</filename> angegeben haben. So
+          kann der Benutzer beispielsweise Shell-Zugang über SSH
+          erlangen oder X11 oder allgemeine Portweiterleitung über
+          Ihren Server einrichten. Um Ihrem Benutzer die
+          geringstmögliche Erlaubnis zu erteilen, sollten Sie
+          unmittelbar nach <literal>command</literal> eine Reihe
+          einschränkender Optionen angeben:</para>
 
         <screen>
   command="svnserve -t --tunnel-user=harry",no-port-forwarding,no-agent-forw
 arding,no-X11-forwarding,no-pty TYPE1 KEY1 harry@example.com
 </screen>
 
+<!--
         <para>Note that this all must be on one line&mdash;truly on
           one line&mdash;since SSH <filename>authorized_keys</filename> 
           files do not even allow the conventional backslash character
           (<literal>\</literal>) for line continuation.  The only
           reason we've shown it with a line break is to fit it on
           the physical page of a book.</para>
+-->
+        <para>Beachten Sie, dass alles auf einer Zeile stehen muss
+          &ndash; tatsächlich auf einer Zeile &ndash; da die
+          SSH-Dateien <filename>authorized_keys</filename> nicht
+          einmal das übliche Backslash-Zeichen (<literal>\</literal>)
+          zur Zeilenfortsetzung erlauben. Der einzige Grund für den
+          von uns eingefügten Zeilenumbruch ist die Unterbringung auf
+          der Breite einer Buchseite.</para>
 
       </sect3>
 
