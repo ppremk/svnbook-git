@@ -8933,8 +8933,30 @@ $ svnlook -v proplist /var/svn/repos /trunk/README
         <refsect1>
           <title>Example</title>
           
-          <para>This shows the tree output (with nodeIDs) for revision
-            13 in our sample repository:</para>
+          <para>This shows the tree output for revision 13 in our
+            sample repository:</para>
+
+          <informalexample>
+            <screen>
+$ svnlook tree -r 13 /var/svn/repos
+/
+ trunk/
+  button.c
+  Makefile
+  integer.c
+ branches/
+  bookstore/
+   button.c
+   Makefile
+   integer.c
+&hellip;
+</screen>
+          </informalexample>
+
+          <para>Use the <option>--show-ids</option> option to include
+            node revision IDs (unique internal identifiers for
+            specific nodes in Subversion's versioned filesystem
+            implementation):</para>
 
           <informalexample>
             <screen>
@@ -8949,6 +8971,30 @@ $ svnlook tree -r 13 /var/svn/repos --show-ids
    button.c &lt;2.1.r12/85&gt;
    Makefile &lt;3.0.r7/41&gt;
    integer.c &lt;4.1.r13/109&gt;
+&hellip;
+</screen>
+          </informalexample>
+
+          <para>For output which lends itself more readily to being
+            parsed by scripts, use the <option>--full-paths</option>
+            option, which causes <command>svnlook</command> to print
+            the full repository path of each tree item and to not use
+            indentation to indicate hierarchy:</para>
+
+          <informalexample>
+            <screen>
+$ svnlook tree -r 13 /var/svn/repos --show-ids
+/ &lt;0.0.r13/811&gt;
+trunk/ &lt;1.0.r9/551&gt;
+trunk/button.c &lt;2.0.r9/238&gt;
+trunk/Makefile &lt;3.0.r7/41&gt;
+trunk/integer.c &lt;4.0.r6/98&gt;
+branches/ &lt;5.0.r13/593&gt;
+branches/bookstore/ &lt;1.1.r13/390&gt;
+branches/bookstore/button.c &lt;2.1.r12/85&gt;
+branches/bookstore/Makefile &lt;3.0.r7/41&gt;
+branches/bookstore/integer.c &lt;4.1.r13/109&gt;
+&hellip;
 </screen>
           </informalexample>
           
@@ -11490,6 +11536,21 @@ exported
 
             <para>Contains the log message describing the
               revision.</para>
+
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><literal>svn:rdump-lock</literal></term>
+          <listitem>
+
+            <para>Used to temporarily enforce mutually exclusive
+              access to the repository by <command>svnrdump
+              load</command>.  This property is generally only
+              observed when such an operation is active&mdash;or when
+              an <command>svnrdump</command> command failed to cleanly
+              disconnect from the repository.  (This property is only
+              relevant when it appears on revision 0.)</para>
 
           </listitem>
         </varlistentry>
