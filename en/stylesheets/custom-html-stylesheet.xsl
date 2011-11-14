@@ -23,7 +23,7 @@
     <hr/>
     <img src="images/cc-by.png" style="float: right;" />
     <p>You are reading <em>Version Control with Subversion</em> (for
-       Subversion 1.7), by Ben Collins-Sussman, Brian W. Fitzpatrick,
+       Subversion 1.8), by Ben Collins-Sussman, Brian W. Fitzpatrick,
        and C. Michael Pilato.</p>
     <p>This work is licensed under
        the <a href="http://creativecommons.org/licenses/by/2.0/"
