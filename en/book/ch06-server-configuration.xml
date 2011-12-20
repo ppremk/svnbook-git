@@ -1365,9 +1365,13 @@ baz
         simply setting <literal>auth-access = read</literal>
         or <literal>auth-access = none</literal>.<footnote><para>Note
         that using any sort of <command>svnserve</command>-enforced
-        access control at all is a bit pointless; the user already has
-        direct access to the repository
-        database.</para></footnote></para>
+        access control at all only makes sense if the users cannot 
+        bypass it and access the repository directory directly using
+        other tools (such as <command>cd</command> and
+        <command>vi</command>); implementing
+        such restrictions is described in
+        <xref linkend="svn.serverconfig.svnserve.sshtricks.fixedcmd"
+        />.</para></footnote></para>
 
       <para>You'd think that the story of SSH tunneling would end
         here, but it doesn't.  Subversion allows you to create custom
@@ -1608,7 +1612,7 @@ arding,no-X11-forwarding,no-pty TYPE1 KEY1 harry@example.com
       excellent documentation, publicly available on their web site at
       <ulink url="http://httpd.apache.org"/>.  For example, a general
       reference for the configuration directives is located at
-      <ulink url="http://httpd.apache.org/docs-2.0/mod/directives.html"
+      <ulink url="http://httpd.apache.org/docs/current/mod/directives.html"
       />.</para>
 
     <para>Also, as you make changes to your Apache setup, it is likely
@@ -2413,7 +2417,9 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
         <para>It's beyond the scope of this book to describe how to
           generate client and server SSL certificates and how to
           configure Apache to use them.  Many other references,
-          including Apache's own documentation, describe the process.</para>
+          including Apache's own documentation (<ulink 
+          url="http://httpd.apache.org/docs/current/ssl/"/>),
+          describe the process.</para>
 
         <tip>
           <para>SSL certificates from well-known entities generally
@@ -2422,7 +2428,8 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
             tool such as OpenSSL (<ulink url="http://openssl.org"
             />).<footnote><para>While self-signed certificates are
             still vulnerable to a <quote>man-in-the-middle</quote>
-            attack, such an attack is much more difficult for a casual
+            attack (before a client sees the certificate for the first
+            time), such an attack is much more difficult for a casual
             observer to pull off, compared to sniffing unprotected
             passwords.</para></footnote></para>
         </tip>
