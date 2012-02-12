@@ -3470,8 +3470,12 @@ ServerName svn.example.com
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.authn.basic">
+<!--
         <title>Setting up HTTP authentication</title>
+-->
+        <title>HTTP Authentifizierung aufsetzen</title>
 
+<!--
         <para>The easiest way to authenticate a client is via the
           HTTP Basic authentication mechanism, which simply uses a
           username and password to verify that a user is who she says
@@ -3480,7 +3484,18 @@ ServerName svn.example.com
           passwords.  Let's grant commit access to
           Sally and Harry.  First, we need to add them to the password
           file:</para>
+-->
+        <para>Die einfachste Methode, einen Client zu authentifizieren
+          geht über den HTTP-Basic-Authentifizierungsmechanismus, der
+          einfach einen Benutzernamen und ein Passwort verwendet, um
+          sicherzustellen, das ein Benutzer auch derjenige ist, für
+          den er sich ausgibt. Apache stellt ein Dienstprogramm zur
+          Verwaltung der Liste zulässiger Benutzernanen und Passwörter
+          namens <command>htpasswd</command> zur Verfügung. Lassen Sie
+          uns Sally und Harry die Berechtigung zur Übergabe erteilen.
+          Zunächst müssen wir sie der Passwortdatei hinzufügen:</para>
 
+<!--
         <screen>
 $ ### First time: use -c to create the file
 $ ### Use -m to use MD5 encryption of the password, which is more secure
@@ -3494,7 +3509,22 @@ Re-type new password: *******
 Adding password for user sally
 $
 </screen>
+-->
+        <screen>
+$ ### Beim 1. Mal: -c verwenden, um die Datei anzulegen
+$ ### -m für die sicherere MD5-Verschlüsselung des Passworts verwenden
+$ htpasswd -cm /etc/svn-auth-file harry
+New password: *****
+Re-type new password: *****
+Adding password for user harry
+$ htpasswd -m /etc/svn-auth-file sally
+New password: *******
+Re-type new password: *******
+Adding password for user sally
+$
+</screen>
 
+<!--
         <para>Next, you need to add some more
           <filename>httpd.conf</filename> directives inside your
           <literal>Location</literal> block to tell Apache what to do
@@ -3509,10 +3539,32 @@ $
           use the <literal>AuthUserFile</literal> directive to specify
           the location of the password file you created using
           <command>htpasswd</command>.</para>
+-->
+        <para>Als nächstes müssen Sie innerhalb Ihres
+          <literal>Location</literal>-Blocks ein paar weitere
+          <filename>httpd.conf</filename>-Directiven hizufügen, um
+          Apache zu sagen, was mit Ihrer neuen Passwortdatei zu tun
+          ist. Die Direktive <literal>AuthType</literal> spezifiziert
+          den Typ des zu verwendenden Authentifizierungssystems. In
+          diesem Fall möchten wir das
+          <literal>Basic</literal>-Authentifizierungssystem
+          spezifizieren. <literal>AuthName</literal> ist ein
+          beliebiger Name, den Sie Ihrer Authentifizierungsdomäne
+          geben. Die meisten Browser zeigen diesen Namen in einem
+          Dialog an, wenn der Browser den Benutzer nach seinem Namen
+          und dem Passwort fragt. Verwenden Sie schließlich die
+          Direktive <literal>AuthUserFile</literal>, um den Ort der
+          Passwortdatei zu spezifizieren, die sie mit
+          <command>htpasswd</command> erstellt haben.</para>
 
+<!--
         <para>After adding these three directives, your
           <literal>&lt;Location&gt;</literal> block should look
           something like this:</para>
+-->
+        <para>Nachdem Sie diese Direktiven hinzugefügt haben, sollte
+          Ihr <literal>&lt;Location&gt;</literal>-Block etwa so
+          aussehen:</para>
 
         <screen>
 &lt;Location /svn&gt;
@@ -3524,6 +3576,7 @@ $
 &lt;/Location&gt;
 </screen>
 
+<!--
         <para>This <literal>&lt;Location&gt;</literal> block is not
           yet complete, and it will not do anything useful.  It's
           merely telling Apache that whenever authorization is
@@ -3535,6 +3588,20 @@ $
           as well.  The simplest thing to do is protect all requests.
           Adding <literal>Require valid-user</literal> tells Apache
           that all requests require an authenticated user:</para>
+-->
+        <para>Dieser <literal>&lt;Location&gt;</literal>-Block ist
+          noch unvollständig und bewirkt noch nichts sinnvolles. Er
+          teilt Apache lediglich mit, dass es sich den Benutzernamen
+          und das Passwort vom Subversion-Client besorgen soll, falls
+          eine Autorisierung benötigt wird. Was hier jedoch noch
+          fehlt, sind Direktiven, die Apache sagen,
+          <emphasis>welche</emphasis> Arten von Client-Anfragen eine
+          Autorisierung erfordern.  Überall dort wo eine Autorisierung
+          verlangt wird, erwartet Apache auch eine Authentifizierung.
+          Das Einfachste ist es, alle Anfragen zu schützen. Durch
+          Hinzufügen von <literal>Require valid-user</literal> wird
+          Apache mitgeteilt, dass alle Anfragen einen
+          authentifizierten Benutzer erfordern:</para>
 
         <screen>
 &lt;Location /svn&gt;
@@ -3547,15 +3614,28 @@ $
 &lt;/Location&gt;
 </screen>
 
+<!--
         <para>Be sure to read the next section (<xref
           linkend="svn.serverconfig.httpd.authz"/>) for more detail on the
           <literal>Require</literal> directive and other ways to set
           authorization policies.</para>
+-->
+        <para>Stellen Sie sicher, dass Sie für weitere Details zur
+          <literal>Require</literal>-Directive und anderen Wegen, 
+          Autorisierungsrichtlinien festzulegen, den nächsten
+          Abschnitt (<xref linkend="svn.serverconfig.httpd.authz"/>)
+          lesen.</para>
 
+<!--
         <para>One word of warning: HTTP Basic Auth passwords pass in
           very nearly plain text over the network, and thus are
           extremely insecure.</para>
+-->
+        <para>Ein Wort zur Warnung: HTTP-Basic-Auth-Passwörter werden
+          nahezu im Klartext durch das Netz geschickt und sind deshalb
+          in höchstem Maße unsicher.</para>
 
+<!--
         <para>Another option is to not use Basic authentication, but to
           use Digest authentication instead.  Digest authentication
           allows the server to verify the client's
@@ -3567,11 +3647,33 @@ $
           a small random-ish string to the client; the client uses the
           user's password to hash the string; the server then looks to
           see whether the hashed value is what it expected.</para>
+-->
+        <para>Eine weitere Option besteht darin, statt der
+          Basic-Authentifizierung die Digest-Authentifizierung zu
+          verwenden. Digest-Authentifizierung erlaubt es dem Server,
+          die Identität des Clients zu bestätigen,
+          <emphasis>ohne</emphasis> das Passwort als Klartext durch
+          das Netz zu schicken. Unter der Voraussetzung, dass sowohl
+          dem Client als auch dem Server das Passwort des Benutzers
+          bekannt ist, können sie verifizieren, dass das Passwort
+          dasselbe ist, indem sie eine Hashfunktion auf ein
+          Einweg-Informationshäppchen anwenden. Der Server sendet eine
+          kleine zufällige Zeichenkette an den Client. Der Client
+          verwendet das Passwort des Benutzers, um die Zeichenkette zu
+          hashen, und der Server prüft dann, ob der gehashte Wert dem
+          erwarteten Ergebnis entspricht.</para>
 
+<!--
         <para>Configuring Apache for Digest authentication is also
           fairly easy, and only a small variation on our prior
           example.  Be sure to consult Apache's documentation for full
           details.</para>
+-->
+        <para>Es ist auch ziemlich einfach, Apache für die
+          Digest-Authentifizierung zu konfigurieren und lediglich eine
+          kleine Abweichung des vorangegangenen Beispiels. Für weitere
+          Einzelheiten wird die Dokumentation zu Apache
+          empfohlen.</para>
 
         <screen>
 &lt;Location /svn&gt;
@@ -3585,6 +3687,7 @@ $
 &lt;/Location&gt;
 </screen>
 
+<!--
         <para>If you're looking for maximum security, public key
           cryptography is the best solution.  It may be best to use
           some sort of SSL encryption, so that clients authenticate
@@ -3600,6 +3703,24 @@ $
           </footnote>
           Consult Apache's documentation (and OpenSSL documentation)
           about how to do that.</para>
+-->
+        <para>Falls Sie maximale Sicherheit anstreben, ist ein
+          asymmetrisches Kryptosystem das Mittel der Wahl. Am besten
+          solte eine Art der SSL-Verschlüsselung eingesetzt werden, so
+          dass Clients sich über <literal>https://</literal> statt
+          <literal>http://</literal> authentifizieren; als
+          Minimallösung können Sie Apache so einstellen, dass ein
+          selbstsigniertes Server-Zertifikat verwendet wird.
+          <footnote>
+            <para>Obwohl selbstsignierte Server-Zertifikate immer noch
+              verwundbar für einen
+              <quote>Man-in-the-middle</quote>-Angriff sind, ist
+              solch ein Angriff für einen gelegentlichen beobachter
+              ungleich schwieriger durchzuführen als ungeschützte
+              Passwörter abzugreifen.</para>
+          </footnote>
+          Wie das bewerkstelligt wird, ist der Dokumentation von
+          Apache (und OpenSSL) zu entnehmen.</para>
 
       </sect3>
 
