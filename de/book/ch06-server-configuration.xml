@@ -3727,15 +3727,27 @@ $
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.authn.sslcerts">
+<!--
         <title>SSL certificate management</title>
+-->
+        <title>SSL-Zertifikatsverwaltung</title>
 
+<!--
         <para>Businesses that need to expose their repositories for access
           outside the company firewall should be conscious of the
           possibility that unauthorized parties could be
           <quote>sniffing</quote> their network traffic.  SSL makes
           that kind of unwanted attention less likely to result in
           sensitive data leaks.</para>
+-->
+        <para>Unternehmen, die ihre Projektarchive für den Zugriff von
+          außerhalb der Firewall freigeben müssen, sollten sich
+          bewusst sein, dass Unbefugte den Netzverkehr
+          <quote>abhören</quote> könnten. SSL lässt diese Art
+          unerwünschte Aufmerksamkeit weniger anfällig für heikle
+          Datenlecks werden.</para>
 
+<!--
         <para>If a Subversion client is compiled to use OpenSSL,
           it gains the ability to speak to an Apache server via
           <literal>https://</literal> URLs.  The Neon library used by
@@ -3744,7 +3756,20 @@ $
           challenged.  When the client and server have exchanged SSL
           certificates and successfully authenticated one another, all
           further communication is encrypted via a session key.</para>
+-->
+        <para>Ist ein Subversion-Client für die Verwendung OpenSSL
+          übersetzt worden, erhält er die Fähigkeit, mit einem
+          Apache-Server über <literal>https://</literal>-URLs zu
+          kommunizieren. Die vom Subversion-Client verwendete
+          Neon-Bibliothek kann nicht nur Server-Zertifikate
+          zertifizieren, sondern nach Aufforderung auch
+          Client-Zertifikate liefern. Wenn der Client und der Server
+          SSL-Zertifikate ausgetauscht und sich gegenseitig
+          erfolgreich authentifiziert haben, wird jede weitere
+          Kommunikation durch einen Sitzungsschlüssel
+          verschlüsselt.</para>
 
+<!--
         <para>It's beyond the scope of this book to describe how to
           generate client and server certificates and how to
           configure Apache to use them.  Many other books, including
@@ -3752,16 +3777,38 @@ $
           <emphasis>can</emphasis> cover here is how to manage
           server and client certificates from an ordinary Subversion
           client.</para>
+-->
+        <para>Es würde den Rahmen dieses Buches sprengen, wenn
+          beschrieben würde, wie Client- und Server-Zertifikate erzeugt
+          werden und wie Apache für ihre Verwendung konfiguriert wird.
+          Viele andere Bücher, darunter Apaches eigene Dokumentation,
+          erläutern diese Aufgabe. Was wir an dieser Stelle jedoch
+          behandeln <emphasis>können</emphasis>, ist die Verwaltung
+          der Client- und Server-Zertifikate durch einen gewöhnlichen
+          Subversion-Client.</para>
 
+<!--
         <para>When speaking to Apache via <literal>https://</literal>,
           a Subversion client can receive two different types of
           information:</para>
+-->
+        <para>Wenn über <literal>https://</literal> mit Apache
+          gesprochen wird, kann ein Subversion-Client zwei
+          unterschiedliche Arten von Informationen empfangen:</para>
 
+<!--
         <itemizedlist>
           <listitem><para>A server certificate</para></listitem>
           <listitem><para>A demand for a client certificate</para></listitem>
         </itemizedlist>
+-->
+        <itemizedlist>
+          <listitem><para>Ein Server-Zertifikat</para></listitem>
+          <listitem><para>Eine Nachfrage für ein
+            Client-Zertifikat</para></listitem>
+        </itemizedlist>
 
+<!--
         <para>If the client receives a server certificate, it needs to
           verify that it trusts the certificate: is the server really
           who it claims to be?  The OpenSSL library does this by
@@ -3772,7 +3819,21 @@ $
           hostname mismatch), the Subversion command-line client will
           ask you whether you want to trust the server certificate
           anyway:</para>
+-->
+        <para>Wenn der Client ein Server-Zertifikat empfängt, muss er
+          sicherstellen, dass er dem Zertifikat vertrauen kann wird:
+          handelt es sich bei dem Server wirklich um denjenigen, als
+          der er sich ausgibt?  Die OpenSSL-Bibliothek macht das,
+          indem der Unterzeichner des Server-Zertifikats, die
+          sogenannte <firstterm>Certificate Authority</firstterm>
+          (CA), untersucht wird. Falls OpenSSL der CA nicht
+          automatisch vertrauen kann, oder falls ein anderes Problem
+          auftaucht (etwa ein abgelaufenes Zertifikat oder ein nicht
+          übereinstimmender Rechnername), fragt Sie der
+          Subversion-Kommandozeilenclient, ob Sie dem
+          Server-Zertifikat dennoch vertrauen möchten:</para>
 
+<!--
         <screen>
 $ svn list https://host.example.com/repos/project
 
@@ -3787,7 +3848,23 @@ Certificate information:
 
 (R)eject, accept (t)emporarily or accept (p)ermanently?
 </screen>
+-->
+        <screen>
+$ svn list https://host.example.com/repos/project
 
+Fehler bei der Validierung des Serverzertifikats für »https://host.example.com:443«:
+ - Das Zertifikat ist nicht von einer vertrauenswürdigen Instanz ausgestellt
+   Überprüfen Sie den Fingerabdruck, um das Zertifikat zu validieren!
+Zertifikats-Informationen:
+ - Hostname: host.example.com
+ - Gültig: von Jan 30 19:23:56 2004 GMT bis Jan 30 19:23:56 2006 GMT
+ - Aussteller: CA, example.com, Sometown, California, US
+ - Fingerabdruck: 7d:e1:a9:34:33:39:ba:6a:e9:a5:c4:22:98:7b:76:5c:92:a0:9c:7b
+
+Ve(r)werfen, (t)emporär akzeptieren oder (p)ermanent akzeptieren?
+</screen>
+
+<!--
         <para>This dialogue should look familiar; it's essentially the
           same question you've probably seen coming from your web
           browser (which is just another HTTP client like Subversion).
@@ -3798,6 +3875,19 @@ Certificate information:
           linkend="svn.serverconfig.netmodel.credcache"/>).  If cached,
           Subversion will automatically trust this certificate
           in future negotiations.</para>
+-->
+        <para>Dieser Dialog sollte bekannt aussehen; im Wesentlichen
+          ist es dieselbe Frage, die Sie wahrscheinlich bei Ihrem
+          Web-Browser gesehen haben (der auch bloß ein weiterer
+          HTTP-Client ist, so wie Subversion).
+          Falls Sie die Option <literal>(p)</literal>ermanent
+          auswählen, wird das Server-Zertifikat in Ihrem privaten  
+          Laufzeit-<filename>auth/</filename>-Bereich
+          zwischengespeichert, ebenso wie Ihr Benutzername und
+          Passwort (siehe <xref
+          linkend="svn.serverconfig.netmodel.credcache"/>). Falls es
+          zwischengespeichert ist, wird Subversion diesem Zertifikat
+          bei künftigen Protokollverhandlungen vertrauen.</para>
 
         <para>Your runtime <filename>servers</filename> file also gives
           you the ability to make your Subversion client automatically
