@@ -3294,25 +3294,20 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
     <para>Both Apache and <command>svnserve</command> are capable of
       granting (or denying) permissions to users.  Typically this is
       done over the entire repository: a user can read the repository
-      (or not), and she can write to the repository (or not).  It's
-      also possible, however, to define finer-grained access rules.
-      One set of users may have permission to write to a certain
-      directory in the repository, but not others; another directory
-      might not even be readable by all but a few special
-      people.  As files are paths, too, it's even possible to restrict
-      access on a per file basis.</para>
+      (or not), and she can write to the repository (or not).</para>
 
-    <para>Both servers use a common file format to describe these
-      path-based access rules.  In the case of Apache, one needs to
-      load the <command>mod_authz_svn</command> module and then add
-      the <literal>AuthzSVNAccessFile</literal> directive (within
-      the <filename>httpd.conf</filename> file) pointing to your own
-      access rules file.  (For a full explanation, see
-      <xref linkend="svn.serverconfig.httpd.authz.perdir"/>.)  If
-      you're using <command>svnserve</command>, you need to make
-      the <literal>authz-db</literal> variable
-      (within <filename>svnserve.conf</filename>) point to your access
-      rules file.</para>
+    <para>It's also possible, however, to define finer-grained access
+      rules.  One set of users may have permission to write to a
+      certain directory in the repository, but not others; another
+      directory might not even be readable by all but a few special
+      people.  It's even possible to restrict access on a per file
+      basis.</para>
+
+    <para>Both Subversion servers use a common file format to describe
+      these path-based access rules.  In this section, we will
+      explain that file format, as well how to configure your
+      Subversion server to use it for managing path-based
+      authorization.</para>
 
     <sidebar>
       <title>Do You Really Need Path-Based Access Control?</title>
@@ -3373,91 +3368,121 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
 
     </sidebar>
 
-    <para>Once your server knows where to find your access file, it's
-      time to define the rules.</para>
+    <!-- =============================================================== -->
+    <sect2 id="svn.serverconfig.pathbasedauthz.getting-started">
 
-    <para>The syntax of the file is the same familiar one used
-      by <filename>svnserve.conf</filename> and the runtime
-      configuration files.  Lines that start with a hash
-      (<literal>#</literal>) are ignored.  In its simplest form, each
-      section names a repository and path within it, as well as the
-      authenticated usernames are the option names within each
-      section.  The value of each option describes the user's level of
-      access to the repository path: either
-      <literal>r</literal> (read-only) or <literal>rw</literal>
-      (read/write).  If the user is not mentioned at all, no access is
-      allowed.</para>
+      <title>Getting Started with Path-Based Access Control</title>
 
-    <para>To be more specific: the value of the section names is
-      either of the form <literal>[repos-name:path]</literal> or of the
-      form <literal>[path]</literal>.</para>
+      <para>Subversion offers path-based access control in Apache via
+        the <command>mod_authz_svn</command> module, which must be
+        loaded using the <literal>LoadModule</literal> directive
+        in <filename>httpd.conf</filename> in the same fashion
+        that <command>mod_dav_svn</command> itself is loaded.  To
+        enable the use of this module for your repositories, you'll
+        add the <literal>AuthzSVNAccessFile</literal> directive (again
+        within the <filename>httpd.conf</filename> file) pointing to
+        your own access rules file.  (For a full explanation, see
+        <xref linkend="svn.serverconfig.httpd.authz.perdir"/>.)</para>
 
-    <warning>
-      <para>Prior to version 1.7, Subversion treated repository names
-        and paths in a case-insensitive fashion for the purposes of
-        access control, converting them to lower case internally
-        before comparing them against the contents of your access
-        file.  It now does these comparisons case-sensitively.  If you
-        upgraded to Subversion 1.7 from an older version, you should
-        review your access files for case correctness.</para>
-    </warning>
+      <para>To configure path-based authorization
+        in <command>svnserve</command>, simply point
+        the <literal>authz-db</literal> configuration variable (within
+        your <filename>svnserve.conf</filename> file) to your access
+        rules file.</para>
 
-    <para>If you're using the
-      <literal>SVNParentPath</literal> directive, it's important
-      to specify the repository names in your sections.  If you omit
-      them, a section such as
-      <literal>[/some/dir]</literal> will match the path
-      <filename>/some/dir</filename> in <emphasis>every</emphasis>
-      repository.  If you're using the <literal>SVNPath</literal>
-      directive, however, it's fine to only define paths in your
-      sections&mdash;after all, there's only one repository.</para>
+      <para>Once your server knows where to look for your access
+        rules, it's time to define those rules.</para>
 
-    <informalexample>
-      <programlisting>
+      <para>The syntax of the Subversion access file is the same
+        familiar one used by <filename>svnserve.conf</filename> and
+        the runtime configuration files.  Lines that start with a hash
+        (<literal>#</literal>) are ignored.  In its simplest form,
+        each section names a versioned path and, optionally, the
+        repository in which that path is found.  In other words,
+        except for a few reserved sections, section names are of one
+        of two forms: either <literal>[repos-name:path]</literal>
+        or <literal>[path]</literal>.  Authenticated usernames are the
+        option names within each section, and an option's value
+        describes that user's level of access to the repository path:
+        either <literal>r</literal> (read-only) or <literal>rw</literal>
+        (read/write).  If the user is not mentioned at all, no access is
+        allowed.</para>
+
+      <para>Here's a simple example demonstrating a piece of the
+        access configuration which grants read access Sally, and
+        read/write access to Harry, for the
+        path <filename>/branches/calc/bug-142</filename> (and all its
+        children) in the repository <literal>calc</literal>:</para>
+
+      <informalexample>
+        <programlisting>
 [calc:/branches/calc/bug-142]
 harry = rw
 sally = r
 </programlisting>
-    </informalexample>
+      </informalexample>
 
-    <para>In this first example, the user <literal>harry</literal> has
-      full read and write access on the
-      <filename>/branches/calc/bug-142</filename> directory in the
-      <literal>calc</literal> repository, but the user
-      <literal>sally</literal> has read-only access.  Any other users
-      are blocked from accessing this directory.</para>
+      <warning>
+        <para>Prior to version 1.7, Subversion treated repository names
+          and paths in a case-insensitive fashion for the purposes of
+          access control, converting them to lower case internally
+          before comparing them against the contents of your access
+          file.  It now does these comparisons case-sensitively.  If you
+          upgraded to Subversion 1.7 from an older version, you should
+          review your access files for case correctness.</para>
+      </warning>
 
-    <warning>
-      <para><command>mod_dav_svn</command> offers a directive,
-        <literal>SVNReposName</literal>, which allows administrators
-        to define a more human-friendly name, of sorts, for a
-        repository:</para>
+      <para>The name of a repository as evaluated by the authorization
+        subsystem is derived directly from the repository's path.
+        Exactly how this happens differs between to two server
+        options. <command>mod_dav_svn</command> uses only the basename
+        of the repository's root URL<footnote><para>Any human-readable
+        name for a repository configured via
+        the <literal>SVNReposName</literal> <filename>httpd.conf</filename>
+        directive will be ignored by the authorization subsystem.
+        Your access control file sections must refer to repositories
+        by their server-sensitive paths as previously
+        described.</para></footnote>,
+        while <command>svnserve</command> uses the entire relative
+        path from the serving root (as determined by
+        its <option>--root</option> (<option>-r</option>) command-line
+        option) to the repository.</para>
+
+      <warning>
+        <para>This different ways that the repository's name is
+          determined by <command>mod_dav_svn</command>
+          and <command>svnserve</command> can cause problems when
+          trying to serve a repository via both servers
+          simultaneously.  Naturally, an administrator would prefer to
+          point both servers' configurations toward a common access
+          file.  However, for this to work, you must ensure that the
+          repository name portion of the file's section names are
+          compatible with each server's idea of what the repository
+          name should be&mdash;for example, by
+          configuring <command>svnserve</command>'s root to be the
+          same as <command>mod_dav_svn</command>'s configured
+          <literal>SVNParentPath</literal>, or by using a different
+          access file per repository so that section names needn't
+          reference the repository at all.</para>
+      </warning>
+
+      <para>If you're using the <literal>SVNParentPath</literal>
+        directive, it's important to specify the repository names in
+        your sections.  If you omit them, a section such as
+        <literal>[/some/dir]</literal> will match the path
+        <filename>/some/dir</filename> in <emphasis>every</emphasis>
+        repository.  If you're using the <literal>SVNPath</literal>
+        directive, however, it's fine to provide only paths in your
+        sections&mdash;after all, there's only one repository.</para>
+
+      <para>Permissions are inherited from a path's parent directory.
+        That means we can specify a subdirectory with a different
+        access policy for Sally.  Let's continue our previous
+        example, and grant Sally write access to a child of the branch
+        that she's otherwise permitted only to read:</para>
 
       <informalexample>
         <programlisting>
-&lt;Location /svn/calc&gt;
-  SVNPath /var/svn/calc
-  SVNReposName "Calculator Application"
-&hellip;
-</programlisting>
-      </informalexample>
-
-      <para>This allows <command>mod_dav_svn</command> to identify the
-        repository by something other than merely its server directory
-        basename&mdash;<filename>calc</filename>, in the previous
-        example&mdash;when providing directory listings of repository
-        content.  Be aware, however, that when consulting the access
-        file for authorization rules, Subversion uses this repository
-        basename for comparison, <emphasis>not</emphasis> any
-        configured human-friendly name.</para>
-    </warning>
-
-    <para>Of course, permissions are inherited from parent to child
-      directory.  That means we can specify a subdirectory with a
-      different access policy for Sally:</para>
-
-    <informalexample>
-      <programlisting>
 [calc:/branches/calc/bug-142]
 harry = rw
 sally = r
@@ -3466,19 +3491,19 @@ sally = r
 [calc:/branches/calc/bug-142/testing]
 sally = rw
 </programlisting>
-    </informalexample>
+      </informalexample>
 
-    <para>Now Sally can write to the <filename>testing</filename>
-      subdirectory of the branch, but can still only read other parts.
-      Harry, meanwhile, continues to have complete read/write access
-      to the whole branch.</para>
+      <para>Now Sally can write to the <filename>testing</filename>
+        subdirectory of the branch, but can still only read other parts.
+        Harry, meanwhile, continues to have complete read/write access
+        to the whole branch.</para>
 
-    <para>It's also possible to explicitly deny permission to someone
-      via inheritance rules, by setting the username variable to
-      nothing:</para>
+      <para>It's also possible to explicitly deny permission to someone
+        via inheritance rules, by setting the username variable to
+        nothing:</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [calc:/branches/calc/bug-142]
 harry = rw
 sally = r
@@ -3486,68 +3511,92 @@ sally = r
 [calc:/branches/calc/bug-142/secret]
 harry =
 </programlisting>
-    </informalexample>
+      </informalexample>
 
-    <para>In this example, Harry has read/write access to the
-      entire <filename>bug-142</filename> tree, but has absolutely no
-      access at all to the <filename>secret</filename> subdirectory
-      within it.</para>
+      <para>In this example, Harry has read/write access to the
+        entire <filename>bug-142</filename> tree, but has absolutely no
+        access at all to the <filename>secret</filename> subdirectory
+        within it.</para>
 
-    <tip>
-      <para>The thing to remember is that the most specific path
-        always matches first.  The server tries to match the path
-        itself, and then the parent of the path, then the parent of
-        that, and so on.  The net effect is that mentioning a specific
-        path in the access file will always override any permissions
-        inherited from parent directories.</para>
+      <tip>
+        <para>The thing to remember is that the most specific path
+          always matches first.  The server tries to match the path
+          itself, and then the parent of the path, then the parent of
+          that, and so on.  The net effect is that mentioning a specific
+          path in the access file will always override any permissions
+          inherited from parent directories.</para>
 
-      <para>Similarly, sections that specify a repository name have
-        precedence over those that don't: if both
-        <literal>[calc:/some/path]</literal> and
-        <literal>[/some/path]</literal> are present, the former will be used
-        and the latter ignored for <literal>calc</literal>.</para>
-    </tip>
+        <para>Similarly, sections that specify a repository name have
+          precedence over those that don't: if both
+          <literal>[calc:/some/path]</literal> and
+          <literal>[/some/path]</literal> are present, the former will be used
+          and the latter ignored for <literal>calc</literal>.</para>
+      </tip>
 
-    <para>By default, nobody has any access to the repository at all.
-      That means that if you're starting with an empty file, you'll
-      probably want to give at least read permission to all users at
-      the root of the repository.  You can do this by using the
-      asterisk variable (<literal>*</literal>), which means <quote>all
-      users</quote>:</para>
+      <para>By default, nobody has any access to any repository at all.
+        That means that if you're starting with an empty file, you'll
+        probably want to give at least read permission to all users at
+        the roots of the repositories.  You can do this by using the
+        asterisk variable (<literal>*</literal>), which means <quote>all
+        users</quote>:</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [/]
 * = r
 </programlisting>
-    </informalexample>
+      </informalexample>
 
-    <para>This is a common setup; notice that no repository
-      name is mentioned in the section name.  This makes all repositories
-      world-readable to all users.  Once all users have read access to
-      the repositories, you can give explicit
-      <literal>rw</literal> permission to certain users on specific
-      subdirectories within specific repositories.</para>
+      <para>This is a common setup; notice that no repository
+        name is mentioned in the section name.  This makes all repositories
+        world-readable to all users.  Once all users have read access to
+        the repositories, you can give explicit
+        <literal>rw</literal> permission to certain users on specific
+        subdirectories within specific repositories.</para>
 
-    <para>The access file also allows you to define whole groups of
-      users, much like the Unix <filename>/etc/group</filename>
-      file:</para>
+      <para>Note that while all of the previous examples use
+        directories, that's only because defining access rules on
+        directories is the most common case.  You may similarly
+        restrict access on file paths, too.</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
+[calendar:/projects/calendar/manager.ics]
+harry = rw
+sally = r
+</programlisting>
+      </informalexample>
+
+    </sect2>
+
+    <!-- =============================================================== -->
+    <sect2 id="svn.serverconfig.pathbasedauthz.groups">
+
+      <title>Access Control Groups</title>
+
+      <para>The access file also allows you to define whole groups of
+        users, much like the Unix <filename>/etc/group</filename>
+        file.  To do this, create a <literal>groups</literal> section
+        in your access file, and then describe your groups within that
+        section: each variable's name defines the name of the group,
+        and its value is a comma-delimited list of usernames which
+        are part of that group.</para>
+
+      <informalexample>
+        <programlisting>
 [groups]
 calc-developers = harry, sally, joe
 paint-developers = frank, sally, jane
 everyone = harry, sally, joe, frank, jane
 </programlisting>
-    </informalexample>
+      </informalexample>
 
-    <para>Groups can be granted access control just like users.
-      Distinguish them with an <quote>at</quote>
-      (<literal>@</literal>) prefix:</para>
+      <para>Groups can be granted access control just like users.
+        Distinguish them with an <quote>at sign</quote>
+        (<literal>@</literal>) prefix:</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [calc:/projects/calc]
 @calc-developers = rw
 
@@ -3555,122 +3604,140 @@ everyone = harry, sally, joe, frank, jane
 jane = r
 @paint-developers = rw
 </programlisting>
-    </informalexample>
+      </informalexample>
 
-    <para>Another important fact is that group permissions are not
-      overridden by individual user permissions. Rather, the
-      <emphasis>combination</emphasis> of all matching permissions is
-      granted.  In the prior example, Jane is a member of the
-      <literal>paint-developers</literal> group, which has read/write
-      access.  Combined with the <literal>jane = r</literal> rule,
-      this still gives Jane read/write access.  Permissions for group
-      members can only be extended beyond the permissions the group
-      already has. Restricting users who are part of a group to less
-      than their group's permissions is impossible.</para>
+      <para>Another important fact is that group permissions are not
+        overridden by individual user permissions. Rather, the
+        <emphasis>combination</emphasis> of all matching permissions is
+        granted.  In the prior example, Jane is a member of the
+        <literal>paint-developers</literal> group, which has read/write
+        access.  Combined with the <literal>jane = r</literal> rule,
+        this still gives Jane read/write access.  Permissions for group
+        members can only be extended beyond the permissions the group
+        already has. Restricting users who are part of a group to less
+        than their group's permissions is impossible.</para>
 
-    <para>Groups can also be defined to contain other groups:</para>
+      <para>Groups can also be defined to contain other groups:</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [groups]
 calc-developers = harry, sally, joe
 paint-developers = frank, sally, jane
 everyone = @calc-developers, @paint-developers
 </programlisting>
-    </informalexample>
+      </informalexample>
 
-    <para>Subversion 1.5 brought several useful features to the access
-      file syntax&mdash;username aliases, authentication class tokens,
-      and a new rule exclusion mechanism&mdash;all of which further
-      simplify the maintenance of the access file.  We'll describe
-      first the username aliases feature.</para>
+    </sect2>
 
-    <para>Some authentication systems expect and carry relatively
-      short usernames of the sorts we've been describing
-      here&mdash;<literal>harry</literal>,
-      <literal>sally</literal>, <literal>joe</literal>, and so on.  But
-      other authentication systems&mdash;such as those which use LDAP
-      stores or SSL client certificates&mdash;may carry much more
-      complex usernames.  For example, Harry's username in an
-      LDAP-protected system might be <literal>CN=Harold
-      Hacker,OU=Engineers,DC=red-bean,DC=com</literal>.  With
-      usernames like that, the access file can become quite bloated
-      with long or obscure usernames that are easy to mistype.
-      Fortunately, username aliases allow you to have to type the
-      correct complex username only once, in a statement which assigns to
-      it a more easily digestable alias.</para>
+    <!-- =============================================================== -->
+    <sect2 id="svn.serverconfig.pathbasedauthz.aliases">
 
-    <informalexample>
-      <programlisting>
+      <title>Username Aliases</title>
+
+      <para>Some authentication systems expect and carry relatively
+        short usernames of the sorts we've been describing
+        here&mdash;<literal>harry</literal>,
+        <literal>sally</literal>, <literal>joe</literal>, and so on.  But
+        other authentication systems&mdash;such as those which use LDAP
+        stores or SSL client certificates&mdash;may carry much more
+        complex usernames.  For example, Harry's username in an
+        LDAP-protected system might be <literal>CN=Harold
+        Hacker,OU=Engineers,DC=red-bean,DC=com</literal>.  With
+        usernames like that, the access file can become quite bloated
+        with long or obscure usernames that are easy to
+        mistype.</para>
+
+      <para>Fortunately, Subversion 1.5 introduced username aliases to
+        the access file syntax.  Username aliases allow you to have to
+        type the correct complex username only once, in a statement
+        which assigns to it a more easily digestable alias.</para>
+
+      <para>Username aliases are defined in the
+        special <literal>aliases</literal> section of the access file,
+        with each variable name in that section defining an alias, and
+        the value of those variables carrying the real Subversion
+        username which is being aliased.</para>
+
+      <informalexample>
+        <programlisting>
 [aliases]
 harry = CN=Harold Hacker,OU=Engineers,DC=red-bean,DC=com
 sally = CN=Sally Swatterbug,OU=Engineers,DC=red-bean,DC=com
 joe = CN=Gerald I. Joseph,OU=Engineers,DC=red-bean,DC=com
 &hellip;
 </programlisting>
-    </informalexample>
+      </informalexample>
 
-    <para>Once you've defined a set of aliases, you can refer to the
-      users elsewhere in the access file via their aliases in all the
-      same places you could have instead used their actual usernames.
-      Simply prepend an ampersand to the alias to distinguish it from
-      a regular username:</para>
+      <para>Once you've defined a set of aliases, you can refer to the
+        users elsewhere in the access file via their aliases in all the
+        same places you could have instead used their actual usernames.
+        Simply prepend an ampersand to the alias to distinguish it from
+        a regular username:</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [groups]
 calc-developers = &amp;harry, &amp;sally, &amp;joe
 paint-developers = &amp;frank, &amp;sally, &amp;jane
 everyone = @calc-developers, @paint-developers
 </programlisting>
-    </informalexample>
+      </informalexample>
 
-    <para>You might also choose to use aliases if your users'
-      usernames change frequently.  Doing so allows you to need to
-      update only the aliases table when these username changes occur,
-      instead of doing global-search-and-replace operations on the
-      whole access file.</para>
+      <para>You might also choose to use aliases if your users'
+        usernames change frequently.  Doing so allows you to need to
+        update only the aliases table when these username changes occur,
+        instead of doing global search-and-replace operations on the
+        whole access file.</para>
 
-    <para>Subversion also supports some <quote>magic</quote> tokens
-      for helping you to make rule assignments based on the user's
-      authentication class.  One such token is
-      the <literal>$authenticated</literal> token.  Use this token
-      where you would otherwise specify a username, alias, or group
-      name in your authorization rules to declare the permissions
-      granted to any user who has authenticated with any username at
-      all.  Similarly employed is the <literal>$anonymous</literal>
-      token, except that it matches everyone who has
-      <emphasis>not</emphasis> authenticated with a username.</para>
+    </sect2>
 
-    <informalexample>
-      <programlisting>
+    <!-- =============================================================== -->
+    <sect2 id="svn.serverconfig.pathbasedauthz.authclass-tokens">
+
+      <title>Advanced Access Control Features</title>
+
+      <para>Beginning with Subversion 1.5, the access file syntax also
+        supports some <quote>magic</quote> tokens for helping you to
+        make rule assignments based on the user's authentication
+        class.  One such token is
+        the <literal>$authenticated</literal> token.  Use this token
+        where you would otherwise specify a username, alias, or group
+        name in your authorization rules to declare the permissions
+        granted to any user who has authenticated with any username at
+        all.  Similarly employed is the <literal>$anonymous</literal>
+        token, except that it matches everyone who has
+        <emphasis>not</emphasis> authenticated with a username.</para>
+
+      <informalexample>
+        <programlisting>
 [calendar:/projects/calendar]
 $anonymous = r
 $authenticated = rw
 </programlisting>
-    </informalexample>
+      </informalexample>
 
-    <para>Finally, another handy bit of access file syntax magic is
-      the use of the tilde (<literal>~</literal>) character as an
-      exclusion marker.  In your authorization rules, prefixing a
-      username, alias, group name, or authentication class token with
-      a tilde character will cause Subversion to apply the rule to
-      users who do <emphasis>not</emphasis> match the rule.  Though
-      somewhat unnecessarily obfuscated, the following block is
-      equivalent to the one in the previous example:</para>
+      <para>Another handy bit of access file syntax magic is the use
+        of the tilde (<literal>~</literal>) character as an exclusion
+        marker.  In your authorization rules, prefixing a username,
+        alias, group name, or authentication class token with a tilde
+        character will cause Subversion to apply the rule to users who
+        do <emphasis>not</emphasis> match the rule.  Though somewhat
+        unnecessarily obfuscated, the following block is equivalent to
+        the one in the previous example:</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [calendar:/projects/calendar]
 ~$authenticated = r
 ~$anonymous = rw
 </programlisting>
-    </informalexample>
+      </informalexample>
 
-    <para>A less obvious example might be as follows:</para>
+      <para>A less obvious example might be as follows:</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [groups]
 calc-developers = &amp;harry, &amp;sally, &amp;joe
 calc-owners = &amp;hewlett, &amp;packard
@@ -3684,49 +3751,48 @@ calc = @calc-developers, @calc-owners
 [calc:/projects/calc/tags]
 ~@calc-owners = r
 </programlisting>
-    </informalexample>
+      </informalexample>
 
-    <para>All of the above examples use directories, because defining
-      access rules on them is the most common case.  But is similarly
-      able to restrict access on file paths, too.</para>
+    </sect2>
 
-    <informalexample>
-      <programlisting>
-[calendar:/projects/calendar/manager.ics]
-harry = rw
-sally = r
-</programlisting>
-    </informalexample>
+    <!-- =============================================================== -->
+    <sect2 id="svn.serverconfig.pathbasedauthz.gotchas">
 
-    <!-- ### FIXME: This is very Neon-specific. -->
-    <sidebar>
-      <title>Partial Readability and Checkouts</title>
+      <title>Some Gotchas with Access Control</title>
 
       <para>If you're using Apache as your Subversion server and have
         made certain subdirectories of your repository unreadable to
         certain users, you need to be aware of a possible nonoptimal
         behavior with <command>svn checkout</command>.</para>
 
-      <para>When the client requests a checkout or update over HTTP,
-        it makes a single server request and receives a single (often
-        large) server response.  When the server receives the request,
-        that is the <emphasis>only</emphasis> opportunity Apache has
-        to demand user authentication.  This has some odd side
-        effects.  For example, if a certain subdirectory of the
-        repository is readable only by user Sally, and user Harry
-        checks out a parent directory, his client will respond to the
-        initial authentication challenge as Harry.  As the server
-        generates the large response, there's no way it can resend an
+      <para>Depending on which HTTP communication library the
+        Subversion client is using, it may request that the entire
+        payload of a checkout or update be delivered in a single
+        (often large) response to the primary checkout/update request.
+        When this happens, this single request is the
+        <emphasis>only</emphasis> opportunity Apache has to demand
+        user authentication.  This has some odd side effects.  For
+        example, if a certain subdirectory of the repository is
+        readable only by user Sally, and user Harry checks out a
+        parent directory, his client will respond to the initial
+        authentication challenge as Harry.  As the server generates
+        the large response, there's no way it can resend an
         authentication challenge when it reaches the special
         subdirectory; thus the subdirectory is skipped altogether,
         rather than asking the user to reauthenticate as Sally at the
-        right moment.  In a similar way, if the root of the repository
-        is anonymously world-readable, the entire checkout will be
-        done without authentication&mdash;again, skipping the
-        unreadable directory, rather than asking for authentication
-        partway through.</para>
-    </sidebar>
+        right moment.</para>
 
+      <para>In a similar way, if the root of the repository is
+        anonymously world-readable, the entire checkout will be done
+        without authentication&mdash;again, skipping the unreadable
+        directory, rather than asking for authentication partway
+        through.<footnote><para>For more on this, see the blog
+        post <emphasis>Authz and Anon Authn Agony</emphasis> at
+        <ulink url="http://blogs.collab.net/subversion/2007/03/authz_and_anon_/"
+        />.</para></footnote></para>
+      <!-- TODO: Merge content from the blog post into the book. --> 
+
+    </sect2>
   </sect1>
 
   <!-- ================================================================= -->
