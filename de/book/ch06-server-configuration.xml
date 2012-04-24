@@ -4043,23 +4043,41 @@ ssl-client-cert-password = somepassword
 <!--
       <title>Authorization Options</title>
 -->
-      <title>Authorization Options</title>
+      <title>Autorisierungsoptionen</title>
 
+<!--
       <para>At this point, you've configured authentication, but not
         authorization.  Apache is able to challenge clients and
         confirm identities, but it has not been told how to allow or
         restrict access to the clients bearing those identities.  This
         section describes two strategies for controlling access to
         your repositories.</para>
+-->
+      <para>An diesem Punkt haben Sie die Authentifizierung
+        eingerichtet, nicht jedoch die Autorisierung. Apache kann
+        Clients auffordern und Identitäten bestätigen, aber es wurde
+        ihm noch nicht gesagt, wie er den Zugriff von Clients mit diesen
+        Identitäten erlauben oder einschränken soll. Dieser Abschnitt
+        beschreibt zwei Strategien, um den Zugriff auf Ihre
+        Projektarchive zu kontrollieren.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.authz.blanket">
+<!--
         <title>Blanket access control</title>
+-->
+        <title>Pauschale Zugriffskontrolle</title>
 
+<!--
         <para>The simplest form of access control is to authorize
           certain users for either read-only access to a repository or
           read/write access to a repository.</para>
+-->
+        <para>Die einfachste Form der Zugriffskontrolle besteht darin,
+          bestimmten Nutzern entweder nur Lesezugriff oder Lese- und
+          Schreibzugriff auf ein Projektarchiv zu gewähren.</para>
 
+<!--
         <para>You can restrict access on all repository operations by
           adding the <literal>Require valid-user</literal> directive
           to your <literal>&lt;Location&gt;</literal> block.  Using
@@ -4068,7 +4086,19 @@ ssl-client-cert-password = somepassword
           <literal>sally</literal> and that provided the correct
           password for their respective username would be allowed to
           do anything with the Subversion repository:</para>
+-->
+        <para>Sie lönnen den Zugriff auf alle Operationen im
+          Projektarchiv einschränken, indem Sie die Direktive 
+          <literal>Require valid-user</literal> Ihrem
+          <literal>&lt;Location&gt;</literal>-Block hinzufügen. Für
+          unser vorheriges Beispiel würde das bedeuten, dass es nur
+          Clients, die sich entweder als <literal>harry</literal> oder
+          <literal>sally</literal> ausgeben und das korrekte Passwort
+          für den entsprechenden Nutzernamen liefern, erlaubt wird,
+          irgendetwas mit dem Subversion-Projektarchiv zu
+          machen:</para>
 
+<!--
         <screen>
 &lt;Location /svn&gt;
   DAV svn
@@ -4083,7 +4113,23 @@ ssl-client-cert-password = somepassword
   Require valid-user
 &lt;/Location&gt;
 </screen>
+-->
+        <screen>
+&lt;Location /svn&gt;
+  DAV svn
+  SVNParentPath /var/svn
 
+  # wie ein Nutzer authentifiziert wird
+  AuthType Basic
+  AuthName "Subversion repository"
+  AuthUserFile /path/to/users/file
+
+  # nur authentifizierte Nutzer dürfen an das Projektarchiv
+  Require valid-user
+&lt;/Location&gt;
+</screen>
+
+<!--
         <para>Sometimes you don't need to run such a tight ship.  For
           example, Subversion's own source code repository at
           <ulink url="http://svn.collab.net/repos/svn"/> allows anyone
@@ -4097,7 +4143,23 @@ ssl-client-cert-password = somepassword
           have starting and ending tags, and you would nest them
           inside your <literal>&lt;Location&gt;</literal>
           block.</para>
+-->
+        <para>Manchmal müssen Sie gar nicht so ein strenges Regiment
+          führen. So erlaubt beispielsweise das eigene Projektarchiv
+          von Subversion unter <ulink
+            url="http://svn.collab.net/repos/svn"/> allen auf der Welt
+          lesende Operationen (wie etwa das Auschecken von
+          Arbeitskopien und das Stöbern mit einem Web-Browser),
+          beschränkt jedoch Schreiboperationen auf authentifiziere
+          Nutzer. Um diese abgestufte Einschränkung einzurichten,
+          können Sie die Konfigurationsdirektiven
+          <literal>Limit</literal> und <literal>LimitExcept</literal>
+          verwenden. Ähnlich der Direktive <literal>Location</literal>
+          haben diese Blöcke Start- und End-Tags, die Sie innerhalb
+          Ihres <literal>&lt;Location&gt;</literal>-Blocks
+          unterbringen.</para>
 
+<!--
         <para>The parameters present on the <literal>Limit</literal>
           and <literal>LimitExcept</literal> directives are HTTP
           request types that are affected by that block.  For example,
@@ -4111,7 +4173,22 @@ ssl-client-cert-password = somepassword
           directive would be placed inside the
           <literal>&lt;LimitExcept&gt;</literal> block instead of just
           inside the <literal>&lt;Location&gt;</literal> block.</para>
+-->
+        <para>Die für die Ditrektiven <literal>Limit</literal> und
+          <literal>LimitExcept</literal> verfügbaren Parameter sind
+          HTTP-Anfrage-Typen, die durch diesen Block berührt werden.
+          Falls Sie beispielsweise alle Zugriffe auf Ihr Projektarchiv
+          unterbinden möchten, außer die momentan unterstützten
+          Leseoperationen, so würden Sie die Direktive
+          <literal>LimitExcept</literal> mit den Anfrage-Parametern
+          <literal>GET</literal>, <literal>PROPFIND</literal>,
+          <literal>OPTIONS</literal> und <literal>REPORT</literal>
+          verwenden. Dann wird die eben erwähnte Direktive
+          <literal>Require valid-user</literal> im
+          <literal>&lt;LimitExcept&gt;</literal>-Block statt innerhalb
+          des <literal>&lt;Location&gt;</literal>-Blocks eingefügt.</para>
 
+<!--
         <screen>
 &lt;Location /svn&gt;
   DAV svn
@@ -4128,21 +4205,51 @@ ssl-client-cert-password = somepassword
   &lt;/LimitExcept&gt;
 &lt;/Location&gt;
 </screen>
+-->
+        <screen>
+&lt;Location /svn&gt;
+  DAV svn
+  SVNParentPath /var/svn
 
+  # wie ein Nutzer authentifiziert wird
+  AuthType Basic
+  AuthName "Subversion repository"
+  AuthUserFile /path/to/users/file
+
+  # nur authentifizierte Nutzer dürfen mehr als die angegebenen Operationen
+  &lt;LimitExcept GET PROPFIND OPTIONS REPORT&gt;
+    Require valid-user
+  &lt;/LimitExcept&gt;
+&lt;/Location&gt;
+</screen>
+
+<!--
         <para>These are only a few simple examples.  For more in-depth
           information about Apache access control and the
           <literal>Require</literal> directive, take a look at the
           <literal>Security</literal> section of the Apache
           documentation's tutorials collection at <ulink
            url="http://httpd.apache.org/docs-2.0/misc/tutorials.html"/>.</para>
+-->
+        <para>Dies sind nur ein paar einfache Beispiele. Für tiefer
+          gehende Informationen über Apaches Zugriffskontrolle und die
+          Direktive <literal>Require</literal> sollten Sie im
+          Abschnitt <literal>Security</literal> der Apache
+          Lehrbuchsammlung unter <ulink
+            url="http://httpd.apache.org/docs-2.0/misc/tutorials.html"/>
+          nachlesen.</para>
 
 
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.authz.perdir">
+<!--
         <title>Per-directory access control</title>
+-->
+        <title>Verzeichnisweise Zugangskontrolle</title>
 
+<!--
         <para>It's possible to set up finer-grained permissions using
           a second Apache httpd module,
           <command>mod_authz_svn</command>.  This module grabs the
@@ -4150,7 +4257,18 @@ ssl-client-cert-password = somepassword
           <command>mod_dav_svn</command> to decode them, and then
           possibly vetoes requests based on access policies defined in
           a configuration file.</para>
+-->
+        <para>Es ist möglich, mithilfe eines zweiten Apache
+          http-Moduls &ndash; <command>mod_authz_svn</command> &ndash;
+          detailliertere Zugriffsrechte einzurichten.  Dieses Modul
+          schnappt sich die verschiedenen undurchsichtigen URLs, die
+          vom Client zum Server gereicht werden, fordert
+          <command>mod_dav_svn</command> auf, sie zu dekodieren, und
+          unterbindet dann möglicherweise Anforderungen entsprechend
+          in einer Konfigurationsdatei definierter Zugriffsregeln.
+        </para>
 
+<!--
         <para>If you've built Subversion from source code,
           <command>mod_authz_svn</command> is automatically built
           and installed alongside <command>mod_dav_svn</command>.
@@ -4159,6 +4277,16 @@ ssl-client-cert-password = somepassword
           right after <command>mod_dav_svn</command>'s
           <literal>LoadModule</literal> directive in
           <filename>httpd.conf</filename>:</para>
+-->
+        <para>Falls Sie Subversion aus Quellcode gebaut haben, ist
+          <command>mod_authz_svn</command> automatisch neben
+          <command>mod_dav_svn</command> gebaut und installiert
+          worden. Viele binäre Distributionen installieren es
+          ebenfalls automatisch. Um die korrekte Installation zu
+          überprüfen, müssen Sie sicherstellen, dass es direkt hinter
+          der <literal>LoadModule</literal>-Directive von
+          <command>mod_dav_svn</command> in
+          <filename>httpd.conf</filename> auftaucht:</para>
 
         <screen>
 LoadModule dav_module         modules/mod_dav.so
@@ -4166,28 +4294,57 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
 LoadModule authz_svn_module   modules/mod_authz_svn.so
 </screen>
 
+<!--
         <para>To activate this module, you need to configure your
           <literal>Location</literal> block to use the
           <literal>AuthzSVNAccessFile</literal> directive, which
           specifies a file containing the permissions policy for paths
           within your repositories.  (In a moment, we'll discuss the
           format of that file.)</para>
+-->
+        <para>Zur Aktivierung dieses Moduls müssen Sie Ihren
+          <literal>Location</literal>-Block mit der Direktive
+          <literal>AuthzSVNAccessFile</literal> konfigurieren, die
+          eine Datei mit Zugriffsrichtlinien für Pfade in Ihren
+          Projektarchiven bezeichnet. (Gleich werden wir auf das
+          Format dieser Datei eingehen.)</para>
 
+<!--
         <para>Apache is flexible, so you have the option to configure
           your block in one of three general patterns.  To begin,
           choose one of these basic configuration patterns.  (The
           following examples are very simple; look at Apache's own
           documentation for much more detail on Apache authentication
           and authorization options.)</para>
+-->
+        <para>Da Apache flexibel ist, haben Sie die Wahl, Ihren Block
+          auf eine von drei Arten zu konfigurieren. Fangen Sie mit der
+          Auswahl eines dieser grundlegenden Konfigurationsmuster an.
+          (Die folgenden Beispiele sind sehr einfach gehalten; sehen
+          Sie sich die mitgelieferte Apache-Dokumentation an, um
+          wesentlich mehr Einzelheiten zu den Authentifizierungs- und
+          Autorisierungsoptionen von Apache zu erfahren.)</para>
 
+<!--
         <para>The simplest block is to allow open access to everyone.
           In this scenario, Apache never sends authentication
           challenges, so all users are treated as
           <quote>anonymous.</quote> (See
           <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-1"/>.)</para>
+-->
+        <para>Der einfachste Block besteht aus einem völlig offenen
+          Zugang. In diesem Szenario schickt Apache niemals
+          Aufforderungen zur Authentifizierung, so dass alle Benutzer
+          als <quote>anonymous</quote> behandelt werden.  (Siehe <xref
+            linkend="svn.serverconfig.httpd.authz.perdir.ex-1"/>.)
+        </para>
 
         <example id="svn.serverconfig.httpd.authz.perdir.ex-1">
+<!--
           <title>A sample configuration for anonymous access</title>
+-->
+          <title>Eine Beispielkonfiguration für anonymen Zugang</title>
+<!--
           <programlisting>
 &lt;Location /repos&gt;
   DAV svn
@@ -4197,8 +4354,19 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
   AuthzSVNAccessFile /path/to/access/file
 &lt;/Location&gt;
           </programlisting>
+-->
+          <programlisting>
+&lt;Location /repos&gt;
+  DAV svn
+  SVNParentPath /var/svn
+
+  # unsere Zugangsrichtlinie
+  AuthzSVNAccessFile /path/to/access/file
+&lt;/Location&gt;
+          </programlisting>
         </example>
 
+<!--
         <para>On the opposite end of the paranoia scale, you can
           configure your block to demand authentication from everyone.
           All clients must supply credentials to identify themselves.
@@ -4206,9 +4374,22 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           <literal>Require valid-user</literal> directive, and it
           defines a means to authenticate.  (See
           <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-2"/>.)</para>
+-->
+        <para>Am anderen Ende der Paranoia-Skala können Sie Ihren
+          Block so konfigurieren, dass sich jedermann authentifizieren
+          muss. Alle Clients müssen sich ausweisen. Ihr Block verlangt
+          eine unbedingte Authentifizierung mit der Direktive
+          <literal>Require valid-user</literal>;  diese Direktive
+          definiert auch, wie die Authentifizierung erfolgen soll.
+          (Siehe <xref
+            linkend="svn.serverconfig.httpd.authz.perdir.ex-2"/>.)</para>
 
         <example id="svn.serverconfig.httpd.authz.perdir.ex-2">
+<!--
           <title>A sample configuration for authenticated access</title>
+-->
+          <title>Eine Beispielkonfiguration für authentifizierten Zugang</title>
+<!--
           <programlisting>
 &lt;Location /repos&gt;
   DAV svn
@@ -4226,8 +4407,27 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
   AuthUserFile /path/to/users/file
 &lt;/Location&gt;
           </programlisting>
+-->
+          <programlisting>
+&lt;Location /repos&gt;
+  DAV svn
+  SVNParentPath /var/svn
+
+  # unsere Zugangsrichtlinie
+  AuthzSVNAccessFile /path/to/access/file
+
+  # nur authentifizierte Benutzer haben Zugriff auf das Projektarchiv
+  Require valid-user
+
+  # wie ein Benutzer zu authentifizieren ist
+  AuthType Basic
+  AuthName "Subversion repository"
+  AuthUserFile /path/to/users/file
+&lt;/Location&gt;
+          </programlisting>
         </example>
 
+<!--
         <para>A third very popular pattern is to allow a combination
           of authenticated and anonymous access.  For example, many
           administrators want to allow anonymous users to read certain
@@ -4240,10 +4440,32 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           and <literal>Require valid-user</literal> directives
           together.  (See
           <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-3"/>.)</para>
+-->
+        <para>Ein drittes sehr verbreitetes Muster ist es, eine
+          Kombination aus authentifizierten und anonymen Zugriff zu
+          erlauben. So möchten beispielsweise viele Administratoren
+          den Lesezugriff auf bestimmte Verzeichnisse des
+          Projektarchivs für anonyme Benutzer freigeben, während
+          in heiklen Bereichen nur authentifizierte Benutzer lesen
+          (oder schreiben) dürfen. Bei dieser Einstellung greifen alle
+          Benutzer zunächst anonym auf das Projektarchiv zu. Falls
+          Ihre Zugangsrichtlinien an einer Stelle einen echten
+          Benutzernamen erfordern sollte, fordert Apache den Client
+          auf, sich zu authentifizieren. Eingestellt wird dieses
+          Verhalten mit den gemeinsam verwendeten Direktiven
+          <literal>Satisfy Any</literal> sowie <literal>Require
+            valid-user</literal>. (Siehe <xref
+            linkend="svn.serverconfig.httpd.authz.perdir.ex-3"/>.)
+        </para>
 
         <example id="svn.serverconfig.httpd.authz.perdir.ex-3">
+<!--
           <title>A sample configuration for mixed
             authenticated/anonymous access</title>
+-->
+          <title>Eine Beispielkonfiguration für gemischten
+            authentifizierten/anonymen Zugang</title>
+<!--
           <programlisting>
 &lt;Location /repos&gt;
   DAV svn
@@ -4263,14 +4485,43 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
   AuthUserFile /path/to/users/file
 &lt;/Location&gt;
           </programlisting>
+-->
+          <programlisting>
+&lt;Location /repos&gt;
+  DAV svn
+  SVNParentPath /var/svn
+
+  # unsere Zugangsrichtlinie
+  AuthzSVNAccessFile /path/to/access/file
+
+  # erst anonymen Zugang, nach Bedarf
+  # echte Authentifizierung
+  Satisfy Any
+  Require valid-user
+
+  # wie ein Benutzer zu authentifizieren ist
+  AuthType Basic
+  AuthName "Subversion repository"
+  AuthUserFile /path/to/users/file
+&lt;/Location&gt;
+          </programlisting>
         </example>
 
+<!--
         <para>Once you've settled on one of these three
           basic <filename>httpd.conf</filename> templates, you need to
           create your file containing access rules for particular
           paths within the repository.  We describe this later in
           this chapter, in
           <xref linkend="svn.serverconfig.pathbasedauthz"/>.</para>
+-->
+        <para>Sobald Sie sich für eine dieser drei grundsätzlichen
+          <filename>httpd.conf</filename>-Vorlagen entschieden haben,
+          müssen Sie Ihre Datei mit den Zugangsregeln für bestimmte
+          Pfade innerhalb des Projektarchivs erstellen. Wir
+          beschreiben später in <xref
+            linkend="svn.serverconfig.pathbasedauthz"/> wie das
+          funktioniert.</para>
 
       </sect3>
 
