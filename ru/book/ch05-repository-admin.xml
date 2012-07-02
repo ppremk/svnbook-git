@@ -1,7 +1,11 @@
-<!-- @TR {{ -->
+<!-- @CHK {{ -->
 <chapter id="svn.reposadmin">
+  <!-- @ENGLISH {{{
   <title>Repository Administration</title>
+  @ENGLISH }}} -->
+  <title>Управление репозиторием</title>
 
+  <!-- @ENGLISH {{{
   <para>The Subversion repository is the central storehouse of all
     your versioned data.  As such, it becomes an obvious candidate for
     all the love and attention an administrator can offer.  While the
@@ -9,7 +13,16 @@
     understand how to properly configure and care for it so that
     potential problems are avoided, and so actual problems are safely
     resolved.</para>
+    @ENGLISH }}} -->
+  <para>Репозиторий Subverison является центральным хранилищем
+    версионированных данных. По этой причине он является очевидным
+    кандидатом на всю любовь и заботу администратора. Хотя
+    репозиторий достаточно неприхотлив, важным является
+    понимание процесса конфигурации и обслуживания, что позволит
+    избежать потенциальных проблем, а также безопасно решить
+    существующие.</para>
 
+  <!-- @ENGLISH {{{
   <para>In this chapter, we'll discuss how to create and configure a
     Subversion repository.  We'll also talk about repository
     maintenance, providing examples of how and when to use the
@@ -17,7 +30,15 @@
     provided with Subversion.  We'll address some common questions and
     mistakes and give some suggestions on how to arrange the data in
     the repository.</para>
+  @ENGLISH }}} -->
+  <para>В этой главе мы обсудим создание и конфигурирование репозитория
+    Subversion. Также мы обсудим обслуживание репозитория, приводя
+    примеры использования инструментов <command>svnlook</command>
+    и <command>svnadmin</command> входящих в дистрибутив Subversion.
+    Обратим внимание на типичные вопросы и ошибки и дадим рекомендации
+    по компоновке данных внутри репозитория.</para>
 
+  <!-- @ENGLISH {{{
   <para>If you plan to access a Subversion repository only in the role
     of a user whose data is under version control (i.e., via a
     Subversion client), you can skip this chapter altogether.
@@ -26,14 +47,26 @@
     and lofty, but we're just talking about anyone who is interested
     in that mysterious realm beyond the working copy where everyone's
     data hangs out.</para></footnote> this chapter is for you.</para>
+  @ENGLISH }}} -->
+  <para>Если вы собираетесь работать с перозиторием Subversion только в
+    качестве пользователя, чьи данные находятся под контролем версий
+    (например, используя клиент Subversion), вы пожете пропустить эту
+    главу целиком. Если же вы являетесь, или только хотите стать,
+    администратором репозитория Subversion,<footnote><para>Это может
+    звучать несколько возвышенно, но мы всего лишь имеем ввиду тех,
+    кому интересна мистическая область за пределами рабочей
+    копии.</para></footnote> эта глава для вас.</para>
 
 
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.reposadmin.basics">
+<!-- @TR {{ -->
     <title>The Subversion Repository, Defined</title>
+<!-- @TR }} -->
 
+    <!-- @ENGLISH {{{
     <para>Before jumping into the broader topic of repository
       administration, let's further define what a repository is.  How
       does it look?  How does it feel?  Does it take its tea hot or
@@ -43,7 +76,17 @@
       acts with respect to non-Subversion tools&mdash;and from a
       logical perspective&mdash;dealing with how data is represented
       <emphasis>inside</emphasis> the repository.</para>
+    @ENGLISH }}} -->
+    <para>Прежде чем углубится в обширную тему управления репозиторием,
+      определимся, чем же является репозиторий. Как он выглядит? Чем живет?
+      Любит ли горячий чай или со льдом, сладкий и с лимоном? Как от
+      администратора репозитория от вас ожидается понимаение как
+      физической части &mdash; как выглядит репоиторий с точки зрения ОС
+      и как взаимодействует с остальными приложениями, так и
+      логической &mdash; как данные представлены <emphasis>внутри</emphasis>
+      репозитория.</para>
 
+    <!-- @ENGLISH {{{
     <para>Seen through the eyes of a typical file browser application
       (such as Windows Explorer) or command-line based filesystem
       navigation tools, the Subversion repository is just another
@@ -55,6 +98,14 @@
       chaos.  So a shallow glance into a typical repository from a
       nuts-and-bolts perspective is sufficient to reveal the basic
       components of the repository:</para>
+    @ENGLISH }}} -->
+    <para>В общем случае хранилище представляет собой обычный каталог
+      с содержимым в виде файлов и других каталогов. Некоторые каталоги
+      содержат человекочитаемые файлы конфигурации, другие &mdash; не так
+      легко читаемые файлы данных. Как и в других областях дизайна
+      Subversion делается упор на модульность, а иерархической организации
+      отдаётся предпочтение перед беспорядком. Быстрого взгляда на типичный
+      репозиторий достаточно для определения базовых составляющих:</para>
 
     <informalexample>
       <screen>
@@ -63,11 +114,17 @@ conf/  db/  format  hooks/  locks/  README.txt
 </screen>
     </informalexample>
 
+    <!-- @ENGLISH {{{
     <para>Here's a quick fly-by overview of what exactly you're seeing
       in this directory listing.  (Don't get bogged down in the
       terminology&mdash;detailed coverage of these components exists
       elsewhere in this and other chapters.)</para>
+    @ENGLISH }}} -->
+    <para>Вот краткий обзор содержимого репозитория. (Не заостряйте своё
+      внимание на терминологии &mdash; в этой и последующих главах
+      мы обсудим её более детально.)</para>
 
+    <!-- @ENGLISH {{{
     <variablelist>
       <varlistentry>
         <term>conf</term>
@@ -110,8 +167,70 @@ conf/  db/  format  hooks/  locks/  README.txt
         </listitem>
       </varlistentry>
     </variablelist>
+    @ENGLISH }}} -->
+    <variablelist>
+      <varlistentry>
+        <term>conf</term>
+        <listitem>
+          <para>Каталог конфигурационных файлов</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>db</term>
+        <listitem>
+          <para>Каталог, содержащий версионированные данные</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>format</term>
+        <listitem>
+          <para>Файл, содержащий единственное целое число, определяющее
+            версию репозитория</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>hooks</term>
+        <listitem>
+          <para>Каталог с шаблонами хуков (а также самими хуками,
+            если таковые имеются)</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>locks</term>
+        <listitem>
+          <para>Каталог файлов блокировок, используемых для отслеживания
+            доступа к хранилищу</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>README.txt</term>
+        <listitem>
+          <para>Простой текстовый файл, уведомляющий о том, что в данном
+            каталоге располагается репозиторий Subversion</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+<!-- @CHK }} -->
 
+<!-- @TR {{ -->
     <note>
+      <!-- @ENGLISH {{{
+      <para>Prior to Subversion 1.5, the on-disk repository structure
+        also always contained a <filename>dav</filename> subdirectory.
+        <filename>mod_dav_svn</filename> used this directory to store
+        information about
+        WebDAV <firstterm>activities</firstterm>&mdash;mappings of
+        high-level WebDAV protocol concepts to Subversion commit
+        transactions.  Subversion 1.5 changed that behavior, moving
+        ownership of the activities directory, and the ability to
+        configure its location, into <filename>mod_dav_svn</filename>
+        itself.  Now, new repositories will not necessarily have
+        a <filename>dav</filename> subdirectory
+        unless <filename>mod_dav_svn</filename> is in use and hasn't
+        been configured to store its activities database elsewhere.
+        See <xref linkend="svn.ref.mod_dav_svn.conf.directives"/> for
+        more information.</para>
+      @ENGLISH }}} -->
       <para>Prior to Subversion 1.5, the on-disk repository structure
         also always contained a <filename>dav</filename> subdirectory.
         <filename>mod_dav_svn</filename> used this directory to store
@@ -128,7 +247,10 @@ conf/  db/  format  hooks/  locks/  README.txt
         See <xref linkend="svn.ref.mod_dav_svn.conf.directives"/> for
         more information.</para>
     </note>
+<!-- @TR }} -->
 
+<!-- @CHK {{ -->
+    <!-- @ENGLISH {{{
     <para>Of course, when accessed via the Subversion libraries, this
       otherwise unremarkable collection of files and directories
       suddenly becomes an implementation of a virtual, versioned
@@ -140,6 +262,17 @@ conf/  db/  format  hooks/  locks/  README.txt
       revisions, keeping all the changes you've ever made to them
       safely stored and forever accessible.  This is where the
       entirety of your versioned data lives.</para>
+    @ENGLISH }}} -->
+    <para>Конечно же, с использованием билиотек Subversion этот ничем
+      не примечательный набор файлов и каталогов становится реализацией
+      виртуальной, версионированной файловой системы, дополненной
+      настраиваемой обработкой событий. Эта файловая система использует
+      собственную нотацию каталогов и файлов близкую к нотации реальных
+      файловых систем (таких как NTFS, FAT32, ext3 и т.п.) Тем не менее
+      это специальная файловая система &mdash; файлы и каталоги связаны
+      ревизиями, позволяющими надежно сохранить все когда-либо сделанные
+      изменения и обеспечить доступ к ним. Здесь и живут все ваши
+      версионированные данные.</para>
 
   </sect1>
  
@@ -147,8 +280,11 @@ conf/  db/  format  hooks/  locks/  README.txt
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.reposadmin.planning">
+<!-- @TR {{ -->
     <title>Strategies for Repository Deployment</title>
+<!-- @TR }} -->
 
+    <!-- @ENGLISH {{{
     <para>Due largely to the simplicity of the overall design of the
       Subversion repository and the technologies on which it relies,
       creating and configuring a repository are fairly straightforward
@@ -157,9 +293,19 @@ conf/  db/  format  hooks/  locks/  README.txt
       Subversion repository is pretty basic, tending toward
       mindless repetition if you find yourself setting up multiples of
       these things.</para>
+    @ENGLISH }}} -->
+    <para>Простота дизайна репозитория Subverion и технологии, на которые
+      он опирается делает процесс его создания и конфигурирования довольно
+      простым. Необходимо принять несколько решений, но фактически процесс
+      довольно прост и сводится к банальному повторению действий, при
+      необходимости нескольких репозиториев.</para>
 
+    <!-- @ENGLISH {{{
     <para>Some things you'll want to consider beforehand, though, are:</para>
+    @ENGLISH }}} -->
+    <para>Несколько вещей, о которых нужно подумать заранее:</para>
 
+    <!-- @ENGLISH {{{
     <itemizedlist>
       <listitem>
         <para>What data do you expect to live in your repository (or
@@ -178,14 +324,37 @@ conf/  db/  format  hooks/  locks/  README.txt
           to use?</para>
       </listitem>
     </itemizedlist>
-
+    @ENGLISH }}} -->
+    <itemizedlist>
+      <listitem>
+        <para>Что за данные ожидаются в хранилице (или хранилищах) и как
+          будут организованы эти данные?</para>
+      </listitem>
+      <listitem>
+        <para>Где будет располагаться хранилище и как будет осуществляться
+          доступ к нему?</para>
+      </listitem>
+      <listitem>
+        <para>Как будут осуществляться контроль доступа и отчетности?</para>
+      </listitem>
+      <listitem>
+        <para>Какой тип хранилища выбрать?</para>
+      </listitem>
+    </itemizedlist>
+    
+    <!-- @ENGLISH {{{
     <para>In this section, we'll try to help you answer those
       questions.</para>
+    @ENGLISH }}} -->
+    <para>Мы постараемся дать ответы на эти вопросы в этом разделе.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.reposadmin.projects.chooselayout">
+<!-- @TR {{ -->
       <title>Planning Your Repository Organization</title>
+<!-- @TR }} -->
 
+      <!-- @ENGLISH {{{
       <para>While Subversion allows you to move around versioned files
         and directories without any loss of information, and even
         provides ways of moving whole sets of versioned history from
@@ -197,14 +366,33 @@ conf/  db/  format  hooks/  locks/  README.txt
         conscientiously <quote>laying out</quote> your repository or
         repositories and their versioned contents ahead of time, you
         can prevent many future headaches.</para>
+      @ENGLISH }}} -->
+      <para>В то время как Subversion предоставляет вам перемещаться
+        между файлами и каталогами разных версий, и даже даёт возможность
+        перемещения истории изменений между репозиториями, подобные
+        операции, если выполнять их слишком часто, могут нарушить процесс
+        работы клиентов с репоиторием, ведь они привыкли находить вещи на
+        своих местах. Поэтому перед созданием репозитория взгляните в
+        будущее; планируйте заранее, перед помещением данных в репозиторий.
+        Добросовестная заблаговременная <quote>разметка</quote>
+        репозитория или репозиториев, а также версионированных данных
+        поможет избежать вам головной боли в будущем.</para>
 
+      <!-- @ENGLISH {{{
       <para>Let's assume that as repository administrator, you will be
         responsible for supporting the version control system for
         several projects.  Your first decision is whether to use a
         single repository for multiple projects, or to give each
         project its own repository, or some compromise of these
         two.</para>
+      @ENGLISH }}} -->
+      <para>Предположим, что как администратор репозитория, вы несете
+        ответственность за поддержку системы контроля версий для
+        нескольких проектов. Первым вашим решением будет выбор между одним
+        репозиторием для всех проектов, или отдельным репозиторием для
+        каждого проекта, или некоторым промежуточным вариантом.</para>
 
+      <!-- @ENGLISH {{{
       <para>There are benefits to using a single repository for
         multiple projects, most obviously the lack of duplicated
         maintenance.  A single repository means that there is one set
@@ -213,7 +401,14 @@ conf/  db/  format  hooks/  locks/  README.txt
         version, and so on.  Also, you can move data between projects
         easily, without losing any historical versioning
         information.</para>
+      @ENGLISH }}} -->
+      <para>Единое хранилище для всех проектов имеет свои преимущества,
+        самое очевидное из которых является упрощение обслуживания.
+        Единый репозиторий обозначает один набор хуков, один процесс
+        резервного копирования и т.д. Также облегчается перемещение
+        данных между проектами без потерь истории изменений.</para>
 
+      <!-- @ENGLISH {{{
       <para>The downside of using a single repository is that
         different projects may have different requirements in terms of
         the repository event triggers, such as needing to send commit
@@ -236,7 +431,33 @@ conf/  db/  format  hooks/  locks/  README.txt
         and <emphasis>not</emphasis> the kind of thing you should
         weigh when deciding how to arrange your projects and
         repositories.</para></footnote></para>
+      @ENGLISH }}} -->
+      <para>Недостатком использования единого хранилища является то, что
+        различные проекты могут иметь различные требования в отношении
+        триггеров событий, такие как необходимость отправлять уведомления
+        о фиксации на различные адреса электронной почты, или иметь
+        различные определения того, что является, и что не является
+        законной фиксацией. Проблема не является непреодолимой
+        &mdash; хуки лишь должны быть чувствительны к структуре репоитория,
+        вместо предположения что весь репозиторий предназнчен для одной
+        группы пользователей. Также стоит иметь ввиду, что Subversion
+        использует глобальные номера версий. Хоть эти номера и не имеют
+        какой-либо магической силы, некоторым не нравится, что даже
+        при отсутствии изменений в проекте, номер версии продолжает
+        нарастать из-за активных изменений соседних проектов.
+<!-- @CHK }} -->
+<!-- @TR {{ -->
+        <footnote><para>Whether founded in
+        ignorance or in poorly considered concepts about how to derive
+        legitimate software development metrics, global revision
+        numbers are a silly thing to fear,
+        and <emphasis>not</emphasis> the kind of thing you should
+        weigh when deciding how to arrange your projects and
+        repositories.</para></footnote></para>
+<!-- @TR }} -->
 
+<!-- @CHK {{ -->
+      <!-- @ENGLISH {{{
       <para>A middle-ground approach can be taken, too.  For example,
         projects can be grouped by how well they relate to each other.
         You might have a few repositories with a handful of projects
@@ -245,7 +466,17 @@ conf/  db/  format  hooks/  locks/  README.txt
         added to the repository, at least the developers know that
         those new revisions are at least remotely related to everyone
         who uses that repository.</para>
+      @ENGLISH }}} -->
+      <para>Существует компромиссное решение. Например, проекты могут
+        быть сгруппированы взависимости от отношения друг к другу
+        У вас может быть несколько репозиториев, в несколькими проектами
+        в каждом из них. Таким образом проекты, которым скорее всего
+        будет необходимо обмениваться данными, легко смогут сделать это
+        и по ходу добавления новых правок к проекту, разработчики
+        будут знать, что эти правки относятся ко всем, кто использует
+        данный репозиторий.</para>
 
+      <!-- @ENGLISH {{{
       <para>
         <indexterm>
           <primary>project root</primary>
@@ -271,8 +502,34 @@ conf/  db/  format  hooks/  locks/  README.txt
         <filename>tags</filename>, and <filename>branches</filename>
         trio is sometimes referred to as <quote>the TTB
         directories.</quote></para></footnote></para>
+      @ENGLISH }}} -->
+      <para>
+        <indexterm>
+          <primary>project root</primary>
+        </indexterm>
 
+        После того, как вы определитесь с организацией проектов внутри
+        репозитория, вы, возможно, задумаетесь об иерархии каталогов
+        внутри репозитория. Так как Subversion использует обычные
+        каталоги для ветвления и назначения меток (см.
+        <xref linkend="svn.branchmerge"/>), сообщество Subversion
+        рекомендует выбрать место для каждого проекта в репозитории
+        &mdash; каталог верхнего уровня, содержащий данные, относящиеся
+        к проекту &mdash; и потом создать три подкаталога:
+        <filename>trunk</filename>, каталог, в котором проходит главный
+        процесс разработки;
+        <filename>branches</filename>, каталог для создания веток;
+        и <filename>tags</filename>, в котором хранятся созданные снимки
+        дерева, порой, даже удаляются, но никогда не изменяются.
+        <footnote><para>Каталоги <filename>trunk</filename>,
+        <filename>tags</filename>, и <filename>branches</filename>
+        вместе порой обозначаются как <quote>TTB-каталоги.</quote>
+        </para></footnote></para>
+
+      <!-- @ENGLISH {{{
       <para>For example, your repository might look like this:</para>
+      @ENGLISH }}} -->
+      <para>Например, ваш репозиторий может выглядеть так:</para>
 
       <informalexample>
         <screen>
@@ -293,6 +550,7 @@ conf/  db/  format  hooks/  locks/  README.txt
 </screen>
       </informalexample>
 
+      <!-- @ENGLISH {{{
       <para>Note that it doesn't matter where in your repository each
         project root is.  If you have only one project per repository,
         the logical place to put each project root is at the root of
@@ -302,6 +560,14 @@ conf/  db/  format  hooks/  locks/  README.txt
         shared code in the same subdirectory, or maybe just grouping
         them alphabetically.  Such an arrangement might look
         like this:</para>
+      @ENGLISH }}} -->
+      <para>Заметьте, что не имеет значения, где находится корень
+        каждого проекта. Если у вас один проект в репозитории, логично
+        расположить корень проекта в корне репозитория. Если у вас
+        несколько проектов, мы можете захотеть организовать их в группы
+        внтури репозитория, например, проекты с общими целями, или
+        проекты с общим кодом, или же, просто сгруппировать их
+        по алфавиту:</para>
 
       <informalexample>
         <screen>
@@ -325,19 +591,34 @@ conf/  db/  format  hooks/  locks/  README.txt
 </screen>
       </informalexample>
 
+      <!-- @ENGLISH {{{
       <para>Lay out your repository in whatever way you see fit.
         Subversion does not expect or enforce a particular layout&mdash;in
         its eyes, a directory is a directory is a directory.
         Ultimately, you should choose the repository arrangement that
         meets the needs of the people who work on the projects that
         live there.</para>
+      @ENGLISH }}} -->
+      <para>Организуйте репозиторий подходящим вам образом. Subversion
+        не ожидает какой-либо определенной структуры, и не налагает
+        ограничений &mdash; в её глазах каталог это каталог. В конце
+        концов, вы должны выбрать такую компоновку, которая удовлетворяет
+        требованиям пользователей, которые будут использовать репозиторий.
+      </para>
 
+      <!-- @ENGLISH {{{
       <para>In the name of full disclosure, though, we'll mention
         another very common layout.  In this layout, the
         <filename>trunk</filename>, <filename>tags</filename>, and
         <filename>branches</filename> directories live in the root
         directory of your repository, and your projects are in
         subdirectories beneath those, like so:</para>
+      @ENGLISH }}} -->
+      <para>Для полноты картины рассмотри ещё одну популярную схему.
+        Здесь каталоги <filename>trunk</filename>,
+        <filename>tags</filename>, и <filename>branches</filename>
+        находятся в корне репозитория, а проекты являются их
+        подкаталогами:</para>
 
       <informalexample>
         <screen>
@@ -360,6 +641,7 @@ conf/  db/  format  hooks/  locks/  README.txt
 </screen>
       </informalexample>
 
+      <!-- @ENGLISH {{{
       <para>There's nothing particularly incorrect about such a
         layout, but it may or may not seem as intuitive for your
         users.  Especially in large, multiproject situations with
@@ -374,13 +656,30 @@ conf/  db/  format  hooks/  locks/  README.txt
         a single repository path that holds the entire
         history&mdash;past, present, tagged, and branched&mdash;for
         that project and that project alone.</para>
+      @ENGLISH }}} -->
+      <para>В такой схеме нет ничего неправильного, но она может быть
+        не так интуитивно понятна вашим пользователям. В особенности,
+        при наличии множества больших проектов, пользователи обычно
+        знакомы с одним-двумя проектами. Наличие же нескольких проектов
+        в каталоге веток ослабляет индивидуальность проекта и заставляет
+        воспринимать весь комплекс проектов как единое целов. Однако,
+        это социальный вопрос.That's a social issue, though. Нам нравится
+        первоначально предложенная схема с чисто практической стороны
+        &mdash; легче запросить (или изменить, или перенести куда-либо)
+        всю историю проекта когда существует единый пусть в репозитории,
+        хранящий всю историю проекта &mdash; прошлую, настоящую, помеченную
+        и разветвленную для этого проетка и проект один.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.reposadmin.basics.hosting">
+      <!-- @ENGLISH {{{
+      <title>Deciding Where and How to Host Your Repository</title>
+      @ENGLISH }}} -->
       <title>Deciding Where and How to Host Your Repository</title>
 
+      <!-- @ENGLISH {{{
       <para>Before creating your Subversion repository, an obvious
         question you'll need to answer is where the thing is going to
         live.  This is strongly connected to myriad other
@@ -391,7 +690,18 @@ conf/  db/  format  hooks/  locks/  README.txt
         Subversion (repository browsing interfaces, email-based
         commit notification, etc.), your data backup strategy, and so
         on.</para>
+      @ENGLISH }}} -->
+      <para>Перед созданием репозитория очевидно необходимо решить, где
+        же он будет храниться. Этот вопрос также связан со множество
+        других: как будет организоват доступ к репозиторию (через сервер
+        Subversion или напрямую), кто будет иметь этот доступ
+        (пользователи внутри вашей организации или весь мир через Интернет),
+        какие ещё сервисы будут предоставляться (интерфейс просмотра
+        репозитория, почтовые уведомления о фиксациях и т.д.), стратегия
+        резервного копирования и так далее.</para>
+<!-- @CHK }} -->
 
+<!-- @TR {{ -->
       <para>We cover server choice and configuration in <xref
         linkend="svn.serverconfig" />, but the point we'd like to
         briefly make here is simply that the answers to some of these
@@ -411,11 +721,17 @@ conf/  db/  format  hooks/  locks/  README.txt
         plan ahead.</para>
 
     </sect2>
+<!-- @TR }} -->
 
+<!-- @CHK {{ -->
     <!-- =============================================================== -->
     <sect2 id="svn.reposadmin.basics.backends">
+      <!-- @ENGLISH {{{
       <title>Choosing a Data Store</title>
+      @ENGLISH }}} -->
+      <title>Выбор хранилища</title>
 
+      <!-- @ENGLISH {{{
       <para>Subversion provides two options for the
         type of underlying data store&mdash;often referred to as
         <quote>the backend</quote> or, somewhat confusingly,
@@ -435,11 +751,31 @@ conf/  db/  format  hooks/  locks/  README.txt
         versioned filesystem implementation that uses the native OS
         filesystem directly&mdash;rather than via a database library
         or some other abstraction layer&mdash;to store data.</para>
+      @ENGLISH }}} -->
+      <para>Subversion предлагает два различных хранилища, или иначе
+        <quote>бэкенда</quote>. Хранилище первого типа помещает
+        данные в базу Berkeley DB (или BDB). Другой типа хранилища
+        использует обычные плоские файлы, содержащие данные в определенном
+        формате. Разработчки Subversion привыкли называть этот механизм
+        <firstterm>FSFS</firstterm><footnote><para>Often
+        pronounced <quote>fuzz-fuzz,</quote> if Jack Repenning has
+        anything to say about it.  (This book, however, assumes that
+        the reader is
+        thinking <quote>eff-ess-eff-ess.</quote>)</para></footnote> &mdash;
+        реализация версионированной файловой системы, использующая
+        файловую систему ОС для хранения данных напрямую, нежели через
+        библиотеку базы данных или какую-либо другую абстракцию.</para>
 
+      <!-- @ENGLISH {{{
       <para><xref linkend="svn.reposadmin.basics.backends.tbl-1" />
         gives a comparative overview of Berkeley DB and FSFS
         repositories.</para>
+      @ENGLISH }}} -->
+      <para><xref linkend="svn.reposadmin.basics.backends.tbl-1" />
+        позволяет сравнить хранилище Berkeley DB с хранилищем FSFS.
+        </para>
 
+      <!-- @ENGLISH {{{
       <table id="svn.reposadmin.basics.backends.tbl-1">
         <title>Repository data store comparison</title>
         <tgroup cols="4">
@@ -522,7 +858,94 @@ conf/  db/  format  hooks/  locks/  README.txt
           </tbody>
         </tgroup>      
       </table>
+    @ENGLISH }}} -->
+    <table id="svn.reposadmin.basics.backends.tbl-1">
+        <title>Сравнение хранилищ</title>
+        <tgroup cols="4">
+          <thead>
+            <row>
+              <entry>Category</entry>
+              <entry>Feature</entry>
+              <entry>Berkeley DB</entry>
+              <entry>FSFS</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry morerows="1">Надежность</entry>
+              <entry>Целостность данных</entry>
+              <entry>При правильно развёртывании, весьма надежно;
+                начиная с версии Berkeley DB 4.4 доступно автоматическое
+                восстановление</entry>
+              <entry>В старых версиях были, достаточно редкие, но
+                уничтожавщие данные, ошибки</entry>
+            </row>
+            <row>
+              <entry>Чувствительность к прерываниям</entry>
+              <entry>Very; crashes and permission problems can leave the
+                database <quote>wedged,</quote> requiring journaled
+                recovery procedures</entry>
+              <entry>Почти нечувствительно</entry>
+            </row>
+            <row>
+              <entry morerows="3">Доступность</entry>
+              <entry>Доступ при монтировании носителя
+                <quote>только для чтения</quote></entry>
+              <entry>Нет</entry>
+              <entry>Да</entry>
+            </row>
+            <row>
+              <entry>Платформонезависимое хранилище</entry>
+              <entry>Нет</entry>
+              <entry>Да</entry>
+            </row>
+            <row>
+              <entry>Доступ посредством сетевой ФС</entry>
+              <entry>Обычно, нет</entry>
+              <entry>Да</entry>
+            </row>
+            <row>
+              <entry>Group permissions handling</entry>
+              <entry>Sensitive to user umask problems; best if accessed
+                by only one user</entry>
+              <entry>Works around umask problems</entry>
+            </row>
+            <row>
+              <entry morerows="2">Масштабируемость</entry>
+              <entry>Использование диска</entry>
+              <entry>Больше (особенно, если не удалены журнальные
+                файлы)</entry>
+              <entry>Меньше</entry>
+            </row>
+            <row>
+              <entry>Количество ревизий дерева</entry>
+              <entry>База данныхх; нет проблем</entry>
+              <entry>Некоторые старые ФС плохо масштабируются при большом
+                количестве файлов в каталоге</entry>
+            </row>
+            <row>
+              <entry>Каталоги с большим количеством файлов</entry>
+              <entry>Медленнее</entry>
+              <entry>Быстрее</entry>
+            </row>
+            <row>
+              <entry morerows="1">Производительность</entry>
+              <entry>Checking out latest revision</entry>
+              <entry>No meaningful difference</entry>
+              <entry>No meaningful difference</entry>
+            </row>
+            <row>
+              <entry>Large commits</entry>
+              <entry>Slower overall, but cost is amortized across the
+                lifetime of the commit</entry>
+              <entry>Faster overall, but finalization delay may cause 
+                client timeouts</entry>
+            </row>
+          </tbody>
+        </tgroup>      
+      </table>
 
+      <!-- @ENGLISH {{{
       <para>There are advantages and disadvantages to each of these
         two backend types.  Neither of them is more
         <quote>official</quote> than the other, though the newer FSFS
@@ -537,7 +960,21 @@ conf/  db/  format  hooks/  locks/  README.txt
         Berkeley DB means there's one fewer component in the
         system&mdash;largely explain why today almost everyone uses
         the FSFS backend when creating new repositories.</para>
+      @ENGLISH }}} -->
+      <para>Каждое хранилище имеет свои преимущества и недостатки.
+        Каждое из них такое же <quote>официальное</quote>, как другое
+        но более новое FSFS является стандартом хранения начиная с
+        Subversion 1.2. Оба достаточно надежны, чтобы доверить им свои
+        данные. Но, как вы можете видеть из <xref
+        linkend="svn.reposadmin.basics.backends.tbl-1" />, FSFS
+        обладает большей гибкость с точки зрения сценариев внедрения.
+        Большая гибкость означает, что придётся немного потрудится, чтобы
+        неправильно внедрить систему. По этим причинам, а также потому,
+        что отказ от изпользования Berkley DB позволяет сократить количество
+        компонентов системы почему почти все сегодня используют FSFS для
+        создания репозиториев.</para>
 
+      <!-- @ENGLISH {{{
       <para>Fortunately, most programs that access Subversion
         repositories are blissfully ignorant of which backend data
         store is in use.  And you aren't even necessarily stuck with
@@ -546,21 +983,43 @@ conf/  db/  format  hooks/  locks/  README.txt
         your repository's data into another repository that uses a
         different backend data store.  We talk more about that later
         in this chapter.</para>
+      @ENGLISH }}} -->
+      <para>К счастью, большей части программ Subversion абсолютно
+        без разницы, какое хранилище используется. Соответственно,
+        можно не задумываться о том, что выбрать в первый раз. Даже,
+        если впоследствии вы захотите изменить хранилище, Subversion
+        предоставляет утилиты для конвертирования одного формата
+        хранилища в другой. Мы обсудим их позже в этой главе.</para>
 
+      <!-- @ENGLISH {{{
       <para>The following subsections provide a more detailed look at
         the available backend data store types.</para>
+      @ENGLISH }}} -->
+      <para>В следующих подразделах дан более детальный обзор доступных
+        хранилищ.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.basics.backends.bdb">
+        <!-- @ENGLISH {{{
+        <title>Berkeley DB</title>
+        @ENGLISH }}} -->
         <title>Berkeley DB</title>
         
+        <!-- @ENGLISH {{{
         <para>When the initial design phase of Subversion was in
           progress, the developers decided to use Berkeley DB for a
           variety of reasons, including its open source license,
           transaction support, reliability, performance, API
           simplicity, thread safety, support for cursors, and so
           on.</para>
+        @ENGLISH }}} -->
+        <para>На начальной стадии разработки Subversion выбор
+          пал на Berkeley BD по ряду причин, таких как открытая
+          лицензия, поддержка транзакций, надежность,
+          производительнось, простой API, безопасность потоков,
+          поддержка курсоров и т.д.</para>
 
+        <!-- @ENGLISH {{{
         <para>Berkeley DB provides real transaction
           support&mdash;perhaps its most powerful feature.  Multiple
           processes accessing your Subversion repositories don't have
@@ -575,7 +1034,21 @@ conf/  db/  format  hooks/  locks/  README.txt
           it never happened, and Subversion gracefully retries the
           operation against a new, updated (and yet still static) view
           of the database.</para>
+        @ENGLISH }}} -->
+        <para>Berkeley DB поддерживает транзакции &mdash; это одна из
+          сильных её сторон. Несколько процессов могут одновременно
+          безопасно работать с репозиторием. Изоляция достигается
+          использованием транзакций &mdash; в момент выполнения
+          операции отдельный процесс Subversion <quote>видит</quote>
+          статическое представление базы данных, а не базу данных,
+          постоянно меняющуюся другим процессом, и может принимать
+          решения, основываясь на этом представлении. Если операция
+          приводит к конфликту с другим процессом, транзакция полностью
+          отменяется, как если бы её не существовало вовсе, и Subversion
+          повторяет операцию на новом, обновленном (или, до сих пор,
+          статичном) представлении базы данных.</para>
 
+        <!-- @ENGLISH {{{
         <para>Another great feature of Berkeley DB is <firstterm>hot
           backups</firstterm>&mdash;the ability to back up the
           database environment without taking it
@@ -584,7 +1057,15 @@ conf/  db/  format  hooks/  locks/  README.txt
           linkend="svn.reposadmin.maint.backup"/>), but the benefits
           of being able to make fully functional copies of your
           repositories without any downtime should be obvious.</para>
+        @ENGLISH }}} -->
+        <para>Другой приятной особенностью Berkeley DB являются
+          <firstterm>горячие копии</firstterm> &mdash; возможность
+          выполнить копирование базы данных <quote>остановки</quote>.
+          Мы обсудим резервное копирование (в <xref
+          linkend="svn.reposadmin.maint.backup"/>), преимущества
+          полноценной копии репозитория без простоя очевидны.</para>
 
+        <!-- @ENGLISH {{{
         <para>Berkeley DB is also a very reliable database system when
           properly used.  Subversion uses Berkeley DB's logging
           facilities, which means that the database first writes to
@@ -597,7 +1078,21 @@ conf/  db/  format  hooks/  locks/  README.txt
           transactions until the data is restored to a usable state.
           See <xref linkend="svn.reposadmin.maint.diskspace"/> later
           in this chapter for more about Berkeley DB logfiles.</para>
+        @ENGLISH }}} -->
+        <para>Berkeley DB также очень надежная база данных, если её
+          правильно использовать. Subversion использует возможности
+          журналирования Berkeley DB's, что подразумевает запись
+          описания изменения в дисковый журнал, и только потом уже
+          проведение самого изменения. В этом случае, если что-то
+          пойдёт не так, базу данных можно будет вернуть к предыдущей
+          <firstterm>точке восстановления</firstterm> &mdash;
+          неповрежденной позиции в журнале, &mdash; и повторить
+          транзакции для приведения базы данных к предыдущему состоянию.
+          Смотрите раздел <xref linkend="svn.reposadmin.maint.diskspace"/>
+          далее в этой главе для дополнительной информации о журнале
+          Berkeley DB.</para>
 
+        <!-- @ENGLISH {{{
         <para>But every rose has its thorn, and so we must note some
           known limitations of Berkeley DB.  First, Berkeley DB
           environments are not portable.  You cannot simply copy a
@@ -609,7 +1104,20 @@ conf/  db/  format  hooks/  locks/  README.txt
           operate on Windows 95/98 systems&mdash;if you need to house
           a BDB-backed repository on a Windows machine, stick with
           Windows 2000 or later.</para>
+        @ENGLISH }}} -->
+        <para>Но, каждая роза, как известно, имеет шипы, посему мы
+          должны отметить и недостатки Berkeley DB. Во-первых Berkeley
+          DB не портируется. Вы не можете просто скопировать
+          репозиторий Subversion, созданный в Unix-системе в систему,
+          на основе Windows. В то время как большая часть формата
+          Berkeley DB не зависит от архитектуры, этого нельзя сказать
+          об остальных частях. Во-вторых, Subversion использует Berkeley
+          DB способом, не фунционирующим на системах Windows 95/98 &mdash;
+          если вам необходимо расположить BDB-репозиторий на
+          Windows-машине, используйте Windows 2000 или более позднюю
+          версию.</para>
 
+        <!-- @ENGLISH {{{
         <para>While Berkeley DB promises to behave correctly on
           network shares that meet a particular set of
           specifications,<footnote><para>Berkeley DB requires that the
@@ -623,8 +1131,22 @@ conf/  db/  format  hooks/  locks/  README.txt
           clients of that share at once (which quite often is the
           whole point of having the repository live on a network share
           in the first place).</para>
+        @ENGLISH }}} -->
+        <para>В то время как Berkeley DB обещает корректную работу
+          с сетевыми файловыми системами, отвечающими спецификациям,
+          <footnote><para>Berkeley DB требует от низлежащей файловой
+          системы строгой реализации блокировок POSIX, и, что более
+          существенно, возможности прямого отображения файлов в память
+          процесса.</para></footnote> большинство
+          сетевых файловых систем в действительности
+          <emphasis>не удволетворяет</emphasis> этим требованиям.
+          И ни в каком случае вы не можете предоставить одновременный
+          доступ к BDB-репозиторию, расположенному в сетевом каталоге
+          (что нередко является самой сутью расположения хранилища
+          на сетевой файловой системе).</para>
 
         <warning>
+          <!-- @ENGLISH {{{
           <para>If you attempt to use Berkeley DB on a noncompliant
             remote filesystem, the results are unpredictable&mdash;you
             may see mysterious errors right away, or it may be months
@@ -632,8 +1154,16 @@ conf/  db/  format  hooks/  locks/  README.txt
             subtly corrupted.  You should strongly consider using the
             FSFS data store for repositories that need to live on a
             network share.</para>
+          @ENGLISH }}} -->
+          <para>Попытка использования Berkeley DB на неподходящей
+            файловой системе, приведет к непредсказуемым результатам
+            &mdash; вы может наблюдать необычные ошибки, или обнаружите
+            поврежденный репозиторий через несколько месяцев. Для
+            репозиториев, располагающихся на сетевых файловых системах
+            необходимо использовать хранилище FSFS.</para>
         </warning>
           
+        <!-- @ENGLISH {{{
         <para>Finally, because Berkeley DB is a library linked
           directly into Subversion, it's more sensitive to
           interruptions than a typical relational database system.
@@ -653,8 +1183,27 @@ conf/  db/  format  hooks/  locks/  README.txt
           Other things can cause a repository to <quote>wedge</quote>
           besides crashed processes, such as programs conflicting over
           ownership and permissions on the database files.</para>
+        @ENGLISH }}} -->
+        <para>Наконец, являясь подключаемой библиотекой, Berkeley
+          более чувствительна к прерываниям, чем обычные системы
+          баз данных. Большинство SQL-систем, например, имеют выделенный
+          серверный процесс, занятый обслуживанием таблиц. Если программа,
+          работающая с базой данных завершается аварийно, сервер
+          отмечает потерянное соединение и выполняет очистку данных.
+          Так как доступ к таблицам осуществляет только серверный процесс,
+          приложениям не нужно заботится о конфликтах доступа. К сожалению,
+          это не так в случае Berkeley DB.  Subversion (и другие программы,
+          использующие библиотеки Subversion) работают с базой данных
+          напрямую, что в случае аварийного завершения может оставить базу
+          в аварийном, состоянии и доступ к ней будет невозможен.
+          В таких случаях администратору необходимо восстановить Berkeley DB
+          до предыдущей точки восстановления, что немного надоедает.
+          По другим причинам, репозиторий может остаться в
+          <quote>подвешенном</quote>состоянии, например, из-за программ,
+          конфликтующих с правами доступа к файлам базы данных.</para>
 
         <note>
+          <!-- @ENGLISH {{{
           <para>Berkeley DB 4.4 brings (to Subversion 1.4 and later)
             the ability for Subversion to automatically and
             transparently recover Berkeley DB environments in need of
@@ -666,8 +1215,20 @@ conf/  db/  format  hooks/  locks/  README.txt
             doesn't completely eliminate instances of repository
             wedging, but it does drastically reduce the amount of
             human interaction required to recover from them.</para>
+          @ENGLISH }}} -->
+          <para>Berkeley DB 4.4 (используется, начиная с Subversion
+            1.4) даёт возможность Subversion проводить автоматическое
+            восстановление окружения Berkeley DB в случае необходимости.
+            Когда процесс Subversion подключается к окружению Berkeley
+            DB он определяет неверное отключение предыдущих процессов,
+            выполняет необходимое восстановление, и продолжает работу,
+            будто бы ничего не произошло. Это не исключает возможности
+            подвешенного репозитория, но значительно уменьшает
+            количество вмешательств человека для восстановления таких
+            ситуаций.</para>
         </note>
 
+        <!-- @ENGLISH {{{
         <para>So while a Berkeley DB repository is quite fast and
           scalable, it's best used by a single server process running
           as one user&mdash;such as Apache's <command>httpd</command>
@@ -678,13 +1239,30 @@ conf/  db/  format  hooks/  locks/  README.txt
           DB repository directly as multiple users, be sure to read
           <xref linkend="svn.serverconfig.multimethod"/> later in this
           chapter.</para>
+        @ENGLISH }}} -->
+        <para>Итак, хотя Berkeley DB быстро работает и хорошо масштабируется,
+          лучше всего использовать его для одного серверного процесса &mdash;
+          такгого как <command>httpd</command> Apache или
+          <command>svnserve</command> (see <xref
+          linkend="svn.serverconfig"/>) &mdash; нежели подключаться множеством
+          пользователей через ресурс <literal>file://</literal> или
+          <literal>svn+ssh://</literal>. Если вы осуществляете доступ
+          к хранилищу Berkeley DB напрямую множеством пользователей,
+          убедитесь, что прочитали
+          <xref linkend="svn.serverconfig.multimethod"/> далее в этой главе.</para>
 
       </sect3>
-      
+<!-- @CHK }} -->
+
+<!-- @TR {{ -->      
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.basics.backends.fsfs">
+        <!-- @ENGLISH {{{
+        <title>FSFS</title>
+        @ENGLISH }}} -->
         <title>FSFS</title>
 
+        <!-- @ENGLISH {{{
         <para>In mid-2004, a second type of repository storage
           system&mdash;one that doesn't use a database at
           all&mdash;came into being.  An FSFS repository stores the
@@ -698,6 +1276,18 @@ conf/  db/  format  hooks/  locks/  README.txt
           unchanging, the repository also can be backed up while
           <quote>hot,</quote> just like a BDB-backed
           repository.</para>
+        @ENGLISH }}} -->
+        <para>В середине 2004 года появилось второе хранилище
+          репозитория, совсем не использующее базу данных. Хранилище
+          FSFS сохраняет изменения, относящиеся к ревизии в одном файле,
+          таким образом, все ревизии репозитория могут быть найдены в
+          одном каталоге, состоящем из нумерованных файлов. Транзакции
+          создаются в отдельных подкаталогах в виде файлов. При
+          завершении транзакции файл переименовывается и перемещается
+          в каталог с ревизиями, таким образом гарантируя атомартность
+          фиксаций. И, так как файлы ревизий не изменяются, репозиторий
+          может быть скопирован <quote>на лету</quote>, точно также,
+          как и BDB-репозиторий.</para>
 
         <sidebar id="svn.reposadmin.basics.backends.fsfs.revfiles">
           <title>Revision files and shards</title>
