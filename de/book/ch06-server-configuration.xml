@@ -4686,8 +4686,12 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.extra.browsing">
+<!--
         <title>Repository browsing</title>
+-->
+        <title>Stöbern im Projektarchiv</title>
 
+<!--
         <para>One of the most useful benefits of an Apache/WebDAV
           configuration for your Subversion repository is that the
           youngest revisions of your versioned files and directories
@@ -4699,7 +4703,22 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           based on whether that URL represents a versioned directory
           or file, <command>mod_dav_svn</command> will respond with a
           directory listing or with file contents.</para>
+-->
+        <para>Einer der nützlichsten Vorteile eines Apache/WebDAV
+          Aufbaus für Ihr Subversion Projektarchiv besteht darin, dass
+          die jüngsten Versionen Ihrer versionierten Dateien und
+          Verzeichnisse unmittelbar mit einem gewöhnlichen Webbrowser
+          bertrachtet werden können. Da Subversion zur Identifizierung
+          versionierter Ressourcen URLs verwendet, können diese URLs
+          für den HTTP-basierten Zugriff direkt im Webbrowser
+          eingetippt werden. Ihr Browser verschickt daraufhin für
+          diesen URL eine HTTP <literal>GET</literal>-Anfrage; je
+          nachdem, ob dieser URL ein versioniertes Verzeichnis oder
+          eine Datei repräsentiert, antwortet
+          <command>mod_dav_svn</command> mit der Auflistung eines
+          Verzeichnisinhalts oder mit dem Inhalt einer Datei.</para>
 
+<!--
         <para>Since the URLs do not contain any information about
           which version of the resource you wish to
           see, <command>mod_dav_svn</command> will always answer with
@@ -4709,14 +4728,33 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           point at the latest manifestation of that document.  Of
           course, you can even use the URLs as hyperlinks from other
           web sites, too.</para>
+-->
+        <para>Da die URLs keinerlei Informationen über die
+          Ressourcenversion enthalten, die Sie sehen möchten,
+          antwortet <command>mod_dav_svn</command> stets mit der
+          jüngsten Version. Diese Funktionalität hat den wundervollen
+          Nebeneffekt, dass Sie Subversion-URLs als Dokumentverweise
+          an Ihre Mitarbeiter weitergeben können, die stets auf die
+          neuesten Ausprägungen dieser Dokumente zeigen werden.
+          Natürlich können Sie diese URLs auch aus anderen Webseiten
+          heraus verwenden.</para>
 
         <sidebar>
+<!--
           <title>Can I View Older Revisions?</title>
+-->
+          <title>Kann ich mir ältere Versionen ansehen?</title>
 
+<!--
           <para>With an ordinary web browser?  In one word: nope.  At
             least, not with <command>mod_dav_svn</command> as your
             only tool.</para>
+-->
+          <para>In einem gewöhnlichen Webbrowser? Mit einem Wort:
+            nein. Jedenfalls nicht mit <command>mod_dav_svn</command>
+            als Ihr einziges Werkzeug.</para>
 
+<!--
           <para>Your web browser speaks ordinary HTTP only.  That
             means it knows only how to GET public URLs, which
             represent the latest versions of files and directories.
@@ -4728,10 +4766,26 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
             URL; the procedure involves issuing a series of WebDAV
             PROPFIND requests and understanding DeltaV concepts.  This
             is something your web browser simply can't do.</para>
+-->
+          <para>Ihr Webbrowser spricht lediglich gewöhnliches HTTP.
+            Das bedeutet, er weiß bloß, wie er mit
+            <literal>GET</literal> öffentliche URLs bekommt, die die
+            neuesten Versionen von Dateien und Verzeichnissen
+            repräsentieren. Gemäß WebDAV/DeltaV-Spezifikation
+            definiert jeder Server eine private URL-Syntax für ältere
+            Ressourcenversionen; diese Syntax ist jedoch für Clients
+            nicht klar ersichtlich. Um eine ältere Version einer Datei
+            zu finden, muss ein Client einer bestimmten Vorgehensweise
+            folgen, um die passende URL zu <quote>ermitteln</quote>;
+            die Vorgehensweise umfasst eine Reihe von WebDAV
+            <literal>PROPFIND</literal>-Anfragen und das Verständnis
+            von DeltaV Konzepten. Das sind Dinge, die Ihr Webbrowser
+            einfach nicht kann.</para>
 
+<!--
           <para>So, to answer the question, one obvious way to see
             older revisions of files and directories is by passing the
-            <option>--revision</option> (<option>-r</option>) argument
+            <option>- -revision</option> (<option>-r</option>) argument
             to the <command>svn list</command> and <command>svn
             cat</command> commands.  To browse old revisions with your
             web browser, however, you can use third-party software.  A
@@ -4743,11 +4797,32 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
             </footnote>
             and the latest releases are able to understand Subversion
             repositories as well.</para>
+-->
+          <para>So, um die Frage zu beantworten, eine offensichtliche
+            Methode, ältere Revisionen von Dateien und Verzeichnissen
+            anzusehen, besteht darin, das Optionsargument
+            <option>--revision</option> (<option>-r</option>) an
+            <command>svn list</command> und <command>svn cat</command>
+            zu übergeben. Um jedoch alte Revisionen mit Ihrem
+            Webbrowser anzusehen, können Sie Software von
+            Drittanbietern verwenden. Ein geeignetes Beispiel hierfür
+            ist ViewVC (<ulink url="http://viewvc.tigris.org/"/>).
+            ViewVC wurde ursprünglich zur Anzeige von 
+            CVS-Projektarchiven über das Web geschrieben.
+            <footnote>
+              <para>Damals hieß es noch ViewCVS.</para>
+            </footnote>
+            Die letzten Releases verstehen auch Subversion
+            Projektarchive.</para>
         </sidebar>
 
         <sect4 id="svn.serverconfig.httpd.extra.browsing.mimetype">
+<!--
           <title>Proper MIME type</title>
+-->
+          <title>Passender MIME-Typ</title>
 
+<!--
           <para>When browsing a Subversion repository, the web browser
             gets a clue about how to render a file's contents by
             looking at the <literal>Content-Type:</literal> header
@@ -4762,7 +4837,24 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
             it might be nice to have a <filename>foo.html</filename> file
             in the repository actually render as HTML when
             browsing.</para>
+-->
+          <para>Während des Durchstöberns eines
+            Subversion-Projektarchivs bekommt der Web-Browser Hinweise
+            zur Darstellung des Inhalts einer Datei, indem er in den
+            <literal>Content-Type:</literal>-Header von Apaches
+            Antwort auf die HTTP <literal>GET</literal>-Anfrage
+            schaut. Der Wert dieses Headers ist eine Art MIME-Typ.
+            Standardmäßig teilt Apache den Web-Browsern mit, dass alle
+            Dateien des Projektarchivs den
+            <quote>Standard</quote>-MIME-Typen besitzen, normalerweise
+            <literal>text/plain</literal>. Das kann jedoch
+            frustrierend sein, wenn ein Benutzer möchte, dass Dateien
+            aus dem Projektarchiv etwas aussagekräftiger dargestellt
+            werden; beispielsweise wäre es nett, wenn eine Datei
+            <filename>foo.html</filename> aus dem Projektarchiv auch
+            als HTML-Datei angezeigt würde.</para>
 
+<!--
           <para>To make this happen, you need only to make sure that
             your files have the
             proper <literal>svn:mime-type</literal> set.  We discuss this 
@@ -4772,7 +4864,20 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
             attach proper <literal>svn:mime-type</literal> properties
             to files entering the repository for the first time; see
             <xref linkend="svn.advanced.props.auto"/>.</para>
+-->
+          <para>Um dieses hinzubekommen, müssen Sie nur sicherstellen,
+            dass Ihre Dateien den passenden
+            <literal>svn:mime-type</literal> gesetzt haben. Im Detail
+            besprechen wir das in <xref
+              linkend="svn.advanced.props.special.mime-type"/>.  Sie
+            können Ihren Client sogar so konfigurieren, dass er
+            automatisch passende
+            <literal>svn:mime-type</literal>-Eigenschaften an Dateien
+            hängt, wenn sie das erste Mal in das Projektarchiv
+            eingebracht werden (siehe <xref
+              linkend="svn.advanced.props.auto"/>).</para>
 
+<!--
           <para>So in our example, if one were to set
           the <literal>svn:mime-type</literal> property
           to <literal>text/html</literal> on
@@ -4784,12 +4889,27 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           There's generally no problem with this, as long as the web
           site doesn't contain any dynamically generated
           content.</para>
-
+-->
+          <para>Falls in unserem Beispiel also jemand die Eigenschaft 
+            <literal>svn:mime-type</literal> mit dem Wert
+            <literal>text/html</literal> an die Datei
+            <filename>foo.html</filename> hänge, würde Apache
+            Ihrem Browser wahrscheinlich mitteilen, dass die Datei als
+            HTML darzustellen sei. Man könnte auch passende
+            <literal>image/*</literal>-MIME-Type-Eigenschaften an
+            Bilddateien hängen und somit eine komplette Webpräsenz
+            direkt aus dem Projektarchiv heraus sichtbar machen!
+            Solange die Webpräsenz keinen dynamisch erzeugten Inhalt
+            hat, gibt es damit im Allgemeinen kein Problem.</para>
         </sect4>
 
         <sect4 id="svn.serverconfig.httpd.extra.browsing.xslt">
+<!--
           <title>Customizing the look</title>
+-->
+          <title>Anpassung der Darstellung</title>
 
+<!--
           <para>You generally will get more use out of URLs to
             versioned files&mdash;after all, that's where the
             interesting content tends to lie.  But you might have
@@ -4805,6 +4925,22 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
             instruct <command>mod_dav_svn</command> to generate XML
             output when displaying a directory listing, and to
             reference the XSLT stylesheet of your choice:</para>
+-->
+          <para>Gemeinhin werden Sie mehr Nutzen aus URLs auf
+            versionierte Dateien ziehen &ndash; hier liegt schließlich
+            der interessante Inhalt. Gelegentlich werden Sie beim
+            Durchstöbern eines Subversion-Verzeichnisinhalts
+            feststellen, dass das zur Darstellung verwendete HTML sehr
+            einfach ist und bestimmt nicht ästhetisch ansprechend (oder
+            gar interessant). Um eine Anpassung dieser
+            Verzeichnisdarstellungen zu ermöglichen, stellt Subversion
+            einen XML-Index-Mechanismus zur Verfügung. Eine einzelne 
+            <literal>SVNIndexXSLT</literal>-Directive im
+            <literal>Location</literal>-Block des Projektarchivs in
+            <filename>httpd.conf</filename> fordert
+            <command>mod_dav_svn</command> auf, bei der Anzeige von
+            Verzeichnisinhalten XML auszugeben und ein XSLT-Stylesheet
+            Ihrer Wahl zu verwenden:</para>
 
         <screen>
 &lt;Location /svn&gt;
@@ -4815,28 +4951,42 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 &lt;/Location&gt;
 </screen>
 
-         <para>Using the <literal>SVNIndexXSLT</literal> directive and
-           a creative XSLT stylesheet, you can make your directory
-           listings match the color schemes and imagery used in other
-           parts of your web site.  Or, if you'd prefer, you can use
-           the sample stylesheets provided in the Subversion source
-           distribution's <filename>tools/xslt/</filename> directory.
-           Keep in mind that the path provided to the
-           <literal>SVNIndexXSLT</literal> directory is actually a URL
-           path&mdash;browsers need to be able to read your
-           stylesheets to make use of them!</para>
+         <para>Wenn Sie die Direktive <literal>SVNIndexXSLT</literal>
+           zusammen mit einem gestalterischen XSLT-Stylesheet
+           verwenden, können Sie die Verzeichnisinhalte an das
+           Farbschema und die bildliche Darstellung anderer Teile
+           Ihrer Webpräsenz anpassen. Sollten Sie es vorziehen, können
+           Sie auch die Beispiel-Stylesheets aus dem Verzeichnis
+           <filename>tools/xslt/</filename> des
+           Subversion-Quelltextpakets verwenden. Beachten Sie, dass
+           die Pfadangabe des Verzeichnisses
+           <literal>SVNIndexXSLT</literal> tatsächlich um einen
+           URL-Pfad handelt &ndash; Browser müssen Ihre Stylesheets
+           lesen können, um sie zu verwenden!</para>
 
          </sect4>
 
         <sect4 id="svn.serverconfig.httpd.extra.browsing.reposlisting">
+<!--
           <title>Listing repositories</title>
+-->
+          <title>Anzeige von Projektarchiven</title>
 
+<!--
           <para>If you're serving a collection of repositories from a
             single URL via the <literal>SVNParentPath</literal>
             directive, then it's also possible to have Apache display
             all available repositories to a web browser.  Just
             activate the <literal>SVNListParentPath</literal>
             directive:</para>
+-->
+          <para>Falls Sie mit einem einzelnen URL eine Ansammlung von
+            Projektarchiven über die Direktive
+            <literal>SVNParentPath</literal> verfügbar machen, ist es
+            auch möglich, dass Apache einem Web-Browser alle
+            verfügbaren Projektarchive anzeigt. Sie müssen nur die
+            Direktive <literal>SVNListParentPath</literal>
+            aktivieren:</para>
 
           <screen>
 &lt;Location /svn&gt;
@@ -4847,12 +4997,20 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 &lt;/Location&gt;
 </screen>
 
+<!--
           <para>If a user now points her web browser to the
           URL <literal>http://host.example.com/svn/</literal>, she'll
           see a list of all Subversion repositories sitting
           in <filename>/var/svn</filename>.  Obviously, this can
           be a security problem, so this feature is turned off by
           default.</para>
+-->
+          <para>Falls ein Benutzer nun mit dem Web-Browser auf den URL
+            <literal>http://host.example.com/svn/</literal> geht,
+            sieht er eine Liste aller Projektarchive unterhalb von
+            <filename>/var/svn</filename>. Offensichtlich kann dies
+            ein Sicherheitsproblem sein, so dass dieser Mechanismus
+            standardmäßig abgestellt ist.</para>
 
         </sect4>
 
