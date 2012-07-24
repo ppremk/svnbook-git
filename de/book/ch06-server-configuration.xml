@@ -5030,8 +5030,12 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.extra.logging">
+<!--
         <title>Apache logging</title>
+-->
+        <title>Protokollierung von Apache</title>
 
+<!--
         <para>Because Apache is an HTTP server at heart, it contains
           fantastically flexible logging features.  It's beyond the
           scope of this book to discuss all of the ways logging can be
@@ -5044,7 +5048,22 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           logging area of your Apache installation.  (On Unix, they
           often live
           in <filename>/usr/local/apache2/logs/</filename>.)</para>
+-->
+        <para>Da Apache im Grunde genommen ein HTTP-Server ist,
+          beinhaltet er fantastisch anpassungsfähige
+          Protokollierungsmöglichkeiten. Es würde den Rahmen dieses
+          Buches sprengen, alle Protokollierungseinstellungen zu
+          erörtern, doch soll darauf hingewiesen werden, dass selbst
+          die gewöhnlichste <filename>httpd.conf</filename>-Datei 
+          Apache veranlasst, zwei Protokolldateien anzulegen:
+          <filename>error_log</filename> 
+          und <filename>access_log</filename>. Diese Protokolldateien
+          können an unterschiedlichen Orten liegen, werden
+          normalerweise aber im Protokollbereich Ihrer
+          Apache-Installation angelegt. (Unter Unix liegen sie oft
+          in  <filename>/usr/local/apache2/logs/</filename>.)</para>
 
+<!--
         <para>The <filename>error_log</filename> describes any internal
           errors that Apache runs into as it works.
           The <filename>access_log</filename> file records every
@@ -5053,7 +5072,17 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           clients are coming from, how often particular clients use
           the server, which users are authenticating properly, and
           which requests succeed or fail.</para>
+-->
+        <para>Die Datei <filename>error_log</filename> zeichnet
+          sämtliche internen Fehler beim Betrieb von Apache auf.
+          Die Datei <filename>access_log</filename> protokolliert
+          jede von Apache empfangene eingehende HTTP-Abfrage. Das
+          macht es einfach, festzustellen, von welchen IP-Adressen
+          Subversion-Clients kommen, wie oft bestimmte Clients den
+          Server benutzen, welche Benutzer sich richtig anmelden und
+          welche Abfragen erfolgreich sind oder fehlschlagen.</para>
 
+<!--
         <para>Unfortunately, because HTTP is a stateless protocol,
           even the simplest Subversion client operation generates
           multiple network requests.  It's very difficult to look at
@@ -5064,20 +5093,48 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           requests.  To make things worse, many client operations send
           nearly identical series of requests, so it's even harder to
           tell them apart.</para>
+-->
+        <para>Da HTTP ein zustandsloses Protokoll ist, erzeugt selbst
+          die einfachste Funktion eines Subversion Clients leider
+          mehrere Netzabfragen. Es ist sehr schwer, anhand der Datei
+          <filename>access_log</filename> herzuleiten, was der Client
+          tat; die meisten Funktionen sehen aus wie eine Folge
+          kryptischer <literal>PROPPATCH</literal>-,
+          <literal>GET</literal>-, <literal>PUT</literal>- und
+          <literal>REPORT</literal>-Abfragen. Und, was alles noch
+          komplizierter macht: viele Client-Funktionen schicken fast
+          identische Anfragen, was ein Auseinanderhalten
+          erschwert.</para>
 
+<!--
         <para><command>mod_dav_svn</command>, however, can come to
           your aid.  By activating an <quote>operational
           logging</quote> feature, you can
           ask <command>mod_dav_svn</command> to create a separate log
           file describing what sort of high-level operations your
           clients are performing.</para>
+-->
+        <para><command>mod_dav_svn</command> kann Ihnen jedoch helfen.
+          Durch die Aktivierung einer <quote>operativen
+          Protokollierung</quote> können Sie
+          <command>mod_dav_svn</command> veranlassen, eine gesonderte
+          Protokolldatei anzulegen, die festhält, welche Art von
+          Funktionen Ihre Clients auf höherer Ebene ausführen.</para>
 
+<!--
         <para>To do this, you need to make use of
           Apache's <literal>CustomLog</literal> directive (which is
           explained in more detail in Apache's own documentation).
           Be sure to invoke this
           directive <emphasis>outside</emphasis> your
           Subversion <literal>Location</literal> block:</para>
+-->
+        <para>Um das zu bewerkstelligen, müssen Sie die
+          Apache-Direktive <literal>CustomLog</literal> verwenden (die
+          detailliert in der Dokumentation zu Apache beschrieben
+          wird). Stellen Sie sicher, dass Sie die Direktive
+          <emphasis>außerhalb</emphasis> Ihres Subversion
+          <literal>Location</literal>-Blocks verwenden:</para>
 
         <screen>
 &lt;Location /svn&gt;
@@ -5088,6 +5145,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
 </screen>
 
+<!--
         <para>In this example, we're asking Apache to create a special
           logfile, <filename>svn_logfile</filename>, in the standard
           Apache <filename>logs</filename> directory.
@@ -5099,10 +5157,28 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
           the <literal>SVN-ACTION</literal> environment variable,
           which is automatically set by <command>mod_dav_svn</command>
           whenever it detects a high-level client action.</para>
+-->
+        <para>In diesem Beispiel veranlassen wir Apache, die spezielle
+          Protokolldatei <filename>svn_logfile</filename> im
+          standardmäßigen Verzeichnis für Apache Protokolldateien,
+          <filename>logs</filename>, anzulegen. Die Variablen
+          <literal>%t</literal> und <literal>%u</literal> werden
+          durch die Zeit bzw. den Benutzernamen der  Anfrage ersetzt.
+          Die wirklich wichtigen Teile sind die zwei Instanzen von
+          <literal>SVN-ACTION</literal>. Wenn Apache diese Variable
+          sieht, ersetzt er den Wert der Umgebungsvariablen
+          <literal>SVN-ACTION</literal>, die automatisch von
+          <command>mod_dav_svn</command> belegt wird, wenn eine
+          Client-Funktion auf hoher Ebene feststellt wird.</para>
 
+<!--
         <para>So, instead of having to interpret a
           traditional <filename>access_log</filename> like
           this:</para>
+-->
+        <para>Statt also eine traditionelle
+          <filename>access_log</filename>-Protokolldatei auswerten zu
+          müssen, die etwa so aussieht:</para>
 
         <screen>
 [26/Jan/2007:22:25:29 -0600] "PROPFIND /svn/calc/!svn/vcc/default HTTP/1.1" 207 398
@@ -5114,9 +5190,9 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
 &hellip;
 </screen>
 
-        <para>you can peruse a much more
-          intelligible <filename>svn_logfile</filename> like
-          this:</para>
+        <para>können Sie eine weit verständlichere Datei
+          <filename>svn_logfile</filename> durchgehen, die so
+          aussieht:</para>
 
         <screen>
 [26/Jan/2007:22:24:20 -0600] - get-dir /tags r1729 props
@@ -5125,8 +5201,13 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
 [26/Jan/2007:22:25:31 -0600] sally commit r1730
 </screen>
 
+<!--
         <para>For an exhaustive list of all actions logged, see <xref
           linkend="svn.ref.mod_dav_svn.conf.logging"/>.</para>
+-->
+        <para>Eine vollständige Liste mit allen protokollierten
+          Aktionen finden Sie unter <xref
+            linkend="svn.ref.mod_dav_svn.conf.logging"/>.</para>
 
       </sect3>
 
