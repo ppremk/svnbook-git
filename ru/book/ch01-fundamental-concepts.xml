@@ -701,8 +701,9 @@
           <para>Несмотря на то, что Subversion в первую очередь является
             системой типа копирование-изменение-слияние, в ней признается
             необходимость блокирования определенных файлов и предлагаются
-            соответствующие механизмы. Подробнее эта возможность рассматривается
-            далее в этой книге, см. <xref linkend="svn.advanced.locking"/>.</para>
+            соответствующие механизмы. Подробнее эта возможность
+            рассматривается далее в этой книге, см.
+            <xref linkend="svn.advanced.locking"/>.</para>
 
         </sidebar>
 
@@ -711,13 +712,18 @@
   </sect1>
 <!-- @CHK }} -->
 
-<!-- @TR {{ -->
+<!-- @CHK {{ -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.basic.in-action">
+    <!-- @ENGLISH {{{
     <title>Version Control the Subversion Way</title>
+    @ENGLISH }}} -->
+    <title>Управление версиями в стиле Subversion</title>
 
+<!-- @TR {{ -->
+    <!-- @ENGLISH {{{
     <para>We've mentioned already that Subversion is a modern,
       network-aware version control system.  As we described in
       <xref linkend="svn.basic.version-control-basics"/> (our
@@ -727,11 +733,26 @@
       interact with that data.  In this section, we'll begin to
       introduce the specific ways in which Subversion implements
       version control.</para>
+    @ENGLISH }}} -->
+    <para>Мы уже упоминали, что Subversion &mdash; это соверменная
+      сетевая система управления версиями.  As we described in
+      <xref linkend="svn.basic.version-control-basics"/> (our
+      high-level version control overview), a repository serves as the
+      core storage mechanism for Subversion's versioned data, and it's
+      via working copies that users and their software programs
+      interact with that data. В этом разделе мы начнем представление
+      специальных техник, используемых Subversion для управления
+      версиями</para>
+<!-- @TR }} -->
 
     <!-- =============================================================== -->
     <sect2 id="svn.basic.svn-repositories">
+      <!-- @ENGLISH {{{
       <title>Subversion Repositories</title>
+      @ENGLISH }}} -->
+      <title>Репозитории Subversion</title>
 
+      <!-- @ENGLISH {{{
       <para>Subversion implements the concept of a version control
         repository much as any other modern version control system
         would.  Unlike a working copy, a Subversion repository is an
@@ -743,18 +764,33 @@
         copy and how to manipulate it.  For the finer details of the
         repository, though, check out
         <xref linkend="svn.reposadmin"/>.</para>
+      @ENGLISH }}} -->
+      <para>Subversion реализует концепцию контроля версий также как
+        многие соверменные системы управления версиями. В отличие от
+        рабочей копии, репозиторий Subversion это абстрактная сущность
+        управляемая почти исключительно инструментами и библиотеками
+        Subversion. Поскольку большая часть взаимодействия пользователя
+        связана с использованием клиента и происходит в контексте
+        рабочей копии, мы потратим большую часть книги на обсуждение
+        рабочих копий и управления ими. Для дополнительной информации о
+        репозитории Subversion существует
+        <xref linkend="svn.reposadmin"/>.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.basic.in-action.revs">
+      <!-- @ENGLISH {{{
       <title>Revisions</title>
+      @ENGLISH }}} -->
+      <title>Ревизии</title>
 
       <indexterm>
         <primary>revisions</primary>
         <secondary>defined</secondary>
       </indexterm>
 
+      <!-- @ENGLISH {{{
       <para>A Subversion client commits (that is, communicates the
         changes made to) any number of files and directories as a
         single atomic transaction.  By atomic transaction, we mean
@@ -762,7 +798,15 @@
         repository, or none of them is.  Subversion tries to retain
         this atomicity in the face of program crashes, system crashes,
         network problems, and other users' actions.</para>
-<!-- @TR }} -->
+      @ENGLISH }}} -->
+      <para>Клиент Subversion фиксирует (то есть, передаёт в
+        перозиторий) изменения любого количества файлов и каталогов
+        как одну атомарную транзакцию. Под атомарностью транзакции
+        подразумевается следующее: либо принимаются все изменения,
+        либо ни одно из них. Subversion tries to retain this
+        atomicity in the face of program crashes, system crashes,
+        network problems, and other users' actions.</para>
+<!-- @CHK }} -->
 
 <!-- @CHK {{ -->
       <!-- @ENGLISH {{{
@@ -776,11 +820,11 @@
       @ENGLISH }}} -->
       <para>Каждый раз, когда происходит фиксация, создаётся
         новое состояние файловой системы, которое называется
-        <firstterm>правкой</firstterm>. Каждая правка получает
-        уникальный номер, на единицу больший номера
-        предыдущей правки. Начальная правка только что созданного
-        хранилища получает номер 0 и не содержит ничего, кроме
-        пустого корневого каталога.</para>
+        <firstterm>ревизией</firstterm>. Каждая ревизия получает
+        уникальный номер, на единицу больший номера предыдущей
+        ревизии. Начальная правка только что созданного хранилища
+        получает номер 0 и не содержит ничего, кроме пустого
+        каталога.</para>
 
       <!-- @ENGLISH {{{
       <para><xref linkend="svn.basic.in-action.revs.dia-1"/>
@@ -791,26 +835,29 @@
         of the way the repository looked after a commit.</para>
       @ENGLISH }}} -->
       <para><xref linkend="svn.basic.in-action.revs.dia-1"/> отлично
-        иллюстрирует хранилище. Представьте массив номеров правок,
+        иллюстрирует хранилище. Представьте массив номеров ревизий,
         начинающийся с 0, с направлением слева направо. Каждый номер
-        правки имеет соответствующее дерево файлов, а каждое дерево
-        представляет собой <quote>снимок</quote> того, как хранилище
-        выглядело после фиксации.</para>
+        ревизии имеет соответствующее дерево файлов, а каждое дерево
+        представляет собой <quote>снимок</quote> того, как репозиторий
+        выглядел после фиксации.</para>
 <!-- @CHK }} -->
 
-<!-- @TR {{ -->
+<!-- @CHK {{ -->
       <figure id="svn.basic.in-action.revs.dia-1">
+        <!-- @ENGLISH {{{
         <title>Tree changes over time</title>
+        @ENGLISH }}} -->
+        <title>Изменения дерева с течением времени</title>
         <graphic fileref="images/ch02dia7.png"/>
       </figure>
-<!-- @TR }} -->
+<!-- @CHK }} -->
 
 <!-- @CHK {{ -->
       <sidebar>
         <!-- @ENGLISH {{{
         <title>Global Revision Numbers</title>
         @ENGLISH }}} -->
-        <title>Глобальные номера правок</title>
+        <title>Глобальные номера ревизий</title>
 
         <indexterm>
           <primary>revisions</primary>
@@ -835,30 +882,35 @@
           might want to see <xref linkend="svn.forcvs"/> for more
           details.)</para>
         @ENGLISH }}} -->
-        <para>В отличие от большинства систем управления версиями, номера
-          правок в Subversion относятся <emphasis>ко всем</emphasis>,
-          а не только к отдельно взятым файлам. Каждый номер правки
-          соответствует целому дереву, отдельному состоянию хранилища после
-          зафиксированного изменения. Иначе говоря, правка N
-          представляет состояние файловой системы хранилища после выполнения
-          N-ой фиксации. Когда пользователи Subversion говорят о
-          <quote>правке 5 <filename>foo.c</filename></quote>, на самом деле
-          речь идет о <quote><filename>foo.c</filename> входящем в правку
-          5</quote>. Заметьте, что правки N и M файла
-          <emphasis>не обязательно</emphasis> будут отличаться! Многие
-          системы управления версиями исполюзуют пофайловую нумерацию правок,
-          так что этот подход на первых порах может показаться непривычным.
-          (Бывшие пользователи CVS могут обратиться за более подробной
-          информацией к <xref linkend="svn.forcvs"/>.)</para>
+        <para>В отличие от большинства систем управления версиями,
+          номера ревизий в Subversion относятся
+          <emphasis>ко всем</emphasis>, а не только к отдельно взятым
+          файлам. Каждый номер ревизии соответствует целому дереву,
+          отдельному состоянию репозитория после зафиксированного
+          изменения. Иначе говоря, правка N представляет состояние
+          файловой системы репозитория после выполнения N-ой фиксации.
+          Когда пользователи Subversion говорят о <quote>ревизии 5
+          <filename>foo.c</filename></quote>, на самом деле речь идет
+          о <quote><filename>foo.c</filename> входящем в ревизию
+          5</quote>. Заметьте, что ревизии N и M файла <emphasis>не
+          обязательно</emphasis> будут отличаться! Многие системы
+          управления версиями исполюзуют пофайловую нумерацию ревизий,
+          так что этот подход на первых порах может показаться
+          непривычным. (Бывшие пользователи CVS могут обратиться за
+          более подробной информацией к
+          <xref linkend="svn.forcvs"/>.)</para>
       </sidebar>
 <!-- @CHK }} -->
 
-<!-- @TR {{ -->
+<!-- @CHK {{ -->
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.reposurls">
+      <!-- @ENGLISH {{{
       <title>Addressing the Repository</title>
+      @ENGLISH }}} -->
+      <title>Обращение к репозиторию</title>
 
       <indexterm>
         <primary>svn</primary>
@@ -871,10 +923,18 @@
         <tertiary>URLs</tertiary>
       </indexterm>
 
+      <!-- @ENGLISH {{{
       <para>Subversion client programs use URLs to identify versioned
         files and directories in Subversion repositories.  For the
         most part, these URLs use the standard syntax, allowing for
         server names and port numbers to be specified as part of the
+        URL.</para>
+      @ENGLISH }}} -->
+      <para>Программа-клиент Subversion использует
+        URL<footnote><para>Единый указатель ресурсов (Uniform Resource
+        Locator)</para></footnote> для идентификации файлов и каталогов
+        в репозитории. В большинстве случаем используется стандартный
+        синтаксис позволяющий указать адреса и порты как часть
         URL.</para>
 
       <informalexample>
@@ -888,6 +948,7 @@
         </itemizedlist>
       </informalexample>
 
+      <!-- @ENGLISH {{{
       <para>Subversion repository URLs aren't limited to only
         the <literal>http://</literal> variety.  Because Subversion
         offers several different ways for its clients to communicate
@@ -898,45 +959,81 @@
         repository access methods.  For more details about
         Subversion's server options, see
         <xref linkend="svn.serverconfig"/>.</para>
+      @ENGLISH }}} -->
+      <para>Адреса репозитория Subversion не ограничивается схемой
+        <literal>http://</literal>. Так как Subversion предлагает
+        различные способы доступа к репозиторию, адрес изменяется в
+        зависимости от метода.
+        <xref linkend="svn.basic.in-action.wc.tbl-1"/>
+        описывает схемы URL для разных методов доступа.
+        Дополнительную информацию о сервере Subversion содержит
+        <xref linkend="svn.serverconfig"/>.</para>
 
       <table id="svn.basic.in-action.wc.tbl-1">
+        <!-- @ENGLISH {{{
         <title>Repository access URLs</title>
+        @ENGLISH }}} -->
+        <title>URL доступа к репозиторию</title>
         <tgroup cols="2">
           <thead>
             <row>
+              <!-- @ENGLISH {{{
               <entry>Schema</entry>
               <entry>Access method</entry>
+              @ENGLISH }}} -->
+              <entry>Схема</entry>
+              <entry>Метод доступа</entry>
             </row>
           </thead>
           <tbody>
             <row>
               <entry><literal>file:///</literal></entry>
+              <!-- @ENGLISH {{{
               <entry>Direct repository access (on local disk)</entry>
+              @ENGLISH }}} -->
+              <entry>Прямой доступ к репозиторию (файлы
+                на локальном диске)</entry>
             </row>
             <row>
               <entry><literal>http://</literal></entry>
+              <!-- @ENGLISH {{{
               <entry>Access via WebDAV protocol to Subversion-aware
                 Apache server</entry>
+              @ENGLISH }}} -->
+              <entry>Доступ по протоколу WebDAV через веб-сервер
+                Apache</entry>
             </row>
             <row>
               <entry><literal>https://</literal></entry>
+              <!-- @ENGLISH {{{
               <entry>Same as <literal>http://</literal>, but with
                 SSL encryption</entry>
+              @ENGLISH }}} -->
+              <entry>Тоже что <literal>http://</literal>, но с
+                шифрованием SSL</entry>
             </row>
             <row>
               <entry><literal>svn://</literal></entry>
+              <!-- @ENGLISH {{{
               <entry>Access via custom protocol to an
                 <literal>svnserve</literal> server</entry>
+              @ENGLISH }}} -->
+              <entry>Доступ к серверу<literal>svnserve</literal>
+                по собственному протоколу</entry>
             </row>
             <row>
               <entry><literal>svn+ssh://</literal></entry>
+              <!-- @ENGLISH {{{
               <entry>Same as <literal>svn://</literal>, but through
                 an SSH tunnel</entry>
+              @ENGLISH }}} -->
+              <entry>Тоже что <literal>svn://</literal>, но
+                через SSH-туннель</entry>
             </row>
           </tbody>
         </tgroup>
       </table>
-<!-- @TR }} -->
+<!-- @CHK }} -->
 
 <!-- @CHK {{ -->
       <!-- @ENGLISH {{{
@@ -947,11 +1044,11 @@
         of <literal>localhost</literal> or no server name at
         all:</para>
       @ENGLISH }}} -->
-      <para>Однако, в обработке URL системой Subversion есть некоторые нюансы, о 
-        которых нужно помнить. Например, в соответствии с принятыми 
-        соглашениями, URL, использующий метод доступа
+      <para>Однако, в обработке URL системой Subversion есть некоторые
+        нюансы, о которых нужно помнить. Например, в соответствии с 
+        принятыми соглашениями, URL, использующий метод доступа
         <literal>file:</literal> (этот метод доступа используется для 
-        локальных хранилищ), должен либо включать имя сервера
+        локальных репозиториев), должен либо включать имя сервера
         <literal>localhost</literal>, либо вообще не содержать имени 
         сервера:</para>
 
@@ -976,16 +1073,17 @@
         <literal>X</literal> is the drive on which the repository
         resides:</para>
       @ENGLISH }}} -->
-      <para>Кроме того, тем, кто применяет схему <literal>file:</literal> на 
-        платформе Windows, необходимо использовать неофициальные
-        <quote>стандартные</quote> правила записи при обращении к 
-        хранилищу, которое находится на одном компьютере, но на разных 
-        дисках с клиентом. Обе приведенные ниже записи будут 
-        работать; здесь <literal>X</literal> &mdash; это имя диска, на котором 
-        находится хранилище:</para>
+      <para>Кроме того, тем, кто применяет схему
+        <literal>file:</literal> на платформе Windows, необходимо
+        использовать неофициальные <quote>стандартные</quote>
+        правила записи при обращении к репозиторию, который
+        находится на одном компьютере, но на разных дисках с
+        клиентом. Обе приведенные ниже записи будут работать;
+        здесь <literal>X</literal> &mdash; это имя диска, на
+        котором находится хранилище:</para>
 <!-- @CHK }} -->
 
-<!-- @TR {{ -->
+<!-- @CHK {{ -->
       <informalexample>
         <itemizedlist spacing="compact">
           <listitem>
@@ -997,6 +1095,7 @@
         </itemizedlist>
       </informalexample>
 
+      <!-- @ENGLISH {{{
       <para>Note that a URL uses forward slashes even though the
         native (non-URL) form of a path on Windows uses backslashes.
         Also note that when using
@@ -1004,8 +1103,17 @@
         form at the command line, you need to quote the URL (wrap it
         in quotation marks) so that the vertical bar character is not
         interpreted as a pipe.</para>
+      @ENGLISH }}} -->
+      <para>Обратите внимание на использование косой черты, хотя на
+        платформе Windows для формирования пути используется обратная
+        косая черта. Также заметьте, что для использования формы
+        <literal>file:///<replaceable>X</replaceable>|/</literal>
+        в командной строке, вам необходимо заключить весь пусть в
+        кавычки, чтобы вертикальная черта не была воспринята
+        интерпретатором как символ конвейр.</para>
 
       <note>
+        <!-- @ENGLISH {{{
         <para>You cannot use Subversion's <literal>file://</literal> URLs
           in a regular web browser the way typical
           <literal>file://</literal> URLs can.  When you attempt to view
@@ -1016,8 +1124,18 @@
           linkend="svn.developer.layerlib.repos" />), and your browser
           will not understand how to interact with that
           filesystem.</para>
+        @ENGLISH }}} -->
+        <para>Вы не сможете использовать адрес Subversion
+          <literal>file://</literal> также, как вы используете обычный
+          адрес <literal>file://</literal>. При попытке открыть
+          <literal>file://</literal> в браузере, он обращается к файлам
+          напрямую, в то время как ресурсы Subversion находятся в
+          виртуальной файловой системе (см. <xref
+          linkend="svn.developer.layerlib.repos" />), и браузер не
+          может взаимодействовать с этой системой.</para>
       </note>
 
+      <!-- @ENGLISH {{{
       <para>The Subversion client will automatically encode URLs as
         necessary, just like a web browser does.  For example, the URL
         <literal>http://host/path with space/project/españa</literal>
@@ -1028,7 +1146,28 @@
         If the URL contains spaces, be sure to place it within
         quotation marks at the command line so that your shell treats
         the whole thing as a single argument to the program.</para>
+      @ENGLISH }}} -->
+      <para>Клиент Subversion автоматически кодирует адрес, также как
+        это делает веб-браузер. Например, URL
+        <literal>http://host/path with space/project/españa</literal>,
+        содержащий пробелы и символы Юникода, будет автоматически
+        закодирован как
+        <literal>http://host/path%20with%20space/project/espa%C3%B1a</literal>.
+        Если адрес содержит пробелы, убедитесь, что заключили его в
+        кавычки, чтобы интерпретатор воспринял всю строку адреса
+        как единый аргумент программы-клиента.</para>
+<!-- @CHK }} -->
 
+<!-- @TR {{ -->
+      <!-- @ENGLISH {{{
+      <para>There is one notable exception to Subversion's handling of
+        URLs which also applies to its handling of local paths in many
+        contexts, too.  If the final path component of your URL or
+        local path contains an at sign (<literal>@</literal>), you need
+        to use a special syntax&mdash;described in
+        <xref linkend="svn.advanced.pegrevs" />&mdash;in order to make
+        Subversion properly address that resource.</para>
+      @ENGLISH }}} -->
       <para>There is one notable exception to Subversion's handling of
         URLs which also applies to its handling of local paths in many
         contexts, too.  If the final path component of your URL or
@@ -1052,12 +1191,15 @@
         <literal>^</literal>.</para>
 
     </sect2>
+<!-- @TR }} -->
 
     <!-- =============================================================== -->
     <sect2 id="svn.basic.in-action.wc">
+      <!-- @ENGLISH {{{
       <title>Subversion Working Copies</title>
+      @ENGLISH }}} -->
+      <title>Рабочие копии</title>
 
-<!-- @TR }} -->
       <indexterm>
         <primary>working copy</primary>
         <secondary>defined</secondary>
@@ -1125,15 +1267,14 @@
         Файлы в служебном каталоге помогают Subversion определить
         какие файлы рабочей копии содержат неопубликованные изменения, и какие
         файлы устарели по отношению к файлам других участников.</para>
-<!-- @CHK }} -->
 
-<!-- @TR {{ -->
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.basic.in-action.track-repos">
+        <!-- @ENGLISH {{{
         <title>How the working copy works</title>
-<!-- @TR }} -->
+        @ENGLISH }}} -->
+        <title>Как работают рабочие копии</title>
 
-<!-- @CHK {{ -->
         <!-- @ENGLISH {{{
         <para>For each file in a working directory, Subversion records
           (among other things) two essential pieces of
