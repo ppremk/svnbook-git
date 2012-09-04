@@ -5291,8 +5291,12 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
           (<command>mod_dav_svn</command>) laufen muss.</para>
 
         <sect4 id="svn.serverconfig.httpd.extra.writethruproxy.configure">
+<!--
           <title>Configure the servers</title>
+-->
+          <title>Einrichtung der Server</title>
 
+<!--
           <para>First, configure your master server's
             <filename>httpd.conf</filename> file in the usual way.
             Make the repository available at a certain URI location,
@@ -5301,6 +5305,16 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
             <quote>slave</quote> servers in the exact same way, but
             add the special <literal>SVNMasterURI</literal> directive
             to the block:</para>
+-->
+          <para>Konfigurieren Sie zunächst die Datei
+            <filename>httpd.conf</filename> des Master-Servers auf die
+            übliche Art. Stellen Sie das Projektarchiv unter einem
+            bestimmten URI zur Verfügung und richten Sie nach ihren
+            Wünschen die Authentifizierung sowie Autorisierung ein.
+            Sobald dies erledigt ist, konfigurieren Sie jeden Ihrer
+            <quote>Slave</quote>-Server auf exakt dieselbe Art, fügen
+            jedoch die besondere Direktive
+            <literal>SVNMasterURI</literal> dem Block hinzu:</para>
 
           <screen>
 &lt;Location /svn&gt;
@@ -5311,6 +5325,7 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
 &lt;/Location&gt;
 </screen>
 
+<!--
           <para>This new directive tells a slave server to redirect
             all write requests to the master.  (This is done
             automatically via Apache's <command>mod_proxy</command>
@@ -5319,7 +5334,19 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
             slave servers all have matching authentication and
             authorization configurations;  if they fall out of sync,
             it can lead to big headaches.</para>
+-->
+          <para>Diese neue Direktive teilt dem Slave-Server mit, alle
+            Schreibanfragen an den Master weiterzuleiten. (Dies
+            geschieht durch das Apache-Modul
+            <command>mod_proxy</command> automatisch.) Gewöhnliche
+            Leseanfragen werden jedoch immer noch von den Slaves
+            bedient. Stellen Sie sicher, dass Ihre Master- und
+            Slave-Server die gleichen Authentifizierungs- und
+            Autorisierungs-Konfigurationen haben; falls sie nicht mehr
+            synchron sein sollten, kann das zu heftigen Kopfschmerzen
+            führen.</para>
 
+<!--
           <para>Next, we need to deal with the problem of infinite
             recursion.  With the current configuration, imagine what
             will happen when a Subversion client performs a commit to
@@ -5330,13 +5357,35 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
             Subversion client performing a commit, the slave will
             immediately attempt to proxy the incoming write request
             back to the master!  Hilarity ensues.</para>
+-->
+          <para>Als nächstes müssen wir uns um das Problem unendlicher
+            Rekursion kümmern. Stellen Sie sich vor, was unter der
+            gegenwärtigen Konfiguration passiert, wenn ein
+            Subversion-Client eine Übergabe an den Master-Server
+            vornimmt. Wenn die Übergabe abgeschlossen ist, benutzt der
+            Server <command>svnsync</command>, um die neue Revision
+            nach jedem Slave zu replizieren. Da sich aber
+            <command>svnsync</command> wie ein gewöhnlicher
+            Subversion-Client bei einer Übergabe verhält, wird der
+            Slave sofort versuchen, die hereinkommende
+            Schreibaufforderung zurück an den Master weiterzuleiten!
+            Da kommt Freude auf.</para>
 
+<!--
           <para>The solution to this problem is to have the master
             push revisions to a different
             <literal>&lt;Location&gt;</literal> on the slaves.  This
             location is configured to <emphasis>not</emphasis> proxy
             write requests at all, but to accept normal commits from
             (and only from) the master's IP address:</para>
+-->
+          <para>Die Lösung des Problems besteht darin, den Master
+            Revisionen an eine unterschiedliche
+            <literal>&lt;Location&gt;</literal> auf den Slaves senden
+            zu lassen. Dieser Ort ist dergestalt konfiguriert, dass
+            Schreibanfragen <emphasis>nicht</emphasis>  weitergeleitet
+            werden, sondern normale Übergaben von der IP-Adresse des
+            Masters (und nur von dort) angenommen werden:</para>
 
           <screen>
 &lt;Location /svn-proxy-sync&gt;
@@ -5344,7 +5393,7 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
   SVNPath /var/svn/repos
   Order deny,allow
   Deny from all
-  # Only let the server's IP address access this Location:
+  # Nur Zugriffe auf diese Location von der IP-Adresse des Servers erlauben:
   Allow from 10.20.30.40
   &hellip;
 &lt;/Location&gt;
