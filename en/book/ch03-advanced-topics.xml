@@ -1306,6 +1306,16 @@ $
     </sect2>
 
     <!-- =============================================================== -->
+    <sect2 id="svn.advanced.props.inheritable">
+      <title>Inheritable Properties</title>
+
+      <para>TODO: Document Inheritable Properties -- This is a temporary
+        stub so other sections referencing this new topic have somewhere
+        to point. </para>
+
+    </sect2>
+
+    <!-- =============================================================== -->
     <sect2 id="svn.advanced.props.auto">
       <title>Automatic Property Setting</title>
 
@@ -1755,17 +1765,17 @@ $
       directories&mdash;its output can get quite noisy where many of
       these things exist.</para>
 
-    <para>So Subversion provides two ways for telling it which files
+    <para>So Subversion provides several ways for telling it which files
       you would prefer that it simply disregard.  One of the ways
       involves the use of Subversion's runtime configuration system
       (see <xref linkend="svn.advanced.confarea" />), and therefore
       applies to all the Subversion operations that make use of that
       runtime configuration&mdash;generally those performed on a particular
-      computer or by a particular user of a computer.  The other way
-      makes use of Subversion's directory property support and is more
+      computer or by a particular user of a computer.  Two other methods
+      make use of Subversion's directory property support and are more
       tightly bound to the versioned tree itself, and therefore
-      affects everyone who has a working copy of that tree.  Both of
-      the mechanisms use <firstterm>file patterns</firstterm> (strings
+      affects everyone who has a working copy of that tree.  All of
+      these mechanisms use <firstterm>file patterns</firstterm> (strings
       of literal and special wildcard characters used to match against
       filenames) to decide which files to ignore.</para>
 
@@ -1868,7 +1878,8 @@ $
     <para>When found on a versioned directory, the
       <literal>svn:ignore</literal> property is expected to contain a
       list of newline-delimited file patterns that Subversion should
-      use to determine ignorable objects in that same directory.
+      use to determine ignorable objects in that
+      <emphasis>same</emphasis> directory.
       These patterns do not override those found in the
       <literal>global-ignores</literal> runtime configuration option,
       but are instead appended to that list.  And it's worth noting
@@ -1883,6 +1894,30 @@ $
       book&mdash;the HTML, PDF, or PostScript files generated as the
       result of a conversion of some source DocBook XML files to a
       more legible output format.</para>
+
+    <para>Subversion 1.8 provides a more powerful version of the
+      <literal>svn:ignore</literal> property, the
+      <literal>svn:global-ignores</literal> property.  Like the
+      <literal>svn:ignore</literal> property,
+      <literal>svn:global-ignores</literal> can only be set
+      on a directory and contains file patterns Subversion uses to
+      determine ignorable objects.<footnote><para>The ignore patterns
+      in the <literal>svn:global-ignores</literal> property may be
+      delimited with any whitespace (similar to the
+      <literal>global-ignores</literal> runtime configuration option),
+      not just newlines (as with the <literal>svn:ignore</literal>
+      property).</para></footnote> These ignore patterns are also
+      appended to any patterns defined in the
+      <literal>global-ignores</literal> runtime configuration option
+      together with any <literal>svn:ignore</literal> defined patterns.
+      Unlike <literal>svn:ignore</literal> however, the
+      <literal>svn:global-ignores</literal> property is inheritable
+      <footnote><para>Of course only a 1.8 or newer Subversion client
+      will recognize the inheritability and special meaning of the
+      <literal>svn:global-ignores</literal> property!</para></footnote>
+      and applies to <emphasis>all</emphasis> paths under the directory on
+      which the property is set, not just the immediate children of the
+      directory.</para>
 
     <note>
       <para>Subversion's support for ignorable file patterns extends
@@ -1925,11 +1960,19 @@ $
 
     </sidebar>
 
-    <para>The global list of ignore patterns tends to be more a
-      matter of personal taste and ties more closely to a user's
-      particular tool chain than to the details of any particular
-      working copy's needs.  So, the rest of this section will focus
-      on the <literal>svn:ignore</literal> property and its
+    <para>The ignore patterns in the <literal>global-ignores</literal>
+      runtime configuration option tend to be more a
+      matter of personal taste<footnote><para>Despite being a matter
+      of personal taste, if you don't explicitly set the
+      <literal>global-ignores</literal> runtime configuration,
+      Subversion uses a default value.  See the
+      <literal>global-ignores</literal> entry in
+      <xref linkend="svn.advanced.confarea.opts.config"/></para>
+      </footnote> and ties more closely to a user's particular tool
+      chain than to the details of any particular working copy's needs.
+      So, the rest of this section will focus
+      on the <literal>svn:ignore</literal> and
+      <literal>svn:global-ignores</literal> properies and their
       uses.</para>
 
     <para>Say you have the following output from <command>svn
@@ -2016,6 +2059,35 @@ I       calc/debug_log
 I       calc/debug_log.1
 I       calc/debug_log.2.gz
 I       calc/debug_log.3.gz
+I       calc/wip.1.diff
+</screen>
+    </informalexample>
+
+    <para>All of your previously hidden unversioned paths are once
+      again shown, but now with the <literal>'I' Ignored</literal>
+      status.  But wait, what about <filename>wip.1.diff</filename>?
+      The <literal>svn:ignore</literal> property on
+      <filename>calc</filename> doesn't include any pattern that
+      matches that filename, so why is it ignored?<footnote><para>
+      Let's assume that you don't have a matching pattern anywhere
+      in your <literal>global-ignores</literal> runtime configuration.
+      </para></footnote>  The answer lies in the third method by which
+      Subversion can disregard unversioned paths, the inheritable
+      <literal>svn:global-ignores</literal> property.  Using the
+      <command>svn propget</command> subcommand with the
+      <option>--show-inherited-props</option> option, you see that
+      the <literal>svn:global-ignores</literal> property is set on the
+      root of your working copy, and sure enough, it defines a
+      matching ignore pattern:</para>
+
+    <informalexample>
+      <screen>
+$ svn pg svn:global-ignores calc -v --show-inherited-props
+Inherited properties on 'calc',
+from '.':
+  svn:global-ignores
+    *.diff
+    *.patch
 </screen>
     </informalexample>
     
@@ -2025,7 +2097,7 @@ I       calc/debug_log.3.gz
       Subversion to begin managing some set of files and directories.
       Rather than force the user to pick and choose which files in a
       tree she wishes to start versioning, Subversion uses the ignore
-      patterns&mdash;both the global and the per-directory
+      patterns&mdash;the global, per-directory, and inherited
       lists&mdash;to determine which files should not be swept into
       the version control system as part of a larger recursive
       addition or import operation.  And here again, you can use the
@@ -2034,7 +2106,8 @@ I       calc/debug_log.3.gz
       present.</para>
 
     <tip>
-      <para>Even if <literal>svn:ignore</literal> is set, you may run
+      <para>Even if <literal>svn:ignore</literal> or
+        <literal>svn:global-ignores</literal> is set, you may run
         into problems if you use shell wildcards in a command.  Shell
         wildcards are expanded into an explicit list of targets before
         Subversion operates on them, so running <userinput>svn
@@ -2050,7 +2123,8 @@ I       calc/debug_log.3.gz
         version control, and the <option>--force</option> option will
         cause Subversion to crawl through that directory, adding
         unversioned files while still honoring the
-        <literal>svn:ignore</literal> property and
+        <literal>svn:ignore</literal> and
+        <literal>svn:global-ignores</literal> properties and the
         <literal>global-ignores</literal> runtime configuration
         variable.  Be sure to also provide the <option>--depth
         files</option> option to the <command>svn add</command>
