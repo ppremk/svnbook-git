@@ -347,25 +347,23 @@ collabnet = svn.collab.net
           <varlistentry>
             <term><literal>http-library</literal></term>
             <listitem>
-              <para>Subversion provides a pair of repository access
-                modules that understand its WebDAV network protocol.
-                The original one, which shipped with Subversion 1.0, is
-                <literal>libsvn_ra_neon</literal> (though back then it
-                was called <literal>libsvn_ra_dav</literal>).  Newer
-                Subversion versions also provide
-                <literal>libsvn_ra_serf</literal>, which uses a
-                different underlying implementation and aims to
-                support some of the newer HTTP concepts.</para>
-
-              <para>At this point, <literal>libsvn_ra_serf</literal>
-                is still considered experimental, though it appears to
-                work in the common cases quite well.  To encourage
-                experimentation, Subversion provides the
-                <literal>http-library</literal> runtime configuration
-                option to allow users to specify (generally, or in a
-                per-server-group fashion) which WebDAV access module
-                they'd prefer to use&mdash;<literal>neon</literal> or
-                <literal>serf</literal>.</para>
+              <para>The <literal>http-library</literal> runtime
+                configuration option allows users to specify
+                (generally, or in a per-server-group fashion) which of
+                the available WebDAV access modules they'd prefer to
+                use.  Prior to version 1.8, Subversion offered a pair
+                of such modules: its original implementiation
+                <literal>libsvn_ra_neon</literal> (selected by
+                using the value <literal>neon</literal> for this
+                option) and the newer <literal>libsvn_ra_serf</literal>
+                (selected using the value <literal>serf</literal>).
+                As of Subversion 1.8, only <literal>libsvn_ra_serf</literal>
+                is supported.  This configuration option remains,
+                though, because the runtime configuration area is
+                version-agnostic.  Users with multiple versions of
+                Subversion installed may still wish to enable the use
+                of <literal>libsvn_ra_neon</literal> for sites which
+                they access with an older version of Subversion.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
@@ -427,12 +425,17 @@ collabnet = svn.collab.net
           <varlistentry>
             <term><literal>neon-debug-mask</literal></term>
             <listitem>
-              <para>This is an integer mask that the underlying HTTP
-                library, Neon, uses for choosing what type of
-                debugging output to yield.  The default value is
-                <literal>0</literal>, which will silence all debugging
-                output.  For more information about how Subversion
-                makes use of Neon, see <xref linkend="svn.developer" />.</para>
+              <para>This is an integer mask that the Neon HTTP library
+                uses for choosing what type of debugging output to
+                yield.  The default value is <literal>0</literal>,
+                which will silence all debugging output.  Prior to
+                version 1.8, most Subversion clients used Neon (via
+                the <literal>libsvn_ra_neon</literal> repository
+                access module) for WebDAV/HTTP communications between
+                the Subversion client and server.  Support
+                for <literal>libsvn_ra_neon</literal> was dropped in
+                Subversion 1.8, though, making this option obsolete
+                for newer Subversion installations.</para>
             </listitem>
           </varlistentry>
           <varlistentry>

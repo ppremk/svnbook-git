@@ -82,11 +82,6 @@
           module</para></listitem>
       </varlistentry>
       <varlistentry>
-        <term>libsvn_ra_neon</term>
-        <listitem><para>The WebDAV Repository Access
-          module</para></listitem>
-      </varlistentry>
-      <varlistentry>
         <term>libsvn_ra_serf</term>
         <listitem><para>Another (experimental) WebDAV Repository
           Access module</para></listitem>
@@ -137,14 +132,13 @@
       API without affecting the rest of the code base.  In some sense,
       this happens within Subversion already.  The
       <filename>libsvn_ra_local</filename>,
-      <filename>libsvn_ra_neon</filename>,
       <filename>libsvn_ra_serf</filename>, and
       <filename>libsvn_ra_svn</filename> libraries each implement the
       same interface, all working as plug-ins to
-      <filename>libsvn_ra</filename>.  And all four communicate with
-      the Repository layer&mdash;<filename>libsvn_ra_local</filename> connects to the
-      repository directly; the other three do so over a network.  The
-      <filename>libsvn_fs_base</filename> and
+      <filename>libsvn_ra</filename>.  And all three communicate with
+      the Repository layer&mdash;<filename>libsvn_ra_local</filename>
+      connects to the repository directly; the others do so over a
+      network.  The <filename>libsvn_fs_base</filename> and
       <filename>libsvn_fs_fs</filename> libraries are another pair of
       libraries that implement the same functionality in different
       ways&mdash;both are plug-ins to the common
@@ -409,7 +403,6 @@
         client libraries and the repository, this layer includes the
         <filename>libsvn_ra</filename> module loader library, the RA
         modules themselves (which currently includes
-        <filename>libsvn_ra_neon</filename>,
         <filename>libsvn_ra_local</filename>,
         <filename>libsvn_ra_serf</filename>, and
         <filename>libsvn_ra_svn</filename>), and any additional
@@ -434,19 +427,16 @@
       <informalexample>
         <screen>
 $ svn --version
-svn, version 1.7.0
-   compiled Nov 15 2011, 10:10:24
+svn, version 1.8.0-dev (under development)
+   compiled Jan  8 2013, 11:45:25 on i686-pc-linux-gnu
 
-Copyright (C) 2011 The Apache Software Foundation.
-This software consists of contributions made by many people; see the NOTICE
-file for more information.
+Copyright (C) 2013 The Apache Software Foundation.
+This software consists of contributions made by many people;
+see the NOTICE file for more information.
 Subversion is open source software, see http://subversion.apache.org/
 
 The following repository access (RA) modules are available:
 
-* ra_neon : Module for accessing a repository via WebDAV protocol using Neon.
-  - handles 'http' scheme
-  - handles 'https' scheme
 * ra_svn : Module for accessing a repository using the svn network protocol.
   - with Cyrus SASL authentication
   - handles 'svn' scheme
@@ -464,8 +454,7 @@ $
         functionality necessary for sending and receiving versioned
         data to and from the repository.  And each of the available RA
         plug-ins is able to perform that task using a specific
-        protocol&mdash;<filename>libsvn_ra_neon</filename>
-        and <filename>libsvn_ra_serf</filename> speak HTTP/WebDAV
+        protocol&mdash;<filename>libsvn_ra_serf</filename> speaks HTTP/WebDAV
         (optionally using SSL encryption) with an Apache HTTP Server
         that is running the <filename>mod_dav_svn</filename>
         Subversion server module; <filename>libsvn_ra_svn</filename>
