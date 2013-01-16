@@ -4809,6 +4809,240 @@ END
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
+  <sect1 id="svn.advanced.working-without-a-wc">
+    <title>Working Without a Working Copy</title>
+
+    <para>As we described in <xref linkend="svn.basic.in-action.wc"
+      />, the Subversion working copy is a sort of staging area where
+      a user can privately make changes to his or her versioned data
+      and then&mdash;when those changes are complete and ready for
+      sharing with others&mdash;commit them to the repository.  It
+      should come as no surprise, then, that most of the interaction
+      you will have with Subversion will be in the form of asking your
+      Subversion client to do <emphasis>something</emphasis> to one or
+      more items in a local working copy.  Even for those operations
+      which don't manipulate the working copy data itself (such
+      as <command>svn log</command>), it's often just easier to use a
+      working copy file or directory as a convenient target for that
+      operation.</para>
+
+    <para>Clearly, the typical approach to making changes to
+      your versioned data is via commits from a Subversion working
+      copy.  Fortunately, it's not the only way.  Users of Subversion
+      who need to make relatively simple changes to their versioned
+      data can do so without the overhead of checking out a working
+      copy.  We'll cover some of those supported operations in this
+      section.</para>
+
+    <!-- =============================================================== -->
+    <sect2 id="svn.advanced.working-without-a-wc.svn">
+      <title>Remote command-line client operations</title>
+
+      <para>The Subversion command-line client supports a number of
+        operations which can be performed directly against repository
+        URLs in order to make simple changes without a working copy.
+        Some of these are described elsewhere in this book, but we
+        provide an exhaustive list of them here for your
+        convenience.</para>
+
+      <para>Perhaps the most obvious remote commit-like operation is
+        the <command>svn import</command> command.  We describe that
+        command in <xref linkend="svn.tour.importing.import" /> as
+        part of explaining how you can easily get a whole tree of
+        unversioned information into your Subversion repository so you
+        can start doing version-controlled operations on it.</para>
+
+      <para>The <command>svn mkdir</command> and <command>svn
+        delete</command> commands, when used with URL targets, are
+        also remote commit-type operations.  These allow the user to
+        create one or more new versioned directories or remove
+        (recursively) one or more versioned files or directories,
+        respectively, without the use of a working copy.  Each time
+        you issue one of these commands, the client communicates with
+        the server in a way that's similar to how it would describe
+        the commit of a directory added or of an item removed from the
+        working copy.  If there's no problem or conflict detected with
+        the requested operation, the server commits the additions or
+        removals in a single new revision.</para>
+
+      <para>You can use <command>svn copy</command> or <command>svn
+        move</command> with two URLs&mdash;a copy/move source and a
+        destination&mdash;to commit a copies and moves of files and
+        directories directly in the repository.  These operations tend
+        to be some of the most expensive ones when performed within a
+        working copy, but they complete in constant time when
+        performed remotely using repository URLs.  In fact,
+        the <command>svn copy</command> remote operation is commonly
+        used to create branches in Subversion, as we discuss later in
+        <xref linkend="svn.branchmerge.using.create" />.</para>
+
+      <para>As with the regular <command>svn commit</command> command,
+        you can supply a log message with any of these commands we've
+        discussed so far to describe the changes you're making.  Use
+        the <option>--file (-F)</option> or <option>--message
+        (-m)</option> option, or otherwise allow the client to prompt
+        you for the log message.</para>
+
+      <para>Finally, there are a number of operations related to
+        unversioned revision properties which can be performed
+        directly against the repository.  In fact, revision properties
+        are somewhat unique in this context, as they aren't stored in
+        the working copy and therefore <emphasis>must</emphasis> be
+        modified without working copy interaction.  See
+        <xref linkend="svn.advanced.props" /> for a more detailed
+        description of how to manage properties in Subversion.</para>
+
+    </sect2>
+
+    <!-- =============================================================== -->
+    <sect2 id="svn.advanced.working-without-a-wc.svnmucc">
+      <title>Using svnmucc</title>
+
+      <para>One shortcoming of the remote commit operation support
+        offered in the command-line client is that you are essentially
+        limited to one operation&mdash;or, really, one type of
+        operation&mdash;per commit.  For example, it's perfectly
+        natural and supported to, say, use <command>svn
+        delete</command> followed by <command>svn mkdir</command>
+        within a working copy to replace an existing versioned
+        directory with a brand new one.  When you commit the results
+        of those operations, a single new revision is created in the
+        repository, and that revision carries the full replacement of
+        your directory.  You can't really do the same thing as remote
+        operations using the command-line client while still
+        preserving the it-happened-in-a-single-revision-ness of the
+        change&mdash;<command>svn
+        delete <replaceable>URL</replaceable></command> would create a
+        new revision that removed the directory; <command>svn
+        mkdir <replaceable>URL</replaceable></command> would generate
+        a second revision for the directory's re-creation.</para>
+
+      <para>Fortunately, Subversion provides a separate tool which
+        exists solely to allow users to string together a set of
+        remote operations and commit them as one atomic change.  That
+        tool is the <command>svnmucc</command> tool&mdash;the
+        Subversion Multiple URL Command Client:</para>
+
+      <informalexample>
+        <screen>
+$ svnmucc --help
+Subversion multiple URL command client
+usage: svnmucc ACTION...
+
+  Perform one or more Subversion repository URL-based ACTIONs, committing
+  the result as a (single) new revision.
+
+Actions:
+  cp REV URL1 URL2       : copy URL1@REV to URL2
+  mkdir URL              : create new directory URL
+  mv URL1 URL2           : move URL1 to URL2
+  rm URL                 : delete URL
+  put SRC-FILE URL       : add or modify file URL with contents copied from
+                           SRC-FILE (use "-" to read from standard input)
+  propset NAME VAL URL   : set property NAME on URL to value VAL
+  propsetf NAME VAL URL  : set property NAME on URL to value from file VAL
+  propdel NAME URL       : delete property NAME from URL
+&hellip;
+</screen>
+      </informalexample>
+
+      <para><command>svnmucc</command> has been a part of the Subversion
+        project's source code tree for many years
+        (as <command>mucc</command> for most of that time), but it was
+        only in Subversion 1.8 that it become a fully supported member
+        of the Subversion command-line tool suite.</para>
+
+      <para>Unlike <command>svn</command>, the functionality
+        that <command>svnmucc</command> offers isn't broken up into
+        subcommands.  Rather, you provide a list of actions and
+        operands in a single command line (or from a file stream, via
+        the <option>--extra-args (-X)</option> option).  Some of the
+        actions supported by <command>svnmucc</command> mimic those of
+        the command-line client.  You'll notice in the previous
+        command output actions such as <literal>cp</literal>,
+        <literal>mkdir</literal>, <literal>mv</literal>,
+        and <literal>rm</literal>, all of which are very similar to
+        the commands we mentioned in
+        <xref linkend="svn.advanced.working-without-a-wc.svn" />.  But
+        remember, the key difference here is that you can use any
+        number of these actions together in a single command
+        invocation, resulting in a single committed revision in the
+        repository.</para>
+
+      <para>Let's take our previous example of trying to simply
+        replace a remote directory.  Using <command>svnmucc</command>,
+        you would accomplish this as follows:</para>
+
+      <informalexample>
+        <screen>
+$ svnmucc rm http://svn.example.com/projects/sandbox \
+          mkdir http://svn.example.com/projects/sandbox \
+          -m "Replace my old sandbox with a fresh new one."
+r22 committed by harry at 2013-01-15T21:45:26.442865Z
+$ 
+</screen>
+      </informalexample>
+
+      <para>Another action commonly performed
+        with <command>svnmucc</command> is the implementation of
+        a <quote>moving tag</quote><footnote><para>"Easy there,
+        cowboy!  Tags?!"  Yes, it's true that we don't really talk
+        about tags until <xref linkend="svn.branchmerge" />, but
+        trying to maintain linear introduction of terms and behaviors
+        in this book is <emphasis>really</emphasis>
+        hard!</para></footnote>, where a single tag name is recycled
+        to point to new snapshots of a codebase.  Some teams use such
+        a tag to identfy, for example, the latest stable snapshot of a
+        quickly evolving codebase.  Again, <command>svnmucc</command>
+        allows you to remove and re-create a moving tag in a single
+        commit:</para>
+
+      <informalexample>
+        <screen>
+$ svnmucc -U http://svn.example.com/projects/doohickey \
+          rm tags/latest-stable \
+          cp trunk tags/latest-stable \
+          -m "Slide the 'latest-stable' tag forward."
+r134 committed by harry at 2013-01-12T11:02:16.142536Z
+$ 
+</screen>
+      </informalexample>
+
+      <para>The astute reader will have noticed that in this second
+        example, we slyly introduced the use of the <option>--root-url
+        (-U)</option> option.  Since <command>svnmucc</command>
+        concerns itself primarily with URLs, and since URLs can get
+        rather lengthy, you can use this option to specify a root URL
+        to which all other operand URLs are treated as
+        relative.</para>
+
+      <para>The <command>svnmucc</command> tool is not limited to
+        merely remixing actions that <command>svn</command> itself can
+        perform.  It introduces some additional functionality not
+        found in the command-line client.  For example, you can use
+        the <command>put</command> action to add or modify a file in
+        the repository, copying the file's contents from either a file
+        on your local machine or from data piped in via standard
+        input.  The tool also offers <command>propset</command>,
+        <command>propsetf</command>, and <command>propdel</command>
+        actions, useful for setting properties on versioned files and
+        directories (explicitly, or by copying the property's value
+        from a local file) and for deleting properties on the same.
+        Those actions are unsupported in the command-line client at
+        this time.</para>
+
+      <para>As you can see, <command>svnmucc</command> is a handy
+        addition to the Subversion user's tool chest.  For a complete
+        reference of this tool's offerings, see
+        <xref linkend="svn.ref.svnmucc" />.</para>
+
+    </sect2>
+
+  </sect1>
+
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
   <sect1 id="svn.advanced.summary">
     <title>Summary</title>
 
