@@ -1330,7 +1330,7 @@ $
         obvious error (at least compared to, say, failing to
         add a file to version control).  To help your properties get
         applied to the places that need them, Subversion provides a
-        couple of simple but useful features.</para>
+        few simple but useful features.</para>
 
       <para>Whenever you introduce a file to version control using the
         <command>svn add</command> or <command>svn import</command>
@@ -1399,29 +1399,277 @@ $
         that match <literal>*.cpp</literal> should have
         <literal>svn:eol-style</literal> set to
         <literal>native</literal>, and <literal>svn:keywords</literal>
-        set to <literal>Id</literal>.  Automatic property support is
-        perhaps the handiest property-related tool in the Subversion
-        toolbox.  See <xref
-        linkend="svn.advanced.confarea.opts.config"/> for more about
-        configuring that support.</para>
+        set to <literal>Id</literal>.  For more details on automatic
+        property support in the runtime configuration see <xref
+        linkend="svn.advanced.confarea.opts.config"/>.</para>
 
-      <note>
-        <para>Subversion administrators commonly ask if it is possible
-          to configure, on the server side, a set of property
-          definitions which all connecting clients will automatically
-          consider when operating on working copies checked out from
-          that server.  Unfortunately, Subversion doesn't offer this
-          feature.  Administrators can use hook scripts to validate
-          that the properties added to and modified on files and
-          directories match the administrator's preferred policies,
-          rejecting commits which are non-compliant in this fashion.
-          (See <xref linkend="svn.reposadmin.create.hooks" /> for more
-          about hook scripts.)  But there's no way to automatically
-          dictate those preferences to Subversion clients
-          beforehand.</para>
-      </note>
 
-    </sect2>     
+      <para>While automatic property support via the runtime
+        configuration system is certainly handy, Subversion
+        administrators might prefer a set of property definitions
+        which all connecting clients automatically consider when
+        operating on working copies checked out from a given server.
+        Subversion 1.8 and newer clients support such functionality
+        through the <literal>svn:auto-props</literal> inheritable
+        property.</para>
+
+      <para>The <literal>svn:auto-props</literal> property works like
+        the runtime configuration to automatically set properties on
+        files when they are added or imported.  The value of the
+        <literal>svn:auto-props</literal> property is expected to be
+        the same as the <literal>auto-props</literal> runtime
+        configuration option (i.e. Any number of key-value pairs in
+        the format FILE_PATTERN = PROPNAME=VALUE[;PROPNAME=VALUE ...])
+        Like the <literal>auto-props</literal> runtime option, the
+        <literal>svn:auto-props</literal> property can be disregarded
+        when using the <option>--no-auto-props</option> option, but unlike
+        the config option, the <literal>svn:auto-props</literal> property
+        is <emphasis>not</emphasis> disabled when the
+        <literal>enable-auto-props</literal> configuration option is set
+        to <literal>no</literal>.
+        </para>
+
+      <para>For example, say you have checked out a working copy of your
+        <filename>trunk</filename> branch and need to add a new file
+        (let's assume that automatic properties in your runtime
+        configuration are disabled):</para>
+
+    <informalexample>
+      <screen>
+$ svn st
+?       calc/data.c
+
+$ svn add calc/data.c
+A         calc/data.c
+
+$ svn proplist -v calc/data.c
+Properties on 'calc/data.c':
+  svn:eol-style
+    native
+</screen>
+    </informalexample>
+
+      <para>Notice that after you place the unversioned file
+        <filename>data.c</filename> under version control the
+        <literal>svn:eol-style</literal> property was automatically set
+        on it.  Since we assumed that the <literal>auto-props</literal>
+        runtime configuration option is disabled, we know
+        that the <literal>svn:auto-props</literal> property must be set
+        on some parent path of <filename>data.c</filename>.  Using the
+        <command>svn propget</command> subcommand with the
+        <option>--show-inherited-props</option> option we see that this
+        is indeed the case:</para>
+
+    <informalexample>
+      <screen>
+$ svn propget svn:auto-props --show-inherited-props -v calc
+Inherited properties on 'calc',
+from 'http://localhost/svn/repositories/repos':
+  svn:auto-props
+    *.py = svn:eol-style=native
+    *.c = svn:eol-style=native
+    *.h = svn:eol-style=native
+</screen>
+    </informalexample>
+
+      <para>Unlike the <literal>svn:global-ignores</literal> property and
+        its analogous runtime configuration
+        <literal>global-ignores</literal>, which are combined, the
+        <literal>svn:auto-props</literal> property
+        <emphasis>overrides</emphasis> the <literal>auto-props</literal>
+        runtime configuration if it defines an auto-prop for the
+        <emphasis>same</emphasis> pattern as the runtime configuration.
+        Automatic properties inherited<footnote><para>Remember that users
+        can only inherit properties from paths for which they have read
+        access.  So if an administrator sets
+        <literal>svn:auto-props</literal> on some high-level parent
+        path (e.g. the repository root), they need to be sure all users
+        have read access to that path or the desired automatic property
+        setting won't kick in.</para></footnote> from one path can also
+        override the <emphasis>identical</emphasis> pattern inherited from
+        a different path.  The hierarchy of these overrides works as
+        follows:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>An auto-prop, for a given pattern, defined in
+            <literal>svn:auto-props</literal> overrides the same auto-prop
+            for the identical pattern in the <literal>auto-props</literal>
+            runtime configuration.</para>
+        </listitem>
+        <listitem>
+          <para>If an auto-prop, for a given pattern, is inherited from
+            more than one parents' <literal>svn:auto-props</literal>
+            property, the nearer path-wise parent overrides the more
+            distant parents.</para>
+        </listitem>
+        <listitem>
+          <para>An auto-prop, for a given pattern, defined in a
+            <literal>svn:auto-props</literal> property explicitly set on
+            a path overrides the same auto-prop(s) for the identical
+            pattern inherited from any parents.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Let's look at an example.  Suppose you have this runtime
+        configuration:</para>
+
+    <informalexample>
+      <screen>
+[miscellany]
+enable-auto-props = yes
+[auto-props]
+*.py  = svn:eol-style=CR
+*.c   = svn:eol-style=CR
+*.h   = svn:eol-style=CR
+*.cpp = svn:eol-style=CR
+</screen>
+    </informalexample>
+
+      <para>And you want to add three files in the <filename>calc</filename>
+        directory of your working copy:</para>
+
+    <informalexample>
+      <screen>
+$ svn st
+?       calc/data-binding.cpp
+?       calc/data.c
+?       calc/editor.py
+</screen>
+    </informalexample>
+
+      <para>Let's check what <literal>svn:auto-props</literal> apply to
+        <filename>calc</filename>:</para>
+
+    <informalexample>
+      <screen>
+$ svn propget svn:auto-props -v --show-inherited-props calc
+Inherited properties on 'calc',
+from 'http://localhost/svn/repositories/repos':
+  svn:auto-props
+    *.py = svn:eol-style=native
+    *.c = svn:eol-style=native
+    *.h = svn:eol-style=native
+
+Inherited properties on 'calc',
+from '.':
+  svn:auto-props
+    *.py = svn:eol-style=native
+    *.c = svn:keywords=Author Date Id Rev URL
+</screen>
+    </informalexample>
+
+      <para>When we add these three files what auto-props do we expect?
+        We add the trio to version control and then check:</para>
+
+    <informalexample>
+      <screen>
+$ svn add calc --force
+A         calc/data-binding.cpp
+A         calc/data.c
+A         calc/editor.py
+</screen>
+    </informalexample>
+
+      <para>The file <filename>data-binding.cpp</filename> has only one
+        matching pattern, <literal>*.cpp = svn:eol-style=CR</literal>
+        in the runtime configuration, so obviously the
+        <literal>svn:eol-style</literal> property is set to
+        <literal>CR</literal>:</para>
+
+    <informalexample>
+      <screen>
+$ svn proplist -v calc/data-binding.cpp
+Properties on 'calc/data-binding.cpp':
+  svn:eol-style
+    CR
+</screen>
+    </informalexample>
+
+      <para>The file <filename>editor.py</filename> matches a single
+        pattern in runtime config and both of the
+        <literal>svn:auto-props</literal> properties, but by the hierarchy
+        described above, the property explicitly set on
+        <filename>calc</filename>,
+        <literal>*.py = svn:eol-style=native</literal>, takes precedence.
+        So the <literal>svn:eol-style</literal> property is set to
+        <literal>native:</literal>:</para>
+
+    <informalexample>
+      <screen>
+$ svn proplist -v calc/editor.py
+Properties on 'calc/editor.py':
+  svn:eol-style
+    native
+</screen>
+    </informalexample>
+
+      <para>The file <filename>data.c</filename> also matches patterns
+        in the runtime config and both of the inherited
+        <literal>svn:auto-props</literal> properties.  The
+        <literal>svn:keywords</literal> auto-prop is only defined once,
+        on <filename>calc</filename>, so <filename>data.c</filename>
+        automatically gets that property.  The
+        <literal>svn:auto-props</literal> on <filename>calc</filename>
+        don't define a <literal>svn:eol-style</literal> value however, so
+        the nearest inherited parent,
+        <literal>http://localhost/svn/repositories/repos</literal>,
+        provides that value:</para>
+
+    <informalexample>
+      <screen>
+$ svn proplist -v calc/data.c
+Properties on 'calc/data.c':
+  svn:eol-style
+    native
+  svn:keywords
+    Author Date Id Rev URL
+</screen>
+    </informalexample>
+
+      <warning>
+        <para>Overriding auto-props only applies for
+          <emphasis>identical</emphasis> patterns.  If a file to be added
+          or imported matches more than one pattern, then there is no
+          guarantee which pattern's auto-props will be applied.  For
+          example, say you want to add the file
+          <filename>foo.cpp</filename> in the directory
+          <filename>bar</filename>.  Further, suppose the
+          <literal>svn:auto-props</literal> property is set on
+          <filename>bar</filename> with the value:</para>
+
+    <informalexample>
+      <screen>
+*.c*  = svn:eol-style=native
+*.cpp = svn:eol-style=native;svn:keywords=Author Date Id Rev URL
+</screen>
+    </informalexample>
+
+        <para>Since <filename>foo.cpp</filename> matches both patterns,
+          there is no way to know if the <literal>svn:keywords</literal>
+          property will be set on <filename>foo.cpp</filename> when it
+          is added.</para>
+      </warning>
+
+      <para>A final note on <literal>svn:auto-props</literal>.  This
+        property (along with the similar
+        <literal>svn:global-ignores</literal>, see
+        <xref linkend="svn.advanced.props.special.ignore"/>)
+        only provides a <emphasis>recommendation</emphasis> to clients
+        that understand the meaning of the property.  Older clients will
+        ignore these properties, the <option>--no-auto-props</option>
+        option will disregard them, a user might manually change or remove
+        automatic properties after they have been set&mdash;there are
+        numerous ways in which the recommended properties contained in
+        <literal>svn:auto-props</literal> can be by-passed.  Given this,
+        administrators will still need to use hook scripts to validate
+        that the properties added to and modified on files and directories
+        match the administrator's preferred policies, rejecting commits
+        which are non-compliant in this fashion.
+        (See <xref linkend="svn.reposadmin.create.hooks"/> for more
+        about hook scripts.)</para>
+
+    </sect2>
   </sect1>
 
   <!-- ================================================================= -->
