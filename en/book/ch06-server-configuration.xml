@@ -2575,6 +2575,128 @@ ssl-client-cert-password = somepassword
     </sect2>
 
     <!-- =============================================================== -->
+    <sect2 id="svn.serverconfig.httpd.perf">
+      <title>Tuning for Performance</title>
+
+      <para>The Apache HTTP Server is built for performance, but you
+        can improve upon its default configuration to get even better
+        results out of your Subversion service offering.  In this
+        section, we'll recommend some specific configuration changes
+        to consider.  Understand, however, that some of
+        the <filename>httpd.conf</filename> configuration options
+        we'll be discussing herein affect the general behavior of your
+        server, not merely the Subversion service.  As such, you need
+        to consider the full breadth of your HTTP service offering to
+        discern how modifications to these settings for Subversion's
+        sake may affect your other services.</para>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.serverconfig.httpd.perf.keepalive">
+        <title>KeepAlive</title>
+
+        <para>By default, the Apache HTTP Server is configured to
+          enable the re-use of a single server connection for multiple
+          requests.  That's very beneficial for Subversion, because
+          unlike many HTTP-based applications, Subversion can very
+          quickly generate hundreds or thousands of requests against
+          the server for a single operation, and the cost of opening a
+          new connection to the server is non-trivial.  Subversion
+          wants to squeeze as many requests as possible out of a
+          single connection before that connection is terminated by
+          the server.  The <literal>KeepAlive</literal> directive is the
+          boolean flag which enables or disables this connection
+          re-use facility, and as we indicated previously, by default
+          its value is <literal>On</literal>.</para>
+
+        <para>But there's another directive which limits the number of
+          requests a client is allowed to submit on a single
+          connection:  the <literal>MaxKeepAliveRequests</literal>
+          directive.  The default value for that option
+          is <literal>100</literal>.  This was probably sufficient for
+          older versions of Subversion, but Subversion 1.8 employs a
+          different HTTP communications library (called Serf) which
+          prefers to pipeline several smaller requests for specific bits
+          of information rather than asking the server to transmit
+          huge chunks of data in a single response.  We recommend that
+          you increase the value of the
+          <literal>MaxKeepAliveRequests</literal> option
+          to at least <literal>1000</literal>.</para>
+
+        <informalexample>
+          <programlisting>
+#
+# KeepAlive: Whether or not to allow persistent connections (more than
+# one request per connection). Set to "Off" to deactivate.
+#
+KeepAlive On
+
+#
+# MaxKeepAliveRequests: The maximum number of requests to allow
+# during a persistent connection. Set to 0 to allow an unlimited amount.
+# We recommend you leave this number high, for maximum performance.
+#
+MaxKeepAliveRequests 1000
+</programlisting>
+        </informalexample>
+      </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.serverconfig.httpd.perf.bulk-updates">
+        <title>Bulk updates</title>
+
+        <para>The biggest difference between the way that Subversion
+          1.8 clients and pre-1.8 clients behave is in how update-style
+          operations (<command>svn checkout</command>, <command>svn
+          update</command>, <command>svn switch</command>, etc.) are
+          handled.  Older clients which used the Neon HTTP library for
+          communications preferred to ask the server for the entire
+          payload of information required from the server in a single
+          request.  Admins will have noticed that in their server
+          logs, there would be some initial handshaking operations,
+          and then a <literal>REPORT</literal> request with a massive
+          response.  That response was the entire checkout/update
+          dataset!</para>
+
+        <para>Subversion clients which use the Serf HTTP
+          library&mdash;which includes all clients built atop the
+          Subversion 1.8&mdash;still send the <literal>REPORT</literal>
+          request, but with slightly different flags set inside that
+          request.  These flags ask the server not to send all the
+          data for the operation, but to instead send only a checklist
+          of other more specific things that the client needs to
+          subsequently fetch from the server in order to complete that
+          operation.  In the server's <filename>access_log</filename>,
+          that <literal>REPORT</literal> is followed by many smaller
+          requests (<literal>GET</literal>s and, in older versions of
+          Subversion, <literal>PROPFIND</literal>s).</para>
+
+        <para>There are pros and cons to each approach.  As we've
+          mentioned, the so-called bulk updates generate considerably
+          less information in the server logs, but a given Apache HTTP
+          Server child process is completely consumed for the duration
+          of what could be a lengthy operation.  Non-bulk updates
+          offer opportunities for setting up content caches (which
+          themselves can improve performance), but generate server log
+          traffic which is whole orders of magnitude larger than the
+          bulk update approach.  So, for one reason or another,
+          administrators may desire to exert a little more control
+          over which approach the clients use.  Subversion 1.6
+          introduced the <literal>SVNAllowBulkUpdates</literal>
+          <command>mod_dav_svn</command> directive&mdash;a simple
+          boolean flag&mdash;to allow admins to specify whether the
+          server was allowed to honor bulk update requests.  In
+          Subversion 1.8, this directive has expanded to include
+          a <literal>Prefer</literal> value in addition to the
+          <literal>On</literal> and <literal>Off</literal> values it
+          already supported. When <literal>SVNAllowBulkUpdates</literal>
+          is set to <literal>Prefer</literal>, supporting clients (1.8
+          or newer) will try to use the bulk update approach unless
+          otherwise configured.</para>
+
+      </sect3>
+    </sect2>
+
+    <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.httpd.extra">
       <title>Extra Goodies</title>
 
