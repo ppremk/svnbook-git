@@ -595,6 +595,50 @@ svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.serverconfig.svnserve.invoking.xinetd">
+        <title>svnserve via xinetd</title>
+
+        <para><command>xinetd</command> is a replacement of
+          the <command>inet</command> daemon which is used mainly in
+          Redhat-based distributions.  In order to
+          configure <command>svnserve</command>
+          for <command>xinetd</command>, you'll need to create a
+          configuration file <filename>/etc/xinetd.d/svn</filename>
+          with the following contents:</para>
+
+        <informalexample>
+          <programlisting>
+# default: on
+# description: Subversion server for the svn protocol
+service svn
+{
+  disabled        = no
+  port            = 3690
+  socket_type     = stream
+  protocol        = tcp
+  wait            = no
+  user            = subversion
+  server          = /usr/local/bin/svnserve
+  server_args     = -i -r <replaceable>/path/to/repositories</replaceable>
+}
+</programlisting>
+        </informalexample>
+
+        <para>Be sure that your <filename>/etc/services</filename>
+          configuration file contains the definition of the port used
+          for the <literal>svn</literal> protocol (as described in
+          <xref linkend="svn.serverconfig.svnserve.invoking.xinetd"
+          />), otherwise the daemon will not start correctly.</para>
+
+        <para>In Redhat-based distributions, you then need to activate
+          the new service using <command>chkconfig --add
+          svn</command>.  After doing so, you will be able to enable
+          and disable the server using the graphical configuration
+          tools.</para>
+
+      </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.invoking.tunnel">
         <title>svnserve over a tunnel</title>
 
