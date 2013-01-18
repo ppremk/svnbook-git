@@ -1949,10 +1949,29 @@ Adding password for user sally
 $
 </screen>
         </informalexample>
+        
+        <para>Next, ensure that Apache has access to the modules which
+          provide the Basic authentication and related
+          functionality:  <literal>mod_auth_basic</literal>,
+          <literal>mod_authn_file</literal>, and
+          <literal>mod_authz_user</literal>.  In many cases, these
+          modules are compiled into <command>httpd</command> itself,
+          but if not, you might need to explicitly load one or more of
+          them using the <literal>LoadModule</literal> directive:</para>
 
-        <para>Next, add some more directives inside the
-          <literal>&lt;Location&gt;</literal> block to tell Apache how
-          to use the password file:</para>
+        <informalexample>
+          <programlisting>
+LoadModule auth_basic_module   modules/mod_auth_basic.so
+LoadModule authn_file_module   modules/mod_authn_file.so
+LoadModule authz_user_module   moduels/mod_authz_user.so
+</programlisting>
+        </informalexample>
+
+        <para>After ensuring the Apache has access to the required
+          functionality, you'll need to add some more directives
+          inside the <literal>&lt;Location&gt;</literal> block to tell
+          Apache what type of authentication you wish to use, and just
+          how to to so:</para>
 
         <informalexample>
           <programlisting>
@@ -1963,6 +1982,7 @@ $
   # Authentication: Basic
   AuthName "Subversion repository"
   AuthType Basic
+  AuthBasicProvider file
   AuthUserFile /etc/svn-auth.htpasswd
 &lt;/Location&gt;
 </programlisting>
@@ -1980,6 +2000,12 @@ $
           <listitem>
             <para><literal>AuthType</literal> specifies the type of
               authentication to use.</para>
+          </listitem>
+          <listitem>
+            <para><literal>AuthBasicProvider</literal> specifies the
+              Basic authentication provider to use for the location.
+              In our example, we wish to consult a local password
+              file.</para>
           </listitem>
           <listitem>
             <para><literal>AuthUserFile</literal> specifies the
@@ -2008,6 +2034,7 @@ $
   # Authentication: Basic
   AuthName "Subversion repository"
   AuthType Basic
+  AuthBasicProvider file
   AuthUserFile /etc/svn-auth.htpasswd
 
   # Authorization: Authenticated users only
@@ -2019,6 +2046,17 @@ $
         <para>Refer to <xref linkend="svn.serverconfig.httpd.authz"/>
           for more detail on the <literal>Require</literal> directive
           and other ways to set authorization policies.</para>
+
+        <note>
+          <para>The default value of the
+            <literal>AuthBasicProvider</literal> option is
+            <literal>file</literal>, so we won't bother including
+            it in future examples.  Just know that if in a broader
+            context you've set this value to something else, you'll
+            need to explicitly reset it to <literal>file</literal>
+            within your Subversion <literal>&lt;Location&gt;</literal>
+            block in order to get that behavior.</para>
+        </note>
 
       </sect3>
 
@@ -2037,8 +2075,10 @@ $
           verifies that the hashes match.</para>
 
         <para>Configuring Apache to use Digest authentication is
-          straightforward, with only small variations on our prior
-          example:</para>
+          straightforward.  You'll need to ensure that
+          the <literal>mod_auth_digest</literal> module is available
+          (instead of <literal>mod_auth_basic</literal>), and then
+          make a few small variations on our prior example:</para>
 
         <informalexample>
           <programlisting>
@@ -2049,6 +2089,7 @@ $
   # Authentication: Digest
   AuthName "Subversion repository"
   AuthType Digest
+  AuthDigestProvider file
   AuthUserFile /etc/svn-auth.htdigest
 
   # Authorization: Authenticated users only
@@ -2060,16 +2101,28 @@ $
         <para>Notice that <literal>AuthType</literal> is now set to
           <literal>Digest</literal>, and we specify a different path
           for <literal>AuthUserFile</literal>.  Digest authentication
-          uses a different file format than Basic authentication; it
-          is created using Apache's <command>htdigest</command>
+          uses a different file format than Basic authentication, 
+          created and managed using Apache's <command>htdigest</command>
           utility<footnote><para>See
           <ulink url="http://httpd.apache.org/docs/current/programs/htdigest.html"
-          />.</para></footnote> rather
-          than <command>htpasswd</command>.  Digest authentication
-          also has the additional concept of a
+          />.</para></footnote> rather than <command>htpasswd</command>.
+          Digest authentication also has the additional concept of a
           <quote>realm</quote>, which must match the value of the
-          <literal>AuthName</literal> directive.  The password file
-          can be created as follows:</para>
+          <literal>AuthName</literal> directive.</para>
+
+        <note>
+          <para>For digest authentication, the authentication provider
+            is selected using the <literal>AuthDigestProvider</literal>
+            as shown in the previous example.  As was the case with
+            the <literal>AuthBasicProvider</literal> directive,
+            <literal>file</literal> is the default value of the
+            <literal>AuthDigestProvider</literal> option, so this
+            line is not strictly required unless you need to override
+            a different value thereof inherited from a broader
+            configuration context.</para>
+        </note>
+
+        <para>The password file can be created as follows:</para>
 
         <informalexample>
           <screen>
