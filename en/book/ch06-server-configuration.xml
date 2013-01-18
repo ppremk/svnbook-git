@@ -3048,10 +3048,75 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
           to one or both of these variables in
           your <literal>CustomLog</literal> format string, too,
           especially if you are combining usage information from
-          multiple repositories into a single log file.</para>
+          multiple repositories into a single log file.  For an
+          exhaustive list of all actions logged, see
+          <xref linkend="svn.serverconfig.operational-logging"/>.</para>
 
-        <para>For an exhaustive list of all actions logged, see <xref
-          linkend="svn.serverconfig.operational-logging"/>.</para>
+        <para>Obviously, the more information that Apache logs about
+          your Subversion activities, the more disk space on your
+          server those logs consume.  It is non uncommon for
+          high-traffic Subversion servers to generate many gigabytes
+          of log information daily.  Obviously, logs are only valuable
+          if they can be meaningfully processed, and huge log files
+          can quickly become unwieldy.  There are various standard
+          approaches to Apache HTTP Server log management which are
+          outside the scope of this book.  Administrators are
+          encouraged to use the log rotation and archival approach
+          which works best for them.</para>
+
+        <para>But what if Subversion is simply generating too much log
+          information to be useful?  For example, in
+          <xref linkend="svn.serverconfig.httpd.perf.bulk-updates" />,
+          we mentioned that certain approaches that Subversion clients
+          may take to checkouts and other update-style operations can
+          cause rapid growth of your server logs as requests for
+          individual pieces of the update data set are individually
+          logged (whereas in previous version of Subversion, they
+          might not have been).  In this case, you might consider
+          using some Apache configuration magic to selectively silence
+          some of that log activity.</para>
+
+        <para>Apache HTTP Server's
+          <literal>mod_setenvif</literal> module offers
+          a <literal>SetEnvIf</literal> directive which is handy for
+          conditionally setting environment variables.  And as it
+          turns out, the <literal>CustomLog</literal> directive can be
+          told to conditionally log requests based on the state of
+          environment variables.  The following is a sample
+          configuration which instructs the server
+          to <emphasis>not</emphasis> log <literal>GET</literal>
+          and <literal>PROPFIND</literal> requests aimed at private
+          Subversion URLs.</para>
+
+        <informalexample>
+          <programlisting>
+# Matches everything, just to initialize the "in_repos" variable.
+SetEnvIf Request_URI "^" in_repos=0
+
+# Set "in_repos" if this is a request for a private Subversion URL.
+SetEnvIf Request_URI "/!svn/" in_repos=1
+
+# Set "do_not_log" for non-public request types we don't care to log.
+SetEnvIf Request_Method "GET" do_not_log
+SetEnvIf Request_Method "PROPFIND" do_not_log
+
+# Unset "do_not_log" for URLs that aren't private Subversion URLs.
+SetEnvIf in_repos 0 !do_not_log
+
+# Log requests, but only if "do_not_log" isn't set.
+CustomLog logs/access_log env=!do_not_log
+</programlisting>
+        </informalexample>
+
+        <para>Using this configuration, <command>httpd</command> would
+          still log <literal>GET</literal> requests aimed at public
+          Subversion URLs.  These are the sorts of requests generated
+          by a web browser as someone navigates the repository
+          directly.  But <literal>GET</literal>
+          and <literal>PROPFIND</literal> requests aimed at so-called
+          "private" Subversion URLs&mdash;which are the very sorts of
+          requests used to fetch each and every individual file during
+          a checkout operation&mdash;won't get logged.</para>
 
       </sect3>
 
