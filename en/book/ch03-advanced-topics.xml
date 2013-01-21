@@ -5400,7 +5400,9 @@ Actions:
         only in Subversion 1.8 that it become a fully supported member
         of the Subversion command-line tool suite.</para>
 
-      <para>Unlike <command>svn</command>, the functionality
+      <para>The <command>svnmucc</command> tool can perform any
+        transformation on your versioned data that <command>svn</command>
+        itself can.  But unlike <command>svn</command>, the functionality
         that <command>svnmucc</command> offers isn't broken up into
         subcommands.  Rather, you provide a list of actions and
         operands in a single command line (or from a file stream, via
@@ -5417,13 +5419,31 @@ Actions:
         invocation, resulting in a single committed revision in the
         repository.</para>
 
+      <warning>
+        <para>Inherent in working-copy-less modifications is the loss
+          of the very conflict detection safeguards offered by a
+          working copy, where changes are committed to the server
+          against a specific base version of a file or directory so
+          that you don't inadvertently overwrite contemporary changes
+          made to the same item by another team member.  In order to
+          provide the same safety mechanism to its users,
+          <command>svnmucc</command> offers a <option>--revision
+          (-r)</option> option for manually specifying such a base
+          revision for the changes it is attempting to commit.  Users
+          are strongly encouraged to use that option at all
+          times.</para>
+      </warning>
+
       <para>Let's take our previous example of trying to simply
         replace a remote directory.  Using <command>svnmucc</command>,
         you would accomplish this as follows:</para>
 
       <informalexample>
         <screen>
-$ svnmucc rm http://svn.example.com/projects/sandbox \
+$ export BASEREV=`svn info http://svn.example.com/projects/sandbox | \
+                  grep '^Revision' | cut -d ' ' -f 2`
+$ svnmucc -r ${BASEREV} \
+          rm http://svn.example.com/projects/sandbox \
           mkdir http://svn.example.com/projects/sandbox \
           -m "Replace my old sandbox with a fresh new one."
 r22 committed by harry at 2013-01-15T21:45:26.442865Z
@@ -5447,9 +5467,11 @@ $
 
       <informalexample>
         <screen>
-$ svnmucc -U http://svn.example.com/projects/doohickey \
+$ export BASEREV=`svn info http://svn.example.com/projects/doohickey | \
+                  grep '^Revision' | cut -d ' ' -f 2`
+$ svnmucc -r ${BASEREV} -U http://svn.example.com/projects/doohickey \
           rm tags/latest-stable \
-          cp trunk tags/latest-stable \
+          cp ${BASEREV} trunk tags/latest-stable \
           -m "Slide the 'latest-stable' tag forward."
 r134 committed by harry at 2013-01-12T11:02:16.142536Z
 $ 
@@ -5460,7 +5482,7 @@ $
         example, we slyly introduced the use of the <option>--root-url
         (-U)</option> option.  Since <command>svnmucc</command>
         concerns itself primarily with URLs, and since URLs can get
-        rather lengthy, you can use this option to specify a root URL
+        rather lengthy, you can use this option to specify a base URL
         to which all other operand URLs are treated as
         relative.</para>
 
