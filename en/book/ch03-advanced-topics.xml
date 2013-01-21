@@ -5419,31 +5419,13 @@ Actions:
         invocation, resulting in a single committed revision in the
         repository.</para>
 
-      <warning>
-        <para>Inherent in working-copy-less modifications is the loss
-          of the very conflict detection safeguards offered by a
-          working copy, where changes are committed to the server
-          against a specific base version of a file or directory so
-          that you don't inadvertently overwrite contemporary changes
-          made to the same item by another team member.  In order to
-          provide the same safety mechanism to its users,
-          <command>svnmucc</command> offers a <option>--revision
-          (-r)</option> option for manually specifying such a base
-          revision for the changes it is attempting to commit.  Users
-          are strongly encouraged to use that option at all
-          times.</para>
-      </warning>
-
       <para>Let's take our previous example of trying to simply
         replace a remote directory.  Using <command>svnmucc</command>,
         you would accomplish this as follows:</para>
 
       <informalexample>
         <screen>
-$ export BASEREV=`svn info http://svn.example.com/projects/sandbox | \
-                  grep '^Revision' | cut -d ' ' -f 2`
-$ svnmucc -r ${BASEREV} \
-          rm http://svn.example.com/projects/sandbox \
+$ svnmucc rm http://svn.example.com/projects/sandbox \
           mkdir http://svn.example.com/projects/sandbox \
           -m "Replace my old sandbox with a fresh new one."
 r22 committed by harry at 2013-01-15T21:45:26.442865Z
@@ -5451,55 +5433,173 @@ $
 </screen>
       </informalexample>
 
-      <para>Another action commonly performed
-        with <command>svnmucc</command> is the implementation of
-        a <quote>moving tag</quote><footnote><para>"Easy there,
-        cowboy!  Tags?!"  Yes, it's true that we don't really talk
-        about tags until <xref linkend="svn.branchmerge" />, but
-        trying to maintain linear introduction of terms and behaviors
-        in this book is <emphasis>really</emphasis>
-        hard!</para></footnote>, where a single tag name is recycled
-        to point to new snapshots of a codebase.  Some teams use such
-        a tag to identfy, for example, the latest stable snapshot of a
-        quickly evolving codebase.  Again, <command>svnmucc</command>
-        allows you to remove and re-create a moving tag in a single
-        commit:</para>
-
-      <informalexample>
-        <screen>
-$ export BASEREV=`svn info http://svn.example.com/projects/doohickey | \
-                  grep '^Revision' | cut -d ' ' -f 2`
-$ svnmucc -r ${BASEREV} -U http://svn.example.com/projects/doohickey \
-          rm tags/latest-stable \
-          cp ${BASEREV} trunk tags/latest-stable \
-          -m "Slide the 'latest-stable' tag forward."
-r134 committed by harry at 2013-01-12T11:02:16.142536Z
-$ 
-</screen>
-      </informalexample>
-
-      <para>The astute reader will have noticed that in this second
-        example, we slyly introduced the use of the <option>--root-url
-        (-U)</option> option.  Since <command>svnmucc</command>
-        concerns itself primarily with URLs, and since URLs can get
-        rather lengthy, you can use this option to specify a base URL
-        to which all other operand URLs are treated as
-        relative.</para>
+      <para>As you can see, <command>svnmucc</command> accomplished in
+        a single revision what <command>svn</command>&mdash;without
+        the benefit of a working copy&mdash;required two revisions to
+        complete.</para>
 
       <para>The <command>svnmucc</command> tool is not limited to
         merely remixing actions that <command>svn</command> itself can
         perform.  It introduces some additional functionality not
         found in the command-line client.  For example, you can use
         the <command>put</command> action to add or modify a file in
-        the repository, copying the file's contents from either a file
-        on your local machine or from data piped in via standard
-        input.  The tool also offers <command>propset</command>,
+        the repository, copying the file's intended new contents from
+        either a file on your local machine or from data piped in via
+        standard input.  The tool also offers <command>propset</command>,
         <command>propsetf</command>, and <command>propdel</command>
         actions, useful for setting properties on versioned files and
         directories (explicitly, or by copying the property's value
         from a local file) and for deleting properties on the same.
         Those actions are unsupported in the command-line client at
         this time.</para>
+
+      <para>At this point, though, it seems prudent to discuss the
+        difference between what <emphasis>can</emphasis> be done
+        with <command>svnmucc</command> and what
+        <emphasis>should</emphasis> be done.  A pair of notable quotes
+        comes to mind:</para>
+
+      <blockquote>
+        <attribution>Jesus</attribution>
+        <para><quote>To whom much has been given, much will be
+          expected.</quote></para>
+      </blockquote>
+
+      <blockquote>
+        <attribution>"Spiderman" Peter Parker's Uncle Ben</attribution>
+        <para><quote>With great power comes great
+          responsibility.</quote></para>
+      </blockquote>
+
+      <para>Inherent in working-copy-less modifications is the loss of
+        the very conflict detection safeguards which make the use of a
+        working copy so valuable.  When using <command>svn</command>
+        in the typical way, changes are committed to the server
+        against a specific base version of a file or directory so that
+        you don't inadvertently overwrite contemporary changes made to
+        the same item by another team member.  The server knows what
+        version of the file you had before you changed it, and it
+        knows if other folks have changed that same file since that
+        revision was created.  That's all the information the server
+        needs to deny your commit when it would clobber someone else's
+        change, forcing you to integrate their change into your
+        working copy and reconsider your own change.  Because there is
+        no working copy in the mix here, <command>svnmucc</command>
+        really gives you the power to bypass those safeguards and to
+        act as if the current state of the repository is precisely the
+        base state against which you are working.  But hopefully it is
+        obvious to you that this is not a power you should cavalierly
+        wield.</para>
+
+      <para>Fortunately, <command>svnmucc</command> allows you to be
+        more conservative in the way you use the tool.  In order to
+        provide a safety mechanism similar to what is offered by the
+        use of a working copy, <command>svnmucc</command> offers
+        a <option>--revision (-r)</option> option.  With this option,
+        you can manually specify a base revision for the changes you
+        are attempting to commit.  The base revision you choose
+        is ideally the most recent revision in your repository of
+        which you can reasonably claim knowledge.</para>
+      
+      <warning>
+        <para>Users are strongly encouraged to use, and to use
+          correctly, the <option>--revision (-r)</option> option
+          to <command>svnmucc</command>.</para>
+      </warning>
+
+      <para>Proper use of the <command>svnmucc put</command> action
+        best demonstrates how this <option>--revision (-r)</option>
+        option should be used.  Say Harry wishes to change the
+        contents of a versioned <filename>README</filename> file
+        without bothering with a full checkout of a working copy.
+        (We'll assume that there is no other value in using a working
+        copy for this operation, such as the presence of scripts Harry
+        should run in advance of his commit to verify that it's a
+        reasonable one.)  The first decision he has to make is which
+        revision of the file he wants to work with.  Typically, users
+        wish to modify the most recent version of a file.  So Harry
+        queries the revision in which the file was last modified, and
+        then uses that revision to fetch the contents of the file into
+        a temporary local file:</para>
+
+      <informalexample>
+        <screen>
+$ svn info http://svn.example.com/projects/sandbox/README
+Path: README
+URL: http://svn.example.com/projects/sandbox/README
+Relative URL: ^/sandbox/README
+Repository Root: http://svn.example.com/projects
+Repository UUID: 13f79535-47bb-0310-9956-ffa450edef68
+Revision: 22
+Node Kind: file
+Last Changed Author: sally
+Last Changed Rev: 14
+Last Changed Date: 2012-09-02 10:34:09 -0400 (Sun, 02 Sep 2012)
+
+$ svn cat -r 14 http://svn.example.com/projects/sandbox/README \
+      > README.tmpfile
+$
+</screen>
+      </informalexample>
+
+      <para>Harry now has a copy of the <filename>README</filename>
+        file as it looked when it it was last modified.  He makes the
+        edits he wishes to make to this copy of the file.  Naturally,
+        when he's finished, he wishes to then commit those changes to
+        the repository.</para>
+
+      <para>Now, if Harry naively uses <userinput>svnmucc put
+        &hellip;</userinput> at this point to replace the contents of
+        <filename>README</filename> in the repository with his locally
+        modified contents, he has just abused the power
+        that <command>svnmucc</command> affords.  What if, just
+        microseconds prior to his commit, Sally had also modified
+        the <filename>README</filename> file?  As with the
+        <command>svn</command> program, <command>svnmucc</command>
+        won't attempt some sort of server-side content merge in order
+        to preserve both users' changes.  Rather,
+        <command>svnmucc</command> will happily replace the current
+        latest version of the file with the contents specified.  Harry
+        will be oblivious.  Sally will be livid.</para>
+
+      <informalexample>
+        <screen>
+$ svnmucc put README.tmpfile \
+          http://svn.example.com/projects/sandbox/README
+r24 committed by harry at 2013-01-21T16:21:23.100133Z
+$
+Message from sally@shell.example.com on pts/2 at 16:26 ...
+We need to talk.  Now.
+EOF
+</screen>
+      </informalexample>
+
+      <para>Harry should instead recall the revision he originally
+        used as the revision on which to base his changes, supplying
+        that revision to <command>svnmucc</command> via
+        the <option>--revision (-r)</option> option, and thus giving
+        the server the opportunity to bounce his commit if, by his own
+        (perhaps ignorant) admission, he's attempting to modify an
+        out-of-date item:</para>
+
+      <informalexample>
+        <screen>
+$ svnmucc -r 14 put README.tmpfile \
+          http://svn.example.com/projects/sandbox/README
+svnmucc: E170004: Item '/sandbox/README' is out of date
+$
+</screen>
+      </informalexample>
+
+      <para>Like other <command>svnmucc</command> options,
+        the <option>--revision (-r)</option> option operates at a
+        scope global to the whole command&mdash;every action specified
+        in that command.  This enables you to have the same sort of
+        safeguards you would have if you had checked out a working
+        copy of your entire repository (and thus had a working copy
+        entirely at a single uniform revision), made changes to that
+        working copy, and then committed all those changes at
+        once.</para>
 
       <para>As you can see, <command>svnmucc</command> is a handy
         addition to the Subversion user's tool chest.  For a complete
