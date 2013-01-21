@@ -1307,11 +1307,203 @@ $
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.props.inheritable">
-      <title>Inheritable Properties</title>
+      <title>Inherited Properties</title>
 
-      <para>TODO: Document Inheritable Properties -- This is a temporary
-        stub so other sections referencing this new topic have somewhere
-        to point. </para>
+      <para>Subversion 1.8 introduces the concept of inherited properties.
+        There is really nothing special about a property that makes it
+        inheritable.  In fact, all versioned properties are inheritable!
+        The main difference between versioned properties before 1.8 and
+        after is that the latter provides a mechanism to find the
+        properties set on a target path's <emphasis>parents</emphasis>,
+        even if those parents are not found within the working copy.
+        </para>
+
+      <para>Generic property inheritance manifests itself in a few
+        commands.  First, the <command>svn proplist</command> and <command>
+        svn propget</command> subcommands can retrieve all the properties
+        on a URL's or a working copy path's parents by using the <option>
+        --show-inherited-props</option> option.  You might think of this
+        as the opposite of a <option>--recursive</option> subcommand
+        operation&mdash;instead of recursing "down" into a target's
+        subdirectories, subcommands with the <option>--show-inherited-props
+        </option> option look "up" into the target's parent directories.
+        The <command>svnlook propget</command> and <command>svnlook
+        proplist </command> subcommands also use the <option>
+        --show-inherited-props</option> option in a similar fashion.</para>
+
+      <para>Let's look at an example of how this works. The following
+        recursive propget on the root of our working copy finds that the
+        <literal>svn:auto-props</literal> property is set on both the target
+        of the subcommand and one of its subdirectories <filename>site
+        </filename>:</para>
+
+        <informalexample>
+          <screen>
+$ svn pg svn:auto-props --verbose -R .
+Properties on '.':
+  svn:auto-props
+    *.py = svn:eol-style=native
+    *.c = svn:eol-style=native
+    *.h = svn:eol-style=native
+
+Properties on 'site':
+  svn:auto-props
+    *.html = svn:eol-style=native
+</screen>
+        </informalexample>
+
+      <para>If we were to instead make the target of the subcommand the
+        subdirectory <filename>site</filename>, then using the <option>
+        -show-inherited-props</option> option, we find that the <literal>
+        svn:auto-props</literal> property is set on the target <emphasis>
+        and</emphasis> its parent.  The parent's properties are called out
+        as "inherited":</para>
+
+        <informalexample>
+          <screen>
+$ svn pg svn:auto-props --verbose --show-inherited-props site
+Inherited properties on 'site',
+from '.':
+  svn:auto-props
+    *.py = svn:eol-style=native
+    *.c = svn:eol-style=native
+    *.h = svn:eol-style=native
+
+Properties on 'site':
+  svn:auto-props
+    *.html = svn:eol-style=native
+</screen>
+        </informalexample>
+
+      <para>In the prior examples the root of the working copy
+        corresponds to the root of the repository, but properties can
+        also be inherited from outside the working copy when this is
+        not the case.  Let's checkout the <filename>site</filename>
+        directory from the prior example, making it the root of our
+        working copy:</para>
+
+        <informalexample>
+          <screen>
+$ svn co http://svn.example.com/repos site-wc
+A    site-wc/publish
+A    site-wc/publish/ch2.html
+A    site-wc/publish/news.html
+A    site-wc/publish/ch3.html
+A    site-wc/publish/faq.html
+A    site-wc/publish/index.html
+A    site-wc/publish/ch1.html
+ U   site-wc
+Checked out revision 19.
+
+$ cd site-wc
+</screen>
+        </informalexample>
+
+      <para>Now when we check for inherited properties on a working copy
+        path we can see that one property is inherited from a working
+        copy parent and one from a repository parent representing a
+        location "above" the root of the working copy:</para>
+
+        <informalexample>
+          <screen>
+$ svn pg svn:auto-props --verbose --show-inherited-props publish
+Inherited properties on 'publish',
+from 'http://svn.example.com/repos':
+  svn:auto-props
+    *.py = svn:eol-style=native
+    *.c = svn:eol-style=native
+    *.h = svn:eol-style=native
+
+Inherited properties on 'publish',
+from '.':
+  svn:auto-props
+    *.html = svn:eol-style=native
+</screen>
+        </informalexample>
+
+        <warning>
+          <para>You can only inherit properties from repository paths
+            which you have read authorization to&mdash;see
+            <xref linkend="svn.serverconfig.svnserve.auth" /> and
+            <xref linkend="svn.serverconfig.httpd.authz" />.  If you
+            don't have read authorization to a parent path then it will
+            appear as if the parent has no properties set on it.
+          </para>
+        </warning>
+
+      <para>As mentioned above, the <command>svnlook proplist</command>
+        and <command>svnlook propget</command> commands also support the
+        <option>--show-inherited-props</option> option, but instead of
+        reporting the inherited props by working copy path or URL, they
+        are listed by repository paths:</para>
+
+        <informalexample>
+          <screen>
+$ svnlook pg repos svn:auto-props /site/publish --show-inherited-props -v
+Inherited properties on '/site/publish',
+from '/':
+  svn:auto-props
+    *.py = svn:eol-style=native
+    *.c = svn:eol-style=native
+    *.h = svn:eol-style=native
+
+Inherited properties on '/site/publish',
+from '/site':
+  svn:auto-props
+    *.html = svn:eol-style=native
+</screen>
+        </informalexample>
+
+      <para>Properties inherited from above the root of the working copy
+        are cached in the working copy's administrative database when the
+        working copy is initially checked out and then refreshed whenever
+        the working copy is updated.  This means that you don't need
+        access to your repository to view inherited properties.  This
+        allows Subversion subcommands that have traditionally not
+        required access to the repository (e.g. <command>svn add</command>
+        ) to remain "disconnected" while still accessing properties
+        inherited from paths not found in the working copy.  However it
+        also means that inherited properties from above the root of the
+        working copy may have changed since your most recent update,
+        causing your local cache to become out of date.  So if you require
+        the absolute latest value of some inherited property, it's always
+        safest to update your working copy first or query the repository
+        directly.</para>
+
+      <para>At this point you might be thinking, "nice trick, but what
+        good is it?"  By itself property inheritance isn't very useful.
+        Before 1.8, all of Subversion's own reserved <literal>svn:*
+        </literal> properties (and likely all of your own custom user
+        properties) applied only to the path on which they were set or
+        at most, the path's immediate children<footnote><para>The one
+        noteable exception to this being the <literal>svn:mergeinfo
+        </literal> property, which is inheritable&mdash;see
+        <xref linkend="svn.branchmerge.basicmerging.mergeinfo" />
+        </para></footnote>  Rather, inheritable properties are a tool
+        that Subversion uses to do other more interesting things, like
+        setting automatic properties with the <literal>svn:auto-props
+        </literal> property or repository-wide ignores with the <literal>
+        svn:global-ignores</literal> property&mdash;see
+        <xref linkend="svn.advanced.props.auto" /> and
+        <xref linkend="svn.advanced.props.special.ignore" /> for more
+        information about these special properties and how to use them.
+        </para>
+
+        <tip>
+          <para>Currently inheritable properties are primarily useful only
+            as regards the <literal>svn:auto-props</literal> and <literal>
+            svn:global-ignores</literal> properties but that doesn't mean
+            those two properties are the end of the story.  Look for more
+            features to be built with inherited properties in future
+            releases of Subversion&mdash;a log message templating mechanism
+            comes to mind.  In the meantime feel free to use the feature
+            however you'd like.  Any piece of versioned metadata you want
+            to apply to your whole repository (or large subsections
+            thereof) can easily be stored in a property on the root of
+            your repository (or the appropriate subtree).  We suspect that
+            some users and administrators will come up with clever ways to
+            use inheritable properties which we never considered.</para>
+        </tip>
 
     </sect2>
 
