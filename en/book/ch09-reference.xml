@@ -8057,6 +8057,15 @@ $ svnadmin verify /var/svn/repos/
           </listitem>
         </varlistentry>
 
+        <varlistentry id="svn.ref.svnlook.sw.show_inherited_props">
+          <term><option>--show-inherited-props</option></term>
+          <listitem>
+            <para>Works with <command>svnlook propget</command> and
+              <command>svnlook proplist</command> to display the versioned
+              properties inherited by a path.</para>
+          </listitem>
+        </varlistentry>
+
         <varlistentry id="svn.ref.svnlook.sw.transaction">
           <term><option>--transaction</option> (<option>-t</option>)</term>
           <listitem>
@@ -8890,6 +8899,7 @@ Rearrange lunch.
             <screen>
 <xref linkend="svn.ref.svnlook.sw.revision" />
 <xref linkend="svn.ref.svnlook.sw.revprop" />
+<xref linkend="svn.ref.svnlook.sw.show_inherited_props" />
 <xref linkend="svn.ref.svnlook.sw.transaction" />
 </screen>
           </informalexample>
@@ -8906,6 +8916,22 @@ Rearrange lunch.
             <screen>
 $ svnlook pg /var/svn/repos seasonings /trunk/sandwich
 mustard
+</screen>
+          </informalexample>
+
+          <para>This shows the inherited values of the <literal>
+            svn:auto-props</literal> property on the directory
+            <filename>/trunk</filename> in revision 14:</para>
+
+          <informalexample>
+            <screen>
+$ svnlook pg repos svn:auto-props trunk --show-inherited-props -v -r14
+Inherited properties on '/trunk',
+from '/':
+  svn:auto-props
+    *.py = svn:eol-style=native
+    *.c = svn:eol-style=native
+    *.h = svn:eol-style=native
 </screen>
           </informalexample>
 
@@ -8946,6 +8972,7 @@ mustard
             <screen>
 <xref linkend="svn.ref.svnlook.sw.revision" />
 <xref linkend="svn.ref.svnlook.sw.revprop" />
+<xref linkend="svn.ref.svnlook.sw.show_inherited_props" />
 <xref linkend="svn.ref.svnlook.sw.transaction" />
 <xref linkend="svn.ref.svnlook.sw.verbose" />
 <xref linkend="svn.ref.svnlook.sw.xml" />
@@ -8978,7 +9005,29 @@ $ svnlook -v proplist /var/svn/repos /trunk/README
   svn:mime-type : text/plain
 </screen>
           </informalexample>
-          
+
+          <para>This shows the properties inherited by a directory:
+            </para>
+
+          <informalexample>
+            <screen>
+$ svnlook pl /var/svn/repos branches --show-inherited-props -v
+Inherited properties on '/branches',
+from '/':
+  svn:auto-props
+    *.py = svn:eol-style=native
+    *.c = svn:eol-style=native
+    *.h = svn:eol-style=native
+
+  svn:global-ignores
+    *.diff
+    *.patch
+
+Properties on '/branches':
+
+</screen>
+          </informalexample>
+
         </refsect1>
       </refentry>
 
