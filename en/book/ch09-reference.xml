@@ -3641,8 +3641,8 @@ $
         </refnamediv>
         <refsect1>
           <title>Synopsis</title>
+          <para><literal>svn merge SOURCE[@REV] [TARGET_WCPATH]</literal></para>
           <para><literal>svn merge [-c M[,N...] | -r N:M ...] SOURCE[@REV] [TARGET_WCPATH]</literal></para>
-          <para><literal>svn merge --reintegrate SOURCE[@REV] [TARGET_WCPATH]</literal></para>
           <para><literal>svn merge SOURCE1[@N] SOURCE2[@M] [TARGET_WCPATH]</literal></para>
         </refsect1>
         <refsect1>
@@ -3655,7 +3655,7 @@ $
             changes are applied to the current working directory,
             unless the sources have identical basenames that match a
             file within the current working directory.  In
-            this case, the differences will be applied to that
+            that case, the differences will be applied to that
             file.</para>
 
           <para>In the first two forms, <replaceable>SOURCE</replaceable>
@@ -3673,21 +3673,40 @@ $
 
           <itemizedlist>
             <listitem>
-              <para>Sync and Cherrypick Merges</para>
-              <para>The first form, when used without either the
-                <option>-c</option> or <option>-r</option> options, is
-                called a <quote>sync</quote> merge and
-                <literal>-r 1:REV</literal> is implied. This variant is
-                used to merge all eligible changes to a branch from its
-                immediate ancestor branch, see
+              <para>Automatic Merges</para>
+              <para>The first form is called an <quote>automatic
+                merge</quote> and is used to perform <quote>sync</quote>
+                and <quote>reintegrate</quote> merges.
+                <quote>Sync</quote> merges merge eligible changes to a
+                branch (<replaceable>TARGET_WCPATH</replaceable>) from
+                the branch's ancestor branch
+                (<replaceable>SOURCE</replaceable>).
+                <quote>Eligible</quote> changes are defined as those that
+                were not previously merged from
+                (<replaceable>SOURCE</replaceable>) to
+                (<replaceable>TARGET_WCPATH</replaceable>).  See
                 <xref linkend="svn.branchemerge.basicmerging.stayinsync"/>.
-              </para>
-              <para>When the first form is used with the
-                <option>-c</option> or <option>-r</option> options, this
-                is called a <quote>cherrypick</quote> merge and is used
-                to merge an explicitly defined set of changes from one
-                branch to another, see
-                <xref linkend="svn.branchmerge.cherrypicking"/></para>
+                <quote>Reintegrate</quote> merges merge changes from a
+                feature branch (<replaceable>SOURCE</replaceable>)
+                back into the feature branch's ancestor branch
+                (<replaceable>TARGET_WCPATH</replaceable>), see
+                <xref linkend="svn.branchemerge.basicmerging.reintegrate"/>
+                and
+                <xref linkend="svn.branchmerge.commonpatterns.feature"/>.
+                </para>
+            </listitem>
+            <listitem>
+              <para>Cherrypick Merges</para>
+              <para>The second form is called a <quote>cherry-pick</quote>
+                merge and is used to merge an explicitly defined set of
+                changes from one branch to another.
+                <replaceable>SOURCE</replaceable> in revision
+                <replaceable>REV</replaceable> is compared as it existed
+                between revisions <replaceable>N</replaceable> and
+                <replaceable>M</replaceable> for each revision range
+                provided.  See
+                <xref linkend="svn.branchmerge.cherrypicking"/> for more
+                information.</para>
               <tip>
                 <para>Multiple <literal>-c</literal> and/or
                   <literal>-r</literal> instances may be specified, and
@@ -3696,32 +3715,6 @@ $
                   representation before merging begins (which may result
                   in a no-op merge or conflicts that cause the merge to
                   stop before merging all of the requested revisions).</para>
-              </tip>
-              <para>In both variants of the first form,
-                <replaceable>SOURCE</replaceable> in revision
-                <replaceable>REV</replaceable> is compared as it existed
-                between revisions <replaceable>N</replaceable> and
-                <replaceable>M</replaceable> for each revision range
-                provided.</para>
-            </listitem>
-            <listitem>
-              <para>Reintegrate Merges</para>
-              <para>The second form is called a <quote>reintegrate
-                merge</quote> and is used to bring changes from a feature
-                branch (<replaceable>SOURCE</replaceable>)
-                back into the feature branch's immediate ancestor branch
-                (<replaceable>TARGET_WCPATH</replaceable>).</para>
-              <tip>
-                <para>Reintegrate merges support only this specialized
-                  use case and as such have a number of special
-                  requirements and limitations that the other two merge
-                  forms do not posses. See
-                  <xref linkend="svn.branchemerge.basicmerging.stayinsync"/>,
-                  <xref linkend="svn.branchemerge.basicmerging.reintegrate"/>,
-                  <xref linkend="svn.branchmerge.advanced.reintegratetwice"/>,
-                  and
-                  <xref linkend="svn.branchmerge.commonpatterns.feature"/>.
-                </para>
               </tip>
             </listitem>
             <listitem>
@@ -3743,23 +3736,25 @@ $
             merge operations when the two merge sources are ancestrally
             related&mdash;if the first source is an ancestor of the
             second or vice versa&mdash;this is guaranteed to be the case
-            when using the first two forms.  Subversion will also take
+            when performing automatic merges.  Subversion will also take
             preexisting merge metadata on the working copy target into
             account when determining what revisions to merge and in an
             effort to avoid repeat merges and needless conflicts it may
             only merge a subset of the requested ranges.</para>
-
-          <tip>
-            <para><xref linkend="svn.branchmerge.basicmerging.mergetracking"/>
-              can be disabled by using the <option>--ignore-ancestry</option>
-              option.</para>
-          </tip>
 
           <para>Unlike <command>svn diff</command>, the merge command
             takes the ancestry of a file into consideration when
             performing a merge operation. This is very important when
             you're merging changes from one branch into another and you've
             renamed a file on one branch but not the other.</para>
+
+          <tip>
+            <para>The <option>--ignore-ancestry</option> option will cause
+            <xref linkend="svn.branchmerge.basicmerging.mergetracking"/>
+            to be disabled and makes merge act like
+            <command>svn diff</command>, ignoring the ancestry of files
+            when merging.</para>
+          </tip>
 
         </refsect1>
 
@@ -3781,6 +3776,7 @@ $
 <xref linkend="svn.ref.svn.sw.record_only" />
 <xref linkend="svn.ref.svn.sw.reintegrate" />
 <xref linkend="svn.ref.svn.sw.revision" />
+<xref linkend="svn.ref.svn.sw.verbose" />
 </screen>
           </informalexample>
         </refsect1>
@@ -3788,42 +3784,55 @@ $
         <refsect1>
           <title>Examples</title>
 
-          <para>Merge a branch back into the trunk (assuming that
-            you have an up-to-date working copy of the trunk):</para>
+          <para>Reintegrate a branch back into the trunk&mdash;assuming
+            that you have an up-to-date working copy of the trunk (the
+            <option>--verbose</option> option prints additional
+            information regarding what the merge is doing prior to
+            actually applying any diff; useful in very large which
+            might take a significant amount of time to complete):</para>
 
           <informalexample>
             <screen>
-$ svn merge --reintegrate \
-            http://svn.example.com/repos/calc/branches/my-calc-branch
---- Merging differences between repository URLs into '.':
-U    button.c
-U    integer.c
-U    Makefile
- U   .
---- Recording mergeinfo for merge between repository URLs into '.':
- U   .
+$ svn merge ^/branches/feature-branch-calc-enhancements trunk --verbose
+checking branch relationship...
+calculating automatic merge...
+merging...
+--- Merging r12 through r37 into 'trunk':
+U    trunk/calc/brush.c
+--- Recording mergeinfo for merge of r12 through r37 into 'trunk':
+ U   trunk
 
 $ # build, test, verify, ...
 
-$ svn commit -m "Merge my-calc-branch back into trunk!"
-Sending        .
-Sending        button.c
-Sending        integer.c
-Sending        Makefile
-Transmitting file data ..
-Committed revision 391.
+$ svn commit trunk -m "Reintegrate the calc enhancements back to trunk!"
+Sending        trunk
+Sending        trunk/calc/brush.c
+Transmitting file data .
+Committed revision 38.
 </screen>
           </informalexample>
           
-        <para>To merge changes to a single file:</para>
+        <para>Cherry-pick merge a single change to a file:</para>
 
         <informalexample>
           <screen>
-$ svn merge -c 31 ^/trunk/thhgttg.txt thhgttg.txt 
---- Merging r31 into 'thhgttg.txt':
-U    thhgttg.txt
---- Recording mergeinfo for merge of r31 into 'thhgttg.txt':
- U   thhgttg.txt
+$ svn merge ^/trunk/calc/brush.c branches/1.x/calc/brush.c -c38
+--- Merging r38 into 'branches/1.x/calc/brush.c':
+U    branches/1.x/calc/brush.c
+--- Recording mergeinfo for merge of r38 into 'branches/1.x/calc/brush.c':
+ G   branches/1.x/calc/brush.c
+</screen>
+        </informalexample>
+
+        <para>Merge the differences between two unrelated branches
+          into a third branch:</para>
+
+        <informalexample>
+          <screen>
+$ svn merge ^/vendor-drop/vendor-1.0 ^/vendor-drop/vendor-1.1 \
+            trunk --ignore-ancestry
+--- Merging differences between repository URLs into 'trunk':
+U    trunk/draw/draw.py
 </screen>
         </informalexample>
 
