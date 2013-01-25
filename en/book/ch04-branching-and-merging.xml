@@ -3674,7 +3674,7 @@ A    newdirectory/newfile
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.advanced.vendorbr">
-    <title>Tracking Third-Party Data</title>
+    <title>Vendor Branches</title>
 
     <para>As is especially the case when developing software, the data
       that you maintain under version control is often closely related
@@ -3752,65 +3752,15 @@ A    newdirectory/newfile
     <para>Unfortunately, there is no single best way to manage vendor
       branches in Subversion.  The flexibility of the system offers
       several different approaches, each of which has its advantages
-      and disadvantages, and&mdash;unfortunately&mdash;none of which
-      is a sort of <quote>silver bullet</quote> for the
-      problem.  We'll cover a few of these approaches at a high level
-      in the following sections, using the common example of a
-      software project which depends on a third-party library.</para>
+      and disadvantages, and none of which can be clearly considered
+      a <quote>silver bullet</quote> for the problem.  We'll cover a
+      few of these approaches at a high level in the following
+      sections, using the common example of a software project which
+      depends on a third-party library.</para>
 
     <!-- =============================================================== -->
-    <sect2 id="svn.advanced.vendorbr.read-only-mirroring">
-      <title>Read-only Mirroring of Third-party Data</title>
-
-      <para>The simplest scenario which involves vendor branches is
-        when that branch is more like a vendor tag&mdash;you never
-        modify the third-party library yourself, and are merely
-        mirroring it in your own repository for convenience.
-        Subversion offers various approaches to this.</para>
-
-      <para>For example, if the third-party library is itself already
-        available via Subversion, you can use Subversion's
-        <command>svnsync</command> tool to quite literally mirror the
-        whole third-party repository&mdash;or a portion
-        thereof&mdash;with a local repository (see
-        <xref linkend="svn.reposadmin.maint.replication" />).  Or, if
-        you wanted to merge the third-party library's history into the
-        same repository you use for your own codebase, you could
-        use <command>svnrdump dump</command> with <command>svnadmin
-        load --parent-dir</command> to replicate the history of the
-        third-party codebase into a subdirectory of your own
-        repository.  (We cover the use of <command>svnrdump</command>
-        in <xref linkend="svn.reposadmin.maint.migrate.svnrdump"
-        />.)</para>
-
-      <para>Often, you don't need the full history (every single
-        revision) of the vendor's data, but are only interested in
-        stable snapshots thereof.  The <command>svn import</command>
-        subcommand is designed specifically for quickly adding to
-        version control whole trees of locally unversioned
-        information, such as the contents of a vendor's source code
-        release archive file.  Alternatively, if the third-party
-        library is already Subversion-accessible, <command>svn
-        export</command> can create just such a local unversioned
-        directory tree&mdash;from, say, a tag in the vendor's
-        repository&mdash;that <command>svn import</command> can then
-        stash in your own repository.</para>
-
-      <para>Whatever approach you use, simply tracking in a read-only
-        manner a collection of information provided by another vendor
-        is relatively easy in Subversion.  It's when you need to
-        maintain customizations to that data that things become more
-        challenging.</para>
-
-    </sect2>
-
-    <!-- =============================================================== -->
-    <sect2 id="svn.advanced.vendorbr.customizing">
-      <title>Vendor Branches</title>
-
-      <para>Depending on third-party data can be a minor hassle.  But
-        depending on third-party data which needs to be tweaked for
-        your own purposes can be downright complicated.</para>
+    <sect2 id="svn.advanced.vendorbr.general">
+      <title>General Vendor Branch Management Procedure</title>
 
       <para>Maintaining customizations to a third-party library
         involves three data sources: the version of the third-party
@@ -3831,10 +3781,10 @@ A    newdirectory/newfile
         the sake of simplicity and with the goal of at least providing
         <emphasis>something</emphasis> concrete in this section of the
         book, we'll assume that there is but a single vendor branch
-        which is rebased against each successive new release of the
-        third-party library on which it is based by receiving updates
-        that describe the differences between the current and new
-        pristine versions of that library.</para>
+        which is upgraded to each successive new release of the
+        third-party library by receiving updates that describe the
+        differences between the current and new pristine versions of
+        that library.</para>
 
       <note>
         <para>Another approach is to create new vendor branches for
@@ -3843,171 +3793,459 @@ A    newdirectory/newfile
           customized version thereof (from the current vendor branch)
           to the new branch.  There's nothing wrong with that
           approach&mdash;we just don't feel compelled to document
-          every legitimate possibility in this
-          space.</para>
+          every legitimate possibility in this space.</para>
       </note>
 
-      <para>Let's continue looking into how to manage our vendor
-        branches.  In the examples which follow, we'll assume that the
-        third-party library is called libcomplex, and that we've
-        implemented a vendor branch based on libcomplex 1.0 which
-        lives in our repository
-        at <filename>^/vendor/libcomplex/custom</filename>.  We'll
-        be looking at how we can upgrade to libcomplex 1.1 while still
-        preserving our customizations to the library.</para>
+      <para>The following sections examine how to create and manage a
+        vendor branch in a few different scenarios.  In the examples
+        which follow, we'll assume that the third-party library is
+        called libcomplex, and that we will be implementing a vendor
+        branch based on libcomplex 1.0.0 which lives in our repository
+        at <filename>^/vendor/libcomplex-custom</filename>.  We'll
+        then look at how we can upgrade to libcomplex 1.0.1 while
+        still preserving our customizations to the library.</para>
 
-      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <sect3 id="svn.advanced.vendorbr.customizing.from-svn">
-        <title>Vendor branches from Subversion sources</title>
+    </sect2>
 
-        <para>When a vendor branch is based on third-party code that
-          is delivered via Subversion, the 2-URL form of
-          the <command>svn merge</command> command is probably the
-          best option for rebasing your vendor branch.  Since
-          Subversion 1.5, <command>svn merge</command> has even been
-          able to perform so-called <quote>foreign repository
-          merges</quote>, where the sources of the merge live in a
-          different repository than the repository from which the
-          merge target working copy was checked
-          out.<footnote><para>There are some notable limitations with
-          foreign repository merges, such as the lack of merge
-          tracking support, but those shouldn't affect the vendor
-          branch maintenance procedure discussed
-          here.</para></footnote> Let's assume that the pristine 1.0
-          and 1.1 versions of libcomplex are already available in our
-          own repository, imported
-          at <filename>^/vendor/libcomplex/1.0</filename>
-          and <filename>^/vendor/libcomplex/1.1</filename>,
-          respectively.</para>
+    <!-- =============================================================== -->
+    <sect2 id="svn.advanced.vendorbr.foreign-repos">
+      <title>Vendor Branches from Foreign Repositories</title>
 
-        <para>In order to get the changes made between versions 1.0
-          and 1.1 of libcomplex into our vendor branch, we must first
-          have a working copy of that branch.</para>
+      <para>Let's look first at a vendor branch management approach
+        that is possible when the original third-party library is
+        itself Subversion-accessible.  For the sake of the example,
+        we'll assume that the libcomplex library we previously
+        discussed is developed in a publicly accessible Subversion
+        repository, and that its developers use sane release
+        procedures which include the creation of tags for each stable
+        release version.</para>
 
-        <informalexample>
-          <screen>
-$ svn co http://svn.example.com/projects/repos/vendor/libcomplex/custom \
-         libcomplex-custom
+      <para>Since Subversion 1.5, <command>svn merge</command> has
+        been able to perform so-called <firstterm>foreign repository
+        merges</firstterm>, where the sources of the merge live in a
+        different repository than the repository from which the merge
+        target working copy was checked out.  And in Subversion 1.8,
+        the behavior of <command>svn copy</command> was changed so
+        that when you perform a copy from a foreign repository into an
+        existing working copy, the resulting tree is incorporated into
+        that working copy and scheduled for addition.  It's
+        this <firstterm>foreign repository copy</firstterm>
+        functionality that we'll use to bootstrap our vendor
+        branch.</para>
+
+      <para>So let's create our vendor branch.  We'll begin by
+        creating a placeholder directory for all such vendor branches
+        in our repository, and then checking out a working copy of
+        that location.</para>
+
+      <informalexample>
+        <screen>
+$ svn mkdir http://svn.example.com/projects/vendor \
+            -m "Create a container for vendor branches."
+Committed revision 1160.
+$ svn checkout http://svn.example.com/projects/vendor \
+               /path/to/vendor
+Checked out revision 1160.
+$
+</screen>
+      </informalexample>
+
+      <para>Now, we'll take advantage of Subversion's foreign
+        repository copy support to get an exact copy of libcomplex
+        1.0.0&mdash;including any Subversion properties stored on its
+        files and directories&mdash;from the vendor repository.</para>
+
+      <informalexample>
+        <screen>
+$ cd /path/to/vendor
+$ svn copy http://svn.othervendor.com/repos/libcomplex/tags/1.0.0 \
+           libcomplex-custom
+--- Copying from foreign repository URL 'http://svn.othervendor.com/repos/lib\
+complex/tags/1.0.0':
 A    libcomplex-custom
 A    libcomplex-custom/README
 A    libcomplex-custom/LICENSE
 &hellip;
-A    libcomplex-custom/src/code.h
 A    libcomplex-custom/src/code.c
+A    libcomplex-custom/tests
 A    libcomplex-custom/tests/TODO
-Checked out revision 1156.
+$ svn commit -m "Initialize libcomplex vendor branch from libcomplex 1.0.0."
+Adding         libcomplex-custom
+Adding         libcomplex-custom/README
+Adding         libcomplex-custom/LICENSE
+&hellip;
+Adding         libcomplex-custom/src
+Adding         libcomplex-custom/src/code.h
+Adding         libcomplex-custom/src/code.c
+Transmitting file data .......................................
+Committed revision 1161.
 $
 </screen>
-        </informalexample>
+      </informalexample>
 
-        <para>This working copy already contains our customized
-          version of libcomplex 1.0.  So, upgrading to libcomplex 1.1 is
-          a simple matter of applying the difference between 1.0 and 1.1
-          to our working copy.  That's pretty much exactly
-          what <command>svn merge</command> is made for.</para>
+      <note>
+        <para>If you happen to be using an older version of
+          Subversion, the closest available approximation of the new
+          foreign repository copy support in <command>svn
+          copy</command> is to instead import (via <command>svn
+          import</command>) a working copy of the vendor's tag,
+          including the <option>--no-auto-props</option>
+          and <option>--no-ignore</option> options so that the
+          complete tree and any of its versioned properties are
+          accurately replicated in your own repository.</para>
+      </note>
 
-        <informalexample>
-          <screen>
-$ cd /path/to/libcomplex-custom
-$ svn merge --ignore-ancestry \
-            ^/vendor/libcomplex/1.0 \
-            ^/vendor/libcomplex/1.1
---- Merging differences between repository URLs into '.':
-A    src/new-module
-A    src/new-module/init.c
-A    src/new-module/header.h
-&hellip;
-U    src/code.h
-C    src/code.c
-U    README
-Summary of conflicts:
-  Text conflicts: 1
-Conflict discovered in file 'src/code.c'.
-Select: (p) postpone, (df) diff-full, (e) edit, (m) merge,
-        (mc) mine-conflict, (tc) theirs-conflict, (s) show all options: 
-</screen>
-        </informalexample>
+      <para>Now that we have a vendor branch based on libcomplex 1.0.0,
+        we can begin making the customizations to libcomplex required
+        for our purposes, committing them directly to the vendor
+        branch we've created.  And of course, we can begin using
+        libcomplex in our own application.</para>
 
-        <para>The first thing to note is that we used
-          the <option>--ignore-ancestry</option> option with
-          our <command>svn merge</command> command.  This is required
-          because in our repository, the
-          <filename>^/vendor/libcomplex/1.0</filename>
-          and <filename>^/vendor/libcomplex/1.1</filename> branches
-          share no common ancestry&mdash;both were fresh imports of
-          the respective libcomplex source release tarballs.  Had we
-          omitted this option, <command>svn merge</command> would have
-          determine that the safest way to transform the 1.0 tree into
-          the 1.1 tree would be to simply delete the former and add
-          the latter, with disastrous results in out working
-          copy.</para>
+      <para>Some time later, libcomplex 1.0.1 is released.  After
+        reviewing its changes, we decide we'd like to upgrade our
+        vendor branch to the new version.  Here is where Subversion's
+        foreign repository merge operation is useful.  We have in our
+        vendor branch the original libcomplex 1.0.0 plus our
+        customizations to it.  What we need now is to get the set of
+        changes the vendor has made between 1.0.0 and 1.0.1 into our
+        vendor branch, ideally without clobbering our own
+        customizations.  This is precisely what the 2-URL form of
+        the <command>svn merge</command> command is for.</para>
 
-        <para>Notice also that <command>svn merge</command> was able
-          to flag a conflict which arose from the merge.  It seems
-          that the libcomplex development team changed one or more
-          regions of <filename>src/code.c</filename> that we had
-          previously customized.  Fortunately, Subversion gives us the
-          change to resolve those conflicts so that our customizations
-          continue to make sense within the context of the upgraded
-          libcomplex codebase.</para>
-
-        <para>Once all conflicts have been resolved, and we've
-          reviewed and tested the vendor branch code for correctness,
-          we can commit the results of our merge.  Our vendor branch
-          is now up-to-date with libcomplex 1.1!</para>
-
-        <para>We mentioned previously that Subversion can also perform
-          such merges when the pristine vendor data lives in a
-          different repository.  We use the same syntax for such a
-          merge, except that we refer to the foreign repository URLs
-          and <emphasis>shouldn't</emphasis> need to use
-          the <option>--ignore-ancestry</option> option (because the
-          tags in the vendor's repository
-          probably <emphasis>do</emphasis> share a common
-          ancestry):</para>
-
-        <informalexample>
-          <screen>
-$ cd /path/to/libcomplex-custom
-$ svn merge http://svn.othervendor.com/repos/libcomplex/tags/1.0 \
-            http://svn.othervendor.com/repos/libcomplex/tags/1.1
+      <informalexample>
+        <screen>
+$ cd /path/to/vendor
+$ svn merge http://svn.othervendor.com/repos/libcomplex/tags/1.0.0 \
+            http://svn.othervendor.com/repos/libcomplex/tags/1.0.1 \
+            libcomplex-custom
 --- Merging differences between foreign repository URLs into '.':
-A    src/new-module
-A    src/new-module/init.c
-A    src/new-module/header.h
-&hellip;
-U    src/code.h
-C    src/code.c
-U    README
+U    libcomplex-custom/src/code.h
+C    libcomplex-custom/src/code.c
+U    libcomplex-custom/README
 Summary of conflicts:
   Text conflicts: 1
-Conflict discovered in file 'src/code.c'.
+Conflict discovered in file 'libcomplex-custom/src/code.c'.
 Select: (p) postpone, (df) diff-full, (e) edit, (m) merge,
         (mc) mine-conflict, (tc) theirs-conflict, (s) show all options: 
 </screen>
-        </informalexample>
+      </informalexample>
 
-        <para>As you can see, Subversion provides the same essential
-          functionality.</para>
+      <para>As you can see, <command>svn merge</command> has merged
+        the changes required to make libcomplex 1.0.0 look like
+        libcomplex 1.0.1 into our working copy.  In our example, it has
+        even noticed and flagged a conflict on one file.   It seems
+        the vendor modified a region of one of the files we also
+        customized.  Subversion safely detects this conflict, and
+        gives us the opportunity to resolve it so that our
+        customizations to what is now libcomplex 1.0.1 continue to
+        make sense.  (See <xref linkend="svn.tour.cycle.resolve" />
+        for more on resolving conflicts of this sort.)</para>
 
-        <para>Admittedly, this is a pretty simple use-case.
-          <command>svn merge</command> is pretty good about handling
-          content modifications and simple tree changes (additions and
-          deletions).  Unfortunately, things quickly devolve into
-          madness when files or directories have been renamed.  This
-          is still an area in which Subversion needs to improve.</para>
+      <para>Once we've resolved the conflicts and performed any
+        testing or review we need, we can commit the changes to our
+        vendor branch.</para>
 
-      </sect3>
+      <informalexample>
+        <screen>
+$ svn status libcomplex-custom
+M       libcomplex-custom/src/code.h
+M       libcomplex-custom/src/code.c
+M       libcomplex-custom/README
+$ svn commit -m "Upgrade vendor branch to libcomplex 1.0.1." \
+             libcomplex-custom
+Sending        libcomplex-custom/README
+Sending        libcomplex-custom/src/code.h
+Sending        libcomplex-custom/src/code.c
+Transmitting file data ...
+Committed revision 1282.
+$
+</screen>
+      </informalexample>
 
-      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <sect3 id="svn.advanced.vendorbr.customizing.from-non-svn">
-        <title>Vendor branches from non-Subversion sources</title>
+      <para>That, in a nutshell, is how to manage vendor branches when
+        the original source is Subversion-accessible.  There are some
+        notable shortcomings, though.  First, foreign repository
+        merges are not automatically tracked by Subversion itself like
+        same-repository merges are.  This means the burden falls to
+        the user to know which merges have been performed on their
+        vendor branch, and just how to construct the next merge when
+        upgrading that branch.  Also, as is the case for all of
+        Subversion's merge support, renames in the merge sources can
+        cause no small amount of complication and frustration.
+        Unfortunately, at this time, we don't have a particularly
+        solid recommendation to offer to alleviate that pain.</para>
 
-        <para>### TODO ###</para>
-
-      </sect3>
     </sect2>
 
+    <!-- =============================================================== -->
+    <sect2 id="svn.advanced.vendorbr.mirrored-sources">
+      <title>Vendor Branches from Mirrored Sources</title>
+
+      <para>In the previous section
+        (<xref linkend="svn.advanced.vendorbr.foreign-repos" />) we
+        looked at how to implement and maintain a vendor branch when
+        the vendor drops are accessible via Subversion, which is the
+        ideal scenario when it comes to vendor branches.  Subversion
+        is pretty good at handling merges of stuff that's been
+        Subversion-managed.  Unfortunately, it's not always the case
+        that third-party libraries are publicly accessible via
+        Subversion.  Many times, a project depends on a library which
+        is delivered via only non-Subversion mechanisms, such as a
+        source code release distribution tarball.  In such
+        circumstances, we strongly recommend that you do all you can
+        to get that non-Subversion information into Subversion as
+        cleanly as possible.  So let's examine an approach to vendor
+        branches in which the third-party library's various releases
+        are mirrored within our own repository.</para>
+
+      <para>Setting up the vendor branch the first time is pretty
+        simple, really.  For our example, we'll assume that libcomplex
+        1.0.0 is delivered via the common tarball mechanism.  To
+        create our vendor branch, we'll first get the contents of the
+        libcomplex 1.0.0 tarball into our repository as a read-only
+        (by convention only) vendor tag of sorts.</para>
+
+      <informalexample>
+        <screen>
+$ tar xvfz libcomplex-1.0.0.tar.gz
+libcomplex-1.0.0/
+libcomplex-1.0.0/README
+libcomplex-1.0.0/LICENSE
+&hellip;
+libcomplex-1.0.0/src/code.c
+libcomplex-1.0.0/tests
+libcomplex-1.0.0/tests/TODO
+$ svn import libcomplex-1.0.0 \
+             http://svn.example.com/projects/vendor/libcomplex-1.0.0 \
+             --no-ignore --no-auto-props \
+             -m "Import libcomplex 1.0.0 sources."
+Adding         libcomplex-custom
+Adding         libcomplex-custom/README
+Adding         libcomplex-custom/LICENSE
+&hellip;
+Adding         libcomplex-custom/src
+Adding         libcomplex-custom/src/code.h
+Adding         libcomplex-custom/src/code.c
+Transmitting file data .......................................
+Committed revision 1160.
+$
+</screen>
+      </informalexample>
+
+      <para>Note that in our example, we used
+        the <option>--no-ignore</option> option during import so that
+        Subversion is sure to pick up every file in the vendor drop
+        and not to omit any of them.  We also supply
+        the <option>--no-auto-props</option> option so that our client
+        doesn't manufacture property information which isn't present
+        in the vendor drop.<footnote><para>Technically, we could let
+        the auto-props feature do its thing, but the key to making
+        that work well is ensuring that each vendor drop gets
+        identical auto-prop treatment.</para></footnote>.</para>
+       
+      <para>Now that the first vendor release drop is present in our
+        repository, we can create our vendor branch from it just as we
+        would create any other branch&mdash;using <command>svn
+        copy</command>.</para>
+
+      <informalexample>
+        <screen>
+$ svn copy http://svn.example.com/projects/vendor/libcomplex-1.0.0 \
+           http://svn.example.com/projects/vendor/libcomplex-custom \
+           -m "Initialize libcomplex vendor branch from libcomplex 1.0.0."
+Committed revision 1161.
+$
+</screen>
+      </informalexample>
+
+      <para>Okay.  At this point we have a vendor branch based on
+        libcomplex 1.0.0.  We are now poised to begin making the
+        customizations to libcomplex required for our
+        purposes&mdash;committing them directly to the vendor branch
+        we've created&mdash;and then to start using our customized
+        libcomplex in our own application.</para>
+
+      <para>Some time later, libcomplex 1.0.1 is released.  After
+        reviewing its changes, we decide we'd like to upgrade our
+        vendor branch to the new version.  In order to perform that
+        upgrade on our branch, we need to essentially apply the same
+        set of changes the vendor has made between 1.0.0 and 1.0.1 to
+        our vendor branch without clobbering our own customizations.
+        The safest way to perform that application is to first get
+        libcomplex 1.0.1 into our repository <emphasis>as a delta
+        against the libcomplex 1.0.0 code in our
+        repository</emphasis>.  Afterwards, we'll use the 2-URL form
+        of the <command>svn merge</command> command to replicate those
+        same changes into our vendor branch.</para>
+
+      <para>As it turns out, there are several different approaches we
+        can take to to get libcomplex 1.0.1 into our repository in the
+        right way.<footnote><para>Using another <command>svn
+        import</command> operation would be
+        an <emphasis>incorrect</emphasis> approach, as the libcomplex
+        1.0.0 and 1.0.1 branches would not have any common
+        ancestry.</para></footnote>  The approach we'll describe here
+        is relatively rudimentary, but it will serve our illustrative
+        needs.</para>
+
+      <para>Remember, we want our mirror of the libcomplex 1.0.1
+        vendor drop to share ancestry with our 1.0.0 vendor drop,
+        which will produce the best results later when we need to
+        merge the changes between those drops to our vendor branch.
+        So we'll start by creating a libcomplex-1.0.1 branch as copy
+        of our previously created libcomplex-1.0.0 <quote>vendor
+        tag</quote>&mdash;a copy which will eventually become a
+        replica of libcomplex 1.0.1.</para>
+        
+      <informalexample>
+        <screen>
+$ svn copy http://svn.example.com/projects/vendor/libcomplex-1.0.0 \
+           http://svn.example.com/projects/vendor/libcomplex-1.0.1 \
+           -m "Setup a construction zone for libcomplex 1.0.1."
+Committed revision 1282.
+$
+</screen>
+      </informalexample>
+
+      <para>What we need now is to make a working copy of our
+        libcomplex-1.0.1 branch, and then to make it actually look
+        like libcomplex 1.0.1.  To do this, we'll take advantage of
+        the fact that <command>svn checkout</command> can overlay an
+        existing directory and, if the <option>--force</option> option
+        is provided, do so in manner that allows the differences
+        between the checked-out tree and the target tree that the
+        checkout overlayed to remain as local modifications in the new
+        working copy.</para>
+
+      <informalexample>
+        <screen>
+$ tar xvfz libcomplex-1.0.1.tar.gz
+libcomplex-1.0.1/
+libcomplex-1.0.1/README
+libcomplex-1.0.1/LICENSE
+&hellip;
+libcomplex-1.0.1/src/code.c
+libcomplex-1.0.1/tests
+libcomplex-1.0.1/tests/TODO
+$ svn checkout http://svn.example.com/projects/vendor/libcomplex-1.0.1 \
+               libcomplex-1.0.1 \
+               --force
+E    libcomplex-1.0.1/README
+E    libcomplex-1.0.1/LICENSE
+E    libcomplex-1.0.1/INSTALL
+&hellip;
+E    libcomplex-1.0.1/src/code.c
+E    libcomplex-1.0.1/tests
+E    libcomplex-1.0.1/tests/TODO
+Checked out revision 1282.
+$ svn status libcomplex-1.0.1
+M       libcomplex-1.0.1/src/code.h
+M       libcomplex-1.0.1/src/code.c
+M       libcomplex-1.0.1/README
+$
+</screen>
+      </informalexample>
+
+      <para>As you can see, after checking out what was really
+        libcomplex 1.0.0 atop the libcomplex 1.0.1 exploded tarball,
+        we are left with a working copy that contains local
+        modifications&mdash;those modifications required to morph our
+        previous vendor release drop into our new one.</para>
+
+      <para>Admittedly, this is a pretty simple example.  The changes
+        required to perform this particular upgrade involved merely
+        content changes to existing files.  In reality, new versions
+        of third-party libraries might also add or remove files or
+        directories, might rename files or directories, and so on.  In
+        those situations, it can be much more challenging to morph the
+        new vendor tag into a state where it accurately reflects the
+        vendor drop it claims to reflect.  We'll leave the details of
+        such transformations as an exercise to the reader.</para>
+
+      <para>However we make it happen, once our new vendor tag working
+        copy is reconciled with the original source distribution, we
+        can commit those changes to our repository.</para>
+
+      <informalexample>
+        <screen>
+$ svn commit -m "Upgrade vendor branch to libcomplex 1.0.1." \
+             libcomplex-custom
+Sending        libcomplex-custom/README
+Sending        libcomplex-custom/src/code.h
+Sending        libcomplex-custom/src/code.c
+Transmitting file data ...
+Committed revision 1283.
+$
+</screen>
+      </informalexample>
+
+      <para>We're finally ready to upgrade our vendor branch.
+        Remember, our goal is to get the changes made by the vendor
+        between the 1.0.0 and 1.0.1 releases of their library into our
+        vendor branch.  There is where a 2-URL <command>svn
+        merge</command> operation, applied to a working copy of our
+        vendor branch, comes into play.</para>
+
+      <informalexample>
+        <screen>
+$ svn checkout http://svn.example.com/projects/vendor/libcomplex-custom \
+               libcomplex-custom
+E    libcomplex-custom/README
+E    libcomplex-custom/LICENSE
+E    libcomplex-custom/INSTALL
+&hellip;
+E    libcomplex-custom/src/code.c
+E    libcomplex-custom/tests
+E    libcomplex-custom/tests/TODO
+Checked out revision 1283.
+$ cd libcomplex-custom
+$ svn merge ^/vendor/libcomplex-1.0.0 \
+            ^/vendor/libcomplex-1.0.1
+--- Merging differences between URLs into '.':
+U    src/code.h
+C    src/code.c
+U    README
+Summary of conflicts:
+  Text conflicts: 1
+Conflict discovered in file 'src/code.c'.
+Select: (p) postpone, (df) diff-full, (e) edit, (m) merge,
+        (mc) mine-conflict, (tc) theirs-conflict, (s) show all options: 
+</screen>
+      </informalexample>
+
+      <para>As you can see, <command>svn merge</command> has merged
+        the requisite changes into our working copy, flagging a
+        conflict where the vendor modified the same region of one of
+        the files as we did during our customizations.  Subversion
+        detects this conflict, and gives us the opportunity to resolve
+        it (using the methods described in
+        <xref linkend="svn.tour.cycle.resolve" />) so that our
+        customizations to what is now libcomplex 1.0.1 continue to
+        make sense.  Once we've resolved the conflicts and performed
+        any testing or review we need, we can commit the changes to
+        our vendor branch.</para>
+
+      <informalexample>
+        <screen>
+$ svn status
+M       src/code.h
+M       src/code.c
+M       README
+$ svn commit -m "Upgrade vendor branch to libcomplex 1.0.1."
+Sending        README
+Sending        src/code.h
+Sending        src/code.c
+Transmitting file data ...
+Committed revision 1284.
+$
+</screen>
+      </informalexample>
+
+      <para>Our vendor branch upgrade is complete.  And the next time
+        we need to upgrade that branch, we'll follow the same
+        procedure we used to upgrade it this time.</para>
+
+    </sect2>
   </sect1>
 
   <!-- ================================================================= -->
