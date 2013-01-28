@@ -670,11 +670,15 @@
       <para>After you've made some changes to the files in your
         working copy and verified that they work properly, Subversion
         provides you with commands to <quote>publish</quote> your
-        changes to the other people working with you on your project
-        (by writing to the repository).  If other people publish their
-        own changes, Subversion provides you with commands to merge
-        those changes into your working copy (by reading from the
-        repository).</para>
+        changes (by writing to the repository), thereby making them
+        available to the other people working with you on your
+        project.  If other people publish their own changes,
+        Subversion provides you with commands to merge those changes
+        into your own working copy (by reading from the repository).
+        Notice that the central repository is the broker for
+        everybody's changes in Subversion&mdash;changes aren't passed
+        directly from working copy to working copy in the typical
+        workflow.</para>
 
       <para>A working copy also contains some extra files, created and
         maintained by Subversion, to help it carry out these commands.
@@ -882,8 +886,8 @@ $
           <secondary>commit</secondary>
         </indexterm>
 
-        <para>To publish your changes to others, you can use
-          Subversion's <command>svn commit</command> command:</para>
+        <para>To publish your changes, you can use Subversion's
+          <command>svn commit</command> command:</para>
 
         <informalexample>
           <screen>
@@ -1027,8 +1031,8 @@ calc/
             a <quote>push</quote> action does not cause
             a <quote>pull</quote> nor vice versa.  Just
             because you're ready to submit new changes to the repository
-            doesn't mean you're ready to receive changes from other
-            people.  And if you have new changes still in progress,
+            doesn't mean you're ready to receive changes that others
+            have checked in.  And if you have new changes still in progress,
             <command>svn update</command> should gracefully merge
             repository changes into your own, rather than forcing you to
             publish them.</para>
@@ -1039,30 +1043,32 @@ calc/
             more complicated by the fact that directories themselves are
             versioned.</para>
 
-          <para>For example, suppose you have a working copy entirely at
-            revision 10.  You edit the
-            file <filename>foo.html</filename> and then perform
-            an <command>svn commit</command>, which creates revision 15
-            in the repository.  After the commit succeeds, many new
+          <para>For example, suppose you have a working copy entirely
+            at revision 10, while others have been committing their
+            changes so that the youngest revision in the repository is
+            now revision 14.  You edit the file
+            <filename>foo.html</filename> and then perform
+            an <command>svn commit</command>, which creates revision
+            15 in the repository.  After the commit succeeds, many new
             users would expect the working copy to be entirely at
-            revision 15, but that's not the case!  Any number of changes
-            might have happened in the repository between revisions 10
-            and 15.  The client knows nothing of those changes in the
-            repository, since you haven't yet run <command>svn
-            update</command>, and <command>svn commit</command> doesn't
-            pull down new changes.  If, on the other hand,
-            <command>svn commit</command> were to automatically download
-            the newest changes, it would be possible to set the
-            entire working copy to revision 15&mdash;but then we'd be
-            breaking the fundamental rule of <quote>push</quote>
-            and <quote>pull</quote> remaining separate actions.
-            Therefore, the only safe thing the Subversion client can do
-            is mark the one
+            revision 15, but that's not the case!  Any number of
+            changes might have happened in the repository between
+            revisions 10 and 15.  The client knows nothing of those
+            changes in the repository, since you haven't yet
+            run <command>svn update</command>, and <command>svn
+            commit</command> doesn't pull down new changes.  If, on
+            the other hand, <command>svn commit</command> were to
+            automatically download the newest changes, it would be
+            possible to set the entire working copy to revision
+            15&mdash;but then we'd be breaking the fundamental rule
+            of <quote>push</quote> and <quote>pull</quote> remaining
+            separate actions.  Therefore, the only safe thing the
+            Subversion client can do is mark the one
             file&mdash;<filename>foo.html</filename>&mdash;as being at
             revision 15.  The rest of the working copy remains at
-            revision 10.  Only by running <command>svn update</command>
-            can the latest changes be downloaded and the whole working
-            copy be marked as revision 15.</para>
+            revision 10.  Only by running <command>svn
+            update</command> can the latest changes be downloaded and
+            the whole working copy be marked as revision 15.</para>
 
         </sect4>
 
