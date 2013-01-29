@@ -8466,39 +8466,103 @@ $ svnlook date -r 40 /var/svn/repos/
         <refsect1>
           <title>Examples</title>
           
-          <para>This shows a newly added (empty) file, a deleted
-            file, and a copied file:</para>
+          <para>This shows a newly added (empty) file, a modified
+            binary file, and a renamed (that is, copied and deleted)
+            file with modifications:</para>
 
           <informalexample>
             <screen>
-$ svnlook diff -r 40 /var/svn/repos/
-Copied: egg.txt (from rev 39, trunk/vendors/deli/pickle.txt)
+$ svnlook diff -r 40 /var/svn/repos
+Copied: trunk/relish.txt (from rev 39, trunk/vendors/deli/pickle.txt)
+===================================================================
+--- trunk/relish.txt	                        (rev 0)
++++ trunk/relish.txt	2013-01-29 20:39:17 UTC (rev 40)
+@@ -0,0 +1 @@
++Pickle relish is mostly made from cucumbers.
+
+Deleted: trunk/vendors/deli/pickle.txt
+===================================================================
+--- trunk/vendors/deli/pickle.txt	                        (rev 39)
++++ trunk/vendors/deli/pickle.txt	2013-01-29 20:39:17 UTC (rev 49)
+@@ -1 +0,0 @@
+-Pickles are mostly made from cucumbers.
+
+Modified: trunk/vendors/deli/logo.jpg
+===================================================================
+(Binary files differ)
+
+Added: trunk/vendors/deli/soda.txt
+===================================================================
+$
+</screen>
+          </informalexample>
+
+          <para>By default, <command>svnlook diff</command> will treat
+            copied files very much like any other added file,
+            displaying in their entirety the contents of the new file
+            and merely using a different label to draw the copy/add
+            distinction.  However, you can use the
+            <option>--diff-copy-from</option> option to cause
+            <command>svnlook diff</command> to consider a copied
+            file as worthy of mention only if it differs from the file
+            from which it was copied, and to actually describe those
+            differences.</para>
+
+          <informalexample>
+            <screen>
+$ svnlook diff -r 40 /var/svn/repos --diff-copy-from
+Copied: trunk/relish.txt (from rev 39, trunk/vendors/deli/pickle.txt)
+===================================================================
+--- trunk/vendors/deli/pickle.txt	2013-01-29 20:39:17 UTC (rev 39)
++++ trunk/relish.txt	2013-01-29 20:47:40 UTC (rev 3)
+@@ -1 +1 @@
+-Pickles are mostly made from cucumbers.
++Pickle relish is mostly made from cucumbers.
+
+Deleted: trunk/vendors/deli/pickle.txt
+===================================================================
+--- trunk/vendors/deli/pickle.txt	(rev 39)
++++ trunk/vendors/deli/pickle.txt	2013-01-29 20:39:17 UTC (rev 40)
+@@ -1 +0,0 @@
+-Pickles are mostly made from cucumbers.
+
+Modified: trunk/vendors/deli/logo.jpg
+===================================================================
+(Binary files differ)
 
 Added: trunk/vendors/deli/soda.txt
 ==============================================================================
+$
+</screen>
+          </informalexample>
 
-Modified: trunk/vendors/deli/sandwich.txt
-==============================================================================
---- trunk/vendors/deli/sandwich.txt	(original)
-+++ trunk/vendors/deli/sandwich.txt	2003-02-22 17:45:04.000000000 -0600
+          <para>Use the <option>--no-diff-deleted</option> option to
+            silence output regarding deleted files.</para>
+
+          <informalexample>
+            <screen>
+$ svnlook diff -r 40 /var/svn/repos --no-diff-deleted
+Copied: trunk/relish.txt (from rev 39, trunk/vendors/deli/pickle.txt)
+===================================================================
+--- trunk/relish.txt	                        (rev 0)
++++ trunk/relish.txt	2013-01-29 20:39:17 UTC (rev 40)
 @@ -0,0 +1 @@
-+Don't forget the mayo!
++Pickle relish is mostly made from cucumbers.
 
 Modified: trunk/vendors/deli/logo.jpg
-==============================================================================
+===================================================================
 (Binary files differ)
 
-Deleted: trunk/vendors/deli/chips.txt
+Added: trunk/vendors/deli/soda.txt
 ==============================================================================
-
-Deleted: trunk/vendors/deli/pickle.txt
-==============================================================================
+$
 </screen>
           </informalexample>
           
-          <para>If a file has a nontextual
-            <literal>svn:mime-type</literal> property, the
-            differences are not explicitly shown.</para>
+          <para>Note that in each of the previous examples, when a
+            file has a nontextual <literal>svn:mime-type</literal>
+            property, the differences are not explicitly shown.</para>
+
         </refsect1>
       </refentry>
 
