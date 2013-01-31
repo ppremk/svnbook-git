@@ -2117,6 +2117,16 @@ svn: E155011: File '/home/sally/svn-work/sandwich.txt' is out of date
         </varlistentry>
 
         <varlistentry>
+          <term><command>svn annotate</command></term>
+          <listitem>
+            <para>Retrieves a human-readable file as it existed in a
+              particular revision number, displaying its contents in a
+              tabular form with last-changed information attributed to
+              each line of the file.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term><command>svn list</command></term>
           <listitem>
             <para>Displays the files in a directory for any given
@@ -2472,8 +2482,7 @@ $
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.tour.history.browsing.cat">
-        <title>svn cat</title>
-
+        <title>Displaying file contents</title>
 
         <para>If you want to examine an earlier version of a file and
           not necessarily the differences between two files, you can use
@@ -2503,8 +2512,135 @@ $
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.tour.history.browsing.annotate">
+        <title>Displaying line-by-line change attribution</title>
+
+        <para>Very similar to the <command>svn cat</command> command
+          we discussed in the previous section is the <command>svn
+          annotate</command> command.  This command also displays the
+          contents of a versioned file, but it does so using a tabular
+          format.  Each line of output shows not only a line of the
+          file's content but also the username, the revision number
+          and (optionally) the datestamp of the revision in which that
+          line was last modified.</para>
+
+        <para>When used with a working copy file target, <command>svn
+          annotate</command> will by default show line-by-line
+          attribution of the file as it currently appears in the
+          working copy.</para>
+
+        <informalexample>
+          <screen>
+$ svn annotate rules.txt
+     1      harry Be kind to others
+     3      sally Freedom = Responsibility
+     1      harry Everything in moderation
+     -          - Chew with your mouth closed
+     -          - Listen when others are speaking
+</screen>
+        </informalexample>
+
+        <para>Notice that for some lines, there is no attribution
+          provided.  In this case, that's because those lines have
+          been modified in the working copy's version of the file.  In
+          this way, <command>svn annotate</command> becomes another
+          way for you to see which lines in the file you have
+          changed.  You can use the <literal>BASE</literal> revision
+          keyword (see <xref linkend="svn.tour.revs.keywords" />) to
+          instead see the unmodified form of the file as it resides
+          in your working copy.</para>
+
+        <informalexample>
+          <screen>
+$ svn annotate rules.txt@BASE
+     1      harry Be kind to others
+     3      sally Freedom = Responsibility
+     1      harry Everything in moderation
+     1      harry Chew with your mouth open
+</screen>
+        </informalexample>
+
+        <para>The <option>--verbose (-v)</option> option causes
+          <command>svn annotate</command> to also include on each line
+          the datestamp associated with that line's reported revision
+          number.  (This adds a significant amount of width to each
+          line of ouput, so we'll skip the demonstration here.)</para>
+
+        <para>As with <command>svn cat</command>, you can also
+          ask <command>svn annotate</command> to display previous
+          versions of the file.  This can be a handy trick when, after
+          finding out who most recently modified a particular line of
+          interest in the file, you then wish to see who modified the
+          same line prior to that.</para>
+
+        <informalexample>
+          <screen>
+$ svn blame rules.txt -r 2
+     1      harry Be kind to others
+     1      harry Freedom = Chocolate Ice Cream
+     1      harry Everything in moderation
+     1      harry Chew with your mouth open
+</screen>
+        </informalexample>
+
+        <para>Unlike the <command>svn cat</command> command, the
+          functionality of <command>svn annotate</command> is tied
+          heavily to the idea of <quote>lines</quote> of text in a
+          human-readable file.  As such, if you attempt to run the
+          command on a file that Subversion has determined is
+          <emphasis>not</emphasis> human-readable (per the file's
+          <literal>svn:mime-type</literal> property&mdash;see <xref
+          linkend="svn.advanced.props.special.mime-type" /> for
+          details), you'll get an error message.</para>
+
+        <informalexample>
+          <screen>
+$ svn annotate images/logo.png
+Skipping binary file (use --force to treat as text): 'images/logo.png'
+$
+</screen>
+        </informalexample>
+
+        <para>As revealed in the error message, you can use
+          the <option>--force</option> option to disable this check
+          and proceed with the annotation as if the file's contents
+          are, in fact, human-readable and line-based.  Naturally, if
+          you force Subversion to try to perform line-based annotation
+          on a nontextual file, you'll get what you asked for: a
+          screenful of nonsense.</para>
+
+        <informalexample>
+          <screen>
+$ svn annotate images/logo.png --force
+     6      harry \211PNG
+     6      harry ^Z
+     6      harry 
+     7      harry \274\361\MI\300\365\353^X\300&hellip;
+</screen>
+        </informalexample>
+
+        <tip>
+          <para>Depending on your mood at the time you execute this
+            command and your reasons for doing so, you may find
+            yourself typing <userinput>svn blame &hellip;</userinput>
+            or <userinput>svn praise &hellip;</userinput> instead of
+            using the canonical <command>svn annotate</command>
+            command form.  That's okay&mdash;the Subversion developers
+            anticipated as much, so those particular command aliases
+            work, too!</para>
+        </tip>
+
+        <para>Finally, as with many of Subversion's informational
+          commands, you can also reference files in your <command>svn
+          annotate</command> command invocations by their repository
+          URLs, allowing access to this information even when you
+          don't have ready access to a working copy.</para>
+
+      </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.tour.history.browsing.list">
-        <title>svn list</title>
+        <title>Listing versioned directories</title>
 
         <para>The <command>svn list</command> command shows you what
           files are in a repository directory without actually
