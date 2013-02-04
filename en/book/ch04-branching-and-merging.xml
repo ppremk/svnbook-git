@@ -4257,6 +4257,112 @@ $
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
+  <sect1 id="svn.branchmerge.when">
+    <title>To Branch or Not to Branch?</title>
+
+    <para>To branch or not to branch&mdash;that is an interesting
+      question.  This chapter has provided thus far a pretty deep dive
+      into the waters of branching and merging, topics which have
+      historically been the premier source of Subversion user
+      confusion.  As if the rote actions involved in branching and
+      branch management aren't sometimes tricky enough, some users get
+      hung up on deciding whether they need to branch at all.  As
+      you've learned, Subversion can handle common branching and
+      branch management scenarios.  So, the decision of whether or not
+      to branch a project's history is rarely a technical one.
+      Rather, the social impact of the decision often carries more
+      weight.  Let's examine some of the benefits and costs of using
+      branches in a software project.</para>
+
+    <para>The most obvious benefit of working on a branch is
+      isolation.  Changes made to the branch don't affect the other
+      lines of development in the project; changes made to those other
+      lines don't affect the branch.  In this way, a branch can serve
+      as a great place to experiment with new features, complex bug
+      fixes, major code rewrites, and so on.  No matter how much stuff
+      Sally breaks on her branch, Harry and the rest of the team can
+      continue with their work unhindered outside the branch.</para>
+
+    <para>Branches also provide a great way to organize related
+      changes into readily identifiable collections.  For example, the
+      changes which comprise the complete solution to a particular bug
+      might be a list of non-sequential revision numbers.  You might
+      describe them in human language as <quote>revisions 1534, 1543,
+      1587 and 1588</quote>.  You'd probably reproduce those numbers
+      manually (or otherwise) in the issue tracker artifact which
+      tracks the bug.  When porting the bug fix to other product
+      versions, you'd need to make sure to port all those revisions.
+      But had those changes been made on a unique branch, you'd find
+      yourself referring only to that branch by its name in
+      conversation, in issue tracker comments, and when porting
+      changes.</para>
+
+    <para>The unfortunate downside of branches, though, is that the
+      very isolation that makes them so
+      useful <emphasis>can</emphasis> be at odds with the
+      collaborative needs of the project team.  Depending on the work
+      habits of your project peers, changes made to branches might not
+      get the kind of constructive review, criticism, and testing that
+      changes made to the main line of development do.  The isolation
+      of a branch can encourage users to forsake certain version
+      control <quote>best practices</quote>, leading to version
+      history which is difficult to review <foreignphrase>post
+      facto</foreignphrase>.  Developers on long-lived branches
+      sometimes need to work extra hard to ensure that the
+      evolutionary direction of their isolated copy of the codebase is
+      in harmony with the direction their peers are steering the main
+      code lines.  Now, these drawbacks might be less of an issue for
+      true exploratory branches aimed at experimenting with the future
+      of a codebase with no expectation of reintegrating the results
+      back into the main development lines&mdash;mere policy needn't
+      be a vision-killer!  But the simple fact remains that projects
+      generally benefit from an orderly approach to version control
+      where code and code changes enjoy the review and comprehension
+      of more than one team member.</para>
+
+    <para>That's not to say that there are no technical penalties to
+      branching.  Pardon us while we <quote>go meta</quote> for a bit
+      here.  If you think about it, every time you checkout a
+      Subversion working copy, you're creating a branch of sorts of
+      your project.  It's a special sort of branch.  It lives only on
+      your client machine; not in the repository.  You synchronize
+      this branch with changes made in the repository
+      using <command>svn update</command>&mdash;which acts almost like
+      a special-cased, simplified form of an <command>svn
+      merge</command> command.<footnote><para>Actually, you
+      <emphasis>could</emphasis> use <userinput>svn merge
+      -r<replaceable>LAST_UPDATED_REV</replaceable>:HEAD .</userinput>
+      in your working copy to quite literally merge in all the
+      repository changes since your last update if really wanted
+      to!</para></footnote> You effectively reintegrate your branch
+      each time you run <command>svn commit</command>.  So, in that
+      special sense, Subversion users deal with branches and merges
+      all the time.  Given the similarities between updating and
+      merging, it's no surprise, then, that the areas in which
+      Subversion seems to have the most shortcomings&mdash;namely,
+      handling file and directory renames and dealing with tree
+      conflicts in general&mdash;are problematic for both
+      the <command>svn update</command> and <command>svn
+      merge</command> operations.  Unfortunately, <command>svn
+      merge</command> has a harder time of it precisely because of the
+      fact that, for every way in which <command>svn update</command>
+      is a special-cased, simplified kind of generic merge operation,
+      a true Subversion merge is neither special-cased nor simplified.
+      For this reason, merges perform much more slowly than updates,
+      require explicit tracking (via
+      the <literal>svn:mergeinfo</literal> property we've discussed in
+      this chapter) and history-crunching arithmetic, and generally
+      offer more opportunities for something to go awry.</para>
+
+    <para>To branch or not to branch?  Ultimately, that depends on
+      what your team needs in order to find that sweet balance of
+      collaboration and isolation.</para>
+
+  </sect1>
+
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
   <sect1 id="svn.branchmerge.summary">
     <title>Summary</title>
 
