@@ -255,325 +255,15 @@ REGEDIT4
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.confarea.opts">
-      <title>Configuration Options</title>
-
-      <!-- TODO(cmpilato): Rework and move this section to the Reference -->
+      <title>Runtime Configuration Options</title>
 
       <para>In this section, we will discuss the specific
         runtime configuration options that Subversion currently 
         supports.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <sect3 id="svn.advanced.confarea.opts.servers">
-        <title>Servers</title>
-
-        <para>The <filename>servers</filename> file contains
-          Subversion configuration options related to the network
-          layers.  There are two special sections in this
-          file&mdash;<literal>[groups]</literal> and
-          <literal>[global]</literal>.  The <literal>[groups]</literal>
-          section is essentially a cross-reference table.  The keys in
-          this section are the names of other sections in the file;
-          their values are <firstterm>globs</firstterm>&mdash;textual
-          tokens that possibly contain wildcard
-          characters&mdash;that are compared against the hostnames of
-          the machine to which Subversion requests are sent.</para>
-
-        <informalexample>
-          <programlisting>
-[groups]
-beanie-babies = *.red-bean.com
-collabnet = svn.collab.net
-
-[beanie-babies]
-&hellip;
-
-[collabnet]
-&hellip;
-</programlisting>
-        </informalexample>
-
-        <para>When Subversion is used over a network, it attempts to
-          match the name of the server it is trying to reach with a
-          group name under the <literal>[groups]</literal> section.  If
-          a match is made, Subversion then looks for a section in the
-          <filename>servers</filename> file whose name is the matched
-          group's name.  From that section, it reads the actual network
-          configuration settings.</para>
-
-        <para>The <literal>[global]</literal> section contains the
-          settings that are meant for all of the servers not matched
-          by one of the globs under the <literal>[groups]</literal>
-          section.  The options available in this section are
-          exactly the same as those that are valid for the other server
-          sections in the file (except, of course, the special
-          <literal>[groups]</literal> section), and are as
-          follows:</para>
-
-        <variablelist>
-          <varlistentry>
-            <term><literal>http-auth-types</literal></term>
-            <listitem>
-              <para>This is a semicolon-delimited list of HTTP
-                authentication types which the client will deem
-                acceptable.  Valid types
-                are <literal>basic</literal>, <literal>digest</literal>,
-                and <literal>negotiate</literal>, with the default
-                behavior being acceptance of any these authentication
-                types.  A client which insists on not transmitting
-                authentication credentials in cleartext might, for
-                example, be configured such that the value of this
-                option is
-                <literal>digest;negotiate</literal>&mdash;omitting
-                <literal>basic</literal> from the list.  (Note that
-                this setting is only honored by Subversion's
-                Neon-based HTTP provider module.)</para>
-              <!-- ### TODO: Subversion 1.7 exposed this to Serf, too,
-                   and with an additional 'ntlm' auth type. -->
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>http-compression</literal></term>
-            <listitem>
-              <para>This specifies whether Subversion should
-                attempt to compress network requests made to DAV-ready
-                servers.  The default value is <literal>yes</literal>
-                (though compression will occur only if that capability
-                is compiled into the network layer).  Set this to
-                <literal>no</literal> to disable compression, such as
-                when debugging network transmissions.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>http-library</literal></term>
-            <listitem>
-              <para>The <literal>http-library</literal> runtime
-                configuration option allows users to specify
-                (generally, or in a per-server-group fashion) which of
-                the available WebDAV access modules they'd prefer to
-                use.  Prior to version 1.8, Subversion offered a pair
-                of such modules: its original implementiation
-                <literal>libsvn_ra_neon</literal> (selected by
-                using the value <literal>neon</literal> for this
-                option) and the newer <literal>libsvn_ra_serf</literal>
-                (selected using the value <literal>serf</literal>).
-                As of Subversion 1.8, only <literal>libsvn_ra_serf</literal>
-                is supported.  This configuration option remains,
-                though, because the runtime configuration area is
-                version-agnostic.  Users with multiple versions of
-                Subversion installed may still wish to enable the use
-                of <literal>libsvn_ra_neon</literal> for sites which
-                they access with an older version of Subversion.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>http-proxy-exceptions</literal></term>
-            <listitem>
-              <para>This specifies a comma-separated list of patterns
-                for repository hostnames that should be accessed
-                directly, without using the proxy machine.  The
-                pattern syntax is the same as is used in the Unix
-                shell for filenames.  A repository hostname matching
-                any of these patterns will not be proxied.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>http-proxy-host</literal></term>
-            <listitem>
-              <para>This specifies the hostname of the proxy computer
-                through which your HTTP-based Subversion requests must
-                pass.  It defaults to an empty value, which means that
-                Subversion will not attempt to route HTTP requests
-                through a proxy computer, and will instead attempt to
-                contact the destination machine directly.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>http-proxy-password</literal></term>
-            <listitem>
-              <para>This specifies the password to supply to the proxy
-                machine.  It defaults to an empty value.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>http-proxy-port</literal></term>
-            <listitem>
-              <para>This specifies the port number on the proxy host
-                to use.  It defaults to an empty value.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>http-proxy-username</literal></term>
-            <listitem>
-              <para>This specifies the username to supply to the proxy
-                machine.  It defaults to an empty value.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>http-timeout</literal></term>
-            <listitem>
-              <para>This specifies the amount of time, in seconds, to
-                wait for a server response.  If you experience
-                problems with a slow network connection causing
-                Subversion operations to time out, you should increase
-                the value of this option.  The default value is
-                <literal>0</literal>, which instructs the underlying
-                HTTP library, Neon, to use its default timeout
-                setting.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>neon-debug-mask</literal></term>
-            <listitem>
-              <para>This is an integer mask that the Neon HTTP library
-                uses for choosing what type of debugging output to
-                yield.  The default value is <literal>0</literal>,
-                which will silence all debugging output.  Prior to
-                version 1.8, most Subversion clients used Neon (via
-                the <literal>libsvn_ra_neon</literal> repository
-                access module) for WebDAV/HTTP communications between
-                the Subversion client and server.  Support
-                for <literal>libsvn_ra_neon</literal> was dropped in
-                Subversion 1.8, though, making this option obsolete
-                for newer Subversion installations.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>ssl-authority-files</literal></term>
-            <listitem>
-              <para>This is a semicolon-delimited list of paths to files
-                containing certificates of the certificate authorities
-                (or CAs) that
-                are accepted by the Subversion client when accessing the
-                repository over HTTPS.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>ssl-client-cert-file</literal></term>
-            <listitem>
-              <para>If a host (or set of hosts) requires an SSL client
-                certificate, you'll normally be prompted for a path to
-                your certificate.  By setting this variable to that
-                same path, Subversion will be able to find your client
-                certificate automatically without prompting you.
-                There's no standard place to store your certificate on
-                disk; Subversion will grab it from any path you
-                specify.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>ssl-client-cert-password</literal></term>
-            <listitem>
-              <para>If your SSL client certificate file is encrypted
-                by a passphrase, Subversion will prompt you for the
-                passphrase whenever the certificate is used.  If you
-                find this annoying (and don't mind storing the
-                password in the <filename>servers</filename> file),
-                you can set this variable to the certificate's
-                passphrase.  You won't be prompted anymore.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>ssl-pkcs11-provider</literal></term>
-            <listitem>
-              <para>The value of this option is the name of the
-                PKCS#11 provider from which an SSL client certificate
-                will be drawn (if the server asks for one).  This
-                setting is only honored by Subversion's Neon-based
-                HTTP provider module.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>ssl-trust-default-ca</literal></term>
-            <listitem>
-              <para>Set this variable to <literal>yes</literal> if you
-                want Subversion to automatically trust the set of
-                default CAs that ship with OpenSSL.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>store-auth-creds</literal></term>
-            <listitem>
-              <para>This setting is the same as
-                <literal>store-passwords</literal>, except that it
-                enables or disables on-disk caching of
-                <emphasis>all</emphasis> authentication information:
-                usernames, passwords, server certificates, and any
-                other types of cacheable credentials.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>store-passwords</literal></term>
-            <listitem>
-              <para>This instructs Subversion to cache, or not to
-                cache, passwords that are supplied by the user in
-                response to server authentication challenges.  The
-                default value is <literal>yes</literal>.  Set this to
-                <literal>no</literal> to disable this on-disk password
-                caching.  You can override this option for a single
-                instance of the <command>svn</command> command using
-                the <option>--no-auth-cache</option> command-line
-                parameter (for those subcommands that support it).
-                For more information regarding that, see
-                <xref linkend="svn.serverconfig.netmodel.credcache"/>.
-                Note that regardless of how this option is configured,
-                Subversion will not store passwords in plaintext
-                unless the <literal>store-plaintext-passwords</literal>
-                option is also set to <literal>yes</literal>.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>store-plaintext-passwords</literal></term>
-            <listitem>
-              <para>This variable is only important on UNIX-like systems.
-                It controls what the Subversion client does in case
-                the password for the current authentication realm can
-                only be cached on disk in unencrypted form, in the
-                <filename>~/.subversion/auth/</filename> caching area.
-                You can set it to <literal>yes</literal> or
-                <literal>no</literal> to enable or disable caching of
-                passwords in unencrypted form, respectively.
-                The default setting is <literal>ask</literal>, which causes
-                the Subversion client to ask you each time a
-                <emphasis>new</emphasis> password is about to be added to
-                the <filename>~/.subversion/auth/</filename> caching area.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>store-ssl-client-cert-pp</literal></term>
-            <listitem>
-              <para>This option controls whether Subversion will cache
-                SSL client certificate passphrases provided by the
-                user.  Its value defaults to <literal>yes</literal>.
-                Set this to <literal>no</literal> to disable this
-                passphrase caching.</para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><literal>store-ssl-client-cert-pp-plaintext</literal></term>
-            <listitem>
-              <para>This option controls whether Subversion, when
-                attempting to cache an SSL client certificate
-                passphrase, will be allowed to do so using its on-disk
-                plaintext storage mechanism.  The default value of
-                this option is <literal>ask</literal>, which causes
-                the Subversion client to ask you each time a
-                <emphasis>new</emphasis> client certificate passphrase
-                is about to be added to
-                the <filename>~/.subversion/auth/</filename> caching
-                area.  Set this option's value
-                to <literal>yes</literal> or <literal>no</literal> to
-                indicate your preference and avoid related
-                prompts.</para>
-            </listitem>
-          </varlistentry>
-        </variablelist>
-
-      </sect3>
-
-      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.advanced.confarea.opts.config">
-        <title>Config</title>
+        <title>General configuration</title>
 
         <para>The <filename>config</filename> file contains the rest
           of the currently available Subversion runtime
@@ -952,6 +642,314 @@ $
           forget to set <literal>enable-auto-props</literal> to
           <literal>yes</literal> in the <literal>miscellany</literal>
           section if you want to enable auto-props.</para>
+
+      </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.advanced.confarea.opts.servers">
+        <title>Per-server configuration</title>
+
+        <para>The <filename>servers</filename> file contains
+          Subversion configuration options related to the network
+          layers.  There are two special sections in this
+          file&mdash;<literal>[groups]</literal> and
+          <literal>[global]</literal>.  The <literal>[groups]</literal>
+          section is essentially a cross-reference table.  The keys in
+          this section are the names of other sections in the file;
+          their values are <firstterm>globs</firstterm>&mdash;textual
+          tokens that possibly contain wildcard
+          characters&mdash;that are compared against the hostnames of
+          the machine to which Subversion requests are sent.</para>
+
+        <informalexample>
+          <programlisting>
+[groups]
+beanie-babies = *.red-bean.com
+collabnet = svn.collab.net
+
+[beanie-babies]
+&hellip;
+
+[collabnet]
+&hellip;
+</programlisting>
+        </informalexample>
+
+        <para>When Subversion is used over a network, it attempts to
+          match the name of the server it is trying to reach with a
+          group name under the <literal>[groups]</literal> section.  If
+          a match is made, Subversion then looks for a section in the
+          <filename>servers</filename> file whose name is the matched
+          group's name.  From that section, it reads the actual network
+          configuration settings.</para>
+
+        <para>The <literal>[global]</literal> section contains the
+          settings that are meant for all of the servers not matched
+          by one of the globs under the <literal>[groups]</literal>
+          section.  The options available in this section are
+          exactly the same as those that are valid for the other server
+          sections in the file (except, of course, the special
+          <literal>[groups]</literal> section), and are as
+          follows:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term><literal>http-auth-types</literal></term>
+            <listitem>
+              <para>This is a semicolon-delimited list of HTTP
+                authentication types which the client will deem
+                acceptable.  Valid types
+                are <literal>basic</literal>, <literal>digest</literal>,
+                and <literal>negotiate</literal>, with the default
+                behavior being acceptance of any these authentication
+                types.  A client which insists on not transmitting
+                authentication credentials in cleartext might, for
+                example, be configured such that the value of this
+                option is
+                <literal>digest;negotiate</literal>&mdash;omitting
+                <literal>basic</literal> from the list.  (Note that
+                this setting is only honored by Subversion's
+                Neon-based HTTP provider module.)</para>
+              <!-- ### TODO: Subversion 1.7 exposed this to Serf, too,
+                   and with an additional 'ntlm' auth type. -->
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>http-compression</literal></term>
+            <listitem>
+              <para>This specifies whether Subversion should
+                attempt to compress network requests made to DAV-ready
+                servers.  The default value is <literal>yes</literal>
+                (though compression will occur only if that capability
+                is compiled into the network layer).  Set this to
+                <literal>no</literal> to disable compression, such as
+                when debugging network transmissions.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>http-library</literal></term>
+            <listitem>
+              <para>The <literal>http-library</literal> runtime
+                configuration option allows users to specify
+                (generally, or in a per-server-group fashion) which of
+                the available WebDAV access modules they'd prefer to
+                use.  Prior to version 1.8, Subversion offered a pair
+                of such modules: its original implementiation
+                <literal>libsvn_ra_neon</literal> (selected by
+                using the value <literal>neon</literal> for this
+                option) and the newer <literal>libsvn_ra_serf</literal>
+                (selected using the value <literal>serf</literal>).
+                As of Subversion 1.8, only <literal>libsvn_ra_serf</literal>
+                is supported.  This configuration option remains,
+                though, because the runtime configuration area is
+                version-agnostic.  Users with multiple versions of
+                Subversion installed may still wish to enable the use
+                of <literal>libsvn_ra_neon</literal> for sites which
+                they access with an older version of Subversion.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>http-proxy-exceptions</literal></term>
+            <listitem>
+              <para>This specifies a comma-separated list of patterns
+                for repository hostnames that should be accessed
+                directly, without using the proxy machine.  The
+                pattern syntax is the same as is used in the Unix
+                shell for filenames.  A repository hostname matching
+                any of these patterns will not be proxied.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>http-proxy-host</literal></term>
+            <listitem>
+              <para>This specifies the hostname of the proxy computer
+                through which your HTTP-based Subversion requests must
+                pass.  It defaults to an empty value, which means that
+                Subversion will not attempt to route HTTP requests
+                through a proxy computer, and will instead attempt to
+                contact the destination machine directly.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>http-proxy-password</literal></term>
+            <listitem>
+              <para>This specifies the password to supply to the proxy
+                machine.  It defaults to an empty value.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>http-proxy-port</literal></term>
+            <listitem>
+              <para>This specifies the port number on the proxy host
+                to use.  It defaults to an empty value.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>http-proxy-username</literal></term>
+            <listitem>
+              <para>This specifies the username to supply to the proxy
+                machine.  It defaults to an empty value.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>http-timeout</literal></term>
+            <listitem>
+              <para>This specifies the amount of time, in seconds, to
+                wait for a server response.  If you experience
+                problems with a slow network connection causing
+                Subversion operations to time out, you should increase
+                the value of this option.  The default value is
+                <literal>0</literal>, which instructs the underlying
+                HTTP library, Neon, to use its default timeout
+                setting.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>neon-debug-mask</literal></term>
+            <listitem>
+              <para>This is an integer mask that the Neon HTTP library
+                uses for choosing what type of debugging output to
+                yield.  The default value is <literal>0</literal>,
+                which will silence all debugging output.  Prior to
+                version 1.8, most Subversion clients used Neon (via
+                the <literal>libsvn_ra_neon</literal> repository
+                access module) for WebDAV/HTTP communications between
+                the Subversion client and server.  Support
+                for <literal>libsvn_ra_neon</literal> was dropped in
+                Subversion 1.8, though, making this option obsolete
+                for newer Subversion installations.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>ssl-authority-files</literal></term>
+            <listitem>
+              <para>This is a semicolon-delimited list of paths to files
+                containing certificates of the certificate authorities
+                (or CAs) that
+                are accepted by the Subversion client when accessing the
+                repository over HTTPS.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>ssl-client-cert-file</literal></term>
+            <listitem>
+              <para>If a host (or set of hosts) requires an SSL client
+                certificate, you'll normally be prompted for a path to
+                your certificate.  By setting this variable to that
+                same path, Subversion will be able to find your client
+                certificate automatically without prompting you.
+                There's no standard place to store your certificate on
+                disk; Subversion will grab it from any path you
+                specify.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>ssl-client-cert-password</literal></term>
+            <listitem>
+              <para>If your SSL client certificate file is encrypted
+                by a passphrase, Subversion will prompt you for the
+                passphrase whenever the certificate is used.  If you
+                find this annoying (and don't mind storing the
+                password in the <filename>servers</filename> file),
+                you can set this variable to the certificate's
+                passphrase.  You won't be prompted anymore.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>ssl-pkcs11-provider</literal></term>
+            <listitem>
+              <para>The value of this option is the name of the
+                PKCS#11 provider from which an SSL client certificate
+                will be drawn (if the server asks for one).  This
+                setting is only honored by Subversion's Neon-based
+                HTTP provider module.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>ssl-trust-default-ca</literal></term>
+            <listitem>
+              <para>Set this variable to <literal>yes</literal> if you
+                want Subversion to automatically trust the set of
+                default CAs that ship with OpenSSL.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>store-auth-creds</literal></term>
+            <listitem>
+              <para>This setting is the same as
+                <literal>store-passwords</literal>, except that it
+                enables or disables on-disk caching of
+                <emphasis>all</emphasis> authentication information:
+                usernames, passwords, server certificates, and any
+                other types of cacheable credentials.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>store-passwords</literal></term>
+            <listitem>
+              <para>This instructs Subversion to cache, or not to
+                cache, passwords that are supplied by the user in
+                response to server authentication challenges.  The
+                default value is <literal>yes</literal>.  Set this to
+                <literal>no</literal> to disable this on-disk password
+                caching.  You can override this option for a single
+                instance of the <command>svn</command> command using
+                the <option>--no-auth-cache</option> command-line
+                parameter (for those subcommands that support it).
+                For more information regarding that, see
+                <xref linkend="svn.serverconfig.netmodel.credcache"/>.
+                Note that regardless of how this option is configured,
+                Subversion will not store passwords in plaintext
+                unless the <literal>store-plaintext-passwords</literal>
+                option is also set to <literal>yes</literal>.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>store-plaintext-passwords</literal></term>
+            <listitem>
+              <para>This variable is only important on UNIX-like systems.
+                It controls what the Subversion client does in case
+                the password for the current authentication realm can
+                only be cached on disk in unencrypted form, in the
+                <filename>~/.subversion/auth/</filename> caching area.
+                You can set it to <literal>yes</literal> or
+                <literal>no</literal> to enable or disable caching of
+                passwords in unencrypted form, respectively.
+                The default setting is <literal>ask</literal>, which causes
+                the Subversion client to ask you each time a
+                <emphasis>new</emphasis> password is about to be added to
+                the <filename>~/.subversion/auth/</filename> caching area.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>store-ssl-client-cert-pp</literal></term>
+            <listitem>
+              <para>This option controls whether Subversion will cache
+                SSL client certificate passphrases provided by the
+                user.  Its value defaults to <literal>yes</literal>.
+                Set this to <literal>no</literal> to disable this
+                passphrase caching.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>store-ssl-client-cert-pp-plaintext</literal></term>
+            <listitem>
+              <para>This option controls whether Subversion, when
+                attempting to cache an SSL client certificate
+                passphrase, will be allowed to do so using its on-disk
+                plaintext storage mechanism.  The default value of
+                this option is <literal>ask</literal>, which causes
+                the Subversion client to ask you each time a
+                <emphasis>new</emphasis> client certificate passphrase
+                is about to be added to
+                the <filename>~/.subversion/auth/</filename> caching
+                area.  Set this option's value
+                to <literal>yes</literal> or <literal>no</literal> to
+                indicate your preference and avoid related
+                prompts.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
 
       </sect3>
 
