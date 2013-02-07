@@ -25,20 +25,44 @@
         <para><literal>start-commit
           <replaceable>REPOS-PATH</replaceable>
           <replaceable>USER</replaceable>
-          <replaceable>CAPABILITIES</replaceable></literal></para>
+          <replaceable>CAPABILITIES</replaceable>
+          <replaceable>TXN-NAME</replaceable></literal></para>
       </refsynopsisdiv>
 
       <refsect1>
         <title>Description</title>
         
-        <para>The start-commit hook is run before the commit
-          transaction is even created.  It is typically used to
-          decide whether the user has commit privileges at all.</para>
+        <para>The start-commit hook is run immediately after the
+          commit transaction is created and its initial properties
+          set.  It is typically used as an early termination
+          mechanism, avoiding what could be a lengthy commit process
+          which would eventually fail at a later phase anyway due to a
+          user's lack of commit privileges or some other commit
+          metadata validation failure.</para>
 
         <para>If the start-commit hook program returns a nonzero exit
-          value, the commit is stopped before the commit transaction
-          is even created, and anything printed to <filename>stderr</filename> is
-          marshalled back to the client.</para>
+          value, the commit process is stopped, the commit transaction
+          is destroyed, and anything printed to
+          <filename>stderr</filename> is marshalled back to the
+          client.</para>
+
+        <para>The start-commit hook is not a suitable place to
+          evaluate the substance of a particular commit, as it is
+          invoked before any file or directory change information has
+          been transmitted.  Use the pre-commit hook script (which is
+          described in <xref linkend="svn.ref.reposhooks.pre-commit"
+          /> elsewhere in this reference) for that purpose.</para>
+
+        <note>
+          <para>Prior to Subversion 1.8, the Subversion invoked the
+            start-commit hook <emphasis>before</emphasis> creating the
+            commit transaction.  Failure of the script resulted in that
+            transaction not being created at all.  This was changed in
+            Subversion 1.8, though, to allow implementations of the
+            start-commit hook access to the transaction's properties,
+            which can include (among other things) the revision log
+            associated with the commit.</para>
+        </note>
 
       </refsect1>
 
@@ -60,7 +84,10 @@
               capabilities that a client passes to the server,
               including <literal>depth</literal>,
               <literal>mergeinfo</literal>, and
-              <literal>log-revprops</literal> (new in Subversion 1.5).</para>
+              <literal>log-revprops</literal> (new in Subversion 1.5)</para>
+          </listitem>
+          <listitem>
+            <para>Commit transaction name (new in Subversion 1.8)</para>
           </listitem>
         </orderedlist>
       </refsect1>
