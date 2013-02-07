@@ -1736,33 +1736,52 @@ svn: E155015: Aborting commit: '/home/sally/svn-work/sandwich.txt' remains in co
         <para>If you've postponed a conflict, you need to resolve the
           conflict before Subversion will allow you to commit your
           changes.  You'll do this with the <command>svn
-          resolve</command> command and one of several arguments to
-          the <option>--accept</option> option.</para>
+          resolve</command> command.  This command accepts
+          the <option>--accept</option> option, which allows you
+          specify your desired approach for resolving the conlict.
+          Prior to Subversion 1.8, the <command>svn resolve</command>
+          <emphasis>required</emphasis> the use of this option.
+          Subversion now allows you to run the <command>svn
+          resolve</command> command without that option.  When you do
+          so, Subversion cranks up its interactive conflict resolution
+          mechanism, which you can read about (if you haven't done so
+          already) in the previous section,
+          <xref linkend="svn.tour.cycle.resolve.resolve" />.  We'll
+          take the opportunity in this section, though, to discuss
+          the use of the <option>--accept</option> option for
+          conflict resolution.</para>
 
-        <para>If you want to choose the version of the file that you
-          last checked out before making your edits, choose
-          the <replaceable>base</replaceable> argument.</para>
+        <para>The <option>--accept</option> option to the <command>svn
+          resolve</command> command instructs Subversion to use one of
+          a its pre-packaged approaches to conflict resolution.  If
+          you want Subversion to resolve the conflict using the
+          version of the file that you last checked out before making
+          your edits, use <option>--accept=base</option>.  If you'd
+          prefer instead to keep the version that contains only your
+          edits, use <option>--accept=mine-full</option>.  You can also
+          select the version that your most recent update pulled from
+          the server (discarding your edits entirely)&mdash;that's
+          done using <option>--accept=theirs-full</option>.  There
+          are other <quote>canned</quote> resolution types, too.  See
+          <xref linkend="svn.ref.svn.sw.accept" /> in
+          <xref linkend="svn.ref.svn" /> for details.</para>
 
-        <para>If you want to choose the version that contains only
-          your edits, choose the <replaceable>mine-full</replaceable>
-          argument.</para>
-
-        <para>If you want to choose the version that your most recent
-          update pulled from the server (and thus discarding your
-          edits entirely), choose
-          the <replaceable>theirs-full</replaceable> argument.</para>
-
-        <para>However, if you want to pick and choose from your
-          changes and the changes that your update fetched from the
-          server, merge the conflicted text <quote>by hand</quote> (by
-          examining and editing the conflict markers within the file)
-          and then choose the <replaceable>working</replaceable>
-          argument.</para>
+        <para>You aren't limited strictly to all-or-nothing options.
+          If you want to pick and choose from your changes and the
+          changes that your update fetched from the server, you can
+          manually repair the working file, fixing up the conflicted
+          text <quote>by hand</quote> (by examining and editing the
+          conflict markers within the file), then tell Subversion to
+          resolve the conflict by keeping the working file in its
+          current state by running <command>svn resolve</command> with
+          the <option>--accept=working</option> option.</para>
 
         <para><command>svn resolve</command> removes the three
           temporary files and accepts the version of the file that you
-          specified with the <option>--accept</option> option, and
-          Subversion no longer considers the file to be in a state of
+          specified.  After the command completes
+          successfully&mdash;and assuming you didn't interactively
+          choose to postpone resolution, of course&mdash;Subversion no
+          longer considers the file to be in a state of
           conflict:</para>
 
         <informalexample>
@@ -1776,7 +1795,7 @@ Resolved conflicted state of 'sandwich.txt'
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.tour.cycle.resolve.byhand">
-        <title>Merging conflicts by hand</title>
+        <title>Manual conflict resolution</title>
 
         <indexterm>
           <primary>conflicts</primary>
@@ -1784,7 +1803,7 @@ Resolved conflicted state of 'sandwich.txt'
           <tertiary>manual</tertiary>
         </indexterm>
 
-        <para>Merging conflicts by hand can be quite intimidating the
+        <para>Manually resolving conflicts can be quite intimidating the
           first time you attempt it, but with a little practice, it
           can become as easy as falling off a bike.</para>
 
@@ -1884,14 +1903,12 @@ $ svn commit -m "Go ahead and use my sandwich, discarding Sally's edits."
 </screen>
         </informalexample>
 
-        <para>Note that <command>svn resolve</command>, unlike most of
-          the other commands we deal with in this chapter, requires
-          that you explicitly list any filenames that you wish to
-          resolve.  In any case, you want to be careful and use
-          <command>svn resolve</command> only when you're certain that
-          you've fixed the conflict in your file&mdash;once the
-          temporary files are removed, Subversion will let you commit
-          the file even if it still contains conflict markers.</para>
+        <para>Naturally, you want to be careful that when using
+          <command>svn resolve</command> you don't tell Subversion
+          that you've resolved a conflict when you truly haven't.
+          Once the temporary files are removed, Subversion will let
+          you commit the file even if it still contains conflict
+          markers.</para>
 
         <para>If you ever get confused while editing the conflicted
           file, you can always consult the three files that Subversion
