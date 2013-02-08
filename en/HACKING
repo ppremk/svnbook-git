@@ -75,7 +75,7 @@ MARKUP GUIDE
 ============
 
 
-- The book uses the DocBook 4.4 DTD, found in our source tree.
+- The book uses the DocBook 4.5 DTD.
 
 - *Always* validate your XML before committing.  Do not commit XML
   that is not well-formed.  See the README for how to validate your XML.
@@ -176,6 +176,63 @@ MARKUP GUIDE
   not like:
 
      <option>--revision (-r)</option>
+
+- Index generation introduces all kinds of fun.  Pay attention to the
+  existing index entry, and try to work new items into existing index
+  heirarchies if they fit
+
+  In general, we try to have an <indexterm> for every <firstterm>
+  item, but some <firstterm>s are rather disinteresting outside of the
+  very specific single section in which they are mentioned.  For such
+  terms, it's okay to omit an index entry.
+
+  We try to mark up index entries as close to the relevant text as
+  possible, but prefer to anchor to the beginnings of paragraphs,
+  trying to avoid unnecessary whitespace in the primary text flow as
+  much as possible.
+
+  For example:
+
+     [...]
+
+       <para>
+         <indexterm>
+           <primary>copies</primary>
+         </indexterm>
+         <indexterm>
+           <primary>svn</primary>
+           <secondary>subcommands</secondary>
+           <tertiary>copy</tertiary>
+         </indexterm>If you wish to copy something in Subversion, you
+         use the <command>svn copy</command> command.  This command is
+     [...]
+
+  One exception to this rule is when indexing items in a list.  Our
+  processors don't seem to apply a finer granularity to the anchor
+  points beyond "the list", so we clump <indexterm>s at the head of
+  the list:
+
+     [...]
+
+       <variablelist>
+
+         <indexterm>
+           <primary>properties</primary>
+           <secondary>svn:ignore</secondary>
+         </indexterm>
+         <indexterm>
+           <primary>properties</primary>
+           <secondary>svn:keywords</secondary>
+         </indexterm>
+         <indexterm>
+           <primary>properties</primary>
+           <secondary>svn:eol-style</secondary>
+         </indexterm>
+
+         <varlistentry>
+           <term>svn:ignore</term>
+           <listitem>This property causes Subversion to wiggle its
+     [...]
 
 
 ====================
