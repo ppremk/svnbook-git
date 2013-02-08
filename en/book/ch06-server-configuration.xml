@@ -26,17 +26,31 @@
 
     <title>Overview</title>
 
-    <para>Subversion was designed with an abstract repository access layer.
-      This means that a repository can be programmatically accessed by
-      any sort of server process, and the client <quote>repository
-      access</quote> API allows programmers to write plug-ins that
-      speak relevant network protocols.  In theory, Subversion can use
-      an infinite number of network implementations.  In practice,
-      there are only two Subversion servers in widespread use today.</para>
+    <para>
+      <indexterm>
+        <primary>API</primary>
+        <secondary>layers</secondary>
+        <tertiary>Repository Access (RA) Layer</tertiary>
+      </indexterm>Subversion was designed with an abstract repository
+      access layer.  This means that a repository can be
+      programmatically accessed by any sort of server process, and the
+      client <quote>repository access</quote> API allows programmers
+      to write plug-ins that speak relevant network protocols.  In
+      theory, Subversion can use an infinite number of network
+      implementations.  In practice, there are only two Subversion
+      servers in widespread use today.</para>
 
-    <para>Apache is an extremely popular web server; using the
-      <command>mod_dav_svn</command> module, Apache can access a
-      repository and make it available to clients via the
+    <para>
+      <indexterm>
+        <primary>httpd</primary>
+      </indexterm>
+      <indexterm>
+        <primary>Apache HTTP Server</primary>
+        <see>httpd</see>
+      </indexterm>Apache HTTP Server (also known
+      as <command>httpd</command>) is an extremely popular web server;
+      using the <command>mod_dav_svn</command> module, Apache can
+      access a repository and make it available to clients via the
       WebDAV/DeltaV protocol, which is an extension of HTTP.  Because
       Apache is an extremely extensible server, it provides a number
       of features <quote>for free,</quote> such as encrypted SSL
@@ -44,16 +58,19 @@
       authentication systems, and limited built-in web browsing of
       repositories.</para>
 
-    <para>In the other corner is <command>svnserve</command>: a small,
-      lightweight server program that speaks a custom protocol with
-      clients.  Because its protocol is explicitly designed for
-      Subversion and is stateful (unlike HTTP), it provides
-      significantly faster network operations&mdash;but at the cost of
-      some features as well.  While it can use SASL to provide a
-      variety of authentication and encryption options, it has no
-      logging or built-in web browsing.  It is, however, extremely
-      easy to set up and is often the best option for small teams just
-      starting out with Subversion.</para>
+    <para>
+      <indexterm>
+        <primary>svnserve</primary>
+      </indexterm>In the other corner is <command>svnserve</command>:
+      a small, lightweight server program that speaks a custom
+      protocol with clients.  Because its protocol is explicitly
+      designed for Subversion and is stateful (unlike HTTP), it
+      provides significantly faster network operations&mdash;but at
+      the cost of some features as well.  While it can use SASL to
+      provide a variety of authentication and encryption options, it
+      has no logging or built-in web browsing.  It is, however,
+      extremely easy to set up and is often the best option for small
+      teams just starting out with Subversion.</para>
 
     <para>The network protocol which <command>svnserve</command>
       speaks may also be tunneled over an SSH connection.  This
@@ -439,7 +456,10 @@
 
     <title>svnserve, a Custom Server</title>
 
-    <para>The <command>svnserve</command> program is a lightweight
+    <para>
+      <indexterm>
+        <primary>svnserve</primary>
+      </indexterm>The <command>svnserve</command> program is a lightweight
       server, capable of speaking to clients over TCP/IP using a
       custom, stateful protocol.  Clients contact an
       <command>svnserve</command> server by using URLs that begin with
@@ -453,7 +473,11 @@
     <sect2 id="svn.serverconfig.svnserve.invoking">
       <title>Invoking the Server</title>
 
-      <para>There are a few different ways to run the
+      <para>
+        <indexterm>
+          <primary>svnserve</primary>
+          <secondary>running</secondary>
+        </indexterm>There are a few different ways to run the
         <command>svnserve</command> program:</para>
 
       <itemizedlist>
@@ -486,7 +510,12 @@
       <sect3 id="svn.serverconfig.svnserve.invoking.daemon">
         <title>svnserve as daemon</title>
 
-        <para>The easiest option is to run <command>svnserve</command>
+        <para>
+          <indexterm>
+            <primary>svnserve</primary>
+            <secondary>running</secondary>
+            <tertiary>daemon mode</tertiary>
+          </indexterm>The easiest option is to run <command>svnserve</command>
           as a standalone <quote>daemon</quote> process.  Use the
           <option>-d</option> option for this:</para>
 
@@ -540,7 +569,15 @@ $ svn checkout svn://host.example.com/project1
       <sect3 id="svn.serverconfig.svnserve.invoking.inetd">
         <title>svnserve via inetd</title>
 
-        <para>If you want <command>inetd</command> to launch the
+        <para>
+          <indexterm>
+            <primary>svnserve</primary>
+            <secondary>running</secondary>
+            <tertiary>via inetd</tertiary>
+          </indexterm>
+          <indexterm>
+            <primary>inetd</primary>
+          </indexterm>If you want <command>inetd</command> to launch the
           process, you need to pass the <option>-i</option>
           (<option>--inetd</option>) option.  In the following
           example, we've shown the output from running
@@ -600,7 +637,15 @@ svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
       <sect3 id="svn.serverconfig.svnserve.invoking.xinetd">
         <title>svnserve via xinetd</title>
 
-        <para>Some operating systems provide the <command>xinetd</command> 
+        <para>
+          <indexterm>
+            <primary>svnserve</primary>
+            <secondary>running</secondary>
+            <tertiary>via xinetd</tertiary>
+          </indexterm>
+          <indexterm>
+            <primary>xinetd</primary>
+          </indexterm>Some operating systems provide the <command>xinetd</command> 
           daemon as an alternative to <command>inetd</command>.
           Fortunately, you can configure <command>svnserve</command> for
           use with <command>xinetd</command>, too.  To do so, you'll need to
@@ -643,7 +688,12 @@ service svn
       <sect3 id="svn.serverconfig.svnserve.invoking.tunnel">
         <title>svnserve over a tunnel</title>
 
-        <para>Another way to invoke <command>svnserve</command> is in
+        <para>
+          <indexterm>
+            <primary>svnserve</primary>
+            <secondary>running</secondary>
+            <tertiary>tunnel mode</tertiary>
+          </indexterm>Another way to invoke <command>svnserve</command> is in
           tunnel mode, using the <option>-t</option> option.  This
           mode assumes that a remote-service program such as
           <command>rsh</command> or <command>ssh</command> has
@@ -674,7 +724,12 @@ service svn
       <sect3 id="svn.serverconfig.svnserve.invoking.winservice">
         <title>svnserve as a Windows service</title>
 
-        <para>If your Windows system is a descendant of Windows NT
+        <para>
+          <indexterm>
+            <primary>svnserve</primary>
+            <secondary>running</secondary>
+            <tertiary>as Windows service</tertiary>
+          </indexterm>If your Windows system is a descendant of Windows NT
           (Windows 2000 or newer), you can
           run <command>svnserve</command> as a standard Windows
           service.  This is typically a much nicer experience than
@@ -772,7 +827,15 @@ C:\&gt; net start svn
       <sect3 id="svn.serverconfig.svnserve.invoking.launchd">
         <title>svnserve as a launchd job</title>
 
-        <para>Mac OS X (10.4 and higher) uses <command>launchd</command>
+        <para>
+          <indexterm>
+            <primary>svnserve</primary>
+            <secondary>running</secondary>
+            <tertiary>via launchd</tertiary>
+          </indexterm>
+          <indexterm>
+            <primary>launchd</primary>
+          </indexterm>Mac OS X (10.4 and higher) uses <command>launchd</command>
           to manage processes (including daemons) both system-wide and
           per-user.  A <command>launchd</command> job is specified by
           parameters in an XML property list file, and
@@ -907,7 +970,15 @@ $
     <sect2 id="svn.serverconfig.svnserve.auth">
       <title>Built-in Authentication and Authorization</title>
 
-      <para>When a client connects to an <command>svnserve</command>
+      <para>
+        <indexterm>
+          <primary>svnserve</primary>
+          <secondary>authentication</secondary>
+        </indexterm>
+        <indexterm>
+          <primary>svnserve</primary>
+          <secondary>authorization</secondary>
+        </indexterm>When a client connects to an <command>svnserve</command>
         process, the following things happen:</para>
 
       <itemizedlist>
@@ -3221,7 +3292,22 @@ CustomLog logs/access_log env=!do_not_log
       <sect3 id="svn.serverconfig.httpd.extra.writethruproxy">
         <title>Write-through proxying</title>
 
-        <para>One of the nice advantages of using Apache as a
+        <para>
+          <indexterm>
+            <primary>WebDAV</primary>
+            <secondary>proxies</secondary>
+            <see>httpd, write-through proxies</see>
+          </indexterm>
+          <indexterm>
+            <primary>httpd</primary>
+            <secondary>write-through proxies</secondary>
+            <tertiary>master</tertiary>
+          </indexterm>
+          <indexterm>
+            <primary>httpd</primary>
+            <secondary>write-through proxies</secondary>
+            <tertiary>slave</tertiary>
+          </indexterm>One of the nice advantages of using Apache as a
           Subversion server is that it can be set up for simple
           replication.  For example, suppose that your team is
           distributed across four offices around the globe.  The
