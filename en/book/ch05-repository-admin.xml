@@ -923,7 +923,7 @@ $
     </sect2>
 
     <!-- =============================================================== -->
-    <sect2 id="svn.reposadmin.create.hooks">
+    <sect2 id="svn.reposadmin.hooks">
       <title>Implementing Repository Hooks</title>
 
       <para>
@@ -996,18 +996,6 @@ $
         <filename>.exe</filename> for programs and
         <filename>.bat</filename> for batch files.</para>
 
-      <tip>
-        <para>For security reasons, the Subversion repository executes
-          hook programs with an empty environment&mdash;that is, no
-          environment variables are set at all, not even
-          <literal>$PATH</literal> (or <literal>%PATH%</literal>,
-          under Windows).  Because of this, many administrators
-          are baffled when their hook program runs fine by hand, but
-          doesn't work when run by Subversion.  Be sure to explicitly
-          set any necessary environment variables in your hook program
-          and/or use absolute paths to programs.</para>
-      </tip>
-
       <para>Subversion executes hooks as the same user who owns the
         process that is accessing the Subversion repository.  In most
         cases, the repository is being accessed via a Subversion
@@ -1034,34 +1022,290 @@ $
         changes to your repository, you don't need to do this
         sort of access control via the hook system.</para>
 
-      <para>There is no shortage of Subversion hook programs and
-        scripts that are freely available either from the Subversion community
-        itself or elsewhere.  These scripts cover a wide range of
-        utility&mdash;basic access control, policy adherence checking,
-        issue tracker integration, email- or syndication-based commit
-        notification, and beyond.  Or, if you wish to write your own,
-        see <xref linkend="svn.developer" />.</para>
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.reposadmin.hooks.configuration">
+        <title>Hook script environment configuration</title>
 
-      <warning>
-        <para>While hook scripts can do almost
-          anything, there is one dimension in which hook script
-          authors should show restraint:  do <emphasis>not</emphasis>
-          modify a commit transaction using hook scripts.  While it
-          might be tempting to use hook scripts to automatically
-          correct errors, shortcomings, or policy violations present
-          in the files being committed, doing so can cause problems.
-          Subversion keeps client-side caches of certain bits of
-          repository data, and if you change a commit transaction in
-          this way, those caches become indetectably stale.  This
-          inconsistency can lead to surprising and unexpected
-          behavior.  Instead of modifying the transaction, you should
-          simply <emphasis>validate</emphasis> the transaction in the
-          <filename>pre-commit</filename> hook and reject the commit
-          if it does not meet the desired requirements.  As a
-          bonus, your users will learn the value of careful,
-          compliance-minded work habits.</para>
-      </warning>
+        <para>By default, Subversion executes hook scripts with an
+          empty environment&mdash;that is, no environment variables
+          are set at all, not even <literal>$PATH</literal>
+          (or <literal>%PATH%</literal>, under Windows).  Because of
+          this, many administrators are baffled when their hook
+          program runs fine by hand, but doesn't work when invoked by
+          Subversion.  Administrators have historically worked around
+          this problem by manually setting all the environment
+          variables their hook scripts need in the scripts
+          themselves.</para>
 
+        <para>Subversion 1.8 introduces a new way to manage the
+          environment of Subversion-executed hook scripts&mdash;the
+          hook script environment configuration file.  If a Subversion
+          server finds a file named <filename>hooks-env</filename> in
+          the repository's <filename>conf/</filename> subdirectory, it
+          parses that file as an INI-formatted configuration file and
+          applies the option names and variables found therein to the
+          hook script's execution environment as environment
+          variables.</para>
+
+        <para>The syntax of the <filename>hooks-env</filename> file is
+          pretty straightforward: each section name is the name of a
+          hook script (such as <literal>pre-commit</literal>
+          or <literal>post-revprop-change</literal>, and the
+          configuration items inside that section are treated as
+          mappings of environment variable names to desired values.
+          Additionally, there is a
+          special <literal>[default]</literal> section, which can be
+          used to configure environment variable mappings that should
+          be applied to <emphasis>all</emphasis> hook scripts (unless
+          explicitly overridden by per-hook-script settings).  See
+          <xref linkend="svn.reposadmin.hooks.configuration.ex-1" />
+          for a sample <filename>hooks-env</filename> configuration
+          file.</para>
+
+        <example id="svn.reposadmin.hooks.configuration.ex-1">
+          <title>hooks-env (custom hook script environment
+            configuration)</title>
+
+          <programlisting>
+# All scripts should use a UTF-8 locale and have our hook script
+# utilities directory on the search path.
+
+[default]
+LANG = en_US.UTF-8
+PATH = /usr/local/svn/tools:/usr/bin
+
+
+# The post-commit and post-revprop-change scripts want to run
+# programs from our custom synctools replication software suite, too.
+
+[post-commit]
+PATH = /usr/local/synctools-1.1/bin:/usr/local/svn/tools:/usr/bin
+
+[post-revprop-change]
+PATH = /usr/local/synctools-1.1/bin:/usr/local/svn/tools:/usr/bin
+</programlisting>
+        </example>
+
+        <para>Of course, having exact duplicates of your custom hook
+          script environment configuration files in every single
+          repository's <filename>conf/</filename> directory could get
+          cumbersome, especially when you need to make changes to them
+          all.  So Subversion's servers allow you to specify an
+          alternate (possibly shared) location for this configuration
+          information.</para>
+
+        <!-- ### TODO:  Add cross reference for the above! -->
+
+      </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.reposadmin.hooks.uses">
+        <title>Common uses for hook scripts</title>
+
+        <para>Repository hook scripts can offer a wide range of
+          utility, but most tend to fall into a couple of categories:
+          notification and change validation.</para>
+
+        <para>Notification scripts are those which tell someone that
+          something happened.  The most common of these found in a
+          Subversion service offering involve programs which send
+          commit and revision property change notification emails to
+          project members, driven by the post-commit and
+          post-revprop-change hooks, respectively.  There are numerous
+          other notification approaches, from issue tracker integration
+          scripts to scripts which operate as IRC bots to announce
+          that something's changed in the repository.</para>
+
+        <para>On the validation side of things, the start-commit and
+          pre-commit hooks are widely used to allow or disallow
+          commits based on various criteria: the author of the commit,
+          the formatting and/or content of the log message which describes the
+          commit, and even the low-level details of the changes made
+          to files and directories in the commit.  Likewise, the
+          pre-revprop-change hook acts as the gateway to revision
+          property changes, which is an especially valuable role
+          considering the fact that revision properties are not
+          themselves versioned, and can therefore only be modified
+          destructively.</para>
+        
+        <para>One special class of change validation that has seen
+          widespread use since Subversion 1.5 was released is
+          validation of the committing client software itself.  When
+          Subversion's merge tracking feature (described extensively
+          in <xref linkend="svn.branchmerge" />) was introduced in
+          that release, Subversion administrators needed a way to
+          ensure that once users of their repositories started using
+          the new feature that <emphasis>all</emphasis> their merges
+          were tracked.  To reduce the chance of someone committing an
+          untracked merge to the repository, they used start-commit
+          hooks to examine the feature capabilities string advertised
+          by Subversion clients.  If the committing client didn't
+          advertise support for merge tracking, the commit was denied
+          with instructions to the user to immediately update their
+          Subversion client!
+          <xref linkend="svn.reposadmin.hooks.uses.ex-1" /> provides
+          an example of a start-commit script which does precisely
+          this.</para>
+
+        <example id="svn.reposadmin.hooks.uses.ex-1">
+          <title>start-commit hook to require merge tracking
+            support</title>
+
+          <programlisting>
+#!/usr/bin/env python
+import sys
+
+# sys.argv[3] is a colon-delimited capabilities list
+if 'mergeinfo' not in sys.argv[3].split(':'):
+  sys.stderr.write("""\
+ERROR: Commits to this repository must be made using Subversion
+clients which support the merge tracking feature.  Please upgrade
+your client to at least Subversion 1.5.0.
+""")
+  sys.exit(1)
+</programlisting>
+        </example>
+        
+        <para>
+          <indexterm>
+            <primary>properties</primary>
+            <secondary>ephemeral transaction properties</secondary>
+          </indexterm>Beginning in Subversion 1.8, clients committing
+          against a Subversion 1.8 server will still provide the
+          feature capabilities string, but will also provide
+          additional information about themselves by way
+          of <firstterm>ephemeral transaction properties</firstterm>.
+          These are essentially commit transaction properties which
+          are set by the client at the earliest opportunity during the
+          commit process, but which are then automatically removed by
+          the server prior to the promotion of the transaction into a
+          new revision.  You can inspect these properties using the
+          same tools with which you'd inspect other unversioned
+          properties set on commit transactions during the timeframe
+          between which the start-commit and pre-commit repository
+          hook scripts would operate.</para>
+
+        <para>The following are the ephemeral transaction properties
+          which Subversion currently provides and implements:</para>
+
+        <variablelist>
+  
+          <varlistentry>
+            <term><literal>svn:txn-client-compat-version</literal></term>
+            <listitem>
+              <para>Carries the Subversion library version string with
+                which the committing client claims compatibility.
+                This is useful for deciding whether the client
+                supports the minimal feature set required for proper
+                handling of the repository data.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:txn-user-agent</literal></term>
+            <listitem>
+              <para>Carries the <quote>user agent</quote> string which
+                describes the committing client program.  Subversion's
+                libraries define the initial portion of this string,
+                but third-party consumers of the API (GUI clients,
+                etc.) can append custom information to it.</para>
+            </listitem>
+          </varlistentry>
+  
+        </variablelist>
+
+        <para>See <xref linkend="svn.reposadmin.hooks.uses.ex-2" />
+          for an example of how to inspect an ephemeral transaction
+          property's value for the purposes of validating a
+          commit.</para>
+
+        <example id="svn.reposadmin.hooks.uses.ex-2">
+          <title>start-commit hook to deny commits from the BogusSVN
+            client</title>
+
+          <programlisting>
+#!/bin/sh
+
+REPOS="$1"
+TXN_NAME="$4"
+
+# Check the c
+CLIENT=`svnlook propget --revprop $REPOS -t $TXN_NAME svn:txn-user-agent`
+if [ ! `echo $CLIENT | grep 'BogusSVN'` ]; then
+  echo "ERROR: Sorry, this repository doesn't allow commits from the \
+BogusSVN client.  Please use another Subversion client which is less \
+... bogus." 1&gt;&amp;2
+  exit 1
+fi
+
+exit 0
+</programlisting>
+        </example>
+        
+        <note>
+          <para>While most clients will transmit ephemeral transaction
+            properties early enough in the commit process that they
+            may be inspected by the start-commit hook script, some
+            configurations of Subversion will cause those properties
+            to not be set on the transaction until later in the commit
+            process.  Administrators should consider performing any
+            validation based on ephemeral transaction properties in
+            both the start-commit and pre-commit hooks&mdash;the
+            former to rule out invalid clients before those clients
+            transmit the commit payload; the latter <quote>just in
+            case</quote> the validation checks couldn't be performed
+            by the start-commit hook.</para>
+        </note>
+
+        <para>As noted before, ephemeral transaction properties are
+          removed from the transaction just before it is promoted to a
+          new revision.  Some administrators may wish to preserve the
+          information in those properties indefinitely.  We suggest
+          that you do so by using the pre-commit hook script to copy
+          the values of those properties to new property names.  In
+          fact, the Subversion source code distribution provides a
+          <filename>persist-ephemeral-txnprops.py</filename> script
+          (in the <filename>tools/hook-scripts/</filename>
+          subdirectory) for doing precisely that.</para>
+
+      </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.reposadmin.hooks.summary">
+        <title>Finding hook scripts or rolling your own</title>
+
+        <para>As you might imagine, there is no shortage of Subversion
+          hook programs and scripts that are freely available either
+          from the Subversion community itself or elsewhere.  In fact,
+          the Subversion distribution provides several commonly used
+          hook scripts in its <filename>tools/hook-scripts/</filename>
+          subdirectory.  However, if you are unable to find one that
+          meets your specific needs, you might consider writing your
+          own.  See <xref linkend="svn.developer" /> for information
+          about developing software using Subversion's public
+          APIs.</para>
+
+        <warning>
+          <para>While hook scripts can do almost anything, there is
+            one dimension in which hook script authors should show
+            restraint: do <emphasis>not</emphasis> modify a commit
+            transaction using hook scripts.  While it might be
+            tempting to use hook scripts to automatically correct
+            errors, shortcomings, or policy violations present in the
+            files being committed, doing so can cause problems.
+            Subversion keeps client-side caches of certain bits of
+            repository data, and if you change a commit transaction in
+            this way, those caches become indetectably stale.  This
+            inconsistency can lead to surprising and unexpected
+            behavior.  Instead of modifying the transaction, you
+            should simply <emphasis>validate</emphasis> the
+            transaction in the <filename>pre-commit</filename> hook
+            and reject the commit if it does not meet the desired
+            requirements.  As a bonus, your users will learn the value
+            of careful, compliance-minded work habits.</para>
+        </warning>
+
+      </sect3>
     </sect2>
 
     <!-- =============================================================== -->
@@ -1549,8 +1793,8 @@ $
       <para>Sometimes a user will have an error in her log message (a
         misspelling or some misinformation, perhaps).  If the
         repository is configured (using the
-        <literal>pre-revprop-change</literal> hook; see <xref
-        linkend="svn.reposadmin.create.hooks"/>) to accept changes to
+        <literal>pre-revprop-change</literal> hook; see
+        <xref linkend="svn.reposadmin.hooks" />) to accept changes to
         this log message after the commit is finished, the user
         can <quote>fix</quote> her log message remotely using
         <command>svn propset</command> (see <xref
@@ -2234,17 +2478,17 @@ $ svnadmin load newrepos &lt; dumpfile
           load process.  By passing the
           <option>--use-pre-commit-hook</option> and
           <option>--use-post-commit-hook</option> options to
-          <command>svnadmin load</command>, you can instruct Subversion
-          to execute the pre-commit and post-commit hook programs,
-          respectively, for each loaded revision.  You might use these,
-          for example, to ensure that loaded revisions pass through the
-          same validation steps that regular commits pass through.  Of
-          course, you should use these options with care&mdash;if your
-          post-commit hook sends emails to a mailing list for each new
-          commit, you might not want to spew hundreds or thousands of
-          commit emails in rapid succession at that list!  You can read
-          more about the use of hook scripts in
-          <xref linkend="svn.reposadmin.create.hooks"/>.</para>
+          <command>svnadmin load</command>, you can instruct
+          Subversion to execute the pre-commit and post-commit hook
+          programs, respectively, for each loaded revision.  You might
+          use these, for example, to ensure that loaded revisions pass
+          through the same validation steps that regular commits pass
+          through.  Of course, you should use these options with
+          care&mdash;if your post-commit hook sends emails to a
+          mailing list for each new commit, you might not want to spew
+          hundreds or thousands of commit emails in rapid succession
+          at that list!  You can read more about the use of hook
+          scripts in <xref linkend="svn.reposadmin.hooks" />.</para>
 
         <para>Note that because <command>svnadmin</command> uses
           standard input and output streams for the repository dump and
