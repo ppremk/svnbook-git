@@ -1079,12 +1079,27 @@ PATH = /usr/local/svn/tools:/usr/bin
 # programs from our custom synctools replication software suite, too.
 
 [post-commit]
-PATH = /usr/local/synctools-1.1/bin:/usr/local/svn/tools:/usr/bin
+PATH = /usr/local/synctools-1.1/bin:%(PATH)s
 
 [post-revprop-change]
-PATH = /usr/local/synctools-1.1/bin:/usr/local/svn/tools:/usr/bin
+PATH = /usr/local/synctools-1.1/bin:%(PATH)s
 </programlisting>
         </example>
+
+        <note>
+          <para><xref linkend="svn.reposadmin.hooks.configuration.ex-1"
+            /> also demonstrates the nifty string substitution syntax
+            found in Subversion's configuration file parser.  In this
+            example, the value of the <literal>PATH</literal>
+            option&mdash;pulled from the <literal>[default]</literal>
+            section of the file&mdash;is substituted in place of
+            the <literal>%(PATH)s</literal> placeholder text in the
+            per-hook sections.  For more about this special syntax,
+            see the <filename>README.txt</filename> file which lives
+            in the Subversion runtime configuration directory.  (And
+            for more information about that directory, see
+            <xref linkend="svn.advanced.confarea" />.)</para>
+        </note>
 
         <para>Of course, having exact duplicates of your custom hook
           script environment configuration files in every single
@@ -1103,8 +1118,8 @@ PATH = /usr/local/synctools-1.1/bin:/usr/local/svn/tools:/usr/bin
         <title>Common uses for hook scripts</title>
 
         <para>Repository hook scripts can offer a wide range of
-          utility, but most tend to fall into a couple of categories:
-          notification and change validation.</para>
+          utility, but most tend to fall into a few basic categories:
+          notification, validation, and replication.</para>
 
         <para>Notification scripts are those which tell someone that
           something happened.  The most common of these found in a
@@ -1175,15 +1190,16 @@ your client to at least Subversion 1.5.0.
           feature capabilities string, but will also provide
           additional information about themselves by way
           of <firstterm>ephemeral transaction properties</firstterm>.
-          These are essentially commit transaction properties which
-          are set by the client at the earliest opportunity during the
-          commit process, but which are then automatically removed by
-          the server prior to the promotion of the transaction into a
-          new revision.  You can inspect these properties using the
-          same tools with which you'd inspect other unversioned
-          properties set on commit transactions during the timeframe
-          between which the start-commit and pre-commit repository
-          hook scripts would operate.</para>
+          Ephemeral transaction properties are essentially revision
+          properties which are set on the commit transaction by the
+          client at the earliest opportunity while committing, but
+          which are automatically removed by the server immediately
+          prior to the transaction becoming a finalized revision.  You
+          can inspect these properties using the same tools with which
+          you'd inspect other unversioned properties set on commit
+          transactions during the timeframe between which the
+          start-commit and pre-commit repository hook scripts would
+          operate.</para>
 
         <para>The following are the ephemeral transaction properties
           which Subversion currently provides and implements:</para>
@@ -1214,34 +1230,10 @@ your client to at least Subversion 1.5.0.
   
         </variablelist>
 
-        <para>See <xref linkend="svn.reposadmin.hooks.uses.ex-2" />
-          for an example of how to inspect an ephemeral transaction
-          property's value for the purposes of validating a
-          commit.</para>
+        <!-- ### TODO: Show an example of these being used?  Or ### -->
+        <!-- ###       do so in ch07 - Customizing Subversion   ### -->
+        <!-- ###       with a cross-reference here.             ### -->
 
-        <example id="svn.reposadmin.hooks.uses.ex-2">
-          <title>start-commit hook to deny commits from the BogusSVN
-            client</title>
-
-          <programlisting>
-#!/bin/sh
-
-REPOS="$1"
-TXN_NAME="$4"
-
-# Check the c
-CLIENT=`svnlook propget --revprop $REPOS -t $TXN_NAME svn:txn-user-agent`
-if [ ! `echo $CLIENT | grep 'BogusSVN'` ]; then
-  echo "ERROR: Sorry, this repository doesn't allow commits from the \
-BogusSVN client.  Please use another Subversion client which is less \
-... bogus." 1&gt;&amp;2
-  exit 1
-fi
-
-exit 0
-</programlisting>
-        </example>
-        
         <note>
           <para>While most clients will transmit ephemeral transaction
             properties early enough in the commit process that they
@@ -1267,6 +1259,15 @@ exit 0
           <filename>persist-ephemeral-txnprops.py</filename> script
           (in the <filename>tools/hook-scripts/</filename>
           subdirectory) for doing precisely that.</para>
+
+        <para>The third common type of hook script usage is for the
+          purpose of replication.  Whether you are driving a simple
+          backup process or a more involved remote repository
+          mirroring scenario, hook scripts can be critical.  See
+          <xref linkend="svn.reposadmin.maint.backup" /> and
+          <xref linkend="svn.reposadmin.maint.replication" /> for more
+          information about these aspects of repository
+          maintenance.</para>
 
       </sect3>
 
