@@ -192,8 +192,7 @@
 
       <informalexample>
         <screen>
-$ svn copy http://svn.example.com/repos/calc/trunk \
-           http://svn.example.com/repos/calc/branches/my-calc-branch \
+$ svn copy ^/calc/trunk ^/calc/branches/my-calc-branch \
            -m "Creating a private branch of /calc/trunk."
 
 Committed revision 341.
@@ -272,10 +271,17 @@ $
       <informalexample>
         <screen>
 $ svn checkout http://svn.example.com/repos/calc/branches/my-calc-branch
-A  my-calc-branch/Makefile
-A  my-calc-branch/integer.c
-A  my-calc-branch/button.c
+A    my-calc-branch/doc
+A    my-calc-branch/src
+A    my-calc-branch/doc/INSTALL
+A    my-calc-branch/src/real.c
+A    my-calc-branch/src/main.c
+A    my-calc-branch/src/button.c
+A    my-calc-branch/src/integer.c
+A    my-calc-branch/Makefile
+A    my-calc-branch/README
 Checked out revision 341.
+
 $
 </screen>
       </informalexample>
@@ -295,17 +301,17 @@ $
       <itemizedlist>
         <listitem>
           <para>You make a change to
-            <filename>/calc/branches/my-calc-branch/button.c</filename>,
+            <filename>/calc/branches/my-calc-branch/src/button.c</filename>,
             which creates revision 342.</para>
         </listitem>
         <listitem>
           <para>You make a change to
-            <filename>/calc/branches/my-calc-branch/integer.c</filename>,
+            <filename>/calc/branches/my-calc-branch/src/integer.c</filename>,
             which creates revision 343.</para>
         </listitem>
         <listitem>
           <para>Sally makes a change to
-            <filename>/calc/trunk/integer.c</filename>, which creates
+            <filename>/calc/trunk/src/integer.c</filename>, which creates
             revision 344.</para>
         </listitem>
       </itemizedlist>
@@ -316,7 +322,7 @@ $
 
       <figure id="svn.branchmerge.using.work.dia-1">
         <title>The branching of one file's history</title>
-        <graphic fileref="images/ch04dia4.png"/>
+        <graphic width="4in" depth="2in"fileref="images/basic-branch.png"/>
       </figure>
 
       <para>Things get interesting when you look at the history of
@@ -327,35 +333,48 @@ $
 $ pwd
 /home/user/my-calc-branch
 
-$ svn log -v integer.c
+$ svn log -v src/integer.c
 ------------------------------------------------------------------------
-r343 | user | 2002-11-07 15:27:56 -0600 (Thu, 07 Nov 2002) | 2 lines
+r343 | user | 2013-02-07 10:41:34 -0500 (Thu, 07 Feb 2013) | 1 line
 Changed paths:
-   M /calc/branches/my-calc-branch/integer.c
+   M /calc/branches/my-calc-branch/src/integer.c
 
 * integer.c:  frozzled the wazjub.
-
 ------------------------------------------------------------------------
-r341 | user | 2002-11-03 15:27:56 -0600 (Thu, 07 Nov 2002) | 2 lines
+r341 | user | 2013-02-02 17:39:21 -0500 (Sat, 02 Feb 2013) | 1 line
 Changed paths:
    A /calc/branches/my-calc-branch (from /calc/trunk:340)
 
 Creating a private branch of /calc/trunk.
-
 ------------------------------------------------------------------------
-r303 | sally | 2002-10-29 21:14:35 -0600 (Tue, 29 Oct 2002) | 2 lines
+r154 | sally | 2013-02-01 12:57:55 -0500 (Fri, 01 Feb 2013) | 2 lines
 Changed paths:
-   M /calc/trunk/integer.c
+   M /calc/trunk/src/integer.c
 
 * integer.c:  changed a docstring.
+------------------------------------------------------------------------
+.
+.
+.
+------------------------------------------------------------------------
+r113 | sally | 2013-01-24 12:52:27 -0500 (Thu, 24 Jan 2013) | 2 lines
+Changed paths:
+   M /calc/trunk/src/integer.c
+
+* integer.c: Revise the fooplus API.
 
 ------------------------------------------------------------------------
-r98 | sally | 2002-02-22 15:35:29 -0600 (Fri, 22 Feb 2002) | 2 lines
+r8 | sally | 2013-01-05 11:43:27 -0500 (Sat, 05 Jan 2013) | 1 line
 Changed paths:
-   A /calc/trunk/integer.c
+   A /calc/trunk/Makefile
+   A /calc/trunk/README
+   A /calc/trunk/doc/INSTALL
+   A /calc/trunk/src/button.c
+   A /calc/trunk/src/integer.c
+   A /calc/trunk/src/main.c
+   A /calc/trunk/src/real.c
 
-* integer.c:  adding this file to the project.
-
+Initial trunk code import for calc project.
 ------------------------------------------------------------------------
 </screen>
       </informalexample>
@@ -374,28 +393,41 @@ Changed paths:
 $ pwd
 /home/sally/calc
 
-$ svn log -v integer.c
+$ svn log -v src/integer.c
 ------------------------------------------------------------------------
-r344 | sally | 2002-11-07 15:27:56 -0600 (Thu, 07 Nov 2002) | 2 lines
+r344 | user | 2013-02-08 10:45:20 -0500 (Fri, 08 Feb 2013) | 1 line
 Changed paths:
-   M /calc/trunk/integer.c
+   M /calc/trunk/src/integer.c
 
-* integer.c:  fix a bunch of spelling errors.
-
+Refactor the bazzle functions.
 ------------------------------------------------------------------------
-r303 | sally | 2002-10-29 21:14:35 -0600 (Tue, 29 Oct 2002) | 2 lines
+r154 | sally | 2013-02-01 12:57:55 -0500 (Fri, 01 Feb 2013) | 2 lines
 Changed paths:
-   M /calc/trunk/integer.c
+   M /calc/trunk/src/integer.c
 
 * integer.c:  changed a docstring.
-
 ------------------------------------------------------------------------
-r98 | sally | 2002-02-22 15:35:29 -0600 (Fri, 22 Feb 2002) | 2 lines
+.
+.
+.
+------------------------------------------------------------------------
+r113 | sally | 2013-01-24 12:52:27 -0500 (Thu, 24 Jan 2013) | 2 lines
 Changed paths:
-   A /calc/trunk/integer.c
+   M /calc/trunk/src/integer.c
 
-* integer.c:  adding this file to the project.
+* integer.c: Revise the fooplus API.
+------------------------------------------------------------------------
+r8 | sally | 2013-01-05 11:43:27 -0500 (Sat, 05 Jan 2013) | 1 line
+Changed paths:
+   A /calc/trunk/Makefile
+   A /calc/trunk/README
+   A /calc/trunk/doc/INSTALL
+   A /calc/trunk/src/button.c
+   A /calc/trunk/src/integer.c
+   A /calc/trunk/src/main.c
+   A /calc/trunk/src/real.c
 
+Initial trunk code import for calc project.
 ------------------------------------------------------------------------
 </screen>
       </informalexample>
@@ -407,8 +439,8 @@ Changed paths:
         <emphasis>does</emphasis> show that the two files share a
         common history.  Before the branch copy was made in revision
         341, the files used to be the same file.  That's why you and
-        Sally both see the changes made in revisions 303 and
-        98.</para>
+        Sally both see the changes made between revisions 8 and
+        154.</para>
 
     </sect2>
 
