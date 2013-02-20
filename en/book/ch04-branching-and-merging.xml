@@ -541,8 +541,8 @@ Initial trunk code import for calc project.
         most recent versions for both your server and client.  Keep in
         mind that even if your server is running 1.5-1.7, you can still
         use a 1.8 client.  This is particularly important with regard to merge
-        tracking, because the overwhelming majority of fixes to it are on
-        the client side.</para>
+        tracking, because the overwhelming majority of fixes and enhancements
+        to it are on the client side.</para>
     </sidebar>
 
     <!-- =============================================================== -->
@@ -616,10 +616,13 @@ Initial trunk code import for calc project.
         project's <filename>/trunk</filename>.  It's in your best
         interest to replicate those changes to your own branch, just
         to make sure they mesh well with your changes.  This is done
-        by performing a <firstterm>sync merge</firstterm>&mdash;a
+        by performing an <firstterm>automatic sync merge</firstterm>&mdash;a
         merge operation designed to bring your branch up to date with
         any changes made to its ancestral parent branch since your
-        branch was created.</para>
+        branch was created.  An <quote>automatic</quote> merge simply means
+        that no changesets are passed to <command>svn merge</command> via
+        the <option>-r</option> or <option>-c</option> options; rather that
+        Subversion automatically determines which changes need merging.</para>
 
       <tip>
         <para>Frequently keeping your branch in sync with the main
@@ -641,12 +644,14 @@ $ pwd
 /home/user/my-calc-branch
 
 $ svn merge ^/calc/trunk
---- Merging r345 through r356 into '.':
-U    button.c
-U    integer.c
---- Recording mergeinfo for merge of r345 through r356 into '.':
+--- Merging r341 through r351 into '.':
+U    doc/INSTALL
+U    src/real.c
+U    src/button.c
+U    Makefile
+--- Recording mergeinfo for merge of r341 through r351 into '.':
  U   .
-$
+ $
 </screen>
       </informalexample>
 
@@ -686,48 +691,55 @@ $
 
         <para>You may not always be able to use Subversion's merge
           tracking feature, perhaps because your server is running
-          Subversion 1.4 or earlier.  In such a scenario, you can of
-          course still perform merges, but Subversion will need you to
-          manually do many of the historical calculations that it
-          automatically does on your behalf when the merge tracking
-          feature is available.</para>
+          Subversion 1.4 or earlier or you must use an older client.
+          In such a scenario, you can of course still perform merges,
+          but Subversion will need you to manually do many of the historical
+          calculations that it automatically does on your behalf when the
+          merge tracking feature is available.</para>
 
         <para>To replicate the most recent trunk changes you need to
           perform sync merges the <quote>old-fashioned</quote>
           way&mdash;by specifying ranges of revisions you wish to
           merge.</para>
 
-        <para>Let's say you branched <filename>/trunk</filename> to 
-          <filename>/branches/foo-feature</filename> in revision
-          400:</para>
+        <para>Using the ongoing example, you know that you branched
+          <filename>/calc/trunk</filename> to 
+          <filename>/calc/branches/my-calc-branch</filename> in revision
+          341:</para>
 
         <informalexample>
           <screen>
-$ svn log -v -r 400 ^/branches/foo-feature
+$ svn log -v -r341
 ------------------------------------------------------------------------
-r400 | carol | 2011-11-09 10:51:27 -0500 (Wed, 09 Nov 2011) | 1 line
+r341 | user | 2013-02-02 17:39:21 -0500 (Sat, 02 Feb 2013) | 1 line
 Changed paths:
-A /branch/b2 (from /trunk:399)
+   A /calc/branches/my-calc-branch (from /calc/trunk:340)
 
-Create branch for the foo feature
+Creating a private branch of /calc/trunk.
 ------------------------------------------------------------------------
 </screen>
         </informalexample>
 
         <para>When you are ready to synchronize your branch with the
           ongoing changes from trunk, you specify the starting
-          revision as the revision of <filename>/trunk</filename>
+          revision as the revision of <filename>/calc/trunk</filename>
           which the branch was copied from and the ending revision as
-          <literal>HEAD</literal>:</para>
+          the youngest change on <filename>/calc/trunk</filename>.  You
+          can find the latter with the <command>svn log</command> command
+          with the <option>-r</option> set to <literal>HEAD</literal>:</para>
 
         <informalexample>
           <screen>
-$ svn merge ^/trunk -r399:HEAD
---- Merging r400 through r556 into '.':
-A    include/foo.h
-U    src/main.c
-A    src/foo.c
-&hellip;
+$ svn log -q -rHEAD http://svn.example.com/repos/calc/trunk
+------------------------------------------------------------------------
+r351 | sally | 2013-02-20 10:49:41 -0500 (Wed, 20 Feb 2013)
+------------------------------------------------------------------------
+
+$ svn merge http://svn.example.com/repos/calc/trunk -r340:351
+U    doc/INSTALL
+U    src/real.c
+U    src/button.c
+U    Makefile
 </screen>
         </informalexample>
 
@@ -742,18 +754,15 @@ A    src/foo.c
 
         <informalexample>
           <screen>
-$ svn ci -m "Sync the foo-feature branch with ^/trunk through r556."
-Sending        include/foo.h
+$ svn ci -m "Sync the my-calc-branch with ^/calc/trunk through r351."
 &hellip;
-Transmitting file data .
-Committed revision 557.
 </screen>
         </informalexample>
 
         <para>The next time you sync
-          <filename>/branches/foo-branch</filename> with
-          <filename>/trunk</filename> you repeat this process, except that
-          the starting revision is the <emphasis>youngest</emphasis>
+          <filename>/calc/branches/my-calc-branch</filename>  with
+          <filename>/calc/trunk</filename> you repeat this process, except
+          that the starting revision is the <emphasis>youngest</emphasis>
           revision that's already been merged in from the trunk.
           If you've been keeping good records of your merges in the
           commit log messages, you should be able to determine what
@@ -763,7 +772,12 @@ Committed revision 557.
 
         <informalexample>
           <screen>
-$ svn merge ^/trunk -r556:HEAD
+$ svn log -q -rHEAD http://svn.example.com/repos/calc/trunk
+------------------------------------------------------------------------
+r959 | sally | 2013-03-5 7:30:21 -0500 (Tue, 05 Mar 2013)
+------------------------------------------------------------------------
+
+$ svn merge http://svn.example.com/repos/calc/trunk -r351:959
 &hellip;
 </screen>
         </informalexample>
@@ -779,9 +793,10 @@ $ svn merge ^/trunk -r556:HEAD
         <screen>
 $ svn status
  M      .
-M       button.c
-M       integer.c
-$
+M       Makefile
+M       doc/INSTALL
+M       src/button.c
+M       src/real.c
 </screen>
       </informalexample>
 
@@ -789,9 +804,27 @@ $
         carefully with <command>svn diff</command>, and then build and
         test your branch.  Notice that the current working directory
         (<quote><filename>.</filename></quote>) has also been
-        modified; <command>svn diff</command> will show that
-        its <literal>svn:mergeinfo</literal> property has been either
-        created or modified.  This is important merge-related metadata
+        modified; <command>svn diff</command> shows that
+        its <literal>svn:mergeinfo</literal> property has been created.
+        </para>
+
+      <informalexample>
+        <screen>
+$ svn diff --depth empty .
+Index: .
+===================================================================
+--- .   (revision 351)
++++ .   (working copy)
+
+Property changes on: .
+___________________________________________________________________
+Added: svn:mergeinfo
+   Merged /calc/trunk:r341-351
+</screen>
+      </informalexample>
+
+      <para>
+        This new property is important merge-related metadata
         that you should <emphasis>not</emphasis> touch, since it is
         needed by future <command>svn merge</command> commands.
         (We'll learn more about this metadata later in the
@@ -812,13 +845,14 @@ $
 
       <informalexample>
         <screen>
-$ svn commit -m "Merged latest trunk changes to my-calc-branch."
+$ svn commit -m "Sync latest trunk changes to my-calc-branch."
 Sending        .
-Sending        button.c
-Sending        integer.c
-Transmitting file data ..
-Committed revision 357.
-$
+Sending        Makefile
+Sending        doc/INSTALL
+Sending        src/button.c
+Sending        src/real.c
+Transmitting file data ....
+Committed revision 352.
 </screen>
       </informalexample>
 
@@ -839,10 +873,14 @@ $
         <informalexample>
           <screen>
 $ cd my-calc-branch
-$ svn diff -r 341:HEAD ^/calc/trunk &gt; my-patch-file
+
+$ svn diff -r 341:351 ^/calc/trunk > my-patch-file
+
 $ svn patch my-patch-file
-U         integer.c
-$
+U         doc/INSTALL
+U         src/real.c
+U         src/button.c
+U         Makefile
 </screen>
         </informalexample>
 
@@ -887,7 +925,7 @@ $
       <informalexample>
         <screen>
 $ svn merge ^/calc/trunk
-svn: E195020: Cannot merge into mixed-revision working copy [357:378]; try up\
+svn: E195020: Cannot merge into mixed-revision working copy [352:357]; try up\
 dating first
 $
 </screen>
@@ -896,8 +934,8 @@ $
       <para>Well that was unexpected!  After making changes to your
         branch over the past week you now find yourself with a working
         copy that contains a mixture of revisions (see
-        <xref linkend="svn.basic.in-action.mixedrevs"/>).  With the
-        release of Subversion 1.7 the <command>svn merge</command>
+        <xref linkend="svn.basic.in-action.mixedrevs"/>).  With Subversion
+        1.7 and later, the <command>svn merge</command>
         subcommand disables merges into mixed-revision working copies
         by default.  Without going into too much detail, this is
         because of limitations in the way merges are tracked by the
@@ -918,16 +956,14 @@ $
         <screen>
 $ svn up
 Updating '.':
-At revision 380.
+At revision 361.
 
 $ svn merge ^/calc/trunk
---- Merging r357 through r380 into '.':
-U    integer.c
-U    Makefile
-A    README
---- Recording mergeinfo for merge of r357 through r380 into '.':
+--- Merging r352 through r361 into '.':
+U    src/real.c
+U    src/main.c
+--- Recording mergeinfo for merge of r352 through r361 into '.':
  U   .
-$
 </screen>
       </informalexample>
 
@@ -959,7 +995,7 @@ $
           there is really only one important point to keep in mind
           about these concepts: the complete record of merges to a
           branch may not be contained solely in the mergeinfo on the
-          branch root.  You may have to look to any subtree mergeinfo
+          branch root.  You may have to consider subtree mergeinfo
           to get a full accounting.  Fortunately Subversion does this
           for you and rarely will you need to concern yourself with
           it.  A brief example will help explain:</para>
