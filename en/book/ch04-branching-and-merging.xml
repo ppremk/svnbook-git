@@ -1241,7 +1241,7 @@ Committed revision 380.
         <screen>
 $ svn delete ^/calc/branches/my-calc-branch \
              -m "Remove my-calc-branch, reintegrated with trunk in r381."
-Committed revision 382.
+&hellip;
 </screen>
       </informalexample>
 
@@ -1282,14 +1282,17 @@ Committed revision 382.
         Subversion properties, see <xref linkend="svn.advanced.props"
         />.)</para>
 
-      <para>You can examine the property, just like any other:</para>
+      <para>You can examine the mergeinfo property, just like any other
+        versioned property:</para>
 
       <informalexample>
         <screen>
 $ cd my-calc-branch
-$ svn propget svn:mergeinfo .
-/trunk:341-390
-$
+
+$ svn pg svn:mergeinfo -v
+Properties on '.':
+  svn:mergeinfo
+    /calc/trunk:341-378
 </screen>
       </informalexample>
 
@@ -1319,9 +1322,9 @@ $
         changes made to a given path have been replicated into the
         directory in question.  In our previous example, the path
         which is the source of the merged changes is
-        <filename>/trunk</filename> and the directory which has
+        <filename>/calc/trunk</filename> and the directory which has
         received the changes is
-        <filename>/branches/my-calc-branch</filename>.
+        <filename>/calc/branches/my-calc-branch</filename>.
         Earlier versions of Subversion maintained the
         <literal>svn:mergeinfo</literal> property silently. You could
         still detect the changes, after a merge completed, with the
@@ -1340,37 +1343,94 @@ $
         track of what was merged.</para>
 
       <para>Subversion also provides a subcommand, <command>svn
-        mergeinfo</command>, which is helpful in seeing not only
-        which changesets a directory has absorbed, but also which
-        changesets it's still eligible to receive.  This gives a sort
-        of preview of which changes a subsequent <command>svn
-        merge</command> operation would replicate to your
-        branch.</para>
+        mergeinfo</command>, which is helpful in seeing the merge
+        relationships between two branches; specifically which changesets
+        a directory has absorbed or which changesets it's still eligible
+        to receive.  The latter gives a sort of preview of which changes a
+        subsequent <command>svn merge</command> operation would replicate
+        to your branch.  By default, <command>svn mergeinfo</command> gives
+        an graphical overview of the relationship between to branches.
+        Returning to our earlier example, we use the subcommand to analyze
+        the relationship between <filename>/calc/trunk</filename> and
+        <filename>/calc/branches/my-calc-branch</filename>:</para>
 
       <informalexample>
         <screen>
 $ cd my-calc-branch
 
-# Which changes have already been merged from trunk to branch?
 $ svn mergeinfo ^/calc/trunk
-r341
-r342
-r343
-&hellip;
-r388
-r389
-r390
+    youngest common ancestor
+    |         last full merge
+    |         |        tip of branch
+    |         |        |         repository path
 
-# Which changes are still eligible to merge from trunk to branch?
-$ svn mergeinfo ^/calc/trunk --show-revs eligible
-r391
-r392
-r393
-r394
-r395
-$
+    340                382
+    |                  |
+  -------| |------------         calc/trunk
+     \          /
+      \        /
+       --| |------------         calc/branches/my-calc-branch
+              |        |
+              379      382
 </screen>
       </informalexample>
+
+      <para>The diagram shows that <filename>/calc/branches/my-calc-branch
+      </filename> was copied from <filename>/calc/trunk@340</filename> and
+      that most recent automatic merge was the reintegrate merge we made
+      from the branch to the trunk in r380.  Notice that the diagram does
+      <emphasis>not</emphasis> show the four automatic sync merges we made
+      in revisions 352, 362, 372, and 379.  Only the most recent automatic
+      merge, in either direction<footnote><para>By <quote>direction</quote>
+      we mean either trunk-to-branch (automatic sync) or branch-to-trunk
+      (automatic reintegrate) merges.</para></footnote>, is shown.  This
+      default output is useful for obtaining an overview of the merges
+      between two branches, but to see the specific revisions which were
+      merged we use the <option>--show-revs=merged</option> option:</para>
+
+      <informalexample>
+        <screen>
+$ svn mergeinfo ^/calc/trunk --show-revs merged
+r344
+r345
+r346
+&hellip;
+r366
+r367
+r368
+</screen>
+      </informalexample>
+
+      <para>Likewise, to see which changes are eligible to merge from the
+        trunk to the branch we can use the <option>--show-revs=eligible
+        </option> option:</para>
+      <informalexample>
+        <screen>
+$ svn mergeinfo ^/calc/trunk --show-revs eligible
+r380
+r381
+r382
+</screen>
+      </informalexample>
+
+      <sidebar id="svn.branchmerge.basicmerging.mergeinfo.operativerevs">
+        <title>Operative and Inoperative Merge Revisions</title>
+
+        <para>The revision lists produced by the <option>--show-revs
+          </option> option include only revisions which made (or would make)
+          changes when merged.  So while we have merged a contiguous range of
+          revisions (i.e. r341-378) from <filename>/calc/trunk</filename> to
+          <filename>/calc/branches/my-calc-branch</filename>, only the
+          revisions listed with the <option>--show-revs=merged</option> option
+          actually represent changes made on <filename>/calc/trunk</filename>.
+          These revisions are described as <quote>operative</quote>
+          revisions as regards merging, not to be confused with the
+          operative revision used with the <option>-r</option> option, see
+          <xref linkend="svn.advanced.pegrevs"/>.  Not suprisingly, the
+          revisions in the range r341-378 that are <emphasis>not</emphasis>
+          listed as merged are termed <quote>inoperative</quote> revisions.
+        </para>
+      </sidebar>
 
       <para>The <command>svn mergeinfo</command> command requires
         a <quote>source</quote> URL (where the changes come
@@ -1379,8 +1439,15 @@ $
         it assumes that the current working directory is the
         target.  In the prior example, because we're querying our
         branch working copy, the command assumes we're interested in
-        receiving changes to <filename>/branches/mybranch</filename>
-        from the specified trunk URL.</para>
+        receiving changes to <filename>/calc/branches/my-calc-branch
+        </filename> from the specified trunk URL.</para>
+
+      <para>Since Subversion 1.7, the
+        <command>svn mergeinfo</command> subcommand can also account for
+        subtree mergeinfo and non-inheritable mergeinfo.  It accounts for
+        subtree mergeinfo by use of the <option>--recursive</option> or
+        <option>--depth</option> options, while non-inheritable mergeinfo
+        is considered by default.</para>
 
       <sidebar id="svn.branchmerge.basicmerging.mergeinfo.inheritance">
         <title>Mergeinfo Inheritance</title>
@@ -1415,7 +1482,8 @@ README
 src/main.c
 
 # Ask what revs were merged to a file with no explicit mergeinfo
-$ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
+$ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c \
+                --show-revs merged
 651
 652
 </screen>
@@ -1454,14 +1522,15 @@ $ svn propget svn:mergeinfo ^/branches/proj-X
 # Revision 758 is non-inheritable, but still applies to the path it is
 # set on. Here the '*' decorator signals that r758 is only partially
 # merged from trunk. 
-$ svn mergeinfo ^/trunk ^/branches/proj-X
+$ svn mergeinfo ^/trunk ^/branches/proj-X --show-revs merged
 651
 652
 758*
 
 # Revision 758 is not reported as merged because it is non-inheritable
 # and applies only to ^/trunk
-$ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
+$ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c \
+                --show-revs merged
 651
 652
 </screen>
@@ -1475,47 +1544,41 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
           <xref linkend="svn.branchmerge.advanced.finalword"/></para>
       </sidebar>
 
-      <para>Since Subversion 1.7, the
-        <command>svn mergeinfo</command> subcommand can also account for
-        subtree mergeinfo and non-inheritable mergeinfo.  It accounts for
-        subtree mergeinfo by use of the <option>--recursive</option> or
-        <option>--depth</option> options, while non-inheritable mergeinfo
-        is considered by default.</para>
-
       <para>Let's say we have a branch with both subtree and
         non-inheritable mergeinfo:</para>
 
         <informalexample>
           <screen>
-$ svn propget svn:mergeinfo --recursive -v
+$ svn pg svn:mergeinfo -vR
 # Non-inheritable mergeinfo
 Properties on '.':
   svn:mergeinfo
-    /trunk:651-652,758*
+    /calc/trunk:354,385-388*
 # Subtree mergeinfo
-Properties on 'doc/INSTALL':
+Properties on 'Makefile':
   svn:mergeinfo
-    /trunk/doc/INSTALL:651-652,958,1060
+    /calc/trunk/Makefile:354,380
 </screen>
         </informalexample>
 
-      <para>From the above mergeinfo we see that r758 has only been
+      <para>From the above mergeinfo we see that r385-388 has only been
         merged into the root of the branch, but not any of the root's
-        children.  We also see that both r958 and r1060 have been
-        merged only to the <filename>doc/INSTALL</filename> file.
+        children.  We also see that r380 has only been merged to
+        <filename>Makefile</filename>.
         When we use <command>svn mergeinfo</command> with the
         <option>--recursive</option> option to see what has been merged
-        from <filename>^/trunk</filename> to this branch, we see two
+        from <filename>/calc/trunk</filename> to this branch, we see three
         revisions are flagged with the <literal>*</literal> marker:</para>
       
         <informalexample>
           <screen>
-$ svn mergeinfo --show-revs=merged ^/trunk . --recursive
-651
-652
-758*
-958*
-1060
+$ svn mergeinfo -R --show-revs=merged ^/calc/trunk .
+r354
+r380*
+r385
+r386
+r387*
+r388*
 </screen>
         </informalexample>
 
@@ -1523,16 +1586,12 @@ $ svn mergeinfo --show-revs=merged ^/trunk . --recursive
         <emphasis>partially</emphasis> merged to the target in question
         (the meaning is the same if we are checking for eligible
         revisions).  What this means in this example is that if we tried
-        to merge r758 or r958 from <filename>^/trunk</filename> then more
-        changes would result. Likewise, because r1060 is
+        to merge r380, r387, or r388 from <filename>^/trunk</filename> then
+        more changes would result. Likewise, because r354, r385 and r386 are
         <emphasis>not</emphasis> flagged with a <literal>*</literal>,
-        we know that it only affects <filename>doc/INSTALL</filename>
-        and that trying to merge it would have no result.<footnote><para>
-        This is often termed an <quote>inoperative</quote> merge.  Though
-        in this example the merge of r1060 would do something: It would
-        update the mergeinfo on the root of the branch, but it would be
-        inoperative in the sense that no diff would be
-        applied.</para></footnote></para>
+        we know that re-merging those revisions would have no result.
+        <footnote><para>This is a good example of inoperative merge
+        revisions.</para></footnote></para>
 
       <para>Another way to get a more precise preview of a merge
         operation is to use the <option>--dry-run</option>
@@ -1540,9 +1599,11 @@ $ svn mergeinfo --show-revs=merged ^/trunk . --recursive
 
       <informalexample>
         <screen>
-$ svn merge ^/calc/trunk --dry-run
---- Merging r391 through r395 into 'branch':
-U    integer.c
+$ svn merge ^/paint/trunk paint-feature-branch --dry-run
+--- Merging r290 through r383 into 'paint-feature-branch':
+U    paint-feature-branch/src/palettes.c
+U    paint-feature-branch/src/brushes.c
+U    paint-feature-branch/Makefile
 
 $ svn status
 #  nothing printed, working copy is still unchanged.
@@ -1559,13 +1620,12 @@ $ svn status
 
       <tip>
         <para>After performing a merge operation, but before
-          committing the results of the merge, you can
-          use <userinput>svn diff
-          --depth=empty <replaceable>/path/to/merge/target</replaceable></userinput>
-          to see only the changes to the immediate target of your
-          merge.  If your merge target was a directory, only property
-          differences are displayed.  This is a handy way to see
-          the changes to the
+          committing the results of the merge, you can use
+          <userinput>svn diff --depth=empty <replaceable>
+          /path/to/merge/target</replaceable></userinput> to see only the
+          changes to the immediate target of your merge.  If your merge
+          target was a directory, only property differences are displayed.
+          This is a handy way to see the changes to the
           <literal>svn:mergeinfo</literal> property recorded by the
           merge operation, which will remind you about what you've
           just merged.</para>
