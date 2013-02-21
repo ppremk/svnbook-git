@@ -1113,38 +1113,50 @@ U    src/main.c
 
       <informalexample>
         <screen>
+$ svn up # (make sure the working copy is up to date)
+Updating '.':
+At revision 371.
+
 $ svn merge ^/calc/trunk
---- Merging r381 through r385 into '.':
-U    button.c
-U    README
---- Recording mergeinfo for merge of r381 through r385 into '.':
+--- Merging r362 through r378 into '.':
+U    src/main.c
+--- Recording mergeinfo for merge of r362 through r378 into '.':
  U   .
 
 $ # build, test, ...
 
 $ svn commit -m "Final merge of trunk changes to my-calc-branch."
 Sending        .
-Sending        button.c
-Sending        README
-Transmitting file data ..
-Committed revision 390.
+Sending        src/main.c
+Transmitting file data .
+Committed revision 379.
 </screen>
       </informalexample>
 
-      <para>Now, use <command>svn merge</command> with the
-        <option>--reintegrate</option> option to replicate your branch
-        changes back into the trunk.  You'll need a working copy
-        of <filename>/trunk</filename>.  You can get one by doing
-        an <command>svn checkout</command>, dredging up an old trunk
+      <para>Now, use <command>svn merge</command> subcommand to automatically
+        replicate your branch changes back into the trunk.  This type of
+        merge is called a <quote>reintegrate</quote> merge.  You'll need a
+        working copy of <filename>/calc/trunk</filename>.  You can get one by
+        doing an <command>svn checkout</command>, dredging up an old trunk
         working copy from somewhere on your disk, or
         using <command>svn switch</command> (see
-        <xref linkend="svn.branchmerge.switchwc" />).  Your trunk
-        working copy cannot have any local edits or contain a mixture
-        of revisions (see
+        <xref linkend="svn.branchmerge.switchwc" />).</para>
+
+      <tip>
+        <para>The term <quote>reintegrating</quote> comes from the
+          <command>merge</command> option <option>--reintegrate</option>.
+          This option is deprecated in Subversion 1.8 (which automatically
+          detects when a reintegrate merge is needed), but is required
+          for Subversion 1.5 through 1.7 clients when performing reintegrate
+          merges.</para>
+      </tip>
+
+      <para>Your trunk working copy cannot have any local edits, switched
+        paths, or contain a mixture of revisions (see
         <xref linkend="svn.basic.in-action.mixedrevs" />).  While
         these are typically best practices for merging anyway, they
-        are <emphasis>required</emphasis> when using the
-        <option>--reintegrate</option> option.</para>
+        are <emphasis>required</emphasis> for automatic reintegrate
+        merges.</para>
 
       <para>Once you have a clean working copy of the trunk, you're
         ready to merge your branch back into it:</para>
@@ -1154,14 +1166,14 @@ Committed revision 390.
 $ pwd
 /home/user/calc-trunk
 
-$ svn update  # (make sure the working copy is up to date)
+$ svn update
 Updating '.':
-At revision 390.
+At revision 379.
 
-$ svn merge --reintegrate ^/calc/branches/my-calc-branch
+$ svn merge ^/calc/branches/my-calc-branch
 --- Merging differences between repository URLs into '.':
-U    button.c
-U    integer.c
+U    src/real.c
+U    src/main.c
 U    Makefile
 --- Recording mergeinfo for merge between repository URLs into '.':
  U   .
@@ -1170,57 +1182,53 @@ $ # build, test, verify, ...
 
 $ svn commit -m "Merge my-calc-branch back into trunk!"
 Sending        .
-Sending        button.c
-Sending        integer.c
 Sending        Makefile
-Transmitting file data ..
-Committed revision 391.
+Sending        src/main.c
+Sending        src/real.c
+Transmitting file data ...
+Committed revision 380.
 </screen>
       </informalexample>
 
       <para>Congratulations, your branch-specific changes have now
-        been merged back into the main line of development.  Notice
-        our use of the <option>--reintegrate</option> option this time
-        around.  The option is critical for reintegrating changes from
-        a branch back into its original line of
-        development&mdash;don't forget it!  It's needed because this
-        sort of <quote>merge back</quote> is a different sort of work
-        than what you've done up until now.  Previously, we were
+        been merged back into the main line of development.  Notice that
+        the automatic reintegrate merge did a different sort of work than
+        what you've done up until now.  Previously, we were
         asking <command>svn merge</command> to grab the <quote>next
         set</quote> of changes from one line of development (the
         trunk) and duplicate them to another (your branch).  This is
         fairly straightforward, and each time Subversion knows how to
         pick up where it left off.  In our prior examples, you can see
-        that first it merges the ranges 345:356 from trunk to branch;
+        that first it merges the ranges 341:351 from
+        <filename>/calc/trunk</filename> to
+        <filename>/calc/branches/my-calc-branch</filename>;
         later on, it continues by merging the next contiguously
-        available range, 356:380.  When doing the final sync, it
-        merges the range 380:385.</para>
+        available range, 351:361.  When doing the final sync, it
+        merges the range 361:378.</para>
 
-      <para>When merging your branch back to the trunk, however, the
+      <para>When merging <filename>/calc/branches/my-calc-branch</filename>
+        back to the <filename>/calc/trunk</filename>, however, the
         underlying mathematics are quite different.  Your feature
         branch is now a mishmash of both duplicated trunk changes and
         private branch changes, so there's no simple contiguous range
-        of revisions to copy over.  By specifying
-        the <option>--reintegrate</option> option, you're asking
-        Subversion to carefully replicate <emphasis>only</emphasis>
+        of revisions to copy over.  By using an automatic merge, you're
+        asking Subversion to carefully replicate <emphasis>only</emphasis>
         those changes unique to your branch.  (And in fact, it does
         this by comparing the latest trunk tree with the latest branch
         tree:  the resulting difference is exactly your branch
         changes!)</para>
 
-      <para>Keep in mind that the <option>--reintegrate</option>
-        option is quite specialized in contrast to the more general
-        nature of most Subversion subcommand options.  It supports the
-        use case described above, but has little applicability outside
-        of that.  Because of this narrow focus, in addition to
-        requiring an up-to-date working copy<footnote><para>Reintegrate
-        merges are allowed if the target is a shallow checkout (see
-        <xref linkend="svn.advanced.sparsedirs"/>) but any paths affected
-        by the diff which are <quote>missing</quote> due to the sparse
-        working copy will be skipped&mdash;this is
-        probably <emphasis>not</emphasis> what you intended!</para></footnote>
-        with no mixed-revisions,
-        it will not function in combination with most of the other
+      <para>Keep in mind that the automatic reintegrate merges only support
+        the use case described above.  Because of this narrow focus, in
+        addition to the requirements previously mentioned (up-to-date working
+        copy <footnote><para>Automatic reintegrate merges are allowed if the
+        target is a shallow checkout
+        (see <xref linkend="svn.advanced.sparsedirs"/>) but any paths
+        affected by the diff which are <quote>missing</quote> due to the
+        sparse working copy will be skipped&mdash;this is probably
+        <emphasis>not</emphasis> what you intended!</para></footnote>
+        with no mixed-revisions, switched paths or local changes) it will not
+        function in combination with most of the other
         <command>svn merge</command> options. You'll get an error if you
         use any non-global options but these: <option>--accept</option>,
         <option>--dry-run</option>, <option>--diff3-cmd</option>,
@@ -1232,8 +1240,8 @@ Committed revision 391.
       <informalexample>
         <screen>
 $ svn delete ^/calc/branches/my-calc-branch \
-             -m "Remove my-calc-branch, reintegrated with trunk in r391."
-Committed revision 392.
+             -m "Remove my-calc-branch, reintegrated with trunk in r381."
+Committed revision 382.
 </screen>
       </informalexample>
 
@@ -1241,39 +1249,24 @@ Committed revision 392.
         What if somebody wants to audit the evolution of your feature
         someday and look at all of your branch changes?  No need to
         worry.  Remember that even though your branch is no longer
-        visible in the <filename>/branches</filename> directory, its
+        visible in the <filename>/calc/branches</filename> directory, its
         existence is still an immutable part of the repository's
         history.  A simple <command>svn log</command> command on
-        the <filename>/branches</filename> URL will show the entire
+        the <filename>/calc/branches</filename> URL will show the entire
         history of your branch.  Your branch can even be resurrected
         at some point, should you desire (see
         <xref linkend="svn.branchmerge.basicmerging.resurrect"/>).</para>
 
-      <para>Once a <option>--reintegrate</option> merge is done from
-        branch to trunk, the branch is no longer usable for further
-        work.  It's not able to correctly absorb new trunk changes,
-        nor can it be properly reintegrated to trunk again.  For this
-        reason, if you want to keep working on your feature branch, we
-        recommend destroying it and then re-creating it from the
-        trunk:</para>
-
-      <informalexample>
-        <screen>
-$ svn delete http://svn.example.com/repos/calc/branches/my-calc-branch \
-             -m "Remove my-calc-branch, reintegrated with trunk in r391."
-Committed revision 392.
-
-$ svn copy http://svn.example.com/repos/calc/trunk \
-           http://svn.example.com/repos/calc/branches/my-calc-branch \
-           -m "Recreate my-calc-branch from trunk@HEAD."
-Committed revision 393.
-</screen>
-      </informalexample>
-
-      <para>There is another way of making the branch usable again
-        after reintegration, without deleting the branch. See
-        <xref linkend="svn.branchmerge.advanced.reintegratetwice"/>.</para>
-
+      <para>If you choose not to delete your branch after reintegrating
+        it to the trunk you may continue to perform sync merges from the
+        trunk and then reintegrate the branch again<footnote><para>Only
+        Subversion 1.8 supports this reuse of a feature branch.  Earlier
+        versions require some special handling before a feature branch
+        can be reintegrated more than once.  See the earlier version of
+        this chapter for more information: <ulink
+        url="http://svnbook.red-bean.com/en/1.7/svn.branchmerge.basicmerging.html#svn.branchemerge.basicmerging.reintegrate"
+        /></para></footnote>. If you do this, only the changes made on your
+        branch after the first reintegrate are merged to the trunk.</para>
     </sect2>
 
     <!-- =============================================================== -->
