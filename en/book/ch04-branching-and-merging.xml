@@ -1652,38 +1652,46 @@ $ svn status
         is to roll back a change that has already been committed.
         Suppose you're working away happily on a working copy of
         <filename>/calc/trunk</filename>, and you discover that the
-        change made way back in revision 303, which changed
-        <filename>integer.c</filename>, is completely wrong.  It never
+        change made back in revision 392, which changed
+        several code files, is completely wrong.  It never
         should have been committed.  You can use <command>svn
         merge</command> to <quote>undo</quote> the change in your
         working copy, and then commit the local modification to the
         repository.  All you need to do is to specify a
         <emphasis>reverse</emphasis> difference.  (You can do this by
-        specifying <option>--revision 303:302</option>, or by an
-        equivalent <option>--change -303</option>.)</para>
+        specifying <option>--revision 392:391</option>, or by an
+        equivalent <option>--change -392</option>.)</para>
 
 
       <informalexample>
         <screen>
-$ svn merge -c -303 ^/calc/trunk
---- Reverse-merging r303 into 'integer.c':
-U    integer.c
---- Recording mergeinfo for reverse merge of r303 into 'integer.c':
- U   A-branch
+$ svn merge ^/calc/trunk . -c-392
+--- Reverse-merging r392 into '.':
+U    src/real.c
+U    src/main.c
+U    src/button.c
+U    src/integer.c
+--- Recording mergeinfo for reverse merge of r392 into '.':
+ U   .
 
-$ svn status
- M      .
-M       integer.c
+$ svn st
+M       src/button.c
+M       src/integer.c
+M       src/main.c
+M       src/real.c
 
 $ svn diff
 &hellip;
 # verify that the change is removed
 &hellip;
 
-$ svn commit -m "Undoing change committed in r303."
-Sending        integer.c
-Transmitting file data .
-Committed revision 350.
+$ svn commit -m "Undoing erroneous change committed in r392."
+Sending        src/button.c
+Sending        src/integer.c
+Sending        src/main.c
+Sending        src/real.c
+Transmitting file data ....
+Committed revision 399.
 </screen>
       </informalexample>
 
@@ -1693,7 +1701,7 @@ Committed revision 350.
         merge</command> to apply a changeset, or a whole range of
         changesets, to your working copy.  In our case of undoing a
         change, we're asking <command>svn merge</command> to apply
-        changeset r303 to our working copy
+        changeset r392 to our working copy
         <emphasis>backward</emphasis>.</para>
 
       <para>Keep in mind that rolling back a change like this is just
@@ -1706,10 +1714,10 @@ Committed revision 350.
         in the <literal>HEAD</literal> revision.</para>
 
       <para>Again, you may be thinking: well, that really didn't undo
-        the commit, did it?  The change still exists in revision 303.
+        the commit, did it?  The change still exists in revision 392.
         If somebody checks out a version of the
-        <filename>calc</filename> project between revisions 303 and
-        349, she'll still see the bad change, right?</para>
+        <filename>calc</filename> project between revisions 392 and
+        398, she'll still see the bad change, right?</para>
 
       <para>Yes, that's true.  When we talk about
         <quote>removing</quote> a change, we're really talking about
