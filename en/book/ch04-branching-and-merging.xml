@@ -1774,40 +1774,60 @@ Committed revision 399.
         do is find the revision in which you deleted the file or
         directory.  You can do this visually, or by using another tool
         to examine the log output (via <command>grep</command>, or
-        perhaps via an incremental search in an editor).</para>
+        perhaps via an incremental search in an editor).  If you know that
+        the item in question was recently deleted you might also use
+        the <option>--limit</option> option to keep the log output brief
+        enough to examine manually.</para>
 
       <informalexample>
         <screen>
-$ cd parent-dir
-$ svn log -v
-&hellip;
-------------------------------------------------------------------------
-r808 | joe | 2003-12-26 14:29:40 -0600 (Fri, 26 Dec 2003) | 3 lines
-Changed paths:
-   D /calc/trunk/real.c
-   M /calc/trunk/integer.c
+$ cd calc/trunk
 
-Added fast fourier transform functions to integer.c.
-Removed real.c because code now in double.c.
-&hellip;
+$ svn log -v --limit 3
+------------------------------------------------------------------------
+r401 | sally | 2013-02-22 10:07:10 -0500 (Fri, 22 Feb 2013) | 1 line
+Changed paths:
+   M /calc/trunk/src/main.c
+
+Follow-up to r400: Fix typos in help text.
+------------------------------------------------------------------------
+r400 | bill | 2013-02-22 09:52:10 -0500 (Fri, 22 Feb 2013) | 4 lines
+Changed paths:
+   M /calc/trunk/src/main.c
+   D /calc/trunk/src/real.c
+
+* calc/trunk/src/main.c: Update help text.
+
+* calc/trunk/src/real.c: Remove this file, none of the APIs
+  implemented here are used anymore.
+------------------------------------------------------------------------
+r399 | jrandom | 2013-02-21 17:19:32 -0500 (Thu, 21 Feb 2013) | 1 line
+Changed paths:
+   M /calc/trunk/src/button.c
+   M /calc/trunk/src/integer.c
+   M /calc/trunk/src/main.c
+   M /calc/trunk/src/real.c
+
+Undoing erroneous change committed in r392.
+------------------------------------------------------------------------
 </screen>
       </informalexample>
 
       <para>In the example, we're assuming that you're looking for a
         deleted file <filename>real.c</filename>.  By looking through
         the logs of a parent directory, you've spotted that this file
-        was deleted in revision 808.  Therefore, the last version of
+        was deleted in revision 400.  Therefore, the last version of
         the file to exist was in the revision right before that.
         Conclusion: you want to resurrect the path
         <filename>/calc/trunk/real.c</filename> from revision
-        807.</para>
+        399.</para>
 
       <para>That was the hard part&mdash;the research.  Now that you
         know what you want to restore, you have two different
         choices.</para>
 
       <para>One option is to use <command>svn merge</command> to apply
-        revision 808 <quote>in reverse.</quote> (We already
+        revision 400 <quote>in reverse.</quote> (We already
         discussed how to undo changes in
         <xref linkend="svn.branchmerge.basicmerging.undo"/>.)  This
         would have the effect of re-adding <filename>real.c</filename>
@@ -1816,15 +1836,15 @@ Removed real.c because code now in double.c.
         in <literal>HEAD</literal>.</para>
 
       <para>In this particular example, however, this is probably not
-        the best strategy.  Reverse-applying revision 808 would not
+        the best strategy.  Reverse-applying revision 400 would not
         only schedule <filename>real.c</filename> for addition, but
         the log message indicates that it would also undo certain
-        changes to <filename>integer.c</filename>, which you don't
-        want.  Certainly, you could reverse-merge revision 808 and
+        changes to <filename>main.c</filename>, which you don't
+        want.  Certainly, you could reverse-merge revision 400 and
         then <command>svn revert</command> the local modifications to
-        <filename>integer.c</filename>, but this technique doesn't
+        <filename>main.c</filename>, but this technique doesn't
         scale well.  What if 90 files were changed in revision
-        808?</para>
+        400?</para>
 
       <para>A second, more targeted strategy is not to use
         <command>svn merge</command> at all, but rather to use the
@@ -1834,15 +1854,14 @@ Removed real.c because code now in double.c.
 
       <informalexample>
         <screen>
-$ svn copy ^/calc/trunk/real.c@807 ./real.c
+$ svn copy ^/calc/trunk/src/real.c@399 ./real.c
+A         real.c
 
-$ svn status
+$ svn st
 A  +    real.c
 
-$ svn commit -m "Resurrected real.c from revision 807, /calc/trunk/real.c."
-Adding         real.c
-Transmitting file data .
-Committed revision 1390.
+# Commit the resurrection.
+&hellip;
 </screen>
       </informalexample>
 
@@ -1852,7 +1871,7 @@ Committed revision 1390.
         where it was copied from.  In the future, running <command>svn
         log</command> on this file will traverse back through the
         file's resurrection and through all the history it had prior
-        to revision 807.  In other words, this new
+        to revision 399.  In other words, this new
         <filename>real.c</filename> isn't really new; it's a direct
         descendant of the original, deleted file.  This is usually
         considered a good and useful thing.  If, however, you wanted
@@ -1862,15 +1881,13 @@ Committed revision 1390.
 
       <informalexample>
         <screen>
-$ svn cat ^/calc/trunk/real.c@807 &gt; ./real.c
+$ svn cat ^/calc/trunk/src/real.c@399 &gt; ./real.c
 
 $ svn add real.c
 A         real.c
 
-$ svn commit -m "Re-created real.c from revision 807."
-Adding         real.c
-Transmitting file data .
-Committed revision 1390.
+# Commit the resurrection.
+&hellip;
 </screen>
       </informalexample>
 
@@ -1882,14 +1899,15 @@ Committed revision 1390.
 
       <informalexample>
         <screen>
-$ svn copy ^/calc/trunk/real.c@807 ^/calc/trunk/ \
-           -m "Resurrect real.c from revision 807."
-Committed revision 1390.
+$ svn copy ^/calc/trunk/src/real.c@399 ^/calc/trunk/src/real.c \
+           -m "Resurrect real.c from revision 399."
 
-$ svn update
+Committed revision 402.
+
+$ svn up
 Updating '.':
 A    real.c
-Updated to revision 1390.
+Updated to revision 402.
 </screen>
       </informalexample>
 
@@ -1934,12 +1952,27 @@ Updated to revision 1390.
 
       <para>Why would people want to replicate just a single change?
         It comes up more often than you'd think.  For example, let's
-        go back in time and imagine that you haven't yet merged your
-        private feature branch back to the trunk.  At the
-        water cooler, you get word that Sally made an interesting
-        change to <filename>integer.c</filename> on the trunk.
+        assume you've created a new feature branch <filename>
+        /calc/branches/my-calc-feature-branch</filename> copied from
+        <filename>/calc/trunk</filename>:</para>
+
+      <informalexample>
+        <screen>
+$ svn log ^/calc/branches/new-calc-feature-branch -v -r403
+------------------------------------------------------------------------
+r403 | user | 2013-02-22 11:30:40 -0500 (Fri, 22 Feb 2013) | 1 line
+Changed paths:
+   A /calc/branches/new-calc-feature-branch (from /calc/trunk:402)
+
+Create a new calc branch for Feature 'X'.
+------------------------------------------------------------------------
+</screen>
+      </informalexample>
+
+      <para>At the water cooler, you get word that Sally made an interesting
+        change to <filename>main.c</filename> on the trunk.
         Looking over the history of commits to the trunk, you see that
-        in revision 355 she fixed a critical bug that directly
+        in revision 413 she fixed a critical bug that directly
         impacts the feature you're working on.  You might not be ready
         to merge all the trunk changes to your branch just yet, but
         you certainly need that particular bug fix in order to continue
@@ -1947,80 +1980,120 @@ Updated to revision 1390.
 
       <informalexample>
         <screen>
-$ svn diff -c 355 ^/calc/trunk
+$ svn log ^/calc/trunk -r413 -v
+------------------------------------------------------------------------
+r413 | sally | 2013-02-22 14:07:21 -0500 (Fri, 22 Feb 2013) | 3 lines
+Changed paths:
+   M /calc/trunk/src/main.c
 
-Index: integer.c
+Fix issue #22 'Passing a null value in the foo argument
+of bar() should be a tolerated, but causes a segfault'.
+------------------------------------------------------------------------
+
+$ svn diff ^/calc/trunk -c413
+Index: src/main.c
 ===================================================================
---- integer.c	(revision 354)
-+++ integer.c	(revision 355)
-@@ -147,7 +147,7 @@
-     case 6:  sprintf(info-&gt;operating_system, "HPFS (OS/2 or NT)"); break;
-     case 7:  sprintf(info-&gt;operating_system, "Macintosh"); break;
-     case 8:  sprintf(info-&gt;operating_system, "Z-System"); break;
--    case 9:  sprintf(info-&gt;operating_system, "CP/MM");
-+    case 9:  sprintf(info-&gt;operating_system, "CP/M"); break;
-     case 10:  sprintf(info-&gt;operating_system, "TOPS-20"); break;
-     case 11:  sprintf(info-&gt;operating_system, "NTFS (Windows NT)"); break;
-     case 12:  sprintf(info-&gt;operating_system, "QDOS"); break;
+--- src/main.c  (revision 412)
++++ src/main.c  (revision 413)
+@@ -34,6 +34,7 @@
+&hellip;
+# Details of the fix
+&hellip;
 </screen>
       </informalexample>
 
       <para>Just as you used <command>svn diff</command> in the prior
-        example to examine revision 355, you can pass the same option
+        example to examine revision 413, you can pass the same option
         to <command>svn merge</command>:</para>
 
       <informalexample>
         <screen>
-$ svn merge -c 355 ^/calc/trunk
---- Merging r355 into '.':
-U    integer.c
---- Recording mergeinfo for merge of r355 into '.':
+$ cd new-calc-feature-branch
+
+$ svn merge ^/calc/trunk -c413
+--- Merging r413 into '.':
+U    src/main.c
+--- Recording mergeinfo for merge of r413 into '.':
  U   .
 
-$ svn status
-M       integer.c
+$ svn st
+ M      .
+M       src/main.c
 </screen>
       </informalexample>
 
       <para>You can now go through the usual testing procedures before
         committing this change to your branch.  After the commit,
-        Subversion marks r355 as having been merged to the branch so
-        that future <quote>magic</quote> merges that synchronize your
-        branch with the trunk know to skip over r355.  (Merging the
-        same change to the same branch almost always results in a
-        conflict!)</para>
+        Subversion updates the <literal>svn:mergeinfo</literal> on your
+        branch to reflect that r413 was been merged to the branch.  This
+        prevents future automatic sync merges from attempting to merge
+        r413 again.  (Merging the same change to the same branch almost
+        always results in a conflict!) Notice also the mergeinfo <literal>
+        /calc/branches/my-calc-branch:341-379</literal>.  This was
+        recorded during the earlier reintegrate merge to <filename>
+        /calc/trunk</filename> from the <filename>
+        /calc/branches/my-calc-branch</filename> branch which we made in
+        r380.  When we created the <filename>my-calc-branch</filename>
+        branch in r403, this mergeinfo was carried along with the copy.
+        </para>
 
       <informalexample>
         <screen>
-$ cd my-calc-branch
+$ svn pg svn:mergeinfo -v
+Properties on '.':
+  svn:mergeinfo
+    /calc/branches/my-calc-branch:341-379
+    /calc/trunk:413
+</screen>
+      </informalexample>
 
-$ svn propget svn:mergeinfo .
-/trunk:341-349,355
+      <para>Notice too that the <command>mergeinfo<command> doesn't list r413
+        as "eligible" to merge, because it's already been merged:</para>
 
-# Notice that r355 isn't listed as "eligible" to merge, because
-# it's already been merged.
+      <informalexample>
+        <screen>
 $ svn mergeinfo ^/calc/trunk --show-revs eligible
-r350
-r351
-r352
-r353
-r354
-r356
-r357
-r358
-r359
-r360
+r404
+r405
+r406
+r407
+r409
+r410
+r411
+r412
+r414
+r415
+r416
+&hellip;
+r455
+r456
+r457
+</screen>
+      </informalexample>
 
+      <para>The preceding means that when the time finally comes to do an
+        automatic sync merge, Subversion breaks the merge into two parts.
+        First it merges all eligible merges up to revision 412.  Then it
+        merges all eligible revisions from revisions 414 to the <literal>HEAD
+        </literal> revision.  Because we already cherrypicked r413, that
+        change is skipped:</para>
+
+      <informalexample>
+        <screen>
 $ svn merge ^/calc/trunk
---- Merging r350 through r354 into '.':
- U   .
-U    integer.c
+--- Merging r403 through r412 into '.':
+U    doc/INSTALL
+U    src/main.c
+U    src/button.c
+U    src/integer.c
 U    Makefile
---- Merging r356 through r360 into '.':
- U   .
-U    integer.c
-U    button.c
---- Recording mergeinfo for merge of r350 through r360 into '.':
+U    README
+--- Merging r414 through r458 into '.':
+G    doc/INSTALL
+G    src/main.c
+G    src/integer.c
+G    Makefile
+--- Recording mergeinfo for merge of r403 through r458 into '.':
  U   .
 </screen>
       </informalexample>
@@ -2042,7 +2115,7 @@ U    button.c
           invocation merged two distinct ranges?
           The <command>svn merge</command> command applied
           two independent patches to your working copy to skip over
-          changeset 355, which your branch already contained.  There's
+          changeset 413, which your branch already contained.  There's
           nothing inherently wrong with this, except that it has the
           potential to make conflict resolution trickier.  If the
           first range of changes creates conflicts,
@@ -2050,9 +2123,8 @@ U    button.c
           the merge process to continue and apply the second range of
           changes.  If you postpone a conflict from the first wave of
           changes, the whole merge command will bail out with an error
-          message.<footnote><para>At least, this is true in Subversion
-          1.7 at the time of this writing.  This behavior may improve
-          in future versions of Subversion.</para></footnote></para>
+          message and you must resolve the conflict before running the
+          merge a second time to get the remainder of the changes.</para>
       </warning>
 
       <para>A word of warning: while <command>svn diff</command> and
