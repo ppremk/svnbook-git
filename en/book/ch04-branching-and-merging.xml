@@ -395,7 +395,7 @@ $ pwd
 
 $ svn log -v src/integer.c
 ------------------------------------------------------------------------
-r344 | user | 2013-02-08 10:45:20 -0500 (Fri, 08 Feb 2013) | 1 line
+r344 | sally | 2013-02-08 10:45:20 -0500 (Fri, 08 Feb 2013) | 1 line
 Changed paths:
    M /calc/trunk/src/integer.c
 
@@ -407,9 +407,7 @@ Changed paths:
 
 * integer.c:  changed a docstring.
 ------------------------------------------------------------------------
-.
-.
-.
+&hellip;
 ------------------------------------------------------------------------
 r113 | sally | 2013-01-24 12:52:27 -0500 (Thu, 24 Jan 2013) | 2 lines
 Changed paths:
@@ -619,10 +617,17 @@ Initial trunk code import for calc project.
         by performing an <firstterm>automatic sync merge</firstterm>&mdash;a
         merge operation designed to bring your branch up to date with
         any changes made to its ancestral parent branch since your
-        branch was created.  An <quote>automatic</quote> merge simply means
-        that no changesets are passed to <command>svn merge</command> via
-        the <option>-r</option> or <option>-c</option> options; rather that
-        Subversion automatically determines which changes need merging.</para>
+        branch was created.
+        <indexterm>
+          <primary>merging</primary>
+          <secondary>automatic</secondary>
+        </indexterm> An <quote>automatic</quote> merge is simply
+        one in which you provide the bare minimum of information required
+        for a merge (i.e. a single merge source and a working copy target)
+        and let Subversion determine which changes need merging&mdash;no
+        changesets are passed to <command>svn merge</command> via the
+        <option>-r</option> or <option>-c</option> options in an automatic
+        merge.</para>
 
       <tip>
         <para>Frequently keeping your branch in sync with the main
@@ -1135,9 +1140,13 @@ Committed revision 379.
 
       <para>Now, use <command>svn merge</command> subcommand to automatically
         replicate your branch changes back into the trunk.  This type of
-        merge is called a <quote>reintegrate</quote> merge.  You'll need a
-        working copy of <filename>/calc/trunk</filename>.  You can get one by
-        doing an <command>svn checkout</command>, dredging up an old trunk
+        merge is called an
+        <indexterm>
+          <primary>merging</primary>
+          <secondary>reintegrate merges</secondary>
+        </indexterm> <quote>automatic reintegrate</quote> merge.  You'll need
+        a working copy of <filename>/calc/trunk</filename>.  You can get one
+        by doing an <command>svn checkout</command>, dredging up an old trunk
         working copy from somewhere on your disk, or
         using <command>svn switch</command> (see
         <xref linkend="svn.branchmerge.switchwc" />).</para>
@@ -2162,7 +2171,7 @@ G    Makefile
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.advanced.advancedsyntax">
-      <title>Merge Syntax:  Full Disclosure</title>
+      <title>Merge Syntax: Full Disclosure</title>
 
       <para>You've now seen some examples of the <command>svn
         merge</command> command, and you're about to see several more.
@@ -2186,9 +2195,9 @@ G    Makefile
         applied to a working copy.</para>
 
       <para>If you're using <command>svn merge</command> to do basic
-        copying of changes between branches, it will generally do the
-        right thing automatically.  For example, a command such as the
-        following:</para>
+        copying of changes between branches, an automatic merge will
+        generally do the right thing.  For example, a command such as the
+        following,</para>
 
       <informalexample>
         <screen>
@@ -2270,7 +2279,12 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
         naming each tree in the form <emphasis>URL@REV</emphasis> and
         naming the working copy target.  The second syntax is used
         as a shorthand for situations when you're comparing two
-        different revisions of the same URL.  The last syntax shows
+        different revisions of the same URL.
+        <indexterm>
+          <primary>merging</primary>
+          <secondary>2-URL</secondary>
+        </indexterm> This type of merge is referred to (for obvious
+        reasons) as a <quote>2-URL</quote> merge. The last syntax shows
         how the working copy argument is optional; if omitted, it
         defaults to the current directory.</para>
 
@@ -2468,36 +2482,46 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
 
       <informalexample>
         <screen>
-$ svn merge -r 1288:1351 http://svn.example.com/myrepos/branch
---- Merging r1289 through r1351 into '.':
-   C bar.c
-   C foo.c
-   C docs
---- Recording mergeinfo for merge of r1289 through r1351 into '.':
+$ svn merge ^/calc/trunk -r104:115
+--- Merging r105 through r115 into '.':
+   C doc
+   C src/button.c
+   C src/integer.c
+   C src/real.c
+   C src/main.c
+--- Recording mergeinfo for merge of r105 through r115 into '.':
  U   .
 Summary of conflicts:
-  Tree conflicts: 3
+  Tree conflicts: 5
 
 $ svn st
-!     C bar.c
-      >   local missing, incoming edit upon merge
-!     C foo.c
-      >   local missing, incoming edit upon merge
-!     C docs
-      >   local delete, incoming edit upon merge
+ M      .
+!     C doc
+      >   local dir missing, incoming dir edit upon merge
+!     C src/button.c
+      >   local file missing, incoming file edit upon merge
+!     C src/integer.c
+      >   local file missing, incoming file edit upon merge
+!     C src/main.c
+      >   local file missing, incoming file edit upon merge
+!     C src/real.c
+      >   local file missing, incoming file edit upon merge
+Summary of conflicts:
+  Tree conflicts: 5
 </screen>
       </informalexample>
 
       <para>In the previous example, it might be the case that
-        <filename>bar.c</filename>, <filename>foo.c</filename>, and
-        <filename>docs</filename> all exist in both snapshots of the
+        <filename>doc</filename> and the four <filename>*.c</filename>
+        files all exist in both snapshots of the
         branch being compared.  The resultant delta wants to change
         the contents of the corresponding paths in your working copy,
         but those paths don't exist in the working copy.  Whatever the
         case, the preponderance of tree conflicts most likely means that
-        the user compared the wrong two trees; it's a classic
-        sign of user error.  When this happens, it's easy to
-        recursively revert all the changes created by the merge
+        the user compared the wrong two trees or that you are merging to
+        the wrong working copy target; both are classic signs of user
+        error.  When this happens, it's easy to recursively revert all
+        the changes created by the merge
         (<userinput>svn revert . --recursive</userinput>), delete any
         unversioned files or directories left behind after the
         revert, and rerun <command>svn merge</command> with the
@@ -2508,27 +2532,27 @@ $ svn st
 
       <informalexample>
         <screen>
-$ svn merge -c 1701 http://svn.example.com/myrepos/branchX --accept postpone
---- Merging r1701 into '.':
-C     glub.c
-C     sputter.c
---- Recording mergeinfo for merge of r1701 into '.':
+$ svn st
+
+$ svn merge ^/paint/trunk -r289:291
+--- Merging r290 through r291 into '.':
+C    Makefile
+--- Recording mergeinfo for merge of r290 through r291 into '.':
  U   .
 Summary of conflicts:
-  Text conflicts: 2
+  Text conflicts: 1
+Conflict discovered in file 'Makefile'.
+Select: (p) postpone, (df) diff-full, (e) edit, (m) merge,
+        (mc) mine-conflict, (tc) theirs-conflict, (s) show all options: p
 
-C:\SVN\src-branch-1.7.x>svn st
+$ svn st
  M      .
-?       glub.c.merge-left.r1700
-?       glub.c.merge-right.r1701
-C       glub.c
-?       glub.c.working
-?       sputter.c.merge-left.r1700
-?       sputter.c.merge-right.r1701
-C       sputter.c
-?       sputter.c.working
+C       Makefile
+?       Makefile.merge-left.r289
+?       Makefile.merge-right.r291
+?       Makefile.working
 Summary of conflicts:
-  Text conflicts: 2
+  Text conflicts: 1
 </screen>
       </informalexample>
 
@@ -2582,28 +2606,31 @@ Summary of conflicts:
       <para>To block a changeset you must make Subversion believe that the
         change has <emphasis>already</emphasis> been merged.  To do this,
         invoke the merge subcommand with the <option>--record-only</option>
-        option:</para>
+        option.  The option makes Subversion record mergeinfo as if it had
+        actually performed the merge, but no difference is actually
+        applied:</para>
 
       <informalexample>
         <screen>
 $ cd my-calc-branch
 
-$ svn propget svn:mergeinfo .
-/trunk:1680-3305
-
-# Let's make the metadata list r3328 as already merged.
-$ svn merge -c 3328 --record-only ^/calc/trunk
---- Recording mergeinfo for merge of r3328 into '.':
+$ svn merge ^/calc/trunk -r386:388 --record-only
+--- Recording mergeinfo for merge of r387 through r388 into '.':
  U   .
 
-$ svn status
-M       .
+# Only the mergeinfo is changed
+$ svn st
+ M      .
 
-$ svn propget svn:mergeinfo .
-/trunk:1680-3305,3328
+$ svn pg svn:mergeinfo -vR
+Properties on '.':
+  svn:mergeinfo
+    /calc/trunk:341-378,387-388
 
-$ svn commit -m "Block r3328 from being merged to the branch."
-&hellip;
+$ svn commit -m "Block r387-388 from being merged to my-calc-branch."
+Sending        .
+
+Committed revision 461.
 </screen>
       </informalexample>
 
@@ -2612,77 +2639,127 @@ $ svn commit -m "Block r3328 from being merged to the branch."
         mergeinfo describing the blocked revision(s), any
         <literal>svn:mergeinfo</literal> property differences in the
         merge source are also applied.  For example, let's say we want to
-        block the 'frazzle' feature from ever being merged from
-        <filename>^/trunk</filename> to our
-        <filename>^/branches/proj-X</filename> branch.  We know that all
-        the frazzle work was done on its own branch, which was
-        reintegrated to <filename>trunk</filename> in revision 1055:</para>
+        block the 'paint-python-wrapper' feature from ever being merged from
+        <filename>^/paint/trunk</filename> to the
+        <filename>^/paint/branches/paint-1.0.x</filename> branch.  We know
+        the work on this feature was done on its own branch, which was
+        reintegrated to <filename>/paint/trunk</filename> in revision
+        465:</para>
       
       <informalexample>
         <screen>
-$ svn log -v ^/trunk -r 1055
+$ svn log -v -r465 ^/paint/trunk
 ------------------------------------------------------------------------
-r1055 | francesca | 2011-09-22 07:40:06 -0400 (Thu, 22 Sep 2011) | 3 lines
+r465 | joe | 2013-02-25 14:26:17 -0500 (Mon, 25 Feb 2013) | 1 line
 Changed paths:
-   M /trunk
-   M /trunk/src/frazzle.c
+   M /paint/trunk
+   A /paint/trunk/python (from /paint/branches/paint-python-wrapper/python:464)
 
-Reintegrate the frazzle-feature-branch to trunk.
+Reintegrate Paint Python wrapper.
+------------------------------------------------------------------------
 </screen>
       </informalexample>
 
-      <para>Because revision 1055 was a reintegrate merge we know
+      <para>Because revision 465 was a reintegrate merge we know
         that mergeinfo was recorded describing the merge:</para>
 
       <informalexample>
         <screen>
-$ svn diff ^/trunk -c 1055 --depth empty
+$ svn diff ^/paint/trunk --depth empty -c465
 Index: .
 ===================================================================
---- .   (revision 1054)
-+++ .   (revision 1055)
+--- .   (revision 464)
++++ .   (revision 465)
 
 Property changes on: .
 ___________________________________________________________________
-Modified: svn:mergeinfo
-   Merged /branches/frazzle-feature-branch:r997-1003
+Added: svn:mergeinfo
+   Merged /paint/branches/paint-python-wrapper:r463-464
 </screen>
       </informalexample>
 
-      <para>Now simply blocking merges of revision 1055 from
-        <filename>^/trunk</filename> isn't foolproof since someone could
-        merge r996:1003 directly from
-        <filename>^/branches/frazzle-feature-branch</filename>.
+      <para>Now simply blocking merges of revision 465 from
+        <filename>/paint/trunk</filename> isn't foolproof since someone could
+        merge r462:464 directly from
+        <filename>/paint/branches/paint-python-wrapper</filename>.
         Fortunately the transitive nature
         of <option>--record-only</option> merges prevents this; the
         <option>--record-only</option> merge
         applies the <literal>svn:mergeinfo</literal> diff from
-        revision 1055, thus blocking merges of that change directly from
-        <filename>^/trunk</filename> <emphasis>and</emphasis> indirectly
-        from <filename>^/branches/frazzle-feature-branch</filename>:
+        revision 465, thus blocking merges of that change directly from
+        <filename>/paint/trunk</filename> <emphasis>and</emphasis> indirectly
+        from <filename>/paint/branches/paint-python-wrapper</filename>:
         </para>
 
       <informalexample>
         <screen>
-$ cd branches/proj-X
+$ cd paint/branches/paint-1.0.x
 
-$ svn merge ^/trunk . -c 1055 --record-only
---- Merging r1055 into '.':
- G   .
---- Recording mergeinfo for merge of r1055 into '.':
+$ svn merge ^/paint/trunk --record-only -c465
+--- Merging r465 into '.':
+ U   .
+--- Recording mergeinfo for merge of r465 into '.':
  G   .
 
-$ svn diff --depth empty .
+$ svn diff --depth empty
 Index: .
 ===================================================================
---- .   (revision 1070)
+--- .   (revision 462)
 +++ .   (working copy)
 
 Property changes on: .
 ___________________________________________________________________
-Modified: svn:mergeinfo
-   Merged /trunk:r1055
-   Merged /branches/frazzle-feature-branch:r997-1003
+Added: svn:mergeinfo
+   Merged /paint/branches/paint-python-wrapper:r463-464
+   Merged /paint/trunk:r465
+
+$ svn ci -m "Block the Python wrappers from the first release of paint."
+Sending        .
+
+Committed revision 466.
+</screen>
+      </informalexample>
+
+      <para>Now any subsequent attempts to merge the feature to <filename>
+        /paint/trunk</filename> are inoperative:</para>
+
+      <informalexample>
+        <screen>
+$ svn merge ^/paint/trunk -c465
+--- Recording mergeinfo for merge of r465 into '.':
+ U   .
+
+$ svn st # No change!
+
+$ svn merge ^/paint/branches/paint-python-wrapper -r462:464
+--- Recording mergeinfo for merge of r463 through r464 into '.':
+ U   .
+
+$ svn st  # No change!
+
+$
+</screen>
+      </informalexample>
+
+      <para>If at a later time you realize that you actually <emphasis>do
+        </emphasis> need the blocked feature merged to <filename>/paint/trunk
+        </filename> you have a couple of choices.  You can reverse merge r466,
+        (the revision you blocked the feature), as we discussed in
+        <xref linkend="svn.branchmerge.basicmerging.undo"/>.  Once you commit
+        that change you can repeat the merge of r465 from <filename>
+        /paint/trunk</filename>.  Alternatively, you can simply repeat the
+        merge of r465 from <filename>/paint/trunk</filename> using the
+        <option>--ignore-ancestry</option> option, which will cause the merge
+        to disregard any mergeinfo and simply apply the requested diff, see
+        <xref linkend="svn.branchmerge.advanced.ancestry"/>.</para>
+
+      <informalexample>
+        <screen>
+$ svn merge ^/paint/trunk -c465 --ignore-ancestry
+--- Merging r465 into '.':
+A    python
+A    python/paint.py
+ G   .
 </screen>
       </informalexample>
 
@@ -2702,88 +2779,6 @@ Modified: svn:mergeinfo
         invented property.</para>
 
     </sect2>
-
-    <!-- =============================================================== -->
-    <sect2 id="svn.branchmerge.advanced.reintegratetwice">
-      <title>Keeping a Reintegrated Branch Alive</title>
-
-      <para>There is an alternative to destroying and re-creating a
-        branch after reintegration. To understand why it works you need
-        to understand why the branch is initially unfit for further use
-        after it has been reintegrated.</para>
-
-      <para>Let's assume you created your branch in revision
-        <emphasis>A</emphasis>. While working on your branch, you created
-        one or more revisions which made changes to the branch.
-        Before reintegrating your branch back to trunk, you made a final
-        merge from trunk to your branch, and committed the result of
-        this merge as revision <emphasis>B</emphasis>.</para>
-
-      <para>When reintegrating your branch into the trunk, you create
-        a new revision <emphasis>X</emphasis> which changes the trunk.
-        The changes made to trunk in this revision <emphasis>X</emphasis>
-        are semantically equivalent to the changes you made to your branch
-        between revisions <emphasis>A</emphasis> and <emphasis>B</emphasis>.</para>
-
-      <para>If you now try to merge outstanding changes from trunk to your
-        branch, Subversion will consider changes made in revision
-        <emphasis>X</emphasis> as eligible for merging into the
-        branch. However, since your branch already contains all the
-        changes made in revision <emphasis>X</emphasis>, merging these
-        changes can result in spurious conflicts! These conflicts are
-        often tree conflicts, especially if renames were made on the
-        branch or the trunk while the branch was in development.</para>
-
-      <para>So what can be done about this? We need to make sure that
-        Subversion does not try to merge revision <emphasis>X</emphasis>
-        into the branch. This is done using the
-        <option>--record-only</option> merge option, which was introduced
-        in <xref linkend="svn.branchmerge.advanced.blockchanges"/>.</para>
-
-      <para>To carry out the record-only merge, get a working copy of
-        the branch which was just reintegrated in revision
-        <emphasis>X</emphasis>, and merge just revision <emphasis>X</emphasis>
-        from trunk into your branch, making sure to use the
-        <option>--record-only</option> option.</para>
-
-      <para>This merge uses the cherry-picking merge syntax, which was
-        introduced in <xref linkend="svn.branchmerge.cherrypicking"/>.
-        Continuing with the running example from
-        <xref linkend="svn.branchmerge.basicmerging.reintegrate"/>,
-        where revision <emphasis>X</emphasis> was revision 391:</para>
-
-      <informalexample>
-        <screen>
-$ cd my-calc-branch
-$ svn update
-Updating '.':
-Updated to revision 393.
-$ svn merge --record-only -c 391 ^/calc/trunk
---- Recording mergeinfo for merge of r391 into '.':
- U   .
-$ svn commit -m "Block revision 391 from being merged into my-calc-branch."
-Sending        .
-
-Committed revision 394.
-</screen>
-      </informalexample>
-
-      <para>Now your branch is ready to soak up changes from the trunk
-        again. After another sync of your branch to the trunk, you can
-        even reintegrate the branch a second time.
-        If necessary, you can do another record-only merge to keep the
-        branch alive. Rinse and repeat.</para>
-        
-      <para>It should now also be apparent why deleting the branch and
-        re-creating it has the same effect as doing the above record-only
-        merge. Because revision <emphasis>X</emphasis> is part of the natural
-        history (see the sidebar
-        <xref linkend="svn.branchmerge.nomergedata.impicit.mergeinfo"/>)
-        of the newly created branch, Subversion will never attempt to
-        merge revision <emphasis>X</emphasis> into the branch, avoiding
-        spurious conflicts.</para>
-
-      </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.advanced.logblame">
@@ -2806,46 +2801,47 @@ Committed revision 394.
       <informalexample>
         <screen>
 $ cd my-calc-branch
+
 $ svn log -q
 ------------------------------------------------------------------------
-r390 | user | 2002-11-22 11:01:57 -0600 (Fri, 22 Nov 2002)
+r461 | user | 2013-02-25 13:53:32 -0500 (Mon, 25 Feb 2013)
 ------------------------------------------------------------------------
-r388 | user | 2002-11-21 05:20:00 -0600 (Thu, 21 Nov 2002)
+r379 | user | 2013-02-20 18:36:52 -0500 (Wed, 20 Feb 2013)
 ------------------------------------------------------------------------
-r381 | user | 2002-11-20 15:07:06 -0600 (Wed, 20 Nov 2002)
+r378 | user | 2013-02-20 18:35:40 -0500 (Wed, 20 Feb 2013)
 ------------------------------------------------------------------------
-r359 | user | 2002-11-19 19:19:20 -0600 (Tue, 19 Nov 2002)
+&hellip;
 ------------------------------------------------------------------------
-r357 | user | 2002-11-15 14:29:52 -0600 (Fri, 15 Nov 2002)
+r8 | sally | 2013-01-05 11:43:27 -0500 (Sat, 05 Jan 2013)
 ------------------------------------------------------------------------
-r343 | user | 2002-11-07 13:50:10 -0600 (Thu, 07 Nov 2002)
+r7 | bill | 2013-01-04 11:32:20 -0500 (Fri, 04 Jan 2013)
 ------------------------------------------------------------------------
-r341 | user | 2002-11-03 07:17:16 -0600 (Sun, 03 Nov 2002)
-------------------------------------------------------------------------
-r303 | sally | 2002-10-29 21:14:35 -0600 (Tue, 29 Oct 2002)
-------------------------------------------------------------------------
-r98 | sally | 2002-02-22 15:35:29 -0600 (Fri, 22 Feb 2002)
+r3 | bill | 2013-01-03 16:36:11 -0500 (Thu, 03 Jan 2013)
 ------------------------------------------------------------------------
 </screen>
       </informalexample>
 
       <para>But is this really an accurate picture of all the changes
         that happened on the branch?  What's left out here is
-        the fact that revisions 390, 381, and 357 were actually the
+        the fact that revisions 352, 362, 372 and 379 were actually the
         results of merging changes from the trunk.  If you look at one
         of these logs in detail, the multiple trunk changesets that
         comprised the branch change are nowhere to be seen:</para>
 
       <informalexample>
         <screen>
-$ svn log -v -r 390
+$ svn log ^/calc/branches/my-calc-branch -r352 -v
 ------------------------------------------------------------------------
-r390 | user | 2002-11-22 11:01:57 -0600 (Fri, 22 Nov 2002) | 1 line
+r352 | user | 2013-02-20 13:36:02 -0500 (Wed, 20 Feb 2013) | 1 line
 Changed paths:
-   M /branches/my-calc-branch/button.c
-   M /branches/my-calc-branch/README
+   M /calc/branches/my-calc-branch
+   M /calc/branches/my-calc-branch/Makefile
+   M /calc/branches/my-calc-branch/doc/INSTALL
+   M /calc/branches/my-calc-branch/src/button.c
+   M /calc/branches/my-calc-branch/src/real.c
 
-Final merge of trunk changes to my-calc-branch.
+Sync latest trunk changes to my-calc-branch.
+------------------------------------------------------------------------
 </screen>
       </informalexample>
 
@@ -2858,66 +2854,80 @@ Final merge of trunk changes to my-calc-branch.
 
       <informalexample>
         <screen>
-$ svn log -v -r 390 -g
+$ svn log ^/calc/branches/my-calc-branch -r352 -v -g
 ------------------------------------------------------------------------
-r390 | user | 2002-11-22 11:01:57 -0600 (Fri, 22 Nov 2002) | 1 line
+r352 | user | 2013-02-20 13:36:02 -0500 (Wed, 20 Feb 2013) | 1 line
 Changed paths:
-   M /branches/my-calc-branch/button.c
-   M /branches/my-calc-branch/README
+   M /calc/branches/my-calc-branch
+   M /calc/branches/my-calc-branch/Makefile
+   M /calc/branches/my-calc-branch/doc/INSTALL
+   M /calc/branches/my-calc-branch/src/button.c
+   M /calc/branches/my-calc-branch/src/real.c
 
-Final merge of trunk changes to my-calc-branch.
+Sync latest trunk changes to my-calc-branch.
 ------------------------------------------------------------------------
-r383 | sally | 2002-11-21 03:19:00 -0600 (Thu, 21 Nov 2002) | 2 lines
+r351 | sally | 2013-02-20 10:49:41 -0500 (Wed, 20 Feb 2013) | 2 lines
 Changed paths:
-   M /branches/my-calc-branch/button.c
-Merged via: r390
+   M /calc/trunk/src/real.c
+Merged via: r352
 
-Fix inverse graphic error on button.
+Trunk work on calc project.
 ------------------------------------------------------------------------
-r382 | sally | 2002-11-20 16:57:06 -0600 (Wed, 20 Nov 2002) | 2 lines
+&hellip;
+------------------------------------------------------------------------
+r345 | sally | 2013-02-20 10:48:58 -0500 (Wed, 20 Feb 2013) | 2 lines
 Changed paths:
-   M /branches/my-calc-branch/README
-Merged via: r390
+   M /calc/trunk/Makefile
+   M /calc/trunk/src/integer.c
+Merged via: r352
 
-Document my last fix in README.
+Trunk work on calc project.
+------------------------------------------------------------------------
+r344 | sally | 2013-02-08 10:45:20 -0500 (Fri, 08 Feb 2013) | 1 line
+Changed paths:
+   M /calc/trunk/src/integer.c
+Merged via: r352
+
+Refactor the bazzle functions.
+------------------------------------------------------------------------
 </screen>
       </informalexample>
 
       <para>By making the log operation use merge history, we see not
-        just the revision we queried (r390), but also the two revisions
-        that came along on the ride with it&mdash;a couple of changes
-        made by Sally to the trunk.  This is a much more complete
-        picture of history!</para>
+        just the revision we queried (r352), but also the other revisions
+        that came along on the ride with it&mdash;Sally's work on trunk.
+        This is a much more complete picture of history!</para>
 
       <para>The <command>svn blame</command> command also takes the
         <option>--use-merge-history</option> (<option>-g</option>)
         option.  If this option is neglected, somebody looking at
-        a line-by-line annotation of <filename>button.c</filename> may
-        get the mistaken impression that you were responsible for the
-        lines that fixed a certain error:</para>
+        a line-by-line annotation of <filename>Makefile</filename> may
+        get the mistaken impression that you were responsible for a
+        particular change:</para>
 
       <informalexample>
         <screen>
-$ svn blame button.c
+$ svn blame src/button.c
 &hellip;
-   390    user    retval = inverse_func(button, path);
-   390    user    return retval;
-   390    user    }
+   352    user    retval = inverse_func(button, path);
+   352    user    return retval;
+   352    user    }
 &hellip;
 </screen>
       </informalexample>
 
       <para>And while it's true that you did actually commit those
-        three lines in revision 390, two of them were actually written
-        by Sally back in revision 383:</para>
+        three lines in revision 352, two of them were actually written
+        by Sally back in revision 348 and were brought into your branch
+        via a sync merge:</para>
 
       <informalexample>
         <screen>
 $ svn blame button.c -g
 &hellip;
-G    383    sally   retval = inverse_func(button, path);
-G    383    sally   return retval;
-     390    user    }
+G    348    sally   retval = inverse_func(button, path);
+G    348    sally   return retval;
+     352    user    }
 &hellip;
 </screen>
       </informalexample>
@@ -2995,7 +3005,12 @@ A    foo.c
         <command>svn merge</command> command.)</para>
 
       <tip>
-        <para>The <option>--ignore-ancestry</option> option also disables
+        <para>
+        <indexterm>
+          <primary>merge tracking</primary>
+          <secondary>disabling</secondary>
+        </indexterm>
+        The <option>--ignore-ancestry</option> option also disables
         <xref linkend="svn.branchmerge.basicmerging.mergetracking"/>.
         This means that <literal>svn:mergeinfo</literal> is not considered
         when <command>svn merge</command> is determining what revisions
