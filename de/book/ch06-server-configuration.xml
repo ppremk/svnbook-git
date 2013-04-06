@@ -6020,9 +6020,15 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync ${REV} &gt; /dev/
 
     </sidebar>
 
+<!--
     <para>Once your server knows where to find your rules file, it's
       time to define the rules.</para>
 
+-->
+    <para>Sobald Ihr Server weiß, wo sich Ihre Regeldateien befinden,
+      ist es an der Zeit, die Regeln zu definieren.</para>
+
+<!--
     <para>The syntax of the file is the same familiar one used
       by <filename>svnserve.conf</filename> and the runtime
       configuration files.  Lines that start with a hash
@@ -6035,6 +6041,20 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync ${REV} &gt; /dev/
       (read/write).  If the user is not mentioned at all, no access is
       allowed.</para>
 
+-->
+    <para>Die Syntax der Datei ist dieselbe wie bei
+      <filename>svnserve.conf</filename> und den
+      Laufzeit-Konfigurationsdateien. Zeilen, die mit einer
+      Raute (<literal>#</literal>) beginnen, werden ignoriert. In der
+      einfachsten Form benennt jeder Abschnitt ein Projektarchiv und
+      einen Pfad darin. Die authentifizierten Anwendernamen sind die
+      Optionen und der entsprechende Wert beschreibt das Zugriffsrecht
+      des Anwenders auf den Pfad im Projektarchiv, entweder
+      <literal>r</literal> (nur lesend) oder <literal>rw</literal>
+      (lesend und schreibend). Wird der Anwender gar nicht erwähnt,
+      ist kein Zugriff erlaubt.</para>
+
+<!--
     <para>To be more specific: the value of the section names is
       either of the form <literal>[repos-name:path]</literal> or of the
       form <literal>[path]</literal>.  If you're using the
@@ -6047,12 +6067,27 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync ${REV} &gt; /dev/
       directive, however, it's fine to only define paths in your
       sections&mdash;after all, there's only one repository.</para>
 
+-->
+    <para>Genauer gesagt: Der Wert des Abschnittsnamens hat entweder
+      das Format <literal>[projektarchiv-name:pfad]</literal> oder
+      <literal>[pfad]</literal>. Falls Sie die Direktive
+      <literal>SVNParentPath</literal> verwenden, ist es wichtig, die
+      Namen der Projektarchive in den Abschnitten anzugeben. Falls Sie
+      sie weglassen, wird ein Abschnitt wie etwa
+      <literal>[/some/dir]</literal> auf den Pfad
+      <filename>/some/dir</filename> <emphasis>jedes</emphasis>
+      Projektarchivs zutreffen. Falls Sie jedoch die Direktive
+      <literal>SVNPath</literal> verwenden, ist es in Ordnung, in den
+      Abschnitten nur Pfade zu definieren, da es ja schließlich nur
+      ein einziges Projektarchiv gibt.</para>
+
     <screen>
 [calc:/branches/calc/bug-142]
 harry = rw
 sally = r
 </screen>
 
+<!--
     <para>In this first example, the user <literal>harry</literal> has
       full read and write access on the
       <filename>/branches/calc/bug-142</filename> directory in the
@@ -6060,10 +6095,26 @@ sally = r
       <literal>sally</literal> has read-only access.  Any other users
       are blocked from accessing this directory.</para>
 
+-->
+    <para>Im ersten Beispiel hat der Anwender <literal>harry</literal>
+      vollständigen Lese- und Schreibzugriff auf das Verzeichnis
+      <filename>/branches/calc/bug-142</filename> im Projektarchiv
+      <literal>calc</literal>, die Anwenderin <literal>sally</literal>
+      hat jedoch nur Lesezugriff. Allen anderen Anwendern ist der
+      Zugriff auf dieses Verzeichnis nicht gestattet.</para>
+
+<!--
     <para>Of course, permissions are inherited from parent to child
       directory.  That means we can specify a subdirectory with a
       different access policy for Sally:</para>
 
+-->
+    <para>Selbstverständlich werden Berechtigungen von den Eltern- auf
+      die Kindverzeichnisse vererbt. Das bedeutet, dass wir ein
+      Unterverzeichnis mit unterschiedlichen Berechtigungen für Sally
+      angeben können:</para>
+
+<!--
     <screen>
 [calc:/branches/calc/bug-142]
 harry = rw
@@ -6073,15 +6124,41 @@ sally = r
 [calc:/branches/calc/bug-142/testing]
 sally = rw
 </screen>
+-->
 
+    <screen>
+[calc:/branches/calc/bug-142]
+harry = rw
+sally = r
+
+# Sally bekommt nur für das Unterverzeichnis 'testing' Schreibrecht
+[calc:/branches/calc/bug-142/testing]
+sally = rw
+</screen>
+
+<!--
     <para>Now Sally can write to the <filename>testing</filename>
       subdirectory of the branch, but can still only read other parts.
       Harry, meanwhile, continues to have complete read/write access
       to the whole branch.</para>
 
+-->
+    <para>Nun kann Sally im Verzeichnis <filename>testing</filename>
+      des Zweigs zwar schreiben, an anderen Stellen allerdings immer
+      noch nur lesen.  Andererseits besitzt Harry weiterhin
+      vollständigen Lese- und Schreibzugriff auf den gesamten
+      Zweig.</para>
+
+<!--
     <para>It's also possible to explicitly deny permission to someone
       via inheritance rules, by setting the username variable to
       nothing:</para>
+
+-->
+    <para>Es ist ebenfalls möglich, einer Person über die
+      Vererbungsregeln explizit Berechtigungen zu entziehen, indem die
+      Variable mit dem Anwendernamen auf den leeren Wert gesetzt
+      wird:</para>
 
     <screen>
 [calc:/branches/calc/bug-142]
@@ -6092,20 +6169,34 @@ sally = r
 harry =
 </screen>
 
+<!--
     <para>In this example, Harry has read/write access to the
       entire <filename>bug-142</filename> tree, but has absolutely no
       access at all to the <filename>secret</filename> subdirectory
       within it.</para>
 
+-->
+    <para>In diesem Beispiel hat Harry Lese- und Schreibzugriff auf
+      den gesamten Baum <filename>bug-142</filename>, jedoch überhaupt keinen Zugriff auf das darin befindliche Unterverzeichnis <filename>secret</filename>.</para>
+
     <tip>
+<!--
       <para>The thing to remember is that the most specific path
         always matches first.  The server tries to match the path
         itself, and then the parent of the path, then the parent of
         that, and so on.  The net effect is that mentioning a specific
         path in the access file will always override any permissions
-        inherited from parent directories.</para>
+-->
+      <para>Man muss sich nur merken, dass der am genauesten
+        angegebene Pfad stets am besten passt. Der Server versucht
+        zunächst, den Pfad selbst abzugleichen, dann das
+        Elternverzeichnis hiervon, dann dessen Elternverzeichnis usw.
+        Unter dem Strich läuft es darauf hinaus, dass die Erwähnung
+        eines bestimmten Pfades in der Zugriffsdatei stets die von
+        Elternverzeichnissen ererbten Berechtigungen überdeckt.</para>
     </tip>
 
+<!--
     <para>By default, nobody has any access to the repository at all.
       That means that if you're starting with an empty file, you'll
       probably want to give at least read permission to all users at
@@ -6113,11 +6204,21 @@ harry =
       asterisk variable (<literal>*</literal>), which means <quote>all
       users</quote>:</para>
 
+-->
+    <para>Standardmäßig hat niemand irgendeine Zugriffsberechtigung
+      auf das Projektarchiv. Das bedeutet, wenn mit einer leeren Datei
+      begonnen wird, sollte mindestens für alle Anwender die
+      Leseberechtigung für die Wurzel des Projektarchivs gewährt
+      werden. Das kann mit der Stern-Variablen (<literal>*</literal>)
+      erreicht werden, die für <quote>alle Anwender</quote>
+      steht:</para>
+
     <screen>
 [/]
 * = r
 </screen>
 
+<!--
     <para>This is a common setup; notice that no repository
       name is mentioned in the section name.  This makes all repositories
       world-readable to all users. Once all users have read access to
@@ -6125,6 +6226,16 @@ harry =
       <literal>rw</literal> permission to certain users on specific
       subdirectories within specific repositories.</para>
 
+-->
+    <para>Dies ist eine verbreitete Einstellung. Beachten Sie, dass im
+      Abschnittsnamen kein Projektarchiv erwähnt wird. Das führt dazu,
+      dass alle Projektarchive fųr alle Anwender der Welt lesbar sind.
+      Sobald alle Anwender Lesezugriff auf die Projektarchive haben,
+      können Sie bestimmten Anwendern fUr ausgewählte Verzeichnisse
+      bestimmter Projektarchive die Berechtigung <literal>rw</literal>
+      geben.</para>
+
+<!--
     <para>The asterisk variable (<literal>*</literal>) is also worth
       special mention because it's the
       <emphasis>only</emphasis> pattern that matches an anonymous
@@ -6135,9 +6246,26 @@ harry =
       if it can't find one, it demands real authentication from
       the client.</para>
 
+-->
+    <para>Die Stern-Variable (<literal>*</literal>) verdient ebenso
+      besondere Erwähnung, da sie das <emphasis>einzige</emphasis>
+      Muster ist, das auf einen anonymen Anwender passt. Falls Sie
+      Ihren Server-Block für einen gemischten anonymen und
+      authentifizierten Zugriff konfiguriert haben, beginnen alle
+      Anwender mit anonymen Zugriff. Der Server sucht nach einem
+      für den Zugriffspfad definierten <literal>*</literal>-Wert; kann
+      er keinen finden, verlangt er echte Authentifizierung vom
+      Client.</para>
+
+<!--
     <para>The access file also allows you to define whole groups of
       users, much like the Unix <filename>/etc/group</filename>
       file:</para>
+
+-->
+    <para>Die Zugriffsdatei erlaubt es Ihnen auch, ganze
+      Anwendergruppen zu definieren, ähnlich der Unix-Datei
+      <filename>/etc/group</filename>:</para>
 
     <screen>
 [groups]
@@ -6146,9 +6274,16 @@ paint-developers = frank, sally, jane
 everyone = harry, sally, joe, frank, sally, jane
 </screen>
 
+<!--
     <para>Groups can be granted access control just like users.
       Distinguish them with an <quote>at</quote>
       (<literal>@</literal>) prefix:</para>
+
+-->
+    <para>Gruppen können ebenso wie Anwendern Zugriffsberechtigungen
+      erteilt werden. Sie werden von Anwendern durch einen
+      <quote>At</quote>-Präfix (<literal>@</literal>)
+      unterschieden:</para>
 
     <screen>
 [calc:/projects/calc]
@@ -6159,6 +6294,7 @@ jane = r
 @paint-developers = rw
 </screen>
 
+<!--
     <para>Another important fact is that
     the <emphasis>first</emphasis> matching rule is the one which gets
     applied to a user.  In the prior example, even though Jane is a
@@ -6167,7 +6303,21 @@ jane = r
     discovered and matched before the group rule, thus denying Jane
     write access.</para>
 
+-->
+    <para>Ein weiterer wichtiger Punkt ist, dass die
+      <emphasis>erste</emphasis> passende Regel diejenige ist, die für
+      einen Anwender gilt. Im vorhergehenden Beispiel trifft die Regel
+      <literal>jane = r</literal> vor der Gruppenregel zu; obwohl Jane
+      Mitglied der Gruppe <literal>paint-developers</literal> ist (die
+      uber Lese- und Schreibzugriff verfügt), bleibt Jane somit der
+      Schreibzugriff verwehrt.</para>
+
+<!--
     <para>Groups can also be defined to contain other groups:</para>
+
+-->
+    <para>Gruppen können auch definiert werden, indem sie andere
+      Gruppen beinhalten:</para>
 
     <screen>
 [groups]
@@ -6176,6 +6326,7 @@ paint-developers = frank, sally, jane
 everyone = @calc-developers, @paint-developers
 </screen>
 
+<!--
     <para>Subversion 1.5 brings another useful feature to the access
       file syntax:  username aliases.  Some authentication systems
       expect and carry relatively short usernames of the sorts we've
@@ -6192,6 +6343,25 @@ everyone = @calc-developers, @paint-developers
       correct complex username only once, in a statement which assigns to
       it a more easily digestable alias.</para>
 
+-->
+    <para>Subversion 1.5 führt eine nützliche Erweiterung in die
+      Syntax der Zugriffsdatei ein: Anwendernamen-Aliase. Einige
+      Authentifizierungssysteme erwarten und verwenden relativ kurze
+      Anwendernamen, wie wir sie hier bereits beschrieben haben:
+      <literal>harry</literal>, <literal>sally</literal>,
+      <literal>joe</literal> usw. Andere Authentifizierungssysteme
+      jedoch, wie solche, die LDAP oder SSL-Client-Zertifikate
+      verwenden, könnten wesentlich komplexere Anwendernamen
+      verwenden. So könnte beispielsweise Harrys Anwendername in einem
+      durch LDAP geschützten System <literal>CN=Harold
+        Hacker,OU=Engineers,DC=red-bean,DC=com</literal> lauten. Mit
+      derartigen Anwendernamen könnte die Zugriffsdatei mit langen
+      oder undurchsichtigen Anwendernamen zugemüllt werden, was auch
+      leicht zu Tippfehlern führen kann. Glücklicherweise ermöglichen
+      es Anwendernamen-Aliase, den komplizierten Anwendernamen nur
+      einmal in einer Anweisung einzutippen, die ihm ein einfacheres
+      Alias zuteilt.</para>
+
     <screen>
 [aliases]
 harry = CN=Harold Hacker,OU=Engineers,DC=red-bean,DC=com
@@ -6200,11 +6370,20 @@ joe = CN=Gerald I. Joseph,OU=Engineers,DC=red-bean,DC=com
 &hellip;
 </screen>
 
+<!--
     <para>Once you've defined a set of aliases, you can refer to the
       users elsewhere in the access file via their aliases in all the
       same places you could have instead used their actual usernames.
       Simply prepend an ampersand to the alias to distinguish it from
       a regular username:</para>
+
+-->
+    <para>Sobald Sie eine Menge an Aliasen definiert haben, können Sie
+      sich an allen Stellen der Zugriffsdatei über die Aliase auf die
+      Anwender beziehen, an denen Sie sonst die eigentlichen
+      Anwendernamen benutzt hätten. Setzen Sie einfach ein
+      kaufmännisches Und vor den Alias, um ihn von einem normalen
+      Anwendernamen zu unterscheiden:</para>
 
     <screen>
 [groups]
@@ -6213,23 +6392,44 @@ paint-developers = &amp;frank, &amp;sally, &amp;jane
 everyone = @calc-developers, @paint-developers
 </screen>
 
+<!--
     <para>You might also choose to use aliases if your users'
       usernames change frequently.  Doing so allows you to need to
       update only the aliases table when these username changes occur,
       instead of doing global-search-and-replace operations on the
       whole access file.</para>
 
+-->
+    <para>Sie könnten sich auch dazu entscheiden, Aliase zu verwenden,
+      falls sich die Anwendernamen Ihrer Anwender häufig ändern. In
+      diesem Fall müssen Sie bei Änderungen der Anwendernamen
+      lediglich die Aliastabelle aktualisieren anstatt eine globale
+      Such- und Ersetzungsoperation über die gesamte Zugriffsdatei
+      vornehmen zu müssen.</para>
+
   <!-- TODO(sussman): Once serf becomes officially support, this
        sidebar will need to be revisited. -->
 
   <sidebar>
+<!--
     <title>Partial Readability and Checkouts</title>
+-->
+    <title>Teilweise Lesbarkeit und Checkouts</title>
 
+<!--
     <para>If you're using Apache as your Subversion server and have
       made certain subdirectories of your repository unreadable to
       certain users, you need to be aware of a possible
       nonoptimal behavior with <command>svn checkout</command>.</para>
 
+-->
+    <para>Falls Sie Apache als Ihren Subversion-Server verwenden und
+      bestimmte Unterverzeichnisse Ihres Projektarchivs für bestimmte
+      Anwender unlesbar gemacht haben, müssen Sie über ein
+      mögliches suboptimales Verhalten von <command>svn
+        checkout</command> Bescheid wissen.</para>
+
+<!--
     <para>When the client requests a checkout or update over HTTP, it
       makes a single server request and receives a single (often
       large) server response.  When the server receives the request,
@@ -6247,6 +6447,30 @@ everyone = @calc-developers, @paint-developers
       the entire checkout will be done without
       authentication&mdash;again, skipping the unreadable directory,
       rather than asking for authentication partway through.</para>
+  </sidebar>
+
+-->
+    <para>Wenn der Client einen Checkout oder eine Aktualisierung über
+      HTTP verlangt, macht er eine einzige Anfrage beim Server und
+      erhält eine einzelne (oftmals umfangreiche) Antwort vom Server.
+      Wenn der Server die Anfrage erhält, ist das die
+      <emphasis>einzige</emphasis> Gelegenheit für Apache, die
+      Authentifizierung des Anwenders einzufordern. Das hat einige
+      merkwürdige Seiteneffekte. Wenn beispielsweise ein
+      Unterverzeichnis des Projektarchivs nur für die Anwenderin Sally
+      lesbar ist und der Anwender Harry ein Elternverzeichnis
+      auscheckt, wird sein Client auf die initiale Aufforderung zur
+      Authentifizierung als Harry antworten. Während der Server die
+      umfangreiche Antwort erzeugt, besteht keine Möglichkeit beim
+      Erreichen des besonderen Verzeichnisses eine erneute
+      Aufforderung zu senden; das Verzeichnis wird somit einfach
+      übergangen, anstatt den Anwender im passenden Moment
+      aufzufordern, sich als Sally zu authentifizieren. Auf ähnliche
+      Weise wird der komplette Checkout ohne Authentifizierung
+      vollzogen, falls das Wurzelverzeichnis des Projektarchivs anonym
+      für jeden lesbar ist; auch hier werden nicht lesbare
+      Verzeichnisse übergangen, anstatt zwischendurch zur
+      Authentifizierung aufzufordern.</para>
   </sidebar>
 
   </sect1>
