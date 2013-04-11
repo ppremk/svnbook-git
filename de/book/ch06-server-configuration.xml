@@ -6480,39 +6480,77 @@ everyone = @calc-developers, @paint-developers
   <!-- ================================================================= -->
   <sect1 id="svn.serverconfig.multimethod">
 
+<!--
     <title>Supporting Multiple Repository Access Methods</title>
+-->
+    <title>Unterstützung mehrerer Zugriffsmethoden auf das Projektarchiv</title>
 
+<!--
     <para>You've seen how a repository can be accessed in many
       different ways.  But is it possible&mdash;or safe&mdash;for your
       repository to be accessed by multiple methods simultaneously?
       The answer is yes, provided you use a bit of foresight.</para>
 
+-->
+    <para>Sie haben gesehen, wie auf viele verschiedene Weisen auf ein
+      Projektarchiv zugegriffen werden kann. Ist es aber möglich, oder
+      sicher, wenn auf Ihr Projektarchiv gleichzeitig mit mehreren
+      Methoden zugegriffen wird? Die Anteort lautet: ja,
+      vorausgesetzt, sie handeln ein bisschen vorausschauend.</para>
+
+<!--
     <para>At any given time, these processes may require read and
       write access to your repository:</para>
 
+-->
+    <para>Diese Prozesse benötigen jederzeit Lese- und Schreibzugriff
+      auf Ihr Projektarchiv:</para>
+
     <itemizedlist>
       <listitem>
+<!--
         <para>Regular system users using a Subversion client (as
           themselves) to access the repository directly via
           <literal>file://</literal> URLs</para>
+-->
+        <para>Gewöhnliche Systemanwender, die einen Subversion-Client
+          mit ihrer Kennung verwenden, um direkt über
+          <literal>file://</literal> URLs auf das Projektarchiv
+          zuzugreifen</para>
       </listitem>
       <listitem>
+<!--
         <para>Regular system users connecting to SSH-spawned private
           <command>svnserve</command> processes (running as
           themselves), which access the repository</para>
+-->
+        <para>Gewöhnliche Systemanwender, die sich über durch SSH
+          gestartete private <command>svnserve</command>-Prozesse
+          verbinden, die unter ihrer Kennung auf das Projektarchiv
+          zugreifen</para>
       </listitem>
       <listitem>
+<!--
         <para>An <command>svnserve</command> process&mdash;either a
           daemon or one launched by
           <command>inetd</command>&mdash;running as a particular fixed
           user</para>
+-->
+        <para>Ein <command>svnserve</command>-Prozess, entweder als
+          Daemon oder von <command>inetd</command> gestartet, der
+          unter einer bestimmten festen Kennung läuft</para>
       </listitem>
       <listitem>
+<!--
         <para>An Apache <command>httpd</command> process, running as a
           particular fixed user</para>
+-->
+        <para>Ein Apache <command>httpd</command>-Prozess, der unter
+          einer bestimmten festen Kennung läuft</para>
       </listitem>
     </itemizedlist>
 
+<!--
     <para>The most common problem administrators run into is
       repository ownership and permissions.  Does every process (or
       user) in the preceding list have the rights to read and write the
@@ -6524,6 +6562,22 @@ everyone = @calc-developers, @paint-developers
       process may write to the database files using an unfriendly
       umask&mdash;one that prevents access by other users.</para>
 
+-->
+    <para>Das häufigste Problem, in das Administratoren laufen,
+      besteht im Eigentumsverhältnis und den Zugriffsrechten des
+      Projektarchivs. Hat jeder Prozess (oder Anwender) aus der obigen
+      Liste die Rechte, die dem Projektarchiv zugrunde liegenden
+      Dateien zu lesen und zu schreiben? Unter der Annahme, dass Sie
+      ein Unix-ähnliches Betriebssystem haben, mag ein einfacher
+      Ansatz darin bestehen, jeden möglichen Anwender des
+      Projektarchivs in eine neue Gruppe <literal>svn</literal>
+      aufzunehmen und dieser Gruppe die Eigentumsrechte über das
+      Projektarchiv zu geben. Aber auch das reicht nicht, da ein
+      Prozess die Datenbankdateien unter Verwendung einer widrigen
+      umask schreiben könnte, so dass anderen Anwendern der Zugriff
+      verwehrt würde.</para>
+
+<!--
     <para>So the next step beyond setting up a common group for
       repository users is to force every repository-accessing process
       to use a sane umask.  For users accessing the repository
@@ -6535,6 +6589,21 @@ everyone = @calc-developers, @paint-developers
       002</userinput> command to Apache's own startup script,
       <filename>apachectl</filename>.  For example:</para>
 
+-->
+    <para>Nach dem Einrichten einer gemeinsamen Gruppe für
+      Projektarchiv-Anwender besteht der nächste Schritt darin, jeden
+      Prozess, der auf das Projektarchiv zugreift, zu zwingen, eine
+      passende umask zu verwenden. Für Anwender, die direkt auf das
+      Projektarchiv zugreifen, können Sie das Programm
+      <command>svn</command> in ein Script umwandeln, das zunächst
+      <userinput>umask 002</userinput> aufruft und dann das
+      eigentliche Client-Programm <command>svn</command> startet. Ein
+      ähnliches Script können Sie für das Programm
+      <command>svnserve</command> schreiben, und in das Startscript
+      von Apache, <filename>apachectl</filename>, fügen Sie das
+      Kommando <userinput>umask 002</userinput> ein. Zum
+      Beispiel:</para>
+
     <screen>
 $ cat /usr/bin/svn
 
@@ -6545,6 +6614,7 @@ umask 002
 
 </screen>
 
+<!--
     <para>Another common problem is often encountered on Unix-like
       systems.  If your repository is backed by Berkeley DB, for
       example, it occasionally creates new log files to journal its
@@ -6557,12 +6627,37 @@ umask 002
       newly created log files to have the same group owner as the
       parent directory.</para>
 
+-->
+    <para>Ein weiteres bekanntes Problem tritt häufig auf
+      Unix-ähnlichen Systemen auf. Wenn Ihr Projektarchiv
+      beispielsweise auf Berkeley-DB aufsetzt, werden gelegentlich
+      neue Dateien angelegt, um die Aktivitäten zu protokollieren.
+      Selbst wenn die Gruppe <command>svn</command> vollständiger
+      Eigentümer des Projektarchivs ist, müssen diese neu erstellten
+      Protokolldateien nicht notwendigerweise derselben Gruppe
+      gehören, was weitere Zugriffsprobleme für Ihre Anwender nach
+      sich zieht. Ein guter Behelf besteht darin, das Gruppen-SUID-Bit
+      für das Verzeichnis <filename>db</filename> des Projektarchivs
+      zu setzen, was dazu führt, das alle neu erstellten
+      Protokolldateien  derselben Gruppe gehören wie das
+      Elternverzeichnis.</para>
+
+<!--
     <para>Once you've jumped through these hoops, your repository
       should be accessible by all the necessary processes.  It may
       seem a bit messy and complicated, but the problems of having
       multiple users sharing write access to common files are classic
       ones that are not often elegantly solved.</para>
 
+-->
+    <para>Sobald Sie diese Hürden genommen haben, sollten alle
+      notwendigen Prozesse auf Ihr Projektarchiv zugreifen können. Es
+      scheint vielleicht etwas chaotisch und kompliziert, doch die
+      Probleme, die bei gemeinsamen Zugriff mehrerer Anwender auf
+      gemeinsame Dateien entstehen, sind Klassiker, die sich oft nicht
+      elegant lösen lassen.</para>
+
+<!--
     <para>Fortunately, most repository administrators will never
       <emphasis>need</emphasis> to have such a complex configuration.
       Users who wish to access repositories that live on the same
@@ -6576,9 +6671,29 @@ umask 002
       We recommend that you choose a single server that best meets your
       needs and stick with it!</para>
 
-    <sidebar>
-      <title>The svn+ssh:// Server Checklist</title>
+-->
+    <para>Glücklicherweise werden die meisten Administratoren von
+      Projektarchiven niemals eine solch komplexe Konfiguration
+      <emphasis>benötigen</emphasis>. Anwender, die auf Projektarchive
+      des Rechners zugreifen möchten, an dem sie sich angemeldet
+      haben, sind nicht auf URLs der Form <literal>file://</literal>
+      beschränkt, sondern können den
+      Apache-Server oden <command>svnserve</command> mit
+      <literal>localhost</literal> als Server-Namen in deren
+      <literal>http://</literal> oder <literal>svn://</literal> URL
+      verwenden. Darüberhinaus wird das Betreiben mehrfacher
+      Server-Prozesse für Ihr Projektarchiv Ihnen mehr Kopfschmerzen
+      bereiten als nötig ist. Wir empfehlen, einen einzigen Server zu
+      wählen, der Ihren Bedürfnissen am nächsten kommt und dabei zu
+      bleiben!</para>
 
+    <sidebar>
+<!--
+      <title>The svn+ssh:// Server Checklist</title>
+-->
+      <title>Die Checkliste für svn+ssh://-Server</title>
+
+<!--
       <para>It can be quite tricky to get a bunch of users with
         existing SSH accounts to share a repository without
         permissions problems.  If you're confused about all the things
@@ -6586,22 +6701,46 @@ umask 002
         system, here's a quick checklist that resummarizes some of the
         topics discussed in this section:</para>
 
+-->
+      <para>Es kann recht verzwickt sein, es hinzubekommen, dass sich
+        ein Haufen Anwender mit bestehenden SSH-Konten ohne Zugriffsprobleme
+        ein Projektarchiv teilt. Falls Sie von all den Dingen, die Sie
+        (als Administrator) auf einem Unix-ähnlichen System erledigen
+        müssen, verwirrt sind: Hier ist eine kurze Checkliste die noch
+        einmal einige der in diesem Abschnitt besprochenen Themen
+        zusammenfasst:</para>
+
       <itemizedlist>
         <listitem>
+<!--
           <para>All of your SSH users need to be able to read and
             write to the repository, so put all the SSH users into a
             single group.</para>
+-->
+          <para>Alle Ihrer SSH-Anwender müssen in der Lage sein, das
+            Projektarchiv zu lesen und zu schreiben. Fassen Sie also
+            alle SSH-Anwender in einer einzelnen Gruppe
+            zusammen.</para>
         </listitem>
         <listitem>
+<!--
           <para>
             Make the repository wholly owned by that group.
             </para>
+-->
+          <para>
+            Machen Sie das Projektarchiv vollständig zum Eigentum dieser Gruppe.
+          </para>
         </listitem>
         <listitem>
+<!--
           <para>Set the group permissions to
             read/write.</para>
+-->
+          <para>Setzen Sie die Gruppenrechte auf lesen/schreiben.</para>
         </listitem>
         <listitem>
+<!--
           <para>Your users need to use a sane umask when accessing the
             repository, so make sure <command>svnserve</command>
             (<filename>/usr/bin/svnserve</filename>, or wherever it
@@ -6609,11 +6748,29 @@ umask 002
             script that runs <userinput>umask 002</userinput> and
             executes the real <command>svnserve</command>
             binary.</para>
+-->
+          <para>Ihre Anwender benötigen eine sinvolle umask, wenn sie
+            auf das Projektarchiv zugreifen. Also sollten sie
+            sicherstellen, dass <command>svnserve</command>
+            (<filename>/usr/bin/svnserve</filename> oder wo es sonst
+            im <literal>$PATH</literal> liegt) tatsächlich ein
+            Wrapper-Script ist, dass <userinput>umask 002</userinput>
+            aufruft und dann das eigentliche Programm
+            <command>svnserve</command> startet.</para>
         </listitem>
+<!--
         <listitem><para>Take similar measures when using
             <command>svnlook</command> and
             <command>svnadmin</command>.  Either run them with a sane
             umask or wrap them as just described.</para>
+        </listitem>
+-->
+        <listitem>
+          <para>Ergreifen Sie ähnliche Maßnahmen bei Verwendung von
+            <command>svnlook</command> und
+            <command>svnadmin</command>. Starten Sie sie entweder mit
+            einer sinvollen umask oder verpacken sie wie eben
+            beschrieben.</para>
         </listitem>
       </itemizedlist>
 
