@@ -3,13 +3,13 @@
   <!-- Here live locale-specific customizations to the HTML base stylesheet -->
 
   <xsl:template name="user.header.navigation">
-    <div id="vcws-header">
-    <hr/>
-    <p>This documentation was written to describe Subversion 1.6.  If
-       you are running a newer version of Subversion, we strongly suggest
-       that you visit <a href="http://www.svnbook.com/"
-       >http://www.svnbook.com/</a> and consult the version of this book
-       appropriate for your version of Subversion.</p>
+    <div id="vcws-version-notice">
+    <p>This documentation was written to describe the 1.6.x series of
+       Subversion.  If you are running a different version of Subversion,
+       you are strongly encourages to visit <a
+       href="http://www.svnbook.com/" >http://www.svnbook.com/</a> and
+       instead consult the version of this documentations appropriate for
+       your version of Subversion.</p>
     </div>
   </xsl:template>
 
