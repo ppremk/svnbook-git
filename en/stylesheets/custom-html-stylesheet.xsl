@@ -6,8 +6,7 @@
   <xsl:param name="draft.watermark.image">images/draft.png</xsl:param>
 
   <xsl:template name="user.header.navigation">
-    <div id="vcws-header">
-    <hr/>
+    <div id="vcws-version-notice">
     <p>This text is a work in progress&#8212;highly subject to
        change&#8212;and may not accurately describe any released
        version of the Apache&#8482; Subversion&#174; software.
