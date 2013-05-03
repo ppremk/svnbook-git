@@ -5,10 +5,10 @@
   <xsl:template name="user.header.navigation">
     <div id="vcws-version-notice">
     <p>This documentation was written to describe the 1.7.x series of
-       Subversion.  If you are running a different version of Subversion,
-       you are strongly encourages to visit <a
+       Apache&#8482; Subversion&#174;.  If you are running a different
+       version of Subversion, you are strongly encouraged to visit <a
        href="http://www.svnbook.com/" >http://www.svnbook.com/</a> and
-       instead consult the version of this documentations appropriate for
+       instead consult the version of this documentation appropriate for
        your version of Subversion.</p>
    </div>
   </xsl:template>
