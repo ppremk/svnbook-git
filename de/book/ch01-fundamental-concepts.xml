@@ -1,18 +1,21 @@
 <chapter id="svn.basic">
+<!--
+  <title>Fundamental Concepts</title>
+-->
   <title>Grundlegende Konzepte</title>
 
-<!--  <para>This chapter is a short, casual introduction to Subversion.
-    If you're new to version control, this chapter is definitely for
-    you.  We begin with a discussion of general version control
-    concepts, work our way into the specific ideas behind
-    Subversion, and show some simple examples of Subversion in
-    use.</para> -->
-  <para>Das Kapitel ist eine kurze, lockere Einführung in Subversion.
-    Wenn Sie noch nicht mit Versionskontrolle zu tun hatten, dann ist
-    dieses Kapitel genau für Sie. Wir besprechen die grundlegenden
-    Konzepte von Versionskontrolle und arbeiten uns in die Richtung von
-    Subversion und dessen spezifischen Ideen und zeigen einfache Beispiele
-    zur Anwendung.</para>
+<!--
+  <para>This chapter is a short, casual introduction to Subversion and
+    its approach to version control.  We begin with a discussion of
+    general version control concepts, work our way into the specific
+    ideas behind Subversion, and show some simple examples of
+    Subversion in use.</para>
+-->
+  <para>Das Kapitel ist eine kurze, lockere Einführung in Subversion
+    und seinem Ansatz zu Versionskontrolle.  Wir besprechen die
+    grundlegenden Konzepte von Versionskontrolle und arbeiten uns in
+    die Richtung von Subversion und dessen spezifischen Ideen und
+    zeigen einfache Beispiele zur Anwendung.</para>
 
 <!--
   <para>Even though the examples in this chapter show people sharing
@@ -30,80 +33,151 @@
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
-  <sect1 id="svn.basic.repository">
-    <title>Das Projektarchiv</title>
+  <sect1 id="svn.basic.version-control-basics">
+<!--
+    <title>Version Control Basics</title>
+-->
+    <title>Grundlagen der Versionskontrolle</title>
 
-<!--    <para>Subversion is a centralized system for sharing information.
-      At its core is a repository, which is a central store of data.
-      The repository stores information in the form of a
-      <firstterm>filesystem tree</firstterm>&mdash;a typical hierarchy
-      of files and directories.  Any number of
-      <firstterm>clients</firstterm> connect to the repository, and
-      then read or write to these files.  By writing data, a client
-      makes the information available to others; by reading data, the
-      client receives information from others.  <xref
-      linkend="svn.basic.repository.dia-1"/> illustrates this.</para> -->
-    <para>Subversion ist ein zentralisiertes System zur gemeinsamen
-      Nutzung von Informationen. In seinem Kern ist ein Projektarchiv ein
-      zentraler Speicher von Daten. Das Projektarchiv speichert Informationen
-      in Form eines <firstterm>Dateisystembaumes</firstterm>, typischerweise
-      eine Hierarchie von Dateien und Verzeichnissen. Eine beliebige Anzahl
-      von <firstterm>Clients</firstterm> verbinden sich mit dem Projektarchiv
-      und lesen oder schreiben diese Dateien. Durch den Schreibvorgang,
-      macht ein Client Informationen für andere verfügbar. Durch den
-      Lesevorgang bekommt der Client Informationen von anderen zur Verfügung
-      gestellt.  <xref linkend="svn.basic.repository.dia-1"/>
-      verdeutlicht das.</para> <!-- jmf: XSLT macht daraus "Abbildung..." -->
+    <indexterm>
+<!--
+      <primary>version control systems</primary>
+-->
+      <primary>Versionskontrollsysteme</primary>
+    </indexterm>
 
-    <figure id="svn.basic.repository.dia-1">
-      <title>Ein typisches Client/Server System</title>
-      <graphic fileref="images/ch02dia1.png"/>
-    </figure>
+<!--
+    <para>A version control system (or revision control system) is a
+      system that tracks incremental versions (or revisions) of files
+      and, in some cases, directories over time.  Of course, merely
+      tracking the various versions of a user's (or group of users')
+      files and directories isn't very interesting in itself.  What
+      makes a version control system useful is the fact that it allows
+      you to explore the changes which resulted in each of those
+      versions and facilitates the arbitrary recall of the
+      same.</para>
+-->
+    <para>Ein Versionskontrollsystem (oder Revisionskontrollsystem)
+      ist ein System, das inkrementelle Versionen (oder Revisionen)
+      von Dateien und, in manchen Fällen, Verzeichnissen über die Zeit
+      hinweg verfolgt. Natürlich ist es für sich nicht sehr
+      interessant, die verschiedenen Versionen eines Nutzers (oder
+      einer Gruppe von Nutzern) zu verfolgen. Was ein
+      Versionskontrollsystem nützlich macht, ist die Tatsache, dass es
+      Ihnen erlaubt, die Änderungen zu untersuchen, die zu jeder
+      dieser Versionen geführt haben und es ermöglicht, erstere
+      jederzeit wieder aufzurufen.</para>
 
-<!--    <para>So why is this interesting?  So far, this sounds like the
-      definition of a typical file server.  And indeed, the repository
-      <emphasis>is</emphasis> a kind of file server, but it's not your
-      usual breed.  What makes the Subversion repository special is
-      that <emphasis>it remembers every change</emphasis> ever written
-      to it&mdash;every change to every file, and even changes to the
-      directory tree itself, such as the addition, deletion, and
-      rearrangement of files and directories.</para> -->
-    <para>So, warum ist das interessant? Bis zu diesem Punkt hört sich
-      das wie die Definition eines typischen File-Servers an. Und
-      tatsächlich, das Projektarchiv <emphasis>ist</emphasis> eine Art von
-      File-Server, aber nicht von der Art, die Sie kennen.  Was das
-      Subversion-Projektarchiv so speziell macht ist, dass es sich
-      <emphasis>jede Änderung merkt</emphasis>, die jemals
-      hineingeschrieben wurde. Jede Änderung an jeder Datei und auch
-      Änderungen am Verzeichnisbaum selbst, wie z.B. das Hinzufügen, Löschen und
-      Umstrukturieren von Dateien und Verzeichnissen.</para>
+<!--
+    <para>In this section, we'll introduce some fairly high-level
+      version control system components and concepts.  We'll limit our
+      discussion to modern version control systems&mdash;in today's
+      interconnected world, there is very little point in
+      acknowledging version control systems which cannot
+      operate across wide-area networks.</para>
+-->
+    <para>In diesem Abschnitt werden wir einige Komponenten und
+      Konzepte von Versionskontrollsystemen auf ziemlich hohem Niveau
+      vorstellen. Wir werden uns auf moderne Versionskontrollsysteme
+      beschränken &ndash; in der heutigen vernetzten Welt hat es wenig
+      Sinn, Versionskontrollsystemen eine Berechtigung einzuräumen,
+      die nicht über Netze hinweg arbeiten können.</para>
 
-<!--    <para>When a client reads data from the repository, it normally
-      sees only the latest version of the filesystem tree.  But the
-      client also has the ability to view
-      <emphasis>previous</emphasis> states of the filesystem.  For
-      example, a client can ask historical questions such
-      as <quote>What did this directory contain last
-      Wednesday?</quote> and <quote>Who was the last person to change
-      this file, and what changes did he make?</quote> These are the
-      sorts of questions that are at the heart of
-      any <firstterm>version control system</firstterm>: systems that
-      are designed to track changes to data over time.
-    </para> -->
-    <para>Wenn ein Client Daten vom Projektarchiv liest, bekommt der Client
-      üblicherweise nur die letzte Version des Dateisystem-Baumes zu sehen.
-      Der Client hat aber auch die Möglichkeit, <emphasis>vorherige</emphasis>
-      Zustände des Dateibaumes anzuschauen.
-      Zum Beispiel kann ein Client somit die Frage stellen:
-      <quote>Was beinhaltete das Verzeichnis am letzten Mittwoch?</quote> und
-      <quote>Wer war die Person, die als letztes die Datei geändert hat und welche
-      Änderungen hat sie gemacht?</quote>. Diese Art von Fragen sind
-      die Grundlage eines
-      <firstterm>Versionskontrollsystems</firstterm>, Systeme, die
-      dazu entwickelt wurden, um die Änderungen an Daten über die Zeit
-      hin aufzuzeichnen.
-    </para>
-  </sect1>
+
+    <!-- ================================================================= -->
+    <sect2 id="svn.basic.repository">
+<!--
+      <title>The Repository</title>
+-->
+      <title>Das Projektarchiv</title>
+
+<!--
+      <indexterm>
+        <primary>repository</primary>
+        <secondary>defined</secondary>
+      </indexterm>
+
+      <para>At the core of the version control system is a repository,
+        which is the central store of that system's data.  The
+        repository usually stores information in the form of a
+        <firstterm>filesystem tree</firstterm>&mdash;a hierarchy of
+        files and directories.  Any number of
+        <firstterm>clients</firstterm> connect to the repository, and
+        then read or write to these files.  By writing data, a client
+        makes the information available to others; by reading data,
+        the client receives information from others.
+        <xref linkend="svn.basic.repository.dia-1"/> illustrates
+        this.</para>
+-->
+      <indexterm>
+        <primary>Projektarchiv</primary>
+        <secondary>Definition</secondary>
+      </indexterm>
+
+      <para>Im Kern eines Versionskontrollsystems ist ein
+        Projektarchiv, das der zentrale Speicher der Daten dieses
+        Systems ist. Das Projektarchiv speichert Informationen
+        gewöhnlicherweise in Form eines
+        <firstterm>Dateisystembaumes</firstterm>, eine Hierarchie aus
+        Dateien und Verzeichnissen. Eine beliebige Anzahl von
+        <firstterm>Clients</firstterm> verbindet sich mit dem
+        Projektarchiv und liest oder schreibt diese Dateien. Durch den
+        Schreibvorgang, macht ein Client Informationen für andere
+        verfügbar. Durch den Lesevorgang bekommt der Client
+        Informationen von anderen zur Verfügung gestellt.
+        <xref linkend="svn.basic.repository.dia-1"/> verdeutlicht
+        das.</para>
+
+      <figure id="svn.basic.repository.dia-1">
+<!--
+        <title>A typical client/server system</title>
+-->
+        <title>Ein typisches Client/Server System</title>
+        <graphic fileref="images/ch02dia1.png"/>
+      </figure>
+
+<!--
+      <para>Why is this interesting?  So far, this sounds like the
+        definition of a typical file server.  And indeed, the
+        repository <emphasis>is</emphasis> a kind of file server, but
+        it's not your usual breed.  What makes the repository special
+        is that as the files in the repository are changed, the
+        repository remembers each version of those files.</para>
+-->
+
+      <para>Warum ist das interessant? Bis zu diesem Punkt hört
+        sich das wie die Definition eines typischen File-Servers an.
+        Und tatsächlich, das Projektarchiv <emphasis>ist</emphasis>
+        eine Art von File-Server, aber nicht von der Art, die Sie
+        kennen.  Was das Subversion-Projektarchiv so speziell macht
+        ist, dass es sich während die Dateien im Projektarchiv
+        geändert werden jede Version jener Dateien merkt.</para>
+
+<!--
+      <para>When a client reads data from the repository, it normally
+        sees only the latest version of the filesystem tree.  But what
+        makes a version control client interesting is that it also has
+        the ability to request previous states of the filesystem from
+        the repository.  A version control client can ask historical
+        questions such as <quote>What did this directory contain last
+        Wednesday?</quote> and <quote>Who was the last person to
+        change this file, and what changes did he make?</quote>
+        These are the sorts of questions that are at the heart of any
+        version control system.</para>
+-->
+
+      <para>Wenn ein Client Daten aus dem Projektarchiv liest, bekommt
+        der Client üblicherweise nur die letzte Version des
+        Dateisystem-Baumes zu sehen. Was ein Versionskontrollsystem
+        aber interessant macht, ist darüberhinaus die Fähigkeit,
+        vorherige Zustände des Dateibaumes aus dem Projektarchiv
+        abzurufen. Ein Versionskontrollsystem kann historische Fragen
+        stellen, wie <quote>Was beinhaltete das Verzeichnis am letzten
+        Mittwoch?</quote> und <quote>Wer war die Person, die als
+        letztes die Datei geändert hat und welche Änderungen hat sie
+        gemacht?</quote>. Diese Art von Fragen sind die Grundlage
+        eines Versionskontrollsystems.</para>
+    </sect2>
 
   <!-- ================================================================= -->
   <!-- ================================================================= -->
