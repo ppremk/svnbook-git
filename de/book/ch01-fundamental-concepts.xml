@@ -179,100 +179,193 @@
         eines Versionskontrollsystems.</para>
     </sect2>
 
-  <!-- ================================================================= -->
-  <!-- ================================================================= -->
-  <!-- ================================================================= -->
-  <sect1 id="svn.basic.vsn-models">
-<!--
-    <title>Versioning Models</title>
--->
-    <title>Versionierungsmodelle</title>
-
-<!--
-    <para>The core mission of a version control system is to enable
-      collaborative editing and sharing of data.  But different
-      systems use different strategies to achieve this.  It's
-      important to understand these different strategies, for a couple
-      of reasons.  First, it will help you compare and contrast
-      existing version control systems, in case you encounter other
-      systems similar to Subversion.  Beyond that, it will also help
-      you make more effective use of Subversion, since Subversion
-      itself supports a couple of different ways of working.</para>
--->
-    <para>Die zentrale Aufgabe eines Versionskontrollsystems ist es,
-      die Zusammenarbeit beim Editieren gemeinsam benutzter Daten zu
-      ermöglichen. Jedoch verwenden unterschiedliche Systeme auch
-      unterschiedliche Strategien, um dies zu ermöglichen. Aus einer
-      Reihe von Gründen ist es wichtig, diese Unterschiede zu
-      verstehen. Erstmal hilft es dabei, bestehende
-      Versionskontrollsysteme zu vergleichen und gegenüberzustellen,
-      falls Ihnen andere Systeme begegnen, die Subversion ähneln.
-      Darüber hinaus wird es Ihnen helfen, Subversion effektiver zu
-      benutzen, da Subversion selbst eine Reihe unterschiedlicher
-      Arbeitsweisen unterstützt.</para>
-
     <!-- =============================================================== -->
-    <sect2 id="svn.basic.vsn-models.problem-sharing">
+    <sect2 id="svn.basic.working-copy">
 <!--
-      <title>The Problem of File Sharing</title>
+      <title>The Working Copy</title>
 -->
-      <title>Das Problem verteilter Dateizugriffe</title>
+      <title>Die Arbeitskopie</title>
 
-<!--      <para>All version control systems have to solve the same
-        fundamental problem: how will the system allow users to share
-        information, but prevent them from accidentally stepping on
-        each other's feet?  It's all too easy for users to
-        accidentally overwrite each other's changes in the
-        repository.</para> -->
-      <para>Alle Versionskontrollsysteme haben das gleiche 
-        fundamentale Problem zu lösen: Wie soll es Anwendern
-        erlaubt werden, Informationen zu teilen, aber sie davor zu
-        bewahren, sich gegenseitig auf die Füße zu treten?
-        Es ist allzu einfach, die Änderungen eines anderen 
-        im Projektarchiv zu überschreiben.</para>
-
-<!--      <para>Consider the scenario shown in <xref
-        linkend="svn.basic.vsn-models.problem-sharing.dia-1"/>.
-        Suppose we have two coworkers, Harry and Sally.  They each
-        decide to edit the same repository file at the same time.  If
-        Harry saves his changes to the repository first, it's
-        possible that (a few moments later) Sally could accidentally
-        overwrite them with her own new version of the file.  While
-        Harry's version of the file won't be lost forever (because the
-        system remembers every change), any changes Harry made
-        <emphasis>won't</emphasis> be present in Sally's newer version
-        of the file, because she never saw Harry's changes to begin
-        with.  Harry's work is still effectively lost&mdash;or at
-        least missing from the latest version of the file&mdash;and
-        probably by accident.  This is definitely a situation we want
-		to avoid!</para> -->
-
-      <para>Stellen Sie sich einmal folgendes <xref 
-        linkend="svn.basic.vsn-models.problem-sharing.dia-1"/>Szenario vor:
-        Zwei Kollegen, Harry und Sally, haben sich entschieden, 
-        dieselbe Datei zur gleichen Zeit zu bearbeiten. 
-        Harry speichert seine Änderungen zuerst im Projektarchiv, 
-        es ist aber möglich, dass Sally nur einige Augenblicke 
-        später seine Datei mit ihrer überschreibt.
-        Harrys Änderungen der Datei sind zwar nicht für immer 
-        verloren (da das System jede Änderung aufzeichnet), aber 
-        alle seine Änderungen sind in Sallys später gespeicherter 
-        Version der Datei nicht vorhanden, da Sally diese Änderungen 
-        noch gar nicht kannte. Das heißt, dass Harrys Arbeit 
-        doch verloren ist, zumindest in der neuesten Version der 
-        Datei, und das vermutlich aus Versehen. 
-        Eine solche Situation wollen wir auf alle Fälle vermeiden.		
-      </para>
-
-      <figure id="svn.basic.vsn-models.problem-sharing.dia-1">
 <!--
-        <title>The problem to avoid</title>
+      <indexterm>
+        <primary>working copy</primary>
+        <secondary>defined</secondary>
+      </indexterm>
+
+      <para>A version control system's value comes from the fact that it
+        tracks versions of files and directories, but the rest of the
+        software universe doesn't operate on <quote>versions of files
+        and directories</quote>.  Most software programs understand
+        how to operate only on a <emphasis>single</emphasis> version
+        of a specific type of file.  So how does a version control
+        user interact with an abstract&mdash;and, often,
+        remote&mdash;repository full of multiple versions of various
+        files in a concrete fashion?  How does his or her word
+        processing software, presentation software, source code
+        editor, web design software, or some other program&mdash;all
+        of which trade in the currency of simple data files&mdash;get
+        access to such files?  The answer is found in the version
+        control construct known as a <firstterm>working
+        copy</firstterm>.</para>
 -->
-        <title>Das zu vermeidende Problem</title>
-        <graphic fileref="images/ch02dia2.png"/>
-      </figure>
+      <indexterm>
+        <primary>Arbeitskopie</primary>
+        <secondary>Definition</secondary>
+      </indexterm>
+
+      <para>Der Wert eines Versionskontrollsystems rührt von der
+        Tatsache her, dass es Versionen von Dateien und Verzeichnissen
+        verfolgt, doch der Rest des Software-Universums arbeitet nicht
+        auf <quote>Versionen von Dateien und Verzeichnissen</quote>.
+        Die meisten Programme wissen, wie mit einer
+        <emphasis>einzelnen</emphasis> Version eines bestimmten
+        Dateityps umgegangen wird. Wie arbeitet also ein Nutzer eines
+        Versionskontrollsystems konkret mit einem abstrakten &ndash;
+        und oft entfernten &ndash; Projektarchiv voll mit mehreren
+        Versionen verschiedener Dateien? Wie schaffen es seine oder
+        ihre Textbearbeitungs-Software, Präsentations-Software,
+        Quelltexteditoren, Web-Design-Software oder sonstigen
+        Programme, die alle nur mit einfachen Dateien umgehen können,
+        Zugriff auf solche Dateien zu bekommen? Die Antwort findet
+        sich im Versionskontroll-Konstrukt, das als
+        <firstterm>Arbeitskopie</firstterm> bekannt ist.</para>
+
+<!--
+      <para>A working copy is, quite literally, a local copy of a
+        particular version of a user's VCS-managed data upon which
+        that user is free to work.  Working copies<footnote><para>The
+        term <quote>working copy</quote> can be generally applied to
+        any one file version's local instance.  When most folks use
+        the term, though, they are referring to a whole directory tree
+        containing files and subdirectories managed by the version
+        control system.</para></footnote> appear to other software
+        just as any other local directory full of files, so those
+        programs don't have to be <quote>version-control-aware</quote>
+        in order to read from and write to that data.  The task of
+        managing the working copy and communicating changes made to
+        its contents to and from the repository falls squarely to the
+        version control system's client software.</para>
+-->
+      <para>Eine Arbeitskopie ist buchstäblich eine lokale Kopie einer
+        bestimmten Version der vom VCS verwalteten Nutzerdaten mit der
+        der Nutzer frei arbeiten kann. Arbeitskopien<footnote><para>Der
+        Begriff <quote>Arbeitskopie</quote> kann allgemein auf die
+        lokale Instanz einer jeden Dateiversion angewendet werden. Die
+        meisten Leute verwenden den Begriff aber, wenn sie sich auf
+        einen kompletten Verzeichnisbaum beziehen, der Dateien und
+        Verzeichnisse enthält, die vom Versionskontrollsystem
+        verwaltet werden.</para></footnote> sehen für andere Software
+        aus wie alle anderen lokalen Verzeichnisse voller Dateien, so
+        dass diese Programme nicht
+        <quote>versionskontroll-bewusst</quote> sein müssen, um die
+        Daten zu lesen und zu schreiben. Die Aufgabe, die Arbeitskopie
+        zu verwalten und Änderungen an ihrem Inhalt zum und vom
+        Projektarchiv zu übertragen, fällt genau der Client-Software
+        des Versionskontrollsystems zu.</para>
 
     </sect2>
+
+    <!-- ================================================================= -->
+    <sect2 id="svn.basic.vsn-models">
+<!--
+      <title>Versioning Models</title>
+-->
+      <title>Versionierungsmodelle</title>
+
+<!--
+      <para>If the primary mission of a version control system is to
+        track the various versions of digital information over time, a
+        very close secondary mission in any modern version control
+        system is to enable collaborative editing and sharing of that
+        data.  But different systems use different strategies to
+        achieve this.  It's important to understand these different
+        strategies, for a couple of reasons.  First, it will help you
+        compare and contrast existing version control systems, in case
+        you encounter other systems similar to Subversion.  Beyond
+        that, it will also help you make more effective use of
+        Subversion, since Subversion itself supports a couple of
+        different ways of working.</para>
+-->
+      <para>Wenn die primäre Mission eines Versionskontrollsystems
+        darin besteht, die unterschiedlichen Versionen digitaler
+        Informationen über die Zeit hinweg zu verfolgen, liegt eine
+        sehr nahe sekundäre Mission darin, das kollaborative
+        Bearbeiten und Teilen dieser Daten zu ermöglichen. Jedoch
+        verwenden unterschiedliche Systeme auch unterschiedliche
+        Strategien, um dies zu bewerkstelligen. Aus einer Reihe von
+        Gründen ist es wichtig, diese Unterschiede zu verstehen.
+        Zunächst hilft es dabei, bestehende Versionskontrollsysteme zu
+        vergleichen und gegenüberzustellen, falls Ihnen andere Systeme
+        begegnen, die Subversion ähneln.  Darüber hinaus wird es Ihnen
+        helfen, Subversion effektiver zu benutzen, da Subversion
+        selbst eine Reihe unterschiedlicher Arbeitsweisen
+        unterstützt.</para>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.basic.vsn-models.problem-sharing">
+<!--
+        <title>The Problem of File Sharing</title>
+-->
+        <title>Das Problem verteilter Dateizugriffe</title>
+
+<!--
+        <para>All version control systems have to solve the same
+          fundamental problem: how will the system allow users to
+          share information, but prevent them from accidentally
+          stepping on each other's feet?  It's all too easy for users
+          to accidentally overwrite each other's changes in the
+          repository.</para>
+-->
+        <para>Alle Versionskontrollsysteme haben das gleiche
+          fundamentale Problem zu lösen: Wie soll es Anwendern erlaubt
+          werden, Informationen zu teilen, aber sie davor zu bewahren,
+          sich gegenseitig auf die Füße zu treten?  Es ist allzu
+          einfach, die Änderungen eines anderen im Projektarchiv zu
+          überschreiben.</para>
+
+<!--
+        <para>Consider the scenario shown in
+          <xref linkend="svn.basic.vsn-models.problem-sharing.dia-1"/>.
+          Suppose we have two coworkers, Harry and Sally.  They each
+          decide to edit the same repository file at the same time.
+          If Harry saves his changes to the repository first, it's
+          possible that (a few moments later) Sally could accidentally
+          overwrite them with her own new version of the file.  While
+          Harry's version of the file won't be lost forever (because
+          the system remembers every change), any changes Harry made
+          <emphasis>won't</emphasis> be present in Sally's newer version
+          of the file, because she never saw Harry's changes to begin
+          with.  Harry's work is still effectively lost&mdash;or at
+          least missing from the latest version of the file&mdash;and
+          probably by accident.  This is definitely a situation we want
+          to avoid!</para>
+-->
+
+        <para>Stellen Sie sich einmal folgendes Szenario in
+          <xref linkend="svn.basic.vsn-models.problem-sharing.dia-1"/>
+          vor: Zwei Kollegen, Harry und Sally, haben sich entschieden,
+          dieselbe Datei zur gleichen Zeit zu bearbeiten.  Harry
+          speichert seine Änderungen zuerst im Projektarchiv, es ist
+          aber möglich, dass Sally nur einige Augenblicke später seine
+          Datei mit ihrer überschreibt.  Harrys Änderungen der Datei
+          sind zwar nicht für immer verloren (da das System jede
+          Änderung aufzeichnet), aber alle seine Änderungen sind in
+          Sallys später gespeicherter Version der Datei nicht
+          vorhanden, da Sally diese Änderungen noch gar nicht kannte.
+          Das heißt, dass Harrys Arbeit doch verloren ist, zumindest
+          in der neuesten Version der Datei, und das vermutlich aus
+          Versehen.  Eine solche Situation wollen wir auf alle Fälle
+          vermeiden.</para>
+
+        <figure id="svn.basic.vsn-models.problem-sharing.dia-1">
+<!--
+          <title>The problem to avoid</title>
+-->
+          <title>Das zu vermeidende Problem</title>
+          <graphic fileref="images/ch02dia2.png"/>
+        </figure>
+
+      </sect3>
 
     <!-- =============================================================== -->
     <sect2 id="svn.basic.vsn-models.lock-unlock">
