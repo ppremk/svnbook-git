@@ -5,19 +5,20 @@
   <title>Grundlegende Benutzung</title>
 
 <!--
-  <para>Now we will go into the details of using Subversion.  By the
-    time you reach the end of this chapter, you will be able to
-    perform all the tasks you need to use Subversion in a normal day's
-    work.  You'll start with getting your files into Subversion,
-    followed by an initial checkout of your code.  We'll then walk you
-    through making changes and examining those changes.  You'll also
-    see how to bring changes made by others into your working copy,
-    examine them, and work through any conflicts that might
-    arise.</para>
+  <para>Theory is useful, but its application is just plain fun.
+    Let's move now into the details of using Subversion.  By the time
+    you reach the end of this chapter, you will be able to perform all
+    the tasks you need to use Subversion in a normal day's work.
+    You'll start with getting your files into Subversion, followed by
+    an initial checkout of your code.  We'll then walk you through
+    making changes and examining those changes.  You'll also see how
+    to bring changes made by others into your working copy, examine
+    them, and work through any conflicts that might arise.</para>
 -->
-  <para>Nun kommen wir zu den Details der Benutzung von Subversion.
-    Bis Sie das Ende dieses Kapitels erreicht haben, werden Sie in der
-    Lage sein, alle Aufgaben zu erledigen, die sich bei der normalen
+  <para>Theorie ist nützlich, doch deren Anwendung ist der pure Spaß.
+    Lassen Sie uns nun zu den Details von Subversion kommen. Wenn Sie
+    das Ende dieses Kapitels erreicht haben, werden Sie in der Lage
+    sein, alle Aufgaben zu erledigen, die sich bei der normalen
     täglichen Arbeit mit Subversion stellen. Sie werden damit
     beginnen, Ihre Dateien in Subversion einzupflegen, gefolgt von
     einem initialen Checkout Ihres Codes. Dann werden wir bei unserem
@@ -27,7 +28,7 @@
     eventuell auftretende Konflikte arbeiten können.</para>
 
 <!--
-  <para>Note that this chapter is not meant to be an exhaustive list
+  <para>This chapter will not provide exhaustive coverage
     of all of Subversion's commands&mdash;rather, it's a conversational
     introduction to the most common Subversion tasks that you'll
     encounter.  This chapter assumes that you've read and understood
@@ -35,15 +36,65 @@
     model of Subversion.  For a complete reference of all commands,
     see <xref linkend="svn.ref"/>.</para>
 -->
-  <para>Beachten Sie jedoch, dass dieses Kapitel nicht als erschöpfende
-    Liste aller Befehle von Subversion gedacht ist &ndash; es ist eher
-    eine Einführung in die gebräuchlichsten Aufgaben von Subversion,
-    denen Sie begegnen werden. Dieses Kapitel setzt voraus, dass Sie
+  <para>Dieses Kapitel ist nicht als erschöpfende Liste aller Befehle
+    von Subversion gedacht ist &ndash; es ist eher eine Einführung in
+    die gebräuchlichsten Aufgaben von Subversion, denen Sie begegnen
+    werden. Dieses Kapitel setzt voraus, dass Sie
     <xref linkend="svn.basic"/> gelesen und verstanden haben und dass
     Sie mit dem allgemeinen Subversion-Modell vertraut sind. Für eine
-    vollständige Referenz aller Befehle, siehe <xref
-      linkend="svn.ref"/>.</para>
+    vollständige Referenz aller Befehle, siehe
+    <xref linkend="svn.ref"/>.</para>
 
+<!--
+  <para>Also, this chapter assumes that the reader is seeking
+    information about how to interact in a basic fashion with an
+    existing Subversion repository.  No repository means no working
+    copy; no working copy means not much of interest in this chapter.
+    There are many Internet sites which offer free or inexpensive
+    Subversion repository hosting services.  Or, if you'd prefer to
+    set up and administer your own repositories, check out
+    <xref linkend="svn.reposadmin"/>.  But don't expect the
+    examples in this chapter to work without the user having access
+    to a Subversion repository.</para>
+-->
+  <para>Dieses Kapitel geht weiter davon aus, dass der Leser
+    Informationen sucht, wie er auf grundlegende Art mit einem
+    bestehenden Subversion-Projektarchiv interagieren kann. Kein
+    Projektarchiv bedeutet, keine Arbeitskopie; keine Arbeitskopie
+    bedeutet, nicht viel Interesse an diesem Kapitel. Es gibt viele
+    Orte im Internet, die freie oder preiswerte Bewirtungsdienste für
+    Subversion-Projektarchive anbieten. Oder, falls Sie es bevorzugen
+    sollten, Ihre eigenen Projektarchive einzurichten und zu
+    verwalten, schauen Sie sich <xref linkend="svn.reposadmin"/> an.
+    Erwarten Sie aber nicht, dass die Beispiele in diesem Kapitel
+    funktionieren, ohne dass der Anwender Zugriff auf ein
+    Subversion-Projektarchiv hat.</para>
+
+<!--
+  <para>Finally, any Subversion operation that contacts the repository
+    over a network may potentially require that the user authenticate.
+    For the sake of simplicity, our examples throughout this chapter
+    avoid demonstrating and discussing authentication.  Be aware that
+    if you hope to apply the knowledge herein to an existing,
+    real-world Subversion instance, you'll probably be forced to
+    provide at least a username and password to the server.  See
+    <xref linkend="svn.serverconfig.netmodel.creds"/> for a detailed
+    description of Subversion's handling of authentication and client
+    credentials.</para>
+
+-->
+  <para>Zum Schluss sei noch gesagt, dass jede Subversion-Operation,
+    die über ein Netzwerk mit dem Projektarchiv Kontakt aufnimmt,
+    möglicherweise erfordert, dass sich der Anwender authentifiziert.
+    Der Einfachheit halber vermeiden unsere Beispiele über das gesamte
+    Kapitel hinweg die Darstellung und Erörterung der
+    Authentifizierung. Beachten Sie, dass sie wahrscheinlich dazu
+    gezwungen werden, dem Server zumindest einen Anwendernamen und ein
+    Passwort anzugeben, falls Sie das hier erlangte Wissen auf einer
+    echten Subversion-Instanz anwenden möchten. Für eine detaillierte
+    Beschreibung, wie Subversion Authentifizierung und
+    Client-Berechtigungsnachweise behandelt, siehe
+    <xref linkend="svn.serverconfig.netmodel.creds"/></para>
 
   <!-- ================================================================= -->
   <!-- ================================================================= -->
@@ -55,110 +106,222 @@
     <title>Hilfe!</title>
 
 <!--
-    <para>Before reading on, here is the most important command you'll
-      ever need when using Subversion: <command>svn help</command>.
-      The Subversion command-line client is self-documenting&mdash;at
-      any time, a quick <userinput>svn help
-      <replaceable>subcommand</replaceable></userinput> will describe
-      the syntax, options, and behavior of the subcommand.</para>
+    <indexterm>
+      <primary>svn</primary>
+      <secondary>subcommands</secondary>
+      <tertiary>help</tertiary>
+    </indexterm>
+
+    <para>It goes without saying that this book exists to be a source
+      of information and assistance for Subversion users new and old.
+      Conveniently, though, the Subversion command-line is
+      self-documenting, alleviating the need to grab a book off the
+      shelf (wooden, virtual, or otherwise).  The <command>svn
+      help</command> command is your gateway to that built-in
+      documentation:</para>
 -->
-    <para>Bevor Sie weiter lesen: hier ist der wichtigste Befehl den
-      Sie benötigen, wenn Sie Subversion verwenden: <command>svn
-        help</command>.  Der Subversion-Kommandozeilen-Client ist
-      selbst-dokumentierend &ndash; jederzeit erklärt Ihnen ein schnelles
-      <userinput>svn help
-        <replaceable>Unterbefehl</replaceable></userinput> die Syntax,
-      die Optionen und das Verhalten des Unterbefehls.</para>
+    <indexterm>
+      <primary>svn</primary>
+      <secondary>Unterbefehle</secondary>
+      <tertiary>help</tertiary>
+    </indexterm>
+
+    <para>Es bedarf keiner Erwähnung, dass dieses Buch existiert, um
+      als Quelle für Information und Hilfe neuen und alten
+      Subversion-Anwendern zu dienen. Allerdings ist die Kommandozeile
+      von Subversion praktischerweise selbst-dokumentierend, was die
+      Notwendigkeit herabsetzt, das Buch aus dem (hölzernen,
+      virtuellen oder sonstigen) Regal hervorzuholen. Der Befehl
+      <command>svn help</command> ist Ihr Einstieg zu dieser
+      eingebauten Dokumentation:</para>
 
 <!--
-    <screen>
-$ svn help import
-import: Commit an unversioned file or tree into the repository.
-usage: import [PATH] URL
+    <informalexample>
+      <screen>
+$ svn help
+Subversion command-line client, version 1.6.13.
+Type 'svn help &lt;subcommand&gt;' for help on a specific subcommand.
+Type 'svn - -version' to see the program version and RA modules
+  or 'svn - -version - -quiet' to see just the version number.
 
-  Recursively commit a copy of PATH to URL.
-  If PATH is omitted '.' is assumed.
-  Parent directories are created as necessary in the repository.
-  If PATH is a directory, the contents of the directory are added
-  directly under URL.
-  Unversionable items such as device files and pipes are ignored
-  if - -force is specified.
+Most subcommands take file and/or directory arguments, recursing
+on the directories.  If no arguments are supplied to such a
+command, it recurses on the current directory (inclusive) by default.
 
-Valid options:
-  -q [- -quiet]             : print nothing, or only summary information
-  -N [- -non-recursive]     : obsolete; try - -depth=files or - -depth=immediates
-  - -depth ARG              : limit operation by depth ARG ('empty', 'files',
-                             'immediates', or 'infinity')
+Available subcommands:
+   add
+   blame (praise, annotate, ann)
+   cat
 &hellip;
 </screen>
+    </informalexample>
 -->
-    <screen>
-$ svn help import
-import: Überträgt eine nicht versionierte Datei oder einen Dateibaum in das
-Projektarchiv.
-Aufruf: import [PFAD] URL
+    <informalexample>
+      <screen>
+$ svn help
+Aufruf: svn &lt;Unterbefehl&gt; [Optionen] [Parameter]
+Subversion-Kommandozeilenclient, Version 1.6.13.
+Geben Sie »svn help &lt;Unterbefehl&gt;« ein, um Hilfe zu einem Unterbefehl
+          zu erhalten.
+Geben Sie »svn --version« ein, um die Programmversion und die Zugriffsmodule
+     oder »svn --version --quiet«, um nur die Versionsnummer zu sehen.
 
-  Überträgt rekursiv eine Kopie des PFADes zur URL.
-  Ohne Angabe von PFAD wird ».« angenommen. Übergeordnete Verzeichnisse
-  werden soweit erforderlich im Projektarchiv angelegt.
-  Falls PFAD ein Verzeichnis ist, wird dessen Inhalt direkt unterhalb der URL
-  hinzugefügt.
-  Nicht versionierbare Elemente wie Gerätedateien und Pipes werden ignoriert,
-  falls --force angegeben wird.
+Die meisten Unterbefehle akzeptieren Datei- und/oder Verzeichnisparameter,
+wobei die Verzeichnisse rekursiv durchlaufen werden. Wenn keine Parameter
+angegeben werden, durchläuft der Befehl das aktuelle Verzeichnis rekursiv.
 
-Gültige Optionen:
-  -q [--quiet]             : nichts oder nur Zusammenfassungen ausgeben
-  -N [--non-recursive]     : veraltet; versuchen Sie --depth=files oder
-                             --depth=immediates
-  --depth PAR              : begrenzt Operation durch Tiefe PAR (»empty«,
-                            »files«, »immediates« oder »infinity«)
+Verfügbare Unterbefehle:
+   add
+   blame (praise, annotate, ann)
+   cat
 &hellip;
 </screen>
+    </informalexample>
 
-      <sidebar>
 <!--
-        <title>Options and Switches and Flags, Oh My!</title>
+    <para>As described in the previous output, you can ask for help on
+      a particular subcommand by running <userinput>svn help
+      <replaceable>SUBCOMMAND</replaceable></userinput>.  Subversion
+      will respond with the full usage message for that subcommand,
+      including its syntax, options, and behavior:</para>
+
 -->
-        <title>Optionen und Schalter und Flags, oh Mann!</title>
-        
+    <para>Wie in der vorangegangenen Ausgabe beschrieben, bekommen Sie
+      Hilfe zu einem bestimmten Unterbefehl mit <userinput>svn help
+      <replaceable>UNTERBEFEHL</replaceable></userinput>. Subversion
+      antwortet mit der vollständigen Aufrufbeschreibung für diesen
+      Unterbefehl mitsamt seiner Syntax, den Optionen und dem
+      Verhalten:</para>
+
 <!--
-        <para>The Subversion command-line client has numerous command
-          modifiers (which we call options), but there are two
-          distinct kinds of options:  short options
-          are a single hyphen followed by a single letter, and
-          long options consist of two hyphens
-          followed by a number of letters (e.g., <literal>-s</literal>
-          and <literal>- -this-is-a-long-option</literal>,
-          respectively).  Every option has a long format, but only
-          certain options have an additional short format (these are
-          typically options that are frequently used).  To
-          maintain clarity, we <emphasis>usually</emphasis> use the
-          long form in code examples, but when describing options, if
-          there's a short form, we'll provide the long form (to
-          improve clarity) and the short form (to make it easier to
-          remember).  You should use whichever one you're more
-          comfortable with, but don't try to use both.</para>
+    <informalexample>
+      <screen>
+$ svn help help
+help (?, h): Describe the usage of this program or its subcommands.
+usage: help [SUBCOMMAND...]
+
+Global options:
+  - -username ARG           : specify a username ARG
+  - -password ARG           : specify a password ARG
+&hellip;
+</screen>
+    </informalexample>
 -->
-        <para>Der Subversion-Kommandozeilen-Client besitzt zahlreiche
-          Befehlsmodifizierer (die wir Optionen nennen), doch davon
-          gibt es zweierlei Arten: Kurzoptionen bestehen aus einem
-          Bindestrich gefolgt von einem einzelnen Buchstaben, und
-          Langoptionen bestehen aus zwei Bindestrichen gefolgt von
-          mehr als einem Buchstaben (z.B. <literal>-s</literal> bzw.
-          <literal>--dies-ist-eine-langoption</literal>).  Jede Option
-          besitzt ein Langformat, jedoch nur bestimmte Optionen haben
-          zusätzlich ein Kurzformat (das sind typischerweise die
-          am meisten gebrauchten Optionen). Um die Deutlichkeit zu wahren,
-          benutzen wir in den Beispielen
-          <emphasis>gewöhnlich</emphasis> die Langform, doch wenn
-          Optionen beschrieben werden, die eine Kurzform besitzen,
-          geben wir sowohl die Langform (um die Deutlichkeit zu
-          verbessern) als auch die Kurzform (um sie sich leichter
-          merken zu können) an. Sie sollten die Form benutzen, mit
-          der Sie am besten zurechtkommen, jedoch versuchen Sie nicht,
-          beide gleichzeitig zu benutzen.</para>
-        
-      </sidebar>
+    <informalexample>
+      <screen>
+$ svn help help
+help (?, h): Beschreibt die Anwendung dieses Programms und seiner Unterbefehle.
+Aufruf: help [UNTERBEFEHL...]
+
+Globale Optionen:
+  --username PAR           : Benutzername PAR angeben
+  --password PAR           : Passwort PAR angeben
+&hellip;
+</screen>
+    </informalexample>
+
+    <sidebar>
+<!--
+      <title>Options and Switches and Flags, Oh My!</title>
+-->
+      <title>Optionen und Schalter und Flags, oh Mann!</title>
+
+<!--
+      <indexterm>
+        <primary>svn</primary>
+        <secondary>options</secondary>
+      </indexterm>
+
+      <para>The Subversion command-line client has numerous command
+        modifiers.  Some folks refer to such things
+        as <quote>switches</quote> or <quote>flags</quote>&mdash;in
+        this book, we'll call them <quote>options</quote>.  You'll
+        find the options supported by a given <command>svn</command>
+        subcommand, plus a set of options which are globally supported
+        by all subcommands, listed near the bottom of the built-in
+        usage message for that subcommand.</para>
+
+-->
+      <indexterm>
+        <primary>svn</primary>
+        <secondary>Optionen</secondary>
+      </indexterm>
+
+      <para>Der Subversion-Kommandozeilen-Client besitzt zahlreiche
+        Befehlsmodifizierer. Manche Leute nennen diese Dinge 
+        <quote>Schalter</quote> oder <quote>Flags</quote> &ndash; in
+        diesem Buch nennen wie sie <quote>Optionen</quote>. Sie finden
+        die von einem <command>svn</command>-Unterbefehl unterstützten
+        Optionen, neben einer Reihe von Optionen, die global von allen
+        Unterbefehlen unterstützt werden, am Ende der eingebauten
+        Aufrufbeschreibung für diesen Unterbefehl.</para>
+
+<!--
+      <para>Subversion's options have two distinct forms:  short
+        options are a single hyphen followed by a single letter, and
+        long options consist of two hyphens followed by several
+        letters and hyphens (e.g., <literal>-s</literal>
+        and <literal>- -this-is-a-long-option</literal>, respectively).
+        Every option has at least one long format.  Some, such as
+        the <option>- -changelist</option> option, feature an
+        abbreviated long-format alias (<option>- -cl</option>, in this
+        case).  Only certain options&mdash;generally the most-used
+        ones&mdash;have an additional short format.  To maintain
+        clarity in this book, we usually use the long form in code
+        examples, but when describing options, if there's a short
+        form, we'll provide the long form (to improve clarity) and the
+        short form (to make it easier to remember).  Use the form
+        you're more comfortable with when executing your own
+        Subversion commands.</para>
+-->
+
+      <para>Die Optionen von Subversion haben zwei unterschiedliche
+        Formen: Kurzoptionen bestehen aus einem Bindestrich gefolgt
+        von einem einzelnen Buchstaben, und Langoptionen bestehen aus
+        zwei Bindestrichen gefolgt von mehreren Buchstaben und
+        Bindestrichen (z.B. <literal>-s</literal> bzw.
+        <literal>--dies-ist-eine-langoption</literal>).  Jede Option
+        besitzt mindestens ein Langformat. Einige, etwa die Option
+        <option>--changelist</option>, verfügen über einen
+        abgekürzten Alias im Langformat (hier <option>--cl</option>).
+        Nur bestimmte Optionen, typischerweise die am meisten
+        gebrauchten, haben zusätzlich ein Kurzformat. Um die Klarheit
+        in diesem Buch zu bewahren, benutzen wir in den Beispielen
+        die Langform, doch wenn Optionen beschrieben werden, die eine
+        Kurzform besitzen, nennen wir sowohl die Langform (der Klarheit
+        wegen) als auch die Kurzform (um sie sich leichter merken zu
+        können). Sie sollten die Form benutzen, mit der Sie am besten
+        zurechtkommen, jedoch versuchen Sie nicht, beide gleichzeitig
+        zu verwenden.</para>
+
+    </sidebar>
+
+<!--
+    <para>Many Unix-based distributions of Subversion include manual
+      pages of the sort that can be invoked using
+      the <command>man</command> program, but those tend to carry only
+      pointers to other sources of real help, such as the project's
+      website and to the website which hosts this book.  Also, several
+      companies offer Subversion help and support, too, usually via a
+      mixture of web-based discussion forums and fee-based consulting.
+      And of course, the Internet holds a decade's worth of
+      Subversion-related discussions just begging to be located by
+      your favorite search engine.  Subversion help is never too far
+      away.</para>
+
+-->
+    <para>Viele Unix-basierte Distributionen von Subversion enthalten
+      Handbuchseiten, die mit dem Programm <command>man</command>
+      aufgerufen werden können, doch jene beinhalten in der Regel nur
+      Verweise auf andere Quellen eigentlicher Hilfe, etwa die
+      Webpräsenz des Projektes und derjenigen, die dieses Buch
+      bewirtet. Daneben bieten mehrere Firmen Hilfe und Unterstützung
+      für Subversion an, üblicherweise als Mischung von webbasierten
+      Diskussionsforen und entgeltlicher Beratung. Und
+      selbstverständlich bietet das Internet einen Hort von einem
+      Jahrzehnt an Diskussionen zum Thema Subversion, der nur darauf
+      wartet, von Ihrer Lieblings-Suchmaschine geborgen zu werden.
+      Hilfe zu Subversion ist nie zu weit weg.</para>
 
   </sect1>
 
@@ -188,11 +351,17 @@ Gültige Optionen:
     <!-- =============================================================== -->
     <sect2 id="svn.tour.importing.import">
 <!--
-      <title>svn import</title>
+      <title>Importing Files and Directories</title>
 -->
-      <title>svn import</title>
+      <title>Importieren von Dateien und Verzeichnissen</title>
 
 <!--
+      <indexterm>
+        <primary>svn</primary>
+        <secondary>subcommands</secondary>
+        <tertiary>import</tertiary>
+      </indexterm>
+
       <para>The <command>svn import</command> command is a quick way to
         copy an unversioned tree of files into a repository, creating
         intermediate directories as necessary.  <command>svn
@@ -212,9 +381,10 @@ Gültige Optionen:
         Beispiel:</para>
 
 <!--
-      <screen>
-$ svnadmin create /var/svn/newrepos
-$ svn import mytree file:///var/svn/newrepos/some/project \
+      <informalexample>
+        <screen>
+$ svn import /path/to/mytree \
+             http://svn.example.com/svn/repo/some/project \
              -m "Initial import"
 Adding         mytree/foo.c
 Adding         mytree/bar.c
@@ -223,10 +393,12 @@ Adding         mytree/subdir/quux.h
 
 Committed revision 1.
 </screen>
+      </informalexample>
 -->
-      <screen>
-$ svnadmin create /var/svn/newrepos
+      <informalexample>
+        <screen>
 $ svn import mytree file:///var/svn/newrepos/some/project \
+             http://svn.example.com/svn/repo/some/project \
              -m "Erstimport"
 Hinzufügen     mytree/foo.c
 Hinzufügen     mytree/bar.c
@@ -235,35 +407,46 @@ Hinzufügen     mytree/subdir/quux.h
 
 Revision 1 übertragen.
 </screen>
+      </informalexample>
 
 <!--
-      <para>The previous example copied the contents of directory
-        <filename>mytree</filename> under the directory
-        <filename>some/project</filename> in the repository:</para>
+      <para>The previous example copied the contents of the local
+        directory <filename>mytree</filename> into the directory
+        <filename>some/project</filename> in the repository.  Note
+        that you didn't have to create that new directory
+        first&mdash;<command>svn import</command> does that for you.
+        Immediately after the commit, you can see your data in the
+        repository:</para>
 -->
       <para>Im vorstehenden Beispiel wurde der Inhalt des
-        Verzeichnisses <filename>mytree</filename> unter dem
-        Verzeichnis <filename>some/project</filename> im Projektarchiv
-        abgelegt:</para>
+        Verzeichnisses <filename>mytree</filename> in das
+        Verzeichnis <filename>some/project</filename> des
+        Projektarchivs abgelegt. Beachten Sie, dass Sie dieses neue
+        Verzeichnis nicht erst anlegen mussten &ndash; <command>svn
+        import</command> erledigt das für Sie. Unmittelbar nach der
+        Übergabe können Sie Ihre Daten im Projektarchiv sehen:</para>
 
-      <screen>
-$ svn list file:///var/svn/newrepos/some/project
+      <informalexample>
+        <screen>
+$ svn list http://svn.example.com/svn/repo/some/project
 bar.c
 foo.c
 subdir/
 </screen>
+      </informalexample>
 
 <!--
-      <para>Note that after the import is finished, the original tree
-        is <emphasis>not</emphasis> converted into a working copy.  To
-        start working, you still need to <command>svn
-        checkout</command> a fresh working copy of the tree.</para>
+      <para>Note that after the import is finished, the original local
+        directory is <emphasis>not</emphasis> converted into a working
+        copy.  To begin working on that data in a versioned fashion,
+        you still need to create a fresh working copy of that
+        tree.</para>
 -->
-      <para>Beachten Sie, dass nach dem Import der Originalbaum
-        <emphasis>nicht</emphasis> in eine Arbeitskopie umgewandelt
-        wird. Vor Beginn der Arbeit müssen Sie noch <command>svn
-          checkout</command> ausführen, um eine frische Arbeitskopie
-        des Baums zu erhalten.</para>
+      <para>Beachten Sie, dass nach dem Import das ursprüngliche
+        Verzeichnis <emphasis>nicht</emphasis> in eine Arbeitskopie
+        umgewandelt wird. Um auf diesen Daten auf eine versionierte
+        Art und Weise arbeiten zu können, müssen Sie noch eine
+        Arbeitskopie aus diesem Baum erzeugen.</para>
 
     </sect2>
 
@@ -272,104 +455,150 @@ subdir/
 <!--
       <title>Recommended Repository Layout</title>
 -->
-      <title>Empfohlene Projektarchiv Aufteilung</title>
+      <title>Empfohlene Aufteilung des Projektarchivs</title>
 
 <!--
-      <para>While Subversion's flexibility allows you to lay out your
-      repository in any way that you choose, we recommend that you
-      create a <filename>trunk</filename> directory to hold the
-      <quote>main line</quote> of development, a
-      <filename>branches</filename> directory to contain branch
-      copies, and a <filename>tags</filename> directory to contain tag
-      copies. For example:</para>
--->
-      <para>Obwohl die Flexibilität von Subversion es Ihnen erlaubt,
-        Ihr Projektarchiv nach Belieben aufzuteilen, empfehlen wir, ein
-        Verzeichnis <filename>trunk</filename> für die
-        <quote>Hauptlinie</quote> der Entwicklung, ein
-        Verzeichnis <filename>branches</filename> für Branch-Kopien und
-        ein Verzeichnis <filename>tags</filename> für
-        Tag-Kopien. Zum Beispiel:</para>
+      <indexterm>
+        <primary>trunk</primary>
+      </indexterm>
+      <indexterm>
+        <primary>tags</primary>
+      </indexterm>
+      <indexterm>
+        <primary>branches</primary>
+      </indexterm>
+      <indexterm>
+        <primary>project root</primary>
+      </indexterm>
 
-      <screen>
-$ svn list file:///var/svn/repos
-/trunk
-/branches
-/tags
+      <para>Subversion provides the ultimate flexibility in terms of
+        how you arrange your data.  Because it simply versions
+        directories and files, and because it ascribes no particular
+        meaning to any of those objects, you may arrange the data in
+        your repository in any way that you choose.  Unfortunately,
+        this flexibility also means that it's easy to find
+        yourself <quote>lost without a roadmap</quote> as you attempt
+        to navigate different Subversion repositories which may carry
+        completely different and unpredictable arrangements of the
+        data within them.</para>
+-->
+      <indexterm>
+        <primary>trunk</primary>
+      </indexterm>
+      <indexterm>
+        <primary>tags</primary>
+      </indexterm>
+      <indexterm>
+        <primary>branches</primary>
+      </indexterm>
+      <indexterm>
+        <primary>Projektwurzel</primary>
+      </indexterm>
+
+      <para>Subversion bietet äußerste Flexibilität, was die Anordnung
+        Ihrer Daten betrifft. Da es einfach Verzeichnisse und Dateien
+        versioniert und keinem dieser Objekte eine bestimmte Bedeutung
+        zuschreibt, können Sie die Daten in Ihrem Projektarchiv auf
+        beliebige Weise anordnen. Leider bedeutet diese Flexibilität
+        auch, dass Sie sich <quote>ohne Karte leicht verirren</quote>
+        können, wenn Sie versuchen, sich in verschiedenen
+        Subversion-Projektarchiven zurechtzufinden, die eine komplett
+        unterschiedliche und unvorhersehbare Anordnung der in ihnen
+        vorhandenen Daten haben.</para>
+
+<!--
+      <para>To counteract this confusion, we recommend that you follow
+        a repository layout convention (established long ago, in the
+        nascency of the Subversion project itself) in which a handful
+        of strategically named Subversion repository directories
+        convey valuable meaning about the data they hold.  Most
+        projects have a recognizable <quote>main line</quote>,
+        or <firstterm>trunk</firstterm>, of development;
+        some <firstterm>branches</firstterm>, which are divergent
+        copies of development lines; and
+        some <firstterm>tags</firstterm>, which are named, stable
+        snapshots of a particular line of development.  So we first
+        recommend that each project have a
+        recognizable <firstterm>project root</firstterm> in the
+        repository, a directory under which all of the versioned
+        information for that project&mdash;and only that
+        project&mdash;lives.  Secondly, we suggest that each project
+        root contain a <filename>trunk</filename> subdirectory for the
+        main development line, a
+        <filename>branches</filename> subdirectory in which specific
+        branches (or collections of branches) will be created, and
+        a <filename>tags</filename> subdirectory in which specific
+        tags (or collections of tags) will be created.  Of course, if
+        a repository houses only a single project, the root of the
+        repository can serve as the project root, too.</para>
+
+-->
+      <para>Um dieser Verwirrung entgegenzuwirken, empfehlen wir
+        Ihnen, dass Sie einer Konvention zur Gestaltung des
+        Projektarchivs (bereits vor langer Zeit eingeführt, während der
+        Entstehung der Subversion-Projektes) folgen, in der eine
+        handvoll strategisch benannter Verzeichnisse des
+        Subversion-Projektarchivs eine nützliche Aussage über die sich
+        darin befindlichen Daten machen. Die meisten Projekte besitzen
+        eine erkennbare <quote>Hauptlinie</quote> oder
+        <firstterm>Trunk</firstterm> der Entwicklung, einige
+        <quote>Zweige</quote> (engl. <firstterm>branches</firstterm>),
+        die abweichende Kopien von Entwicklungslinien darstellen und
+        einige  <firstterm>Tags</firstterm>, die benannte stabile
+        Momentaufnahmen einer bestimmten Entwicklungslinie sind. Also
+        empfehlen wir zunächst, dass jedes Projekt eine erkennbare
+        <firstterm>Projektwurzel</firstterm> im Projektarchiv hat, ein
+        Verzeichnis unter dem sich die gesamte versionierte
+        Information des Projektes befindet, und zwar nur dieses
+        Projektes. Zweitens schlagen wir vor, dass jede Projektwurzel
+        ein Unterverzeichnis <filename>trunk</filename> für die
+        Hauptentwicklungslinie hat, ein Unterverzeichnis
+        <filename>branches</filename>, in dem bestimmte Zweige (oder
+        Sammlungen von Zweigen) erstellt werden und ein
+        Unterverzeichnis <filename>tags</filename>, in dem bestimmte
+        Tags (oder Sammlungen von Tags) angelegt werden.
+        Selbstverständlich kann die Wurzel des Projektarchivs auch als
+        Projektwurzel dienen, falls das Projektarchiv nur ein einziges
+        Projekt beheimatet.</para>
+
+      <informalexample>
+        <screen>
+$ svn list file:///var/svn/single-project-repo
+trunk/
+branches/
+tags/
+$ svn list file:///var/svn/multi-project-repo
+project-A/
+project-B/
+$ svn list file:///var/svn/multi-project-repo/project-A
+trunk/
+branches/
+tags/
+$
 </screen>
+      </informalexample>
 
 <!--
-      <para>You'll learn more about tags and branches in <xref
-      linkend="svn.branchmerge"/>.  For details and how to set up
-      multiple projects, see <xref
-      linkend="svn.branchmerge.maint.layout"/> and <xref
-      linkend="svn.reposadmin.projects.chooselayout"/> to read more
-      about project roots.</para>
+      <para>We talk much more about tags and branches in
+        <xref linkend="svn.branchmerge"/>.  For details and some
+        advice on how to set up repositories when you have multiple
+        projects, see <xref linkend="svn.branchmerge.maint.layout"/>.
+        Finally, we discuss project roots more in
+        <xref linkend="svn.reposadmin.projects.chooselayout"/>.</para>
 -->
-      <para>In <xref linkend="svn.branchmerge"/> werden Sie mehr über
-        Branches und Tags erfahren. Details über das Aufsetzen
-        mehrerer Projekte finden Sie in <xref
-          linkend="svn.branchmerge.maint.layout"/>, und in <xref
-          linkend="svn.reposadmin.projects.chooselayout"/>  lesen
-        Sie mehr über Wurzelverzeichnisse von Projekten.</para>
+      <para>Wir werden in <xref linkend="svn.branchmerge"/> viel mehr
+        über Tags und Zweige reden. Details und Ratschläge zum
+        Einrichten von Projektarchiven bei mehreren Projekten finden
+        Sie in <xref linkend="svn.branchmerge.maint.layout"/>.
+        Schließlich erörtern wir Projektwurzeln näher in
+        <xref linkend="svn.reposadmin.projects.chooselayout"/>.</para>
 
     </sect2>
 
-  </sect1>
-
-  <!-- ================================================================= -->
-  <!-- ================================================================= -->
-  <!-- ================================================================= -->
-  <sect1 id="svn.tour.initial">
+    <!-- =============================================================== -->
+    <sect2 id="svn.tour.importing.naming">
 <!--
-    <title>Initial Checkout</title>
--->
-    <title>Anfänglicher Checkout</title>
-
-<!--
-    <para>Most of the time, you will start using a Subversion
-      repository by doing a <firstterm>checkout</firstterm> of your
-      project.  Checking out a repository creates a <quote>working
-      copy</quote> of it on your local machine.  This copy contains
-      the <literal>HEAD</literal> (latest revision) of the Subversion
-      repository that you specify on the command line:</para>
--->
-    <para>In den meisten Fällen werden Sie ein Subversion-Projektarchiv
-      zu nutzen beginnen, indem Sie einen
-      <firstterm>Checkout</firstterm> Ihres Projektes vornehmen. Das
-      Auschecken eines Projektarchivs erzeugt eine
-      <quote>Arbeitskopie</quote> desselben auf Ihrem lokalen Rechner.
-      Diese Arbeitskopie umfasst die Revision <literal>HEAD</literal>
-      (die letzte Revision) des auf der Kommandozeile angegebenen
-      Subversion-Projektarchivs:</para>
-
-
-<!--
-    <screen>
-$ svn checkout http://svn.collab.net/repos/svn/trunk
-A    trunk/Makefile.in
-A    trunk/ac-helpers
-A    trunk/ac-helpers/install.sh
-A    trunk/ac-helpers/install-sh
-A    trunk/build.conf
-&hellip;
-Checked out revision 8810.
-</screen>
--->
-    <screen>
-$ svn checkout http://svn.collab.net/repos/svn/trunk
-A    trunk/Makefile.in
-A    trunk/ac-helpers
-A    trunk/ac-helpers/install.sh
-A    trunk/ac-helpers/install-sh
-A    trunk/build.conf
-&hellip;
-Ausgecheckt, Revision 8810.
-</screen>
-
-    <sidebar>
-<!--
-      <title>What's in a Name?</title>
+      <title>What's In a Name?</title>
 -->
       <title>Was steckt in einem Namen?</title>
 
@@ -423,19 +652,22 @@ Ausgecheckt, Revision 8810.
         attribute values, and property names in XML tag names.  This
         means that pathnames can contain only legal XML (1.0)
         characters, and properties are further limited to ASCII
-        characters.  Subversion also prohibits TAB, CR, and LF
-        characters in path names to prevent paths from being broken up
-        in diffs or in the output of commands such as <command>svn
-        log</command> or <command>svn status</command>.</para>
+        characters.  Subversion also prohibits <literal>TAB</literal>,
+        <literal>CR</literal>, and <literal>LF</literal> characters in
+        path names to prevent paths from being broken up in diffs or
+        in the output of commands such as <command>svn log</command>
+        or <command>svn status</command>.</para>
 -->
       <para>Darüber hinaus werden Pfadnamen sowohl bei
         WebDAV-Übertragungen als auch in einigen der Steuerdateien von
         Subversion als XML-Attributwerte verwendet. Das bedeutet, dass
         Pfadnamen nur aus zulässigen XML (1.0) Zeichen bestehen
-        dürfen. Subversion verbietet ebenfalls TAB-, CR- und LF-Zeichen
-        in Pfadnamen, um zu verhindern, das Pfade in Vergleichen oder
-        bei Befehlsausgaben, wie <command>svn log</command> oder
-        <command>svn status</command> zerrissen werden.</para>
+        dürfen. Subversion verbietet ebenfalls
+        <literal>TAB</literal>-, <literal>CR</literal>- und
+        <literal>LF</literal>-Zeichen in Pfadnamen, um zu verhindern,
+        das Pfade in Vergleichen oder bei Befehlsausgaben, wie
+        <command>svn log</command> oder <command>svn status</command>
+        zerrissen werden.</para>
 
 <!--
       <para>While it may seem like a lot to remember, in practice
@@ -458,90 +690,161 @@ Ausgecheckt, Revision 8810.
         internen Gebrauch zu erzeugen, maskiert er bei Bedarf automatisch
         illegale Zeichen in URL-Pfaden, die Sie eingeben.</para>
 
-    </sidebar>
+    </sect2>
+  </sect1>
 
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <sect1 id="svn.tour.initial">
 <!--
-    <para>Although the preceding example checks out the trunk directory,
-      you can just as easily check out any deep subdirectory of a
-      repository by specifying the subdirectory in the checkout
-      URL:</para>
+    <title>Creating a Working Copy</title>
 -->
-    <para>Obwohl im vorangehenden Beispiel das Verzeichnis <filename>trunk</filename> ausgecheckt
-      wird, können Sie genauso leicht irgendein tiefliegendes
-      Unterverzeichnis aus einem Projektarchiv auschecken, indem Sie das
-      Unterverzeichnis im URL beim Checkout angeben:</para>
+    <title>Erstellen einer Arbeitskopie</title>
 
 <!--
-    <screen>
-$ svn checkout \
-      http://svn.collab.net/repos/svn/trunk/subversion/tests/cmdline/
-A    cmdline/revert_tests.py
-A    cmdline/diff_tests.py
-A    cmdline/autoprop_tests.py
-A    cmdline/xmltests
-A    cmdline/xmltests/svn-test.sh
+    <indexterm>
+      <primary>svn</primary>
+      <secondary>subcommands</secondary>
+      <tertiary>checkout</tertiary>
+    </indexterm>
+
+    <para>Most of the time, you will start using a Subversion
+      repository by performing a <firstterm>checkout</firstterm> of
+      your project.  Checking out a directory from a repository
+      creates a working copy of that directory on your local machine.
+      Unless otherwise specified, this copy contains the youngest
+      (that is, most recently created or modified) versions of the
+      directory and its children found in the Subversion
+      repository:</para>
+-->
+    <indexterm>
+      <primary>svn</primary>
+      <secondary>Unterbefehle</secondary>
+      <tertiary>checkout</tertiary>
+    </indexterm>
+
+    <para>In den meisten Fällen werden Sie ein Subversion-Projektarchiv
+      zu nutzen beginnen, indem Sie einen
+      <firstterm>Checkout</firstterm> Ihres Projektes vornehmen. Das
+      Auschecken eines Verzeichnisses aus dem Projektarchivs erzeugt eine
+      Arbeitskopie dieses Verzeichnisses auf Ihrem lokalen Rechner.
+      Falls nicht anderweitig angegeben, enthält diese Kopie die
+      jüngste (d.h. zuletzt erzeugte oder geänderte) im
+      Subversion-Projektarchiv aufgefundene Version des Verzeichnisses
+      und seiner Kinder:</para>
+
+<!--
+    <informalexample>
+      <screen>
+$ svn checkout http://svn.example.com/svn/repo/trunk
+A    trunk/README
+A    trunk/INSTALL
+A    trunk/src/main.c
+A    trunk/src/header.h
 &hellip;
 Checked out revision 8810.
+$
 </screen>
+    </informalexample>
 -->
-    <screen>
-$ svn checkout \
-      http://svn.collab.net/repos/svn/trunk/subversion/tests/cmdline/
-A    cmdline/revert_tests.py
-A    cmdline/diff_tests.py
-A    cmdline/autoprop_tests.py
-A    cmdline/xmltests
-A    cmdline/xmltests/svn-test.sh
+    <informalexample>
+      <screen>
+$ svn checkout http://svn.example.com/svn/repo/trunk
+A    trunk/README
+A    trunk/INSTALL
+A    trunk/src/main.c
+A    trunk/src/header.h
 &hellip;
 Ausgecheckt, Revision 8810.
 </screen>
+    </informalexample>
+
 
 <!--
-    <para>Since Subversion uses a copy-modify-merge
-      model instead of lock-modify-unlock (see
-      <xref linkend="svn.basic.vsn-models"/>), you can immediately
-      make changes to the files and directories in your working
-      copy.  Your working copy is just like any other collection of
-      files and directories on your system.  You can edit and change
-      it, move it around, even delete the entire working copy and
-      forget about it.</para>
+    <para>Although the preceding example checks out the trunk
+      directory, you can just as easily check out a deeper
+      subdirectory of a repository by specifying that subdirectory's
+      URL as the checkout URL:</para>
 -->
-    <para>Da Subversion ein <emphasis>copy-modify-merge</emphasis>-Modell
-      (kopieren-ändern-zusammenführen) statt eines
-      <emphasis>lock-modify-unlock</emphasis>-Modells (sperren-ändern-freigeben)
-      verwendet (siehe <xref
-        linkend="svn.basic.vsn-models"/>), können Sie sofort damit
+    <para>Obwohl im vorangehenden Beispiel das Trunk-Verzeichnis
+      ausgecheckt wird, können Sie ebenso leicht irgendein tiefer
+      befindliched Unterverzeichnis aus einem Projektarchiv
+      auschecken, indem Sie den URL dieses Unterverzeichnissed als URL
+      für den Checkout angeben:</para>
+
+<!--
+    <informalexample>
+      <screen>
+$ svn checkout http://svn.example.com/svn/repo/trunk/src
+A    src/main.c
+A    src/header.h
+A    src/lib/helpers.c
+&hellip;
+Checked out revision 8810.
+$
+</screen>
+    </informalexample>
+-->
+    <informalexample>
+      <screen>
+$ svn checkout http://svn.example.com/svn/repo/trunk/src
+A    src/main.c
+A    src/header.h
+A    src/lib/helpers.c
+&hellip;
+Ausgecheckt, Revision 8810.
+$
+</screen>
+    </informalexample>
+
+<!--
+    <para>Since Subversion uses a copy-modify-merge model instead of
+      lock-modify-unlock (see <xref linkend="svn.basic.vsn-models"/>),
+      you can immediately make changes to the files and directories in
+      your working copy.  Your working copy is just like any other
+      collection of files and directories on your system.  You can
+      edit the files inside it, rename it, even delete the entire
+      working copy and forget about it.</para>
+-->
+    <para>Da Subversion ein
+      <emphasis>Kopieren-Ändern-Zusammenführen</emphasis>-Modell
+      (copy-modify-merge model) statt eines
+      <emphasis>Sperren-Ändern-Entsperren</emphasis>-Modells
+      (lock-modify-unlock) verwendet (siehe
+      <xref linkend="svn.basic.vsn-models"/>), können Sie sofort damit
       beginnen, Änderungen an den Dateien und Verzeichnissen Ihrer
       Arbeitskopie vorzunehmen. Ihre Arbeitskopie ist wie jede
       beliebige andere Ansammlung aus Dateien und Verzeichnissen auf
-      Ihrem System. Sie können sie bearbeiten, ändern, verschieben und
-      sie sogar löschen und vergessen.</para>
+      Ihrem System. Sie können die Dateien darin bearbeiten,
+      umbenennen, sogar die komplette Arbeitskopie löschen und
+      vergessen.</para>
 
 <!--
-      <warning>
-        <para>While your working copy is <quote>just like any other
-          collection of files and directories on your system,</quote>
-          you can edit files at will, but you must tell Subversion
-          about <emphasis>everything else</emphasis> that you do.  For
-          example, if you want to copy or move an item in a working
-          copy, you should use <command>svn copy</command> or
-          <command>svn move</command> instead of the copy and move
-          commands provided by your operating system.  We'll talk more
-          about them later in this chapter.</para>
-      </warning>
+    <warning>
+      <para>While your working copy is <quote>just like any other
+        collection of files and directories on your system,</quote>
+        you can edit files at will, but you must tell Subversion
+        about <emphasis>everything else</emphasis> that you do.  For
+        example, if you want to copy or move an item in a working
+        copy, you should use <command>svn copy</command> or
+        <command>svn move</command> instead of the copy and move
+        commands provided by your operating system.  We'll talk more
+        about them later in this chapter.</para>
+    </warning>
 -->
-      <warning>
-        <para>Obwohl sich Ihre Arbeitskopie <quote>wie jede beliebige
-            andere Ansammlung aus Dateien und Verzeichnissen auf Ihrem
-            System</quote> verhält, können Sie zwar beliebig Dateien
-          editieren, doch Sie müssen Subversion über <emphasis>alles
-            andere</emphasis> was Sie tun in Kenntnis setzen. Wenn Sie
-          z.B.  ein Objekt in der Arbeitskopie kopieren oder
-          verschieben möchten, sollten Sie <command>svn copy</command>
-          oder <command>svn move</command> verwenden statt der Kopier-
-          oder Verschiebebefehle Ihres Betriebssystems. Wir werden
-          darauf später im Kapitel näher eingehen.</para>
-      </warning>
+    <warning>
+      <para>Obwohl sich Ihre Arbeitskopie <quote>wie jede beliebige
+        andere Ansammlung aus Dateien und Verzeichnissen auf Ihrem
+        System</quote> verhält, können Sie zwar beliebig Dateien
+        editieren, doch Sie müssen Subversion über <emphasis>alles
+        andere</emphasis> was Sie tun in Kenntnis setzen. Wenn Sie
+        z.B. ein Objekt in der Arbeitskopie kopieren oder verschieben
+        möchten, sollten Sie <command>svn copy</command> oder
+        <command>svn move</command> verwenden statt der Kopier- oder
+        Verschiebebefehle Ihres Betriebssystems. Wir werden
+        darauf später im Kapitel näher eingehen.</para>
+    </warning>
 
 <!--
     <para>Unless you're ready to commit the addition of a new file or
@@ -556,11 +859,13 @@ Ausgecheckt, Revision 8810.
       irgendetwas gemacht haben.</para>
 
     <sidebar>
+
+      <!-- ### This will change in 1.7 -->
+
 <!--
       <title>What's with the .svn Directory?</title>
 -->
-      <title>Was hat es mit dem  Verzeichnis .svn
-        auf sich?</title>
+      <title>Was hat es mit dem  Verzeichnis .svn auf sich?</title>
 
 <!--
       <para>Every directory in a working copy contains an
@@ -568,8 +873,9 @@ Ausgecheckt, Revision 8810.
         <filename>.svn</filename>.  Usually, directory listing
         commands won't show this subdirectory, but it is nevertheless
         an important directory.  Whatever you do, don't delete or
-        change anything in the administrative area!  Subversion
-        depends on it to manage your working copy.</para>
+        change anything in the administrative area!  Subversion uses
+        that directory and its contents to manage your working
+        copy.</para>
 -->
       <para>Jedes Verzeichnis in einer Arbeitskopie beinhaltet einen
         Verwaltungsbereich &ndash; ein Verzeichnis namens
@@ -577,8 +883,9 @@ Ausgecheckt, Revision 8810.
         Unterverzeichnis nicht vom Befehl zum Auflisten des
         Verzeichnisinhaltes angezeigt, trotzdem ist es ein wichtiges
         Verzeichnis. Egal, was Sie machen, löschen oder ändern Sie
-        nichts im Verwaltungsbereich! Subversion ist darauf
-        angewiesen, um Ihre Arbeitskopie zu verwalten.</para>
+        nichts im Verwaltungsbereich! Subversion verwendet jenes
+        Verzeichnis und seinen Inhalt, um Ihre Arbeitskopie zu
+        verwalten.</para>
 
 <!--
       <para>If you accidentally remove the <filename>.svn</filename>
@@ -602,61 +909,71 @@ Ausgecheckt, Revision 8810.
     </sidebar>
 
 <!--
-    <para>While you can certainly check out a working copy with the
-      URL of the repository as the only argument, you can also specify
-      a directory after your repository URL.  This places your working
-      copy in the new directory that you name.  For example:</para>
+    <para>Notice that in the previous pair of examples, Subversion
+      chose to create a working copy in a directory named for the
+      final component of the checkout URL.  This occurs only as a
+      convenience to the user when the checkout URL is the only bit of
+      information provided to the <command>svn checkout</command>
+      command.  Subversion's command-line client gives you additional
+      flexibility, though, allowing you to optionally specify the
+      local directory name that Subversion should use for the working
+      copy it creates.  For example:</para>
 -->
-    <para>Obwohl Sie sicherlich eine Arbeitskopie mit dem
-      Projektarchiv-URL als einziges Argument auschecken können, haben
-      sie auch die Möglichkeit, ein Verzeichnis hinter dem
-      Projektarchiv-URL anzugeben. Das erstellt Ihre Arbeitskopie in dem
-      angegebenen Verzeichnis. Zum Beispiel:</para>
+    <para>Beachten Sie, dass in den vorangegangenen Beispielen
+      Subversion eine Arbeitskopie in einem Verzeichnis angelegt hat,
+      dessen Name der letzten Komponente des Checkout-URLs entsprach.
+      Das passiert nur aus reiner Anwenderfreundlichkeit, wenn dem
+      Befehl <command>svn checkout</command> lediglich der URL zum
+      Auschecken übergeben wird. Der Kommmandozeilen-Client von
+      Subversion bietet Ihnen dennoch zusätzlich die Möglichkeit, den
+      Namen des lokalen Verzeichnisses anzugeben, den Subversion zum
+      Anlegen der Arbeitskopie verwenden soll. Zum Beispiel:</para>
 
 <!--
-    <screen>
-$  svn checkout http://svn.collab.net/repos/svn/trunk subv
-A    subv/Makefile.in
-A    subv/ac-helpers
-A    subv/ac-helpers/install.sh
-A    subv/ac-helpers/install-sh
-A    subv/build.conf
+    <informalexample>
+      <screen>
+$ svn checkout http://svn.example.com/svn/repo/trunk my-working-copy
+A    my-working-copy/README
+A    my-working-copy/INSTALL
+A    my-working-copy/src/main.c
+A    my-working-copy/src/header.h
 &hellip;
 Checked out revision 8810.
+$
 </screen>
+    </informalexample>
 -->
-    <screen>
-$  svn checkout http://svn.collab.net/repos/svn/trunk subv
-A    subv/Makefile.in
-A    subv/ac-helpers
-A    subv/ac-helpers/install.sh
-A    subv/ac-helpers/install-sh
-A    subv/build.conf
+    <informalexample>
+      <screen>
+$ svn checkout http://svn.example.com/svn/repo/trunk my-working-copy
+A    my-working-copy/README
+A    my-working-copy/INSTALL
+A    my-working-copy/src/main.c
+A    my-working-copy/src/header.h
 &hellip;
 Ausgecheckt, Revision 8810.
+$
 </screen>
+    </informalexample>
 
 <!--
-    <para>That will place your working copy in a directory named
-      <literal>subv</literal> instead of a directory named
-      <literal>trunk</literal> as we did previously.  The directory
-      <literal>subv</literal> will be created if it doesn't already
-      exist.</para>
+    <para>If the local directory you specify doesn't yet
+      exist, that's okay&mdash;<command>svn checkout</command> will
+      create it for you.</para>
 -->
-    <para>Das legt Ihre Arbeitskopie in einem Verzeichnis namens 
-      <literal>subv</literal> ab anstatt in <literal>trunk</literal>
-      so wie wir es früher schon einmal gemacht haben. Das Verzeichnis
-      <literal>subv</literal> wird angelegt, sofern es nicht bereits
-      vorhanden ist.</para>
+    <para>Falls das von Ihnen angegebene lokale Verzeichnis noch nicht
+      existiert, ist das in Ordnung: <command>svn checkout</command>
+      legt es für Sie an.</para> 
 
-
+<!-- TODO: move to ch03 -->
+<!--
     <sect2 id="svn.tour.initial.disabling-password-caching">
-<!--
+<!- -
       <title>Disabling Password Caching</title>
--->
+- ->
       <title>Das Zwischenspeichern des Passwortes abstellen</title>
 
-<!--
+<!- -
       <para>When you perform a Subversion operation that requires you
         to authenticate, by default Subversion caches your
         authentication credentials on disk.  This is done for
@@ -673,7 +990,7 @@ Ausgecheckt, Revision 8810.
         </footnote>
         you can disable caching either permanently or on a
         case-by-case basis.</para>
--->
+- ->
       <para>Wenn Sie eine Subversion-Operation ausführen, für die Sie
         sich authentisieren müssen, speichert Subversion Ihre
         Zugangsdaten standardmäßig auf der Platte. Das geschieht zu
@@ -691,33 +1008,33 @@ Ausgecheckt, Revision 8810.
         können Sie das Zwischenspeichern entweder dauerhaft oder von Fall zu
         Fall abstellen.</para>
 
-<!--
+<!- -
       <para>To disable password caching for a particular one-time
         command, pass the <option >- -no-auth-cache</option > option on
         the command line.  To permanently disable caching, you can add
         the line <literal>store-passwords = no</literal> to your local
         machine's Subversion configuration file.  See <xref
-        linkend="svn.serverconfig.netmodel.credcache"/> for
+        linkend="svn.serverconfig.netmodel.creds"/> for
         details.</para>
--->
+- ->
       <para>Um das Passwort-Caching für einen bestimmten einmaligen
         Befehl zu unterbinden, übergeben Sie die
-        <option>--no-auth-cache</option>-Option auf der Kommandozeile.
+        <option>- -no-auth-cache</option>-Option auf der Kommandozeile.
         Um das Caching dauerhaft abzustellen, können Sie der
         Subversion-Konfigurationsdatei Ihres lokalen Rechners die Zeile
         <literal>store-passwords = no</literal> hinzufügen. Für
         Details siehe <xref
-          linkend="svn.serverconfig.netmodel.credcache"/>.</para>
+          linkend="svn.serverconfig.netmodel.creds"/>.</para>
 
     </sect2>
 
     <sect2 id="svn.tour.initial.different-user">
-<!--
+<!- -
       <title>Authenticating As a Different User</title>
--->
+- ->
       <title>Authentisierung als ein anderer Anwender</title>
 
-<!--
+<!- -
       <para>Since Subversion caches auth credentials by default (both
         username and password), it conveniently remembers who you were
         acting as the last time you modified your working copy.  But
@@ -727,7 +1044,7 @@ Ausgecheckt, Revision 8810.
         case, just pass the <option>- -username</option> option on the
         command line, and Subversion will attempt to authenticate as
         that user, prompting you for a password if necessary.</para>
--->
+- ->
       <para>Da Subversion standardmäßig Zugangsdaten speichert
         (sowohl den Benutzernamen als auch das Passwort), erinnert es
         sich bequemerweise, wer Sie das letzte Mal waren, als Sie Ihre
@@ -736,13 +1053,13 @@ Ausgecheckt, Revision 8810.
         benutzten Arbeitskopie arbeiten wie in einem
         Konfigurationsverzeichnis oder im Dokumenten-Wurzelverzeichnis
         eines Webservers. In diesem Fall brauchen Sie nur die
-        <option>--username</option>-Option auf der Kommandozeile zu
+        <option>- -username</option>-Option auf der Kommandozeile zu
         übergeben und Subversion versucht, sich als dieser Benutzer zu
         authentisieren und wird Sie, wenn nötig, zur Eingabe eines
         Passworts auffordern.</para>
 
     </sect2>
-
+    -->
   </sect1>
 
   <!-- ================================================================= -->
@@ -775,92 +1092,105 @@ Ausgecheckt, Revision 8810.
     <orderedlist>
       <listitem>
 <!--
-        <para>Update your working copy.</para>
+        <para><emphasis>Update your working copy.</emphasis> This
+          involves the use of the <command>svn update</command>
+          command.</para>
 -->
-        <para>Aktualisieren Sie Ihre Arbeitskopie.</para>
-        <itemizedlist>
-          <listitem>
-            <para><command>svn update</command></para>
-          </listitem>
-        </itemizedlist>
-
+        <para><emphasis>Aktualisieren Sie Ihre
+          Arbeitskopie.</emphasis> Das bedingt die Verwendung des
+          Befehls <command>svn update</command>.</para>
+      </listitem>
+      <listitem>
+<!--
+        <para><emphasis>Make your changes.</emphasis> The most common
+          changes that you'll make are edits to the contents of your
+          existing files.  But sometimes you need to add, remove, copy
+          and move files and directories&mdash;the <command>svn
+          add</command>, <command>svn delete</command>, <command>svn
+          copy</command>, and <command>svn move</command> commands
+          handle those sorts of structural changes within the working
+          copy.</para>
+-->
+        <para><emphasis>Nehmen Sie Ihre Änderungen vor.</emphasis> Die
+          häufigsten Änderungen, die Sie machen werden, sind
+          Bearbeitungen des Inhalts Ihrer bestehenden Dateien. Doch
+          manchmal müssen Sie Dateien und Verzeichnisse hinzufügen,
+          entfernen und verschieben &ndash; die Befehle <command>svn
+          add</command>, <command>svn delete</command>, <command>svn
+          copy</command> sowie <command>svn move</command>
+          bewerkstelligen derartige strukturelle Änderungen in der
+          Arbeitskopie.</para>
+      </listitem>
+      <listitem>
+<!--
+        <para><emphasis>Review your changes.</emphasis>
+          The <command>svn status</command> and <command>svn
+          diff</command> commands are critical to reviewing the
+          changes you've made in your working copy.</para>
+-->
+        <para><emphasis>Überprüfen Sie Ihre Änderungen.</emphasis> Die
+          Befehle <command>svn status</command> und <command>svn
+          diff</command> sind entscheidend beim Überprüfen der von
+          Ihnen in der Arbeitskopie vorgenommenen Änderungen.</para>
       </listitem>
 
       <listitem>
 <!--
-        <para>Make changes.</para>
+        <para><emphasis>Fix your mistakes.</emphasis>  Nobody's
+          perfect, so as you review your changes, you may spot
+          something that's not quite right.  Sometimes the easiest way
+          to fix a mistake is start all over again from scratch.
+          The <command>svn revert</command> command restores a file
+          or directory to its unmodified state.</para>
 -->
-        <para>Nehmen Sie Änderungen vor.</para>
-        <itemizedlist>
-          <listitem>
-            <para><command>svn add</command></para>
-          </listitem>
-          <listitem>
-            <para><command>svn delete</command></para>
-          </listitem>
-          <listitem>
-            <para><command>svn copy</command></para>
-          </listitem>
-          <listitem>
-            <para><command>svn move</command></para>
-          </listitem>
-        </itemizedlist>
+        <para><emphasis>Beheben Sie Ihre Fehler.</emphasis> Niemand
+          ist vollkommen, und so kann es passieren, dass Sie beim
+          Überprüfen Ihrer Änderungen etwas entdecken, was nicht
+          richtig ist. Manchmal ist es am einfachsten, einfach erneut
+          von vorne zu beginnen. Der Befehl <command>svn
+          revert</command> stellt den ungeänderten Zustand einer Datei
+          oder eines Verzeichnisses wieder her.</para>
       </listitem>
-
       <listitem>
 <!--
-        <para>Examine your changes.</para>
+        <para><emphasis>Resolve any conflicts (merge others'
+          changes).</emphasis>  In the time it takes you to make and
+          review your changes, others might have made and published
+          changes, too.  You'll want to integrate their changes into
+          your working copy to avoid the potential out-of-dateness
+          scenarios when you attempt to publish your own.  Again,
+          the <command>svn update</command> command is the way to do
+          this.  If this results in local conflicts, you'll need to
+          resolve those using the <command>svn resolve</command>
+          command.</para>
 -->
-        <para>Untersuchen Sie Ihre Änderungen.</para>
-        <itemizedlist>
-          <listitem>
-            <para><command>svn status</command></para>
-          </listitem>
-          <listitem>
-            <para><command>svn diff</command></para>
-          </listitem>
-        </itemizedlist>
+        <para><emphasis>Lösen Sie etwaige Konflikte auf (arbeiten Sie
+          die Änderungen anderer ein).</emphasis> Während der Zeit,
+          die Sie benötigen, um Änderungen vorzunehmen und zu
+          überprüfen, hätten andere ebenfalls Änderungen machen und
+          sie veröffentlichen können. Sie sollten deren Änderungen in
+          Ihre Arbeitskopie integrieren, um Szenarien bedingt durch
+          Veralterung zu vermeiden, die möglicherweise entstehen, wenn
+          Sie Ihre Änderungen veröffentlichen wollen. Auch hier hilft
+          Ihnen der Befehl <command>svn update</command> weiter.
+          Sollte das zu lokalen Konflikten führen, müssen Sie jene
+          mithilfe des Befehls <command>svn resolve</command>
+          auflösen.</para>
       </listitem>
-
       <listitem>
 <!--
-        <para>Possibly undo some changes.</para>
+        <para><emphasis>Publish (commit) your changes.</emphasis>
+          The <command>svn commit</command> command transmits your
+          changes to the repository where, if they are accepted, they
+          create the newest versions of all the things you modified.
+          Now others can see your work, too!</para>
 -->
-        <para>Nehmen Sie eventuell einige Änderungen zurück.</para>
-        <itemizedlist>
-          <listitem>
-            <para><command>svn revert</command></para>
-          </listitem>
-        </itemizedlist>
-      </listitem>
-
-
-      <listitem>
-<!--
-        <para>Resolve conflicts (merge others' changes).</para>
--->
-        <para>Lösen Sie Konflikte auf (arbeiten Sie die Änderungen
-          anderer ein).</para>
-        <itemizedlist>
-          <listitem>
-            <para><command>svn update</command></para>
-          </listitem>
-          <listitem>
-            <para><command>svn resolve</command></para>
-          </listitem>
-        </itemizedlist>
-      </listitem>
-
-      <listitem>
-<!--
-        <para>Commit your changes.</para>
--->
-        <para>Bringen Sie Ihre Änderungen ins Projektarchiv.</para>
-        <itemizedlist>
-          <listitem>
-            <para><command>svn commit</command></para>
-          </listitem>
-        </itemizedlist>
+        <para><emphasis>Veröffentlichen (übergeben) Sie Ihre
+          Änderungen.</emphasis> Der Befehl <command>svn
+          commit</command> überträgt Ihre Änderungen in das
+          Projektarchiv, in dem sie, falls sie angenommen werden, die
+          neueste Version aller Dinge erstellen, die Sie modifiziert
+          haben. Nun können auch andere Ihre Arbeit sehen.</para>
       </listitem>
     </orderedlist>
 
@@ -872,33 +1202,72 @@ Ausgecheckt, Revision 8810.
       <title>Aktualisieren Sie Ihre Arbeitskopie</title>
 
 <!--
-      <para>When working on a project with a team, you'll want to
-        update your working copy to receive any changes other developers
-        on the project have made since your last update.  Use
-        <command>svn update</command> to bring your working copy into
-        sync with the latest revision in the repository:</para>
+      <indexterm>
+        <primary>svn</primary>
+        <secondary>subcommands</secondary>
+        <tertiary>update</tertiary>
+      </indexterm>
+
+      <para>When working on a project that is being modified via
+        multiple working copies, you'll want to update your working
+        copy to receive any changes committed from other working
+        copies since your last update.  These might be changes that
+        other members of your project team have made, or they might
+        simply be changes you've made yourself from a different
+        computer.  To protect your data, Subversion won't
+        allow you commit new changes to out-of-date files and
+        directories, so it's best to have the latest versions
+        of all your project's files and directories before making new
+        changes of your own.</para>
 -->
-      <para>Wenn Sie in einem Projekt im Team zusammenarbeiten,
-        sollten Sie Ihre Arbeitskopie aktualisieren, um die Änderungen zu bekommen,
-        die die anderen Entwickler im Projekt seit Ihrer letzten
-        Aktualisierung vorgenommen haben. Benutzen Sie <command>svn
-          update</command> um Ihre Arbeitskopie synchron mit der
-        letzten Revision im Projektarchiv zu bekommen:</para>
+      <indexterm>
+        <primary>svn</primary>
+        <secondary>Unterbefehle</secondary>
+        <tertiary>update</tertiary>
+      </indexterm>
+
+      <para>Wenn Sie in einem Projekt arbeiten, das über mehrere
+        Arbeitskopien modifiziert wird, sollten Sie Ihre Arbeitskopie
+        aktualisieren, damit Sie die Änderungen aus anderen
+        Arbeitskopien seit Ihrer letzten Aktualisierung mitbekommen.
+        Es kann sich dabei um Änderungen handeln, die andere
+        Mitarbeiter aus dem Team gemacht haben, oder aber Änderungen,
+        die Sie selbst von einem anderen Computer gemacht haben.  Um
+        Ihre Daten zu schützen, erlaubt es Ihnen Subversion nicht,
+        neue Änderungen auf veraltete Dateien und Verzeichnisse
+        anzuwenden, so dass Sie am besten die neuesten Versionen aller
+        Ihrer Projektdateien und -verzeichnisse haben, bevor Sie
+        selbst irgendwelche Änderungen vornehmen.</para>
 
 <!--
-      <screen>
-$ svn update
-U  foo.c
-U  bar.c
-Updated to revision 2.
-</screen>
+      <para>Use <command>svn update</command> to bring your working
+        copy into sync with the latest revision in the
+        repository:</para>
+
 -->
-      <screen>
+      <para>Verwenden Sie  <command>svn update</command>, um Ihre
+        Arbeitskopie mit der letzten Revision im Projektarchiv zu
+        synchronisieren:</para>
+
+<!--
+      <informalexample>
+        <screen>
 $ svn update
-U  foo.c
-U  bar.c
+U    foo.c
+U    bar.c
+Updated to revision 2.
+$
+</screen>
+      </informalexample>
+-->
+      <informalexample>
+        <screen>
+$ svn update
+U    foo.c
+U    bar.c
 Aktualisiert zu Revision 2.
 </screen>
+      </informalexample>
 
 <!--
       <para>In this case, it appears that someone checked in
@@ -918,7 +1287,8 @@ Aktualisiert zu Revision 2.
         <command>svn update</command>, a letter code is displayed next
         to each item to let you know what actions Subversion performed
         to bring your working copy up to date.  To find out what these
-        letters mean, run <userinput>svn help update</userinput>.</para>
+        letters mean, run <userinput>svn help update</userinput> or
+        see <xref linkend="svn.ref.svn.c.update"/>.</para>
 -->
       <para>Wenn der Server über <command>svn update</command>
         Änderungen an Ihre Arbeitskopie schickt, wird ein
@@ -926,74 +1296,59 @@ Aktualisiert zu Revision 2.
         anzuzeigen, was Subversion gemacht hat, um die Arbeitskopie
         auf den neuesten Stand zu bringen. Zur Bedeutung der
         Buchstaben, rufen Sie <userinput>svn help update</userinput>
-        auf.</para>
+        auf oder schauen sich <xref linkend="svn.ref.svn.c.update"/>
+        an.</para>
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.tour.cycle.edit">
 <!--
-      <title>Make Changes to Your Working Copy</title>
+      <title>Make Your Changes</title>
 -->
-      <title>Nehmen Sie Änderungen an Ihrer Arbeitskopie vor</title>
+      <title>Nehmen Sie Ihre Änderungen vor</title>
 
 <!--
       <para>Now you can get to work and make changes in your working
-        copy.  It's usually most convenient to decide on a discrete
-        change (or set of changes) to make, such as writing a new
-        feature, fixing a bug, and so on.  The Subversion commands that you
-        will use here are <command>svn add</command>, <command>svn
-        delete</command>, <command>svn copy</command>, <command>svn
-        move</command>, and <command>svn mkdir</command>.  However, if
-        you are merely editing files that are already in Subversion,
-        you may not need to use any of these commands until you
-        commit.</para>
+        copy.  You can make two kinds of changes to your working
+        copy: <firstterm>file changes</firstterm> and <firstterm>tree
+        changes</firstterm>.  You don't need to tell Subversion that
+        you intend to change a file; just make your changes using your
+        text editor, word processor, graphics program, or whatever
+        tool you would normally use.  Subversion automatically detects
+        which files have been changed, and in addition, it handles
+        binary files just as easily as it handles text files&mdash;and
+        just as efficiently, too.  Tree changes are different, and
+        involve changes to a directory's structure.  Such changes
+        include adding and removing files, renaming files or
+        directories, and copying files or directories to new
+        locations.  For tree changes, you use Subversion operations
+        to <quote>schedule</quote> files and directories for removal,
+        addition, copying, or moving.  These changes may take place
+        immediately in your working copy, but no additions or removals
+        will happen in the repository until you commit them.</para>
 -->
       <para>Nun können Sie loslegen und Änderungen an Ihrer
-        Arbeitskopie vornehmen. Normalerweise ist es am einfachsten,
-        sich für eine bestimmte Änderung (oder eine Menge von
-        Änderungen) zu entscheiden, etwa ein neues Feature zu
-        implementieren oder einen Fehler zu beseitigen usw. Die
-        Subversion-Befehle, die Sie hierfür verwenden werden sind
-        <command>svn add</command>, <command>svn delete</command>,
-        <command>svn copy</command>, <command>svn move</command> und
-        <command>svn mkdir</command>.  Falls Sie jedoch größtenteils
-        Dateien editieren, die bereits mit Subversion verwaltet
-        werden, brauchen Sie keinen dieser Befehle, bis Sie die
-        Änderungen übergeben.</para>
-
-<!--
-      <para>You can make two kinds of changes to your
-        working copy: <firstterm>file changes</firstterm>
-        and <firstterm>tree changes</firstterm>.  You don't need to
-        tell Subversion that you intend to change a file; just make
-        your changes using your text editor, word processor, graphics
-        program, or whatever tool you would normally use.  Subversion
-        automatically detects which files have been changed, and in
-        addition, it handles binary files just as easily as it handles
-        text files&mdash;and just as efficiently, too.  For tree
-        changes, you can ask Subversion to <quote>mark</quote> files
-        and directories for scheduled removal, addition, copying, or
-        moving.  These changes may take place immediately in your
-        working copy, but no additions or removals will happen in the
-        repository until you commit them.</para>
--->
-      <para>Sie können zwei Arten von Änderungen an Ihrer
-        Arbeitskopie vornehmen:
+        Arbeitskopie vornehmen. Sie können zwei Arten von Änderungen
+        an Ihrer Arbeitskopie machen:
         <firstterm>Dateiänderungen</firstterm> und
-        <firstterm>Verzeichnisbaumänderungen</firstterm>. Sie brauchen
-        Subversion nicht mitzuteilen, dass Sie beabsichtigen, eine
-        Datei zu ändern; nehmen Sie einfach die Änderungen mit Ihrem
-        Texteditor, Textverarbeitungsprogramm, Grafikprogramm oder
-        sonstigen Programm vor, wie Sie es gewohnt sind. Subversion
-        stellt automatisch fest, welche Dateien sich geändert haben
-        und behandelt dabei Binärdateien genauso einfach wie
-        Textdateien &ndash; und genauso effizient. Für Änderungen am
-        Verzeichnisbaum können Sie Subversion mitteilen, Dateien und
-        Verzeichnisse zum geplanten Entfernen, Hinzufügen, Kopieren
-        oder Verschieben <quote>vorzumerken</quote>. Diese Änderungen
-        finden sofort in Ihrer Arbeitskopie statt, doch nichts wird
-        dem Projektarchiv hinzugefügt oder daraus entfernt, bevor Sie die
-        Änderungen übergeben.</para>
+        <firstterm>Baumänderungen</firstterm>. Sie brauchen Subversion
+        nicht mitteilen, dass Sie beabsichtigen, eine Datei zu ändern;
+        machen Sie einfach Ihre Änderungen mit Ihrem Editor,
+        Textverarbeitungsprogramm, Grafikprogramm oder was Sie sonst
+        normalerweise benutzen. Subversion merkt automatisch, welche
+        Dateien verändert wurden; darüber hinaus behandelt es binäre
+        Dateien ebenso einfach wie Textdateien &ndash; und ebenso
+        effizient. Davon unterscheiden sich Baumändrungen, die
+        Änderungen an der Verzeichnisstruktur nach sich ziehen. Zu
+        solchen Änderungen zählen das Hinzufügen und Entfernen von
+        Dateien, das Umbenennen von Dateien oder Verzeichnissen sowie
+        das Kopieren von Dateien und Verzeichnissen an andere Orte.
+        Für Baumänderungen verwenden Sie Subversion-Operationen, um
+        Dateien und Verzeichnisse zum Löschen, Hinzufügen, Kopieren
+        oder Verschieben <quote>einzuplanen</quote>. Diese Änderungen
+        können sofort in Ihrer Arbeitskopie stattfinden, jedoch wird
+        im Projektarchiv nichts hinzugefügt oder gelöscht bevor Sie
+        die Änderungen übergeben haben.</para>
 
       <sidebar>
 <!--
@@ -1007,7 +1362,7 @@ Aktualisiert zu Revision 2.
           link</firstterm> (or <quote>symlink</quote>).  A symlink is
           a file that acts as a sort of transparent reference to some
           other object in the filesystem, allowing programs to read
-          and write to those objects indirectly by way of performing
+          and write to those objects indirectly by performing
           operations on the symlink itself.</para>
 -->
         <para>Auf Nicht-Windows-Systemen kann Subversion den
@@ -1030,7 +1385,7 @@ Aktualisiert zu Revision 2.
           usability of working copies on systems such as Windows that
           do not support symlinks.  On such systems, Subversion simply
           creates a regular text file whose contents are the path to
-          which to the original symlink pointed.  While that file
+          which the original symlink pointed.  While that file
           can't be used as a symlink on a Windows system, it also
           won't prevent Windows users from performing their other
           Subversion-related activities.</para> </sidebar>
@@ -1062,127 +1417,162 @@ Aktualisiert zu Revision 2.
       <variablelist>
 
         <varlistentry>
-          <term><userinput>svn add foo</userinput></term>
+          <term><userinput>svn add FOO</userinput></term>
           <listitem>
 <!--
-            <para>Schedule file, directory, or symbolic link
-              <filename>foo</filename> to be added to the repository.
-              When you next commit, <filename>foo</filename> will
-              become a child of its parent directory.  Note that if
-              <filename>foo</filename> is a directory, everything
-              underneath <filename>foo</filename> will be scheduled
+            <indexterm>
+              <primary>svn</primary>
+              <secondary>subcommands</secondary>
+              <tertiary>add</tertiary>
+            </indexterm>
+            <para>Use this to schedule the file, directory, or
+              symbolic link <filename>FOO</filename> to be added to
+              the repository.  When you next
+              commit, <filename>FOO</filename> will become a child of
+              its parent directory.  Note that if
+              <filename>FOO</filename> is a directory, everything
+              underneath <filename>FOO</filename> will be scheduled
               for addition.  If you want only to add
-              <filename>foo</filename> itself, pass the
-              <option>- -depth empty</option> option.</para>
+              <filename>FOO</filename> itself, pass the
+              <option>- -depth=empty</option> option.</para>
 -->
-            <para>Die Datei, das Verzeichnis oder den symbolischen
-              Link <filename>foo</filename> zum Hinzufügen in das
+            <indexterm>
+              <primary>svn</primary>
+              <secondary>Unterbefehle</secondary>
+              <tertiary>add</tertiary>
+            </indexterm>
+            <para>Verwenden Sie diesen Befehl, um die Datei, das
+              Verzeichnis oder den symbolischen Link
+              <filename>FOO</filename> zum Hinzufügen in das
               Projektarchiv vormerken. Wenn Sie das nächste Mal übergeben,
-              wird <filename>foo</filename> ein Kind seines
+              wird <filename>FOO</filename> ein Kind seines
               Elternverzeichnisses. Beachten Sie, dass alles unterhalb
-              von <filename>foo</filename> zum Hinzufügen vorgemerkt
-              wird, falls <filename>foo</filename> ein Verzeichnis
-              ist. Falls Sie nur <filename>foo</filename> selber
-              hinzufügen möchten, geben Sie die <option>--depth
-                empty</option>-Option an.</para>
+              von <filename>FOO</filename> zum Hinzufügen vorgemerkt
+              wird, falls <filename>FOO</filename> ein Verzeichnis
+              ist. Falls Sie nur <filename>FOO</filename> selber
+              hinzufügen möchten, geben Sie die Option
+              <option>--depth=empty</option> an.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term><userinput>svn delete foo</userinput></term>
+          <term><userinput>svn delete FOO</userinput></term>
           <listitem>
 <!--
-            <para>Schedule file, directory, or symbolic link
-              <filename>foo</filename> to be deleted from the
-              repository.  If <filename>foo</filename> is a file or
-              link, it is immediately deleted from your working copy.
-              If <filename>foo</filename> is a directory, it is not
-              deleted, but Subversion schedules it for deletion.  When
-              you commit your changes, <filename>foo</filename> will
-              be entirely removed from your working copy and the
-              repository.
-              <footnote>
-                <para>Of course, nothing is ever totally deleted from
-                  the repository&mdash;just from the
-                  <literal>HEAD</literal> of the repository.  You can
-                  get back anything you delete by checking out (or
-                  updating your working copy to) a revision earlier
-                  than the one in which you deleted it. Also see <xref
-                  linkend="svn.branchmerge.basicmerging.resurrect"
-                  />.</para>
-              </footnote>
-            </para>
+            <indexterm>
+              <primary>svn</primary>
+              <secondary>subcommands</secondary>
+              <tertiary>delete</tertiary>
+            </indexterm>
+            <para>Use this to schedule the file, directory, or
+              symbolic link <filename>FOO</filename> to be deleted
+              from the repository.  If <filename>FOO</filename> is a
+              file or link, it is immediately deleted from your
+              working copy.  If <filename>FOO</filename> is a
+              directory, it is not deleted, but Subversion schedules
+              it for deletion.  When you commit your
+              changes, <filename>FOO</filename> will be entirely
+              removed from your working copy and the
+              repository.<footnote><para>Of course, nothing is ever
+              totally deleted from the repository&mdash;just from
+              162Gits <literal>HEAD</literal> revision.  You may continue
+              to access the deleted item in previous revisions.
+              Should you desire to resurrect the item so that it is
+              again present in <literal>HEAD</literal>, see
+              <xref linkend="svn.branchmerge.basicmerging.resurrect"
+              />.</para></footnote></para>
 -->
-            <para>Die Datei, das Verzeichnis oder den symbolischen
-              Link <filename>foo</filename> zum Löschen aus dem
-              Projektarchiv vormerken. <filename>foo</filename> wird
+            <indexterm>
+              <primary>svn</primary>
+              <secondary>Unterbefehle</secondary>
+              <tertiary>delete</tertiary>
+            </indexterm>
+            <para>Verwenden Sie das, um die Datei, das Verzeichnis oder den symbolischen
+              Link <filename>FOO</filename> zum Löschen aus dem
+              Projektarchiv vormerken. <filename>FOO</filename> wird
               sofort aus der Arbeitskopie entfernt, falls es eine
-              Datei oder ein Link ist. Falls <filename>foo</filename>
+              Datei oder ein Link ist. Falls <filename>FOO</filename>
               ein Verzeichnis ist, wird es nicht gelöscht, sondern zum
               Löschen vorgemerkt. Wenn Sie Ihre Änderungen übergeben,
-              wird das gesamte Verzeichnis <filename>foo</filename>
+              wird das gesamte Verzeichnis <filename>FOO</filename>
               aus der Arbeitskopie und dem Projektarchiv entfernt.
-              <footnote>
-                <para>Selbstverständlich wird nichts jemals
-                  vollständig aus dem Projektarchiv
-                  gelöscht &ndash; lediglich aus der
-                  <literal>HEAD</literal>-Revision des Projektarchivs.
-                  Sie können alles was Sie gelöscht haben zurückholen,
-                  indem Sie eine Revision auschecken
-                  (oder hierauf aktualisieren), die älter ist, als die
-                  Revision Ihrer Löschung. Siehe auch <xref
-                    linkend="svn.branchmerge.basicmerging.resurrect"
-                    />.</para>
-              </footnote>
-            </para>
+              <footnote><para>Selbstverständlich wird nichts jemals
+              vollständig aus dem Projektarchiv gelöscht &ndash;
+              lediglich aus seiner <literal>HEAD</literal>-Revision.
+              Sie können weiterhin auf das gelöschte Objekt in
+              früheren Revisionen zugreifen. Sollten Sie den Wunsch
+              haben, das Objekt wiederauferstehen zu lassen, so das es
+              wieder in <literal>HEAD</literal> vorhanden ist, siehe
+              <xref linkend="svn.branchmerge.basicmerging.resurrect"
+              />.</para></footnote></para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term><userinput>svn copy foo bar</userinput></term>
+          <term><userinput>svn copy FOO BAR</userinput></term>
           <listitem>
 <!--
-            <para>Create a new item <filename>bar</filename> as a
-              duplicate of <filename>foo</filename> and automatically
-              schedule <filename>bar</filename> for addition.  When
-              <filename>bar</filename> is added to the repository on
+            <indexterm>
+              <primary>svn</primary>
+              <secondary>subcommands</secondary>
+              <tertiary>copy</tertiary>
+            </indexterm>
+            <para>Create a new item <filename>BAR</filename> as a
+              duplicate of <filename>FOO</filename> and automatically
+              schedule <filename>BAR</filename> for addition.  When
+              <filename>BAR</filename> is added to the repository on
               the next commit, its copy history is recorded (as having
-              originally come from <filename>foo</filename>).
+              originally come from <filename>FOO</filename>).
               <command>svn copy</command> does not create intermediate
               directories unless you pass the
               <option>- -parents</option> option.</para>
 -->
-            <para>Erzeuge ein neues Objekt <filename>bar</filename>
-              als Duplikat von <filename>foo</filename> und merke
-              <filename>bar</filename> automatisch zum Hinzufügen vor.
-              Wird bei der nächsten Übergabe <filename>bar</filename> dem
+            <indexterm>
+              <primary>svn</primary>
+              <secondary>Unterbefehle</secondary>
+              <tertiary>copy</tertiary>
+            </indexterm>
+            <para>Erzeuge ein neues Objekt <filename>BAR</filename>
+              als Duplikat von <filename>FOO</filename> und merke
+              <filename>BAR</filename> automatisch zum Hinzufügen vor.
+              Wird bei der nächsten Übergabe <filename>BAR</filename> dem
               Projektarchiv hinzugefügt, wird die Historie der Kopie
               mitaufgezeichnet (so wie sie ursprünglich in
-              <filename>foo</filename> war).  <command>svn
-                copy</command> erzeugt keine Zwischenverzeichnisse,
+              <filename>FOO</filename> war).  <command>svn
+              copy</command> erzeugt keine Zwischenverzeichnisse,
               sofern nicht die Option <option>--parents</option>
               angegeben wird..</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term><userinput>svn move foo bar</userinput></term>
+          <term><userinput>svn move FOO BAR</userinput></term>
           <listitem>
 <!--
+            <indexterm>
+              <primary>svn</primary>
+              <secondary>subcommands</secondary>
+              <tertiary>move</tertiary>
+            </indexterm>
             <para>This command is exactly the same as running
-              <userinput>svn copy foo bar; svn delete foo</userinput>.
-              That is, <filename>bar</filename> is scheduled for
-              addition as a copy of <filename>foo</filename>, and
-              <filename>foo</filename> is scheduled for removal.
+              <userinput>svn copy FOO BAR; svn delete FOO</userinput>.
+              That is, <filename>BAR</filename> is scheduled for
+              addition as a copy of <filename>FOO</filename>, and
+              <filename>FOO</filename> is scheduled for removal.
               <command>svn move</command> does not create intermediate
               directories unless you pass the
               <option>- -parents</option> option.</para>
 -->
+            <indexterm>
+              <primary>svn</primary>
+              <secondary>Unterbefehle</secondary>
+              <tertiary>move</tertiary>
+            </indexterm>
             <para>Dieser Befehl macht genau das gleiche wie
-              <userinput>svn copy foo bar; svn delete foo</userinput>.
-              D.h., <filename>bar</filename> wird zum Hinzufügen als
-              Kopie von <filename>foo</filename> und
-              <filename>foo</filename> selbst zum Löschen vorgemerkt.
+              <userinput>svn copy FOO BAR; svn delete FOO</userinput>.
+              D.h., <filename>BAR</filename> wird zum Hinzufügen als
+              Kopie von <filename>FOO</filename> und
+              <filename>FOO</filename> selbst zum Löschen vorgemerkt.
               <command>svn move</command> erzeugt keine
               Zwischenverzeichnisse, sofern nicht die Option
               <option>--parents</option> angegeben wird.</para>
@@ -1190,17 +1580,27 @@ Aktualisiert zu Revision 2.
         </varlistentry>
 
         <varlistentry>
-          <term><userinput>svn mkdir blort</userinput></term>
+          <term><userinput>svn mkdir FOO</userinput></term>
           <listitem>
 <!--
+            <indexterm>
+              <primary>svn</primary>
+              <secondary>subcommands</secondary>
+              <tertiary>mkdir</tertiary>
+            </indexterm>
             <para>This command is exactly the same as running
-              <userinput>mkdir blort; svn add blort</userinput>.  That is,
-              a new directory named <filename>blort</filename> is
+              <userinput>mkdir FOO; svn add FOO</userinput>.  That is,
+              a new directory named <filename>FOO</filename> is
               created and scheduled for addition.</para>
 -->
+            <indexterm>
+              <primary>svn</primary>
+              <secondary>Unterbefehle</secondary>
+              <tertiary>mkdir</tertiary>
+            </indexterm>
             <para>Dieser Befehl macht genau das gleiche wie
-              <userinput>mkdir blort; svn add blort</userinput>. D.h., ein
-              neues Verzeichnis namens <filename>blort</filename> wird
+              <userinput>mkdir FOO; svn add FOO</userinput>. D.h., ein
+              neues Verzeichnis namens <filename>FOO</filename> wird
               angelegt und zum Hinzufügen vorgemerkt.</para>
           </listitem>
         </varlistentry>
@@ -1214,44 +1614,61 @@ Aktualisiert zu Revision 2.
         <title>Ändern des Projektarchivs ohne Arbeitskopie</title>
 
 <!--
-        <para>There <emphasis>are</emphasis> some use cases that
-          immediately commit tree changes to the repository.  This
-          happens only when a subcommand is operating directly on a
-          URL, rather than on a working-copy path.  In particular,
-          specific uses of <command>svn mkdir</command>, <command>svn
+        <para>Subversion <emphasis>does</emphasis> offer ways to
+          immediately commit tree changes to the repository without an
+          explicit commit action.  In particular, specific uses
+          of <command>svn mkdir</command>, <command>svn
           copy</command>, <command>svn move</command>, and
-          <command>svn delete</command> can work with URLs (and don't
-          forget that <command>svn import</command> always makes
-          changes to a URL).</para>
+          <command>svn delete</command> can operate directly on
+          repository URLs as well as on working copy paths.  Of
+          course, as previously mentioned, <command>svn
+          import</command> always makes direct changes to the
+          repository.</para>
 -->
-        <para>Es <emphasis>gibt</emphasis> einige Anwendungsfälle, die
-          Änderungen am Verzeichnisbaum unmittelbar in das Projektarchiv
-          übertragen. Das passiert nur, wenn ein Unterbefehl direkt
-          auf einen URL statt auf einen Pfad in der Arbeitskopie
-          angewendet wird. Im Einzelnen können spezielle Anwendungen
-          der Befehle <command>svn mkdir</command>, <command>svn
-            copy</command>, <command>svn move</command> und
-          <command>svn delete</command> mit URLs arbeiten (und
-          vergessen Sie nicht, dass <command>svn import</command>
-          immer Änderungen über einen URL macht).</para>
+        <para>Subversion <emphasis>bietet</emphasis> Wege, um 
+          Änderungen am Verzeichnisbaum ohne explizite Übergabe
+          unmittelbar in das Projektarchiv zu übertragen. Im einzelnen
+          können besondere Anwendungen von <command>svn
+          mkdir</command>, <command>svn copy</command>, <command>svn
+          move</command> und <command>svn delete</command> sowohl
+          direkt auf Projektarchiv-URLs als auch auf Pfaden in der
+          Arbeitskopie arbeiten. Selbstverständlich macht <command>svn
+          import</command>, wie bereits erwähnt, immer Änderungen
+          direkt am Projektarchiv.</para>
 
 <!--
-        <para>URL operations behave in this manner because commands
-          that operate on a working copy can use the working copy as a
-          sort of <quote>staging area</quote> to set up your changes
-          before committing them to the repository.  Commands that
-          operate on URLs don't have this luxury, so when you operate
-          directly on a URL, any of the aforementioned actions represents an
-          immediate commit.</para>
+        <para>There are pros and cons to performing URL-based
+          operations.  One obvious advantage to doing so is speed:
+          sometimes, checking out a working copy that you don't
+          already have solely to perform some seemingly simple action
+          is an overbearing cost.  A disadvantage is that you are
+          generally limited to a single, or single type of, operation
+          at a time when operating directly on URLs.  Finally, the
+          primary advantage of a working copy is in its utility as a
+          sort of <quote>staging area</quote> for changes.  You can
+          make sure that the changes you are about to commit make
+          sense in the larger scope of your project before committing
+          them.  And, of course, these staged changes can be as
+          complex or as a simple as they need to be, yet result in but
+          a single new revision when committed.</para>
 -->
-        <para>URL Operationen verhalten sich auf diese Weise, da
-          Befehle, die auf einer Arbeitskopie arbeiten, diese als eine
-          Art <quote>Bereitstellungsraum</quote> verwenden, in denen
-          Ihre Änderungen vorbereitet werden können, bevor sie in das
-          Projektarchiv übergeben werden. Befehle, die auf URLs arbeiten,
-          haben diesen Luxus nicht, so dass die Arbeit direkt mit
-          einem URL bei den oben genannten Aktionen eine sofortige Übergabe
-          repräsentiert.</para>
+        <para>Es gibt Vor- und Nachteile bei URL-basierten
+          Operationen. Ein offensichtlicher Vorteil davon ist
+          Geschwindigkeit: das Auschecken einer Arbeitskopie, die Sie
+          noch nicht haben, nur um eine scheinbar einfache Aktion
+          durchzuführen, bedeutet unverhältnismäßige Kosten. Ein
+          Nachteil ist, dass Sie im Allgemeinen auf eine einzelne
+          Operation oder einen einzelnen Operationstypen beschränkt
+          sind, wenn Sie direkt auf URLs arbeiten. Schliesslich liegt
+          der Hauptvorteil einer Arbeitskopie darin, dass sie sich als
+          eine Art <quote>Bereitstellungsraum</quote> verwenden lässt.
+          Sie können sicherstellen, dass die Änderungen, die Sie
+          übergeben möchten, im Gesamtzusammenhang Ihres Projektes
+          einen Sinn ergeben, bevor sie tatsächlich in das
+          Projektarchiv übergeben werden. Und selbstverständlich
+          können diese vorbereiteten Änderungen so einfach oder so
+          kompliziert wie notwendig sein, und dennoch bei der Übergabe
+          in einer einzigen neuen Revision münden.</para>
 
       </sidebar>
 
