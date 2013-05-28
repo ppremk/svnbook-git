@@ -2953,11 +2953,97 @@ from '.':
       formatted as
       <literal>$</literal><replaceable>KeywordName</replaceable><literal>$</literal>.</para>
 
+    <para>Adding keyword anchor text alone to your file does nothing
+      special.  Subversion will never attempt to perform textual
+      substitutions on your file contents unless explicitly asked to
+      do so.  After all, you might be writing a
+      document<footnote><para>&hellip; or maybe even a section of a
+      book &hellip;</para></footnote> about how to use keywords, and
+      you don't want Subversion to substitute your beautiful examples
+      of unsubstituted keyword anchors!</para>
+
+    <para>To tell Subversion whether to substitute keywords
+      on a particular file, we again turn to the property-related
+      subcommands.  The <literal>svn:keywords</literal> property,
+      when set on a versioned file, controls which keywords will
+      be substituted on that file.  The value is a space-delimited
+      list of keyword names or aliases.</para>
+
+    <para>For example, say you have a versioned file named
+      <filename>weather.txt</filename> that looks like
+      this:</para>
+
+    <informalexample>
+      <programlisting>
+Here is the latest report from the front lines.
+$LastChangedDate$
+$Rev$
+Cumulus clouds are appearing more frequently as summer approaches.
+</programlisting>
+    </informalexample>
+        
+    <para>With no <literal>svn:keywords</literal> property set on
+      that file, Subversion will do nothing special.  Now, let's
+      enable substitution of the
+      <literal>LastChangedDate</literal> keyword.</para>
+
+    <informalexample>
+      <screen>
+$ svn propset svn:keywords "Date Author" weather.txt
+property 'svn:keywords' set on 'weather.txt'
+$
+</screen>
+    </informalexample>
+    
+    <para>Now you have made a local property modification on the
+      <filename>weather.txt</filename> file.  You will see no
+      changes to the file's contents (unless you made some of your
+      own prior to setting the property).  Notice that the file
+      contained a keyword anchor for the <literal>Rev</literal>
+      keyword, yet we did not include that keyword in the property
+      value we set.  Subversion will happily ignore requests to
+      substitute keywords that are not present in the file and
+      will not substitute keywords that are not present in the
+      <literal>svn:keywords</literal> property value.</para>
+
+    <para>Immediately after you commit this property change,
+      Subversion will update your working file with the new
+      substitute text.  Instead of seeing your keyword anchor
+      <literal>$LastChangedDate$</literal>, you'll see its
+      substituted result.  That result also contains the name of
+      the keyword and continues to be delimited by the dollar sign
+      (<literal>$</literal>) characters.  And as we predicted, the
+      <literal>Rev</literal> keyword was not substituted because
+      we didn't ask for it to be.</para>
+
+    <para>Note also that we set the <literal>svn:keywords</literal>
+      property to <literal>Date Author</literal>, yet the keyword
+      anchor used the alias <literal>$LastChangedDate$</literal>
+      and still expanded correctly:</para>
+
+    <informalexample>
+      <programlisting>
+Here is the latest report from the front lines.
+$LastChangedDate: 2006-07-22 21:42:37 -0700 (Sat, 22 Jul 2006) $
+$Rev$
+Cumulus clouds are appearing more frequently as summer approaches.
+</programlisting>
+    </informalexample>
+        
+    <para>If someone else now commits a change to
+      <filename>weather.txt</filename>, your copy of that file
+      will continue to display the same substituted keyword value
+      as before&mdash;until you update your working copy.  At that
+      time, the keywords in your <filename>weather.txt</filename>
+      file will be resubstituted with information that
+      reflects the most recent known commit to that file.</para>
+
     <para>All keywords are case-sensitive where they appear as
       anchors in files: you must use the correct capitalization
       for the keyword to be expanded.  You should consider the
       value of the <literal>svn:keywords</literal> property to be
-      case-sensitive, too&mdash;certain keyword names will be recognized
+      case-sensitive, too&mdash;for the sake of backward
+      compatibility, certain keyword names will be recognized
       regardless of case, but this behavior is deprecated.</para>
 
     <para>Subversion defines the list of keywords available for
@@ -3098,91 +3184,6 @@ from '.':
       versioned files are being changed regularly in the
       repository.</para>
 
-    <para>Simply adding keyword anchor text to your file does nothing
-      special.  Subversion will never attempt to perform textual
-      substitutions on your file contents unless explicitly asked to
-      do so.  After all, you might be writing a
-      document<footnote><para>&hellip; or maybe even a section of a
-      book &hellip;</para></footnote> about how to use keywords, and
-      you don't want Subversion to substitute your beautiful examples
-      of unsubstituted keyword anchors!</para>
-
-    <para>To tell Subversion whether to substitute keywords
-      on a particular file, we again turn to the property-related
-      subcommands.  The <literal>svn:keywords</literal> property,
-      when set on a versioned file, controls which keywords will
-      be substituted on that file.  The value is a space-delimited
-      list of keyword names or aliases.</para>
-
-    <para>For example, say you have a versioned file named
-      <filename>weather.txt</filename> that looks like
-      this:</para>
-
-    <informalexample>
-      <programlisting>
-Here is the latest report from the front lines.
-$LastChangedDate$
-$Rev$
-Cumulus clouds are appearing more frequently as summer approaches.
-</programlisting>
-    </informalexample>
-        
-    <para>With no <literal>svn:keywords</literal> property set on
-      that file, Subversion will do nothing special.  Now, let's
-      enable substitution of the
-      <literal>LastChangedDate</literal> keyword.</para>
-
-    <informalexample>
-      <screen>
-$ svn propset svn:keywords "Date Author" weather.txt
-property 'svn:keywords' set on 'weather.txt'
-$
-</screen>
-    </informalexample>
-    
-    <para>Now you have made a local property modification on the
-      <filename>weather.txt</filename> file.  You will see no
-      changes to the file's contents (unless you made some of your
-      own prior to setting the property).  Notice that the file
-      contained a keyword anchor for the <literal>Rev</literal>
-      keyword, yet we did not include that keyword in the property
-      value we set.  Subversion will happily ignore requests to
-      substitute keywords that are not present in the file and
-      will not substitute keywords that are not present in the
-      <literal>svn:keywords</literal> property value.</para>
-
-    <para>Immediately after you commit this property change,
-      Subversion will update your working file with the new
-      substitute text.  Instead of seeing your keyword anchor
-      <literal>$LastChangedDate$</literal>, you'll see its
-      substituted result.  That result also contains the name of
-      the keyword and continues to be delimited by the dollar sign
-      (<literal>$</literal>) characters.  And as we predicted, the
-      <literal>Rev</literal> keyword was not substituted because
-      we didn't ask for it to be.</para>
-
-    <para>Note also that we set the <literal>svn:keywords</literal>
-      property to <literal>Date Author</literal>, yet the keyword
-      anchor used the alias <literal>$LastChangedDate$</literal>
-      and still expanded correctly:</para>
-
-    <informalexample>
-      <programlisting>
-Here is the latest report from the front lines.
-$LastChangedDate: 2006-07-22 21:42:37 -0700 (Sat, 22 Jul 2006) $
-$Rev$
-Cumulus clouds are appearing more frequently as summer approaches.
-</programlisting>
-    </informalexample>
-        
-    <para>If someone else now commits a change to
-      <filename>weather.txt</filename>, your copy of that file
-      will continue to display the same substituted keyword value
-      as before&mdash;until you update your working copy.  At that
-      time, the keywords in your <filename>weather.txt</filename>
-      file will be resubstituted with information that
-      reflects the most recent known commit to that file.</para>
-
     <sidebar>
       <title>Where's $GlobalRev$?</title>
 
@@ -3209,6 +3210,138 @@ Cumulus clouds are appearing more frequently as summer approaches.
         linkend="svn.ref.svnversion"/>.</para>
 
     </sidebar>
+
+    <para>In addition to previous set of stock keyword definitions and
+      aliases, Subversion 1.8 allows you the freedom to define and use
+      custom keywords.  To define a custom keyword, add a token to the
+      value of the <literal>svn:keywords</literal> property which is
+      of the form
+      <userinput><replaceable>MyKeyword</replaceable>=<replaceable>FORMAT</replaceable></userinput>,
+      where <replaceable>MyKeyword</replaceable> is the keyword name
+      (which you'll use in the keyword anchor)
+      and <replaceable>FORMAT</replaceable> is a format string into
+      which information will be substituted when your keyword is
+      expanded inside your file.</para>
+
+    <para>The format string syntax used for custom keywords supports
+      the following format codes:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term><literal>%a</literal></term>
+        <listitem>
+          <para>The author of the revision given
+            by <literal>%r</literal>.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>%b</literal></term>
+        <listitem>
+          <para>The basename of the URL of the file.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>%d</literal></term>
+        <listitem>
+          <para>Short format of the date of the revision given by
+            <literal>%r</literal>.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>%D</literal></term>
+        <listitem>
+          <para>Long format of the date of the revision given by
+            <literal>%r</literal>.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>%P</literal></term>
+        <listitem>
+          <para>The file's path, relative to the repository
+            root.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>%r</literal></term>
+        <listitem>
+          <para>The last known revision in which this file changed in
+          the repository.  (This is the same revision which would be
+          substituted for the <literal>Revision</literal>
+          keyword.)</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>%R</literal></term>
+        <listitem>
+          <para>The URL to the root of the repository.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>%u</literal></term>
+        <listitem>
+          <para>The URL of the file.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>%_</literal></term>
+        <listitem>
+          <para>A space character. (Keyword definitions cannot contain
+            a literal space character.)</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>%%</literal></term>
+        <listitem>
+          <para>A literal percent sign ('<literal>%</literal>').</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>%H</literal></term>
+        <listitem>
+          <para>Equivalent to <literal>%P%_%r%_%d%_%a</literal>.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>%I</literal></term>
+        <listitem>
+          <para>Equivalent to <literal>%b%_%r%_%d%_%a</literal>.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>As you can see, many of the individual format codes serve as
+      placeholders for the same information available through the
+      stock keywords.  But of course, the custom keyword format allows
+      you to more flexibly string together multiple bits of
+      information.  For example, you might wish to have a single
+      keyword in your files which reports the repository relative path
+      of the file and last-changed revision, formatted in a pleasant,
+      human-readable way.  To do so, you'd first define your custom
+      keyword:</para>
+
+    <informalexample>
+      <screen>
+$ svn pset svn:keywords "PathRev=%P,%_r%r" calc/button.c
+property 'svn:keywords' set on 'button.c'
+$
+</screen>
+    </informalexample>
+
+    <para>Next, you'd edit the file's contents to add the keyword
+      anchor for your custom keyword, which in this case
+      is <literal>$PathRev$</literal>.  After committing these
+      changes, an examination of your file's contents will show that
+      your custom keyword was substituted as you would
+      expect&mdash;where previously the file
+      contained <literal>$PathRev$</literal>, it now reads
+      <literal>$PathRev: trunk/calc/button.c, r23 $</literal>.</para>
+
+    <note>
+      <para>Subversion will automatically truncate any keyword
+        expansions which exceed 255 bytes in length.  Also custom
+        keywords defined with names that exceed 255 bytes will be
+        ignored altogether.</para>
+    </note>
 
     <para>You can also instruct Subversion to maintain a fixed length
       (in terms of the number of bytes consumed) for the substituted
