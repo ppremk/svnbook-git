@@ -2550,109 +2550,190 @@ $
     <!-- =============================================================== -->
     <sect2 id="svn.tour.cycle.resolve">
 <!--
-      <title>Resolve Conflicts (Merging Others' Changes)</title>
+      <title>Resolve Any Conflicts</title>
 -->
-      <title>Konflikte auflösen (Änderungen anderer einarbeiten)</title>
+      <title>Lösen Sie etwaige Konflikte auf</title>
 
 <!--
-      <para>We've already seen how <userinput>svn status -u</userinput>
-        can predict conflicts.  Suppose you run <userinput>svn
-        update</userinput> and some interesting things occur:</para>
+      <indexterm>
+        <primary>conflicts</primary>
+        <secondary>resolving</secondary>
+      </indexterm>
+      <para>We've already seen how <userinput>svn status
+        -u</userinput> can predict conflicts, but dealing with those
+        conflicts is still something that remains to be done.
+        Conflicts can occur any time you attempt to merge or integrate
+        (in a very general sense) changes from the repository into
+        your working copy.  By now you know that <command>svn
+        update</command> creates exactly that sort of
+        scenario&mdash;that command's very purpose is to bring your
+        working copy up to date with the repository by merging all the
+        changes made since your last update into your working
+        copy.  So how does Subversion report these conflicts to you,
+        and how do you deal with them?</para>
+
 -->
+      <indexterm>
+        <primary>Konflikte</primary>
+        <secondary>Auflösung</secondary>
+      </indexterm>
       <para>Wir haben bereits gesehen, wie <userinput>svn status
-          -u</userinput> Konflikte vorhersagen kann.  Angenommen, Sie
-        starten <command>svn update</command> und einige interessante
-        Dinge passieren:</para>
+        -u</userinput> Konflikte vorhersagen kann, jedoch müssen wir
+        uns noch um diese Konflikte kümmern. Konflikte können
+        jederzeit auftreten, wenn Sie versuchen, Änderungen aus dem
+        Projektarchiv mit Ihrer Arbeitskopie zusammenzuführen oder zu
+        integrieren (in einem sehr allgemeinen Sinn). Bie hierher
+        wissen Sie, dass <command>svn update</command> genau diese Art
+        von Szenario hervorruft &ndash; der eigentliche Zweck dieses
+        Befehls ist es, Ihre Arbeitskopie mit dem Projektarchiv auf
+        einen Stand zu bringen, indem alle Änderungen seit Ihrer
+        letzten Aktualisierung mit Ihrer Arbeitskopie zusammengeführt
+        werden. Wie teilt Ihnen Subversion nun diese Konflikte mit,
+        und wie gehen Sie damit um?</para>
 
 <!--
-      <screen>
+      <para>Suppose you run <userinput>svn update</userinput> and you
+        see this sort of interesting output:</para>
+-->
+      <para>Angenommen, Sie rufen <command>svn update</command> auf
+        und sehen diese interessante Ausgabe:</para>
+
+<!--
+      <informalexample>
+        <screen>
 $ svn update
-U  INSTALL
-G  README
+U    INSTALL
+G    README
 Conflict discovered in 'bar.c'.
 Select: (p) postpone, (df) diff-full, (e) edit,
-        (h) help for more options:
+        (mc) mine-conflict, (tc) theirs-conflict,
+        (s) show all options: 
 </screen>
+      </informalexample>
 -->
-      <screen>
+      <informalexample>
+        <screen>
 $ svn update
-U  INSTALL
-G  README
+U    INSTALL
+G    README
 Konflikt in »bar.c« entdeckt.
 Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
-        (h) Hilfe für weitere Optionen:
+         (mc) eigene konfliktbehaftete Datei, (tc) fremde konfliktbehaftete Datei,
+         (s) alle Optionen anzeigen: 
 </screen>
+      </informalexample>
 
 <!--
-      <para>The <computeroutput>U</computeroutput> and
-        <computeroutput>G</computeroutput> codes are no cause for
-        concern; those files cleanly absorbed changes from the
-        repository.  The files marked with
-        <computeroutput>U</computeroutput> contained no local changes
-        but were <computeroutput>U</computeroutput>pdated with changes
-        from the repository.  The <computeroutput>G</computeroutput>
-        stands for mer<computeroutput>G</computeroutput>ed, which
-        means that the file had local changes to begin with, but the
-        changes coming from the repository didn't overlap with the local
-        changes.</para>
+      <para>The <computeroutput>U</computeroutput> (which stands for
+        <quote>Updated</quote>) and <computeroutput>G</computeroutput>
+        (for <quote>merGed</quote>) codes are no cause for concern;
+        those files cleanly absorbed changes from the repository.  A
+        file marked with <computeroutput>U</computeroutput> contains
+        no local changes but was updated with changes from the
+        repository.  One marked with
+        <computeroutput>G</computeroutput> had local changes to begin
+        with, but the changes coming from the repository didn't
+        overlap with those local changes.</para>
 -->
       <para>Die Codes <computeroutput>U</computeroutput> und
         <computeroutput>G</computeroutput> sind kein Grund zur
         Beunruhigung; diese Dateien haben die Änderungen aus dem
-        Projektarchiv sauber aufgenommen. Die mit
-        <computeroutput>U</computeroutput> markierten Dateien
-        enthielten keine lokalen Änderungen, wurden jedoch mit
-        Änderungen aus dem Projektarchiv
-        ge<computeroutput>U</computeroutput>pdatet. Das
-        <computeroutput>G</computeroutput> steht für
-        mer<computeroutput>G</computeroutput>ed, was bedeutet, dass
-        die Datei zwar lokale Änderungen enthielt, die Änderungen aus
-        dem Projektarchiv sich aber nicht damit überschnitten
-        haben.</para>
+        Projektarchiv sauber aufgenommen. Eine mit
+        <computeroutput>U</computeroutput> markierte Datei enthält
+        keine lokalen Änderungen, wurden jedoch mit Änderungen aus dem
+        Projektarchiv aktualisiert.  Eine mit
+        <computeroutput>G</computeroutput> markierte Datei enthielt
+        zwar lokale Änderungen, die Änderungen aus dem Projektarchiv
+        haben sich aber nicht damit überschnitten.</para>
 
 <!--
-      <para>But the next two lines are part of a feature (new in
-        Subversion 1.5) called <firstterm>interactive conflict
-        resolution</firstterm>.  This means that the changes from the
-        server overlapped with your own, and you have the opportunity
-        to resolve this conflict.  The most commonly used options are
-        displayed, but you can see all of the options by
-        typing <replaceable>h</replaceable>:</para>
+      <para>It's the next few lines which are interesting.  First,
+        Subversion reports to you that in its attempt to merge
+        outstanding server changes into the
+        file <filename>bar.c</filename>, it has detected that some of
+        those changes clash with local modifications you've made to
+        that file in your working copy but have not yet committed.
+        Perhaps someone has changed the same line of text you also
+        changed.  Whatever the reason, Subversion instantly flags this
+        file as being in a state of conflict.  It then asks you what
+        you want to do about the problem, allowing you to
+        interactively choose an action to take toward resolving the
+        conflict.  The most commonly used options are displayed, but
+        you can see all of the options by
+        typing <replaceable>s</replaceable>:</para>
 -->
-      <para>Die nächsten beiden Zeilen jedoch sind Teil eines Features
-        (neu in Subversion 1.5) namens <firstterm>interaktive
-          Konfliktauflösung</firstterm>. Das bedeutet, dass die
-        Änderungen vom Server sich mit Ihren eigenen überschneiden,
-        uns Sie nun die Gelegenheit haben, den Konflikt aufzulösen.
-        Die gebräuchlichsten Optionen werden angezeigt, aber alle
-        Optionen können sie sehen, wenn Sie
-        <replaceable>h</replaceable> eintippen:</para>
+      <para>Die nächsten paar Zeilen sind allerdings interessant.
+        Zunächst teilt Ihnen Subversion mit, dass es beim Versuch,
+        ausstehende Server-Änderungen in die Datei
+        <filename>bar.c</filename> hineinzubringen, festgestellt hat,
+        dass einige dieser Ändeungen mit lokalen Änderungen
+        kollidieren, die Sie an dieser Datei in Ihrer Arbeitskopie
+        vorgenommen, jedoch noch nicht übergeben haben. Vielleicht hat
+        jemand dieselbe Textzeile wie Sie geändert. Wie dem auch sei,
+        Subversion markiert diese Datei umgehend als konfliktbehaftet.
+        Dann fragt es Sie, wie Sie mit diesem Problem umgehen möchten,
+        indem es Ihnen interaktiv einen Bearbeitungsschritt zur
+        Auflösung des Konfliktes anbietet. Die am häufigsten
+        verwendeten Optionen werden angezeigt, aber Sie können auch
+        alle Optionen sehen, wenn Sie <replaceable>s</replaceable>
+        eintippen:</para>
 <!--
-      <screen>
+      <informalexample>
+        <screen>
 &hellip;
-  (p)  postpone    - mark the conflict to be resolved later
-  (df) diff-full   - show all changes made to merged file
-  (e)  edit        - change merged file in an editor
-  (r)  resolved    - accept merged version of file
-  (mf) mine-full   - accept my version of entire file (ignore their changes)
-  (tf) theirs-full - accept their version of entire file (lose my changes)
-  (l)  launch      - launch external tool to resolve conflict
-  (h)  help        - show this list
+Select: (p) postpone, (df) diff-full, (e) edit,
+        (mc) mine-conflict, (tc) theirs-conflict,
+        (s) show all options: s
+
+  (e)  edit             - change merged file in an editor
+  (df) diff-full        - show all changes made to merged file
+  (r)  resolved         - accept merged version of file
+
+  (dc) display-conflict - show all conflicts (ignoring merged version)
+  (mc) mine-conflict    - accept my version for all conflicts (same)
+  (tc) theirs-conflict  - accept their version for all conflicts (same)
+
+  (mf) mine-full        - accept my version of entire file (even non-conflicts)
+  (tf) theirs-full      - accept their version of entire file (same)
+
+  (p)  postpone         - mark the conflict to be resolved later
+  (l)  launch           - launch external tool to resolve conflict
+  (s)  show all         - show this list
+
+Select: (p) postpone, (df) diff-full, (e) edit,
+        (mc) mine-conflict, (tc) theirs-conflict,
+        (s) show all options:
 </screen>
+      </informalexample>
 -->
-      <screen>
+      <informalexample>
+        <screen>
 &hellip;
-  (p)  zurückstellen      - den Konflikt erst später auflösen
-  (df) voller Diff        - alle Änderungen in der zusammengeführten Datei anzeigen
+Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
+         (mc) eigene konfliktbehaftete Datei, (tc) fremde konfliktbehaftete Datei,
+         (s) alle Optionen anzeigen: s
+
   (e)  editieren          - zusammengeführte Datei in einem Editor ändern
+  (df) voller Diff        - alle Änderungen in der zusammengeführten Datei anzeigen
   (r)  aufgelöst          - akzeptieren der zusammengeführten Version der Datei
+  (dc) Konflikte anzeigen - alle Konflikte anzeigen (die zusammengeführte Version
+                            ignorieren)
+  (mc) mine-conflict      - eigene Version für alle Konflikte akzeptieren (das selbe)
+  (tc) theirs-conflict    - fremde Version für alle Konflikte akzeptieren (das selbe)
+
   (mf) volle eigene Datei - die eigene Version der kompletten Datei akzeptieren
-                            (ignorieren fremder Änderungen)
+                            (selbst Nicht-Konflikte)
   (tf) volle fremde Datei - die fremde Version der kompletten Datei akzeptieren
-                            (verlieren eigener Änderungen)
+                            (das selbe)
+  (p)  zurückstellen      - den Konflikt erst später auflösen
   (l)  starten            - Starten eines externen Programms zur Konfliktauflösung
-  (h)  Hilfe              - diese Liste anzeigen
+  (s)  alle anzeigen      - diese Liste anzeigen
+
+Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
+         (mc) eigene konfliktbehaftete Datei, (tc) fremde konfliktbehaftete Datei,
+         (s) alle Optionen anzeigen:
 </screen>
+      </informalexample>
 
 <!--
       <para>Let's briefly review each of these options before we go
@@ -2663,39 +2744,10 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
 
       <variablelist>
         <varlistentry>
-          <term>(<computeroutput>p</computeroutput>)ostpone</term>
-          <listitem>
-
 <!--
-            <para>Leave the file in a conflicted state for you to
-              resolve after your update is complete.</para>
+          <term><computeroutput>(e)  edit</computeroutput></term>
 -->
-            <para>Die Datei im Konfliktzustand lassen, um nach
-              Abschluss der Aktualisierung die Konfliktauflösung
-              durchzuführen.</para>
-
-          </listitem>
-        </varlistentry>
-
-
-
-        <varlistentry>
-          <term>(<computeroutput>d</computeroutput>)iff</term>
-          <listitem>
-
-<!--
-            <para>Display the differences between the base revision
-              and the conflicted file itself in unified diff format.</para>
--->
-            <para>Die Unterschiede zwischen der Basisrevision und der
-              Konfliktdatei im unified-diff-Format anzeigen.</para>
-
-          </listitem>
-        </varlistentry>
-
-
-        <varlistentry>
-          <term>(<computeroutput>e</computeroutput>)dit</term>
+          <term><computeroutput>(e)  editieren</computeroutput></term>
           <listitem>
 
 <!--
@@ -2710,9 +2762,28 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
           </listitem>
         </varlistentry>
 
+        <varlistentry>
+<!--
+          <term><computeroutput>(df) diff-full</computeroutput></term>
+-->
+          <term><computeroutput>(df) voller Diff</computeroutput></term>
+          <listitem>
+
+<!--
+            <para>Display the differences between the base revision
+              and the conflicted file itself in unified diff format.</para>
+-->
+            <para>Die Unterschiede zwischen der Basisrevision und der
+              Konfliktdatei im unified-diff-Format anzeigen.</para>
+
+          </listitem>
+        </varlistentry>
 
         <varlistentry>
-          <term>(<computeroutput>r</computeroutput>)esolved</term>
+<!--
+          <term><computeroutput>(r)  resolved</computeroutput></term>
+-->
+          <term><computeroutput>(r)  aufgelöst</computeroutput></term>
           <listitem>
 
 <!--
@@ -2731,44 +2802,119 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
         </varlistentry>
 
         <varlistentry>
-          <term>(<computeroutput>m</computeroutput>)ine-(<computeroutput>f</computeroutput>)ull</term>
+<!--
+          <term><computeroutput>(dc) display-conflict</computeroutput></term>
+-->
+          <term><computeroutput>(dc) Konflikte anzeigen</computeroutput></term>
+          <listitem>
+<!--
+            <para>Display all conflicting regions of the file,
+              ignoring changes which were successfully merged.</para>
+-->
+            <para>Zeigt alle konfliktbehafteten Regionen der Datei an,
+              wobei erfolgreich zusammengeführte Änderungen ignoriert
+              werden.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><computeroutput>(mc) mine-conflict</computeroutput></term>
           <listitem>
 
 <!--
-            <para>Discard the newly received changes from the server
-              and use only your local changes for the file under review.</para>
+            <para>Discard any newly received changes from the server
+              which conflict with your local changes to the file under
+              review.  However, accept and merge all non-conflicting
+              changes received from the server for that file.</para>
 -->
-            <para>Die neuen vom Server erhaltenen Änderungen verwerfen
-              und nur Ihre lokalen Änderungen an der zu überprüfenden
-              Datei verwenden.</para>
+            <para>Die neuen vom Server erhaltenen Änderungen
+              verwerfen, die in Konflikt mit Ihren lokalen Änderungen
+              an der zu überprüfenden Datei stehen. Jedoch werden alle
+              nicht in Konflikt stehenden Änderungen vom Server für
+              diese Datei angenommen und zusammengeführt.</para>
 
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>(<computeroutput>t</computeroutput>)heirs-(<computeroutput>f</computeroutput>)ull</term>
+          <term><computeroutput>(tc) theirs-conflict</computeroutput></term>
           <listitem>
-
 <!--
-            <para>Discard your local changes to the file under review
-              and use only the newly received changes from the
-              server.</para>
+            <para>Discard any local changes which conflict with
+              incoming changes from the server for the file under
+              review.  However, preserve all non-conflicting local
+              changes to that file.</para>
 -->
-            <para>Ihre lokalen Änderungen an der zu überprüfenden
+            <para>Alle lokalen Änderungen an der zu überprüfenden
+              Datei verwerfen, die in Konflikt zu Änderungen vom
+              Server stehen. Jedoch werden alle nicht in Konflikt
+              stehehden lokalen Änderungen an dieser Datei
+              beibehalten.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+<!--
+          <term><computeroutput>(mf) mine-full</computeroutput></term>
+-->
+          <term><computeroutput>(mf) volle eigene Datei</computeroutput></term>
+          <listitem>
+<!--
+            <para>Discard all newly received changes from the server
+              for the file under review, but preserve all your local
+              changes for that file.</para>
+-->
+            <para>Alle neuen vom Server erhaltenen Änderungen für die
+              zu überprüfende Datei verwerfen, aber alle Ihre lokalen
+              Änderungen an dieser Datei beibehalten.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+<!--
+          <term><computeroutput>(tf) theirs-full</computeroutput></term>
+-->
+          <term><computeroutput>(tf) volle fremde Datei</computeroutput></term>
+          <listitem>
+<!--
+            <para>Discard all your local changes to the file under
+              review and use only the newly received changes from the
+              server for that file.</para>
+-->
+            <para>Alle Ihre lokalen Änderungen für die zu überprüfende
               Datei verwerfen und nur die neuen vom Server erhaltenen
-              Änderungen verwenden.</para>
+              Änderungen für diese Datei verwenden.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+<!--
+          <term><computeroutput>(p)  postpone</computeroutput></term>
+-->
+          <term><computeroutput>(p)  zurückstellen</computeroutput></term>
+          <listitem>
+<!--
+            <para>Leave the file in a conflicted state for you to
+              resolve after your update is complete.</para>
+-->
+            <para>Die Datei im Konfliktzustand lassen, um nach
+              Abschluss der Aktualisierung die Konfliktauflösung
+              durchzuführen.</para>
 
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>(<computeroutput>l</computeroutput>)aunch</term>
+<!--
+          <term><computeroutput>(l)  launch</computeroutput></term>
+-->
+          <term><computeroutput>(l)  starten</computeroutput></term>
           <listitem>
 
 <!--
             <para>Launch an external program to perform the conflict
-            resolution.  This requires a bit of preparation
-            beforehand.</para>
+              resolution.  This requires a bit of preparation
+              beforehand.</para>
 -->
             <para>Ein externes Programm zur Konfliktauflösung starten.
               Das setzt Vorbereitungen voraus.</para>
@@ -2777,12 +2923,15 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
         </varlistentry>
 
         <varlistentry>
-          <term>(<computeroutput>h</computeroutput>)elp</term>
+<!--
+          <term><computeroutput>(s)  show all</computeroutput></term>
+-->
+          <term><computeroutput>(s)  alle anzeigen</computeroutput></term>
           <listitem>
 
 <!--
             <para>Show the list of all possible commands you can use
-            in interactive conflict resolution.</para>
+              in interactive conflict resolution.</para>
 -->
             <para>Die Liste aller bei der interaktiven
               Konfliktauflösung möglichen Befehle anzeigen.</para>
