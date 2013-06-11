@@ -3216,19 +3216,31 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
         <title>Aufschieben der Konfliktauflösung</title>
 
 <!--
+        <indexterm>
+          <primary>conflicts</primary>
+          <secondary>resolution</secondary>
+          <tertiary>postponing</tertiary>
+        </indexterm>
+
         <para>This may sound like an appropriate section for avoiding
           marital disagreements, but it's actually still about
           Subversion, so read on.  If you're doing an update and
           encounter a conflict that you're not prepared to review or
           resolve, you can type <userinput>p</userinput> to postpone
           resolving a conflict on a file-by-file basis when you run
-          <userinput>svn update</userinput>.  If you're running an update
-          and don't want to resolve any conflicts, you can pass the
-          <option>- -non-interactive</option> option to <command>svn
-          update</command>, and any file in conflict will be marked
-          with a <computeroutput>C</computeroutput>
+          <userinput>svn update</userinput>.  If you know in advance
+          that you don't want to resolve any conflicts interactively,
+          you can pass the <option>- -non-interactive</option> option
+          to <command>svn update</command>, and any file in conflict
+          will be marked with a <computeroutput>C</computeroutput>
           automatically.</para>
 -->
+        <indexterm>
+          <primary>conflicts</primary>
+          <secondary>resolution</secondary>
+          <tertiary>postponing</tertiary>
+        </indexterm>
+
         <para>Das hört sich vielleicht an wie ein passender Abschnitt
           zur Vermeidung von Ehestreitigkeiten, doch es geht immer
           noch um Subversion; also lesen Sie weiter.  Falls Sie eine
@@ -3236,25 +3248,25 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
           nicht begutachten oder auflösen können, ermöglicht Ihnen das
           Eingeben von <userinput>p</userinput> die Konfliktauflösung
           Datei für Datei aufzuschieben, wenn Sie <userinput>svn
-          update</userinput> aufrufen. Falls Sie aktualisieren wollen,
-          ohne Konflikte aufzulösen, können Sie die
-          <option>--non-interactive</option>-Option an <command>svn
+          update</userinput> aufrufen. Falls Sie bereits vorher
+          wissen, dass Sie aktualisieren wollen, ohne Konflikte
+          aufzulösen, können Sie die Option
+          <option>--non-interactive</option> an <command>svn
           update</command> übergeben, und jede Datei mit Konflikten
           wird automatisch mit einem
           <computeroutput>C</computeroutput> gekennzeichnet.</para>
 
 <!--
-        <para>The <computeroutput>C</computeroutput> stands for
-          <computeroutput>c</computeroutput>onflict.  This means that
-          the changes from the server overlapped with your own, and
-          now you have to manually choose between them after the
-          update has completed.  When you postpone a conflict
-          resolution, <command>svn</command> typically does three
-          things to assist you in noticing and resolving that
-          conflict:</para>
+        <para>The <computeroutput>C</computeroutput>
+          (for <quote>Conflicted</quote>) means that the changes from the
+          server overlapped with your own, and now you have to
+          manually choose between them after the update has completed.
+          When you postpone a conflict resolution,
+          <command>svn</command> typically does three things to assist
+          you in noticing and resolving that conflict:</para>
 -->
-        <para>Das <computeroutput>C</computeroutput> bedeutet
-          <computeroutput>c</computeroutput>onflict.  Das heißt, dass
+        <para>Das <computeroutput>C</computeroutput> (für
+          <quote>Conflicted</quote>) bedeutet, dass
           die Änderungen vom Server sich mit Ihren eigenen
           überschneiden, und Sie nach Abschluss der Aktualisierung
           manuell aus den Änderungen wählen müssen. Wenn Sie eine
@@ -3263,6 +3275,18 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
           Konfliktauflösung zu helfen:</para>
 
         <itemizedlist>
+
+<!--
+          <indexterm>
+            <primary>conflicts</primary>
+            <secondary>conflict markers</secondary>
+          </indexterm>
+-->
+          <indexterm>
+            <primary>Konflikte</primary>
+            <secondary>Konfliktmarkierungen</secondary>
+          </indexterm>
+
 
           <listitem>
 <!--
@@ -3317,19 +3341,20 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
                 <term><filename>filename.mine</filename></term>
                 <listitem>
 <!--
-                  <para>This is your file as it existed in your working
-                    copy before you updated your working copy&mdash;that
-                    is, without conflict markers.  This file has only
-                    your latest changes in it.  (If Subversion considers
-                    the file to be unmergeable, the
-                    <filename>.mine</filename> file isn't created, since
-                    it would be identical to the working file.)</para>
+                  <para>This is your file as it existed in your
+                    working copy before you began the update process.
+                    This version of the file contains your local
+                    modifications as well as conflict markers.  (If
+                    Subversion considers the file to be unmergeable,
+                    the <filename>.mine</filename> file isn't created,
+                    since it would be identical to the working
+                    file.)</para>
 -->
                   <para>Dies ist Ihre Datei aus der Arbeitskopie bevor
-                    Sie aktualisierten &ndash; d.h. ohne
-                    Konfliktmarken. Diese Datei beinhaltet nur Ihre
-                    letzten Änderungen. (Falls Subversion diese Datei
-                    als nicht-zusammenführbar erachtet, wird die
+                    Sie die Aktualisierung begannen.  Diese Datei
+                    beinhaltet Ihre lokalen Änderungen sowie
+                    Konfliktmarkierungen. (Falls Subversion diese
+                    Datei als nicht-zusammenführbar erachtet, wird die
                     <filename>.mine</filename>-Datei nicht erstellt,
                     da sie identisch mit der Datei der Arbeitskopie
                     wäre.)</para>
@@ -3341,17 +3366,22 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
                       </filename></term>
                 <listitem>
 <!--
-                  <para>This is the file that was the
-                    <literal>BASE</literal> revision before you updated
-                    your working copy.  That is, the file that you
-                    checked out before you made your latest
-                    edits.</para>
+                  <para>This is the file as it existed in the
+                    <literal>BASE</literal> revision&mdash;that is,
+                    the unmodified revision of the file in your
+                    working copy <emphasis>before</emphasis> you began
+                    the update process&mdash;where
+                    <replaceable>OLDREV</replaceable> is that base
+                    revision number.</para>
 -->
-                  <para>Dies ist die Datei, die die
-                    <literal>BASE</literal>-Revision war bevor Sie
-                    Ihre Arbeitskopie aktualisiert haben; also die
-                    Datei, die Sie ausgecheckt hatten, bevor Sie Ihre
-                    letzten Änderungen machten.</para>
+                  <para>Dies ist die Datei, wie sie in der
+                    <literal>BASE</literal>-Revision aussah, d.h., die
+                    unmodifizierte Revision der Datei in Ihrer
+                    Arbeitskopie <emphasis>bevor</emphasis> Sie die
+                    Aktualisierung begonnen haben, wobei
+                    <replaceable>OLDREV</replaceable> die
+                    Nummer der <literal>BASE</literal>-Revision
+                    ist.</para>
                 </listitem>
               </varlistentry>
 
@@ -3361,79 +3391,80 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
                 <listitem>
 <!--
                   <para>This is the file that your Subversion client
-                    just received from the server when you updated your
-                    working copy.  This file corresponds to the
-                    <literal>HEAD</literal> revision of the
-                    repository.</para>
+                    just received from the server via the update of
+                    your working copy, where
+                    <replaceable>NEWREV</replaceable> corresponds to
+                    the revision number to which you were updating
+                    (<literal>HEAD</literal>, unless otherwise
+                    requested).</para>
 -->
                   <para>Dies ist die Datei, die Ihr Subversion-Client
-                    soeben vom Server erhalten hat als Sie Ihre
-                    Arbeitskopie aktualisierten. Diese Datei
-                    entspricht der <literal>HEAD</literal>-Revision
-                    des Projektarchivs.</para>
+                    soeben durch die Aktualisierung Ihrer Arbeitskopie
+                    vom Server erhalten hat, wobei
+                    <replaceable>NEWREV</replaceable> der
+                    Revisionsnummer entspricht, auf der Sie
+                    aktualisiert haben (<literal>HEAD</literal>, falls
+                    nichts anderes angegeben wurde).</para>
                 </listitem>
               </varlistentry>
 
             </variablelist>
-
-<!--
-            <para>Here <replaceable>OLDREV</replaceable> is the revision number
-              of the file in your <filename>.svn</filename> directory,
-              and <replaceable>NEWREV</replaceable> is the revision number of
-              the repository <literal>HEAD</literal>.</para>
--->
-            <para>Hierbei ist <replaceable>OLDREV</replaceable> die
-              Revisionsnummer der Datei in Ihrem
-              Verzeichnis <filename>.svn</filename>, und
-              <replaceable>NEWREV</replaceable> ist die
-              Revisionsnummer von <literal>HEAD</literal> im
-              Projektarchiv.</para>
           </listitem>
 
         </itemizedlist>
 
 <!--
         <para>For example, Sally makes changes to the file
-          <filename>sandwich.txt</filename> in the repository.  Harry has
-          just changed the file in his working copy and checked it in.
-          Sally updates her working copy before checking in and she gets
-          a conflict, which she postpones:</para>
+          <filename>sandwich.txt</filename>, but does not yet commit
+          those changes.  Meanwhile, Harry commits changes to that
+          same file.  Sally updates her working copy before committing
+          and she gets a conflict, which she postpones:</para>
 -->
         <para>Beispielsweise ändert Sally die Datei
-          <filename>sandwich.txt</filename> aus dem Projektarchiv. Harry
-          hat gerade diese Datei in seiner Arbeitskopie geändert und
-          übergeben. Sally aktualisiert Ihre Arbeitskopie vor dem
-          übergeben und bekommt einen Konflikt, den sie
-          verschiebt:</para>
+          <filename>sandwich.txt</filename>, übergibt diese Änderungen
+          jedoch noch nicht. In der Zwischenzeit übergibt Harry
+          Änderungen an derselben Datei. Sally aktualisiert Ihre
+          Arbeitskopie vor der Übergabe und bekommt einen Konflikt,
+          den sie verschiebt:</para>
 
 <!--
-        <screen>
+        <informalexample>
+          <screen>
 $ svn update
 Conflict discovered in 'sandwich.txt'.
 Select: (p) postpone, (df) diff-full, (e) edit,
-        (h)elp for more options : p
-C  sandwich.txt
+        (mc) mine-conflict, (tc) theirs-conflict,
+        (s) show all options: p
+C    sandwich.txt
 Updated to revision 2.
+Summary of conflicts:
+  Text conflicts: 1
 $ ls -1
 sandwich.txt
 sandwich.txt.mine
 sandwich.txt.r1
 sandwich.txt.r2
 </screen>
+        </informalexample>
 -->
-        <screen>
+        <informalexample>
+          <screen>
 $ svn update
 Konflikt in »sandwich.txt« entdeckt.
 Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
-        (h) Hilfe für weitere Optionen: p
+         (mc) eigene konfliktbehaftete Datei, (tc) fremde konfliktbehaftete Datei
+         (s) alle Optionen anzeigen: p
 C  sandwich.txt
 Aktualisiert zu Revision 2.
+Konfliktübersicht:
+  Textkonflikte: 1
 $ ls -1
 sandwich.txt
 sandwich.txt.mine
 sandwich.txt.r1
 sandwich.txt.r2
 </screen>
+        </informalexample>
 
 <!--
         <para>At this point, Subversion will <emphasis>not</emphasis>
@@ -3448,17 +3479,21 @@ sandwich.txt.r2
           entfernt werden:</para>
 
 <!--
-        <screen>
+        <informalexample>
+          <screen>
 $ svn commit -m "Add a few more things"
 svn: Commit failed (details follow):
 svn: Aborting commit: '/home/sally/svn-work/sandwich.txt' remains in conflict
 </screen>
+        </informalexample>
 -->
-        <screen>
+        <informalexample>
+          <screen>
 $ svn commit -m "Add a few more things"
 svn: Übertragen schlug fehl (Details folgen):
 svn: Übertragung abgebrochen: »/home/sally/svn-work/sandwich.txt« bleibt im Konflikt
 </screen>
+        </informalexample>
 
 <!--
         <para>If you've postponed a conflict, you need to resolve the
@@ -3532,15 +3567,19 @@ svn: Übertragung abgebrochen: »/home/sally/svn-work/sandwich.txt« bleibt im K
           konfliktbehaftet:</para>
 
 <!--
-        <screen>
+        <informalexample>
+          <screen>
 $ svn resolve - -accept working sandwich.txt
 Resolved conflicted state of 'sandwich.txt'
 </screen>
+        </informalexample>
 -->
-        <screen>
+        <informalexample>
+          <screen>
 $ svn resolve --accept working sandwich.txt
 Konflikt von »sandwich.txt« aufgelöst
 </screen>
+        </informalexample>
 
       </sect3>
 
