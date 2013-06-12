@@ -2394,7 +2394,7 @@ $
         Änderungen rückgängig machen. Sie könnten versuchen, eine
         Kopie der Datei im Ursprungszustand zu bekommen und deren
         Inhalt über Ihre Änderungen zu kopieren. Sie könnten
-        versuchen, diese Änderrungen erneut mit <userinput>patch
+        versuchen, diese Änderungen erneut mit <userinput>patch
         -R</userinput> rückwärts anzuwenden. Es gibt wahrscheinlich
         noch andere Herangehensweisen, die Sie ausprobieren
         könnten.</para>
@@ -2582,7 +2582,7 @@ $
         uns noch um diese Konflikte kümmern. Konflikte können
         jederzeit auftreten, wenn Sie versuchen, Änderungen aus dem
         Projektarchiv mit Ihrer Arbeitskopie zusammenzuführen oder zu
-        integrieren (in einem sehr allgemeinen Sinn). Bie hierher
+        integrieren (in einem sehr allgemeinen Sinn). Bis hierher
         wissen Sie, dass <command>svn update</command> genau diese Art
         von Szenario hervorruft &ndash; der eigentliche Zweck dieses
         Befehls ist es, Ihre Arbeitskopie mit dem Projektarchiv auf
@@ -2666,7 +2666,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
         Zunächst teilt Ihnen Subversion mit, dass es beim Versuch,
         ausstehende Server-Änderungen in die Datei
         <filename>bar.c</filename> hineinzubringen, festgestellt hat,
-        dass einige dieser Ändeungen mit lokalen Änderungen
+        dass einige dieser Änderungen mit lokalen Änderungen
         kollidieren, die Sie an dieser Datei in Ihrer Arbeitskopie
         vorgenommen, jedoch noch nicht übergeben haben. Vielleicht hat
         jemand dieselbe Textzeile wie Sie geändert. Wie dem auch sei,
@@ -2848,7 +2848,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
             <para>Alle lokalen Änderungen an der zu überprüfenden
               Datei verwerfen, die in Konflikt zu Änderungen vom
               Server stehen. Jedoch werden alle nicht in Konflikt
-              stehehden lokalen Änderungen an dieser Datei
+              stehenden lokalen Änderungen an dieser Datei
               beibehalten.</para>
           </listitem>
         </varlistentry>
@@ -3129,7 +3129,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
           verwenden, um die Datei mit den Konfliktmarken manuell in
           einem Texteditor (nach den Anweisungen in <xref
           linkend="svn.advanced.externaleditors"/> konfiguriert)
-          bearnbeiten. Nachdem Sie die Datei bearbeitet haben und mit
+          bearbeiten. Nachdem Sie die Datei bearbeitet haben und mit
           Ihren Änderungen zufrieden sind, können Sie Subversion
           mitteilen, das sich die bearbeitete Datei nicht mehr im
           Konfliktzustand befindet, indem Sie den Befehl
@@ -3192,7 +3192,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
           detected.</para>
 
 -->
-        <para>Zum Schluß gibt es noch ein Paar von Kompromissoptionen.
+        <para>Zum Schluss gibt es noch ein Paar von Kompromissoptionen.
           Die Befehle <quote>mine-conflict</quote>
           (<userinput>mc</userinput>)
           und <quote>theirs-conflict</quote>
@@ -3284,7 +3284,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
 -->
           <indexterm>
             <primary>Konflikte</primary>
-            <secondary>Konfliktmarkierungen</secondary>
+            <secondary>Konfliktmarken</secondary>
           </indexterm>
 
 
@@ -4176,13 +4176,24 @@ svn: Datei »/rules.txt« ist veraltet
       <emphasis>gehen</emphasis>.</para>
 
 <!--
-    <para>Several commands can provide you with
-      historical data from the repository:</para>
+    <para>Several commands can provide you with historical data from
+      the repository:</para>
 -->
     <para>Es gibt mehrere Befehle, die Sie mit historischen Daten aus dem
       Projektarchiv versorgen können:</para>
 
       <variablelist>
+
+        <varlistentry>
+          <term><command>svn diff</command></term>
+          <listitem>
+<!--
+            <para>Shows line-level details of a particular change</para>
+-->
+            <para>Zeigt die Details einer bestimmten Änderung auf
+              Zeilenebene</para>
+          </listitem>
+        </varlistentry>
 
         <varlistentry>
           <term><command>svn log</command></term>
@@ -4196,17 +4207,6 @@ svn: Datei »/rules.txt« ist veraltet
               verknüpfte Protokolleinträge zu Datum
               und Autor und welche Pfade sich in jeder Revision
               geändert haben.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term><command>svn diff</command></term>
-          <listitem>
-<!--
-            <para>Shows line-level details of a particular change</para>
--->
-            <para>Zeigt die Details einer bestimmten Änderung auf
-              Zeilenebene</para>
           </listitem>
         </varlistentry>
 
@@ -4239,6 +4239,221 @@ svn: Datei »/rules.txt« ist veraltet
 
 
     <!-- =============================================================== -->
+    <sect2 id="svn.tour.history.diff">
+<!--
+      <title>Examining the Details of Historical Changes</title>
+-->
+      <title>Detaillierte Untersuchung der Änderungsgeschichte</title>
+
+<!--
+      <para>We've already seen <command>svn diff</command>
+        before&mdash;it displays file differences in unified diff
+        format; we used it to show the local modifications made to
+        our working copy before committing to the repository.</para>
+-->
+      <para><command>svn diff</command> ist uns bereits begegnet
+        &ndash; es zeigt Dateiunterschiede im unified-diff-Format; wir
+        verwendeten es, um die lokalen Änderungen an unserer
+        Arbeitskopie anzuzeigen, bevor wir sie dem Projektarchiv
+        übergaben.</para>
+
+<!--
+      <para>In fact, it turns out that there are
+        <emphasis>three</emphasis> distinct uses of <command>svn
+        diff</command>:</para>
+-->
+      <para>Tatsächlich stellt sich heraus, dass es
+        <emphasis>drei</emphasis> verschiedene
+        Verwendungsmöglichkeiten für <command>svn diff</command>
+        gibt:</para>
+
+      <itemizedlist>
+
+        <listitem>
+<!--
+          <para>Examining local changes</para>
+-->
+          <para>zum Untersuchen lokaler Änderungen</para>
+        </listitem>
+
+        <listitem>
+<!--
+          <para>Comparing your working copy to the repository</para>
+-->
+	  <para>zum Vergleichen Ihrer Arbeitskopie mit dem
+	    Projektarchiv</para>
+        </listitem>
+
+        <listitem>
+<!--
+          <para>Comparing repository revisions</para>
+-->
+          <para>zum Vergleichen von Projektarchiv-Revisionen</para>
+        </listitem>
+
+      </itemizedlist>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.tour.history.diff.local">
+<!--
+        <title>Examining local changes</title>
+-->
+        <title>Untersuchen lokaler Änderungen</title>
+
+<!--
+        <para>As we've seen, invoking <userinput>svn diff</userinput> with
+          no options will compare your working files to the cached
+          <quote>pristine</quote> copies in
+          the <filename>.svn</filename> area:</para>
+-->
+        <para>Wie wir gesehen haben, vergleicht der Aufruf von
+          <userinput>svn diff</userinput> ohne Optionen die
+          Arbeitsdateien mit den zwischengespeicherten
+          <quote>ursprünglichen</quote> Kopien im
+          <filename>.svn</filename>-Bereich:</para>
+
+        <informalexample>
+          <screen>
+$ svn diff
+Index: rules.txt
+===================================================================
+--- rules.txt	(revision 3)
++++ rules.txt	(working copy)
+@@ -1,4 +1,5 @@
+ Be kind to others
+ Freedom = Responsibility
+ Everything in moderation
+-Chew with your mouth open
++Chew with your mouth closed
++Listen when others are speaking
+$
+</screen>
+        </informalexample>
+
+      </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.tour.history.diff.wcrepos">
+<!--
+        <title>Comparing working copy to repository</title>
+-->
+        <title>Vergleichen der Arbeitskopie mit dem Projektarchiv</title>
+
+<!--
+        <para>If a single <option>- -revision</option>
+          (<option>-r</option>) number is passed, your
+          working copy is compared to the specified revision in the
+          repository:</para>
+-->
+        <para>Wird eine einzelne Nummer mit <option>--revision</option>
+          (<option>-r</option>) übergeben, wird die Arbeitskopie mit
+          der angegebenen Revision im Projektarchiv verglichen:</para>
+
+        <informalexample>
+          <screen>
+$ svn diff -r 3 rules.txt
+Index: rules.txt
+===================================================================
+--- rules.txt	(revision 3)
++++ rules.txt	(working copy)
+@@ -1,4 +1,5 @@
+ Be kind to others
+ Freedom = Responsibility
+ Everything in moderation
+-Chew with your mouth open
++Chew with your mouth closed
++Listen when others are speaking
+$
+</screen>
+        </informalexample>
+
+      </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.tour.history.diff.reposrepos">
+<!--
+        <title>Comparing repository revisions</title>
+-->
+        <title>Vergleichen von Projektarchiv-Revisionen</title>
+
+<!--
+        <para>If two revision numbers, separated by a colon, are
+          passed via <option>- -revision</option>
+          (<option>-r</option>), the two revisions are directly
+          compared:</para>
+-->
+        <para>Werden zwei Revisionsnummern durch einen Doppelpunkt
+          getrennt mit <option>--revision</option>
+          (<option>-r</option>) übergeben, werden die beiden
+          Revisionen direkt miteinander verglichen:</para>
+
+        <informalexample>
+          <screen>
+$ svn diff -r 2:3 rules.txt
+Index: rules.txt
+===================================================================
+--- rules.txt	(revision 2)
++++ rules.txt	(revision 3)
+@@ -1,4 +1,4 @@
+ Be kind to others
+-Freedom = Chocolate Ice Cream
++Freedom = Responsibility
+ Everything in moderation
+ Chew with your mouth open
+$
+</screen>
+        </informalexample>
+
+<!--
+        <para>A more convenient way of comparing one revision to the
+          previous revision is to use the <option>- -change</option>
+          (<option>-c</option>) option:</para>
+-->
+        <para>Eine bequemere Möglichkeit, eine Revision mit der
+          Vorgänger-Revision zu vergleichen, bietet die Verwendung der
+          Option <option>--change</option>
+          (<option>-c</option>):</para>
+
+        <informalexample>
+          <screen>
+$ svn diff -c 3 rules.txt
+Index: rules.txt
+===================================================================
+--- rules.txt	(revision 2)
++++ rules.txt	(revision 3)
+@@ -1,4 +1,4 @@
+ Be kind to others
+-Freedom = Chocolate Ice Cream
++Freedom = Responsibility
+ Everything in moderation
+ Chew with your mouth open
+$
+</screen>
+        </informalexample>
+
+<!--
+        <para>Lastly, you can compare repository revisions even when
+          you don't have a working copy on your local machine, just by
+          including the appropriate URL on the command line:</para>
+-->
+        <para>Zu guter Letzt können Sie Revisionen im Projektarchiv auch
+          dann vergleichen, falls Sie gar keine Arbeitskopie auf Ihrem
+          lokalen Rechner haben, indem Sie einfach den entsprechenden
+          URL auf der Kommandozeile angeben:</para>
+
+        <informalexample>
+          <screen>
+$ svn diff -c 5 http://svn.example.com/repos/example/trunk/text/rules.txt
+&hellip;
+$
+</screen>
+        </informalexample>
+
+      </sect3>
+
+    </sect2>
+
+    <!-- =============================================================== -->
     <sect2 id="svn.tour.history.log">
 <!--
       <title>Generating a List of Historical Changes</title>
@@ -4265,7 +4480,8 @@ svn: Datei »/rules.txt« ist veraltet
         Protokolleintrag:</para>
 
 <!--
-      <screen>
+      <informalexample>
+        <screen>
 $ svn log
  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  -
 r3 | sally | 2008-05-15 23:09:28 -0500 (Thu, 15 May 2008) | 1 line
@@ -4281,8 +4497,10 @@ r1 | sally | 2008-05-10 19:50:31 -0500 (Sat, 10 May 2008) | 1 line
 Initial import
  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  -
 </screen>
+      </informalexample>
 -->
-      <screen>
+      <informalexample>
+        <screen>
 $ svn log
 ------------------------------------------------------------------------
 r3 | sally | 2008-05-15 23:09:28 -0500 (Thu, 15 May 2008) | 1 line
@@ -4298,6 +4516,7 @@ r1 | sally | 2008-05-10 19:50:31 -0500 (Sat, 10 May 2008) | 1 line
 Erstimport
 ------------------------------------------------------------------------
 </screen>
+      </informalexample>
 <!--
       <para>Note that the log messages are printed in
         <emphasis>reverse chronological order</emphasis> by default.
@@ -4314,21 +4533,63 @@ Erstimport
         <option>--revision</option> (<option>-r</option>):</para>
 
 <!--
-      <screen>
-$ svn log -r 5:19    # shows logs 5 through 19 in chronological order
-
-$ svn log -r 19:5    # shows logs 5 through 19 in reverse order
-
-$ svn log -r 8       # shows log for revision 8
-</screen>
+      <table id="svn.tour.history.log.tbl-1">
+        <title>Common log requests</title>
+        <tgroup cols="2">
+          <thead>
+            <row>
+              <entry>Command</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><userinput>svn log -r 5:19</userinput></entry>
+              <entry>Display logs for revisions 5 through 19 in
+                chronological order</entry>
+            </row>
+            <row>
+              <entry><userinput>svn log -r 19:5</userinput></entry>
+              <entry>Display logs for revisions 5 through 19 in
+                reverse chronological order</entry>
+            </row>
+            <row>
+              <entry><userinput>svn log -r 8</userinput></entry>
+              <entry>Display logs for revision 8 only</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
 -->
-      <screen>
-$ svn log -r 5:19    # zeigt Protokolleintrag 5 bis 19 in chronologischer Reihenfolge
-
-$ svn log -r 19:5    # zeigt Protokolleintrag 5 bis 19 in umgekehrter Reihenfolge
-
-$ svn log -r 8       # zeigt Protokolleintrag für Revision 8
-</screen>
+      <table id="svn.tour.history.log.tbl-1">
+        <title>Häufige Protokollanfragen</title>
+        <tgroup cols="2">
+          <thead>
+            <row>
+              <entry>Befehl</entry>
+              <entry>Beschreibung</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><userinput>svn log -r 5:19</userinput></entry>
+              <entry>Anzeige der Protokolleinträge für die Revisionen
+                5 bis 19 in chronologischer Reihenfolge</entry>
+            </row>
+            <row>
+              <entry><userinput>svn log -r 19:5</userinput></entry>
+              <entry>Anzeige der Protokolleinträge für die Revisionen
+                5 bis 19 in umgekehrt chronologischer
+                Reihenfolge</entry>
+            </row>
+            <row>
+              <entry><userinput>svn log -r 8</userinput></entry>
+              <entry>Anzeige des Protokolleintrags nur für Revision
+                8</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
 
 <!--
       <para>You can also examine the log history of a single file or
@@ -4338,12 +4599,14 @@ $ svn log -r 8       # zeigt Protokolleintrag für Revision 8
         einzigen Datei oder eines einzigen Verzeichnisses ansehen. Zum
         Beispiel:</para>
 
-      <screen>
+      <informalexample>
+        <screen>
 $ svn log foo.c
 &hellip;
 $ svn log http://foo.com/svn/trunk/code/foo.c
 &hellip;
 </screen>
+      </informalexample>
 
 <!--
       <para>These will display log messages <emphasis>only</emphasis>
@@ -4361,7 +4624,7 @@ $ svn log http://foo.com/svn/trunk/code/foo.c
           Just Committed?</title>
 -->
         <title>Warum zeigt mir svn log nicht, was ich gerade übergeben
-	  habe?</title>
+          habe?</title>
 
 <!--
         <para>If you make a commit and immediately type <userinput>svn
@@ -4427,7 +4690,8 @@ $ svn log http://foo.com/svn/trunk/code/foo.c
         einer Revision:</para>
 
 <!--
-      <screen>
+      <informalexample>
+        <screen>
 $ svn log -r 8 -v
  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  -
 r8 | sally | 2008-05-21 13:19:25 -0500 (Wed, 21 May 2008) | 1 line
@@ -4440,8 +4704,10 @@ Frozzled the sub-space winch.
 
  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  -
 </screen>
+      </informalexample>
 -->
-      <screen>
+      <informalexample>
+        <screen>
 $ svn log -r 8 -v
 ------------------------------------------------------------------------
 r8 | sally | 2008-05-21 13:19:25 -0500 (Wed, 21 May 2008) | 1 line
@@ -4454,12 +4720,14 @@ Die Unterraumwinde gefrozzelt.
 
 ------------------------------------------------------------------------
 </screen>
+      </informalexample>
 
 <!--
       <para>
-        <command>svn log</command> also takes a <option>- -quiet</option>
-        (<option>-q</option>) option, which suppresses the body of the
-        log message.  When combined with <option>- -verbose</option>, it
+        <command>svn log</command> also takes
+        a <option>- -quiet</option> (<option>-q</option>) option, which
+        suppresses the body of the log message.  When combined
+        with <option>- -verbose</option>, it
         gives just the names of the changed files.</para>
 -->
       <para>
@@ -4483,11 +4751,13 @@ Die Unterraumwinde gefrozzelt.
         <para>Nach ein wenig Arbeit mit Subversion werden die meisten
           Benutzer so etwas begegnen:</para>
 
-        <screen>
+        <informalexample>
+          <screen>
 $ svn log -r 2
 ------------------------------------------------------------------------
 $
 </screen>
+        </informalexample>
 
 <!--
         <para>At first glance, this seems like an error.  But recall
@@ -4500,8 +4770,8 @@ $
           nor any of its children was changed, Subversion will show you
           an empty log.  If you want to see what changed in that
           revision, try pointing <command>svn log</command> directly at
-          the topmost URL of your repository, as in <userinput>svn log -r 2
-          http://svn.collab.net/repos/svn</userinput>.</para>
+          the topmost URL of your repository, as in <userinput>svn log
+          -r 2 ^/</userinput>.</para>
 -->
         <para>Auf den ersten Blick sieht es aus wie ein Fehler. Aber
           seien Sie daran erinnert, dass, während Revisionen über das
@@ -4517,217 +4787,13 @@ $
           Revision geändert hat, versuchen Sie <command>svn
           log</command> direkt auf den obersten URL Ihres Projektarchivs
           zeigen zu lassen, wie in <userinput>svn log -r 2
-          http://svn.collab.net/repos/svn</userinput>.</para>
+          ^/</userinput>.</para>
 
       </sidebar>
 
     </sect2>
 
     <!-- =============================================================== -->
-    <sect2 id="svn.tour.history.diff">
-<!--
-      <title>Examining the Details of Historical Changes</title>
--->
-      <title>Detaillierte Untersuchung der Änderungsgeschichte</title>
-
-<!--
-      <para>We've already seen <command>svn diff</command>
-        before&mdash;it displays file differences in unified diff
-        format; we used it to show the local modifications made to
-        our working copy before committing to the repository.</para>
--->
-      <para><command>svn diff</command> ist uns bereits begegnet
-        &ndash; es zeigt Dateiunterschiede im unified-diff-Format; wir
-        verwendeten es, um die lokalen Änderungen an unserer
-        Arbeitskopie anzuzeigen, bevor wir sie dem Projektarchiv
-        übergaben.</para>
-
-<!--
-      <para>In fact, it turns out that there are
-        <emphasis>three</emphasis> distinct uses of <command>svn
-        diff</command>:</para>
--->
-      <para>Tatsächlich stellt sich heraus, dass es
-        <emphasis>drei</emphasis> verschiedene
-        Verwendungsmöglichkeiten für <command>svn diff</command>
-        gibt:</para>
-
-      <itemizedlist>
-
-        <listitem>
-<!--
-          <para>Examining local changes</para>
--->
-          <para>zum Untersuchen lokaler Änderungen</para>
-        </listitem>
-
-        <listitem>
-<!--
-          <para>Comparing your working copy to the repository</para>
--->
-	  <para>zum Vergleichen Ihrer Arbeitskopie mit dem
-	    Projektarchiv</para>
-        </listitem>
-
-        <listitem>
-<!--
-          <para>Comparing one repository to another</para>
--->
-          <para>zum Vergleichen von Revisionen im Projektarchiv</para>
-        </listitem>
-
-      </itemizedlist>
-
-      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <sect3 id="svn.tour.history.diff.local">
-<!--
-        <title>Examining local changes</title>
--->
-        <title>Untersuchen lokaler Änderungen</title>
-
-<!--
-        <para>As we've seen, invoking <userinput>svn diff</userinput> with
-          no options will compare your working files to the cached
-          <quote>pristine</quote> copies in
-          the <filename>.svn</filename> area:</para>
--->
-        <para>Wie wir gesehen haben, vergleicht der Aufruf von
-          <userinput>svn diff</userinput> ohne Optionen die
-          Arbeitsdateien mit den zwischengespeicherten
-          <quote>ursprünglichen</quote> Kopien im
-          <filename>.svn</filename>-Bereich:</para>
-
-        <screen>
-$ svn diff
-Index: rules.txt
-===================================================================
---- rules.txt   (revision 3)
-+++ rules.txt   (working copy)
-@@ -1,4 +1,5 @@
- Be kind to others
- Freedom = Responsibility
- Everything in moderation
--Chew with your mouth open
-+Chew with your mouth closed
-+Listen when others are speaking
-$
-</screen>
-
-      </sect3>
-
-      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <sect3 id="svn.tour.history.diff.wcrepos">
-<!--
-        <title>Comparing working copy to repository</title>
--->
-        <title>Vergleichen der Arbeitskopie mit dem Projektarchiv</title>
-
-<!--
-        <para>If a single <option>- -revision</option>
-          (<option>-r</option>) number is passed, your
-          working copy is compared to the specified revision in the
-          repository:</para>
--->
-        <para>Wird eine einzelne Nummer mit <option>--revision</option>
-          (<option>-r</option>) übergeben, wird die Arbeitskopie mit
-          der angegebenen Revision im Projektarchiv verglichen:</para>
-
-        <screen>
-$ svn diff -r 3 rules.txt
-Index: rules.txt
-===================================================================
---- rules.txt   (revision 3)
-+++ rules.txt   (working copy)
-@@ -1,4 +1,5 @@
- Be kind to others
- Freedom = Responsibility
- Everything in moderation
--Chew with your mouth open
-+Chew with your mouth closed
-+Listen when others are speaking
-$
-</screen>
-
-      </sect3>
-
-      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <sect3 id="svn.tour.history.diff.reposrepos">
-<!--
-        <title>Comparing repository to repository</title>
--->
-        <title>Vergleichen von Projektarchiv mit Projektarchiv</title>
-
-<!--
-        <para>If two revision numbers, separated by a colon, are
-          passed via <option>- -revision</option>
-          (<option>-r</option>), the two revisions are directly
-          compared:</para>
--->
-        <para>Werden zwei Revisionsnummern durch einen Doppelpunkt
-          getrennt mit <option>--revision</option>
-          (<option>-r</option>) übergeben, werden die beiden
-          Revisionen direkt miteinander verglichen:</para>
-
-        <screen>
-$ svn diff -r 2:3 rules.txt
-Index: rules.txt
-===================================================================
---- rules.txt   (revision 2)
-+++ rules.txt   (revision 3)
-@@ -1,4 +1,4 @@
- Be kind to others
--Freedom = Chocolate Ice Cream
-+Freedom = Responsibility
- Everything in moderation
- Chew with your mouth open
-$
-</screen>
-
-<!--
-        <para>A more convenient way of comparing one revision to the
-          previous revision is to use the <option>- -change</option>
-          (<option>-c</option>) option:</para>
--->
-        <para>Eine bequemere Möglichkeit, eine Revision mit der
-          Vorgänger-Revision zu vergleichen, bietet die Verwendung der
-          Option <option>--change</option>
-          (<option>-c</option>):</para>
-
-        <screen>
-$ svn diff -c 3 rules.txt
-Index: rules.txt
-===================================================================
---- rules.txt   (revision 2)
-+++ rules.txt   (revision 3)
-@@ -1,4 +1,4 @@
- Be kind to others
--Freedom = Chocolate Ice Cream
-+Freedom = Responsibility
- Everything in moderation
- Chew with your mouth open
-$
-</screen>
-
-<!--
-        <para>Lastly, you can compare repository revisions even when
-          you don't have a working copy on your local machine, just by
-          including the appropriate URL on the command line:</para>
--->
-        <para>Zu guter Letzt können Sie Revisionen im Projektarchiv auch
-          dann vergleichen, falls Sie gar keine Arbeitskopie auf Ihrem
-          lokalen Rechner haben, indem Sie einfach den entsprechenden
-          URL auf der Kommandozeile angeben:</para>
-
-        <screen>
-$ svn diff -c 5 http://svn.example.com/repos/example/trunk/text/rules.txt
-&hellip;
-$
-</screen>
-
-      </sect3>
-
-    </sect2>
-
     <!-- =============================================================== -->
     <sect2 id="svn.tour.history.browsing">
 <!--
@@ -4750,7 +4816,8 @@ $
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.tour.history.browsing.cat">
-         <title>svn cat</title>
+        <title>svn cat</title>
+
 
 <!--
         <para>If you want to examine an earlier version of a file and
@@ -4762,7 +4829,8 @@ $
           zwei Dateien, können Sie <command>svn cat</command>
           verwenden:</para>
 
-        <screen>
+        <informalexample>
+          <screen>
 $ svn cat -r 2 rules.txt
 Be kind to others
 Freedom = Chocolate Ice Cream
@@ -4770,6 +4838,7 @@ Everything in moderation
 Chew with your mouth open
 $
 </screen>
+        </informalexample>
 
 <!--
         <para>You can also redirect the output directly into a
@@ -4778,10 +4847,12 @@ $
         <para>Sie können die Ausgabe auch direkt in eine Datei
           umleiten:</para>
 
-        <screen>
+        <informalexample>
+          <screen>
 $ svn cat -r 2 rules.txt &gt; rules.txt.v2
 $
 </screen>
+        </informalexample>
 
       </sect3>
 
@@ -4799,14 +4870,15 @@ $
           befinden, ohne die Dateien auf Ihren lokalen Rechner
           herunterladen zu müssen:</para>
 
-        <screen>
-$ svn list http://svn.collab.net/repos/svn
+        <informalexample>
+          <screen>
+$ svn list http://svn.example.com/repo/project
 README
 branches/
-clients/
 tags/
 trunk/
 </screen>
+        </informalexample>
 
 <!--
         <para>If you want a more detailed listing, pass the
@@ -4818,14 +4890,16 @@ trunk/
           (<option>-v</option>), um eine Ausgabe ähnlich der folgenden
           zu bekommen:</para>
 
-        <screen>
-$ svn list -v http://svn.collab.net/repos/svn
+        <informalexample>
+          <screen>
+$ svn list -v http://svn.example.com/repo/project
+  23351 sally                 Feb 05 13:26 ./
   20620 harry            1084 Jul 13  2006 README
   23339 harry                 Feb 04 01:40 branches/
-  21282 sally                 Aug 27 09:41 developer-resources/
   23198 harry                 Jan 23 17:17 tags/
   23351 sally                 Feb 05 13:26 trunk/
 </screen>
+        </informalexample>
 
 <!--
         <para>The columns tell you the revision at which the file or
@@ -4840,22 +4914,24 @@ $ svn list -v http://svn.collab.net/repos/svn
 
         <warning>
 <!--
-          <para>The <userinput>svn list</userinput> command with no arguments
-          defaults to the <emphasis>repository URL</emphasis> of the
-          current working directory, <emphasis>not</emphasis> the
-          local working copy directory.  After all, if you want a
-          listing of your local directory, you could use just plain
-          <command>ls</command> (or any reasonable non-Unixy
-          equivalent).</para>
+          <para>The <userinput>svn list</userinput> command with no
+            arguments defaults to the <emphasis>repository
+            URL</emphasis> of the current working
+            directory, <emphasis>not</emphasis> the local working copy
+            directory.  After all, if you want a listing of your local
+            directory, you could use just plain
+            <command>ls</command> (or any reasonable non-Unixy
+            equivalent).</para>
 -->
           <para>Der Befehl <userinput>svn list</userinput> ohne
-          Argumente verwendet standardmäßig den
-          <emphasis>Projektarchiv-URL</emphasis> des aktuellen
-          Arbeitsverzeichnisses und <emphasis>nicht</emphasis> das
-          Verzeichnis der lokalen Arbeitskopie. Schließlich können
-          Sie, falls Sie eine Auflistung des lokalen Verzeichnisses
-          möchten, das einfache <command>ls</command> (oder irgendein
-          vernünftiges nicht-unixartiges Äquivalent) benutzen.</para>
+            Argumente verwendet standardmäßig den
+            <emphasis>Projektarchiv-URL</emphasis> des aktuellen
+            Arbeitsverzeichnisses und <emphasis>nicht</emphasis> das
+            Verzeichnis der lokalen Arbeitskopie. Schließlich können
+            Sie, falls Sie eine Auflistung des lokalen Verzeichnisses
+            möchten, das einfache <command>ls</command> (oder
+            irgendein vernünftiges nicht-unixartiges Äquivalent)
+            benutzen.</para>
         </warning>
 
       </sect3>
@@ -4872,39 +4948,37 @@ $ svn list -v http://svn.collab.net/repos/svn
 
 <!--
       <para>In addition to all of the previous commands, you can use
-        <command>svn update</command> and <command>svn
-        checkout</command> with the <option>- -revision</option> option
-        to take an entire working copy <quote>back in time</quote>:
-        <footnote>
-          <para>See?  We told you that Subversion was a time machine.</para>
-        </footnote>
-        </para>
+        the <option>- -revision</option> (<option>-r</option>) option
+        with <command>svn update</command> to take an entire working
+        copy <quote>back in time</quote>:<footnote><para>See?  We told
+        you that Subversion was a time
+        machine.</para></footnote></para>
 -->
-      <para>Zusätzlich zu den obigen Befehlen können Sie <command>svn
-        update</command> und <command>svn checkout</command> mit der
-        Option <option>--revision</option> verwenden, um eine
-        vollständige Arbeitskopie <quote>zeitlich
-        zurückzusetzen</quote>:
-        <footnote>
-          <para>Sehen Sie? Wir haben Ihnen gesagt, dass Subversion
-            eine Zeitmaschine sei.</para>
-        </footnote>
-        </para>
+      <para>Zusätzlich zu den obigen Befehlen können Sie die Option
+        <option>--revision</option> (<option>-r</option>) mit
+        <command>svn update</command> verwenden, um eine vollständige
+        Arbeitskopie <quote>zeitlich zurückzusetzen</quote>:<footnote>
+        <para>Sehen Sie? Wir haben Ihnen gesagt, dass Subversion eine
+        Zeitmaschine sei.</para></footnote></para>
 
 <!--
-      <screen>
-$ svn checkout -r 1729 # Checks out a new working copy at r1729
+      <informalexample>
+        <screen>
+# Make the current directory look like it did in r1729.
+$ svn update -r 1729
 &hellip;
-$ svn update -r 1729 # Updates an existing working copy to r1729
-&hellip;
+$
 </screen>
+      </informalexample>
 -->
-      <screen>
-$ svn checkout -r 1729 # Checkt eine neue Arbeitskopie von r1729 aus
+      <informalexample>
+        <screen>
+# Lass das aktuelle Verzeichnis aussehen wie in r1729.
+$ svn update -r 1729
 &hellip;
-$ svn update -r 1729 # Aktualisiert eine bestehende Arbeitskopie auf r1729
-&hellip;
+$
 </screen>
+      </informalexample>
 
       <tip>
 <!--
@@ -4929,44 +5003,104 @@ $ svn update -r 1729 # Aktualisiert eine bestehende Arbeitskopie auf r1729
       </tip>
 
 <!--
+      <para>If you'd prefer to create a whole new working copy from an
+        older snapshot, you can do so by modifying the typical
+        <command>svn checkout</command> command.  As with <command>svn
+        update</command>, you can provide
+        the <option>- -revision</option> (<option>-r</option>) option.
+        But for reasons that we cover in
+        <xref linkend="svn.advanced.pegrevs" />, you might instead want
+        to specify the target revision as part of Subversion's
+        expanded URL syntax.</para>
+
+-->
+      <para>Sollten Sie es bevorzugen, eine vollständige neue
+        Arbeitskopie aus einem älteren Schnappschuss zu erzeugen,
+        können Sie das, indem Sie den üblichen Befehl <command>svn
+        checkout</command> modifizieren. Wie bei <command>svn
+        update</command>, können Sie die Option
+        <option>--revision</option> (<option>-r</option>) mitgeben.
+        Aus Gründen, die wir in <xref linkend="svn.advanced.pegrevs"
+        /> erörtern werden, sollten Sie stattdessen die Zielrevision
+        als Teil der erweiterten URL-Syntax von Subversion
+        angeben.</para>
+
+<!--
+      <informalexample>
+        <screen>
+# Checkout the trunk from r1729.
+$ svn checkout http://svn.example.com/svn/repo/trunk@1729 trunk-1729
+&hellip;
+# Checkout the current trunk as it looked in r1729.
+$ svn checkout http://svn.example.com/svn/repo/trunk -r 1729 trunk-1729
+&hellip;
+$
+</screen>
+      </informalexample>
+-->
+      <informalexample>
+        <screen>
+# Den Trunk von r1729 auschecken.
+$ svn checkout http://svn.example.com/svn/repo/trunk@1729 trunk-1729
+&hellip;
+# Den aktuellen Trunk auschecken, wie er in r1729 aussah.
+$ svn checkout http://svn.example.com/svn/repo/trunk -r 1729 trunk-1729
+&hellip;
+$
+</screen>
+      </informalexample>
+
+      <!-- ### TODO: This changes a bit in 1.7 -->
+
+<!--
       <para>Lastly, if you're building a release and wish to bundle up
         your files from Subversion but don't want those
-        pesky <filename>.svn</filename> directories in the way,
-        you can use <command>svn export</command> to create a local
-        copy of all or part of your repository
-        sans <filename>.svn</filename> directories.  As
-        with <command>svn update</command> and
-        <command>svn checkout</command>, you can also pass the
-        <option>- -revision</option> option to <command>svn
-        export</command>:</para>
+        pesky <filename>.svn</filename> directories in the way, you
+        can use <command>svn export</command> to create a local copy
+        of all or part of your repository
+        sans <filename>.svn</filename> directories.  The basic syntax
+        of this subcommand is identical to that of the <command>svn
+        checkout</command>:</para>
 -->
       <para>Wenn Sie am Ende ein Release bauen und die Dateien aus
         Subversion zu einem Bündel schnüren möchten, ohne allerdings
         diese verdammten <filename>.svn</filename>-Verzeichnisse dabei
         zu haben, können Sie <command>svn export</command> verwenden,
         um eine lokale Kopie des gesamten oder teilweisen Projektarchivs
-        ohne <filename>.svn</filename>-Verzeichnisse zu erhalten. Wie
-        bei <command>svn update</command> und <command>svn
-        checkout</command> können Sie auch hier die Option
-        <option>--revision</option> an <command>svn export</command>
-        übergeben:</para>
+        ohne <filename>.svn</filename>-Verzeichnisse zu erhalten. Die
+        Syntax ist grundsätzlich identisch zu der von <command>svn
+        checkout</command>:</para>
 
 <!--
-      <screen>
-$ svn export http://svn.example.com/svn/repos1 # Exports latest revision
+      <informalexample>
+        <screen>
+# Export the trunk from the latest revision.
+$ svn export http://svn.example.com/svn/repo/trunk trunk-export
 &hellip;
-$ svn export http://svn.example.com/svn/repos1 -r 1729
-# Exports revision r1729
+# Export the trunk from r1729.
+$ svn export http://svn.example.com/svn/repo/trunk@1729 trunk-1729
 &hellip;
+# Export the current trunk as it looked in r1729. 
+$ svn export http://svn.example.com/svn/repo/trunk -r 1729 trunk-1729
+&hellip;
+$
 </screen>
+      </informalexample>
 -->
-      <screen>
-$ svn export http://svn.example.com/svn/repos1 # Exportiert die letzte Revision
+      <informalexample>
+        <screen>
+# Den Trunk aus der letzten Revision exportieren.
+$ svn export http://svn.example.com/svn/repo/trunk trunk-export
 &hellip;
-$ svn export http://svn.example.com/svn/repos1 -r 1729
-# Exportiert Revision r1729
+# Den Trunk aus r1729 exportieren.
+$ svn export http://svn.example.com/svn/repo/trunk@1729 trunk-1729
 &hellip;
+# Den aktuellen Trunk exportieren, wie er in in r1729 aussah. 
+$ svn export http://svn.example.com/svn/repo/trunk -r 1729 trunk-1729
+&hellip;
+$
 </screen>
+      </informalexample>
 
     </sect2>
 
@@ -5028,22 +5162,21 @@ $ svn export http://svn.example.com/svn/repos1 -r 1729
 
 <!--
       <para>However, if you're definitely not going to use a working
-        copy again, you can safely delete the entire thing, but you'd
-        be well served to take a look through the working copy for
-        unversioned files.  To find these files, run <userinput>svn
-        status</userinput> and review any files that are prefixed with a
+        copy again, you can safely delete the entire thing using
+        whatever directory removal capabilities your operating system
+        offers.  We recommend that before you do so you
+        run <userinput>svn status</userinput> and review any files
+        listed in its output that are prefixed with a
         <literal>?</literal> to make certain that they're not of
-        importance.  After you're done reviewing, you can safely
-        delete your working copy.</para>
+        importance.</para>
 -->
       <para>Falls Sie die Arbeitskopie jedoch bestimmt nicht mehr
-        verwenden möchten, können Sie sie ruhig löschen; jedoch
-        sollten Sie vorher darin nach unversionierten Dateien
-        suchen. Um diese Dateien zu finden, rufen Sie <userinput>svn
-        status</userinput> auf und untersuchen alle Dateien, denen ein
-        <literal>?</literal> voransteht, um sicherzugehen, dass sie
-        nicht wichtig sind. Wenn Sie die Untersuchung abgeschlossen
-        haben, können Sie Ihre Arbeitskopie ruhig löschen.</para>
+        verwenden möchten, können Sie sie ruhig löschen, indem Sie die
+        zum Löschen von Verzeichnissen vorgesehenen Bordmittel Ihres
+        Betriebssystems verwenden. Wir empfehlen jedoch, vorher
+        <userinput>svn status</userinput> aufzurufen und alle Dateien
+        zu untersuchen, denen ein <literal>?</literal> voransteht, um
+        sicherzugehen, dass sie nicht wichtig sind.</para>
 
     </sect2>
 
@@ -5054,84 +5187,826 @@ $ svn export http://svn.example.com/svn/repos1 -r 1729
       <title>Wiederherstellung nach einer Unterbrechung</title>
 
 <!--
-      <para>When Subversion modifies your working copy (or any
-        information within <filename>.svn</filename>), it tries to do
+      <para>When Subversion modifies your working copy&mdash;either
+        your files or its own administrative state&mdash;it tries to do
         so as safely as possible.  Before changing the working copy,
-        Subversion writes its intentions to a logfile.  Next, it
-        executes the commands in the logfile to apply the requested
-        change, holding a lock on the relevant part of the working
-        copy while it works&mdash;to prevent other Subversion clients
-        from accessing the working copy mid-change.  Finally,
-        Subversion removes the logfile.  Architecturally, this is
-        similar to a journaled filesystem.  If a Subversion operation
-        is interrupted (e.g., if the process is killed or if the machine
-        crashes), the logfiles remain on disk.  By
-        reexecuting the logfiles, Subversion can complete the
-        previously started operation, and your working copy can get
-        itself back into a consistent state.</para>
+        Subversion logs its intentions in a private <quote>to-do
+        list</quote>, of sorts.  Next, it performs those actions to
+        affect the desired change, holding a lock on the relevant part
+        of the working copy while it works.  This prevents other
+        Subversion clients from accessing the working copy mid-change.
+        Finally, Subversion releases its lock and cleans up its
+        private to-do list.  Architecturally, this is similar to a
+        journaled filesystem.  If a Subversion operation is
+        interrupted (e.g, if the process is killed or if the machine
+        crashes), the private to-do list remains on disk.  This allows
+        Subversion to return to that list later to complete any
+        unfinished operations and return your working copy to a
+        consistent state.</para>
 -->
-      <para>Wenn Subversion Ihre Arbeitskopie (oder irgendwelche
-        Informationen in <filename>.svn</filename>) verändert,
-        versucht es das so sicher wie möglich zu machen. Bevor die
+      <para>Wenn Subversion Ihre Arbeitskopie verändert, entweder Ihre
+        Dateien oder seinen eigenen Verwaltungsbereich, versucht es so
+        sicher vorzugehen wie möglich. Bevor die
         Arbeitskopie geändert wird, schreibt Subversion seine
-        Absichten in eine Protokolldatei. Dann führt es die Befehle in
-        der Protokolldatei aus, um die Änderungen anzuwenden, wobei es
-        während der Arbeit den relevanten Teil der Arbeitskopie
+        Absichten in eine Art private <quote>Merkliste</quote>. Dann
+        führt es diese Aktionen aus, um die Änderungen durchzuführen,
+        wobei es während der Arbeit den relevanten Teil der Arbeitskopie
         sperrt, um andere Clients davon abzuhalten, während der
         Änderung auf die Arbeitskopie zuzugreifen. Zuletzt entfernt
-        Subversion die Protokolldatei. Architektonisch ist dies
-        ähnlich wie bei einem Dateisystem mit Journal. Falls eine
-        Subversion-Operation unterbrochen wird (z.B. wenn der Prozess
-        abgeschossen wird oder der Rechner abstürzt), bleibt die
-        Protokolldatei auf der Platte. Durch das erneute Ausführen der
-        Protokolldatei kann Subversion die vorher begonnene Operation
-        vervollständigen und Ihre Arbeitskopie gelangt wieder in
-        einen konsistenten Zustand.</para>
+        Subversion die Sperre und räumt die private Merkliste auf.
+        Architektonisch ähnelt das einem Dateisystem mit Journal.
+        Falls eine Operation von Subversion unterbrochen wird (z.B.
+        wenn der Prozess abgeschossen wird oder der Rechner abstürzt),
+        verbleibt die private Merkliste auf der Platte. Das erlaubt es
+        Subversion später zu der Merkliste zurückzukehren, um die
+        vorher begonnene Operationen zu vervollständigen und Ihre
+        Arbeitskopie wieder in einen konsistenten Zustand zu
+        bringen.</para>
 
 <!--
-      <para>And this is exactly what <command>svn cleanup</command>
-        does: it searches your working copy and runs any leftover
-        logs, removing working copy locks in the process.
-        If Subversion ever tells you that some part of your working copy
-        is <quote>locked,</quote> this is the command that you
-        should run.  Also, <command>svn status</command> will display
-        an <literal>L</literal> next to locked items:</para>
+      <para>This is exactly what <command>svn cleanup</command> does:
+        it searches your working copy and runs any leftover to-do
+        items, removing working copy locks as it completes those
+        operations.  If Subversion ever tells you that some part of
+        your working copy is <quote>locked,</quote> run <command>svn
+        cleanup</command> to remedy the problem.  The <command>svn
+        status</command> command will inform you about administrative
+        locks in the working copy, too, by displaying
+        an <literal>L</literal> next to those locked paths:</para>
 -->
       <para>Genau das macht <command>svn cleanup</command>: Es
-        durchsucht Ihre Arbeitskopie und führt etwaige übrig gebliebene
-        Protokolldateien aus, wobei Sperren in der Arbeitskopie
-        entfernt werden. Fall Ihnen Subversion jemals mitteilt, dass
-        ein Teil Ihrer Arbeitskopie <quote>gesperrt</quote> ist,
-        sollten Sie diesen Befehl aufrufen. Darüberhinaus zeigt
-        <command>svn status</command> ein <literal>L</literal> neben
-        gesperrten Objekten an:</para>
+        durchsucht Ihre Arbeitskopie und arbeitet etwaige übrig
+        gebliebene Punkte von der Merkliste ab, wobei Sperren in der
+        Arbeitskopie entfernt werden. Falls Ihnen Subversion jemals
+        mitteilt, dass ein Teil Ihrer Arbeitskopie
+        <quote>gesperrt</quote> ist, sollten Sie <command>svn
+        cleanup</command> aufrufen, um das Problem zu beheben. Der
+        Befehl <command>svn status</command> informiert Sie auch über
+        administrative Sperren in der Arbeitskopie, indem es ein
+        <literal>L</literal> neben diesen gesperrten Pfaden
+        anzeigt:</para>
 
-      <screen>
+      <informalexample>
+        <screen>
 $ svn status
-  L    somedir
-M      somedir/foo.c
-
+  L     somedir
+M       somedir/foo.c
 $ svn cleanup
 $ svn status
-M      somedir/foo.c
+M       somedir/foo.c
 </screen>
+      </informalexample>
 
 <!--
-      <para>Don't confuse these working copy locks with the ordinary
-        locks that Subversion users create when using
-        the lock-modify-unlock model of concurrent
-        version control; see the sidebar
+      <para>Don't confuse these working copy administrative locks with
+        the user-managed locks that Subversion users create when using
+        the lock-modify-unlock model of concurrent version control;
+        see the sidebar
         <xref linkend="svn.advanced.locking.meanings"/> for
         clarification.</para>
 
-      <para>Verwechseln Sie diese Sperren nicht mit den gewöhnlichen
-        Sperren, die Subversion-Benutzer anlegen, wenn sie das
-        sperren-ändern-freigeben-Modell der gleichzeitigen
-        Versionskontrolle verwenden; zur Klärung siehe den Kasten
-        <xref linkend="svn.advanced.locking.meanings"/>.</para>
+      <para>Verwechseln Sie diese administrativen Sperren nicht mit
+        den anwenderverwalteten Sperren, die Subversion-Anwender
+        anlegen, wenn sie das sperren-ändern-freigeben-Modell der
+        gleichzeitigen Versionskontrolle verwenden; zur Klärung siehe
+        den Kasten <xref
+        linkend="svn.advanced.locking.meanings"/>.</para>
 -->
     </sect2>
 
+  </sect1>
+
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <sect1 id="svn.tour.treeconflicts">
+<!--
+    <title>Dealing with Structural Conflicts</title>
+-->
+    <title>Umgang mit Strukturkonflikten</title>
+
+<!--
+    <para>So far, we have only talked about conflicts at the level of
+      file content.  When you and your collaborators make overlapping
+      changes within the same file, Subversion forces you to merge
+      those changes before you can commit.<footnote><para>Well,
+      you <emphasis>could</emphasis> mark files containing conflict
+      markers as resolved and commit them, if you really wanted to.
+      But this is rarely done in practice.</para></footnote></para>
+-->
+    <para>Bis hierhin haben wir nur über Konflikte auf der Ebene von
+      Dateiinhalten gesprochen. Wenn Sie und Ihre Mitarbeiter
+      überlappende Änderungen innerhalb derselben Datei vornehmen,
+      zwingt Sie Subversion dazu, diese Änderungen zusammenzuführen,
+      bevor Sie sie übergeben können.<footnote><para>Natürlich
+      <emphasis>könnten</emphasis> Sie Dateien, die
+      Konfliktmarkierungen enthalten, als konfliktfrei erklären und
+      übergeben, wenn Sie es wirklich wollten, doch das wird in der
+      Praxis kaum gemacht.</para></footnote></para>
+
+<!--
+    <para>But what happens if your collaborators move or delete a file
+      that you are still working on?  Maybe there was a
+      miscommunication, and one person thinks the file should be
+      deleted, while another person still wants to commit changes to
+      the file.  Or maybe your collaborators did some refactoring,
+      renaming files and moving around directories in the process.  If
+      you were still working on these files, those modifications may
+      need to be applied to the files at their new location.  Such
+      conflicts manifest themselves at the directory tree structure
+      level rather than at the file content level, and are known
+      as <firstterm>tree conflicts</firstterm>.</para>
+-->
+    <para>Was passiert aber, wenn Ihre Mitarbeiter eine Datei
+      verschieben oder löschen, an der Sie noch arbeiten? Vielleicht
+      gab es ein Verständnisproblem oder die eine Person glaubt, die
+      Datei soll gelöscht werden, während die andere Person noch
+      Änderungen an der Datei übergeben will. Vielleicht haben Ihre
+      Mitarbeiter ja auch etwas Refactoring betrieben und dabei
+      Dateien umbenannt und Verzeichnisse verschoben. Falls Sie noch
+      an diesen Dateien gearbeitet haben, müssten diese Änderungen auf
+      die Dateien am der neuen Stelle angewendet werden. Derartige
+      Konflikte äußern sich auf der Ebene der Verzeichnisstruktur
+      statt des Dateiinhaltes und sind bekannt als
+      <firstterm>Baumkonflikte</firstterm>.</para>
+
+    <sidebar>
+<!--
+      <title>Tree conflicts prior to Subversion 1.6</title>
+-->
+      <title>Baumkonflikte vor Subversion 1.6</title>
+
+<!--
+      <para>Prior to Subversion 1.6, tree conflicts could yield rather
+        unexpected results.  For example, if a file was locally
+        modified, but had been renamed in the repository,
+        running <command>svn update</command> would make Subversion
+        carry out the following steps:</para>
+-->
+      <para>Vor Subversion 1.6 konnten Baumkonflikte zu ziemlich
+        unerwarteten Ergebnissen führen. Wenn beispielsweise eine
+        Datei lokal geändert im Projektarchiv jedoch umbenannt worden
+        war, hätte ein <command>svn update</command> Subversion zu den
+        folgenden Schritten veranlasst:</para>
+
+      <itemizedlist>
+<!--
+        <listitem><para>Check the file to be renamed for local
+          modifications.</para></listitem>
+-->
+        <listitem><para>Überprüfe, ob die umzubenennende Datei lokale
+          Änderungen hat.</para></listitem>
+
+<!--
+        <listitem><para>Delete the file at its old location, and if it
+          had local modifications, keep an on-disk copy of the file at
+          the old location.  This on-disk copy now appears as an
+          unversioned file in the working copy.</para></listitem>
+-->
+        <listitem><para>Lösche die Datei an ihrer alten Stelle und
+          bewahre eine Kopie der Datei an der alten Stelle auf, falls
+          lokale Änderungen vorhanden waren. Diese Kopie erscheint nun
+          als eine nicht versionierte Datei in der
+          Arbeitskopie.</para></listitem>
+<!--
+        <listitem><para>Add the file, as it exists in the repository,
+          at its new location.</para></listitem>
+-->
+        <listitem><para>Füge die Datei wie sie im Projektarchiv
+          besteht an ihrer neuen Stelle hinzu.</para></listitem>
+      </itemizedlist>
+
+<!--
+      <para>When this situation arises, there is the possibility that
+        the user makes a commit without realizing that local
+        modifications have been left in a now-unversioned file in the
+        working copy, and have not reached the repository.  This gets
+        more and more likely (and tedious) if the number of files
+        affected by this problem is large.</para>
+-->
+      <para>Beim Eintreten dieser Situation besteht die Möglichkeit,
+        dass der Anwender eine Übergabe durchführt, ohne sich bewusst
+        zu sein, dass sich lokale Änderungen immer noch in einer nun
+        nicht-versionierten Datei der Arbeitskopie befinden und noch
+        nicht im Projektarchiv sind. Dies wird wahrscheinlicher (und
+        lästiger), falls die Anzahl der von diesem Problem berührten
+        Dateien groß ist.</para>
+
+<!--
+      <para>Since Subversion 1.6, this and other similar situations
+        are flagged as conflicts in the working copy.</para>
+-->
+      <para>Seit Subversion 1.6 werden diese und ähnliche Situationen
+        als Konflikte in der Arbeitskopie  
+        gekennzeichnet.</para>
+
+    </sidebar>
+
+<!--
+    <para>As with textual conflicts, tree conflicts prevent a commit
+      from being made from the conflicted state, giving the user the
+      opportunity to examine the state of the working copy for
+      potential problems arising from the tree conflict, and resolving
+      any such problems before committing.</para>
+-->
+    <para>Wie bei textuellen Konflikten verhindern Baumkonflikte eine
+      Übergabe aus dem Konfliktzustand und geben dem Anwender die
+      Gelegenheit, den Zustand der Arbeitskopie auf potenzielle
+      Probleme, die aus dem Baumkonflikt entstehen könnten, zu
+      überprüfen und vor der Übergabe aufzulösen.</para>
+
+    <!-- =============================================================== -->
+    <sect2 id="svn.tour.treeconflicts.example">
+<!--
+      <title>An Example Tree Conflict</title>
+-->
+      <title>Ein Beispiel für einen Baumkonflikt</title>
+
+<!--
+      <para>Suppose a software project you were working on currently
+        looked like this:</para>
+-->
+      <para>Gegeben sei folgendes Softwareprojekt, an dem Sie gerade
+        arbeiten:</para>
+
+      <informalexample>
+        <screen>
+$ svn list -Rv svn://svn.example.com/trunk/
+      4 harry                 Feb 06 14:34 ./
+      4 harry              23 Feb 06 14:34 COPYING
+      4 harry              41 Feb 06 14:34 Makefile
+      4 harry              33 Feb 06 14:34 README
+      4 harry                 Feb 06 14:34 code/
+      4 harry              51 Feb 06 14:34 code/bar.c
+      4 harry             124 Feb 06 14:34 code/foo.c
+</screen>
+      </informalexample>
+
+<!--
+      <para>Your collaborator Harry has renamed the file
+        <filename>bar.c</filename> to <filename>baz.c</filename>.  You
+        are still working on <filename>bar.c</filename> in your
+        working copy, but you don't know yet that the file has been
+        renamed in the repository.</para>
+-->
+      <para>Ihr Kollege Harry hat die Datei <filename>bar.c</filename>
+        in <filename>baz.c</filename> umbenannt. Sie arbeiten immer
+        noch an <filename>bar.c</filename> in Ihrer Arbeitskopie, doch
+        wissen noch nicht, dass die Datei im Projektarchiv umbenannt
+        wurde.</para>
+
+<!--
+      <para>The log message to Harry's commit looked like this:</para>
+-->
+      <para>Die Protokollmeldung für Harrys Übergabe sah so aus:</para>
+
+<!--
+      <informalexample>
+        <screen>
+$ svn log -r5 svn://svn.example.com/trunk
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+r5 | harry | 2009-02-06 14:42:59 +0000 (Fri, 06 Feb 2009) | 2 lines
+Changed paths:
+   M /trunk/Makefile
+   D /trunk/code/bar.c
+   A /trunk/code/baz.c (from /trunk/code/bar.c:4)
+
+Rename bar.c to baz.c, and adjust Makefile accordingly.
+</screen>
+      </informalexample>
+-->
+      <informalexample>
+        <screen>
+$ svn log -r5 svn://svn.example.com/trunk
+------------------------------------------------------------------------
+r5 | harry | 2009-02-06 14:42:59 +0000 (Fri, 06 Feb 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/Makefile
+   D /trunk/code/bar.c
+   A /trunk/code/baz.c (from /trunk/code/bar.c:4)
+
+bar.c nach baz.c umbenannt und Makefile entsprechend angepasst.
+</screen>
+      </informalexample>
+
+<!--
+      <para>The local changes you have made look like this:</para>
+-->
+      <para>Die von Ihnen vorgenommenen Änderungen sehen so aus:</para>
+
+      <informalexample>
+        <screen>
+$ svn diff
+Index: code/foo.c
+===================================================================
+--- code/foo.c  (revision 4)
++++ code/foo.c  (working copy)
+@@ -3,5 +3,5 @@
+ int main(int argc, char *argv[])
+ {
+        printf("I don't like being moved around!\n%s", bar());
+-       return 0;
++       return 1;
+ }
+Index: code/bar.c
+===================================================================
+--- code/bar.c  (revision 4)
++++ code/bar.c  (working copy)
+@@ -1,4 +1,4 @@
+ const char *bar(void)
+ {
+-       return "Me neither!\n";
++       return "Well, I do like being moved around!\n";
+ }
+</screen>
+      </informalexample>
+
+<!--
+      <para>Your changes are all based on revision 4.  They cannot be
+        committed because Harry has already checked in revision 5:</para>
+-->
+      <para>Ihre Änderungen bauen alle auf Revision 4 auf. Sie können
+        nicht übergeben werden, da Harry bereits Revision 5 übergeben
+        hat:</para>
+
+<!--
+      <informalexample>
+        <screen>
+$ svn commit -m "Small fixes"
+Sending        code/bar.c
+Sending        code/foo.c
+Transmitting file data ..
+svn: Commit failed (details follow):
+svn: File not found: transaction '5-5', path '/trunk/code/bar.c'
+</screen>
+      </informalexample>
+-->
+      <informalexample>
+        <screen>
+$ svn commit -m "Small fixes"
+Sende          code/bar.c
+Sende          code/foo.c
+Übertrage Daten ..
+svn: Übertragen schlug fehl (Details folgen):
+svn: Datei nicht gefunden: Transaktion »5-5«, Pfad »/trunk/code/bar.c«
+</screen>
+      </informalexample>
+<!-- XXX: That error message should be cleaned up! -->
+
+<!--
+      <para>At this point, you need to run <command>svn update</command>.
+        Besides bringing our working copy up to date so that you can
+        see Harry's changes, this also flags a tree conflict so you
+        have the opportunity to evaluate and properly resolve it.</para>
+-->
+      <para>An dieser Stelle müssen Sie <command>svn update</command>
+        aufrufen. Außer Ihre Arbeitskopie zu aktualisieren, so dass
+        Sie Harrys Änderungen sehen können, markiert es auch einen
+        Baumkonflikt, so dass Sie die Gelegenheit bekommen, die
+        Situation abzuschätzen und entsprechend aufzulösen.</para>
+
+<!--
+      <informalexample>
+        <screen>
+$ svn update
+   C code/bar.c
+A    code/baz.c
+U    Makefile
+Updated to revision 5.
+Summary of conflicts:
+  Tree conflicts: 1
+</screen>
+      </informalexample>
+-->
+      <informalexample>
+        <screen>
+$ svn update
+   C code/bar.c
+A    code/baz.c
+U    Makefile
+Aktualisiert zu Revision 5.
+Konfliktübersicht:
+  Baumkonflikte: 1
+</screen>
+      </informalexample>
+
+<!--
+      <para>In its output, <command>svn update</command> signifies tree
+        conflicts using a capital C in the fourth output column.
+        <command>svn status</command> reveals additional details of the
+        conflict:</para>
+-->
+      <para>In seiner Ausgabe zeigt <command>svn update</command>
+        Baumkonflikte mit einem großen C in der vierten Spalte an.
+        <command>svn status</command> enthüllt weitere Details zum
+        Konflikt:</para>
+
+<!--
+      <informalexample>
+        <screen>
+$ svn status
+M       code/foo.c
+A  +  C code/bar.c
+      >   local edit, incoming delete upon update
+M       code/baz.c
+</screen>
+      </informalexample>
+-->
+      <informalexample>
+        <screen>
+$ svn status
+M       code/foo.c
+A  +  C code/bar.c
+      >   lokal editiert, eingehend gelöscht bei Aktualisierung
+M       code/baz.c
+</screen>
+      </informalexample>
+
+<!--
+      <para>Note how bar.c is automatically scheduled for re-addition
+        in your working copy, which simplifies things in case you want
+        to keep the file.</para>
+-->
+      <para>Beachten Sie, wie bar.c automatisch in Ihrer Arbeitskopie
+        zum erneuten Hinzufügen vorgemerkt wird, was die Sache
+        vereinfacht, sollten sie sich entscheiden, die Datei zu
+        behalten.</para>
+
+<!--
+      <para>Because a move in Subversion is implemented as a copy operation
+        followed by a delete operation, and these two operations cannot
+        be easily related to one another during an update, all Subversion
+        can warn you about is an incoming delete operation on a locally
+        modified file.
+        This delete operation <emphasis>may</emphasis> be part of a move,
+        or it could be a genuine delete operation.  Talking to your
+        collaborators, or, as a last resort, <command>svn log</command>,
+        is a good way to find out what has actually happened.</para>
+-->
+      <para>Da eine Verschiebung in Subversion als eine Kopie mit
+        anschließender Löschung implementiert ist, und diese beiden
+        Operationen sich bei einer Aktualisierung sich nicht einfach
+        in Beziehung setzen lassen, kann Sie Subversion lediglich
+        über eine hereinkommende Löschung einer lokal modifizierten
+        Datei warnen. Diese Löschung <emphasis>kann</emphasis> Teil
+        einer Verschiebung sein oder eine tatsächliche Löschung. Um
+        herauszufinden, was wirklich passiert ist, empfiehlt es sich,
+        mit Ihren Kollegen Rücksprache zu halten, oder, als letzte
+        Möglichkeit, <command>svn log</command> zu befragen.</para>
+
+<!--
+      <para>Both <filename>foo.c</filename> and <filename>baz.c</filename>
+        are reported as locally modified in the output of
+        <command>svn status</command>.  You made the changes to
+        <filename>foo.c</filename> yourself, so this should not be
+        surprising.  But why is <filename>baz.c</filename> reported as
+        locally modified?</para>
+-->
+      <para>Sowohl <filename>foo.c</filename> als auch
+        <filename>baz.c</filename> werden in der Ausgabe von
+        <command>svn status</command> als lokal modifiziert angezeigt.
+        Sie selbst haben Änderungen an <filename>foo.c</filename>
+        vorgenommen, das sollte Sie nicht überraschen. Aber warum wird
+        <filename>baz.c</filename> als lokal modifiziert
+        angezeigt?</para>
+
+<!--
+      <para>The answer is that despite the limitations of the move
+        implementation, Subversion was smart enough to transfer your
+        local edits in <filename>bar.c</filename>
+        into <filename>baz.c</filename>:</para>
+-->
+      <para>Die Antwort ist, dass, trotz der Einschränkungen bei der
+        Implementierung der Verschiebung, Subversion klug genug war,
+        Ihre lokalen Änderungen an <filename>bar.c</filename> nach
+        <filename>baz.c</filename> zu übertragen:</para>
+
+      <informalexample>
+        <screen>
+$ svn diff code/baz.c
+Index: code/baz.c
+===================================================================
+--- code/baz.c  (revision 5)
++++ code/baz.c  (working copy)
+@@ -1,4 +1,4 @@
+ const char *bar(void)
+ {
+-       return "Me neither!\n";
++       return "Well, I do like being moved around!\n";
+ }
+</screen>
+      </informalexample>
+
+<!--
+      <warning>
+        <para>Local edits to the file <filename>bar.c</filename>, which is
+          renamed during an update to <filename>baz.c</filename>, will
+          only be applied to <filename>bar.c</filename> if your working
+          copy of <filename>bar.c</filename> is based on the revision in
+          which it was last modified before being moved in the repository.
+          Otherwise, Subversion will resort to retreiving
+          <filename>baz.c</filename> from the repository, and will not
+          try to transfer your local modifications to it.  You will have
+          to do so manually.</para>
+      </warning>
+-->
+      <warning>
+        <para>Lokale Änderungen an der Datei
+          <filename>bar.c</filename>, die während einer Aktualisierung
+          in <filename>baz.c</filename> umbenannt wird, werden nur
+          dann auf <filename>bar.c</filename> angewendet, falls Ihre
+          Arbeitskopie von <filename>bar.c</filename> auf der Revision
+          aufbaut, in der sie zuletzt modifiziert wurde, bevor sie im
+          Projektarchiv verschoben wurde. Anderenfalls wird Subversion
+          sich damit begnügen, <filename>baz.c</filename> aus dem
+          Projektarchiv zu holen, und nicht versuchen, Ihre lokalen
+          Änderungen dorthin zu übertragen. Das müssen Sie manuell
+          machen.</para>
+      </warning>
+
+<!--
+      <para><command>svn info</command> shows the URLs of the items
+        involved in the conflict. The <emphasis>left</emphasis> URL
+        shows the source of the local side of the conflict, while
+        the <emphasis>right</emphasis> URL shows the source of the
+        incoming side of the conflict. These URLs indicate where you
+        should start searching the repository's history for the change
+        which conflicts with your local change.</para>
+-->
+      <para><command>svn info</command> zeigt die URLs der am Konflikt
+        beteiligten Objekte. Der <emphasis>linke</emphasis> URL
+        zeigt die Quelle der lokalen Seite des Konfliktes, während die
+        <emphasis>rechte</emphasis> URL die Quelle der hereinkommenden
+        Seite des Konfliktes anzeigt. Diese URLs weisen darauf hin, wo
+        Sie mit der Suche nach der mit Ihrer lokalen Änderung in
+        Konflikt stehenden Änderung in der Vorgeschichte des
+        Projektarchivs beginnen sollten.</para>
+
+<!--
+      <informalexample>
+        <screen>
+$ svn info code/bar.c | tail -n 4 
+Tree conflict: local edit, incoming delete upon update
+  Source  left: (file) ^/trunk/code/bar.c@4
+  Source right: (none) ^/trunk/code/bar.c@5
+</screen>
+      </informalexample>
+-->
+      <informalexample>
+        <screen>
+$ svn info code/bar.c | tail -n 4 
+Baumkonflikt: lokal editiert, eingehend gelöscht bei Aktualisierung
+  Quelle  links: (Datei) ^/trunk/code/bar.c@4
+  Quelle  rechts: (nichts) ^/trunk/code/bar.c@5
+</screen>
+      </informalexample>
+
+<!--
+      <para><filename>bar.c</filename> is now said to be the
+        <firstterm>victim</firstterm> of a tree conflict.
+        It cannot be committed until the conflict is resolved:</para>
+-->
+      <para><filename>bar.c</filename> heißt nun
+        <firstterm>Opfer</firstterm> eines Baumkonfliktes.  Sie kann
+        nicht übergeben werden, bevor der Konflikt aufgelöst
+        wird:</para>
+
+<!--
+      <informalexample>
+        <screen>
+$ svn commit -m "Small fixes" 
+svn: Commit failed (details follow):
+svn: Aborting commit: 'code/bar.c' remains in conflict
+</screen>
+      </informalexample>
+-->
+      <informalexample>
+        <screen>
+$ svn commit -m "Small fixes" 
+svn: Übertragen schlug fehl (Details folgen):
+svn: Übertragung abgebrochen: »code/bar.c« bleibt im Konflikt
+</screen>
+      </informalexample>
+
+<!--
+      <para>So how can this conflict be resolved?  You can either agree
+        or disagree with the move Harry made.  In case you agree, you can
+        delete <filename>bar.c</filename> and mark the tree conflict as
+        resolved:</para>
+-->
+      <para>Wie kann denn dieser Konflikt nun aufgelöst werden? Sie
+        können entweder mit Harrys Vorgehen einverstanden sein oder
+        nicht. Falls ja, löschen Sie <filename>bar.c</filename> und
+        markieren den Baumkonflikt als aufgelöst:</para>
+
+<!--
+      <informalexample>
+        <screen>
+$ svn delete - -force code/bar.c
+D         code/bar.c
+$ svn resolve - -accept=working code/bar.c
+Resolved conflicted state of 'code/bar.c'
+$ svn status
+M       code/foo.c
+M       code/baz.c
+$ svn diff
+Index: code/foo.c
+===================================================================
+- - - code/foo.c  (revision 5)
++++ code/foo.c  (working copy)
+@@ -3,5 +3,5 @@
+ int main(int argc, char *argv[])
+ {
+        printf("I don't like being moved around!\n%s", bar());
+-       return 0;
++       return 1;
+ }
+Index: code/baz.c
+===================================================================
+- - - code/baz.c  (revision 5)
++++ code/baz.c  (working copy)
+@@ -1,4 +1,4 @@
+ const char *bar(void)
+ {
+-       return "Me neither!\n";
++       return "Well, I do like being moved around!\n";
+ }
+</screen>
+      </informalexample>
+-->
+      <informalexample>
+        <screen>
+$ svn delete --force code/bar.c
+D         code/bar.c
+$ svn resolve --accept=working code/bar.c
+Konflikt von »code/bar.c« aufgelöst
+$ svn status
+M       code/foo.c
+M       code/baz.c
+$ svn diff
+Index: code/foo.c
+===================================================================
+--- code/foo.c  (revision 5)
++++ code/foo.c  (working copy)
+@@ -3,5 +3,5 @@
+ int main(int argc, char *argv[])
+ {
+        printf("I don't like being moved around!\n%s", bar());
+-       return 0;
++       return 1;
+ }
+Index: code/baz.c
+===================================================================
+--- code/baz.c  (revision 5)
++++ code/baz.c  (working copy)
+@@ -1,4 +1,4 @@
+ const char *bar(void)
+ {
+-       return "Me neither!\n";
++       return "Well, I do like being moved around!\n";
+ }
+</screen>
+      </informalexample>
+
+<!--
+      <para>If you do not agree with the move, you can delete
+        <filename>baz.c</filename> instead, after making sure any
+        changes made to it after it was renamed are either preserved
+        or not worth keeping.  Do not forget to revert the changes
+        Harry made to the <filename>Makefile</filename>.
+        Since <filename>bar.c</filename> is already scheduled for
+        re-addition, there is nothing else left to do, and the conflict
+        can be marked resolved:</para>
+-->
+      <para>Falls Sie mit dem Vorgehen nicht einverstanden sind,
+        können Sie stattdessen <filename>baz.c</filename> löschen,
+        nachdem Sie sichergestellt haben, das alle nach der
+        Umbenennung vorgenommenen Änderungen entweder bewahrt worden
+        sind, oder verworfen werden können. Vergessen Sie nicht, die
+        Änderungen zurückzunehmen, die Harry an
+        <filename>Makefile</filename> gemacht hat. Da
+        <filename>bar.c</filename> bereits zum neu Hinzufügen
+        vorgemerkt ist, bleibt nichts mehr zu tun, und der Konflikt
+        kann als aufgelöst markiert werden:</para>
+
+<!--
+      <informalexample>
+        <screen>
+$ svn delete - -force code/baz.c
+D         code/baz.c
+$ svn resolve - -accept=working code/bar.c
+Resolved conflicted state of 'code/bar.c'
+$ svn status
+M       code/foo.c
+A  +    code/bar.c
+D       code/baz.c
+M       Makefile
+$ svn diff
+Index: code/foo.c
+===================================================================
+- - - code/foo.c	(revision 5)
++++ code/foo.c	(working copy)
+@@ -3,5 +3,5 @@
+ int main(int argc, char *argv[])
+ {
+ 	printf("I don't like being moved around!\n%s", bar());
+-	return 0;
++	return 1;
+ }
+Index: code/bar.c
+===================================================================
+- - - code/bar.c	(revision 5)
++++ code/bar.c	(working copy)
+@@ -1,4 +1,4 @@
+ const char *bar(void)
+ {
+-	return "Me neither!\n";
++	return "Well, I do like being moved around!\n";
+ }
+Index: code/baz.c
+===================================================================
+- - - code/baz.c	(revision 5)
++++ code/baz.c	(working copy)
+@@ -1,4 +0,0 @@
+-const char *bar(void)
+-{
+-	return "Me neither!\n";
+-}
+Index: Makefile
+===================================================================
+- - - Makefile	(revision 5)
++++ Makefile	(working copy)
+@@ -1,2 +1,2 @@
+ foo: 
+-	$(CC) -o $@ code/foo.c code/baz.c
++	$(CC) -o $@ code/foo.c code/bar.c
+</screen>
+      </informalexample>
+-->
+      <informalexample>
+        <screen>
+$ svn delete --force code/baz.c
+D         code/baz.c
+$ svn resolve --accept=working code/bar.c
+Konflikt von »code/bar.c« aufgelöst
+$ svn status
+M       code/foo.c
+A  +    code/bar.c
+D       code/baz.c
+M       Makefile
+$ svn diff
+Index: code/foo.c
+===================================================================
+--- code/foo.c	(revision 5)
++++ code/foo.c	(working copy)
+@@ -3,5 +3,5 @@
+ int main(int argc, char *argv[])
+ {
+ 	printf("I don't like being moved around!\n%s", bar());
+-	return 0;
++	return 1;
+ }
+Index: code/bar.c
+===================================================================
+--- code/bar.c	(revision 5)
++++ code/bar.c	(working copy)
+@@ -1,4 +1,4 @@
+ const char *bar(void)
+ {
+-	return "Me neither!\n";
++	return "Well, I do like being moved around!\n";
+ }
+Index: code/baz.c
+===================================================================
+--- code/baz.c	(revision 5)
++++ code/baz.c	(working copy)
+@@ -1,4 +0,0 @@
+-const char *bar(void)
+-{
+-	return "Me neither!\n";
+-}
+Index: Makefile
+===================================================================
+--- Makefile	(revision 5)
++++ Makefile	(working copy)
+@@ -1,2 +1,2 @@
+ foo: 
+-	$(CC) -o $@ code/foo.c code/baz.c
++	$(CC) -o $@ code/foo.c code/bar.c
+</screen>
+      </informalexample>
+
+<!--
+      <para>In either case, you have now resolved your first tree
+        conflict!  You can commit your changes and tell Harry during
+        tea break about all the extra work he caused for you.</para>
+-->
+      <para>In jedem Fall haben Sie nun Ihren ersten Baumkonflikt
+        aufgelöst! Sie können Ihre Änderungen übergeben und Harry in
+        der Kaffeepause erzählen, welche Mehrarbeit er Ihnen bereitet
+        hat.</para>
+
+    </sect2>
   </sect1>
 
   <!-- ================================================================= -->
@@ -5155,7 +6030,7 @@ M      somedir/foo.c
 -->
       <para>Nun haben wir die meisten der Subversion-Client-Befehle
         behandelt. Erwähnenswerte Ausnahmen sind diejenigen, die sich
-        mit dem Branchen und Mergen befassen (siehe <xref
+        mit dem Branchen und Zusammenführen befassen (siehe <xref
         linkend="svn.branchmerge"/>) sowie mit Eigenschaften (siehe <xref
         linkend="svn.advanced.props"/>). Jedoch möchten Sie vielleicht
         einen Augenblick damit verbringen, um durch <xref
