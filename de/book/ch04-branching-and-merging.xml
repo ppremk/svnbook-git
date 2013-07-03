@@ -1838,80 +1838,126 @@ Revision 393 übertragen.
 <!--
       <para>The basic mechanism Subversion uses to track
         changesets&mdash;that is, which changes have been merged to
-        which branches&mdash;is by recording data in properties.
-        Specifically, merge data is tracked in
+        which branches&mdash;is by recording data in versioned
+        properties.  Specifically, merge data is tracked in
         the <literal>svn:mergeinfo</literal> property attached to
         files and directories.  (If you're not familiar with
-        Subversion properties, now is the time to skim
-        <xref linkend="svn.advanced.props"/>.)</para>
+        Subversion properties, see <xref linkend="svn.advanced.props"
+        />.)</para>
 -->
       <para>Der grundsätzliche Mechanismus, den Subversion verwendet,
         um Änderungsmengen zu verfolgen &ndash; d.h. welche Änderungen
         auf welchen Zweig übertragen worden sind &ndash; besteht aus
-        dem Festhalten von Daten in Eigenschaften. Daten über das
-        Zusammenführen werden speziell in der Eigenschaft
-        <literal>svn:mergeinfo</literal> vermerkt, die an Dateien und
-        Verzeichnissen hängt. (Falls Sie mit Subversion-Eigenschaften
-        nicht vertraut sind, ist es nun an der Zeit, <xref
-        linkend="svn.advanced.props"/> zu überfliegen.)</para>
+        der Datenspeicherung in versionierten Eigenschaften.
+        Namentlilch werden Daten die das Zusammenführen betreffen in
+        der Eigenschaft <literal>svn:mergeinfo</literal> festgehalten,
+        die mit Dateien und Verzeichnissen verknüpft ist. (Falls Sie
+        mit Subversion-Eigenschaften nicht vertraut sind, siehe <xref
+          linkend="svn.advanced.props"/>.) </para>
 
 <!--
-      <para>You can examine the property, just like any
-        other:</para>
+      <para>You can examine the property, just like any other:</para>
 -->
       <para>Sie können sich die Eigenschaft ansehen, wie jede andere
         auch:</para>
 
-      <screen>
+      <informalexample>
+        <screen>
 $ cd my-calc-branch
 $ svn propget svn:mergeinfo .
 /trunk:341-390
+$
 </screen>
+      </informalexample>
 
 <!--
-      <para>It is <emphasis>not</emphasis> recommended that you change
-        the value of this property yourself, unless you really know
-        what you're doing.  This property is automatically maintained
-        by Subversion whenever you run <command>svn merge</command>.
-        Its value indicates which changes (at a given path) have been
-        replicated into the directory in question.  In this case, the
-        path is <filename>/trunk</filename> and the directory which
-        has received the specific changes
-        is <filename>/branches/my-calc-branch</filename>.</para>
+      <warning>
+        <para>While is possible to
+          modify <literal>svn:mergeinfo</literal> just as you might
+          any other versioned property, we strongly discourage doing
+          so unless you <emphasis>really</emphasis> know what you're
+          doing.</para>
+      </warning>
 -->
-      <para>Es wird <emphasis>nicht</emphasis> empfohlen, dass Sie
-        selbst den Wert dieser Eigenschaft ändern, es sei denn, Sie
-        wissen wirklich, was Sie tun. Diese Eigenschaft wird
+      <warning>
+        <para>Obwohl es möglich ist, <literal>svn:mergeinfo</literal>
+          zu ändern wie jede andere versionierte Eigenschaft, raten
+          wir dringend davor ab, es sei denn, Sie wissen
+          <emphasis>wirklich</emphasis>, was Sie da machen.</para>
+      </warning>
+
+<!--
+      <para>The <literal>svn:mergeinfo</literal> property is
+        automatically maintained by Subversion whenever you
+        run <command>svn merge</command>.  Its value indicates which
+        changes made to a given path have been replicated into the
+        directory in question.  In our previous example, the path
+        which is the source of the merged changes is
+        <filename>/trunk</filename> and the directory which has
+        received the changes is
+        <filename>/branches/my-calc-branch</filename>.</para>
+-->
+
+      <para>Die Eigenschaft <literal>svn:mergeinfo</literal> wird
         automatisch von Subversion gepflegt, sobald Sie den Befehl
         <command>svn merge</command> ausführen. Ihr Wert gibt
-        Aufschluss darüber, welche Änderungen (von einem gegebenen
-        Pfad) mit dem in Frage kommenden Verzeichnis abgeglichen
-        wurden. In diesem Fall ist der Pfad
-        <filename>/trunk</filename>, und das Verzeichnis, das die
-        bestimmten Änderungen erhalten hat, ist
-        <filename>/branches/my-calc-branch</filename>.</para>
+        Aufschluss darüber, welche Änderungen an einem gegebenen Pfad
+        mit dem in Frage kommenden Verzeichnis abgeglichen wurden. Im
+        vorangegangenen Beispiel ist <filename>/trunk</filename> der
+        Ursprungspfad der zusammengeführten Änderungen und
+        <filename>/branches/my-calc-branch</filename> das
+        Zielverzeichnis.</para>
 
 <!--
-      <para>There's also a subcommand, <command>svn
+      <para>Subversion also provides a subcommand, <command>svn
         mergeinfo</command>, which can be helpful in seeing not only
         which changesets a directory has absorbed, but also which
         changesets it's still eligible to receive.  This gives a sort
-        of preview of the next set of changes that <command>svn
-        merge</command> will replicate to your branch.</para>
+        of preview of which changes a subsequent <command>svn
+        merge</command> operation would replicate to your
+        branch.</para>
 -->
-      <para>Es gibt auch einen Unterbefehl, <command>svn
-        mergeinfo</command>, der hilfreich dabei ist, nicht nur die
-        Änderungsmengen anzuzeigen, die ein Verzeichnis absorbiert
-        hat, sondern auch, welche Änderungsmengen für einen Abgleich
-        noch in Frage kommen. Das ergibt eine Art Vorschau der
-        nächsten Änderungsmengen, die <command>svn merge</command> auf
-        Ihren Zweig abgleichen wird.</para>
+      <para>Subversion stellt auch den Unterbefehl, <command>svn
+        mergeinfo</command> zur Verfügung, der dabei hilfreich sein
+        kann, nicht nur die in ein Verzeichnis eingeflossenen
+        Änderungsmengen anzuzeigen, sondern auch, welche
+        Änderungsmengen noch für einen Abgleich bereit stehen. Das
+        ergibt eine Art Vorschau der nächsten Änderungsmengen, die
+        <command>svn merge</command> auf Ihren Zweig abgleichen
+        wird.</para>
 
-      <screen>
+<!--
+      <informalexample>
+        <screen>
+$ cd my-calc-branch
+
+# Which changes have already been merged from trunk to branch?
+$ svn mergeinfo ^/calc/trunk
+r341
+r342
+r343
+&hellip;
+r388
+r389
+r390
+
+# Which changes are still eligible to merge from trunk to branch?
+$ svn mergeinfo ^/calc/trunk - -show-revs eligible
+r391
+r392
+r393
+r394
+r395
+$
+</screen>
+      </informalexample>
+-->
+      <informalexample>
+        <screen>
 $ cd my-calc-branch
 
 # Welche Änderungen wurden bereits vom Stamm auf den Zweig abgeglichen?
-$ svn mergeinfo http://svn.example.com/repos/calc/trunk
+$ svn mergeinfo ^/calc/trunk
 r341
 r342
 r343
@@ -1921,13 +1967,15 @@ r389
 r390
 
 # Welche Änderungen kommen für einen Abgleich vom Stamm auf den Zweig noch in Frage?
-$ svn mergeinfo http://svn.example.com/repos/calc/trunk --show-revs eligible
+$ svn mergeinfo ^/calc/trunk --show-revs eligible
 r391
 r392
 r393
 r394
 r395
+$
 </screen>
+      </informalexample>
 
 <!--
       <para>The <command>svn mergeinfo</command> command requires
@@ -1944,12 +1992,12 @@ r395
         <quote>Quell</quote>-URL (woher die Änderungen kommen würden)
         und einen optionalen <quote>Ziel</quote>-URL (wohin die
         Änderungen abgeglichen würden). Falls kein Ziel-URL angegeben
-        ist, wird angenommen, dass das aktuelle Arbeitsverzeichnis das
-        Ziel ist. Weil wir im vorangegangenen Beispiel unser
-        Arbeitsverzeichnis vom Zweig abfragen, geht der Befehl davon
-        aus, dass wir daran interessiert sind, Änderungen für
-        <filename>/branches/mybranch</filename> vom angegebenen
-        Stamm-URL zu erhalten.</para>
+        ist, wird das aktuelle Arbeitsverzeichnis als Ziel angenommen.
+        Da wir im vorangegangenen Beispiel unser dem Zweig
+        entsprechenden Arbeitsverzeichnis abfragen, geht der Befehl
+        davon aus, dass wir daran interessiert sind, Änderungen vom
+        angegebenen Stamm-URL für
+        <filename>/branches/mybranch</filename> zu erhalten.</para>
 
 <!--
       <para>Another way to get a more precise preview of a merge
@@ -1960,13 +2008,26 @@ r395
         Abgleich zu bekommen, ist die Verwendung der Option
         <option>--dry-run</option>:</para>
 
-      <screen>
-$ svn merge http://svn.example.com/repos/calc/trunk --dry-run
+<!--
+      <informalexample>
+        <screen>
+$ svn merge ^/calc/trunk - -dry-run
+U    integer.c
+
+$ svn status
+#  nothing printed, working copy is still unchanged.
+</screen>
+      </informalexample>
+-->
+      <informalexample>
+        <screen>
+$ svn merge ^/calc/trunk --dry-run
 U    integer.c
 
 $ svn status
 #  es wird nichts ausgegeben, die Arbeitskopie ist unverändert
 </screen>
+      </informalexample>
 
 <!--
       <para>The <option>- -dry-run</option> option doesn't actually
@@ -1987,12 +2048,14 @@ $ svn status
 
       <tip>
 <!--
-        <para>After performing a merge operation, but before committing
-          the results of the merge, you can use <userinput>svn diff
-          - -depth=empty <replaceable>/path/to/merge/target</replaceable></userinput> to see only
-          the changes to the immediate target of your merge.  If your
-          merge target was a directory, only property differences will
-          be displayed.  This is a handy way to see the changes to the
+        <para>After performing a merge operation, but before
+          committing the results of the merge, you can
+          use <userinput>svn diff
+          - -depth=empty <replaceable>/path/to/merge/target</replaceable></userinput>
+          to see only the changes to the immediate target of your
+          merge.  If your merge target was a directory, only property
+          differences will be displayed.  This is a handy way to see
+          the changes to the
           <literal>svn:mergeinfo</literal> property recorded by the
           merge operation, which will remind you about what you've
           just merged.</para>
@@ -2017,9 +2080,9 @@ $ svn status
         modifications to your working copy&mdash;but we've already
         stressed that you shouldn't be merging into such an
         environment).  If you don't like the results of the merge,
-        simply run <userinput>svn revert . -R</userinput> to revert the changes from
-        your working copy and retry the command with different
-        options.  The merge isn't final until you
+        simply run <userinput>svn revert . -R</userinput> to revert
+        the changes from your working copy and retry the command with
+        different options.  The merge isn't final until you
         actually <command>svn commit</command> the results.</para>
 -->
       <para>Natürlich ist die beste Methode, eine Vorschau eines
