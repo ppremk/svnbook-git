@@ -1183,6 +1183,7 @@ $ svn merge ^/calc/trunk
 --- Zusammenführen von r345 bis r356 in ».«:
 U    button.c
 U    integer.c
+$
 </screen>
       </informalexample>
 
@@ -2184,8 +2185,8 @@ $ svn merge -c -303 ^/calc/trunk
 U    integer.c
 
 $ svn status
- M     .
-M      integer.c
+ M      .
+M       integer.c
 
 $ svn diff
 &hellip;
@@ -2748,13 +2749,14 @@ Aktualisiert zu Revision 1390.
         Fehlerbehebung, um mit Ihrer Arbeit weitermachen zu
         können.</para>
 
-      <screen>
-$ svn diff -c 355 http://svn.example.com/repos/calc/trunk
+      <informalexample>
+        <screen>
+$ svn diff -c 355 ^/calc/trunk
 
 Index: integer.c
 ===================================================================
---- integer.c   (revision 354)
-+++ integer.c   (revision 355)
+--- integer.c	(revision 354)
++++ integer.c	(revision 355)
 @@ -147,7 +147,7 @@
      case 6:  sprintf(info-&gt;operating_system, "HPFS (OS/2 or NT)"); break;
      case 7:  sprintf(info-&gt;operating_system, "Macintosh"); break;
@@ -2765,6 +2767,7 @@ Index: integer.c
      case 11:  sprintf(info-&gt;operating_system, "NTFS (Windows NT)"); break;
      case 12:  sprintf(info-&gt;operating_system, "QDOS"); break;
 </screen>
+      </informalexample>
 
 <!--
       <para>Just as you used <command>svn diff</command> in the prior
@@ -2776,13 +2779,28 @@ Index: integer.c
         Sie die gleiche Option an <command>svn merge</command>
         übergeben:</para>
 
-      <screen>
-$ svn merge -c 355 http://svn.example.com/repos/calc/trunk
+<!--
+      <informalexample>
+        <screen>
+$ svn merge -c 355 ^/calc/trunk
+- - Merging r355 into '.':
 U    integer.c
 
 $ svn status
-M      integer.c
+M       integer.c
 </screen>
+      </informalexample>
+-->
+      <informalexample>
+        <screen>
+$ svn merge -c 355 ^/calc/trunk
+--- Zusammenführen von r355 in ».«:
+U    integer.c
+
+$ svn status
+M       integer.c
+</screen>
+      </informalexample>
 
 <!--
       <para>You can now go through the usual testing procedures before
@@ -2803,7 +2821,8 @@ M      integer.c
         einem Konflikt!)</para>
 
 <!--
-      <screen>
+      <informalexample>
+        <screen>
 $ cd my-calc-branch
 
 $ svn propget svn:mergeinfo .
@@ -2811,7 +2830,7 @@ $ svn propget svn:mergeinfo .
 
 # Notice that r355 isn't listed as "eligible" to merge, because
 # it's already been merged.
-$ svn mergeinfo http://svn.example.com/repos/calc/trunk - -show-revs eligible
+$ svn mergeinfo ^/calc/trunk - -show-revs eligible
 r350
 r351
 r352
@@ -2823,7 +2842,7 @@ r358
 r359
 r360
 
-$ svn merge http://svn.example.com/repos/calc/trunk
+$ svn merge ^/calc/trunk
 - - - Merging r350 through r354 into '.':
  U   .
 U    integer.c
@@ -2833,8 +2852,10 @@ U    Makefile
 U    integer.c
 U    button.c
 </screen>
+      </informalexample>
 -->
-      <screen>
+      <informalexample>
+        <screen>
 $ cd my-calc-branch
 
 $ svn propget svn:mergeinfo .
@@ -2842,7 +2863,7 @@ $ svn propget svn:mergeinfo .
 
 # Beachten Sie, dass r355 nicht als Zusammenführungs-Kandidat aufgeführt wird
 # da es bereits zusammengeführt wurde.
-$ svn mergeinfo http://svn.example.com/repos/calc/trunk --show-revs eligible
+$ svn mergeinfo ^/calc/trunk --show-revs eligible
 r350
 r351
 r352
@@ -2854,7 +2875,7 @@ r358
 r359
 r360
 
-$ svn merge http://svn.example.com/repos/calc/trunk
+$ svn merge ^/calc/trunk
 --- Zusammenführen von r350 bis r354 in ».«:
  U   .
 U    integer.c
@@ -2864,6 +2885,7 @@ U    Makefile
 U    integer.c
 U    button.c
 </screen>
+      </informalexample>
 
 <!--
       <para>This use case of replicating
@@ -2888,22 +2910,18 @@ U    button.c
         <para>Did you notice how, in the last example, the merge
           invocation caused two distinct ranges of merges to be
           applied?  The <command>svn merge</command> command applied
-          two independent patches to your working copy to
-          skip over changeset 355, which your branch already
-          contained.  There's nothing inherently wrong with this,
-          except that it has the potential to make conflict resolution
-          trickier.  If the first range of changes creates
-          conflicts, you <emphasis>must</emphasis> resolve them
-          interactively for the merge process to continue and
-          apply the second range of changes.  If you postpone a
-          conflict from the first wave of changes, the whole merge
-          command will bail out with an error message.
-          <footnote>
-            <para>At least, this is true in Subversion 1.5 at the time
-              of this writing.  This behavior may improve in future
-              versions of Subversion.</para>
-          </footnote> 
-        </para>
+          two independent patches to your working copy to skip over
+          changeset 355, which your branch already contained.  There's
+          nothing inherently wrong with this, except that it has the
+          potential to make conflict resolution trickier.  If the
+          first range of changes creates conflicts,
+          you <emphasis>must</emphasis> resolve them interactively for
+          the merge process to continue and apply the second range of
+          changes.  If you postpone a conflict from the first wave of
+          changes, the whole merge command will bail out with an error
+          message.<footnote><para>At least, this is true in Subversion
+          1.6 at the time of this writing.  This behavior may improve
+          in future versions of Subversion.</para></footnote></para>
 -->
         <para>Haben Sie bemerkt, wie im letzten Beispiel der Aufruf
           von <command>svn merge</command> dazu geführt hat, zwei
@@ -2919,19 +2937,11 @@ U    button.c
           Änderungsintervall anzuwenden. Wenn Sie die
           Konfliktauflösung der ersten Phase aufschieben, wird der
           komplette Zusammenführungsbefehl mit einer Fehlermeldung
-          abbrechen.
-          <footnote>
-<!--
-            <para>At least, this is true in Subversion 1.5 at the time
-              of this writing.  This behavior may improve in future
-              versions of Subversion.</para>
--->
-            <para>Zumindest trifft das zur Zeit für Subversion 1.5 zu.
-              Dieses Verhalten könnte sich in künftigen Versionen von
-              Subversion verbessern.</para>
-          </footnote> 
-        </para>
-      </warning>
+          abbrechen.<footnote><para>Zumindest trifft das zur Zeit für
+          Subversion 1.6 zu.  Dieses Verhalten könnte sich in
+          künftigen Versionen von Subversion verbessern.</para>
+          </footnote></para>
+        </warning>
 
 <!--
       <para>A word of warning: while <command>svn diff</command> and
