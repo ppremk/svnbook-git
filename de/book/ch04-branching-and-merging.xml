@@ -1834,7 +1834,7 @@ Revision 393 übertragen.
 <!--
       <title>Mergeinfo and Previews</title>
 -->
-      <title>Mergeinfo und Vorschauen</title>
+      <title>Zusammenführungsinformation und Vorschauen</title>
 
 <!--
       <para>The basic mechanism Subversion uses to track
@@ -3225,7 +3225,7 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
 <!--
       <title>Merges Without Mergeinfo</title>
 -->
-      <title>Zusammenführen ohne Mergeinfo</title>
+      <title>Zusammenführen ohne Zusammenführungsinformationen</title>
 
 <!--
       <para>Subversion tries to generate merge metadata whenever it
@@ -3330,7 +3330,7 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
           <term>Zusammenführen rückgängig machen</term>
           <listitem>
 <!--
-            <para>Earlier in this chapter 
+            <para>Earlier in this chapter
               (<xref linkend="svn.branchmerge.basicmerging.undo"/>) we
               discussed how to use <command>svn merge</command> to
               apply a <quote>reverse patch</quote> as a way of rolling
@@ -3359,12 +3359,12 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
               <userinput>svn merge . -c -5</userinput> rückgängig
               machen), hat dies keine Auswirkungen auf die
               aufgezeichneten
-              Metadaten.<footnote><para>Interessanterweise werden wir
-              nach dem Zurücknehmen einer Revision auf diese Art nicht
-              in der Lage sein, diese Revision erneut mit
-              <userinput>svn merge . -c 5</userinput> anzuwenden, da
-              aus den Metadaten hervorgeht, dass r5 bereits angewendet
-              wurde. Wir müssten die Option
+              Zusammenführungsinformationen.<footnote><para>Interessanterweise
+              werden wir nach dem Zurücknehmen einer Revision auf
+              diese Art nicht in der Lage sein, diese Revision erneut
+              mit <userinput>svn merge . -c 5</userinput> anzuwenden,
+              da aus den Metadaten hervorgeht, dass r5 bereits
+              angewendet wurde. Wir müssten die Option
               <option>--ignore-ancestry</option> verwenden, damit der
               Befehl die bestehenden Metadaten
               ignoriert.</para></footnote></para>
@@ -3372,9 +3372,130 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
         </varlistentry>
       </variablelist>
 
+      <!-- TODO: We might need to introduce a glossary of merge
+                 tracking terms into this chapter.  Here we use
+                 "mergeinfo" to help defined "natural history", but
+                 we've not really defined "mergeinfo" either.  -->
+
+      <sidebar>
+<!--
+        <title>Natural History and Implicit Mergeinfo</title>
+-->
+        <title>Natürliche Historie und implizite Zusammenführungsinformation</title>
+
+<!--
+        <para>When a path has the <literal>svn:mergeinfo</literal>
+          property set on it we say it has <quote>explicit</quote>
+          mergeinfo.  Yes, this implies a path can
+          have <quote>implicit</quote> mergeinfo, too!  Implicit
+          mergeinfo, or <firstterm>natural history</firstterm>, is
+          simply a path's own history (see
+          <xref linkend="svn.tour.history" />) interpreted as merge
+          tracking information.  While implicit mergeinfo is largely
+          an implementation detail, it can be a useful abstraction for
+          understanding merge tracking behavior.</para>
+-->
+        <para>Wenn bei einem Pfad die Eigenschaft
+          <literal>svn:mergeinfo</literal> gwsetzt ist, nennen wir das
+          <quote>explizite</quote> Zusammenführungsinformation. Ja,
+          das bedeutet, dass ein Pfad auch <quote>implizite</quote>
+          Zusammenführungsinformation haben kann! Implizite
+          Zusammenführungsinformation, oder <firstterm>natürliche
+          Historie</firstterm>, ist einfach die dem Pfad eigene
+          Historie (siehe <xref linkend="svn.tour.history" />) die als
+          Information zur Verfolgung von Zusammenführungen
+          interpretiert wird. Obwohl es sich bei impliziter
+          Zusammenführungsinformation größtenteils um Details der
+          Implementierung handelt, kann es als nützliche Abstraktion
+          für das Verstehen des Verhaltens der
+          Zusammenführungsverfolgung dienen.</para>
+
+<!--
+        <para>Let's say you created <filename>^/trunk</filename> in
+          revision 100 and then later, in revision 201,
+          created <filename>^/branches/feature-branch</filename> as
+          a copy of <filename>^/trunk@200</filename>.  The natural
+          history of <filename>^/branches/feature-branch</filename>
+          contains all the repository paths and revision ranges
+          through which the history of the new branch has ever
+          passed:</para>
+-->
+        <para>Nehmen wir mal an, Sie hätten in Revision 100
+          <filename>^/trunk</filename> erzeugt und dann in Revision
+          201 <filename>^/branches/feature-branch</filename> als
+          Kopie von <filename>^/trunk@200</filename> erzeugt. Die
+          natürliche Historie von
+          <filename>^/branches/feature-branch</filename>
+          enthält all diejenigen Pfade im Projektarchiv und
+          Revisionsintervalle, die die Historie des neuen Zweigs je
+          berührt hat.</para>
+
+        <informalexample>
+          <literallayout>
+/trunk:100-200
+/branches/feature-branch:201
+</literallayout>
+        </informalexample>
+
+<!--
+        <para>With each new revision added to the repository, the
+          natural history&mdash;and thus, implicit mergeinfo&mdash;of
+          the branch continues to expand to include those revisions
+          until the day the branch is deleted.  Here's what the
+          implicit mergeinfo of our branch would look like when
+          the <literal>HEAD</literal> revision of the repository had
+          grown to 234:</para>
+-->
+        <para>Mit jeder dem Projektarchiv hinzugefügten neuen Revision
+          wird die natųrliche Historie &ndash; und somit die implizite
+          Zusammenführungsinformation &ndash; des Zweigs durch diese
+          Revisionen stetig erweitert, bis zu dem Tag, an dem der
+          Zweig gelöscht wird. So würde die implizite
+          Zusammenführungsinformation unseres Zweiges aussehen, wenn
+          die <literal>HEAD</literal>-Revision des Projektarchivs bis
+          auf 234 angewachsen wäre:</para>
+
+        <informalexample>
+          <literallayout>
+/trunk:100-200
+/branches/feature-branch:201-234
+</literallayout>
+        </informalexample>
+
+<!--
+        <para>Implicit mergeinfo does not actually show up in the
+          <literal>svn:mergeinfo</literal> property, but Subversion
+          acts as if it does.  This is why if you check out
+          <filename>^/branches/feature-branch</filename> and then
+          run <userinput>svn merge ^/trunk -c 58</userinput> in the
+          resulting working copy, nothing happens.  Subversion knows
+          that the changes committed to <filename>^/trunk</filename>
+          in revision 58 are already present in the target's natural
+          history, so there's no need to try to merge them again.
+          After all, avoiding repeated merges of
+          changes <emphasis>is</emphasis> the primary goal of
+          Subversion's merge tracking feature!</para>
+-->
+        <para>Implizite Zusammenführungsinformation taucht nicht
+          wirklich in der Eigenschaft <literal>svn:mergeinfo</literal>
+          auf, doch Subversion handelt so, als tauchte sie dort auf.
+          Das ist der Grund dafür, dass nichts passiert, wenn Sie 
+          <filename>^/branches/feature-branch</filename> auschecken
+          und dann <userinput>svn merge ^/trunk -c 58</userinput> in
+          der so erstellten Arbeitskopie aufrufen. Subversion weiß,
+          dass die in Revision 53 an <filename>^/trunk</filename>
+          übergebenen Änderunge bereits in der natürlichen Historie
+          des Ziels vohanden sind, so dass sie nicht erneut
+          zusammengefuhrt werden mussen. Letzten Endes
+          <emphasis>ist</emphasis> es das primäre Ziel der
+          Zusammenführungsverfolgungs/Funktionalität von Subversion,
+          unnötige Zusammenführungen zu vermeiden!</para>
+
+      </sidebar>
+
     </sect2>
 
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.advanced.mergeconflicts">
 <!--
       <title>More on Merge Conflicts</title>
