@@ -3836,27 +3836,58 @@ $ svn commit -m "Das Zusammenführen von r3328 mit dem Zweig verhindern."
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.advanced.reintegratetwice">
+<!--
       <title>Keeping a Reintegrated Branch Alive</title>
+-->
+      <title>Einen reintegrierten Zweig am Leben erhalten</title>
 
+<!--
       <para>There is an alternative to destroying and re-creating a
         branch after reintegration. To understand why it works you need
         to understand why the branch is initially unfit for further use
         after it has been reintegrated.</para>
+-->
+      <para>Es gibt einen weiteren Weg, statt einen Zweig nach der
+        Reintegration zu zerstören und erneut zu erzeugen. Zum
+        Verständnis, warum das funktioniert, müssen Sie verstehen,
+        warum der Zweig unmittelbar nach dem Reintegrieren zunächst
+        nicht weiterverwendbar ist.</para>
 
+<!--
       <para>Let's assume you created your branch in revision
         <emphasis>A</emphasis>. While working on your branch, you created
         one or more revisions which made changes to the branch.
         Before reintegrating your branch into trunk, you made a final
         merge from trunk to your branch, and committed the result of
         this merge as revision <emphasis>B</emphasis>.</para>
+-->
+      <para>Nehmen wir an, Sie haben den Zweig in Revision
+        <emphasis>A</emphasis> angelegt. Bei der Arbeit auf diesem
+        Zweig haben Sie eine oder mehrere Revisionen erzeugt, die
+        Änderungen an dem Zweig gemacht haben. Vor der Reintegration
+        des Zweigs auf die Hauptentwicklungslinie haben Sie eine
+        abschließende Zusammenführung von dort auf Ihren Zweig
+        vollzogen und das Ergebnis dieser Zusammenführung als Revision
+        <emphasis>B</emphasis> übertragen.</para>
 
+<!--
       <para>When reintegrating your branch into the trunk, you create
         a new revision <emphasis>X</emphasis> which changes the trunk.
         The changes made to trunk in this revision <emphasis>X</emphasis>
         are semantically equivalent to the changes you made to your branch
         between revisions <emphasis>A</emphasis> and <emphasis>B</emphasis>.
         </para>
+-->
+      <para>Bei der Reintegration Ihres Zweigs auf die
+        Hauptentwicklungslinie erzeugen Sie eine neue Revision
+        <emphasis>X</emphasis> die jene ändert. Die Änderungen an der
+        Hauptentwicklungslinie in dieser Revision
+        <emphasis>X</emphasis> sind semantisch äquivalent zu den
+        Änderungen, die Sie zwischen Revision <emphasis>A</emphasis>
+        und <emphasis>B</emphasis> auf Ihrem Zweig vorgenommen haben.
+        </para>
 
+<!--
       <para>If you now try to merge outstanding changes from trunk to your
         branch, Subversion will consider changes made in revision
         <emphasis>X</emphasis> as eligible for being merged into the
@@ -3865,52 +3896,124 @@ $ svn commit -m "Das Zusammenführen von r3328 mit dem Zweig verhindern."
         changes can result in spurious conflicts! These conflicts are
         often tree conflicts, especially if renames were made on the
         branch or the trunk while the branch was in development.</para>
+-->
+      <para>Falls Sie jetzt versuchen, ausstehende Änderungen von der
+        Hauptentwicklungslinie mit Ihrem Zweig zusammenzuführen, wird
+        Subversion die in Revision <emphasis>X</emphasis>
+        vorgenommenen Änderungen als Kandidaten für die
+        Zusammenführung betrachten. Da Ihr Zweig jedoch bereits alle
+        in Revision <emphasis>X</emphasis> vorgenommenen Änderungen
+        enthält, kann das Zusammenführen dieser Änderungen
+        fälschlicherweise zu Konflikten führen! Bei diesen Konflikten
+        handelt es sich oft um Baumkonflikte, besonders dann, wenn
+        während der Entwicklung auf dem Zweig dort oder auf der
+        Hauptentwicklungslinie Umbenennungen gemacht wurden.</para>
 
+<!--
       <para>So what can be done about this? We need to make sure that
         Subversion does not try to merge revision <emphasis>X</emphasis>
         into the branch. This can be done using the
-        <option>--record-only</option> merge option, which was introduced
+        <option>- -record-only</option> merge option, which was introduced
         in <xref linkend="svn.branchmerge.advanced.blockchanges"/>.</para>
+-->
+      <para>Wie soll also damit umgegangen werden? Wir müssen
+        sicherstellen, dass Subversion nicht versucht, die Revision
+        <emphasis>X</emphasis> mit dem Zweig zusammenzuführen. Das
+        kann mit der Zusammenführungs-Option
+        <option>--record-only</option> erreicht werden, die in
+        <xref linkend="svn.branchmerge.advanced.blockchanges"/>
+        vorgestellt wurde.</para>
 
+<!--
       <para>To carry out the record-only merge, get a working copy of
         the branch which was just reintegrated in revision
         <emphasis>X</emphasis>, and merge just revision <emphasis>X</emphasis>
         from trunk into your branch, making sure to use the
-        <option>--record-only</option> option.</para>
+        <option>- -record-only</option> option.</para>
+-->
+      <para>Um die nur vermerkte Zusammenführung auszuführen,
+        erstellen Sie sich eine Arbeitskopie des Zweigs, der in
+        Revision <emphasis>X</emphasis> frisch reintegriert wurde, und
+        führen Sie lediglich die Revision <emphasis>X</emphasis> von
+        der Hauptentwicklungslinie mit Ihrem Zweig zusammen, indem Sie
+        sicherstellen, dass Sie die Option
+        <option>--record-only</option> verwenden.</para>
 
+<!--
       <para>This merge uses the cherry-picking merge syntax, which was
         introduced in <xref linkend="svn.branchmerge.cherrypicking"/>.
         Continuing with the running example from
         <xref linkend="svn.branchemerge.basicmerging.reintegrate"/>,
         where revision <emphasis>X</emphasis> was revision 391:</para>
+-->
+      <para>Diese Zusammenführung verwendet die Syntax zum
+        Herauspicken der Rosinen, wie sie in
+        <xref linkend="svn.branchmerge.cherrypicking"/> vorgestellt
+        wurde. Um mit dem aktuellen Beispiel aus
+        <xref linkend="svn.branchemerge.basicmerging.reintegrate"/>
+        fortzufahren, in dem Revision <emphasis>X</emphasis> die
+        Revision 391 war:</para>
 
+<!--
       <informalexample>
         <screen>
 $ cd my-calc-branch
 $ svn update
 Updated to revision 393.
-$ svn merge --record-only -c 391 ^/calc/trunk
+$ svn merge - -record-only -c 391 ^/calc/trunk
 $ svn commit -m "Block revision 391 from being merged into my-calc-branch."
 Sending        .
 
 Committed revision 394.
 </screen>
       </informalexample>
+-->
+      <informalexample>
+        <screen>
+$ cd my-calc-branch
+$ svn update
+Aktualisiert zu Revision 393.
+$ svn merge --record-only -c 391 ^/calc/trunk
+$ svn commit -m "Block revision 391 from being merged into my-calc-branch."
+Sende          .
+
+Revision 394 übertragen.
+</screen>
+      </informalexample>
 
       <!-- ### FIXME: In 1.7, record-only merges produce some output -->
 
+<!--
       <para>Now your branch is ready to soak up changes from the trunk
         again. After another sync of your branch to the trunk, you can
         even reintegrate the branch a second time.
         If necessary, you can do another record-only merge to keep the
         branch alive. Rinse and repeat.</para>
-        
+-->
+      <para>Nun ist Ihr Zweig wieder bereit, Änderungen von der
+        Hauptentwicklungslinie aufzunehmen. Nach einer weiteren
+        Synchronisierung Ihres Zweigs auf die Hauptentwicklungslinie
+        können Sie sogar ein zweites Mal Ihren Zweig reintegrieren.
+        Falls notwendig, können Sie eine weitere, nur vermerkte
+        Zusammenführung machen, um den Zweig am Leben zu erhalten.
+        Spülen und wiederholen.</para>
+
+<!--
       <para>It should now also be apparent why deleting the branch and
         re-creating it has the same effect as doing the above record-only
         merge. Because revision <emphasis>X</emphasis> is part of the natural
         history of the newly created branch, Subversion will never attempt to
         merge revision <emphasis>X</emphasis> into the branch, avoiding
         spurious conflicts.</para>
+-->
+      <para>Nun sollte es auch offensichtlich sein, warum das Löschen
+        und Wiederherstellen des Zweigs den selben Effekt hat wie die
+        obige nur vermerkte Zusammenführung. Da die Revision
+        <emphasis>X</emphasis> Teil der natürlichen Historie des
+        frisch erzeugten Zweigs ist, wird Subversion niemals
+        versuchen, die Revision <emphasis>X</emphasis> mit dem Zweig
+        zusammenzuführen, und vermeidet dadurch fälschliche Konflikte.
+        </para>
 
       </sect2>
 
