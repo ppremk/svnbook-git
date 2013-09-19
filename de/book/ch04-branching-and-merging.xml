@@ -4627,11 +4627,40 @@ U   .
         client reports itself as having <literal>mergeinfo</literal>
         capabilities, the hook script can allow the commit to start.
         If the client doesn't report that capability, have the hook
-        deny the commit.  We'll learn more about hook scripts in the
-        next chapter; see
-        <xref linkend="svn.reposadmin.create.hooks"/> and
-        <xref linkend="svn.ref.reposhooks.start-commit"/> for
-        details.</para>
+        deny the commit.
+        <xref linkend="svn.branchmerge.advanced.hook-ex1" /> gives an
+        example of such a hook script:</para>
+
+      <example id="svn.branchmerge.advanced.hook-ex1">
+        <title>Merge-tracking gatekeeper start-commit hook script</title>
+
+        <programlisting>
+#!/usr/bin/env python
+import sys
+
+# The start-commit hook is invoked before a Subversion txn is created
+# in the process of doing a commit.  Subversion runs this hook
+# by invoking a program (script, executable, binary, etc.) named
+# 'start-commit' (for which this file is a template)
+# with the following ordered arguments:
+#
+#   [1] REPOS-PATH   (the path to this repository)
+#   [2] USER         (the authenticated user attempting to commit)
+#   [3] CAPABILITIES (a colon-separated list of capabilities reported
+#                     by the client; see note below)
+
+capabilities = sys.argv[3].split(':')
+if "mergeinfo" not in capabilities:
+  sys.stderr.write("Commits from merge-tracking-unaware clients are "
+                   "not permitted.  Please upgrade to Subversion 1.5 "
+                   "or newer.\n")
+  sys.exit(1)
+sys.exit(0)
+</programlisting>
+      </example>
+
+      <para>For more information about hook scripts, see
+        <xref linkend="svn.reposadmin.create.hooks"/>.</para>
 -->
       <para>Wenn Sie und Ihr Team auf die Zusammenführungs-Verfolgung
         von Subversion angewiesen sind, sollten Sie Ihr Projektarchiv
@@ -4642,11 +4671,44 @@ U   .
         Wenn der Client meldet, dass er mit
         <literal>mergeinfo</literal> umgehen kann, kann das Skript den
         Beginn der Übergabe erlauben.  Wenn der Client diese Fähigkeit
-        nicht meldet, wird die Übergabe abgelehnt. Wir werden mehr
-        über Hook-Skripte im nächsten Kapitel erfahren; siehe <xref
-        linkend="svn.reposadmin.create.hooks"/> und <xref
-        linkend="svn.ref.reposhooks.start-commit"/> für
-        Details.</para>
+        nicht meldet, wird die Übergabe abgelehnt.
+        <xref linkend="svn.branchmerge.advanced.hook-ex1" /> zeigt ein
+        Beispiel für ein solches Hook-Skript:</para>
+
+      <example id="svn.branchmerge.advanced.hook-ex1">
+        <title>Hook-Skript zum Start der Übertragung als Torwächter für die Zusammenführungs-Verfolgung</title>
+
+        <programlisting>
+#!/usr/bin/env python
+import sys
+
+# Dieser Start-Commit-Hook wird aufgerufen, bevor eine
+# Subversion-Transaktion im Zuge einer Übergabe begonnen wird.
+# Subversion führt diesen Hook aus, indem ein Programm (Skript,
+# ausführbare Datei, Binärdatei, etc.) namens "start-commit" (für die
+# diese Datei als Vorlage dient) mit den folgenden geordneten Argumenten
+# aufgerufen wird:
+#
+#   [1] REPOS-PATH   (der Pfad zu diesem Projektarchiv)
+#   [2] USER         (der authentisierte Anwender, der übergeben möchte)
+#   [3] CAPABILITIES (eine vom Client durch Doppelpunkte getrennte
+#                     Liste von Leistungsmerkmalen; siehe Anmerkung
+#                     unten)
+
+capabilities = sys.argv[3].split(':')
+if "mergeinfo" not in capabilities:
+  sys.stderr.write("Übertragungen von Clients, die keine"
+                   "Zusammenführungs-Verfolgung unterstützen,"
+                   "sind nicht erlaubt. Bitte auf Subversion 1.5 "
+                   "oder neuer aktualisieren.\n")
+  sys.exit(1)
+sys.exit(0)
+</programlisting>
+      </example>
+
+      <para>Für weitergehende Informationen zu Hook-Skripten, siehe
+        nächsten Kapitel erfahren; siehe
+        <xref linkend="svn.reposadmin.create.hooks"/>.</para>
 
     </sect2>
 
