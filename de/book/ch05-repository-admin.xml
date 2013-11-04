@@ -1376,6 +1376,80 @@ conf/  db/  format  hooks/  locks/  README.txt
           Projektarchiv.</para>
 
 <!--
+        <sidebar id="svn.reposadmin.basics.backends.fsfs.revfiles">
+          <title>Revision files and shards</title>
+
+          <para>FSFS repositories contain files that describe the
+            changes made in a single revision, and files that contain
+            the revision properties associated with a single revision.
+            Repositories created in versions of Subversion prior to
+            1.5 keep these files in two directories&mdash;one for each
+            type of file.  As new revisions are committed to the
+            repository, Subversion drops more files into these two
+            directories&mdash;over time, the number of these files in
+            each directory can grow to be quite large.  This has been
+            observed to cause performance problems on certain
+            network-based filesystems.</para>
+
+          <para>Subversion 1.5 creates FSFS-backed repositories using
+            a slightly modified layout in which the contents of these
+            two directories are <firstterm>sharded</firstterm>, or
+            scattered across several subdirectories.  This can greatly
+            reduce the time it takes the system to locate any one of
+            these files, and therefore increases the overall
+            performance of Subversion when reading from the
+            repository.</para>
+
+          <para>Subversion 1.6 takes the sharded layout one step
+            further, allowing administrators to
+            optionally <firstterm>pack</firstterm> each of their
+            repository shards up into a single multi-revision file.
+            This can have both performance and disk usage benefits.
+            See
+            <xref linkend="svn.reposadmin.maint.diskspace.fsfspacking"/>
+            for more information.</para>
+
+        </sidebar>
+-->
+        <sidebar id="svn.reposadmin.basics.backends.fsfs.revfiles">
+          <title>Revisionsdateien und Scherben</title>
+
+          <para>FSFS Projektarchive beinhalten sowohl Dateien, die die
+            in einer einzelnen Revision gemachten Änderungen
+            beschreiben als auch Dateien, die die
+            Revisionseigenschaften beinhalten, die zu einer einzelnen
+            Revision gehören. Projektarchive, die mit
+            Subversion-Versionen vor 1.5 erzeugt worden sind,
+            speichern diese Dateien in zwei Verzeichnissen, eins für
+            jede Art von Datei. Wenn dem Projektarchiv neue Revisionen
+            hinzugefügt werden, hinterlegt Subversion immer mehr
+            Dateien in diese beiden Verzeichnisse; im Lauf der Zeit
+            kann die Anzahl dieser Dateien in jedem dieser
+            Verzeichnisse recht groß werden. Dabei wurde beobachtet,
+            dass es in bestimmten netzbasierten Dateisystemen zu
+            Leistungsproblemen kommen kann.</para>
+
+          <para>Subversion 1.5 erstellt Projektarchive mit FSFS mit
+            einem etwas veränderten Layout, bei dem der Inhalt dieser
+            beiden Verzeichnisse in  <firstterm>Scherben</firstterm>
+            zerlegt wird, oder über mehrere Unterverzeichnisse
+            verteilt wird. Das kann erheblich zur Verkürzung der Zeit
+            beitragen, die das System benötigt, um irgendeine dieser
+            Dateien zu finden, und somit die Gesamtleistung von
+            Subversion beim Lesen des Projektarchivs erhöhen.</para>
+
+          <para>Subversion 1.6 geht bei diesem Scherben-Design noch
+            einen Schritt weiter und erlaubt Administratoren, optional
+            jede dieser Projektarchiv-Scherben in eine einzelne
+            Multi-Revisions-Datei zu <firstterm>packen</firstterm>.
+            Das kann sowohl Leistungsvorteile bringen als auch die
+            Plattennutzung verbessern. Siehe
+            <xref linkend="svn.reposadmin.maint.diskspace.fsfspacking"/>
+            für weitere Informationen.</para>
+
+        </sidebar>
+
+<!--
         <para>The FSFS revision files describe a revision's
           directory structure, file contents, and deltas against files
           in other revision trees.  Unlike a Berkeley DB database,
@@ -1403,26 +1477,21 @@ conf/  db/  format  hooks/  locks/  README.txt
         <para>FSFS has different performance characteristics, too.
           When committing a directory with a huge number of files,
           FSFS is able to more quickly append directory entries.  On
-          the other hand, FSFS writes the latest version of a file as
-          a delta against an earlier version, which means that
-          checking out the latest tree is a bit slower than fetching
-          the full-texts stored in a Berkeley DB HEAD revision.  FSFS
-          also has a longer delay when finalizing a commit, which
-          could in extreme cases cause clients to time out while
-          waiting for a response.</para>
+          the other hand, FSFS has a longer delay when finalizing a
+          commit while it performs tasks that the BDB backend
+          amortizes across the lifetime of the commit, which could in
+          extreme cases cause clients to time out while waiting for a
+          response.</para>
 -->
         <para>FSFS hat auch eine unterschiedliche Charakteristik, was
           den Durchsatz anbelangt. Wenn eine große Zahl an Dateien
           übergeben wird, kann FSFS schneller Verzeichniseinträge
-          hinzufügen. Andererseits schreibt FSFS die letzte Version
-          einer Datei als ein Delta gegenüber einer älteren Version,
-          was bedeutet, dass das Auschecken des letzten Baums etwas
-          langsamer ist als die vollständigen Texte zu holen, die in
-          einer Berkeley-DB HEAD-Revision gespeichert sind. FSFS hat
-          auch eine längere Verzögerung beim Fertigstellen einer
-          Übergabe, was im Extremfall dazu führen kann, dass bei
-          Clients Zeitüberschreitungen beim Warten auf eine Antwort
-          auftreten.</para>
+          hinzufügen. Andererseits hat FSFS beim Abschluss einer
+          Übergabe eine längere Verzögerung während es Aufgaben
+          durchführt, die das BDB-Backend über die Laufzeit der
+          Übergabe abwickelt, was in extemen Fällen dazu führen kann,
+          dass bei Clients Zeitüberschreitungen beim Warten auf eine
+          Antwort auftreten.</para>
 
 <!--
         <para>The most important distinction, however, is FSFS's
@@ -1445,41 +1514,6 @@ conf/  db/  format  hooks/  locks/  README.txt
           das Projektarchiv hiervon überhaupt nicht betroffen. Das
           Schlimmste, was passieren kann, ist, dass einige
           Transaktionsdaten nicht abgearbeitet werden können.</para>
-
-<!--
-        <para>The only real argument against FSFS is its relative
-          immaturity compared to Berkeley DB.  Unlike Berkeley DB,
-          which has years of history, its own dedicated development
-          team, and, now, Oracle's mighty name attached to it,
-          <footnote>
-            <para>Oracle bought Sleepycat and its flagship software,
-              Berkeley DB, on Valentine's Day in 2006.</para>
-          </footnote>
-          FSFS is a newer bit of engineering.  Prior to Subversion
-          1.4, it was still shaking out some pretty serious data
-          integrity bugs, which, while triggered in only very rare
-          cases, nonetheless did occur.  That said, FSFS has quickly
-          become the backend of choice for some of the largest public
-          and private Subversion repositories, and it promises a lower
-          barrier to entry for Subversion across the board.</para>
--->
-        <para>Das einzige echte Argument, was gegen FSFS spricht, ist
-          seine relative Unreife im Gegensatz zu Berkeley DB. Anders
-          als Berkeley DB, das auf eine jahrelange Geschichte
-          zurückblicken kann, ein eigenes Entwicklerteam hat und sich
-          nun mit dem mächtigen Namen Oracle schmücken darf,
-          <footnote>
-            <para>Oracle kaufte Sleepycat und sein Vorzeigeprogramm,
-              Berkeley DB, am Valentinstag 2006.</para>
-          </footnote>
-          ist FSFS eine neuere Technik. Vor Subversion 1.4 purzelten
-          immer noch einige ernsthafte Fehler in Bezug auf die
-          Unversehrtheit der Daten heraus, die, obwohl sie sehr selten
-          ausgelöst wurden, dennoch auftraten.  Nichtsdestoweniger
-          ist FSFS schnell zum Speicherverfahren der Wahl für einige
-          der größten öffentlichen und privaten Subversion-Projektarchive
-          geworden und verspricht durch die Bank eine niedrigere
-          Einstiegshürde für Subversion.</para>
 
       </sect3>
     </sect2>
