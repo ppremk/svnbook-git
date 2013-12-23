@@ -3457,8 +3457,12 @@ $ rm `svnadmin list-unused-dblogs /var/svn/repos`
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.maint.diskspace.fsfspacking">
+<!--
         <title>Packing FSFS filesystems</title>
+-->
+        <title>FSFS Filesysteme packen</title>
 
+<!--
         <para>As described in the sidebar
           <xref linkend="svn.reposadmin.basics.backends.fsfs.revfiles"/>,
           FSFS-backed Subversion repositories create, by default, a
@@ -3466,14 +3470,34 @@ $ rm `svnadmin list-unused-dblogs /var/svn/repos`
           Having thousands of these files present on your Subversion
           server&mdash;even when housed in separate shard
           directories&mdash;can lead to inefficiencies.</para>
+-->
+        <para>Wie in der Anmerkung
+          <xref linkend="svn.reposadmin.basics.backends.fsfs.revfiles"/>
+          beschrieben, erzeugen auf FSFS basierende
+          Subversion-Projektarchive standardmäßig für jede dem
+          Projektarchiv hinzugefügte Revision eine neue Datei auf
+          der Platte. Wenn tausende dieser Dateien auf dem
+          Subversion-Server liegen, kann dies ineffizient werden,
+          selbst dann, wenn sie in getrennten Scherben-Verzeichnissen
+          untergebracht sind.</para>
 
+<!--
         <para>The first problem is that the operating system has to
           reference many different files over a short period of time.
           This leads to inefficient use of disk caches and, as a
           result, more time spent seeking across large disks.  Because
           of this, Subversion pays a performance penalty when
           accessing your versioned data.</para>
+-->
+        <para>Das erste Problem besteht darin, dass das Betriebssystem
+          innerhalb kurzer Zeit auf viele verschiedene Dateien
+          beziehen muss. Das führt zur ineffektiven Verwendung von
+          Zwischenspeicherungen der Platte und hat zur Folge, dass bei
+          großen Platten viel Zeit zum Suchen verbraucht wird. Daher
+          kommt es beim Zugriff von Subversion auf versionierte Daten
+          zu Leistungseinbußen.</para>
 
+<!--
         <para>The second problem is a bit more subtle.  Because of the
           ways that most filesystems allocate disk space, each file
           claims more space on the disk than it actually uses.  The
@@ -3486,7 +3510,22 @@ $ rm `svnadmin list-unused-dblogs /var/svn/repos`
           which have many small revisions, since the overhead involved
           in storing the revision file quickly outgrows the size of
           the actual data being stored.</para>
+-->
+        <para>Das zweite Problem ist etwas subtiler. Aufgrund der Art
+          und Weise wie die meisten Dateisysteme Plattenplatz
+          zuweisen, benötigt eine Datei mehr Platz, als sie eigentlich
+          belegt. Der Umfang des zusätzlichen Platzes, um eine
+          einzelne Datei unterzubringen, kann, je nach verwendetem
+          Dateisystem durchschnittlich irgendwo zwischen 2 und 16
+          Kilobyte <emphasis>pro Datei</emphasis> liegen. Das bedeutet
+          pro Revision eine Einbuße bei der Plattennutzung für
+          Projektarchive auf FSFS Basis. Besonders deutlich wird der
+          Effekt bei Projektarchiven mit vielen kleinen Revisionen, da
+          hier platzmäßig die Kosten der Speicherung der
+          Revisionsdatei schnell den Umfang der eigentlich zu
+          speichernden Daten überschreiten.</para>
 
+<!--
         <para>To solve these problems, Subversion 1.6 introduced the
           <command>svnadmin pack</command> command.  By concatenating
           all the files of a completed shard into a single <quote>pack</quote> file
@@ -3496,13 +3535,34 @@ $ rm `svnadmin list-unused-dblogs /var/svn/repos`
           doing so, it aids filesystem caches and reduces (to one) the
           number of times a file storage overhead penalty is
           paid.</para>
+-->
+        <para>Zur Lösung dieser Probleme führte Subversion 1.6 den
+          Befehl <command>svnadmin pack</command> ein. Durch das
+          Aneinanderfügen aller Dateien einer vollständigen Scherbe in
+          eine einzelne <quote>pack</quote>-Datei und das
+          anschließende Entfernen der ursprünglichen Dateien, die pro
+          Revision angelegt wurden, verringert <command>svnadmin
+          pack</command> die Anzahl der Dateien innerhalb einer
+          gegebenen Scherbe auf nur eine einzelne Datei.
+          Das kommt den Zwischenspeichern des Dateisystems entgegen
+          und verringert die Anzahl der Kosten für Dateispeicherung
+          auf eins.</para>
 
+<!--
         <para>Subversion can pack existing sharded repositories which
           have been upgraded to the 1.6 filesystem format (see
           <xref linkend="svn.ref.svnadmin.c.upgrade"/>).  To do so,
           just run <command>svnadmin pack</command> on the
           repository:</para>
+-->
+        <para>Subversion kann bestehenede zerlegte Projektarchive
+          packen, die auf das Dateisystemformat von 1.6 aktualisiert
+          worden sind (siehe
+          <xref linkend="svn.ref.svnadmin.c.upgrade"/>). Lassen Sie
+          dafür einfach <command>svnadmin pack</command> über das
+          Projektarchiv laufen:</para>
 
+<!--
         <informalexample>
           <screen>
 $ svnadmin pack /var/svn/repos
@@ -3516,15 +3576,42 @@ Packing shard 36...done.
 $
 </screen>
         </informalexample>
+-->
+        <informalexample>
+          <screen>
+$ svnadmin pack /var/svn/repos
+Packe 0...erledigt.
+Packe 1...erledigt.
+Packe 2...erledigt.
+&hellip;
+Packe 34...erledigt.
+Packe 35...erledigt.
+Packe 36...erledigt.
+$
+</screen>
+        </informalexample>
 
+<!--
         <para>Because the packing process obtains the required locks
           before doing its work, you can run it on live repositories,
           or even as part of a post-commit hook.  Repacking packed
           shards is legal, but will have no effect on the disk usage
           of the repository.</para>
+-->
+        <para>Da der Packprozess die benötigten Sperren erlangt, bevor
+          er seine Arbeit beginnt, können Sie ihn auf in Benutzung
+          befindliche Projektarchive anwenden oder sogar als Teil
+          eines Hooks nach der Übergabe. Das erneute Packen bereits
+          gepackter Scherben ist legal, hat allerdings keine
+          Auswirkungen auf den Plattenverbrauch des
+          Projektarchivs.</para>
 
+<!--
         <para><command>svnadmin pack</command> has no effect on
           BDB-backed Subversion repositories.</para>
+-->
+        <para><command>svnadmin pack</command> hat keine Auswirkungen
+          auf Subversion-Projektarchive auf BDB-Basis.</para>
 
       </sect3>
     </sect2>
