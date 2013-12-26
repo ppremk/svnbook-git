@@ -2,24 +2,23 @@
 <!-- 
   <title>Server Configuration</title>
 -->
-  <title>Die Administration eines Subversion-Servers</title>
+<title>Konfiguration des Servers</title>
 
 <!--
   <para>A Subversion repository can be accessed simultaneously by
     clients running on the same machine on which the repository
-    resides using the <literal>file://</literal> method.  But the
-    typical Subversion setup involves a single server machine being
-    accessed from clients on computers all over the office&mdash;or,
-    perhaps, all over the world.</para>
+    resides using URLs carrying the <literal>file://</literal> scheme.
+    But the typical Subversion setup involves a single server machine
+    being accessed from clients on computers all over the
+    office&mdash;or, perhaps, all over the world.</para>
 -->
-
   <para>Der Zugriff auf ein Subversion-Projektarchiv kann problemlos
     von mehreren Clients, welche auf demselben Rechner wie Subversion
-    laufen, gleichzeitig erfolgen &ndash; unter Verwendung der
-    <literal>file://</literal>-Methode. Aber typischerweise läuft der
-    Subversion-Server auf einem separaten Rechner, und der Zugriff
-    erfolgt von Clients auf vielen verschiedenen Computern aus der
-    ganzen Firma &ndash; ja sogar der ganzen Welt.</para>
+    laufen, gleichzeitig erfolgen &ndash; unter Verwendung von URLs
+    mit dem <literal>file://</literal>-Schema. Aber typischerweise
+    läuft der Subversion-Server auf einem separaten Rechner, und der
+    Zugriff erfolgt von Clients auf vielen verschiedenen Computern aus
+    der ganzen Firma &ndash; ja sogar der ganzen Welt.</para>
 
 <!--
   <para>This chapter describes how to get your Subversion repository
@@ -50,24 +49,24 @@
     <title>Überblick</title>
 
 <!--
-    <para>Subversion was designed with an abstract network layer.
+    <para>Subversion was designed with an abstract repository access layer.
       This means that a repository can be programmatically accessed by
       any sort of server process, and the client <quote>repository
       access</quote> API allows programmers to write plug-ins that
       speak relevant network protocols.  In theory, Subversion can use
       an infinite number of network implementations.  In practice,
-      there are only two servers at the time of this writing.</para>
+      there are only two Subversion servers in widespread use today.</para>
 -->
-    <para>Subversion wurde mit einer abstrakten Netzwerkschicht
-      entworfen. Dies bedeutet, dass auf ein Projektarchiv
-      automatisiert von beliebigen Server-Prozessen zugegriffen werden
-      kann, und die für Clients vorhandene
-      <quote>Projektarchiv-Zugriffs</quote>-API
+    <para>Subversion wurde mit einer abstrakten
+      Projektarchiv-Zugriffs-Schicht entworfen. Dies bedeutet, dass
+      auf ein Projektarchiv automatisiert von beliebigen
+      Server-Prozessen zugegriffen werden kann, und die für Clients
+      vorhandene <quote>Projektarchiv-Zugriffs</quote>-API
       (Programmierschnittstelle) erlaubt es Programmierern, Plugins zu
       entwickeln, die relevante Netzwerkprotokolle verstehen.
       Theoretisch ermöglicht dies Subversion, eine unbegrenzte Zahl an
-      Netzwerkprotokollen zu verwenden.  Zum Zeitpunkt an dem dies
-      geschrieben wird, gibt es aber nur zwei Server.</para>
+      Netzwerkprotokollen zu verwenden. Praktisch gibt es heute
+      allerdings nur zwei weitverbreitete Server.</para>
 
 <!--
     <para>Apache is an extremely popular web server; using the
@@ -119,11 +118,10 @@
       einfach nur schnell mit Subversion "loslegen" wollen, die beste
       Wahl.</para>
 
-<!--
-    <para>A third option is to use <command>svnserve</command>
-      tunneled over an SSH connection.  Even though this scenario
-      still uses <command>svnserve</command>, it differs quite a bit
-      in features from a traditional <command>svnserve</command>
+    <para>The network protocol which <command>svnserve</command>
+      speaks may also be tunneled over an SSH connection.  This
+      deployment option for <command>svnserve</command> differs quite
+      a bit in features from a traditional <command>svnserve</command>
       deployment.  SSH is used to encrypt all communication.  SSH is
       also used exclusively to authenticate, so real system accounts
       are required on the server host (unlike
@@ -132,22 +130,22 @@
       user spawn a private, temporary <command>svnserve</command>
       process, it's equivalent (from a permissions point of view) to
       allowing a group of local users to all access the repository
-      via <literal>file://</literal> URLs. Path-based access control
+      via <literal>file://</literal> URLs.  Path-based access control
       has no meaning, since each user is accessing the repository
       database files directly.</para>
 -->
 
-    <para>Ein dritte Möglichkeit ist, <command>svnserve</command>
-      durch SSH-Verbindungen zu tunneln. Auch wenn in diesem Fall
-      weiterhin <command>svnserve</command> verwendet wird, so
-      unterscheidet sich die Funktionalität ziemlich von der normalen
-      Nutzung von <command>svnserve</command>. SSH wird zur
-      Verschlüsselung der gesamten Kommunikation verwendet. Ebenso zur
-      Authentifikation, was die Verwendung von realen Anwenderkonten
-      auf dem Subversion-Server notwendig macht (anders als beim
-      einfachen <command>svnserve</command>, der seine eigene
-      Anwenderverwaltung hat).  Des weiteren ist es notwendig &ndash; da
-      jeder angemeldete Nutzer einen eigenen
+    <para>Das Netzwerkprotokoll, das <command>svnserve</command>
+      spricht, kann auch über eine SSH-Verbindunge getunnelt werden.
+      Diese Option zum Einsatz von <command>svnserve</command>
+      unterscheidet sich erheblich von der traditionellen Nutzung von
+      <command>svnserve</command>. SSH wird zur Verschlüsselung der
+      gesamten Kommunikation verwendet. Ebenso zur Authentifikation,
+      was die Verwendung von realen Anwenderkonten auf dem
+      Subversion-Server notwendig macht (anders als beim einfachen
+      <command>svnserve</command>, der seine eigene Anwenderverwaltung
+      hat).  Des weiteren ist es notwendig &ndash; da jeder
+      angemeldete Nutzer einen eigenen
       <command>svnserve</command>-Prozess startet &ndash; einer Gruppe
       von lokalen Nutzern (aus Sicht der Rechtevergabe) vollen Zugriff
       auf das Projektarchiv via <literal>file://</literal> URLs zu
@@ -167,154 +165,241 @@
 
 
     <table id="svn.serverconfig.overview.tbl-1">
- <!-- <title>Comparison of subversion server options</title> -->
+<!--
+      <title>Comparison of subversion server options</title>
+-->
       <title>Vergleich der Serveroptionen für Subversion</title>
       <tgroup cols="4">
         <thead>
           <row>
-        <!-- <entry>Feature</entry> -->
-            <entry>Funktionen</entry>
+<!--
+            <entry>Feature</entry>
+-->
+            <entry>Funktion</entry>
             <entry>Apache + mod_dav_svn</entry>
             <entry>svnserve</entry>
-       <!-- <entry>svnserve over SSH</entry> -->
+<!--
+            <entry>svnserve over SSH</entry>
+-->
             <entry>svnserve via SSH</entry>
           </row>
         </thead>
         <tbody>
           <row>
-       <!-- <entry>Authentication options</entry> -->
+<!--
+            <entry>Authentication options</entry>
+-->
             <entry>Authentifikationsmöglichkeiten</entry>
-       <!-- <entry>HTTP(S) basic auth, X.509 certificates, LDAP, NTLM, or
-              any other mechanism available to Apache httpd</entry> -->
-            <entry>HTTP(S) basic auth, X.509 Zertifikate, LDAP, NTLM,
-              oder jede andere für den Apache Webserver verfügbare
-              Methode</entry>
-       <!-- <entry>CRAM-MD5 by default;  LDAP, NTLM, or any other mechanism
-              available to SASL</entry> -->
+<!--
+            <entry>HTTP Basic or Digest auth, X.509 certificates, LDAP,
+              NTLM, or any other mechanism available to Apache httpd</entry>
+-->
+            <entry>HTTP Basic oder Digest Auth, X.509 Zertifikate,
+              LDAP, NTLM, oder jede andere für den Apache Webserver
+              verfügbare Methode</entry>
+<!--
+            <entry>CRAM-MD5 by default;  LDAP, NTLM, or any other mechanism
+              available to SASL</entry>
+-->
             <entry>CRAM-MD5 als Voreinstellung,  LDAP, NTLM oder jede
               andere für SASL verfügbare Methode</entry>
             <entry>SSH</entry>
           </row>
 
           <row>
-       <!-- <entry>User account options</entry> -->
+<!--
+            <entry>User account options</entry>
+-->
             <entry>Anwenderkonfigurationen</entry>
-       <!-- <entry>Private 'users' file, or other mechanisms
-            available to Apache httpd (LDAP, SQL, etc.)</entry> -->
+<!--
+            <entry>Private <quote>users</quote> file, or other mechanisms
+            available to Apache httpd (LDAP, SQL, etc.)</entry>
+-->
             <entry>private Datei <filename>users</filename> oder jede
               andere für den Apache Webserver verfügbare Methode
               (LDAP, SQL, usw.)</entry>
-       <!-- <entry>Private 'users' file, or other mechanisms available
-              to SASL (LDAP, SQL, etc.)</entry> -->
+<!--
+            <entry>Private <quote>users</quote> file, or other
+              mechanisms available to SASL (LDAP, SQL, etc.)</entry>
+-->
             <entry>private Datei <filename>users</filename> oder jede
               andere für SASL verfügbare Methode (LDAP, SQL,
               usw.)</entry> 
-       <!-- <entry>System accounts</entry> -->
+<!--
+            <entry>System accounts</entry>
+-->
             <entry>lokale Anwenderkonten auf dem Server</entry>
           </row>
 
           <row>
-       <!-- <entry>Authorization options</entry> -->
+<!--
+            <entry>Authorization options</entry>
+-->
             <entry>Autorisierungsmöglichkeiten</entry>
-       <!-- <entry>Read/write access can be granted over the whole
-              repository, or specified per path</entry> -->
+<!--
+            <entry>Read/write access can be granted over the whole
+              repository, or specified per path</entry>
+-->
             <entry>Lese-/Schreibzugriff auf das komplette
               Projektarchiv oder pfadbasierte Rechtevergabe</entry>
-        <!-- <entry>Read/write access can be granted over the whole
-              repository, or specified per path</entry> -->
+<!--
+            <entry>Read/write access can be granted over the whole
+              repository, or specified per path</entry>
+-->
             <entry>Lese-/Schreibzugriff auf das komplette
               Projektarchiv oder pfadbasierte Rechtevergabe</entry>
-        <!-- <entry>Read/write access only grantable over the whole
-              repository</entry> -->
+<!--
+            <entry>Read/write access only grantable over the whole
+              repository</entry>
+-->
             <entry>Lese-/Schreibzugriff nur auf ganzes Projektarchiv
               einstellbar</entry>
           </row>
 
           <row>
-       <!-- <entry>Encryption</entry> -->
+<!--
+            <entry>Encryption</entry>
+-->
             <entry>Verschlüsselung</entry>
-       <!-- <entry>Available via optional SSL</entry> -->
-            <entry>optional mit SSL</entry>
-       <!-- <entry>Available via optional SASL features</entry> -->
+<!--
+            <entry>Available via optional SSL (https)</entry>
+-->
+            <entry>optional mit SSL (https)</entry>
+<!--
+            <entry>Available via optional SASL features</entry>
+-->
             <entry>optional mit der SASL-Funktionen</entry>
-       <!-- <entry>Inherent in SSH connection</entry> -->
+<!--
+            <entry>Inherent in SSH connection</entry>
+-->
             <entry>Bestandteil der SSH-Verbindung</entry>
           </row>
 
           <row>
-       <!-- <entry>Logging</entry> -->
+<!--
+            <entry>Logging</entry>
+-->
             <entry>Protokollierung</entry>
-       <!-- <entry>Full Apache logs of each HTTP request, with
-            optional <quote>high-level</quote> logging of general
-            client operations</entry> -->
-            <entry>Protokollierung aller HTTP-Anfragen seitens Apache,
-              optionale <quote>High-Level</quote>-Protokollierung
-              aller Client-Operationen</entry>
-       <!-- <entry>No logging</entry> -->
-            <entry>keine Protokollierung</entry>
-       <!-- <entry>No logging</entry> -->
-            <entry>keine Protokollierung</entry>
+<!--
+            <entry>High-level operational logging of Subversion
+              operations plus detailed logging at the
+              per-HTTP-request level</entry>
+-->
+            <entry>Protokollierung der Subversion-Aktivitäten auf
+              hoher Ebene, dazu detaillierte Protokollierung auf der
+              Ebene der HTTP-Anfragen</entry>
+<!--
+            <entry>High-level operational logging only</entry>
+-->
+            <entry>Nur Protolollierung der Aktivitäten auf hoher
+              Ebenen</entry>
+<!--
+            <entry>High-level operational logging only</entry>
+-->
+            <entry>Nur Protolollierung der Aktivitäten auf hoher
+              Ebenen</entry>
           </row>
 
           <row>
-       <!-- <entry>Interoperability</entry> -->
+<!--
+            <entry>Interoperability</entry>
+-->
             <entry>Interoperabilität</entry>
-       <!-- <entry>Accessible by other WebDAV clients</entry> -->
+<!--
+            <entry>Accessible by other WebDAV clients</entry>
+-->
             <entry>Zugriff durch andere WebDAV-Clients</entry>
-       <!-- <entry>Talks only to svn clients</entry> -->
+<!--
+            <entry>Talks only to svn clients</entry>
+-->
             <entry>Verbindung nur mit svn-Clients möglich</entry>
-       <!-- <entry>Talks only to svn clients</entry> -->
+<!--
+            <entry>Talks only to svn clients</entry>
+-->
             <entry>Verbindung nur mit svn-Clients möglich</entry>
           </row>
 
           <row>
-       <!-- <entry>Web viewing</entry> -->
+<!--
+            <entry>Web viewing</entry>
+-->
             <entry>web-basierte Anzeige des Projektarchivs</entry>
-       <!-- <entry>Limited built-in support, or via third-party tools
-             such as ViewVC</entry> -->
+<!--
+            <entry>Limited built-in support, or via third-party tools
+              such as ViewVC</entry>
+-->
             <entry>eingeschränkte Unterstützung, alternativ mittels
               Programmen von Drittanbietern, wie etwa ViewVC,
               erweiterbar</entry>
-       <!-- <entry>Only via third-party tools such as ViewVC</entry> -->
+<!--
+            <entry>Only via third-party tools such as ViewVC</entry>
+-->
             <entry>nur mittels Programmen von Drittanbietern, wie etwa
               ViewVC</entry>
-       <!-- <entry>Only via third-party tools such as ViewVC</entry> -->
+<!--
+            <entry>Only via third-party tools such as ViewVC</entry>
+-->
             <entry>nur mittels Programmen von Drittanbietern, wie etwa
               ViewVC</entry>
           </row>
 
           <row>
-       <!-- <entry>Master-slave server replication</entry> -->
+<!--
+            <entry>Master-slave server replication</entry>
+-->
             <entry>Master-Slave-Server Replizierungen</entry>
-       <!-- <entry>Transparent write-proxying available from slave to master</entry> -->
+<!--
+            <entry>Transparent write-proxying available from slave to
+              master</entry>
+-->
             <entry>transparenter Schreib-Proxy vom Slave zum
               Master</entry> 
-       <!-- <entry>Can only create read-only slave servers</entry> -->
+<!--
+            <entry>Can only create read-only slave servers</entry>
+-->
             <entry>beschränkt auf nur lesbare Slave-Server</entry>
-       <!-- <entry>Can only create read-only slave servers</entry> -->
+<!--
+            <entry>Can only create read-only slave servers</entry>
+-->
             <entry>beschränkt auf nur lesbare Slave-Server</entry>
           </row>
 
 
           <row>
-      <!--  <entry>Speed</entry> -->
+<!--
+            <entry>Speed</entry>
+-->
             <entry>Geschwindigkeit</entry>
-       <!-- <entry>Somewhat slower</entry> -->
+<!--
+            <entry>Somewhat slower</entry>
+-->
             <entry>ein wenig langsamer</entry>
-      <!--  <entry>Somewhat faster</entry> -->
+<!--
+            <entry>Somewhat faster</entry>
+-->
             <entry>ein wenig schneller</entry>
-       <!-- <entry>Somewhat faster</entry> -->
+<!--
+            <entry>Somewhat faster</entry>
+-->
             <entry>ein wenig schneller</entry>
           </row>
 
           <row>
-       <!-- <entry>Initial setup</entry> -->
+<!--
+            <entry>Initial setup</entry>
+-->
             <entry>Erstkonfiguration</entry>
-       <!-- <entry>Somewhat complex</entry> -->
+<!--
+            <entry>Somewhat complex</entry>
+-->
             <entry>eher komplexer</entry>
-      <!--  <entry>Extremely simple</entry> -->
+<!--
+            <entry>Extremely simple</entry>
+-->
             <entry>sehr einfach</entry>
-       <!-- <entry>Moderately simple</entry> -->
+<!--
+            <entry>Moderately simple</entry>
+-->
             <entry>durchschnittlich</entry>
           </row>
 
