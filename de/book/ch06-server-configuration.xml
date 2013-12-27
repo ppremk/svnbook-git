@@ -3332,9 +3332,38 @@ arding,no-X11-forwarding,no-pty TYPE1 KEY1 harry@example.com
         ein benanntes Modul auf den Ort einer Shared-Library auf
         der Platte abgebildet wird:</para>
 
-        <screen>
+      <informalexample>
+        <programlisting>
 LoadModule dav_svn_module     modules/mod_dav_svn.so
-</screen>
+</programlisting>
+      </informalexample>
+
+<!--
+      <para>Apache interprets the <literal>LoadModule</literal>
+        configuration item's library path as relative to its own
+        server root.  If configured as previously shown, Apache will
+        look for the Subversion DAV module shared library in its
+        own <filename>modules/</filename> subdirectory.  Depending on
+        how Subversion was installed on your system, you might need to
+        specify a different path for this library altogether, perhaps
+        even an absolute path such as in the following example:</para>
+-->
+      <para>Apache interpretiert den Bibliothekspfad des
+        Konfigurationseintrags <literal>LoadModule</literal> als
+        relativ zum Wurzelverzeichnis seines eigenen Servers. Falls er
+        wie gezeigt konfiguriert ist, wird Apache in seinem eigenen
+        <filename>modules/</filename> Unterverzeichnis nach der
+        Shared-Library des Subversion DAV-Moduls suchen. Abhängig
+        davon, wie Subversion auf Ihrem System installiert wurde, kann
+        es sein, dass Sie einen ganz anderen Pfad für diese Bibliothek
+        angeben müssen, vielleicht sogar einen absoluten Pfad wie im
+        folgenden Beispiel:</para>
+
+      <informalexample>
+        <programlisting>
+LoadModule dav_svn_module     C:/Subversion/lib/mod_dav_svn.so
+</programlisting>
+      </informalexample>
 
 <!--
       <para>Note that if <command>mod_dav</command> was compiled as a
@@ -3351,10 +3380,12 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         dass er vor der <command>mod_dav_svn</command>-Zeile
         steht:</para>
 
-        <screen>
+      <informalexample>
+        <programlisting>
 LoadModule dav_module         modules/mod_dav.so
 LoadModule dav_svn_module     modules/mod_dav_svn.so
-</screen>
+</programlisting>
+      </informalexample>
 
 <!--
 
@@ -3399,12 +3430,14 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         folgende <filename>httpd.conf</filename>-Syntax
         verwenden:</para>
 
-        <screen>
+      <informalexample>
+        <programlisting>
 &lt;Location /repos&gt;
   DAV svn
   SVNPath /var/svn/repository
 &lt;/Location&gt;
-</screen>
+</programlisting>
+      </informalexample>
 
 <!--
       <para>If you plan to support multiple Subversion repositories
@@ -3435,17 +3468,31 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         <filename>httpd.conf</filename> aus dem folgenden Beispiel
         verwenden:</para>
 
-        <screen>
+<!--
+      <informalexample>
+        <programlisting>
 &lt;Location /svn&gt;
   DAV svn
 
-  # any "/svn/foo" URL will map to a repository /var/svn/foo
+  # Automatically map any "/svn/foo" URL to repository /var/svn/foo
   SVNParentPath /var/svn
 &lt;/Location&gt;
-</screen>
+</programlisting>
+      </informalexample>
+-->
+      <informalexample>
+        <programlisting>
+&lt;Location /svn&gt;
+  DAV svn
+
+  # Automatisch irgendein "/svn/foo" URL auf Projektarchiv /var/svn/foo abbilden
+  SVNParentPath /var/svn
+&lt;/Location&gt;
+</programlisting>
+      </informalexample>
 
 <!--
-      <para>Using the previous syntax, Apache will delegate the
+      <para>Using this syntax, Apache will delegate the
         handling of all URLs whose path portions begin with
         <filename>/svn/</filename> to the Subversion DAV provider,
         which will then assume that any items in the directory
@@ -3453,10 +3500,10 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         are actually Subversion repositories.  This is a particularly
         convenient syntax in that, unlike the use of the
         <literal>SVNPath</literal> directive, you don't have to
-        restart Apache to create and network new repositories.</para>
+        restart Apache to add or remove hosted repositories.</para>
 -->
-      <para>Die Verwendung der vorangegangenen Syntax veranlasst
-        Apache, die Bearbeitung aller URLs, deren Pfadteil mit
+      <para>Die Verwendung dieser Syntax veranlasst Apache, die
+        Bearbeitung aller URLs, deren Pfadteil mit
         <filename>/svn/</filename> beginnt, an den
         Subversion-DAV-Provider weiterzuleiten, der dann davon
         ausgeht, dass alle Objekte in dem durch die
@@ -3464,8 +3511,8 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         Verzeichnis tatsächlich Subversion-Projektarchive sind. Dies
         ist insofern eine besonders bequeme Syntax, da Sie im
         Gegensatz zur Direktive <literal>SVNPath</literal> Apache
-        nicht neu starten müssen, wenn Sie neue Projektarchive
-        erstellen und über das Netz verfügbar machen.</para>
+        nicht neu starten müssen, wenn Sie Projektarchive
+        hinzufügen oder entfernen.</para>
 
 <!--
       <para>Be sure that when you define your new
@@ -3529,9 +3576,11 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
           hierfür die Direktive <literal>ServerName</literal> in
           <filename>httpd.conf</filename> verwenden.</para>
 
-        <screen>
+        <informalexample>
+          <programlisting>
 ServerName svn.example.com
-</screen>
+</programlisting>
+        </informalexample>
 
 <!--
         <para>If you are using Apache's virtual hosting support via
