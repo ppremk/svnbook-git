@@ -1973,7 +1973,9 @@ sally = undnocheins
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.auth.general">
- <!--       <title>Set access controls</title> -->
+<!--
+        <title>Set access controls</title>
+-->
         <title>Setzen von Zugriffsbeschränkungen</title>
 
 <!--
@@ -2005,7 +2007,8 @@ sally = undnocheins
           gesamte Projektarchiv Lese- und Schreibzugriff.  </para>
 
 <!--
-        <screen>
+        <informalexample>
+          <programlisting>
 [general]
 password-db = userfile
 realm = example realm
@@ -2015,10 +2018,12 @@ anon-access = read
 
 # authenticated users can both read and write
 auth-access = write
-</screen>
+</programlisting>
+        </informalexample>
 -->
 
-        <screen>
+        <informalexample>
+          <programlisting>
 [general]
 password-db = Anwenderdatei
 realm = Ihr realm
@@ -2028,7 +2033,8 @@ anon-access = read
 
 # Authentifizierte Anwender können sowohl lesen als auch schreiben
 auth-access = write
-</screen>
+</programlisting>
+        </informalexample>
 
 <!--
         <para>The example settings are, in fact, the default values of
@@ -2044,7 +2050,8 @@ auth-access = write
           anonymen Zugriff auch komplett unterbinden:</para>
 
 <!--
-        <screen>
+        <informalexample>
+          <programlisting>
 [general]
 password-db = userfile
 realm = example realm
@@ -2054,10 +2061,11 @@ anon-access = none
 
 # authenticated users can both read and write
 auth-access = write
-</screen>
+</programlisting>
+        </informalexample>
 -->
-
-        <screen>
+        <informalexample>
+          <programlisting>
 [general]
 password-db = Anwenderdatei
 realm = Ihr realm
@@ -2067,16 +2075,18 @@ anon-access = none
 
 # Authentifizierte Anwender können sowohl lesen als auch schreiben
 auth-access = write
-</screen>
+</programlisting>
+        </informalexample>
 
 <!--
         <para>The server process understands not only
-        these <quote>blanket</quote> access controls to the
-        repository, but also finer-grained access restrictions placed
-        on specific files and directories within the repository.  To
-        make use of this feature, you need to define a file containing
-        more detailed rules, and then set
-        the <literal>authz-db</literal> variable to point to it:</para>
+          these <quote>blanket</quote> access controls to the
+          repository, but also finer-grained access restrictions
+          placed on specific files and directories within the
+          repository.  To make use of this feature, you need to define
+          a file containing more detailed rules, and then set
+          the <literal>authz-db</literal> variable to point to
+          it:</para>
 -->
 
         <para>Der Serverprozess versteht nicht nur diese
@@ -2091,25 +2101,27 @@ auth-access = write
 
 
 <!--
-        <screen>
+        <informalexample>
+          <programlisting>
 [general]
 password-db = userfile
 realm = example realm
 
 # Specific access rules for specific locations
 authz-db = authzfile
-</screen>
+</programlisting>
+        </informalexample>
 -->
-
-        <screen>
+        <informalexample>
+          <programlisting>
 [general]
 password-db = Anwenderdatei
 realm = Ihr realm
 
 # Zum Festlegen von umfangreicheren Zugriffsregeln für bestimmte Bereiche
 authz-db = Auth-Datei
-</screen>
-
+</programlisting>
+        </informalexample>
 
 <!--
         <para>We discuss the syntax of the <filename>authzfile</filename> file
@@ -2176,15 +2188,12 @@ authz-db = Auth-Datei
           you're building Subversion yourself, you'll need to have at
           least version 2.1 of SASL installed on your system, and
           you'll need to make sure that it's detected during
-          Subversion's build process.  If you're using a prebuilt
-          Subversion binary package, you'll have to check with the
-          package maintainer as to whether SASL support was compiled
-          in.  SASL comes with a number of pluggable modules that
-          represent different authentication systems: Kerberos
-          (GSSAPI), NTLM, One-Time-Passwords (OTP), DIGEST-MD5, LDAP,
-          Secure-Remote-Password (SRP), and others.  Certain
-          mechanisms may or may not be available to you; be sure to
-          check which modules are provided.</para>
+          Subversion's build process.  The Subversion command-line
+          client will report the availability of Cyrus SASL when you
+          run <userinput>svn - -version</userinput>; if you're using
+          some other Subversion client, you might need to check with
+          the package maintainer as to whether SASL support was
+          compiled in.</para>
 -->
         <para>Cyrus Simple Authentication and Security Layer (einfache
           Cyrus Authentifikations- und Sicherheitsschicht) ist
@@ -2198,20 +2207,33 @@ authz-db = Auth-Datei
           Subversion selber bauen, müssen Sie mindestens Version 2.1
           von SASL auf Ihrem System installiert haben und
           sicherstellen, dass es während des Erstellungsprozesses
-          gefunden wird. Falls Sie ein fertiges Subversion-Binärpaket
-          verwenden, müssen Sie den Paketpfleger fragen, ob
-          SASL-Unterstützung einkompiliert wurde. SASL wird mit
-          einer Anzahl ergänzbarer Module geliefert, die
-          verschiedenartige Authentifikationssysteme repräsentieren:
-          Kerberos (GSSAPI), NTLM, One-Time-Passwords (OTP),
-          DIGEST-MD5, LDAP, Secure-Remote-Password (SRP) u.a.
+          gefunden wird. Der Subversion Kommandozeilenclient zeigt die
+          Verfügbarkeit von Cyrus SASL an, wenn Sie
+          <userinput>svn --version</userinput> aufrufen; falls Sie
+          irgend einen anderen Subversion-Client verwenden, sollten
+          sie mit dem Lieferanten des Paketes Rücksprache halten, ob
+          SASL-Unterstützung hineinkompiliert wurde.</para>
+
+<!--
+        <para>SASL comes with a number of pluggable modules that
+          represent different authentication systems: Kerberos
+          (GSSAPI), NTLM, One-Time-Passwords (OTP), DIGEST-MD5, LDAP,
+          Secure-Remote-Password (SRP), and others.  Certain
+          mechanisms may or may not be available to you; be sure to
+          check which modules are provided.</para>
+-->
+        <para>SASL wird mit einer Anzahl ergänzbarer Module geliefert,
+          die verschiedenartige Authentifikationssysteme
+          repräsentieren: Kerberos (GSSAPI), NTLM, One-Time-Passwords
+          (OTP), DIGEST-MD5, LDAP, Secure-Remote-Password (SRP) u.a.
           Bestimmte Mechanismen könnten für Sie verfügbar sein;
           überprüfen Sie, welche Module mitgeliefert werden.</para>
 
 <!--
         <para>You can download Cyrus SASL (both code and
           documentation) from
-          <ulink url="http://asg.web.cmu.edu/sasl/sasl-library.html"/>.</para>
+          <ulink url="http://asg.web.cmu.edu/sasl/sasl-library.html"
+          />.</para>
 -->
         <para>Sie können Cyrus SASL (sowohl den Code als auch die
           Dokumentation) bei
