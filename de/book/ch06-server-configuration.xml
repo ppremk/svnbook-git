@@ -3676,12 +3676,14 @@ ServerName svn.example.com
         konfiguriert haben, so dass sie etwa den folgenden Eintrag
         enthält:</para>
 
-      <screen>
+      <informalexample>
+        <programlisting>
 &lt;Location /svn&gt;
   DAV svn
   SVNParentPath /var/svn
 &lt;/Location&gt;
-</screen>
+</programlisting>
+      </informalexample>
 
 <!--
       <para>your repository is <quote>anonymously</quote>
@@ -3741,12 +3743,29 @@ ServerName svn.example.com
 -->
       <para>Natürlich kann es sein, dass Sie schon längst ein
         <filename>pre-commit</filename> Hook-Skript bereitgestellt
-        haben, um Übergaben zu verhindern (siehe <xref
-          linkend="svn.reposadmin.create.hooks"/>). Sie werden jedoch
-        beim Weiterlesen feststellen, dass es möglich ist, die
+        haben, um Übergaben zu verhindern (siehe
+        <xref linkend="svn.reposadmin.create.hooks"/>). Sie werden
+        jedoch beim Weiterlesen feststellen, dass es möglich ist, die
         eingebauten Methoden von Apache zu verwenden, um den Zugriff
         auf bestimmte Art und Weise einzuschränken.</para>
 
+      <tip>
+<!--
+        <para>Requiring authentication defends against invalid users
+          directly accessing the repository, but does not guard the
+          privacy of valid users' network activity.  See
+          <xref linkend="svn.serverconfig.httpd.ssl"/> for how to
+          configure your server to support SSL encryption, which can
+          provide that extra layer of protection.</para>
+-->
+        <para>Die erforderliche Authentifizierung verhindert zwar,
+          dass unerlaubte Anwnder direkt auf das Projektarchiv
+          zugreifen, schützt aber nicht die Vertraulichkeit der
+          Netzwerkaktivitäten erlaubter Anwender. Siehe
+          <xref linkend="svn.serverconfig.httpd.ssl"/> zur
+          Konfiguration Ihres Servers mit SSL-Verschlüsselung, die
+          eine zusätzliche Sicherheitsschicht bietet.</para>
+      </tip>
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.authn.basic">
 <!--
@@ -4943,6 +4962,187 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 
       </sect3>
 
+    </sect2>
+
+    <!-- =============================================================== -->
+    <sect2 id="svn.serverconfig.httpd.ssl">
+      <title>Protecting network traffic with SSL</title>
+
+      <para>Connecting to a repository via <literal>http://</literal>
+        means that all Subversion activity is sent across the network
+        in the clear.  This means that actions such as checkouts,
+        commits, and updates could potentially be intercepted by an
+        unauthorized party <quote>sniffing</quote> network traffic.
+        Encrypting traffic using SSL is a good way to protect
+        potentially sensitive information over the network.</para>
+
+      <para>If a Subversion client is compiled to use OpenSSL,
+        it gains the ability to speak to an Apache server via
+        <literal>https://</literal> URLs, so all traffic is encrypted
+        with a per-connection session key.  The WebDAV library used by
+        the Subversion client is not only able to verify server
+        certificates, but can also supply client certificates when
+        challenged by the server.</para>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.serverconfig.httpd.ssl.server">
+        <title>Subversion server SSL certificate configuration</title>
+
+        <para>It's beyond the scope of this book to describe how to
+          generate client and server SSL certificates and how to
+          configure Apache to use them.  Many other references,
+          including Apache's own documentation, describe the process.</para>
+
+        <tip>
+          <para>SSL certificates from well-known entities generally
+            cost money, but at a bare minimum, you can configure
+            Apache to use a self-signed certificate generated with a
+            tool such as OpenSSL (<ulink url="http://openssl.org"
+            />).<footnote><para>While self-signed certificates are
+            still vulnerable to a <quote>man-in-the-middle</quote>
+            attack, such an attack is much more difficult for a casual
+            observer to pull off, compared to sniffing unprotected
+            passwords.</para></footnote></para>
+        </tip>
+
+      </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.serverconfig.httpd.ssl.client">
+        <title>Subversion client SSL certificate management</title>
+
+        <para>When connecting to Apache via <literal>https://</literal>,
+          a Subversion client can receive two different types of
+          responses:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>A server certificate</para>
+          </listitem>
+          <listitem>
+            <para>A challenge for a client certificate</para>
+          </listitem>
+        </itemizedlist>
+
+        <sect4 id="svn.serverconfig.httpd.ssl.client.servercert">
+          <title>Server certificate</title>
+
+          <para>When the client receives a server certificate, it needs
+            to verify that the server is who it claims to be. OpenSSL
+            does this by examining the signer of the server certificate,
+            or <firstterm>certificate authority</firstterm> (CA).  If
+            OpenSSL is unable to automatically trust the CA, or if some
+            other problem occurs (such as an expired certificate or
+            hostname mismatch), the Subversion command-line client will
+            ask you whether you want to trust the server certificate
+            anyway:</para>
+
+          <informalexample>
+            <screen>
+$ svn list https://host.example.com/repos/project
+
+Error validating server certificate for 'https://host.example.com:443':
+ - The certificate is not issued by a trusted authority.  Use the
+   fingerprint to validate the certificate manually!
+Certificate information:
+ - Hostname: host.example.com
+ - Valid: from Jan 30 19:23:56 2004 GMT until Jan 30 19:23:56 2006 GMT
+ - Issuer: CA, example.com, Sometown, California, US
+ - Fingerprint: 7d:e1:a9:34:33:39:ba:6a:e9:a5:c4:22:98:7b:76:5c:92:a0:9c:7b
+
+(R)eject, accept (t)emporarily or accept (p)ermanently?
+</screen>
+          </informalexample>
+
+          <para>This dialogue is essentially the same question you may
+            have seen coming from your web browser (which is just
+            another HTTP client like Subversion).  If you choose the
+            <literal>(p)</literal>ermanent option, Subversion will
+            cache the server certificate in your private runtime
+            <filename>auth/</filename> area, just as your username and
+            password are cached (see <xref
+            linkend="svn.serverconfig.netmodel.credcache"/>), and will
+            automatically trust the certificate in the future.</para>
+
+          <para>Your runtime <filename>servers</filename> file also gives
+            you the ability to make your Subversion client automatically
+            trust specific CAs, either globally or on a per-host basis.
+            Simply set the <literal>ssl-authority-files</literal>
+            variable to a semicolon-separated list of PEM-encoded CA
+            certificates:</para>
+
+          <informalexample>
+            <programlisting>
+[global]
+ssl-authority-files = /path/to/CAcert1.pem;/path/to/CAcert2.pem
+</programlisting>
+          </informalexample>
+
+          <para>Many OpenSSL installations also have a predefined set
+            of <quote>default</quote> CAs that are nearly universally
+            trusted.  To make the Subversion client automatically trust
+            these standard authorities, set the
+            <literal>ssl-trust-default-ca</literal> variable to
+            <literal>true</literal>.</para>
+
+        </sect4>
+
+        <sect4 id="svn.serverconfig.httpd.ssl.client.clientcert">
+          <title>Client certificate challenge</title>
+
+          <para>If the client receives a challenge for a certificate,
+            the server is asking the client to prove its identity.
+            The client must send back a certificate signed by a CA
+            that the server trusts, along with a <firstterm>challenge
+            response</firstterm> which proves that the client owns the
+            private key associated with the certificate.  The private
+            key and certificate are usually stored in an encrypted
+            format on disk, protected by a passphrase.  When Subversion
+            receives this challenge, it will ask you for the path to the
+            encrypted file and the passphrase that protects it:</para>
+
+          <informalexample>
+            <screen>
+$ svn list https://host.example.com/repos/project
+
+Authentication realm: https://host.example.com:443
+Client certificate filename: /path/to/my/cert.p12
+Passphrase for '/path/to/my/cert.p12':  ********
+</screen>
+          </informalexample>
+
+          <para>Notice that the client credentials are stored in a
+            <literal>.p12</literal> file.  To use a client certificate
+            with Subversion, it must be in PKCS#12 format, which is a
+            portable standard.  Most web browsers are able to import
+            and export certificates in that format.  Another option
+            is to use the OpenSSL command-line tools to convert
+            existing certificates into PKCS#12.</para>
+
+          <para>The runtime <filename>servers</filename> file also
+            allows you to automate this challenge on a per-host basis.
+            If you set the <literal>ssl-client-cert-file</literal>
+            and <literal>ssl-client-cert-password</literal> variables,
+            Subversion can automatically respond to a client
+            certificate challenge without prompting you:</para>
+
+          <informalexample>
+            <programlisting>
+[groups]
+examplehost = host.example.com
+
+[examplehost]
+ssl-client-cert-file = /path/to/my/cert.p12
+ssl-client-cert-password = somepassword
+</programlisting>
+          </informalexample>
+
+          <para>More security-conscious folk might want to exclude
+            <literal>ssl-client-cert-password</literal> to avoid
+            storing the passphrase in the clear on disk.</para>
+
+        </sect4>
+      </sect3>
     </sect2>
 
     <!-- =============================================================== -->
