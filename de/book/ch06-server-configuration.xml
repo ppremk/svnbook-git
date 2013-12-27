@@ -1130,10 +1130,12 @@ $ svn checkout svn://host.example.com/project1
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.invoking.inetd">
-
 <!--
         <title>svnserve via inetd</title>
+-->
+        <title>svnserve über inetd starten</title>
 
+<!--
         <para>If you want <command>inetd</command> to launch the
           process, you need to pass the <option>-i</option>
           (<option>- -inetd</option>) option.  In the following
@@ -1143,50 +1145,7 @@ $ svn checkout svn://host.example.com/project1
           paragraphs following the example for how to configure
           <command>inetd</command> to start
           <command>svnserve</command>.</para>
-
-      <screen>
-$ svnserve -i
-( success ( 1 2 ( ANONYMOUS ) ( edit-pipeline ) ) )
-</screen>
-
-      <para>When invoked with the <option>- -inetd</option> option,
-        <command>svnserve</command> attempts to speak with a
-        Subversion client via <filename>stdin</filename> and
-        <filename>stdout</filename> using a custom protocol.  This is
-        the standard behavior for a program being run via
-        <command>inetd</command>.  The IANA has reserved port 3690 for
-        the Subversion protocol, so on a Unix-like system you can add
-        lines to <filename>/etc/services</filename> such as these (if
-        they don't already exist):</para>
-
-      <screen>
-svn           3690/tcp   # Subversion
-svn           3690/udp   # Subversion
-</screen>
-
-      <para>If your system is using a classic Unix-like
-        <command>inetd</command> daemon, you can add this line to
-        <filename>/etc/inetd.conf</filename>:</para>
-
-      <screen>
-svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
-</screen>
-
-      <para>Make sure <quote>svnowner</quote> is a user that has
-        appropriate permissions to access your repositories.  Now,
-        when a client connection comes into your server on port 3690,
-        <command>inetd</command> will spawn an
-        <command>svnserve</command> process to service it.  Of course,
-        you may also want to add <option>-r</option> to the
-        configuration line as well, to restrict which repositories are
-        exported.</para>
-
-      </sect3>
 -->
-
-
-        <title>svnserve über inetd starten</title>
-
         <para>Wenn Sie <command>inetd</command> zum Starten des
           Prozesses verwenden wollen, so übergeben Sie
           <command>svnserve</command> beim Aufruf die Option
@@ -1199,11 +1158,25 @@ svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
           <command>svnserve</command> über <command>inetd</command>
           gestartet wird, folgt anschließend.</para>
 
-        <screen>
+        <informalexample>
+          <screen>
 $ svnserve -i
-( success ( 1 2 ( ANONYMOUS ) ( edit-pipeline ) ) )
+( success ( 2 2 ( ) ( edit-pipeline svndiff1 absent-entries commit-revprops d\
+epth log-revprops partial-replay ) ) )
 </screen>
+        </informalexample>
 
+<!--
+        <para>When invoked with the <option>- -inetd</option> option,
+          <command>svnserve</command> attempts to speak with a
+          Subversion client via <filename>stdin</filename> and
+          <filename>stdout</filename> using a custom protocol.  This
+          is the standard behavior for a program being run via
+          <command>inetd</command>.  The IANA has reserved port 3690
+          for the Subversion protocol, so on a Unix-like system you
+          can add lines to <filename>/etc/services</filename> such as
+          these (if they don't already exist):</para>
+-->
         <para>Mit der <option>--inetd</option>-Option versucht
           <command>svnserve</command> mit dem Subversion-Client unter
           Verwendung eines speziellen Protokolls via
@@ -1216,19 +1189,38 @@ $ svnserve -i
           Zeilen (wenn noch nicht vorhanden) in die Datei
           <filename>/usw/services</filename> ein:</para>
 
-        <screen>
+        <informalexample>
+          <programlisting>
 svn           3690/tcp   # Subversion
 svn           3690/udp   # Subversion
-</screen>
+</programlisting>
+        </informalexample>
 
+<!--
+        <para>If your system is using a classic Unix-like
+          <command>inetd</command> daemon, you can add this line to
+          <filename>/etc/inetd.conf</filename>:</para>
+-->
         <para>Wenn Sie den klassischen Unix-<command>inetd</command>
           verwenden, können Sie die folgende Zeile in die Datei
           <filename>/usw/inetd.conf</filename> einfügen:</para>
 
-        <screen>
+        <informalexample>
+          <programlisting>
 svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
-</screen>
+</programlisting>
+        </informalexample>
 
+<!--
+        <para>Make sure <quote>svnowner</quote> is a user that has
+          appropriate permissions to access your repositories.  Now,
+          when a client connection comes into your server on port
+          3690, <command>inetd</command> will spawn an
+          <command>svnserve</command> process to service it.  Of
+          course, you may also want to add <option>-r</option> to the
+          configuration line as well, to restrict which repositories
+          are exported.</para>
+-->
         <para>Stellen Sie sicher, dass <quote>svnowner</quote> der
           Nutzer ist, welcher alle notwendigen Zugriffsrechte auf ihre
           Projektarchive hat.  Kommt nun eine Anfrage eines
@@ -1241,8 +1233,6 @@ svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
           exportiert werden dürfen.</para>
 
       </sect3>
-
-
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.invoking.tunnel">
