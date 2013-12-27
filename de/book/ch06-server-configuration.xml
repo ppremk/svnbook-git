@@ -4121,66 +4121,65 @@ $
 
 <!--
         <para>You can restrict access on all repository operations by
-          adding the <literal>Require valid-user</literal> directive
-          to your <literal>&lt;Location&gt;</literal> block.  Using
-          our previous example, this would mean that only clients that
-          claimed to be either <literal>harry</literal> or
-          <literal>sally</literal> and that provided the correct
-          password for their respective username would be allowed to
-          do anything with the Subversion repository:</para>
+          adding <literal>Require valid-user</literal> directly inside
+          the <literal>&lt;Location&gt;</literal> block.  The example
+          from <xref linkend="svn.serverconfig.httpd.authn.digest"/>
+          allows only clients that successfully authenticate to do
+          anything with the Subversion repository:</para>
 -->
         <para>Sie können den Zugriff auf alle Operationen im
-          Projektarchiv einschränken, indem Sie die Direktive 
-          <literal>Require valid-user</literal> Ihrem
-          <literal>&lt;Location&gt;</literal>-Block hinzufügen. Für
-          unser vorheriges Beispiel würde das bedeuten, dass es nur
-          Clients, die sich entweder als <literal>harry</literal> oder
-          <literal>sally</literal> ausgeben und das korrekte Passwort
-          für den entsprechenden Anwendernamen liefern, erlaubt wird,
-          irgendetwas mit dem Subversion-Projektarchiv zu
+          Projektarchiv einschränken, indem Sie 
+          <literal>Require valid-user</literal> direkt dem
+          <literal>&lt;Location&gt;</literal>-Block hinzufügen. Das 
+          Beispiel von <xref linkend="svn.serverconfig.httpd.authn.digest"/>
+          erlaubt nur Clients, die sich erfolgreich authentifiziert
+          haben, um irgendetwas mit dem Subversion-Projektarchiv zu
           machen:</para>
 
 <!--
-        <screen>
+        <informalexample>
+          <programlisting>
 &lt;Location /svn&gt;
   DAV svn
   SVNParentPath /var/svn
 
-  # how to authenticate a user
-  AuthType Basic
+  # Authentication: Digest
   AuthName "Subversion repository"
-  AuthUserFile /path/to/users/file
+  AuthType Digest
+  AuthUserFile /etc/svn-auth.htdigest
 
-  # only authenticated users may access the repository
+  # Authorization: Authenticated users only
   Require valid-user
 &lt;/Location&gt;
-</screen>
+</programlisting>
+        </informalexample>
 -->
-        <screen>
+        <informalexample>
+          <programlisting>
 &lt;Location /svn&gt;
   DAV svn
   SVNParentPath /var/svn
 
-  # wie ein Nutzer authentifiziert wird
-  AuthType Basic
+  # Authentifizierung: Digest
   AuthName "Subversion repository"
-  AuthUserFile /path/to/users/file
+  AuthType Digest
+  AuthUserFile /etc/svn-auth.htdigest
 
-  # nur authentifizierte Nutzer dürfen an das Projektarchiv
+  # Autorisierung: Nur für authentifizierte Anwender
   Require valid-user
 &lt;/Location&gt;
-</screen>
+</programlisting>
+        </informalexample>
 
 <!--
         <para>Sometimes you don't need to run such a tight ship.  For
           example, Subversion's own source code repository at
           <ulink url="http://svn.collab.net/repos/svn"/> allows anyone
           in the world to perform read-only repository tasks (such as
-          checking out working copies and browsing the repository with
-          a web browser), but restricts all write operations to
-          authenticated users.  To do this type of selective
-          restriction, you can use the <literal>Limit</literal> and
-          <literal>LimitExcept</literal> configuration directives.
+          checking out working copies and browsing the repository),
+          but restricts write operations to authenticated users.  The
+          <literal>Limit</literal> and <literal>LimitExcept</literal>
+          directives allow for this type of selective restriction.
           Like the <literal>Location</literal> directive, these blocks
           have starting and ending tags, and you would nest them
           inside your <literal>&lt;Location&gt;</literal>
@@ -4188,82 +4187,86 @@ $
 -->
         <para>Manchmal müssen Sie gar nicht so ein strenges Regiment
           führen. So erlaubt beispielsweise das eigene Projektarchiv
-          von Subversion unter <ulink
-            url="http://svn.collab.net/repos/svn"/> allen auf der Welt
-          lesende Operationen (wie etwa das Auschecken von
-          Arbeitskopien und das Stöbern mit einem Web-Browser),
+          von Subversion unter
+          <ulink url="http://svn.collab.net/repos/svn"/> allen auf der
+          Welt lesende Operationen (wie etwa das Auschecken von
+          Arbeitskopien und das Stöbern im Projektarchiv),
           beschränkt jedoch Schreiboperationen auf authentifizierte
-          Nutzer. Um diese abgestufte Einschränkung einzurichten,
-          können Sie die Konfigurationsdirektiven
-          <literal>Limit</literal> und <literal>LimitExcept</literal>
-          verwenden. Ähnlich der Direktive <literal>Location</literal>
-          haben diese Blöcke Start- und Ende-Tags, die Sie innerhalb
-          Ihres <literal>&lt;Location&gt;</literal>-Blocks
+          Nutzer. Die Direktiven <literal>Limit</literal> und
+          <literal>LimitExcept</literal> erlauben diese Art der
+          selektiven Einschränkung. Ähnlich der Direktive
+          <literal>Location</literal> haben diese Blöcke Start- und
+          Ende-Tags, die Sie innerhalb Ihres
+          <literal>&lt;Location&gt;</literal>-Blocks
           unterbringen.</para>
 
 <!--
         <para>The parameters present on the <literal>Limit</literal>
           and <literal>LimitExcept</literal> directives are HTTP
           request types that are affected by that block.  For example,
-          if you wanted to disallow all access to your repository
-          except the currently supported read-only operations, you
-          would use the <literal>LimitExcept</literal> directive,
-          passing the <literal>GET</literal>,
-          <literal>PROPFIND</literal>, <literal>OPTIONS</literal>, and
-          <literal>REPORT</literal> request type parameters.  Then the
-          previously mentioned <literal>Require valid-user</literal>
-          directive would be placed inside the
+          to allow anonymous read-only operations, you would use the
+          <literal>LimitExcept</literal> directive (passing the
+          <literal>GET</literal>, <literal>PROPFIND</literal>,
+          <literal>OPTIONS</literal>, and <literal>REPORT</literal>
+          request type parameters) and place the previously mentioned
+          <literal>Require valid-user</literal> directive inside the
           <literal>&lt;LimitExcept&gt;</literal> block instead of just
           inside the <literal>&lt;Location&gt;</literal> block.</para>
 -->
         <para>Die für die Direktiven <literal>Limit</literal> und
           <literal>LimitExcept</literal> verfügbaren Parameter sind
-          HTTP-Anfrage-Typen, die durch diesen Block berührt werden.
-          Falls Sie beispielsweise alle Zugriffe auf Ihr Projektarchiv
-          unterbinden möchten, außer die momentan unterstützten
-          Leseoperationen, so würden Sie die Direktive
-          <literal>LimitExcept</literal> mit den Anfrage-Parametern
+          HTTP-Anfrage-Typen, die von diesem Block beeinflusst werden.
+          Falls Sie beispielsweise anonyme Nur-Lese-Zugriffe erlauben
+          wollen, so würden Sie die Direktive
+          <literal>LimitExcept</literal> (mit den Anfrage-Parametern
           <literal>GET</literal>, <literal>PROPFIND</literal>,
-          <literal>OPTIONS</literal> und <literal>REPORT</literal>
-          verwenden. Dann wird die eben erwähnte Direktive
-          <literal>Require valid-user</literal> im
-          <literal>&lt;LimitExcept&gt;</literal>-Block statt innerhalb
-          des <literal>&lt;Location&gt;</literal>-Blocks eingefügt.</para>
+          <literal>OPTIONS</literal> und <literal>REPORT</literal>)
+          verwenden und die vorher erwähnte Direktive <literal>Require
+          valid-user</literal> im Block
+          <literal>&lt;LimitExcept&gt;</literal> statt nur innerhalb
+          des <literal>&lt;Location&gt;</literal>-Blocks
+          einfügen.</para>
 
 <!--
-        <screen>
+        <informalexample>
+          <programlisting>
 &lt;Location /svn&gt;
   DAV svn
   SVNParentPath /var/svn
 
-  # how to authenticate a user
-  AuthType Basic
+  # Authentication: Digest
   AuthName "Subversion repository"
-  AuthUserFile /path/to/users/file
+  AuthType Digest
+  AuthUserFile /etc/svn-auth.htdigest
 
-  # For any operations other than these, require an authenticated user.
+  # Authorization: Authenticated users only for non-read-only
+  #                (write) operations; allow anonymous reads
   &lt;LimitExcept GET PROPFIND OPTIONS REPORT&gt;
     Require valid-user
   &lt;/LimitExcept&gt;
 &lt;/Location&gt;
-</screen>
+</programlisting>
+        </informalexample>
 -->
-        <screen>
+        <informalexample>
+          <programlisting>
 &lt;Location /svn&gt;
   DAV svn
   SVNParentPath /var/svn
 
-  # wie ein Nutzer authentifiziert wird
-  AuthType Basic
+  # Authentifizierung: Digest
   AuthName "Subversion repository"
-  AuthUserFile /path/to/users/file
+  AuthType Digest
+  AuthUserFile /etc/svn-auth.htdigest
 
-  # nur authentifizierte Nutzer dürfen mehr als die angegebenen Operationen
+  # Autorisierung: Nur authentifizierte Anwender für nicht Nur-Lese
+  #                (Schreib-) Operationen; anonymes Lesen zulassen
   &lt;LimitExcept GET PROPFIND OPTIONS REPORT&gt;
     Require valid-user
   &lt;/LimitExcept&gt;
 &lt;/Location&gt;
-</screen>
+</programlisting>
+        </informalexample>
 
 <!--
         <para>These are only a few simple examples.  For more in-depth
@@ -4271,14 +4274,14 @@ $
           <literal>Require</literal> directive, take a look at the
           <literal>Security</literal> section of the Apache
           documentation's tutorials collection at <ulink
-           url="http://httpd.apache.org/docs-2.0/misc/tutorials.html"/>.</para>
+          url="http://httpd.apache.org/docs-2.0/misc/tutorials.html"/>.</para>
 -->
         <para>Dies sind nur ein paar einfache Beispiele. Für tiefer
           gehende Informationen über Apaches Zugriffskontrolle und die
           Direktive <literal>Require</literal> sollten Sie im
           Abschnitt <literal>Security</literal> der Apache
           Lehrbuchsammlung unter <ulink
-            url="http://httpd.apache.org/docs-2.0/misc/tutorials.html"/>
+          url="http://httpd.apache.org/docs-2.0/misc/tutorials.html"/>
           nachlesen.</para>
 
 
