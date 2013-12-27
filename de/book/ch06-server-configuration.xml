@@ -1477,6 +1477,217 @@ C:\&gt; net start svn
 
       </sect3>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.serverconfig.svnserve.invoking.launchd">
+<!--
+        <title>svnserve as a launchd job</title>
+-->
+        <title>svnserve als ein launchd-Job</title>
+
+<!--
+        <para>Mac OS X (10.4 and higher) uses <command>launchd</command>
+          to manage processes (including daemons) both system-wide and
+          per-user.  A <command>launchd</command> job is specified by
+          parameters in an XML property list file, and
+          the <command>launchctl</command> command is used to manage
+          the lifecycle of those jobs.</para>
+-->
+        <para>Mac OS X (10.4 und höher) verwendet
+          <command>launchd</command> zur Prozessverwaltung
+          (einschließlich Dämonen) sowohl systemweit als auch pro
+          Anwender. Ein <command>launchd</command>-Job wird durch
+          Parameter in einer XML-Datei als Eigenschaftsliste
+          spezifiziert. und der Befehl <command>launchctl</command>
+          wird verwendet, um den Lebenszyklus dieser Jobs zu
+          verwalten.</para>
+
+<!--
+        <para>When configured to run as a <command>launchd</command>
+          job, <command>svnserve</command> is automatically launched
+          on demand whenever incoming Subversion
+          <literal>svn://</literal> network traffic needs to be
+          handled.  This is far more convenient than a configuration
+          which requires you to manually invoke
+          <command>svnserve</command> as a long-running
+          background process.</para>
+-->
+        <para>Ist es als <command>launchd</command>-Job eingerichtet,
+          wird <command>svnserve</command> bei Bedarf automatisch
+          gestartet, sobald eingehender Subversion-Netzverkehr mit
+          <literal>svn://</literal> abgewickelt werden muss. Das ist
+          viel einfacher als eine Konfiguration, die voraussetzt, dass
+          <command>svnserve</command> als ein langlaufender
+          Hintergrundprozess manuell gestartet wird.</para>
+
+<!--
+        <para>To configure <command>svnserve</command> as
+          a <command>launchd</command> job, first create a job
+          definition file named
+          <filename>/Library/LaunchDaemons/org.apache.subversion.svnserve.plist</filename>.
+          <xref linkend="svn.serverconfig.svnserve.invoking.launchd.ex-1"/>
+          provides an example of such a file.</para>
+-->
+        <para>Um <command>svnserve</command> als einen
+          <command>launchd</command>-Job einzurichten, erstellen Sie
+          zunächst eine Jobdefinitionsdatei namens
+          <filename>/Library/LaunchDaemons/org.apache.subversion.svnserve.plist</filename>.
+          <xref linkend="svn.serverconfig.svnserve.invoking.launchd.ex-1"/>
+          liefert ein Beispiel für eine solche Datei.</para>
+
+        <example id="svn.serverconfig.svnserve.invoking.launchd.ex-1">
+<!--
+          <title>A sample svnserve launchd job definition</title>
+-->
+          <title>Eine Beispieldefinition für einen svnserve launchd Job</title>
+          <programlisting>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+    "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;plist version="1.0"&gt;
+    &lt;dict&gt;
+        &lt;key&gt;Label&lt;/key&gt;
+        &lt;string&gt;org.apache.subversion.svnserve&lt;/string&gt;
+        &lt;key&gt;ServiceDescription&lt;/key&gt;
+        &lt;string&gt;Host Subversion repositories using svn:// scheme&lt;/string&gt;
+        &lt;key&gt;ProgramArguments&lt;/key&gt;
+        &lt;array&gt;
+            &lt;string&gt;/usr/bin/svnserve&lt;/string&gt;
+            &lt;string&gt;--inetd&lt;/string&gt;
+            &lt;string&gt;--root=/var/svn&lt;/string&gt;
+        &lt;/array&gt;
+        &lt;key&gt;UserName&lt;/key&gt;
+        &lt;string&gt;svn&lt;/string&gt;
+        &lt;key&gt;GroupName&lt;/key&gt;
+        &lt;string&gt;svn&lt;/string&gt;
+        &lt;key&gt;inetdCompatibility&lt;/key&gt;
+        &lt;dict&gt;
+            &lt;key&gt;Wait&lt;/key&gt;
+            &lt;false/&gt;
+        &lt;/dict&gt;
+        &lt;key&gt;Sockets&lt;/key&gt;
+        &lt;dict&gt;
+            &lt;key&gt;Listeners&lt;/key&gt;
+            &lt;array&gt;
+                &lt;dict&gt;
+                    &lt;key&gt;SockServiceName&lt;/key&gt;
+                    &lt;string&gt;svn&lt;/string&gt;
+                    &lt;key&gt;Bonjour&lt;/key&gt;
+                    &lt;true/&gt;
+                &lt;/dict&gt;
+            &lt;/array&gt;
+        &lt;/dict&gt;
+    &lt;/dict&gt;
+&lt;/plist&gt;
+</programlisting>
+        </example>
+
+        <warning>
+<!--
+          <para>The <command>launchd</command> system can be somewhat
+            challenging to learn.  Fortunately, documentation exists
+            for the commands described in this section. For example,
+            run <userinput>man launchd</userinput> from the command
+            line to see the manual page for <command>launchd</command>
+            itself, <userinput>man launchd.plist</userinput> to read
+            about the job definition format, etc.</para>
+-->
+          <para>Das Erlernen des <command>launchd</command>-Systems
+            kann ein wenig herausfordernd sein. Glücklicherweise gibt
+            es Dokumentation zu den in diesem Abschnitt beschriebenen
+            Befehlen. Rufen Sie beispielsweise
+            <userinput>man launchd</userinput> von der Kommandozeile
+            auf, um die Handbuchseite zu <command>launchd</command>
+            selbst zu sehen, <userinput>man launchd.plist</userinput>,
+            für das Format der Job-Definition, usw.</para>
+        </warning>
+
+<!--
+        <para>Once your job definition file is created, you can
+          activate the job using <command>launchctl load</command>:</para>
+-->
+        <para>Sobald die Jobdefinitionsdatei erstellt ist, können Sie
+          den Job mit <command>launchctl load</command> aktivieren:</para>
+
+        <informalexample>
+          <screen>
+$ sudo launchctl load \
+       -w /Library/LaunchDaemons/org.apache.subversion.svnserve.plist
+</screen>
+        </informalexample>
+
+<!--
+        <para>To be clear, this action doesn't actually launch
+          <command>svnserve</command> yet.  It simply tells
+          <command>launchd</command> how to fire up
+          <command>svnserve</command> when incoming networking traffic
+          arrives on the <literal>svn</literal> network port; it will
+          be terminated it after the traffic has been handled.</para>
+-->
+        <para>Zur Klarstellung: Diese Aktion startet
+          <command>svnserve</command> noch nicht. Sie teilt
+          <command>launchd</command> bloß mit, wie
+          <command>svnserve</command> gestartet werden soll, falls
+          Netzverkehr auf dem <literal>svn</literal> Netzwerk-Port
+          aufschlägt; es wird beendet nachdem der Verkehr abgewickelt
+          worden sein wird.</para>
+
+        <note>
+<!--
+          <para>Because we want <command>svnserve</command> to be a
+            system-wide daemon process, we need to
+            use <command>sudo</command> to manage this job as an
+            administrator.  Note also that the
+            <literal>UserName</literal>
+            and <literal>GroupName</literal> keys in the definition
+            file are optional&mdash;if omitted, the job will run as
+            the user who loaded the job.</para>
+-->
+          <para>Da wir möchten, dass <command>svnserve</command> ein
+            systemweiter Dämon-Prozess ist, müssen wir
+            <command>sudo</command> verwenden, um diesen Job als
+            Administrator zu verwalten. Beachten Sie ebenfalls, dass
+            die Schlüssel <literal>UserName</literal> und
+            <literal>GroupName</literal> in der Definitionsdatei
+            optional sind &mdash; werden sie weggelassen, wird der Job
+            unter dem Konto des Anwenders laufen, den ihn geladen
+            hat.</para>
+        </note>
+
+<!--
+        <para>Deactivating the job is just as easy to do&mdash;use
+          <command>launchctl unload</command>:</para>
+-->
+        <para>Den Job abzustellen ist ebenso einfach &mdash; mit
+          <command>launchctl unload</command>:</para>
+
+        <informalexample>
+          <screen>
+$ sudo launchctl unload \
+       -w /Library/LaunchDaemons/org.apache.subversion.svnserve.plist
+</screen>
+        </informalexample>
+
+<!--
+        <para><command>launchctl</command> also provides a way for you
+          to query the status of jobs.  If the job is loaded, there
+          will be line which matches the <literal>Label</literal>
+          specified in the job definition file:</para>
+-->
+        <para><command>launchctl</command> bietet Ihnen auch eine
+          Möglichkeit, den Zustand von Jobs abzufragen. Falls der Job
+          geladen ist, gibt es eine Zeile, die zum
+          <literal>Label</literal> in der Jobdefinitionsdatei
+          passt:</para>
+
+        <informalexample>
+          <screen>
+$ sudo launchctl list | grep org.apache.subversion.svnserve
+-       0       org.apache.subversion.svnserve
+$
+</screen>
+        </informalexample>
+
+      </sect3>
     </sect2>
 
     <!-- =============================================================== -->
