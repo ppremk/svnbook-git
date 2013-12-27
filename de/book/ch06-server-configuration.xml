@@ -1236,7 +1236,6 @@ svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.invoking.tunnel">
-
 <!--
         <title>svnserve over a tunnel</title>
 -->
@@ -1304,102 +1303,27 @@ svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.invoking.winservice">
 <!--
-        <title>svnserve as Windows service</title>
+        <title>svnserve as a Windows service</title>
+-->
+        <title>svnserve als ein Dienst unter Windows</title>
 
+<!--
         <para>If your Windows system is a descendant of Windows NT
-          (2000, 2003, XP, or Vista), you can
+          (Windows 2000 or newer), you can
           run <command>svnserve</command> as a standard Windows
           service.  This is typically a much nicer experience than
-          running it as a standalone daemon with the <option>- -daemon
-          (-d)</option> option.  Using daemon mode requires launching
-          a console, typing a command, and then leaving the console
-          window running indefinitely.  A Windows service, however,
-          runs in the background, can start at boot time
-          automatically, and can be started and stopped using the same
-          consistent administration interface as other
-          Windows services. </para>
-
-        <para>You'll need to define the new service using the
-          command-line tool <command>SC.EXE</command>.  Much like
-          the <command>inetd</command> configuration line, you must
-          specify an exact invocation of <command>svnserve</command>
-          for Windows to run at startup time:</para>
-
-        <screen>
-C:\&gt; sc create svn
-        binpath= "C:\svn\bin\svnserve.exe - -service -r C:\repos"
-        displayname= "Subversion Server"
-        depend= Tcpip
-        start= auto
-</screen>
-
-        <para>This defines a new Windows service named
-          <quote>svn,</quote> which executes a particular
-          <command>svnserve.exe</command> command when started (in
-          this case, rooted at <filename>C:\repos</filename>).  There
-          are a number of caveats in the prior example,
-          however.</para>
-
-        <para>First, notice that the <command>svnserve.exe</command>
-          program must always be invoked with the
-          <option>- -service</option> option.  Any other options to
-          <command>svnserve</command> must then be specified on the
-          same line, but you cannot add conflicting options such as
-          <option>- -daemon (-d)</option>, <option>- -tunnel</option>,
-          or <option>- -inetd (-i)</option>.  Options such as
-          <option>-r</option> or <option>- -listen-port</option> are
-          fine, though.  Second, be careful about spaces when invoking
-          the <command>SC.EXE</command> command: the <literal>key=
-          value</literal> patterns must have no spaces between
-          <literal>key=</literal> and must have exactly one space
-          before the <literal>value</literal>.  Lastly, be careful
-          about spaces in your command line to be invoked.  If a
-          directory name contains spaces (or other characters that
-          need escaping), place the entire inner value of
-          <literal>binpath</literal> in double quotes, by escaping
-          them:</para>
-
-        <screen>
-C:\&gt; sc create svn
-        binpath= "\"C:\program files\svn\bin\svnserve.exe\" - -service -r C:\repos"
-        displayname= "Subversion Server"
-        depend= Tcpip
-        start= auto
-</screen>
-
-        <para>Also note that the word <literal>binpath</literal> is
-          misleading&mdash;its value is a <emphasis>command
-          line</emphasis>, not the path to an executable.  That's why
-          you need to surround it with quotes if it contains
-          embedded spaces.</para>
-
-        <para>Once the service is defined, it can be stopped, started,
-          or queried using standard GUI tools (the Services
-          administrative control panel), or at the command
-          line:</para>
-
-        <screen>
-C:\&gt; net stop svn
-C:\&gt; net start svn
-</screen>
-
-        <para>The service can also be uninstalled (i.e., undefined) by
-          deleting its definition:  <userinput>sc delete svn</userinput>.
-          Just be sure to stop the service first!
-          The <command>SC.EXE</command> program has many other
-          subcommands and options; run <userinput>sc /?</userinput> to
-          learn more about it.</para>
-
-      </sect3>
-
-    </sect2>
- -->
-
-        <title>svnserve als Dienst unter Windows</title>
-
-        <para>Gehört ihr Windows zur NT-Familie (2000, 2003, XP oder
-          Vista), so können Sie <command>svnserve</command> auch als
-          normalen Windows-Dienst laufen lassen. Dies ist wesentlich
+          running it as a standalone daemon with
+          the <option>- -daemon</option>  (<option>-d</option>) option.
+          Using daemon mode requires launching a console, typing a
+          command, and then leaving the console window running
+          indefinitely.  A Windows service, however, runs in the
+          background, can start at boot time automatically, and can be
+          started and stopped using the same consistent administration
+          interface as other Windows services. </para>
+-->
+        <para>Gehört ihr Windows zur NT-Familie (Windows oder neuer),
+          so können Sie <command>svnserve</command> auch als normalen
+          Windows-Dienst laufen lassen. Dies ist wesentlich
           sinnvoller, als die Option <option>--daemon</option>
           (<option>-d</option>) zu verwenden und ihn als
           selbstständigen Dienst zu betreiben. Sie müssten dann immer
@@ -1410,6 +1334,13 @@ C:\&gt; net start svn
           andere Windows-Dienst mit demselben Administrationsprogramm
           starten und stoppen.</para>
 
+<!--
+        <para>You'll need to define the new service using the
+          command-line tool <command>SC.EXE</command>.  Much like
+          the <command>inetd</command> configuration line, you must
+          specify an exact invocation of <command>svnserve</command>
+          for Windows to run at startup time:</para>
+-->
         <para>Es ist notwendig, den neuen Windows-Dienst unter
           Verwendung des Kommandozeilenprogramms
           <command>SC.EXE</command> einzurichten.  Ähnlich der
@@ -1417,21 +1348,53 @@ C:\&gt; net start svn
           genauen Aufruf für den Start von <command>svnserve</command>
           festlegen:</para>
 
-        <screen>
+        <informalexample>
+          <screen>
 C:\&gt; sc create svn
         binpath= "C:\svn\bin\svnserve.exe --service -r C:\repos"
         displayname= "Subversion Server"
         depend= Tcpip
         start= auto
 </screen>
+        </informalexample>
 
+<!--
+        <para>This defines a new Windows service named
+          <literal>svn</literal> which executes a particular
+          <command>svnserve.exe</command> command when started (in
+          this case, rooted at <filename>C:\repos</filename>).  There
+          are a number of caveats in the prior example,
+          however.</para>
+-->
         <para>Hiermit erzeugen Sie einen neuen Windows-Dienst mit dem
-          Namen <quote>svn</quote>, welcher jedes Mal das Programm
+          Namen <literal>svn</literal>, welcher jedes Mal das Programm
           <command>svnserve.exe</command> startet (und in diesem Fall
           <filename>C:\repos</filename> als Wurzelverzeichnis
           verwendet).  In diesem Beispiel müssen jedoch einige
           wichtige Punkte beachtet werden.</para>
 
+<!--
+        <para>First, notice that the <command>svnserve.exe</command>
+          program must always be invoked with the
+          <option>- -service</option> option.  Any other options to
+          <command>svnserve</command> must then be specified on the
+          same line, but you cannot add conflicting options such as
+          <option>- -daemon</option>
+          (<option>-d</option>), <option>- -tunnel</option>,
+          or <option>- -inetd</option> (<option>-i</option>).  Options
+          such as <option>-r</option>
+          or <option>- -listen-port</option> are fine, though.  Second,
+          be careful about spaces when invoking
+          the <command>SC.EXE</command> command: the <literal>key=
+          value</literal> patterns must have no spaces between
+          <literal>key=</literal> and must have exactly one space
+          before the <literal>value</literal>.  Lastly, be careful
+          about spaces in your command line to be invoked.  If a
+          directory name contains spaces (or other characters that
+          need escaping), place the entire inner value of
+          <literal>binpath</literal> in double quotes, by escaping
+          them:</para>
+-->
         <para>Als erstes ist es wichtig, dass das Programm
           <command>svnserve.exe</command> immer mit der Option
           <option>--service</option> aufgerufen wird.  Alle weiteren
@@ -1453,14 +1416,23 @@ C:\&gt; sc create svn
           schützende Zeichen) enthalten, so umschließen Sie sie mit
           zusätzlichen doppelten Anführungszeichen:</para>
 
-        <screen>
+        <informalexample>
+          <screen>
 C:\&gt; sc create svn
         binpath= "\"C:\program files\svn\bin\svnserve.exe\" --service -r C:\repos"
         displayname= "Subversion Server"
         depend= Tcpip
         start= auto
 </screen>
+        </informalexample>
 
+<!--
+        <para>Also note that the word <literal>binpath</literal> is
+          misleading&mdash;its value is a <emphasis>command
+          line</emphasis>, not the path to an executable.  That's why
+          you need to surround it with quotes if it contains
+          embedded spaces.</para>
+-->
         <para>Beachten Sie bitte auch, dass das Wort
           <literal>binpath</literal> etwas irreführend ist &ndash;
           sein Wert ist eine <emphasis>Kommandozeile</emphasis> und
@@ -1468,17 +1440,33 @@ C:\&gt; sc create svn
           Sie vorhandene Leerzeichen mit doppelten Anführungszeichen
           schützen müssen.</para>
 
+<!--
+        <para>Once the service is defined, it can be stopped, started,
+          or queried using standard GUI tools (the Services
+          administrative control panel), or at the command
+          line:</para>
+-->
         <para>Ist der Dienst erst einmal eingerichtet, können Sie ihn mit
           Hilfe von grafischen Programmen (etwa der Microsoft
           Management Console) stoppen, starten oder seinen Status
           abfragen. Alternativ steht ihnen auch die Kommandozeile zur
           Verfügung:</para>
 
-        <screen>
+        <informalexample>
+          <screen>
 C:\&gt; net stop svn
 C:\&gt; net start svn
 </screen>
+        </informalexample>
 
+<!--
+        <para>The service can also be uninstalled (i.e., undefined) by
+          deleting its definition:  <userinput>sc delete svn</userinput>.
+          Just be sure to stop the service first!
+          The <command>SC.EXE</command> program has many other
+          subcommands and options; run <userinput>sc /?</userinput> to
+          learn more about it.</para>
+-->
         <para>Der Dienst kann natürlich auch wieder deinstalliert
           werden, indem Sie den Befehl <userinput>sc delete
             svn</userinput> aufrufen.  Stoppen Sie den Dienst aber
