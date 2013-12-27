@@ -3769,170 +3769,203 @@ ServerName svn.example.com
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.authn.basic">
 <!--
-        <title>Setting up HTTP authentication</title>
+        <title>Basic authentication</title>
 -->
-        <title>HTTP Authentifizierung aufsetzen</title>
+        <title>Einfache Authentifizierung</title>
 
 <!--
-        <para>The easiest way to authenticate a client is via the
-          HTTP Basic authentication mechanism, which simply uses a
-          username and password to verify that a user is who she says
-          she is.  Apache provides an <command>htpasswd</command>
-          utility for managing the list of acceptable usernames and
-          passwords.  Let's grant commit access to
-          Sally and Harry.  First, we need to add them to the password
-          file:</para>
+        <para>The easiest way to authenticate a client is via the HTTP
+          Basic authentication mechanism, which simply uses a username
+          and password to verify a user's identity.  Apache provides
+          the <command>htpasswd</command> utility<footnote><para>See
+          <ulink url="http://httpd.apache.org/docs/current/programs/htpasswd.html"
+          />.</para></footnote> for managing files containing
+          usernames and passwords.</para>
 -->
         <para>Die einfachste Methode, einen Client zu authentifizieren
           geht über den HTTP-Basic-Authentifikationsmechanismus, der
           einfach einen Anwendernamen und ein Passwort verwendet, um
-          sicherzustellen, das ein Anwender auch derjenige ist, für
-          den er sich ausgibt. Apache stellt ein Dienstprogramm zur
-          Verwaltung der Liste zulässiger Anwendernamen und Passwörter
-          namens <command>htpasswd</command> zur Verfügung. Lassen Sie
-          uns Sally und Harry die Berechtigung zur Übergabe erteilen.
-          Zunächst müssen wir sie der Passwortdatei hinzufügen:</para>
+          die Identität eines Anwenders sicherzustellen. Apache stellt
+          das Dienstprogramm <command>htpasswd</command><footnote><para>Siehe
+          <ulink url="http://httpd.apache.org/docs/current/programs/htpasswd.html"
+          />.</para></footnote> zur Verfügung, welches die Verwaltung
+          von Dateien übernimmt, die Anwendernamen und Passwörter
+          beinhalten.</para>
+
+        <warning>
+<!--
+          <para>Basic authentication is <emphasis>extremely</emphasis>
+            insecure, because it sends passwords over the network
+            in very nearly plain text.  See
+            <xref linkend="svn.serverconfig.httpd.authn.digest"/> for
+            details on using the much safer Digest mechanism.</para>
+-->
+          <para>Die einfacheAuthentifizierung ist
+            <emphasis>extremy</emphasis>
+            unsicher, da Passwörter fast im Klartext über das Netz
+            geschickt werden. Siehe
+            <xref linkend="svn.serverconfig.httpd.authn.digest"/> für
+            Details zur Verwendung des wesentlich sichereren Digest
+            Mechanismus.</para>
+        </warning>
 
 <!--
-        <screen>
+        <para>First, create a password file and grant access to
+          users Harry and Sally:</para>
+-->
+        <para>Legen Sie zunächst eine Passwort-Datei und erlauben Sie
+          den Zugriff für die Anwender Harry und Sally:</para>
+
+<!--
+        <informalexample>
+          <screen>
 $ ### First time: use -c to create the file
 $ ### Use -m to use MD5 encryption of the password, which is more secure
-$ htpasswd -cm /etc/svn-auth-file harry
+$ htpasswd -c -m /etc/svn-auth.htpasswd harry
 New password: *****
 Re-type new password: *****
 Adding password for user harry
-$ htpasswd -m /etc/svn-auth-file sally
+$ htpasswd -m /etc/svn-auth.htpasswd sally
 New password: *******
 Re-type new password: *******
 Adding password for user sally
 $
 </screen>
+        </informalexample>
 -->
-        <screen>
+        <informalexample>
+          <screen>
 $ ### Beim 1. Mal: -c verwenden, um die Datei anzulegen
 $ ### -m für die sicherere MD5-Verschlüsselung des Passworts verwenden
-$ htpasswd -cm /etc/svn-auth-file harry
+$ htpasswd -c -m /etc/svn-auth.htpasswd harry
 New password: *****
 Re-type new password: *****
 Adding password for user harry
-$ htpasswd -m /etc/svn-auth-file sally
+$ htpasswd -m /etc/svn-auth.htpasswd sally
 New password: *******
 Re-type new password: *******
 Adding password for user sally
 $
 </screen>
+        </informalexample>
 
 <!--
-        <para>Next, you need to add some more
-          <filename>httpd.conf</filename> directives inside your
-          <literal>Location</literal> block to tell Apache what to do
-          with your new password file.  The
-          <literal>AuthType</literal> directive specifies the type of
-          authentication system to use.  In this case, we want to
-          specify the <literal>Basic</literal> authentication system.
-          <literal>AuthName</literal> is an arbitrary name that you
-          give for the authentication domain.  Most browsers will
-          display this name in the pop-up dialog box when the browser
-          is querying the user for her name and password.  Finally,
-          use the <literal>AuthUserFile</literal> directive to specify
-          the location of the password file you created using
-          <command>htpasswd</command>.</para>
+        <para>Next, add some more directives inside the
+          <literal>&lt;Location&gt;</literal> block to tell Apache how
+          to use the password file:</para>
 -->
-        <para>Als nächstes müssen Sie innerhalb Ihres
-          <literal>Location</literal>-Blocks ein paar weitere
-          <filename>httpd.conf</filename>-Direktiven hinzufügen, um
-          Apache zu sagen, was mit Ihrer neuen Passwortdatei zu tun
-          ist. Die Direktive <literal>AuthType</literal> spezifiziert
-          den Typ des zu verwendenden Authentifikationssystems. In
-          diesem Fall möchten wir das
-          <literal>Basic</literal>-Authentfikationssystem
-          spezifizieren. <literal>AuthName</literal> ist ein
-          beliebiger Name, den Sie Ihrer Authentifikationsdomäne
-          geben. Die meisten Browser zeigen diesen Namen in einem
-          Dialog an, wenn der Browser den Anwender nach seinem Namen
-          und dem Passwort fragt. Verwenden Sie schließlich die
-          Direktive <literal>AuthUserFile</literal>, um den Ort der
-          Passwortdatei zu spezifizieren, die sie mit
-          <command>htpasswd</command> erstellt haben.</para>
 
-<!--
-        <para>After adding these three directives, your
-          <literal>&lt;Location&gt;</literal> block should look
-          something like this:</para>
--->
-        <para>Nachdem Sie diese Direktiven hinzugefügt haben, sollte
-          Ihr <literal>&lt;Location&gt;</literal>-Block etwa so
-          aussehen:</para>
-
-        <screen>
+        <informalexample>
+          <programlisting>
 &lt;Location /svn&gt;
   DAV svn
   SVNParentPath /var/svn
-  AuthType Basic
+  # Authentication: Basic
   AuthName "Subversion repository"
-  AuthUserFile /etc/svn-auth-file
+  AuthType Basic
+  AuthUserFile /etc/svn-auth.htpasswd
 &lt;/Location&gt;
-</screen>
+</programlisting>
+        </informalexample>
 
 <!--
-        <para>This <literal>&lt;Location&gt;</literal> block is not
-          yet complete, and it will not do anything useful.  It's
-          merely telling Apache that whenever authorization is
-          required, Apache should harvest a username and password from
-          the Subversion client.  What's missing here, however, are
-          directives that tell Apache <emphasis>which</emphasis> sorts
-          of client requests require authorization.  Wherever
-          authorization is required, Apache will demand authentication
-          as well.  The simplest thing to do is protect all requests.
-          Adding <literal>Require valid-user</literal> tells Apache
-          that all requests require an authenticated user:</para>
+        <para>These directives work as follows:</para>
 -->
-        <para>Dieser <literal>&lt;Location&gt;</literal>-Block ist
-          noch unvollständig und bewirkt noch nichts sinnvolles. Er
-          teilt Apache lediglich mit, dass es sich den Anwendernamen
-          und das Passwort vom Subversion-Client besorgen soll, falls
-          eine Autorisierung benötigt wird. Was hier jedoch noch
-          fehlt, sind Direktiven, die Apache sagen,
-          <emphasis>welche</emphasis> Arten von Client-Anfragen eine
-          Autorisierung erfordern.  Überall dort wo eine Autorisierung
-          verlangt wird, erwartet Apache auch eine Authentifikation.
-          Das Einfachste ist es, alle Anfragen zu schützen. Durch
-          Hinzufügen von <literal>Require valid-user</literal> wird
-          Apache mitgeteilt, dass alle Anfragen einen
-          authentifizierten Anwender erfordern:</para>
+        <para>Diese Direktiven funktioieren wie folgt:</para>
 
-        <screen>
+        <itemizedlist>
+          <listitem>
+<!--
+            <para><literal>AuthName</literal> is an arbitrary name
+              that you choose for the authentication domain.  Most
+              browsers display this name in the dialog box when
+              prompting for username and password.</para>
+-->
+            <para><literal>AuthName</literal> ist ein beliebiger Name,
+              den Sie für Ihre Authentifikationsdomäne wählen.  Die
+              meisten Browser zeigen diesen Namen im Dialog an, wenn
+              der Browser den Anwender nach seinem Namen und dem
+              Passwort fragt.</para>
+          </listitem>
+          <listitem>
+<!--
+            <para><literal>AuthType</literal> specifies the type of
+              authentication to use.</para>
+-->
+            <para><literal>AuthType</literal> spezifiziert den Typ der
+              zu verwendenden Authentifikation.</para>
+          </listitem>
+          <listitem>
+<!--
+            <para><literal>AuthUserFile</literal> specifies the
+              location of the password file to use.</para>
+-->
+            <para><literal>AuthUserFile</literal> spezifiziert den Ort
+              der zu verwendenden Passwortdatei.</para>
+          </listitem>
+        </itemizedlist>
+
+<!--
+        <para>However, this <literal>&lt;Location&gt;</literal> block
+          doesn't yet do anything useful.  It merely tells Apache that
+          <emphasis>if</emphasis> authorization were required, it
+          should challenge the Subversion client for a username and
+          password.  (When authorization is required, Apache requires
+          authentication as well.)  What's missing here, however, are
+          directives that tell Apache <emphasis>which sorts</emphasis>
+          of client requests require authorization; currently, none do.
+          The simplest thing is to specify that <emphasis>all</emphasis>
+          requests require authorization by adding
+          <literal>Require valid-user</literal> to the block:</para>
+-->
+        <para>Allerdings bewirkt dieser
+          <literal>&lt;Location&gt;</literal>-Block noch nichts
+          sinnvolles. Er teilt Apache lediglich mit, dass es sich den
+          Anwendernamen und das Passwort vom Subversion-Client
+          besorgen soll, <emphasis>falls</emphasis> eine Autorisierung
+          benötigt wird. (Wenn eine Autorisierung erforderlich ist,
+          benötigt Apache auch eine Authentifikation.) Was hier jedoch noch
+          fehlt, sind Direktiven, die Apache sagen,
+          <emphasis>welche Arten</emphasis> von Client-Anfragen eine
+          Autorisierung erfordern; momentan sind das keine. 
+          Das Einfachste ist es, anzugeben, dass
+          <emphasis>alle</emphasis> Anfragen eine Autorisierung
+          erfordern, indem dem Block die Anweisung 
+          <literal>Require valid-user</literal> hinzugefügt
+          wird:</para>
+
+        <informalexample>
+          <programlisting>
 &lt;Location /svn&gt;
   DAV svn
   SVNParentPath /var/svn
-  AuthType Basic
+
+  # Authentication: Basic
   AuthName "Subversion repository"
-  AuthUserFile /etc/svn-auth-file
+  AuthType Basic
+  AuthUserFile /etc/svn-auth.htpasswd
+
+  # Authorization: Authenticated users only
   Require valid-user
 &lt;/Location&gt;
-</screen>
+</programlisting>
+        </informalexample>
 
 <!--
-        <para>Be sure to read the next section (<xref
-          linkend="svn.serverconfig.httpd.authz"/>) for more detail on the
-          <literal>Require</literal> directive and other ways to set
-          authorization policies.</para>
+        <para>Refer to <xref linkend="svn.serverconfig.httpd.authz"/>
+          for more detail on the <literal>Require</literal> directive
+          and other ways to set authorization policies.</para>
 -->
-        <para>Stellen Sie sicher, dass Sie für weitere Details zur
-          <literal>Require</literal>-Direktive und anderen Wegen, 
-          Autorisierungsrichtlinien festzulegen, den nächsten
-          Abschnitt (<xref linkend="svn.serverconfig.httpd.authz"/>)
-          lesen.</para>
+        <para>Zu Details über die Direktive <literal>Require</literal>
+          und anderen Möglichkeiten, Autorisierungsrichtlinien
+          festzulegen, sehen Sie unter
+          <xref linkend="svn.serverconfig.httpd.authz"/> nach.</para>
 
-<!--
-        <para>One word of warning: HTTP Basic Auth passwords pass in
-          very nearly plain text over the network, and thus are
-          extremely insecure.</para>
--->
-        <para>Ein Wort zur Warnung: HTTP-Basic-Auth-Passwörter werden
-          nahezu im Klartext durch das Netz geschickt und sind deshalb
-          in höchstem Maße unsicher.</para>
+      </sect3>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.serverconfig.httpd.authn.digest">
+        <title>Digest authentication</title>
 <!--
         <para>Another option is to not use Basic authentication, but to
           use Digest authentication instead.  Digest authentication
