@@ -4964,7 +4964,22 @@ ssl-authority-files = /path/to/CAcert1.pem;/path/to/CAcert2.pem
             format on disk, protected by a passphrase.  When Subversion
             receives this challenge, it will ask you for the path to the
             encrypted file and the passphrase that protects it:</para>
+          <para>Falls der Client eine die Aufforderung erhält, ein
+            Client-Zertifikat vorzulegen, ersucht Apache den Client,
+            sich zu identifizieren.  Der Client muss ein Zertifikat
+            zurückschicken, das von einer CA signiert wurde, der
+            Apache vertraut, zusätzlich mit einer
+            <firstterm>Aufforderungserwiederung</firstterm>
+            (<emphasis>Challenge Response</emphasis>), die beweist,
+            dass der Client in Besitz des zum Zertifikat gehörigen
+            privaten Schlüssels ist. Für gewöhnlich wird der private
+            Schlüssel und das Client-Zertifikat, durch eine lokale
+            Passphrase geschützt, verschlüsselt auf Platte
+            gespeichert.  Wenn Subversion diese Aufforderung erhält,
+            fragt es Sie nach dem Pfad zum Zertifikat und der
+            Passphrase, das jenes schützt:</para>
 
+<!--
           <informalexample>
             <screen>
 $ svn list https://host.example.com/repos/project
@@ -4974,7 +4989,18 @@ Client certificate filename: /path/to/my/cert.p12
 Passphrase for '/path/to/my/cert.p12':  ********
 </screen>
           </informalexample>
+-->
+          <informalexample>
+            <screen>
+$ svn list https://host.example.com/repos/project
 
+Anmeldebereich: https://host.example.com:443
+Client Zertifikatsdatei: /path/to/my/cert.p12
+Passphrase für »/path/to/my/cert.p12«:  ********
+</screen>
+          </informalexample>
+
+<!--
           <para>Notice that the client credentials are stored in a
             <literal>.p12</literal> file.  To use a client certificate
             with Subversion, it must be in PKCS#12 format, which is a
@@ -4982,13 +5008,32 @@ Passphrase for '/path/to/my/cert.p12':  ********
             and export certificates in that format.  Another option
             is to use the OpenSSL command-line tools to convert
             existing certificates into PKCS#12.</para>
+-->
+          <para>Beachten Sie, dass die Zugangsdaten des Clients in
+            einer <literal>.p12</literal>-Datei gespeichert werden. Um
+            ein Client-Zertifikat mit Subversion verwenden zu können,
+            muss es im PKCS#12-Format vorliegen, was einem portablen
+            Standard entspricht. Die meisten Web-Browser können
+            Zertifikate in diesem Format im-
+            und exportieren. Eine weitere Option ist es, die
+            OpenSSL-Kommandozeilenwerkzeuge zu verwenden, um
+            bestehende Zertifikate in PKCS#12 zu überführen.</para>
 
+<!--
           <para>The runtime <filename>servers</filename> file also
             allows you to automate this challenge on a per-host basis.
             If you set the <literal>ssl-client-cert-file</literal>
             and <literal>ssl-client-cert-password</literal> variables,
             Subversion can automatically respond to a client
             certificate challenge without prompting you:</para>
+-->
+          <para>Die Laufzeitdatei <filename>servers</filename> erlaubt
+            Ihnen auch, diese Aufforderung pro Host zu
+            automatisieren. Falls Sie die Variablen
+            <literal>ssl-client-cert-file</literal> und
+            <literal>ssl-client-cert-password</literal> setzen, kann
+            Subversion automatisch auf Client-Zertifikatsanforderungen
+            antworten, ohne bei Ihnen nachzufragen:</para>
 
           <informalexample>
             <programlisting>
@@ -5001,9 +5046,15 @@ ssl-client-cert-password = somepassword
 </programlisting>
           </informalexample>
 
+<!--
           <para>More security-conscious folk might want to exclude
             <literal>ssl-client-cert-password</literal> to avoid
             storing the passphrase in the clear on disk.</para>
+-->
+          <para>Sicherheitsbewusstere Leute lassen
+            möglicherweise <literal>ssl-client-cert-password</literal>
+            weg, um zu vermeiden, die Passphrase im Klartext auf
+            Platte zu speichern.</para>
 
         </sect4>
       </sect3>
