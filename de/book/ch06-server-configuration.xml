@@ -4824,8 +4824,12 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
         </itemizedlist>
 
         <sect4 id="svn.serverconfig.httpd.ssl.client.servercert">
+<!--
           <title>Server certificate</title>
+-->
+          <title>Server-Zertifikat</title>
 
+<!--
           <para>When the client receives a server certificate, it needs
             to verify that the server is who it claims to be. OpenSSL
             does this by examining the signer of the server certificate,
@@ -4835,7 +4839,20 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
             hostname mismatch), the Subversion command-line client will
             ask you whether you want to trust the server certificate
             anyway:</para>
+-->
+          <para>Wenn der Client ein Server-Zertifikat empfängt, muss
+            er sicherstellen, dass der Server derjenige ist, für den
+            er sich ausgibt. OpenSSL macht das, indem der
+            Unterzeichner des Server-Zertifikats, die sogenannte
+            <firstterm>Certificate Authority</firstterm> (CA), oder
+            Zertifizierungsstelle, untersucht wird. Falls OpenSSL der
+            CA nicht automatisch vertrauen kann, oder falls ein
+            anderes Problem auftaucht (etwa ein abgelaufenes
+            Zertifikat oder ein nicht übereinstimmender Rechnername),
+            fragt Sie der Subversion-Kommandozeilenclient, ob Sie dem
+            Server-Zertifikat dennoch vertrauen möchten:</para>
 
+<!--
           <informalexample>
             <screen>
 $ svn list https://host.example.com/repos/project
@@ -4852,7 +4869,25 @@ Certificate information:
 (R)eject, accept (t)emporarily or accept (p)ermanently?
 </screen>
           </informalexample>
+-->
+          <informalexample>
+            <screen>
+$ svn list https://host.example.com/repos/project
 
+Fehler bei der Validierung des Serverzertifikats für »https://host.example.com:443«:
+ - Das Zertifikat ist nicht von einer vertrauenswürdigen Instanz ausgestellt
+   Überprüfen Sie den Fingerabdruck, um das Zertifikat zu validieren!
+Zertifikats-Informationen:
+ - Hostname: host.example.com
+ - Gültig: von Jan 30 19:23:56 2004 GMT bis Jan 30 19:23:56 2006 GMT
+ - Aussteller: CA, example.com, Sometown, California, US
+ - Fingerabdruck: 7d:e1:a9:34:33:39:ba:6a:e9:a5:c4:22:98:7b:76:5c:92:a0:9c:7b
+
+Ve(r)werfen, (t)emporär akzeptieren oder (p)ermanent akzeptieren?
+</screen>
+          </informalexample>
+
+<!--
           <para>This dialogue is essentially the same question you may
             have seen coming from your web browser (which is just
             another HTTP client like Subversion).  If you choose the
@@ -4862,13 +4897,34 @@ Certificate information:
             password are cached (see <xref
             linkend="svn.serverconfig.netmodel.credcache"/>), and will
             automatically trust the certificate in the future.</para>
+-->
+          <para>Dieser Dialog ist im Wesentlichen dieselbe Frage, die
+            Sie bei Ihrem Web-Browser gesehen haben (der auch bloß ein
+            weiterer HTTP-Client ist, so wie Subversion).  Falls Sie
+            die Option <literal>(p)</literal>ermanent auswählen, wird
+            Subversion das Server-Zertifikat in Ihrem privaten
+            Laufzeitbereich <filename>auth/</filename>
+            zwischengespeichert, ebenso wie Ihr Anwendername und
+            Passwort (siehe
+            <xref linkend="svn.serverconfig.netmodel.creds"/>), und
+            diesem Zertifikat bei künftigen Protokollverhandlungen
+            vertrauen.</para>
 
+<!--
           <para>Your runtime <filename>servers</filename> file also gives
             you the ability to make your Subversion client automatically
             trust specific CAs, either globally or on a per-host basis.
             Simply set the <literal>ssl-authority-files</literal>
             variable to a semicolon-separated list of PEM-encoded CA
             certificates:</para>
+-->
+          <para>Ihre Laufzeit-Datei <filename>servers</filename>
+            ermöglicht es Ihrem Subversion-Client ebenso, automatisch
+            bestimmten CAs zu vertrauen, entweder global oder pro
+            Host. Setzen Sie die Variable
+            <literal>ssl-authority-files</literal> auf eine durch
+            Semikolons getrennte Liste PEM-kodierter
+            CA-Zertifikate:</para>
 
           <informalexample>
             <programlisting>
@@ -4877,11 +4933,20 @@ ssl-authority-files = /path/to/CAcert1.pem;/path/to/CAcert2.pem
 </programlisting>
           </informalexample>
 
+<!--
           <para>Many OpenSSL installations also have a predefined set
             of <quote>default</quote> CAs that are nearly universally
             trusted.  To make the Subversion client automatically trust
             these standard authorities, set the
             <literal>ssl-trust-default-ca</literal> variable to
+            <literal>true</literal>.</para>
+-->
+          <para>Viele OpenSSL-Installationen besitzen auch eine
+            vordefinierte Menge von <quote>Standard</quote>-CAs, denen
+            nahezu allgemein vertraut wird. Damit der Subversion-Client
+            diesen Standard-Zertifizierungsstellen automatisch vertraut,
+            setzen Sie die Variable
+            <literal>ssl-trust-default-ca</literal> auf
             <literal>true</literal>.</para>
 
         </sect4>
