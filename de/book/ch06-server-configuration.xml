@@ -4296,22 +4296,20 @@ $
 
 <!--
         <para>It's possible to set up finer-grained permissions using
-          a second Apache httpd module,
-          <command>mod_authz_svn</command>.  This module grabs the
-          various opaque URLs passing from client to server, asks
+          <command>mod_authz_svn</command>.  This Apache module grabs
+          the various opaque URLs passing from client to server, asks
           <command>mod_dav_svn</command> to decode them, and then
           possibly vetoes requests based on access policies defined in
           a configuration file.</para>
 -->
-        <para>Es ist möglich, mithilfe eines zweiten Apache
-          http-Moduls &ndash; <command>mod_authz_svn</command> &ndash;
-          detailliertere Zugriffsrechte einzurichten.  Dieses Modul
-          schnappt sich die verschiedenen undurchsichtigen URLs, die
-          vom Client zum Server gereicht werden, fordert
-          <command>mod_dav_svn</command> auf, sie zu dekodieren, und
-          unterbindet dann möglicherweise Anforderungen entsprechend
-          in einer Konfigurationsdatei definierter Zugriffsregeln.
-        </para>
+        <para>Es ist möglich, detailliertere Zugriffsrechte mithilfe
+          von <command>mod_authz_svn</command> einzurichten.  Dieses
+          Apache-Modul schnappt sich die verschiedenen
+          undurchsichtigen URLs, die vom Client zum Server gereicht
+          werden, fordert <command>mod_dav_svn</command> auf, sie zu
+          dekodieren, und unterbindet dann möglicherweise
+          Anforderungen entsprechend in einer Konfigurationsdatei
+          definierter Zugriffsregeln.  </para>
 
 <!--
         <para>If you've built Subversion from source code,
@@ -4333,22 +4331,24 @@ $
           <command>mod_dav_svn</command> in
           <filename>httpd.conf</filename> auftaucht:</para>
 
-        <screen>
+        <informalexample>
+          <programlisting>
 LoadModule dav_module         modules/mod_dav.so
 LoadModule dav_svn_module     modules/mod_dav_svn.so
 LoadModule authz_svn_module   modules/mod_authz_svn.so
-</screen>
+</programlisting>
+        </informalexample>
 
 <!--
         <para>To activate this module, you need to configure your
-          <literal>Location</literal> block to use the
+          <literal>&lt;Location&gt;</literal> block to use the
           <literal>AuthzSVNAccessFile</literal> directive, which
           specifies a file containing the permissions policy for paths
           within your repositories.  (In a moment, we'll discuss the
           format of that file.)</para>
 -->
         <para>Zur Aktivierung dieses Moduls müssen Sie Ihren
-          <literal>Location</literal>-Block mit der Direktive
+          <literal>&lt;Location&gt;</literal>-Block mit der Direktive
           <literal>AuthzSVNAccessFile</literal> konfigurieren, die
           eine Datei mit Zugriffsrichtlinien für Pfade in Ihren
           Projektarchiven bezeichnet. (Gleich werden wir auf das
@@ -4371,17 +4371,18 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           Autorisierungsoptionen von Apache zu erfahren.)</para>
 
 <!--
-        <para>The simplest block is to allow open access to everyone.
-          In this scenario, Apache never sends authentication
-          challenges, so all users are treated as
-          <quote>anonymous.</quote> (See
-          <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-1"/>.)</para>
+        <para>The most open approach is to allow access to everyone.
+          This means Apache never sends authentication challenges, and
+          all users are treated as <quote>anonymous</quote>.  (See
+          <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-1"
+          />.)</para>
 -->
-        <para>Der einfachste Block besteht aus einem völlig offenen
-          Zugang. In diesem Szenario schickt Apache niemals
-          Aufforderungen zur Authentifikation, so dass alle Anwender
-          als <quote>anonymous</quote> behandelt werden.  (Siehe <xref
-            linkend="svn.serverconfig.httpd.authz.perdir.ex-1"/>.)
+        <para>Der offenste Ansatz besteht aus Zugang für jeden. Das
+          bedeutet, dass Apache niemals Aufforderungen zur
+          Authentifikation sendet, so dass alle Anwender als
+          <quote>anonymous</quote> behandelt werden.  (Siehe
+          <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-1"
+          />.)
         </para>
 
         <example id="svn.serverconfig.httpd.authz.perdir.ex-1">
@@ -4395,39 +4396,42 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
   DAV svn
   SVNParentPath /var/svn
 
-  # our access control policy
+  # Authentication: None
+
+  # Authorization: Path-based access control
   AuthzSVNAccessFile /path/to/access/file
 &lt;/Location&gt;
-          </programlisting>
+</programlisting>
 -->
           <programlisting>
 &lt;Location /repos&gt;
   DAV svn
   SVNParentPath /var/svn
 
-  # unsere Zugangsrichtlinie
+  # Authentifizierung: keine
+
+  # Autorisierung: pfadbasierte Zugangskontriolle
   AuthzSVNAccessFile /path/to/access/file
 &lt;/Location&gt;
-          </programlisting>
+</programlisting>
         </example>
 
 <!--
         <para>On the opposite end of the paranoia scale, you can
-          configure your block to demand authentication from everyone.
-          All clients must supply credentials to identify themselves.
-          Your block unconditionally requires authentication via the
-          <literal>Require valid-user</literal> directive, and it
-          defines a means to authenticate.  (See
+          configure Apache to authenticate all clients.
+          This block unconditionally requires authentication via the
+          <literal>Require valid-user</literal> directive, and defines
+          a means to authenticate valid users.  (See
           <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-2"/>.)</para>
 -->
-        <para>Am anderen Ende der Paranoia-Skala können Sie Ihren
-          Block so konfigurieren, dass sich jedermann authentisieren
-          muss. Alle Clients müssen sich ausweisen. Ihr Block verlangt
-          eine unbedingte Authentifikation mit der Direktive
-          <literal>Require valid-user</literal>;  diese Direktive
-          definiert auch, wie die Authentifizierung erfolgen soll.
-          (Siehe <xref
-            linkend="svn.serverconfig.httpd.authz.perdir.ex-2"/>.)</para>
+        <para>Am anderen Ende der Paranoia-Skala können Sie Apache
+          dergestalt konfigurieren, dass er alle Clients
+          authentifiziert.  Dieser Block verlangt eine unbedingte
+          Authentifikation durch die Direktive
+          <literal>Require valid-user</literal> und definiert wie
+          berechtigte Anwender authentifiziert werden sollen.  (Siehe
+          <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-2"/>.)
+        </para>
 
         <example id="svn.serverconfig.httpd.authz.perdir.ex-2">
 <!--
@@ -4440,68 +4444,63 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
   DAV svn
   SVNParentPath /var/svn
 
-  # our access control policy
-  AuthzSVNAccessFile /path/to/access/file
-
-  # only authenticated users may access the repository
-  Require valid-user
-
-  # how to authenticate a user
-  AuthType Basic
+  # Authentication: Digest
   AuthName "Subversion repository"
-  AuthUserFile /path/to/users/file
+  AuthType Digest
+  AuthUserFile /etc/svn-auth.htdigest
+
+  # Authorization: Path-based access control; authenticated users only
+  AuthzSVNAccessFile /path/to/access/file
+  Require valid-user
 &lt;/Location&gt;
-          </programlisting>
+</programlisting>
 -->
           <programlisting>
 &lt;Location /repos&gt;
   DAV svn
   SVNParentPath /var/svn
 
-  # unsere Zugangsrichtlinie
-  AuthzSVNAccessFile /path/to/access/file
-
-  # nur authentifizierte Anwender haben Zugriff auf das Projektarchiv
-  Require valid-user
-
-  # wie ein Anwender zu authentifizieren ist
-  AuthType Basic
+  # Authentifizierung: Digest
   AuthName "Subversion repository"
-  AuthUserFile /path/to/users/file
+  AuthType Digest
+  AuthUserFile /etc/svn-auth.htdigest
+
+  # Autorisierung: pfadbasierte Zugangskontrolle; nur für authentifizierte Anwender
+  AuthzSVNAccessFile /path/to/access/file
+  Require valid-user
 &lt;/Location&gt;
-          </programlisting>
+</programlisting>
         </example>
 
 <!--
         <para>A third very popular pattern is to allow a combination
           of authenticated and anonymous access.  For example, many
           administrators want to allow anonymous users to read certain
-          repository directories, but want only authenticated users to
-          read (or write) more sensitive areas.  In this setup, all
+          repository directories, but restrict access to more
+          sensitive areas to authenticated users.  In this setup, all
           users start out accessing the repository anonymously.  If
           your access control policy demands a real username at any
           point, Apache will demand authentication from the client.
           To do this, use both the <literal>Satisfy Any</literal>
-          and <literal>Require valid-user</literal> directives
-          together.  (See
-          <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-3"/>.)</para>
+          and <literal>Require valid-user</literal> directives.  (See
+          <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-3"
+          />.)</para>
 -->
         <para>Ein drittes sehr verbreitetes Muster ist es, eine
           Kombination aus authentifizierten und anonymen Zugriff zu
           erlauben. So möchten beispielsweise viele Administratoren
-          den Lesezugriff auf bestimmte Verzeichnisse des
-          Projektarchivs für anonyme Anwender freigeben, während
-          in heiklen Bereichen nur authentifizierte Anwender lesen
-          (oder schreiben) dürfen. Bei dieser Einstellung greifen alle
+          für anonyme Anwender den Lesezugriff auf bestimmte
+          Verzeichnisse des Projektarchivs freigeben, während
+          für heikle Bereichen nur authentifizierte Anwender
+          zugelassen werden.  Bei dieser Einstellung greifen alle
           Anwender zunächst anonym auf das Projektarchiv zu. Falls
           Ihre Zugangsrichtlinien an einer Stelle einen echten
           Anwendernamen erfordern sollte, fordert Apache den Client
           auf, sich zu authentisieren. Eingestellt wird dieses
-          Verhalten mit den gemeinsam verwendeten Direktiven
-          <literal>Satisfy Any</literal> sowie <literal>Require
-            valid-user</literal>. (Siehe <xref
-            linkend="svn.serverconfig.httpd.authz.perdir.ex-3"/>.)
-        </para>
+          Verhalten mit den Direktiven <literal>Satisfy Any</literal>
+          sowie <literal>Require valid-user</literal>. (Siehe
+          <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-3"
+          />.)</para>
 
         <example id="svn.serverconfig.httpd.authz.perdir.ex-3">
 <!--
@@ -4516,57 +4515,48 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
   DAV svn
   SVNParentPath /var/svn
 
-  # our access control policy
-  AuthzSVNAccessFile /path/to/access/file
+  # Authentication: Digest
+  AuthName "Subversion repository"
+  AuthType Digest
+  AuthUserFile /etc/svn-auth.htdigest
 
-  # try anonymous access first, resort to real
-  # authentication if necessary.
+  # Authorization: Path-based access control; try anonymous access
+  #                first, but authenticate if necessary
+  AuthzSVNAccessFile /path/to/access/file
   Satisfy Any
   Require valid-user
-
-  # how to authenticate a user
-  AuthType Basic
-  AuthName "Subversion repository"
-  AuthUserFile /path/to/users/file
 &lt;/Location&gt;
-          </programlisting>
+</programlisting>
 -->
           <programlisting>
 &lt;Location /repos&gt;
   DAV svn
   SVNParentPath /var/svn
 
-  # unsere Zugangsrichtlinie
-  AuthzSVNAccessFile /path/to/access/file
+  # Authentifizierung: Digest
+  AuthName "Subversion repository"
+  AuthType Digest
+  AuthUserFile /etc/svn-auth.htdigest
 
-  # erst anonymen Zugang, nach Bedarf
-  # echte Authentifizierung
+  # Autorisierung: pfadbasierte Zugangskontrolle; zunächst anonymen Zugang
+  #                versuchen, doch wenn nötig authentifizieren
+  AuthzSVNAccessFile /path/to/access/file
   Satisfy Any
   Require valid-user
-
-  # wie ein Anwender zu authentifizieren ist
-  AuthType Basic
-  AuthName "Subversion repository"
-  AuthUserFile /path/to/users/file
 &lt;/Location&gt;
-          </programlisting>
+</programlisting>
         </example>
 
 <!--
-        <para>Once you've settled on one of these three
-          basic <filename>httpd.conf</filename> templates, you need to
-          create your file containing access rules for particular
-          paths within the repository.  We describe this later in
-          this chapter, in
+        <para>The next step is to create the authorization file
+          containing access rules for particular paths within the
+          repository.  We describe how later in this chapter, in
           <xref linkend="svn.serverconfig.pathbasedauthz"/>.</para>
 -->
-        <para>Sobald Sie sich für eine dieser drei grundsätzlichen
-          <filename>httpd.conf</filename>-Vorlagen entschieden haben,
-          müssen Sie Ihre Datei mit den Zugangsregeln für bestimmte
-          Pfade innerhalb des Projektarchivs erstellen. Wir
-          beschreiben später in <xref
-            linkend="svn.serverconfig.pathbasedauthz"/> wie das
-          funktioniert.</para>
+        <para>Der nächste Schritt ist, eine Autorisierungsdatei zu
+          erstellen, die Zugangsregeln für bestimmte Pfade innerhalb
+          des Projektarchivs enthält. Wie, beschreiben wir später in
+          <xref linkend="svn.serverconfig.pathbasedauthz"/>.</para>
 
       </sect3>
 
