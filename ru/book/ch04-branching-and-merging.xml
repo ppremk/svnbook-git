@@ -12,7 +12,7 @@
     <para><quote>君子务本
       (It is upon the Trunk that a gentleman works.)</quote></para>
   </blockquote>
-<!-- @TR {{ -->
+<!-- @TR }} -->
 
 <!-- @CHK {{ -->
   <!-- @ENGLISH {{{
@@ -333,13 +333,19 @@
         <literal>my-calc-branch</literal>. Тогда вам следует создать новый
         каталог <filename>/calc/branches/my-calc-branch</filename>,
         который будет копией <filename>/calc/trunk</filename>.</para>
-<!-- @CHK }} -->
 
-<!-- @TR {{ -->
+      <!-- @ENGLISH {{{
       <para>You may already have seen <command>svn copy</command> used
         to copy one file to another within a working copy.  But it can
         also be used to do a <quote>remote</quote> copy entirely
         within the repository.  Just copy one URL to another:</para>
+      @ENGLISH }}} -->
+      <para>Возможно, вы уже видели как команда <command>svn copy</command>
+        использовалась для копирования файла в рамках рабочей копии.
+        Но она также может быть использована для <quote>удаленного</quote>
+        копирования в самом репозитории.  Просто скопируйте из одного URL
+        в другой:</para>
+<!-- @CHK }} -->
 
       <informalexample>
         <screen>
@@ -351,6 +357,8 @@ Committed revision 341.
 </screen>
       </informalexample>
 
+<!-- @CHK {{ -->
+      <!-- @ENGLISH {{{
       <para>This command causes a near-instantaneous commit in the
         repository, creating a new directory in revision 341.  The new
         directory is a copy of <filename>/calc/trunk</filename>.  This
@@ -368,12 +376,33 @@ Committed revision 341.
         on the local disk.  Copying a directory on the server,
         however, is a constant-time operation, and it's the way most
         people create branches.</para>
+      @ENGLISH }}} -->
+      <para>Эта команда приводит к почти мгновенному коммиту в репозиторий,
+        создавая новый каталог в ревизии 341.
+        Новый каталог это копия <filename>/calc/trunk</filename>.
+        Это показано в <xref linkend="svn.branchmerge.using.create.dia-1"
+        />.<footnote><para>Subversion не поддерживает копирование между
+        различными репозиториями.  Используя URL с командами <command>svn
+        copy</command> или <command>svn move</command>, вы можете копировать
+        элементы только в рамках одного и того же репозитория.</para></footnote>
+        Хотя также возможно создать ветку используя <command>svn
+        copy</command>, чтобы дублировать каталог внутри рабочей копии,
+        такой способ не рекомендуется.  На самом деле это может быть довольно
+        медленно.  Копирование каталога на стороне клиента это линейная
+        по времени операция, в которой нужно скопировать каждый файл
+        и подкаталог внутри каталога рабочей копии на локальном диске.
+        Копирование каталога на сервере, с другой стороны, это константная
+        по времени операция, поэтому этим способом большинство людей создает
+        ветки.</para>
 
       <figure id="svn.branchmerge.using.create.dia-1">
+        <!-- @ENGLISH {{{
         <title>Repository with new copy</title>
+        @ENGLISH }}} -->
+        <title>Репозиторий с новой копией</title>
         <graphic fileref="images/ch04dia3.png"/>
       </figure>
-<!-- @TR }} -->
+<!-- @CHK }} -->
 
 <!-- @CHK {{ -->
       <sidebar>
@@ -383,7 +412,8 @@ Committed revision 341.
         <title>Легкие копии</title>
 <!-- @CHK }} -->
 
-<!-- @TR {{ -->
+<!-- @CHK {{ -->
+        <!-- @ENGLISH {{{
         <para>Subversion's repository has a special design.  When you
           copy a directory, you don't need to worry about the
           repository growing huge&mdash;Subversion doesn't actually
@@ -395,7 +425,21 @@ Committed revision 341.
           Subversion continues to employ this hard link concept where
           it can.  It duplicates data only when it is necessary to
           disambiguate different versions of objects.</para>
-<!-- @TR }} -->
+        @ENGLISH }}} -->
+        <para>
+          Репозиторий Subversion имеет особую структуру. Когда вы
+          копируете каталог, вы не должны беспокоиться о резком росте
+          репозитория &mdash; на самом деле Subversion не дублирует
+          эти данные. Вместо этого, он создает запись о новом каталоге,
+          которая указывает на <emphasis>существующее</emphasis> дерево.
+          Если вы опытный пользователь Unix, то вы конечно вспомните &mdash;
+          та же идея используется для жесткой ссылки (hard link).
+          По мере того как выполняются изменения над файлами и каталогами
+          внутри скопированного каталога, Subversion продолжает использовать
+          эту идею жесткой ссылки везде где это возможно.  Данные дублируются
+          только тогда, когда это необходимо для разрешения неоднозначнности
+          между различными версиями объектов.</para>
+<!-- @CHK }} -->
 
 <!-- @CHK {{ -->
         <!-- @ENGLISH {{{
@@ -422,7 +466,8 @@ Committed revision 341.
           пузырьков</quote>.)</para>
 <!-- @CHK }} -->
 
-<!-- @TR {{ -->
+<!-- @CHK {{ -->
+        <!-- @ENGLISH {{{
         <para>Of course, these internal mechanics of copying and
           sharing data are hidden from the user, who simply sees
           copies of trees.  The main point here is that copies are
@@ -431,10 +476,19 @@ Committed revision 341.
           <replaceable>URL1</replaceable> <replaceable>URL2</replaceable></userinput>),
           it's a quick, constant-time operation.  Make branches as
           often as you want.</para>
+        @ENGLISH }}} -->
+        <para>Конечно, эта внутренняя механика копирования и общего
+          использования данных спрятана от пользователя, который просто видит
+          копии деревьев.  Главная мысль тут в том что копии стоят дешево,
+          как по времени так и по используемому месту.
+          Если вы создаете новую ветку внутри репозитория (выполняя команду
+          <userinput>svn copy <replaceable>URL1</replaceable> <replaceable>URL2</replaceable></userinput>),
+          то это быстрая, константная по времени операция.  Создавайте
+          новые ветки так часто как вам это нужно.</para>
       </sidebar>
+<!-- @CHK }} -->
 
     </sect2>
-<!-- @TR }} -->
 
 <!-- @CHK {{ -->
     <!-- =============================================================== -->
@@ -664,7 +718,8 @@ Changed paths:
       <title>Ключевые идеи, стоящие за ветками</title> 
 <!-- @CHK }} -->
 
-<!-- @TR {{ -->
+<!-- @CHK {{ -->
+      <!-- @ENGLISH {{{
       <para>You should remember two important lessons
         from this section.  First, Subversion has no internal concept
         of a branch&mdash;it knows only how to make copies.  When you
@@ -674,7 +729,18 @@ Changed paths:
         differently, or treat it differently, but to Subversion it's
         just an ordinary directory that happens to carry some extra
         historical information.</para>
+      @ENGLISH }}} -->
+      <para>Из этого раздела вы должны вынести два главных урока.
+        Первое, внутри Subversion нет такого внутреннего понятия как ветвление
+        &mdash; он знает только как делать копии.
+        Когда вы копируете директорию, результирующая директория является
+        <quote>веткой</quote> только потому что <emphasis>вы</emphasis>
+        придаете ей такой смысл.  Вы можете думать об этой директории
+        иначе или работать с ней иначе, но для Subversion это просто обычная
+        директория, которая (так уж получилось) хранит некоторую дополнительную
+        историческую информацию.</para>
 
+      <!-- @ENGLISH {{{
       <para>Second, because of this copy mechanism, Subversion's
         branches exist as <emphasis>normal filesystem
         directories</emphasis> in the repository.  This is different
@@ -685,29 +751,57 @@ Changed paths:
         to Subversion.  Most teams follow a convention of putting all
         branches into a <filename>/branches</filename> directory, but
         you're free to invent any policy you wish.</para>
+      @ENGLISH }}} -->
+      <para>Второе, благодаря такому механизму копирования, ветки в Subversion
+        существуют в репозитории в таком же виде как <emphasis>обычные
+        директории</emphasis>.  Это отличается от других систем контроля версий,
+        в которых ветки обычно определяют, добавив новое измерение к 
+        <quote>меткам</quote>, которыми наделяются наборы файлов.
+        Расположение директорий-веток не важно для Subversion.
+        Большинство команд разработчиков поддерживает соглашение что все ветки
+        помещаются в директорию <filename>/branches</filename>, но вы вольны
+        в выборе любой политики какой пожелаете.</para>
+<!-- @CHK }} -->
 
     </sect2>
 
   </sect1>
 
-
+<!-- @CHK {{ -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.branchmerge.basicmerging">
+    <!-- @ENGLISH {{{
     <title>Basic Merging</title>
+    @ENGLISH }}} -->
+    <title>Базовое слияние</title>
 
+    <!-- @ENGLISH {{{
     <para>Now you and Sally are working on parallel branches of the
       project: you're working on a private branch, and Sally is
       working on the trunk, or main line of development.</para>
+    @ENGLISH }}} -->
+    <para>Теперь вы и Салли работаете над параллельными ветками одного
+      проекта: вы в своей личной ветке, а Салли работает на trunk,
+      основной линии разработки.</para>
 
+    <!-- @ENGLISH {{{
     <para>For projects that have a large number of contributors, it's
       common for most people to have working copies of the trunk.
       Whenever someone needs to make a long-running change that is
       likely to disrupt the trunk, a standard procedure is to create a
       private branch and commit changes there until all the work is
       complete.</para>
+    @ENGLISH }}} -->
+    <para>Для проектов, над которыми работает большое число участников,
+      обычно бывает так что большинство людей имеют рабочие копии транка.
+      Когда кому-то нужно выполнить значительное изменение, которое
+      скорее всего нарушит нормальную работу транка, стандартной процедурой
+      является создание личной ветки для внесения изменений туда до тех пор
+      пока эта работа не будет закончена.</para>
 
+    <!-- @ENGLISH {{{
     <para>So, the good news is that you and Sally aren't interfering
       with each other.  The bad news is that it's very easy to drift
       <emphasis>too</emphasis> far apart.  Remember that one of the
@@ -715,7 +809,16 @@ Changed paths:
       that by the time you're finished with your branch, it may be
       near-impossible to merge your changes back into the trunk
       without a huge number of conflicts.</para>
+    @ENGLISH }}} -->
+    <para>Итак, хорошая новость в том что вы с Салли теперь не мешаете
+      работе друг друга.  Плохая новость в том что теперь очень легко
+      разойтись по изменениям <emphasis>слишком</emphasis> далеко.
+      Помните, что одна из проблем со стратегией <quote>забраться в нору</quote>
+      &mdash; это то, что когда вы закончите со своей веткой, возможно
+      будет уже почти невозможно объединить изменения обратно в транк
+      без большого количества конфликтов.</para>
 
+    <!-- @ENGLISH {{{
     <para>Instead, you and Sally might continue to share changes as
       you work.  It's up to you to decide which changes are worth
       sharing; Subversion gives you the ability to selectively
@@ -726,7 +829,19 @@ Changed paths:
       branch to another is called <firstterm>merging</firstterm>, and
       it is performed using various invocations of the <command>svn
       merge</command> command.</para>
+    @ENGLISH }}} -->
+    <para>Вместо этого, вы и Салли можете продолжать обмениваться изменениями
+      по мере своей работы.  Вам самим решать, когда изменения стоят того
+      чтобы их передать другому; Subversion дает вам возможность выборочно
+      <quote>копировать</quote> изменения между ветками.  И когда вы
+      полностью закончите с вашей веткой, весь набор изменений из вашей ветки
+      может быть скопирован обратно в транк.  В терминологии Subversion,
+      действие по репликации изменений из одной ветки в другую называется
+      <firstterm>слиянием (merging)</firstterm>, и выполняется
+      с использованием различных вариантов команды
+      <command>svn merge</command>.</para>
 
+    <!-- @ENGLISH {{{
     <para>In the examples that follow, we're assuming that both your
       Subversion client and server are running Subversion 1.5 (or
       later).  If either client or server is older than version 1.5,
@@ -740,11 +855,29 @@ Changed paths:
       already been merged and what hasn't.  For this reason,
       we <emphasis>strongly</emphasis> recommend that you make sure your
       client and server are at least at version 1.5.</para>
+    @ENGLISH }}} -->
+    <para>В примере который приведен далее, мы предполагаем что и клиент
+      и сервер Subversion работают на Subversion версии 1.5 (или выше).
+      Если версия клиента или сервера меньше чем 1.5, то все несколько
+      более сложно: система не будет отслеживать изменения автоматически,
+      и вам придется использовать мучительные ручные методы для получения
+      подобных результатов.  Так, вам придется всегда применять
+      детализованный синтаксис при слиянии, чтобы указать набор ревизий,
+      которые нужно реплицировать (см.
+      <xref linkend="svn.branchmerge.advanced.advancedsyntax"/> ниже
+      в этой главе), а также заботиться о том чтобы следить за тем
+      что было уже подвержено слиянию и что еще нет.
+      По этой причине, мы <emphasis>строго</emphasis> рекомендуем чтобы
+      ваши клиент и сервер были по крайней мере версии 1.5.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.changesets">
+      <!-- @ENGLISH {{{
       <title>Changesets</title>
+      @ENGLISH }}} -->
+      <title>Наборы изменений</title>
 
+      <!-- @ENGLISH {{{
       <para>Before we proceed further, we should warn you that there's
         going to be a lot of discussion of <quote>changes</quote> in
         the pages ahead.  A lot of people experienced with version
@@ -752,7 +885,16 @@ Changed paths:
         and <quote>changeset</quote> interchangeably, and we should
         clarify what Subversion understands as
         a <firstterm>changeset</firstterm>.</para>
+      @ENGLISH }}} -->
+      <para>Перед тем как продолжить далее, мы должны предупредить вас,
+        что на последующих страницах будет много рассуждений об
+        <quote>изменениях</quote>.
+        Многие люди, опытные в работе с системами управления версиями,
+        используют термины <quote>изменение</quote> и <quote>набор изменений</quote>
+        как взаимозаменимые, но мы должны прояснить, что Subversion понимает
+        под <quote>набором изменений</quote>.</para>
 
+      <!-- @ENGLISH {{{
       <para>Everyone seems to have a slightly different definition
         of changeset, or at least a different
         expectation of what it means for a version control system to
@@ -761,7 +903,18 @@ Changed paths:
         include textual edits to file contents, modifications to tree
         structure, or tweaks to metadata.  In more common speak, a
         changeset is just a patch with a name you can refer to.</para>
+      @ENGLISH }}} -->
+      <para>Кажется что каждый имеет немного другое определение
+        набора изменений или по крайней мере другие ожидания от того
+        что система контроля версий должна понимать под этим.
+        Для наших целей давайте считать, что набор изменений это просто
+        множество изменений под некоторым уникальным именем.
+        Эти изменения могут включать в себя правки содержимого текстовых
+        файлов, изменения в структуре дерева каталогов или модификация
+        метаданных.  В общем, набор изменений это просто патч с некоторым
+        именем, на которое вы можете ссылаться.</para>
 
+      <!-- @ENGLISH {{{
       <para>In Subversion, a global revision
         number <replaceable>N</replaceable> names a tree in the
         repository: it's the way the repository looked after the
@@ -785,13 +938,40 @@ Changed paths:
         arguments: passing <userinput>-c 9238</userinput>
         to <command>svn merge</command> would merge changeset r9238
         into your working copy.</para>
+      @ENGLISH }}} -->
+      <para>В Subversion глобальный номер ревизии <replaceable>N</replaceable>
+        именует дерево репозитория: это то как репозиторий выглядит после
+        <replaceable>N</replaceable>-го коммита.  Это также имя для неявного
+        набора изменений: если вы сравните дерево <replaceable>N</replaceable>
+        с деревом <replaceable>N</replaceable>-1, то вы в точности получите
+        патч, который был применен.  По этой причине, вы можете думать
+        о ревизии <replaceable>N</replaceable> не просто как о дереве каталогов,
+        но и как о наборе изменений.  Если вы работаете с какой-либо системой
+        отслеживания ошибок, вы можете использовать номера ревизий для того
+        чтобы сослаться на отдельные патчи, исправляющие ошибки &mdash;
+        например, <quote>эта проблема была исправлена в r9238.</quote>
+        Кто-либо может выполнить <userinput>svn log -r 9238</userinput>
+        чтобы прочесть об этом конкретном наборе изменений, исправляющем ошибку,
+        или запустить <userinput>svn diff -c 9238</userinput> чтобы посмотреть
+        на сам патч.  И, как вы скоро увидите, команда Subversion
+        <command>svn merge</command> может использовать номера ревизий.
+        Вы можете слить конкретные наборы изменений из одной ветки
+        в другую, указав их в аргументах команды слияния: передав
+        <userinput>-c 9238</userinput> в команду <command>svn merge</command>
+        сольет набор изменений r9238 в вашу рабочую копию.</para>
 
     </sect2>
+<!-- @CHK }} -->
 
+<!-- @CHK {{ -->
     <!-- =============================================================== -->
     <sect2 id="svn.branchemerge.basicmerging.stayinsync">
+      <!-- @ENGLISH {{{
       <title>Keeping a Branch in Sync</title>
+      @ENGLISH }}} -->
+      <title>Поддержание ветки в синхронизированном состоянии</title>
 
+      <!-- @ENGLISH {{{
       <para>Continuing with our running example, let's suppose that a
         week has passed since you started working on your private
         branch.  Your new feature isn't finished yet, but at the same
@@ -800,14 +980,32 @@ Changed paths:
         project's <filename>/trunk</filename>.  It's in your best
         interest to replicate those changes to your own branch, just
         to make sure they mesh well with your changes.</para>
+      @ENGLISH }}} -->
+      <para>Продолжая с нашим примером, предположим что прошла неделя
+        с тех пор как вы начали работу над своей личной веткой.
+        Ваша новая функциональность еще не завершена, но при этом вы знаете
+        что другие люди в вашей команде продолжают реализовывать важные
+        изменения в <filename>/trunk</filename> вашего проекта.
+        В ваших интересах скопировать эти изменения в вашу собственную ветку,
+        просто для того чтобы быть уверенным, что они хорошо объединятся
+        с вашими изменениями.</para>
 
       <tip>
+        <!-- @ENGLISH {{{
         <para>Frequently keeping your branch in sync with the main
           development line helps prevent <quote>surprise</quote>
           conflicts when the time comes for you to fold your changes
           back into the trunk.</para>
+        @ENGLISH }}} -->
+        <para>Частые синхронизации в вашу ветку из основной ветки разработки
+          позволяют избежать <quote>внезапных</quote> конфликтов
+          когда придет время вам объединить ваши изменения с транком.</para>
       </tip>
+<!-- @CHK }} -->
 
+<!-- @TR {{ -->
+      <!-- @ENGLISH {{{
+      @ENGLISH }}} -->
       <para>Subversion is aware of the history of your branch and
         knows when it divided away from the trunk.  To replicate the
         latest, greatest trunk changes to your branch, first make sure
