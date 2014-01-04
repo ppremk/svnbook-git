@@ -5112,103 +5112,191 @@ ssl-client-cert-password = somepassword
           eines Verzeichnisinhalts oder mit dem Inhalt einer
           Datei.</para>
 
+        <sect4 id="svn.serverconfig.httpd.extra.browsing.syntax">
 <!--
-        <para>Since the URLs do not contain any information about
-          which version of the resource you wish to
-          see, <command>mod_dav_svn</command> will always answer with
-          the youngest version.  This functionality has the wonderful
-          side effect that you can pass around Subversion URLs to your
-          peers as references to documents, and those URLs will always
-          point at the latest manifestation of that document.  Of
-          course, you can even use the URLs as hyperlinks from other
-          web sites, too.</para>
+          <title>URL syntax</title>
 -->
-        <para>Da die URLs keinerlei Informationen über die
-          Ressourcenversion enthalten, die Sie sehen möchten,
-          antwortet <command>mod_dav_svn</command> stets mit der
-          jüngsten Version. Diese Funktionalität hat den wundervollen
-          Nebeneffekt, dass Sie Subversion-URLs als Dokumentverweise
-          an Ihre Mitarbeiter weitergeben können, die stets auf die
-          neuesten Ausprägungen dieser Dokumente zeigen werden.
-          Natürlich können Sie diese URLs auch aus anderen Webseiten
-          heraus verwenden.</para>
-
-        <sidebar>
+          <title>URL Syntax</title>
 <!--
-          <title>Can I View Older Revisions?</title>
+          <para>If the URLs do not contain any information about which
+            version of the resource you wish to
+            see, <command>mod_dav_svn</command> will answer with the
+            youngest version.  This functionality has the wonderful
+            side effect that you can pass around Subversion URLs to
+            your peers as references to documents, and those URLs will
+            always point at the latest manifestation of that document.
+            Of course, you can even use the URLs as hyperlinks from
+            other web sites, too.</para>
 -->
-          <title>Kann ich mir ältere Versionen ansehen?</title>
-
-<!--
-          <para>With an ordinary web browser?  In one word: nope.  At
-            least, not with <command>mod_dav_svn</command> as your
-            only tool.</para>
--->
-          <para>In einem gewöhnlichen Webbrowser? Mit einem Wort:
-            nein. Jedenfalls nicht mit <command>mod_dav_svn</command>
-            als Ihr einziges Werkzeug.</para>
+          <para>Falls die URLs keinerlei Informationen über die
+            Ressourcenversion enthalten, die Sie sehen möchten, wird
+            <command>mod_dav_svn</command> stets mit der jüngsten
+            Version antworten. Diese Funktionalität hat den
+            wundervollen Nebeneffekt, dass Sie Subversion-URLs als
+            Dokumentverweise an Ihre Mitarbeiter weitergeben können,
+            die stets auf die neuesten Ausprägungen dieser Dokumente
+            zeigen werden.  Natürlich können Sie diese URLs auch aus
+            anderen Webseiten heraus verwenden.</para>
 
 <!--
-          <para>Your web browser speaks ordinary HTTP only.  That
-            means it knows only how to GET public URLs, which
-            represent the latest versions of files and directories.
-            According to the WebDAV/DeltaV specification, each server
-            defines a private URL syntax for older versions of
-            resources, and that syntax is opaque to clients.  To find
-            an older version of a file, a client must follow a
-            specific procedure to <quote>discover</quote> the proper
-            URL; the procedure involves issuing a series of WebDAV
-            PROPFIND requests and understanding DeltaV concepts.  This
-            is something your web browser simply can't do.</para>
+          <para>As of Subversion 1.6, <command>mod_dav_svn</command>
+            supports a public URI syntax for examining older revisions
+            of both files and directories.  The syntax uses the query
+            string portion of the URL to specify either or both of a
+            peg revision and operative revision, which Subversion will
+            then use to determine which version of the file or
+            directory to display to your web browser.  Add the query
+            string name/value pair
+            <literal>p=<replaceable>PEGREV</replaceable></literal>,
+            where <replaceable>PEGREV</replaceable> is a revision
+            number, to specify the peg revision you wish to apply to the
+            request.  Use
+            <literal>r=<replaceable>REV</replaceable></literal>,
+            where <replaceable>REV</replaceable> is a revision number, to
+            specify an operative revision.</para>
 -->
-          <para>Ihr Webbrowser spricht lediglich gewöhnliches HTTP.
-            Das bedeutet, er weiß bloß, wie er mit
-            <literal>GET</literal> öffentliche URLs bekommt, die die
-            neuesten Versionen von Dateien und Verzeichnissen
-            repräsentieren. Gemäß WebDAV/DeltaV-Spezifikation
-            definiert jeder Server eine private URL-Syntax für ältere
-            Ressourcenversionen; diese Syntax ist jedoch für Clients
-            nicht klar ersichtlich. Um eine ältere Version einer Datei
-            zu finden, muss ein Client einer bestimmten Vorgehensweise
-            folgen, um die passende URL zu <quote>ermitteln</quote>;
-            die Vorgehensweise umfasst eine Reihe von WebDAV
-            <literal>PROPFIND</literal>-Anfragen und das Verständnis
-            von DeltaV Konzepten. Das sind Dinge, die Ihr Webbrowser
-            einfach nicht kann.</para>
+          <para>Seit Subversion 1.6 unterstützt
+            <command>mod_dav_svn</command> eine öffentliche URI Syntax
+            zur Untersuchung älterer Revisionen sowohl von Dateien als
+            auch Verzeichnissen. Die Syntax verwendet den Teil des
+            Query-Strings des URL, um entweder die Peg-Revision oder
+            die operative Revision oder beide anzugeben, die
+            Subversion dann verwendet, um die in Ihrem Browser
+            darzustellende Version zu ermitteln. Fügen Sie dem
+            Query-String das Namens-Wert-Paar
+            <literal>p=<replaceable>PEGREV</replaceable></literal>,
+            hinzu, wobei <replaceable>PEGREV</replaceable> eine
+            Revisionsnummer ist, die die Peg-Revision festlegt, die
+            Sie für die Abfrage anwenden möchten. Verwenden Sie
+            <literal>r=<replaceable>REV</replaceable></literal>,
+            wobei <replaceable>REV</replaceable> eine Revisionsnummer
+            ist, die die operative Revisionsnumer festlegt.</para>
 
 <!--
-          <para>So, to answer the question, one obvious way to see
-            older revisions of files and directories is by passing the
-            <option>- -revision</option> (<option>-r</option>) argument
-            to the <command>svn list</command> and <command>svn
-            cat</command> commands.  To browse old revisions with your
-            web browser, however, you can use third-party software.  A
-            good example of this is ViewVC (<ulink
-            url="http://viewvc.tigris.org/"/>).  ViewVC was originally
-            written to display CVS repositories through the Web,
-            <footnote>
-              <para>Back then, it was called ViewCVS.</para>
-            </footnote>
-            and the latest releases are able to understand Subversion
-            repositories as well.</para>
+          <para>For example, if you wish to see the latest version of a
+            <filename>README.txt</filename> file located in your
+            project's <filename>/trunk</filename>, point your web
+            browser to that file's repository URL, which might look
+            something like the following:</para>
 -->
-          <para>So, um die Frage zu beantworten, eine offensichtliche
-            Methode, ältere Revisionen von Dateien und Verzeichnissen
-            anzusehen, besteht darin, das Optionsargument
-            <option>--revision</option> (<option>-r</option>) an
-            <command>svn list</command> und <command>svn cat</command>
-            zu übergeben. Um jedoch alte Revisionen mit Ihrem
-            Webbrowser anzusehen, können Sie Software von
-            Drittanbietern verwenden. Ein geeignetes Beispiel hierfür
-            ist ViewVC (<ulink url="http://viewvc.tigris.org/"/>).
-            ViewVC wurde ursprünglich zur Anzeige von 
-            CVS-Projektarchiven über das Web geschrieben.
-            <footnote>
-              <para>Damals hieß es noch ViewCVS.</para>
-            </footnote>
-            Die letzten Releases verstehen auch Subversion
-            Projektarchive.</para>
-        </sidebar>
+          <para>Wenn Sie beispielsweise die letzte Version einer Datei
+            <filename>README.txt</filename> in
+            <filename>/trunk</filename> Ihres Projektes sehen möchten,
+            zeigen Sie mit Ihrem Webbrower auf die Projektarchiv-URL
+            dieser Datei, die ählich der folgenden aussehen
+            sollte:</para>
+
+          <informalexample>
+            <programlisting>
+http://host.example.com/repos/project/trunk/README.txt
+</programlisting>
+          </informalexample>
+
+<!--
+          <para>If you now wish to see some older version of that
+            file, add an operative revision to the URL's query
+            string:</para>
+-->
+          <para>Falls Sie nun eine ältere Version dieser Datei sehen
+            wollten, fügen Sie dem Query-String der URL eine operative
+            Revision hinzu:</para>
+
+          <informalexample>
+            <programlisting>
+http://host.example.com/repos/project/trunk/README.txt?r=1234
+</programlisting>
+          </informalexample>
+
+<!--
+          <para>What if the thing you're trying to view no longer exists
+            in the youngest revision of the repository?  That's where a
+            peg revision is handy:</para>
+-->
+          <para>Was ist, falls das Objekt, das Sie sehen möchten,
+            nicht mehr in der letzten Revision des Projektarchivs
+            vorhanden ist? Hierbei ist eine Peg-Revision sehr
+            hilfreich:</para>
+
+          <informalexample>
+            <programlisting>
+http://host.example.com/repos/project/trunk/deleted-thing.txt?p=321
+</programlisting>
+          </informalexample>
+
+<!--
+          <para>And of course, you can combine peg revision and
+            operative revision specifiers to fine-tune the exact item
+            you wish to view:</para>
+-->
+          <para>Natürlich können Sie Peg-Revisios- und Angaben für
+            operative Revisionen kombinieren, um genau anzugeben, was
+            genau Sie sehen möchten:</para>
+
+          <informalexample>
+            <programlisting>
+http://host.example.com/repos/project/trunk/renamed-thing.txt?p=123&amp;r=21
+</programlisting>
+          </informalexample>
+
+<!--
+          <para>The previous URL would display revision 21 of the
+            object which, in revision 123, was located
+            at <filename>/trunk/renamed-thing.txt</filename> in the
+            repository.  See <xref linkend="svn.advanced.pegrevs" /> for a
+            detailed explanation of these <quote>peg revision</quote>
+            and <quote>operative revision</quote> concepts.  They can
+            be a bit tricky to wrap your head around.</para>
+-->
+          <para>Der obige URL würde Revision 21 des Objekts anzeigen,
+            das in Revision 123 an der Stelle
+            <filename>/trunk/renamed-thing.txt</filename> im
+            Projektarchiv lag.  Siehe
+            <xref linkend="svn.advanced.pegrevs" /> für eine
+            detaillierte detailed Erörterung dieser Konzepte von
+            <quote>Peg-Revision</quote> und <quote>operativer
+              Revision</quote>. Sie könnten ein wenig
+            schwerverständlich sein.</para>
+
+<!--
+          <para>As a reminder, this feature
+            of <command>mod_dav_svn</command> offers only a limited
+            repository browsing experience.  You can see directory
+            listings and file contents, but no revision properties
+            (such as commit log messages) or file/directory
+            properties.  For folks who require more extensive browsing
+            of repositories and their history, there are several
+            third-party software packages which offer this.  Some
+            examples include ViewVC
+            (<ulink url="http://viewvc.tigris.org"/>), Trac
+            (<ulink url="http://trac.edgewall.org"/>) and WebSVN
+            (<ulink url="http://websvn.info"/>).  These third-party
+            tools don't affect <command>mod_dav_svn</command>'s
+            built-in <quote>browseability</quote>, and generally offer
+            a much wider set of features, including the display of the
+            aforementioned property sets, display of content
+            differences between file revisions, and so on.</para>
+-->
+          <para>Zur Erinnerung: Diese Funktionalität von
+            <command>mod_dav_svn</command> bietet nur ein
+            eingeschränktes Stöbererlebnis im Projektarchiv. Sie
+            können Verzeichnislisten und Dateiinhalte sehen, jedoch
+            keine Revisionseigenschaften (wie etwa
+            Protokollnachrichten) oder Datei- oder
+            Verzeichniseigenschaften. Für Leute, die weitergehende
+            Informationen zum Projektarchiv und seiner Geschichte
+            benötigen gibt es hierfür mehrere Softwarepakete von
+            Drittanbietern. Hierzu zählen beispielsweise ViewVC
+            (<ulink url="http://viewvc.tigris.org"/>), Trac
+            (<ulink url="http://trac.edgewall.org"/>) und WebSVN
+            (<ulink url="http://websvn.info"/>). Diese Werkzeuge von
+            Drittanbietern beeinträchtigen nicht die eingebaute
+            <quote>stöberfähigkeit</quote> von
+            <command>mod_dav_svn</command> und bieten im Allgemeinen
+            weitergehende Funktionalität, wozu die Anzeige der eben
+            erwähnten Mengen von Eigenschaften, die Anzeige von
+            Unterschieden zwischen Dateirevisionen u.a. gehört.</para>
+
+        </sect4>
 
         <sect4 id="svn.serverconfig.httpd.extra.browsing.mimetype">
 <!--
