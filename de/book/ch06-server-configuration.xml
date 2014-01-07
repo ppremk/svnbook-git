@@ -5837,14 +5837,16 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
             jedoch die besondere Direktive
             <literal>SVNMasterURI</literal> dem Block hinzu:</para>
 
-          <screen>
+          <informalexample>
+            <programlisting>
 &lt;Location /svn&gt;
   DAV svn
   SVNPath /var/svn/repos
   SVNMasterURI http://master.example.com/svn
   &hellip;
 &lt;/Location&gt;
-</screen>
+</programlisting>
+          </informalexample>
 
 <!--
           <para>This new directive tells a slave server to redirect
@@ -5908,7 +5910,23 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
             werden, sondern normale Übergaben von der IP-Adresse des
             Masters (und nur von dort) angenommen werden:</para>
 
-          <screen>
+<!--
+          <informalexample>
+            <programlisting>
+&lt;Location /svn-proxy-sync&gt;
+  DAV svn
+  SVNPath /var/svn/repos
+  Order deny,allow
+  Deny from all
+  # Only let the server's IP address access this Location:
+  Allow from 10.20.30.40
+  &hellip;
+&lt;/Location&gt;
+</programlisting>
+          </informalexample>
+-->
+          <informalexample>
+            <programlisting>
 &lt;Location /svn-proxy-sync&gt;
   DAV svn
   SVNPath /var/svn/repos
@@ -5918,7 +5936,8 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
   Allow from 10.20.30.40
   &hellip;
 &lt;/Location&gt;
-</screen>
+</programlisting>
+          </informalexample>
 
         </sect4>
 
@@ -5970,12 +5989,13 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
             empfangen:</para>
 
 <!--
-          <screen>
-$ svnsync init http://slave1.example.com/svn-proxy-sync file://var/svn/repos
+          <informalexample>
+            <screen>
+$ svnsync init http://slave1.example.com/svn-proxy-sync file:///var/svn/repos
 Copied properties for revision 0.
-$ svnsync init http://slave2.example.com/svn-proxy-sync file://var/svn/repos
+$ svnsync init http://slave2.example.com/svn-proxy-sync file:///var/svn/repos
 Copied properties for revision 0.
-$ svnsync init http://slave3.example.com/svn-proxy-sync file://var/svn/repos
+$ svnsync init http://slave3.example.com/svn-proxy-sync file:///var/svn/repos
 Copied properties for revision 0.
 
 # Perform the initial replication
@@ -6007,13 +6027,15 @@ Committed revision 2.
 Copied properties for revision 2.
 &hellip;
 </screen>
+          </informalexample>
 -->
-          <screen>
-$ svnsync init http://slave1.example.com/svn-proxy-sync file://var/svn/repos
+          <informalexample>
+            <screen>
+$ svnsync init http://slave1.example.com/svn-proxy-sync file:///var/svn/repos
 Eigenschaften für Revision 0 kopiert.
-$ svnsync init http://slave2.example.com/svn-proxy-sync file://var/svn/repos
+$ svnsync init http://slave2.example.com/svn-proxy-sync file:///var/svn/repos
 Eigenschaften für Revision 0 kopiert.
-$ svnsync init http://slave3.example.com/svn-proxy-sync file://var/svn/repos
+$ svnsync init http://slave3.example.com/svn-proxy-sync file:///var/svn/repos
 Eigenschaften für Revision 0 kopiert.
 
 # Die initiale Replizierung durchführe
@@ -6045,6 +6067,7 @@ Revision 2 übertragen.
 Eigenschaften für Revision 2 kopiert.
 &hellip;
 </screen>
+          </informalexample>
 
 <!--
           <para>After this is done, we configure the master server's
@@ -6058,23 +6081,27 @@ Eigenschaften für Revision 2 kopiert.
             aufgerufen wird:</para>
 
 <!--
-          <programlisting>
+          <informalexample>
+            <programlisting>
 #!/bin/sh
 # Post-commit script to replicate newly committed revision to slaves
 
-svnsync sync http://slave1.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1
-svnsync sync http://slave2.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1
-svnsync sync http://slave3.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1
+svnsync sync http://slave1.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1 &amp;
+svnsync sync http://slave2.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1 &amp;
+svnsync sync http://slave3.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1 &amp;
 </programlisting>
+          </informalexample>
 -->
-          <programlisting>
+          <informalexample>
+            <programlisting>
 #!/bin/sh
 # Post-Commit-Skript zum Replizieren der neu übergebenen Revision an die Slaves
 
-svnsync sync http://slave1.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1
-svnsync sync http://slave2.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1
-svnsync sync http://slave3.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1
+svnsync sync http://slave1.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1 &amp;
+svnsync sync http://slave2.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1 &amp;
+svnsync sync http://slave3.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1 &amp;
 </programlisting>
+          </informalexample>
 
 <!--
           <para>The extra bits on the end of each line aren't
@@ -6099,62 +6126,70 @@ svnsync sync http://slave3.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1
             Änderung ebenfalls mitbekommen:</para>
 
 <!--
-          <programlisting>
+          <informalexample>
+            <programlisting>
 #!/bin/sh
 # Post-revprop-change script to replicate revprop-changes to slaves
 
 REV=${2}
-svnsync copy-revprops http://slave1.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1
-svnsync copy-revprops http://slave2.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1
-svnsync copy-revprops http://slave3.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1
+svnsync copy-revprops http://slave1.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1 &amp;
+svnsync copy-revprops http://slave2.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1 &amp;
+svnsync copy-revprops http://slave3.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1 &amp;
 </programlisting>
+          </informalexample>
 -->
-          <programlisting>
+          <informalexample>
+            <programlisting>
 #!/bin/sh
 # Post-revprop-Change-Skript zur Weitergabe der Änderung an den Revisionseigenschaften an die Slaves
 
 REV=${2}
-svnsync copy-revprops http://slave1.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1
-svnsync copy-revprops http://slave2.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1
-svnsync copy-revprops http://slave3.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1
+svnsync copy-revprops http://slave1.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1 &amp;
+svnsync copy-revprops http://slave2.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1 &amp;
+svnsync copy-revprops http://slave3.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1 &amp;
 </programlisting>
+          </informalexample>
 
 <!--
           <para>The only thing we've left out here is what to do about
-            locks.  Because locks are strictly enforced by the master
-            server (the only place where commits happen), we don't
-            technically need to do anything.  Many teams don't use
-            Subversion's locking features at all, so it may be a
-            nonissue for you.  However, if lock changes aren't
-            replicated from master to slaves, it means that clients
-            won't be able to query the status of locks
-            (e.g., <userinput>svn status -u</userinput> will show no
-            information about repository locks).  If this bothers you,
-            you can write <literal>post-lock</literal> and
-            <literal>post-unlock</literal> hook scripts that run
-            <command>svn lock</command> and <command>svn
-            unlock</command> on each slave machine, presumably through
-            a remote shell method such as SSH.  That's left as an
-            exercise for the reader!</para>
+            user-level locks (of the <command>svn lock</command>
+            variety).  Locks are enforced by the master server during
+            commit operations; but all the information about locks is
+            distributed during read operations such as <command>svn
+            update</command> and <command>svn status</command> by the
+            slave server.  As such, a fully functioning proxy setup
+            needs to perfectly replicate lock information from the
+            master server to the slave servers.  Unfortunately, most
+            of the mechanisms that one might employ to accomplish this
+            replication fall short in one way or
+            another<footnote><para><ulink
+            url="http://subversion.tigris.org/issues/show_bug.cgi?id=3457"
+            /> tracks these problems.</para></footnote>.  Many teams
+            don't use Subversion's locking features at all, so this
+            may be a nonissue for you.  Sadly, for those teams which
+            do use locks, we have no recommendations on how to
+            gracefully work around this shortcoming.</para>
 -->
           <para>Das Einzige, was wir hier ausgelassen haben, ist die
-            Behandlung von Sperren. Da Sperren streng vom
-            Master-Server durchgesetzt werden (die einzige Stelle, an
-            denen Übergaben stattfinden), brauchen wir technisch gar
-            nichts zu tun. Viele Teams benutzen die Sperrmechanismen
-            von Subversion überhaupt nicht, so dass es Sie vielleicht
-            gar nicht betrifft. Wenn jedoch Änderungen an Sperren
-            nicht vom Master an die Slaves weitergegeben werden,
-            bedeutet das, dass Clients den Zustand von Sperren nicht
-            abfragen können (z.B. wird <userinput>svn status
-              -u</userinput> keinerlei Informationen über
-            Projektarchiv-Sperren anzeigen). Sollte Sie das stören,
-            können Sie <literal>post-lock</literal> und
-            <literal>post-unlock</literal>-Hook-Skripts schreiben, die
-            <command>svn lock</command> und <command>svn
-              unlock</command> auf jedem Slave-Rechner aufrufen, etwa
-            über einen Remote-Shell-Mechanismus, wie etwa SSH. Das sei
-            dem Leser als Übung überlassen!</para>
+            Behandlung von Sperren auf Anwenderebene (der Sorte
+            <command>svn lock</command>). Sperren werden vom
+            Master-Server während der Übergabeoperationen
+            durchgesetzt; alle Informationen zu Sperren werden jedoch
+            während Leseoperationen wie <command>svn
+            update</command> und <command>svn status</command> durch
+            den Slave-Server verteilt. An und für sich müsste eine
+            voll funktionsfähige Proxy-Umgebung die Sperrinformationen
+            vom Master-zum Slave-Server perfekt replizieren. Leider
+            sind die meisten der hierfür eingesetzten Mechanismen auf
+            die eine oder andere Art
+            unzureichend<footnote><para><ulink
+            url="http://subversion.tigris.org/issues/show_bug.cgi?id=3457"
+            /> verfiolgt diese Probleme.</para></footnote>. Viele
+            Teams verwenden die Sperrfunktionalität von Subversion
+            überhaupt nicht, so dass es Sie gar nicht betreffen
+            könnte. Leider können wir den Teams, die Sperren
+            verwenden, keine Empfehlungen aussprechen, wie diese
+            Schwäche umgangen werden kann.</para>
 
         </sect4>
 
