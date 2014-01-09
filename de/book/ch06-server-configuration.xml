@@ -7244,186 +7244,260 @@ sally = r
   <!-- ================================================================= -->
   <sect1 id="svn.serverconfig.operational-logging">
 <!--
-        <title>High-level logging</title>
+    <title>High-level Logging</title>
 -->
-        <title>Protokollierung auf hoher Ebene</title>
+    <title>Protokollierung auf hohem Niveau</title>
 
 <!--
-        <para>This is a list of Subversion action log messages
-          produced by Apache's high-level logging mechanism, followed
-          by an example of the log message.  See <xref
-          linkend="svn.serverconfig.httpd.extra.logging"/> for details
-          on logging.</para>
+    <para>Both the Apache <command>httpd</command>
+      and <command>svnserve</command> Subversion servers provide
+      support for high-level logging of Subversion operations.
+      Configuring each of the server options to provide this level of
+      logging is done differently, of course, but the output from each
+      is designed to conform to a uniform syntax.</para>
 -->
-        <para>Dies ist eine Liste mit Protokollnachrichten von
-          Subversion-Aktionen, die von Apaches Protokollmechanismus
-          auf hoher Ebene erzeugt werden, gefolgt durch ein Beispiel
-          einer Protokollnachricht. Siehe <xref
-          linkend="svn.serverconfig.httpd.extra.logging"/> für Details
-          zur Protokollierung.</para>
+    <para>Sowohl der Apache <command>httpd</command>- als auch der
+      Subversion <command>svnserve</command>-Server bieten die
+      Protokollierung von Subversion-Operationen auf hohem Niveau. Die
+      Einstellung jeder dieser Server-Optionen zur Bereitstellung
+      dieser Protokollstufe erfolgt natürlich auf unterschiedliche
+      Weise; gleichwohl folgt jedes Ausgabeformat einer einheitlichen
+      Syntax.</para>
 
-        <variablelist>
-
-          <varlistentry>
 <!--
-            <term>Checkout or export</term>
+    <para>To enable high-level logging in <command>svnserve</command>,
+      you need only use the <option>- -log-file</option> command-line
+      option when starting the server, passing as the value to the
+      option the file to which <command>svnserve</command> should
+      write its log output.</para>
 -->
-            <term>Checkout oder Export</term>
-            <listitem>
-              <para><literal>checkout-or-export /path r62
-            depth=infinity</literal></para>
-            </listitem>
-          </varlistentry>
+    <para>Um dieses hohe Protokollierungsniveau in
+      <command>svnserve</command> zu ermöglichen, brauchen Sie nur
+      beim Start des Servers die Kommandozeilenoption
+      <option>--log-file</option> zu verwenden, deren Wert der Name
+      der Datei ist, in die <command>svnserve</command> seine
+      Protokollausgaben schreibt.</para>
 
-          <varlistentry>
+    <informalexample>
+      <screen>
+$ svnserve -d -r /path/to/repositories --log-file /var/log/svn.log
+</screen>
+    </informalexample>
+
 <!--
-            <term>Commit</term>
+    <para>Enabling the same in Apache is a bit more involved, but is
+      essentially an extension of Apache's stock log output
+      configuration mechanisms&mdash;see
+      <xref linkend="svn.serverconfig.httpd.extra.logging"/> for
+      details.</para>
 -->
-            <term>Übergabe</term>
-            <listitem>
-              <para><literal>commit harry r100</literal></para>
-            </listitem>
-          </varlistentry>
+    <para>Um das Gleiche in Apache einzustellen, ist etwas mehr Arbeit
+      notwendig, jedoch handelt es sich um eine Erweiterung von
+      Apaches Standardkonfigurationsmechanismus für die
+      Protokollausgabe (Näheres unter
+      <xref linkend="svn.serverconfig.httpd.extra.logging"/>).</para>
 
-          <varlistentry>
-            <term>Diffs</term>
-            <listitem>
-              <para><literal>diff /path r15:20 depth=infinity ignore-ancestry</literal></para>
-              <para><literal>diff /path1@15 /path2@20 depth=infinity ignore-ancestry</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
 <!--
-            <term>Fetch a directory</term>
+    <para>The following is a list of Subversion action log messages
+      produced by its high-level logging mechanism, followed by one or
+      more examples of the log message as it appears in the log
+      output.</para>
 -->
-            <term>Holen eines Verzeichnisses</term>
-            <listitem>
-              <para><literal>get-dir /trunk r17 text</literal></para>
-            </listitem>
-          </varlistentry>
+    <para>Es folgt eine eine Liste mit Protokollnachrichten von
+      Subversion-Aktionen, die von seinem Protokollmechanismus
+      auf hohem Niveau erzeugt werden, gefolgt durch ein oder mehrere
+      Beispiele einer Protokollnachricht wie sie in der Ausgabe
+      erscheint.</para>
 
-          <varlistentry>
+    <variablelist>
+      <varlistentry>
 <!--
-            <term>Fetch a file</term>
+        <term>Checkout or export</term>
 -->
-            <term>Holen einer Datei</term>
-            <listitem>
-              <para><literal>get-file /path r20 props</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
+        <term>Checkout oder Export</term>
+        <listitem>
+          <programlisting>
+checkout-or-export /path r62 depth=infinity
+</programlisting>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
 <!--
-            <term>Fetch a file revision</term>
+        <term>Commit</term>
 -->
-            <term>Holen einer Dateirevision</term>
-            <listitem>
-              <para><literal>get-file-revs /path r12:15 include-merged-revisions</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
+        <term>Übergabe</term>
+        <listitem>
+          <programlisting>
+commit harry r100
+</programlisting>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>Diffs</term>
+        <listitem>
+          <programlisting>
+diff /path r15:20 depth=infinity ignore-ancestry
+diff /path1@15 /path2@20 depth=infinity ignore-ancestry
+</programlisting>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
 <!--
-            <term>Fetch merge information</term>
+        <term>Fetch a directory</term>
 -->
-            <term>Holen von Informationen über eine Zusammenführung</term>
-            <listitem>
-              <para><literal>get-mergeinfo (/path1 /path2)</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
+        <term>Holen eines Verzeichnisses</term>
+        <listitem>
+          <programlisting>
+get-dir /trunk r17 text
+</programlisting>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
 <!--
-            <term>Lock</term>
+        <term>Fetch a file</term>
 -->
-            <term>Sperre</term>
-            <listitem>
-              <para><literal>lock /path steal</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
+        <term>Holen einer Datei</term>
+        <listitem>
+          <programlisting>
+get-file /path r20 props
+</programlisting>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
 <!--
-            <term>Log</term>
+        <term>Fetch a file revision</term>
 -->
-            <term>Protokoll</term>
-            <listitem>
-              <para><literal>log (/path1,/path2,/path3) r20:90
-            discover-changed-paths revprops=()</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
+        <term>Holen einer Dateirevision</term>
+        <listitem>
+          <programlisting>
+get-file-revs /path r12:15 include-merged-revisions
+</programlisting>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
 <!--
-            <term>Replay revisions (svnsync)</term>
+        <term>Fetch merge information</term>
 -->
-            <term>Wiederholen von Revisionen (svnsync)</term>
-            <listitem>
-              <para><literal>replay /path r19</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
+        <term>Holen von Informationen über eine Zusammenführung</term>
+        <listitem>
+          <programlisting>
+get-mergeinfo (/path1 /path2)
+</programlisting>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
 <!--
-            <term>Revision property change</term>
+        <term>Lock</term>
 -->
-            <term>Änderung einer Revisions-Eigenschaft</term>
-            <listitem>
-              <para><literal>change-rev-prop r50
-            propertyname</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
+        <term>Sperre</term>
+        <listitem>
+          <programlisting>
+lock /path steal
+</programlisting>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
 <!--
-            <term>Revision property list</term>
+        <term>Log</term>
 -->
-            <term>Liste von Revisions-Eigenschaften</term>
-            <listitem>
-              <para><literal>rev-proplist r34</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Status</term>
-            <listitem>
-              <para><literal>status /path r62
-                depth=infinity</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
+        <term>Protokoll</term>
+        <listitem>
+          <programlisting>
+log (/path1,/path2,/path3) r20:90 discover-changed-paths revprops=()
+</programlisting>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
 <!--
-            <term>Switch</term>
+        <term>Replay revisions (svnsync)</term>
 -->
-            <term>Umschalten</term>
-            <listitem>
-              <para><literal>switch /pathA /pathB@50 depth=infinity</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
+        <term>Wiederholen von Revisionen (svnsync)</term>
+        <listitem>
+          <programlisting>
+replay /path r19
+</programlisting>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
 <!--
-            <term>Unlock</term>
+        <term>Revision property change</term>
 -->
-            <term>Entsperren</term>
-            <listitem>
-              <para><literal>unlock /path break</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
+        <term>Änderung einer Revisions-Eigenschaft</term>
+        <listitem>
+          <programlisting>
+change-rev-prop r50 propertyname
+</programlisting>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
 <!--
-            <term>Update</term>
+        <term>Revision property list</term>
 -->
-            <term>Aktualisieren</term>
-            <listitem>
-              <para><literal>update /path r17 send-copyfrom-args</literal></para>
-            </listitem>
-          </varlistentry>
+        <term>Liste von Revisions-Eigenschaften</term>
+        <listitem>
+          <programlisting>
+rev-proplist r34
+</programlisting>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>Status</term>
+        <listitem>
+          <programlisting>
+status /path r62 depth=infinity
+</programlisting>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+<!--
+        <term>Switch</term>
+-->
+        <term>Umschalten</term>
+        <listitem>
+          <programlisting>
+switch /pathA /pathB@50 depth=infinity
+</programlisting>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+<!--
+        <term>Unlock</term>
+-->
+        <term>Entsperren</term>
+        <listitem>
+          <programlisting>
+unlock /path break
+</programlisting>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+<!--
+        <term>Update</term>
+-->
+        <term>Aktualisieren</term>
+        <listitem>
+          <programlisting>
+update /path r17 send-copyfrom-args
+</programlisting>
+        </listitem>
+      </varlistentry>
+    </variablelist>
 
-        </variablelist>
+<!--
+    <para>As a convenience to administrators who wish to post-process
+      their Subversion high-level logging output (perhaps for
+      reporting or analysis purposes), Subversion source code
+      distributions provide a Python module (located at
+      <filename>tools/server-side/svn_server_log_parse.py</filename>)
+      which can be used to parse Subversion's log output.</para>
+-->
+    <para>Zur Erleichterung der Arbeit von Administratoren, die ihre
+      Subversion Protokollausgaben nachbearbeiten möchten (vielleicht
+      für Berichte oder zur Analyse), ist den Quelltextpaketen für
+      Subversion ein Python-Modul unter
+      <filename>tools/server-side/svn_server_log_parse.py</filename>
+      beigelegt, das verwendet werden kann, um die Protokollausgaben
+      von Subversion zu parsen.</para>
 
   </sect1>
   <!-- ================================================================= -->
