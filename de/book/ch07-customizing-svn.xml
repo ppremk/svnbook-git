@@ -2767,25 +2767,38 @@ REM wird als fatal behandelt.
 import sys
 import os
 
+<!--
+# Configure your favorite merge program here.
+-->
 # Geben Sie hier Ihr bevorzugtes diff-Programm an.
-DIFF3 = "/usr/local/bin/my-merge-tool"
+MERGE = "/usr/local/bin/my-merge-tool"
 
-# Subversion liefert die benötigten Pfade als die letzten drei Parameter.
-MINE  = sys.argv[-3]
-OLDER = sys.argv[-2]
-YOURS = sys.argv[-1]
+<!--
+# Get the paths provided by Subversion.
+-->
+# Holen Sie sich die durch Subversion gelieferten Pfade
+BASE   = sys.argv[1]
+THEIRS = sys.argv[2]
+MINE   = sys.argv[3]
+MERGED = sys.argv[4]
+WCPATH = sys.argv[5]
 
+<!--
+# Call the merge command (change the following line to make sense for
+# your merge program).
+-->
 # Aufruf des merge-Befehls (ändern Sie die folgende Zeile passend für
 # Ihr merge-Programm).
-cmd = [DIFF3, '--older', OLDER, '--mine', MINE, '--yours', YOURS]
+cmd = [DIFF3, '--base', BASE, '--mine', MINE, '--theirs', THEIRS,
+              '--outfile', MERGED]
 os.execv(cmd[0], cmd)
 
-# Nach der Zusammenführung muss dieses Skript den Inhalt der
-# zusammengeführten Datei nach stdout schreiben. Machen Sie das, wie
-# Sie wollen.
-# Rückgabewert 0 bei erfolgreicher Zusammenführung, 1 falls noch
-# unaufgelöste Konflikte vorhanden. Alles andere wird als fatal
-# betrachtet,
+<!--
+# Return an errorcode of 0 if the conflict was resolved; 1 otherwise.
+# Any other errorcode will be treated as fatal.
+-->
+# Rückgabewert 0 bei erfolgreicher Zusammenführung, 1 bei noch
+# unaufgelösten Konflikten. Alles andere wird als fatal behandelt.
 </programlisting>
       </example>
 
@@ -2794,30 +2807,36 @@ os.execv(cmd[0], cmd)
         <programlisting>
 @ECHO OFF
 
+<!--
+REM Configure your favorite merge program here.
+-->
 REM Geben Sie hier Ihr bevorzugtes diff-Programm an.
 SET DIFF3="C:\Program Files\Funky Stuff\My Merge Tool.exe"
 
-REM Subversion liefert die benötigten Pfade als die letzten drei Parameter.
-REM Das sind die Parameter 9, 10 und 11. Allerdings haben wir zu einem
-REM gegebenen Zeitpunkt nur Zugriff auf neun Parameter, so dass wir
-REM unser Fenster aus neun Parametern zweimal verschieben, um das zu
-REM bekommen, was wir benötigen.
-SHIFT
-SHIFT
-SET MINE=%7
-SET OLDER=%8
-SET YOURS=%9
+<!--
+REM Get the paths provided by Subversion.
+-->
+REM Holen Sie sich die durch Subversion gelieferten Pfade
+SET BASE=%1
+SET THEIRS=%2
+SET MINE=%3
+SET MERGED=%4
+SET WCPATH=%5
 
-REM Aufruf des merge-Befehls (ändern Sie die folgende Zeile passend für
-REM Ihr merge-Programm).
-%DIFF3% --older %OLDER% --mine %MINE% --yours %YOURS%
+<!--
+REM Call the merge command (change the following line to make sense for
+REM your merge program).
+-->
+REM Aufruf des merge-Befehls (ändern Sie die folgende Zeile passend
+REM für Ihr merge-Programm).
+%DIFF3% --base %BASE% --mine %MINE% --theirs %THEIRS% --outfile %MERGED%
 
-REM Nach der Zusammenführung muss dieses Skript den Inhalt der
-REM zusammengeführten Datei nach stdout schreiben. Machen Sie das, wie
-REM Sie wollen.
-REM Rückgabewert 0 bei erfolgreicher Zusammenführung, 1 falls noch
-REM unaufgelöste Konflikte vorhanden. Alles andere wird als fatal
-REM betrachtet,
+<!--
+REM Return an errorcode of 0 if the conflict was resolved; 1 otherwise.
+REM Any other errorcode will be treated as fatal.
+-->
+REM Rückgabewert 0 bei erfolgreicher Zusammenführung, 1 bei noch
+REM unaufgelösten Konflikten. Alles andere wird als fatal betrachtet,
 </programlisting>
       </example>
 
