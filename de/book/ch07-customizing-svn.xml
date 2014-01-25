@@ -2303,26 +2303,6 @@ svn: Kann Zeichenkette nicht von »UTF-8« in die eigene Codierung konvertieren:
       hier hört es für die meisten Benutzer auf, intuitiv zu
       sein.</para>
 
-<!--
-    <para>The key to using external two- and three-way differencing tools
-      (other than GNU diff and diff3, of course) with Subversion is to
-      use wrapper scripts, which convert the input from Subversion into
-      something that your differencing tool can understand, and then
-      to convert the output of your tool back into a format that
-      Subversion expects&mdash;the format that the GNU tools would
-      have used.  The following sections cover the specifics of those
-      expectations.</para>
--->
-    <para>Der Schlüssel zur Benutzung externer Zwei- und
-      Dreiwege-Vergleichsprogramme (natürlich anderer als GNU diff und
-      diff3) mit Subversion besteht darin, die Werkzeuge in Skripte 
-      <quote>einzupacken</quote>, die die Eingaben von Subversion in
-      etwas umwandeln, das Ihr Werkzeug versteht, und dann die Ausgabe
-      Ihres Werkzeugs in ein von Subversion erwartetes Format
-      umzuwandeln &ndash; das Format, das die GNU-Werkzeuge verwendet
-      hätten. Die folgenden Abschnitte behandeln die Besonderheiten
-      dieser Erwartungen.</para>
-
     <note>
 <!--
       <para>The decision on when to fire off a contextual two- or three-way
@@ -2602,25 +2582,29 @@ REM Jeder andere Rückgabewert wird als fatal betrachtet.
       <title>Externes diff3</title>
 
 <!--
-      <para>Subversion calls external merge programs with parameters
-        suitable for the GNU diff3 utility, expecting that the
-        external program will return with a successful error code and that
-        the full file contents that result from the completed merge
-        operation are printed on the standard output stream (so that
-        Subversion can redirect them into the appropriate version-controlled
-        file).  For most alternative merge programs, only
-        the ninth, tenth, and eleventh arguments, the paths of the
-        files which represent the <quote>mine,</quote>
-        <quote>older,</quote> and <quote>yours</quote> inputs,
-        respectively, are of interest.  Note that because Subversion
-        depends on the output of your merge program, your wrapper
-        script must not exit before that output has been delivered to
-        Subversion.  When it finally does exit, it should return an
-        error code of 0 if the merge was successful, or 1 if unresolved
-        conflicts remain in the output&mdash;any other error code is
-        considered a fatal error.</para>
+      <para>Subversion invokes three-way differencing programs to
+        perform non-interactive merges.  When configured to use an
+        external three-way differencing program, it executes that
+        program with parameters suitable for the GNU diff3 utility,
+        expecting that the external program will return with a
+        successful error code and that the full file contents that
+        result from the completed merge operation are printed on the
+        standard output stream (so that Subversion can redirect them
+        into the appropriate version-controlled file).  For most
+        alternative merge programs, only the ninth, tenth, and
+        eleventh arguments, the paths of the files which represent
+        the <quote>mine</quote>, <quote>older</quote>,
+        and <quote>yours</quote> inputs, respectively, are of
+        interest.  Note that because Subversion depends on the output
+        of your merge program, your wrapper script must not exit
+        before that output has been delivered to Subversion.  When it
+        finally does exit, it should return an error code of 0 if the
+        merge was successful, or 1 if unresolved conflicts remain in
+        the output&mdash;any other error code is considered a fatal
+        error.</para>
 -->
-      <para>Subversion ruft externe Zusammenführungsprogramme mit
+      <para>Subversion ruft für die Ausführung nicht-interaktiver
+        Zusammenführungen Dreiwege-Vergleichsprogramme auf.
         Parametern auf, die für das GNU diff3-Werkzeug passen und
         erwartet, dass das externe Programm einen Erfolg
         signalisierenden Rückgabewert liefert und der vollständige
@@ -2643,14 +2627,14 @@ REM Jeder andere Rückgabewert wird als fatal betrachtet.
 <!--
       <para><xref linkend="svn.advanced.externaldifftools.diff3.ex-1"/> 
         and <xref linkend="svn.advanced.externaldifftools.diff3.ex-2"/> are
-        templates for external merge tool wrappers in the Python
-        and Windows batch scripting languages, respectively.</para>
+        templates for external three-way differencing tool wrappers in
+        the Python and Windows batch scripting languages,
+        respectively.</para>
 -->
-      <para><xref linkend="svn.advanced.externaldifftools.diff3.ex-1"/> 
-        und <xref
-        linkend="svn.advanced.externaldifftools.diff3.ex-2"/> sind
-        <quote>Verpackungs</quote>-Vorlagen für externe
-        Zusammenführungsprogramme in den Skriptsprachen Python bzw.
+      <para><xref linkend="svn.advanced.externaldifftools.diff3.ex-1"/>
+        und <xref linkend="svn.advanced.externaldifftools.diff3.ex-2"/>
+        sind <quote>Verpackungs</quote>-Vorlagen für externe
+        Dreiwege-Vergleichswerkzeuge in den Skriptsprachen Python bzw.
         Windows-Batch.</para>
 
       <example id="svn.advanced.externaldifftools.diff3.ex-1">
@@ -2660,23 +2644,42 @@ REM Jeder andere Rückgabewert wird als fatal betrachtet.
 import sys
 import os
 
-# Configure your favorite diff program here.
-DIFF3 = "/usr/local/bin/my-merge-tool"
+<!--
+# Configure your favorite three-way diff program here.
+-->
+# Konfigurieren Sie hier Ihr bevorzugtes Dreiwege-Vergleichsprogramm
+DIFF3 = "/usr/local/bin/my-diff3-tool"
 
+<!--
 # Subversion provides the paths we need as the last three parameters.
+-->
+# Subversion liefert die von uns benötigten Pfade als die letzten drei Parameter
 MINE  = sys.argv[-3]
 OLDER = sys.argv[-2]
 YOURS = sys.argv[-1]
 
-# Call the merge command (change the following line to make sense for
-# your merge program).
-cmd = [DIFF3, '- -older', OLDER, '- -mine', MINE, '- -yours', YOURS]
+<!--
+# Call the three-way diff command (change the following line to make
+# sense for your three-way diff program).
+-->
+# Aufruf des Dreiwege-Vergleichs-Befehls (ändern Sie die folgende
+# Zeile, damit es für Ihr Dreiwege-Vergleichsprogramm einen Sinn
+# ergibt).
+cmd = [DIFF3, '--older', OLDER, '--mine', MINE, '--yours', YOURS]
 os.execv(cmd[0], cmd)
 
+<!--
 # After performing the merge, this script needs to print the contents
 # of the merged file to stdout.  Do that in whatever way you see fit.
 # Return an errorcode of 0 on successful merge, 1 if unresolved conflicts
 # remain in the result.  Any other errorcode will be treated as fatal.
+-->
+# Nach der Zusammenführung muss das Script den Inhalt der
+# zusammengeführten Datei an die Standardausgabe schreiben. Machen Sie
+# das wie Sie möchten.
+# Nach erfolgreicher Zusammenführung wird 0 zurückgegeben; 1, falls
+# offene Konflikte im Ergebnis zurückbleiben. Jeder andere Fehlercode
+# wird als fatal behandelt.
 </programlisting>
       </example>
 
@@ -2685,27 +2688,51 @@ os.execv(cmd[0], cmd)
         <programlisting>
 @ECHO OFF
 
+<!--
 REM Configure your favorite three-way diff program here.
+-->
+REM Konfigurieren Sie hier Ihr bevorzugtes Dreiwege-Vergleichsprogramm
 SET DIFF3="C:\Program Files\Funky Stuff\My Diff3 Tool.exe"
 
+<!--
 REM Subversion provides the paths we need as the last three parameters.
 REM These are parameters 9, 10, and 11.  But we have access to only
 REM nine parameters at a time, so we shift our nine-parameter window
 REM twice to let us get to what we need.
+-->
+REM Subversion liefert die von uns benötigten Pfade als die letzten
+REM drei Parameter
+REM Dies sind die Parameter 9, 10 und 11. Allerdings haben wir
+REM gleichzeitig nur Zugriff auf neun Parameter, also verschieben wir
+REM das Neun-Parameter-Fenster zweimal, damit wir das bekommen, was
+REM wir benötigen
 SHIFT
 SHIFT
 SET MINE=%7
 SET OLDER=%8
 SET YOURS=%9
 
+<!--
 REM Call the three-way diff command (change the following line to make
 REM sense for your three-way diff program).
+-->
+REM Aufruf des Dreiwege-Vergleichs-Befehls (ändern Sie die folgende
+REM Zeile, damit es für Ihr Dreiwege-Vergleichsprogramm einen Sinn
+REM ergibt).
 %DIFF3% - -older %OLDER% - -mine %MINE% - -yours %YOURS%
 
+<!--
 REM After performing the merge, this script needs to print the contents
 REM of the merged file to stdout.  Do that in whatever way you see fit.
 REM Return an errorcode of 0 on successful merge, 1 if unresolved conflicts
 REM remain in the result.  Any other errorcode will be treated as fatal.
+-->
+REM Nach der Zusammenführung muss das Script den Inhalt der
+REM zusammengeführten Datei an die Standardausgabe schreiben. Machen
+REM Sie das wie Sie möchten.
+REM Nach erfolgreicher Zusammenführung wird 0 zurückgegeben; 1, falls
+REM offene Konflikte im Ergebnis zurückbleiben. Jeder andere Fehlercode
+REM wird als fatal behandelt.
 </programlisting>
       </example>
 
