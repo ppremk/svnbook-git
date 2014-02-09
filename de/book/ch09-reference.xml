@@ -769,15 +769,11 @@ $ svn status myfile -qv
               einen Sperrkommentar auf der Kommandozeile nach dieser
               Option angeben. Zum Beispiel:</para>
 
+            <informalexample>
+              <screen>
 <!--
-            <informalexample>
-              <screen>
 $ svn commit -m "They don't make Sunday."
-</screen>
-            </informalexample>
 -->
-            <informalexample>
-              <screen>
 $ svn commit -m "Sie schaffen es nicht bis Sonntag."
 </screen>
             </informalexample>
@@ -1041,16 +1037,17 @@ $ svn commit -m "Sie schaffen es nicht bis Sonntag."
               your working copy references.  This is useful if the
               location of your repository changes and you have an
               existing working copy that you'd like to continue to
-              use.  See <command>svn switch</command> for an
-              example.</para>
+              use.  See <xref linkend="svn.ref.svn.c.switch"/> for
+              more details and an example.</para>
 -->
             <para>Bei Verwendung mit dem Unterbefehl <command>svn
               switch</command> wird der Ort des Projektarchivs geändert,
               auf den sich Ihre Arbeitskopie bezieht. Das ist dann
               nützlich, wenn sich der Ort Ihres Projektarchivs ändert und
               Sie eine bestehende Arbeitskopie haben, die Sie
-              weiterverwenden möchten. Für ein Beispiel siehe
-              <command>svn switch</command>.</para>
+              weiterverwenden möchten. Für weitere Details sowie ein
+              Beispiel
+              siehe <xref linkend="svn.ref.svn.c.switch"/>.</para>
           </listitem>
         </varlistentry>
 
@@ -1090,13 +1087,15 @@ $ svn commit -m "Sie schaffen es nicht bis Sonntag."
               durch einen Doppelpunkt getrennte Revisionen übergeben.
               Zum Beispiel:</para>
 
-            <screen>
+            <informalexample>
+              <screen>
 $ svn log -r 1729
 $ svn log -r 1729:HEAD
 $ svn log -r 1729:1744
 $ svn log -r {2001-12-04}:{2002-02-17}
 $ svn log -r 1729:{2002-02-17}
 </screen>
+            </informalexample>
 
 <!--
             <para>See <xref linkend="svn.tour.revs.keywords"/> for more
@@ -1131,15 +1130,20 @@ $ svn log -r 1729:{2002-02-17}
           <listitem>
 <!--
             <para>Sets the sticky depth on a directory in a working
-              copy to one of <literal>empty</literal>,
+              copy to one of <literal>exclude</literal>, <literal>empty</literal>,
               <literal>files</literal>, <literal>immediates</literal>,
-              or <literal>infinity</literal>.</para>
+              or <literal>infinity</literal>.  For detailed coverage
+              of what these mean and how to use this option, see
+              <xref linkend="svn.advanced.sparsedirs" />.</para>
 -->
             <para>Setzt die Wirktiefe eines Verzeichnisses in der
               Arbeitskopie auf einen der Werte
-              <literal>empty</literal>, <literal>files</literal>,
-              <literal>immediates</literal> oder
-              <literal>infinity</literal>.</para>
+              <literal>exclude</literal>, <literal>empty</literal>,
+              <literal>files</literal>, <literal>immediates</literal>
+              oder <literal>infinity</literal>. Für eine detaillierte
+              Erörterung derer Bedeutung und wie diese Option zu
+              verwenden ist, siehe
+              <xref linkend="svn.advanced.sparsedirs" />.</para>
           </listitem>
         </varlistentry>
 
@@ -1215,18 +1219,38 @@ $ svn log -r 1729:{2002-02-17}
         </varlistentry>
 
         <varlistentry>
+          <term><option>--summarize</option></term>
+          <listitem>
+<!--
+            <para>Display only high-level summary notifications about
+              the operation instead of its detailed output.</para>
+-->
+            <para>Statt detaillierter Ausgabe nur grob
+              zusammengefasste Informationen über die Operation
+              anzeigen.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term><option>--targets</option>
             <replaceable>FILENAME</replaceable></term>
           <listitem>
 <!--
-            <para>Tells Subversion to get the list of files that you
-              wish to operate on from the filename that you provide
-              instead of listing all the files on the command line.
+            <para>Tells Subversion to read additional target paths for
+              the operation from <replaceable>FILENAME</replaceable>.
+              <replaceable>FILENAME</replaceable> should contain one
+              path per line, with each path expected to use the same
+              encoding and formatting that it would if you had
+              specified it directly as an argument on the command
+              line.</para>
 -->
-            <para>Teilt Subversion mit, die Liste der Dateien auf die
-              eine Operation angewendet werden soll aus der
-              angegebenen Datei zu entnehmen, anstatt sie von der
-              Kommandozeile zu lesen.</para>
+            <para>Teilt Subversion mit, zusätzliche Zielpfade für die
+              Operation aus <replaceable>FILENAME</replaceable> zu
+              lesen. <replaceable>FILENAME</replaceable> soll einen
+              Pfad pro Zeile beinhalten, wobei dieselbe
+              Zeichenkodierung und Formatierung erwartet wird, die
+              auch direkt als Kommandozeilenargument angegeben worden
+              wäre.</para>
           </listitem>
         </varlistentry>
 
@@ -1287,14 +1311,37 @@ $ svn log -r 1729:{2002-02-17}
           <term><option>--with-all-revprops</option></term>
           <listitem>
 <!--
-            <para>Used with the <option>- -xml</option> option to <command>svn log</command>,
-            will retrieve and display all revision
-            properties in the log output.</para>
+            <para>Used with the <option>- -xml</option> option
+            to <command>svn log</command>, instructs Subversion to
+            retrieve and display all revision properties&mdash;the
+            standard ones used internally by Subversion as well as any
+            user-defined ones&mdash;in the log output.</para>
 -->
             <para>In Verbindung mit der Option <option>--xml</option>
               von <command>svn log</command> werden alle
-              Revisions-Eigenschaften abgerufen und in der
+              Revisions-Eigenschaften, sowohl die standardmäßig von
+              Subversion verwendeten als auch etwaige
+              anwenderdefinierte, abgerufen und in der
               Protokollausgabe angezeigt.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--with-no-revprops</option></term>
+          <listitem>
+<!--
+            <para>Used with the <option>- -xml</option> option
+            to <command>svn log</command>, instructs Subversion to
+            omit all revision properties&mdash;including the standard
+            log message, author, and revision datestamp&mdash;from the
+            log output.</para>
+-->
+            <para>In Verbindung mit der Option <option>--xml</option>
+              von <command>svn log</command> werden alle
+              Revisions-Eigenschaften in der Protokollausgabe
+              unterdrückt, einschließlich der
+              Standard-Protokollnachricht, des Autors und des
+              Zeitstempels der Revision.</para>
           </listitem>
         </varlistentry>
 
@@ -1356,11 +1403,14 @@ $ svn log -r 1729:{2002-02-17}
         globalen Optionen (beschrieben in <xref
         linkend="svn.ref.svn.sw" />) bei den folgenden Beschreibungen
         der Unterbefehle aus.</para>
-
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svn.c.add">
 
         <indexterm>
           <primary>svn</primary>
+<!--
+          <secondary>subcommands</secondary>
+-->
           <secondary>Unterbefehle</secondary>
           <tertiary>add</tertiary>
         </indexterm>
@@ -1379,7 +1429,7 @@ $ svn log -r 1729:{2002-02-17}
           <title>Synopsis</title> 
 -->
           <title>Aufruf</title> 
-          <programlisting>svn add PATH...</programlisting>
+          <para><literal>svn add PATH...</literal></para>
         </refsect1>
         <refsect1>
 <!--
@@ -1407,38 +1457,12 @@ $ svn log -r 1729:{2002-02-17}
 
         <refsect1>
 <!--
-          <title>Alternate names</title>
-          <para>None</para>
--->
-          <title>Alternativnamen</title>
-          <para>Keine</para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Changes</title>
-          <para>Working copy</para>
--->
-          <title>Änderungen</title>
-          <para>Arbeitskopie</para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Accesses repository</title>
-          <para>No</para>
--->
-          <title>Projektarchiv-Zugriff</title>
-          <para>Nein</para>
-        </refsect1>
-
-        <refsect1>
-<!--
           <title>Options</title>
 -->
           <title>Optionen</title>
 
-          <screen>
+          <informalexample>
+            <screen>
 --auto-props
 --depth ARG
 --force
@@ -1448,6 +1472,7 @@ $ svn log -r 1729:{2002-02-17}
 --quiet (-q)
 --targets FILENAME
 </screen>
+          </informalexample>
         </refsect1>
 
         <refsect1>
@@ -1461,10 +1486,12 @@ $ svn log -r 1729:{2002-02-17}
 -->
           <para>Eine Datei zur Arbeitskopie hinzufügen:</para>
 
-          <screen>
+          <informalexample>
+            <screen>
 $ svn add foo.c 
 A         foo.c
 </screen>
+          </informalexample>
 
 <!--
           <para>When adding a directory, the default behavior of
@@ -1473,7 +1500,8 @@ A         foo.c
           <para>Beim Hinzufügen eines Verzeichnisses ist Rekursion das
             Standardverhalten von <command>svn add</command>:</para>
 
-          <screen>
+          <informalexample>
+            <screen>
 $ svn add testdir
 A         testdir
 A         testdir/a
@@ -1481,6 +1509,7 @@ A         testdir/b
 A         testdir/c
 A         testdir/d
 </screen>
+          </informalexample>
 
 <!--
           <para>You can add a directory without adding its
@@ -1489,10 +1518,12 @@ A         testdir/d
           <para>Sie können ein Verzeichnis ohne seinen Inhalt
             hinzufügen:</para>
 
-          <screen>
+          <informalexample>
+            <screen>
 $ svn add --depth=empty otherdir
 A         otherdir
 </screen>
+          </informalexample>
 
 <!--
           <para>Normally, the command <userinput>svn add *</userinput>
@@ -1514,27 +1545,33 @@ A         otherdir
             bearbeiten:
           </para>
 
-          <screen>
+          <informalexample>
+            <screen>
 $ svn add * --force
 A         foo.c
 A         somedir/bar.c
 A  (bin)  otherdir/docs/baz.doc
 &hellip;
 </screen>
+          </informalexample>
 
         </refsect1>
       </refentry>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svn.c.blame">
 
         <indexterm>
           <primary>svn</primary>
+<!--
+          <secondary>subcommands</secondary>
+-->
           <secondary>Unterbefehle</secondary>
           <tertiary>blame</tertiary>
         </indexterm>
 
         <refnamediv>
-          <refname>svn blame</refname>
+          <refname>svn blame (praise, annotate, ann)</refname>
 <!--
           <refpurpose>Show author and revision information inline
             for the specified files or URLs.</refpurpose>
@@ -1547,7 +1584,7 @@ A  (bin)  otherdir/docs/baz.doc
           <title>Synopsis</title>
 -->
           <title>Aufruf</title>
-          <programlisting>svn blame TARGET[@REV]...</programlisting>
+          <para><literal>svn blame TARGET[@REV]...</literal></para>
         </refsect1>
         <refsect1>
 <!--
@@ -1570,77 +1607,21 @@ A  (bin)  otherdir/docs/baz.doc
 
         <refsect1>
 <!--
-          <title>Alternate names</title>
--->
-          <title>Alternativnamen</title>
-          <para><command>praise</command>, <command>annotate</command>, <command>ann</command></para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Changes</title>
--->
-          <title>Änderungen</title>
-<!--
-          <para>Nothing</para>
--->
-          <para>Nichts</para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Accesses repository</title>
--->
-          <title>Projektarchiv-Zugriff</title>
-<!--
-          <para>Yes</para>
--->
-          <para>Ja</para>
-        </refsect1>
-
-        <refsect1>
-<!--
           <title>Options</title>
 -->
           <title>Optionen</title>
 
-          <screen>
+          <informalexample>
+            <screen>
 --extensions (-x) ARG
 --force
 --incremental
---revision (-r) ARG
+--revision (-r) REV
 --use-merge-history (-g)
 --verbose (-v)
 --xml
 </screen>
-
-<!--
-
-TODO(fitz): doc this:
-  - -incremental            : give output suitable for concatenation
-  - -xml                    : output in XML
-  -x [- -extensions] arg    : Default: '-u'. When Subversion is invoking an
-                             external diff program, ARG is simply passed along
-                             to the program. But when Subversion is using its
-                             default internal diff implementation, or when
-                             Subversion is displaying blame annotations, ARG
-                             could be any of the following:
-                                -u (- -unified):
-                                   Output 3 lines of unified context.
-                                -b (- -ignore-space-change):
-                                   Ignore changes in the amount of white space.
-                                -w (- -ignore-all-space):
-                                   Ignore all white space.
-                                - -ignore-eol-style:
-                                   Ignore changes in EOL style
-  - -force                  : force operation to run
-
--->
-
-
-
-
-
+          </informalexample>
         </refsect1>
 
         <refsect1>
@@ -1657,11 +1638,14 @@ TODO(fitz): doc this:
           <para>Wenn Sie den Quelltext von
             <filename>readme.txt</filename> in Ihrem Test-Projektarchiv
             mit Anmerkungen sehen wollen:</para>
-          <screen>
+
+          <informalexample>
+            <screen>
 $ svn blame http://svn.red-bean.com/repos/test/readme.txt
      3      sally This is a README file.
      5      harry You should read this.
 </screen>
+          </informalexample>
 
 <!--
           <para>Even if <command>svn blame</command> says that Harry
@@ -1689,12 +1673,13 @@ $ svn blame http://svn.red-bean.com/repos/test/readme.txt
             bekommen Sie die Anmerkungen als XML-Ausgabe, jedoch nicht
             den eigentlichen Inhalt der Zeilen:</para>
 
-          <screen>
+          <informalexample>
+            <screen>
 $ svn blame --xml http://svn.red-bean.com/repos/test/readme.txt
 &lt;?xml version="1.0"?&gt;
 &lt;blame&gt;
 &lt;target
-   path="sandwich.txt"&gt;
+   path="readme.txt"&gt;
 &lt;entry
    line-number="1"&gt;
 &lt;commit
@@ -1714,14 +1699,19 @@ $ svn blame --xml http://svn.red-bean.com/repos/test/readme.txt
 &lt;/target&gt;
 &lt;/blame&gt;
 </screen>
+          </informalexample>
 
         </refsect1>
       </refentry>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svn.c.cat">
 
         <indexterm>
           <primary>svn</primary>
+<!--
+          <secondary>subcommands</secondary>
+-->
           <secondary>Unterbefehle</secondary>
           <tertiary>cat</tertiary>
         </indexterm>
@@ -1740,7 +1730,7 @@ $ svn blame --xml http://svn.red-bean.com/repos/test/readme.txt
           <title>Synopsis</title>
 -->
           <title>Aufruf</title>
-          <programlisting>svn cat TARGET[@REV]...</programlisting>
+          <para><literal>svn cat TARGET[@REV]...</literal></para>
         </refsect1>
         <refsect1>
 <!--
@@ -1756,39 +1746,7 @@ $ svn blame --xml http://svn.red-bean.com/repos/test/readme.txt
           <para>Ausgeben des Inhalts der angegebenen Datei oder des
             URLs. Um den Inhalt von Verzeichnissen aufzulisten, siehe
             <command>svn list</command> später in diesem
-            Kapitel.</para> </refsect1>
-
-        <refsect1>
-<!--
-          <title>Alternate names</title>
--->
-          <title>Alternativnamen</title>
-<!--
-          <para>None</para>
--->
-          <para>Keine</para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Changes</title>
--->
-          <title>Änderungen</title>
-<!--
-          <para>Nothing</para>
--->
-          <para>Nichts</para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Accesses repository</title>
--->
-          <title>Projektarchiv-Zugriff</title>
-<!--
-          <para>Yes</para>
--->
-          <para>Ja</para>
+            Kapitel.</para>
         </refsect1>
 
         <refsect1>
@@ -1797,9 +1755,11 @@ $ svn blame --xml http://svn.red-bean.com/repos/test/readme.txt
 -->
           <title>Optionen</title>
 
-          <screen>
+          <informalexample>
+            <screen>
 --revision (-r) REV
 </screen>
+          </informalexample>
         </refsect1>
 
         <refsect1>
@@ -1815,11 +1775,15 @@ $ svn blame --xml http://svn.red-bean.com/repos/test/readme.txt
           <para>Wenn Sie die Datei <filename>readme.txt</filename> in
             Ihrem Projektarchiv ansehen möchten, ohne sie auszuchecken:
           </para>
-          <screen>
+
+          <informalexample>
+            <screen>
 $ svn cat http://svn.red-bean.com/repos/test/readme.txt
 This is a README file.
 You should read this.
+$
 </screen>
+          </informalexample>
 
           <tip>
 <!--
@@ -1839,28 +1803,34 @@ You should read this.
               angegebenen Pfad:</para>
           </tip>
 
-          <screen>
+          <informalexample>
+            <screen>
 $ cat foo.c
 This file is in my local working copy 
 and has changes that I've made.
-
 $ svn cat -r HEAD foo.c
 Latest revision fresh from the repository!
+$
 </screen>
+          </informalexample>
 
         </refsect1>
       </refentry>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svn.c.changelist">
 
         <indexterm>
           <primary>svn</primary>
+<!--
+          <secondary>subcommands</secondary>
+-->
           <secondary>Unterbefehle</secondary>
           <tertiary>changelist</tertiary>
         </indexterm>
 
         <refnamediv>
-          <refname>svn changelist</refname>
+          <refname>svn changelist (cl)</refname>
 <!--
           <refpurpose>Associate (or deassociate) local paths with a
             changelist.</refpurpose>
@@ -1873,8 +1843,8 @@ Latest revision fresh from the repository!
           <title>Synopsis</title>
 -->
           <title>Aufruf</title>
-          <programlisting>changelist CLNAME TARGET...</programlisting>
-          <programlisting>changelist --remove TARGET...</programlisting>
+          <para><literal>changelist CLNAME TARGET...</literal></para>
+          <para><literal>changelist --remove TARGET...</literal></para>
         </refsect1>
         <refsect1>
 <!--
@@ -1898,48 +1868,20 @@ Latest revision fresh from the repository!
 
         <refsect1>
 <!--
-          <title>Alternate names</title>
--->
-          <title>Alternativnamen</title>
-          <para><command>cl</command></para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Changes</title>
--->
-          <title>Änderungen</title>
-<!--
-          <para>Working copy</para>
--->
-          <para>Arbeitskopie</para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Accesses repository</title>
--->
-          <title>Projektarchiv-Zugriff</title>
-<!--
-          <para>No</para>
--->
-          <para>Nein</para>
-        </refsect1>
-
-        <refsect1>
-<!--
           <title>Options</title>
 -->
           <title>Optionen</title>
 
-          <screen>
+          <informalexample>
+            <screen>
 --changelist ARG
 --depth ARG
 --quiet (-q)
 --recursive (-R)
 --remove
---targets ARG
+--targets FILENAME
 </screen>
+          </informalexample>
         </refsect1>
 
         <refsect1>
@@ -1956,83 +1898,75 @@ Latest revision fresh from the repository!
             Änderungsliste hinzu und übergeben dann nur die Dateien
             auf dieser Änderungsliste:</para>
 
+          <informalexample>
+            <screen>
+$ svn changelist issue1729 foo.c bar.c baz.c
 <!--
-          <screen>
-$ svn cl issue1729 foo.c bar.c baz.c
 Path 'foo.c' is now a member of changelist 'issue1729'.
 Path 'bar.c' is now a member of changelist 'issue1729'.
 Path 'baz.c' is now a member of changelist 'issue1729'.
-
+-->
+Pfad »foo.c« ist nun ein Element der Änderungsliste »issue1729«.
+Pfad »bar.c« ist nun ein Element der Änderungsliste »issue1729«.
+Pfad »baz.c« ist nun ein Element der Änderungsliste »issue1729«.
 $ svn status
-A      someotherfile.c
-A      test/sometest.c
+A       someotherfile.c
+A       test/sometest.c
 
+<!--
 - - - Changelist 'issue1729':
-A      foo.c
-A      bar.c
-A      baz.c
-
-$ svn commit - -changelist issue1729 -m "Fixing Issue 1729."
+-->
+--- Änderungsliste 'issue1729':
+A       foo.c
+A       bar.c
+A       baz.c
+$ svn commit --changelist issue1729 -m "Fixing Issue 1729."
+<!--
 Adding         bar.c
 Adding         baz.c
 Adding         foo.c
 Transmitting file data ...
 Committed revision 2.
-
-$ svn status
-A      someotherfile.c
-A      test/sometest.c
-</screen>
 -->
-
-          <screen>
-$ svn cl issue1729 foo.c bar.c baz.c
-Pfad »foo.c« ist nun ein Element der Änderungsliste »issue1729«.
-Pfad »bar.c« ist nun ein Element der Änderungsliste »issue1729«.
-Pfad »baz.c« ist nun ein Element der Änderungsliste »issue1729«.
-
-$ svn status
-A      someotherfile.c
-A      test/sometest.c
-
---- Änderungsliste 'issue1729':
-A      foo.c
-A      bar.c
-A      baz.c
-
-$ svn commit --changelist issue1729 -m "Fehlerbehebung 1729."
 Hinzufügen     bar.c
 Hinzufügen     baz.c
 Hinzufügen     foo.c
 Übertrage Daten...
 Revision 2 übertragen.
-
 $ svn status
-A      someotherfile.c
-A      test/sometest.c
+A       someotherfile.c
+A       test/sometest.c
+$
 </screen>
+          </informalexample>
+
 <!--
-          <para>Note that only the files in changelist
-            <replaceable>issue1729</replaceable> were
+          <para>Note that in the previous example, only the files in
+            changelist <literal>issue1729</literal> were
             committed.</para>
 -->
-          <para>Beachten Sie, dass nur die Dateien der Änderungsliste 
-            <replaceable>issue1729</replaceable> übergeben wurden.
+          <para>Beachten Sie, dass im vorigen Beispiel nur die Dateien
+            der Änderungsliste <literal>issue1729</literal> übergeben
+            wurden.
           </para>
 
         </refsect1>
       </refentry>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svn.c.checkout">
 
         <indexterm>
           <primary>svn</primary>
+<!--
+          <secondary>subcommands</secondary>
+-->
           <secondary>Unterbefehle</secondary>
           <tertiary>checkout</tertiary>
         </indexterm>
 
         <refnamediv>
-          <refname>svn checkout</refname>
+          <refname>svn checkout (co)</refname>
 <!--
           <refpurpose>Check out a working copy from a repository.</refpurpose>
 -->
@@ -2044,7 +1978,7 @@ A      test/sometest.c
           <title>Synopsis</title>
 -->
           <title>Aufruf</title>
-          <programlisting>svn checkout URL[@REV]... [PATH]</programlisting>
+          <para><literal>svn checkout URL[@REV]... [PATH]</literal></para>
         </refsect1>
         <refsect1>
 <!--
@@ -2073,47 +2007,19 @@ A      test/sometest.c
 
         <refsect1>
 <!--
-          <title>Alternate names</title>
--->
-          <title>Alternativnamen</title>
-          <para><command>co</command></para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Changes</title>
--->
-          <title>Änderungen</title>
-<!--
-          <para>Creates a working copy</para>
--->
-          <para>Erzeugt eine Arbeitskopie</para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Accesses repository</title>
--->
-          <title>Projektarchiv-Zugriff</title>
-<!--
-          <para>Yes</para>
--->
-          <para>Ja</para>
-        </refsect1>
-
-        <refsect1>
-<!--
           <title>Options</title>
 -->
           <title>Optionen</title>
 
-          <screen>
+          <informalexample>
+            <screen>
 --depth ARG
 --force
 --ignore-externals
 --quiet (-q)
 --revision (-r) REV
 </screen>
+          </informalexample>
         </refsect1>
 
         <refsect1>
@@ -2129,28 +2035,22 @@ A      test/sometest.c
           <para>Eine Arbeitskopie in ein Verzeichnis
             <filename>mine</filename> auschecken:</para>
 
+          <informalexample>
+            <screen>
+$ svn checkout file:///var/svn/repos/test mine
+A    mine/a
+A    mine/b
+A    mine/c
+A    mine/d
 <!--
-          <screen>
-$ svn checkout file:///var/svn/repos/test mine
-A  mine/a
-A  mine/b
-A  mine/c
-A  mine/d
 Checked out revision 20.
-$ ls
-mine
-</screen>
 -->
-          <screen>
-$ svn checkout file:///var/svn/repos/test mine
-A  mine/a
-A  mine/b
-A  mine/c
-A  mine/d
 Ausgecheckt. Revision 20.
 $ ls
 mine
+$
 </screen>
+          </informalexample>
 
 <!--
           <para>Check out two different directories into two separate
@@ -2159,34 +2059,29 @@ mine
           <para>Zwei unterschiedliche Verzeichnisse in zwei getrennte
             Arbeitskopien auschecken:</para>
 
+          <informalexample>
+            <screen>
+$ svn checkout file:///var/svn/repos/test \
+               file:///var/svn/repos/quiz
+A    test/a
+A    test/b
+A    test/c
+A    test/d
 <!--
-          <screen>
-$ svn checkout file:///var/svn/repos/test  file:///var/svn/repos/quiz
-A  test/a
-A  test/b
-A  test/c
-A  test/d
 Checked out revision 20.
-A  quiz/l
-A  quiz/m
-Checked out revision 13.
-$ ls
-quiz  test
-</screen>
 -->
-          <screen>
-$ svn checkout file:///var/svn/repos/test  file:///var/svn/repos/quiz
-A  test/a
-A  test/b
-A  test/c
-A  test/d
 Ausgecheckt. Revision 20.
-A  quiz/l
-A  quiz/m
+A    quiz/l
+A    quiz/m
+<!--
+Checked out revision 13.
+-->
 Ausgecheckt. Revision 13.
 $ ls
 quiz  test
+$
 </screen>
+          </informalexample>
 
 <!--
           <para>Check out two different directories into two separate
@@ -2197,34 +2092,29 @@ quiz  test
             Arbeitskopien auschecken, jedoch beide in ein Verzeichnis
             <filename>working-copies</filename>:</para>
 
+          <informalexample>
+            <screen>
+$ svn checkout file:///var/svn/repos/test \
+               file:///var/svn/repos/quiz \
+               working-copies
+A    working-copies/test/a
+A    working-copies/test/b
+A    working-copies/test/c
+A    working-copies/test/d
 <!--
-          <screen>
-$ svn checkout file:///var/svn/repos/test  file:///var/svn/repos/quiz working-copies
-A  working-copies/test/a
-A  working-copies/test/b
-A  working-copies/test/c
-A  working-copies/test/d
 Checked out revision 20.
-A  working-copies/quiz/l
-A  working-copies/quiz/m
-Checked out revision 13.
-$ ls
-working-copies
-</screen>
 -->
-          <screen>
-$ svn checkout file:///var/svn/repos/test  file:///var/svn/repos/quiz working-copies
-A  working-copies/test/a
-A  working-copies/test/b
-A  working-copies/test/c
-A  working-copies/test/d
 Ausgecheckt. Revision 20.
-A  working-copies/quiz/l
-A  working-copies/quiz/m
+A    working-copies/quiz/l
+A    working-copies/quiz/m
+<!--
+Checked out revision 13.
+-->
 Ausgecheckt. Revision 13.
 $ ls
 working-copies
 </screen>
+          </informalexample>
 
 <!--
           <para>If you interrupt a checkout (or something else
@@ -2240,44 +2130,36 @@ working-copies
             Aktualisierung der unvollständigen Arbeitskopie
             wiederholen:</para>
 
+          <informalexample>
+            <screen>
+$ svn checkout file:///var/svn/repos/test mine
+A    mine/a
+A    mine/b
+^C
 <!--
-          <screen>
-$ svn checkout file:///var/svn/repos/test mine
-A  mine/a
-A  mine/b
-^C
 svn: The operation was interrupted
 svn: caught SIGINT
-
-$ svn checkout file:///var/svn/repos/test mine
-A  mine/c
-^C
-svn: The operation was interrupted
-svn: caught SIGINT
-
-$ svn update mine
-A  mine/d
-Updated to revision 20.
-</screen>
 -->
-          <screen>
-$ svn checkout file:///var/svn/repos/test mine
-A  mine/a
-A  mine/b
-^C
 svn: Die Operation wurde unterbrochen
 svn: Abbruchsignal empfangen
-
 $ svn checkout file:///var/svn/repos/test mine
-A  mine/c
+A    mine/c
 ^C
+<!--
+svn: The operation was interrupted
+svn: caught SIGINT
+-->
 svn: Die Operation wurde unterbrochen
 svn: Abbruchsignal empfangen
-
 $ svn update mine
-A  mine/d
+A    mine/d
+<!--
+Updated to revision 20.
+-->
 Aktualisiert zu Revision 20.
+$
 </screen>
+          </informalexample>
 
 <!--
           <para>If you wish to check out some revision other than the
@@ -2290,26 +2172,176 @@ Aktualisiert zu Revision 20.
             checkout</command> die Option <option>--revision</option>
             (<option>-r</option>) mitgeben:</para>
 
+          <informalexample>
+            <screen>
+$ svn checkout -r 2 file:///var/svn/repos/test mine
+A    mine/a
 <!--
-          <screen>
-$ svn checkout -r 2 file:///var/svn/repos/test mine
-A  mine/a
 Checked out revision 2.
-</screen>
 -->
-          <screen>
-$ svn checkout -r 2 file:///var/svn/repos/test mine
-A  mine/a
 Ausgecheckt. Revision 2.
+$
 </screen>
+          </informalexample>
+
+<!--
+          <para>Subversion will complain by default if you try to
+            check out a directory atop an existing directory which
+            contains files or subdirectories that the checkout itself
+            would have created.  Use the <option>- -force</option>
+            option to override this safeguard.  When you check out
+            with the <option>- -force</option> option, any unversioned
+            file in the checkout target tree which ordinarily would
+            obstruct the checkout will still become versioned, but
+            Subversion will preserve its contents as-is.  If those
+            contents differ from the repository file at that path
+            (which was downloaded as part of the checkout), the file
+            will appear to have local modifications&mdash;the changes
+            required to transform the versioned file you checked out
+            into the unversioned file you had before checking
+            out&mdash;when the checkout completes.</para>
+-->
+          <para>Standardmäßig wird sich Subversion beschweren, falls
+            Sie versuchen, ein Verzeichnis auf einem bestehenden
+            Verzeichnis auszuchecken, das Dateien oder
+            Unterverzeichnisse beinhaltet, die der Checkout selbst
+            angelegt hätte. Verwenden Sie die Option
+            <option>--force</option>, um diese Schutzmaßnahme zu
+            umgehen. Wenn Sie mit der Option <option>--force</option>
+            auschecken, gerät jede unversionierte Dateien im
+            Checkout-Zielverzeichnisbaum, die normalerweise den
+            Checkout verhindert hätte, unter Versionskontrolle, jedoch
+            ändert Subversion ihren Inhalt nicht. Wenn dieser Inhalt
+            sich vom Inhalt der Datei an dieser Stelle im
+            Projektarchiv unterscheidet (der als Teil des Checkouts
+            heruntergeladen wurde), erscheint die Datei nach
+            vollendetem Checkout als lokal geändert, wobei die
+            Änderungen der Überführung der versionierten,
+            ausgecheckten Datei in die unversionierte Datei vor dem
+            Checkout entsprechen.</para>
+
+          <informalexample>
+            <screen>
+$ mkdir project
+$ mkdir project/lib
+$ touch project/lib/file.c
+$ svn checkout file:///var/svn/repos/project/trunk project
+<!--
+svn: Failed to add directory 'project/lib': an unversioned directory of the sa
+me name already exists
+-->
+svn: Verzeichnis »project/lib« konnte nicht hinzugefügt werden: ein nicht versi
+oniertes Verzeichnis mit demselben Namen existiert bereits
+$ svn checkout file:///var/svn/repos/project/trunk project --force
+E    project/lib
+A    project/lib/subdir
+E    project/lib/file.c
+A    project/lib/anotherfile.c
+A    project/include/header.h
+<!--
+Checked out revision 21.
+-->
+Ausgecheckt, Revision 21.
+$ svn status wc
+M       project/lib/file.c
+$ svn diff wc
+Index: project/lib/file.c
+===================================================================
+--- project/lib/file.c	(revision 1)
++++ project/lib/file.c	(working copy)
+@@ -3 +0,0 @@
+-/* file.c: Code for acting file-ishly. */
+-#include &lt;stdio.h&gt;
+-/* Not feeling particularly creative today. */
+
+$
+</screen>
+          </informalexample>
+
+<!--
+          <para>As in another other working copy, you have the choices
+            typically available:  reverting some or all of those
+            local <quote>modifications</quote>, committing them, or
+            continuing to modify your working copy.</para>
+-->
+          <para>Wie auch bei anderen Arbeitskopien haben Sie die
+            üblichen Möglichkeiten zur Auswahl: die lokalen
+            <quote>Änderungen</quote> teilweise oder vollständig
+            rückgängig machen, sie übergeben oder mit Änderungen in
+            Ihrer Arbeitskopie fortfahren.</para>
+
+<!--
+          <para>This feature is especially useful for performing
+            in-place imports of unversioned directory trees.  By first
+            importing the tree into the repository, and then checking
+            out new repository location atop the unversioned tree with
+            the <option>- -force</option> option, you effectively
+            transform the unversioned tree into a working
+            copy.</para>
+-->
+          <para>Besonders nützlich ist diese Funktionalität, um cor
+            Ort unversionierte Verzeichnisbäune zu importieren. Indem
+            zunächst der Baum in das Projektarchiv importiert und dann
+            über den unversionierten Baum mit der Option
+            <option>--force</option> ausgecheckt wird, bewirken Sie
+            hiermit eine Überführung des unversionierten Baums in eine
+            Arbeitskopie.</para>
+
+          <informalexample>
+            <screen>
+$ svn mkdir -m "Create newproject project root." \
+      file://var/svn/repos/newproject
+$ svn import -m "Import initial newproject codebase." newproject \
+      file://var/svn/repos/newproject/trunk
+<!--
+Adding         newproject/include
+Adding         newproject/include/newproject.h
+Adding         newproject/lib
+Adding         newproject/lib/helpers.c
+Adding         newproject/lib/base.c
+Adding         newproject/notes
+Adding         newproject/notes/README
+-->
+Hinzufügen     newproject/include
+Hinzufügen     newproject/include/newproject.h
+Hinzufügen     newproject/lib
+Hinzufügen     newproject/lib/helpers.c
+Hinzufügen     newproject/lib/base.c
+Hinzufügen     newproject/notes
+Hinzufügen     newproject/notes/README
+
+<!--
+Committed revision 22.
+-->
+Revision 22 übertragen.
+$ svn checkout file://`pwd`/repos-1.6/newproject/trunk newproject --force
+E    newproject/include
+E    newproject/include/newproject.h
+E    newproject/lib
+E    newproject/lib/helpers.c
+E    newproject/lib/base.c
+E    newproject/notes
+E    newproject/notes/README
+<!--
+Checked out revision 2.
+-->
+Ausgecheckt. Revision 2.
+$ svn status newproject
+$
+</screen>
+          </informalexample>
 
         </refsect1>
       </refentry>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svn.c.cleanup">
 
         <indexterm>
           <primary>svn</primary>
+<!--
+          <secondary>subcommands</secondary>
+-->
           <secondary>Unterbefehle</secondary>
           <tertiary>cleanup</tertiary>
         </indexterm>
@@ -2326,7 +2358,7 @@ Ausgecheckt. Revision 2.
           <title>Synopsis</title>
 -->
           <title>Aufruf</title>
-          <programlisting>svn cleanup [PATH...]</programlisting>
+          <para><literal>svn cleanup [PATH...]</literal></para>
         </refsect1>
         <refsect1>
 <!--
@@ -2353,57 +2385,25 @@ Ausgecheckt. Revision 2.
           <para>If, for some reason, an <command>svn update</command>
             fails due to a problem running an external diff program
             (e.g., user input or network failure), pass the
-            <option>- -diff3-cmd</option> to allow cleanup to complete
-            any merging with your external diff program.  You can also
-            specify any configuration directory with the
-            <option>- -config-dir</option> option, but you should need
-            these options extremely infrequently.</para>
+            <option>- -diff3-cmd</option> to allow the cleanup process
+            to complete any required merging using your external diff
+            program.  You can also specify any configuration directory
+            with the <option>- -config-dir</option> option, but you
+            should need these options extremely infrequently.</para>
 -->
-          <para>Falls aus irgendwelchen Gründen <command>svn
-            update</command> wegen eines Problems mit einem externen
-            diff-Programm fehlschlagen sollte (z.B. durch
-            Benutzereingaben oder Netzprobleme), übergeben Sie die
-            Option <option>--diff3-cmd</option>, um <command>svn
-            cleanup</command> die Möglichkeit zu geben, das
-            Zusammenführen mit Ihrem externen diff-Programm
+          <para>Falls aus irgendwelchen Gründen
+            <command>svn update</command> wegen eines Problems mit
+            einem externen diff-Programm fehlschlagen sollte (z.B.
+            durch Benutzereingaben oder Netzprobleme), übergeben Sie
+            die Option <option>--diff3-cmd</option>, um dem
+            cleanup-Prozess die Möglichkeit zu geben, notwendige
+            Zusammenführungen mit Ihrem externen diff-Programm
             abzuschließen. Sie können mit der Option
             <option>--config-dir</option> auch irgendein
             Konfigurationsverzeichnis angeben, allerdings sollten Sie
             diese Optionen nur äußerst selten benötigen.</para>
 
-        </refsect1>
 
-        <refsect1>
-<!--
-          <title>Alternate names</title>
--->
-          <title>Alternativnamen</title>
-<!--
-          <para>None</para>
--->
-          <para>Keine</para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Changes</title>
--->
-          <title>Änderungen</title>
-<!--
-          <para>Working copy</para>
--->
-          <para>Arbeitskopie</para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Accesses repository</title>
--->
-          <title>Projektarchiv-Zugriff</title>
-<!--
-          <para>No</para>
--->
-          <para>Nein</para>
         </refsect1>
 
         <refsect1>
@@ -2412,9 +2412,11 @@ Ausgecheckt. Revision 2.
 -->
           <title>Optionen</title>
 
-          <screen>
+          <informalexample>
+            <screen>
 --diff3-cmd CMD
 </screen>
+          </informalexample>
 
         </refsect1>
 
@@ -2436,25 +2438,31 @@ Ausgecheckt. Revision 2.
             wird <quote><filename>.</filename></quote> verwendet:
           </para>
 
-          <screen>
+          <informalexample>
+            <screen>
 $ svn cleanup
 
 $ svn cleanup /var/svn/working-copy
 </screen>
+          </informalexample>
 
         </refsect1>
       </refentry>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svn.c.commit">
 
         <indexterm>
           <primary>svn</primary>
+<!--
+          <secondary>subcommands</secondary>
+-->
           <secondary>Unterbefehle</secondary>
           <tertiary>commit</tertiary>
         </indexterm>
 
         <refnamediv>
-          <refname>svn commit</refname>
+          <refname>svn commit (ci)</refname>
 <!--
           <refpurpose>Send changes from your working copy to the repository.</refpurpose>
 -->
@@ -2466,7 +2474,7 @@ $ svn cleanup /var/svn/working-copy
           <title>Synopsis</title>
 -->
           <title>Aufruf</title>
-          <programlisting>svn commit [PATH...]</programlisting>
+          <para><literal>svn commit [PATH...]</literal></para>
         </refsect1>
         <refsect1>
 <!--
@@ -2475,10 +2483,11 @@ $ svn cleanup /var/svn/working-copy
           <title>Beschreibung</title>
 
 <!--
-          <para>Send changes from your working copy to the
-            repository.  If you do not supply a log message with your
-            commit by using either the <option>- -file</option> or
-            <option>- -message</option> option,
+          <para>Send changes from your working copy to the repository.
+            If you do not supply a log message with your commit by
+            using either the <option>- -file</option>
+            (<option>-F</option>) or <option>- -message</option>
+            (<option>-m</option>) option,
             <command>svn</command> will launch your editor for you
             to compose a commit message.  See the
             <literal>editor-cmd</literal> list entry in <xref
@@ -2486,11 +2495,11 @@ $ svn cleanup /var/svn/working-copy
 -->
           <para>Änderungen aus der Arbeitskopie an das Projektarchiv
             übergeben. Falls Sie keine Protokollnachricht, mit einer
-            der Optionen <option>--file</option> oder
-            <option>--message</option>, angeben, startet
-            <command>svn</command> Ihren Editor zum Verfassen einer
-            Protokollnachricht. Siehe auch den Listeneintrag zu
-            <literal>editor-cmd</literal> in <xref
+            der Optionen <option>--file</option> (<option>-F</option>)
+            oder <option>--message</option> (<option>-m</option>),
+            angeben, startet <command>svn</command> Ihren Editor zum
+            Verfassen einer Protokollnachricht. Siehe auch den
+            Listeneintrag zu <literal>editor-cmd</literal> in <xref
             linkend="svn.advanced.confarea.opts.config"/>.</para>
 
 <!--
@@ -2528,66 +2537,28 @@ $ svn cleanup /var/svn/working-copy
 
         </refsect1>
 
-
-
-        <refsect1>
-<!--
-          <title>Alternate names</title>
--->
-          <title>Alternativnamen</title>
-<!--
-          <para><command>ci</command> (short for <quote>check in</quote>; not 
-            <command>co</command>, which is an alias for the 
-            <command>checkout</command> subcommand)</para>
--->
-          <para><command>ci</command> (kurz für <quote>check
-            in</quote>; nicht <command>co</command>, welches ein Alias
-            für den Unterbefehl <command>checkout</command>
-            ist)</para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Changes</title>
--->
-          <title>Änderungen</title>
-<!--
-          <para>Working copy; repository</para>
--->
-          <para>Arbeitskopie; Projektarchiv</para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Accesses repository</title>
--->
-          <title>Projektarchiv-Zugriff</title>
-<!--
-          <para>Yes</para>
--->
-          <para>Ja</para>
-        </refsect1>
-
         <refsect1>
 <!--
           <title>Options</title>
 -->
           <title>Optionen</title>
 
-          <screen>
+          <informalexample>
+            <screen>
 --changelist ARG
 --depth ARG
---editor-cmd ARG
+--editor-cmd CMD
 --encoding ENC
---file (-F) FILE
+--file (-F) FILENAME
 --force-log
 --keep-changelists
---message (-m) TEXT
+--message (-m) MESSAGE
 --no-unlock
 --quiet (-q)
 --targets FILENAME
 --with-revprop ARG
 </screen>
+          </informalexample>
         </refsect1>
 
         <refsect1>
@@ -2607,20 +2578,18 @@ $ svn cleanup /var/svn/working-copy
             aktuellen Verzeichnis als implizites Ziel
             (<quote><filename>.</filename></quote>):</para>
 
-<!--
-          <screen>
+          <informalexample>
+            <screen>
 $ svn commit -m "added howto section."
 Sending        a
+<!--
 Transmitting file data .
 Committed revision 3.
-</screen>
 -->
-          <screen>
-$ svn commit -m "added howto section."
-Sende          a
 Übertrage Daten .
 Revision 3 übertragen.
 </screen>
+          </informalexample>
 
 <!--
           <para>Commit a modification to the file
@@ -2633,80 +2602,89 @@ Revision 3 übertragen.
             Kommandozeile angegeben) mit der Protokollnachricht in der
             Datei <filename>msg</filename>:</para>
 
-<!--
-          <screen>
+          <informalexample>
+            <screen>
 $ svn commit -F msg foo.c
+<!--
 Sending        foo.c
 Transmitting file data .
 Committed revision 5.
-</screen>
 -->
-          <screen>
-$ svn commit -F msg foo.c
 Sende          foo.c
 Übertrage Daten .
 Revision 5 übertragen.
 </screen>
+          </informalexample>
 
 <!--
-          <para>If you want to use a file that's under version
-            control for your commit message with
-            <option>- -file</option>, you need to pass the
+          <para>If you want to use a file that's under version control
+            for your commit message with <option>- -file</option>
+            (<option>-F</option>), you need to pass the
             <option>- -force-log</option> option:</para>
 -->
-          <para>Falls Sie  mit der Option <option>--file</option> eine
-            Datei unter Versionskontrolle für Ihre
-            Protokollnachricht verwenden möchten, müssen Sie die
-            Option <option>--force-log</option> angeben:</para>
+          <para>Falls Sie  mit der Option <option>--file</option>
+            (<option>-F</option>) eine Datei unter Versionskontrolle
+            für Ihre Protokollnachricht verwenden möchten, müssen Sie
+            die Option <option>--force-log</option> angeben:</para>
 
+          <informalexample>
+            <screen>
+$ svn commit -F file_under_vc.txt foo.c
 <!--
-          <screen>
-$ svn commit - -file file_under_vc.txt foo.c
 svn: The log message file is under version control
 svn: Log message file is a versioned file; use '- -force-log' to override
-
-$ svn commit - -force-log - -file file_under_vc.txt foo.c
-Sending        foo.c
-Transmitting file data .
-Committed revision 6.
-</screen>
 -->
-          <screen>
-$ svn commit --file file_under_vc.txt foo.c
 svn: Die Datei für die Logmeldung ist unter Versionskontrolle
 svn: Die Datei für den Sperrkommentar ist versioniert; geben Sie »--force-log« an, um sie zu verwenden
 
-$ svn commit --force-log --file file_under_vc.txt foo.c
+$ svn commit --force-log -F file_under_vc.txt foo.c
+<!--
+Sending        foo.c
+Transmitting file data .
+Committed revision 6.
+-->
 Sende          foo.c
 Übertrage Daten .
 Revision 6 übertragen.
 </screen>
+          </informalexample>
 
 <!--
           <para>To commit a file scheduled for deletion:</para>
 -->
           <para>Eine zur Löschung vorgemerkte Datei übergeben:</para>
 
-          <screen>
+          <informalexample>
+            <screen>
 $ svn commit -m "removed file 'c'."
+<!--
+Deleting       c
+
+Committed revision 7.
+-->
 Lösche         c
 
 Revision 7 übertragen.
 </screen>
+          </informalexample>
 
         </refsect1>
       </refentry>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svn.c.copy">
 
         <indexterm>
           <primary>svn</primary>
+<!--
+          <secondary>subcommands</secondary>
+-->
           <secondary>Unterbefehle</secondary>
           <tertiary>copy</tertiary>
         </indexterm>
 
         <refnamediv>
-          <refname>svn copy</refname>
+          <refname>svn copy (cp)</refname>
 <!--
           <refpurpose>Copy a file or directory in a working copy or
             in the repository.</refpurpose>
@@ -2720,7 +2698,7 @@ Revision 7 übertragen.
           <title>Synopsis</title>
 -->
           <title>Aufruf</title>
-          <programlisting>svn copy SRC[@REV]... DST</programlisting>
+          <para><literal>svn copy SRC[@REV]... DST</literal></para>
         </refsect1>
 
         <refsect1>
@@ -2731,19 +2709,21 @@ Revision 7 übertragen.
 
 <!--
           <para>Copy one or more files in a working copy or in the
-            repository.  When copying multiple sources, they will be
-            added as children of <replaceable>DST</replaceable>, which must be a directory.
-            <replaceable>SRC</replaceable> and
+            repository. <replaceable>SRC</replaceable> and
             <replaceable>DST</replaceable> can each be either a
-            working copy (WC) path or URL:</para>
+            working copy (WC) path or URL.  When copying multiple
+            sources, add the  copies as immediate children
+            of <replaceable>DST</replaceable> (which, of course, must
+            be a directory).</para>
 -->
           <para>Kopieren einer Datei oder mehrerer Dateien in der
-            Arbeitskopie. Werden mehrere Quellen kopiert, werden diese
-            als Kinder <replaceable>DST</replaceable> hinzugefügt,
-            welches ein Verzeichnis sein muss.
-            <replaceable>SRC</replaceable> und
+            Arbeitskopie. <replaceable>SRC</replaceable> und
             <replaceable>DST</replaceable> können beide entweder ein
-            Pfad in der Arbeitskopie (AK) oder ein URL sein:</para>
+            Pfad in der Arbeitskopie (AK) oder ein URL sein. Sollen
+            mehrere Quellen kopiert werden, fügen Sie diese als
+            unmittelbare Kindobjekte <replaceable>DST</replaceable>
+            hinzu (welches natürlich ein Verzeichnis sein
+            muss).</para>
 
             <variablelist>
 
@@ -2807,13 +2787,20 @@ Revision 7 übertragen.
             </variablelist>
 
 <!--
-          <para>When copying multiple sources, they will be added as
-            children of <replaceable>DST</replaceable>, which must be
-            a directory.</para>
+          <para>If no peg revision (i.e.,
+            <replaceable>@REV</replaceable>) is supplied, by default
+            the <literal>BASE</literal> revision will be used for
+            files copied from the working copy, while the
+            <literal>HEAD</literal> revision will be used for files
+            copied from a URL.</para>
 -->
-          <para>Werden mehrere Quellen kopiert, werden diese
-            als Kinder <replaceable>DST</replaceable> hinzugefügt,
-            welches ein Verzeichnis sein muss.</para>
+          <para>Wird keine Peg-Revision (z.B.
+            <replaceable>@REV</replaceable>) angegeben, so wird
+            standardmäßig die Revision <literal>BASE</literal> für
+            Dateien verwendet, die aus der Arbeitskopie kopiert
+            werden, wohingegen die Revision <literal>HEAD</literal>
+            für Dateien herangezogen wird, die von einem URL kopiert
+            werden.</para>
 
           <note>
 <!--
@@ -2829,55 +2816,24 @@ Revision 7 übertragen.
 
         <refsect1>
 <!--
-          <title>Alternate names</title>
--->
-          <title>Alternativnamen</title>
-          <para><command>cp</command></para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Changes</title>
--->
-          <title>Änderungen</title>
-<!--
-          <para>Repository if destination is a URL; working copy if destination is a WC path</para>
--->
-          <para>Projektarchiv, falls Ziel ein URL ist; Arbeitskopie,
-            falls Ziel ein AK-Pfad ist.</para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Accesses repository</title>
--->
-          <title>Projektarchiv-Zugriff</title>
-<!--
-          <para>Yes, if source or destination is in the repository, or if needed
-            to look up the source revision number.</para>
--->
-          <para>Ja, falls Quelle und Ziel im Projektarchiv liegen oder
-            falls die Revisionsnummer der Quelle ermittelt werden
-            muss.</para>
-        </refsect1>
-
-        <refsect1>
-<!--
           <title>Options</title>
 -->
           <title>Optionen</title>
 
-          <screen>
---editor-cmd EDITOR
+          <informalexample>
+            <screen>
+--editor-cmd CMD
 --encoding ENC
---file (-F) FILE
+--file (-F) FILENAME
 --force-log
---message (-m) TEXT
+--ignore-externals
+--message (-m) MESSAGE
 --parents
 --quiet (-q)
 --revision (-r) REV
 --with-revprop ARG
 </screen>
+          </informalexample>
         </refsect1>
 
         <refsect1>
@@ -2895,12 +2851,14 @@ Revision 7 übertragen.
             (dies merkt die Kopie vor &ndash; bis zur Übergabe wird
             nichts ins Projektarchiv übertragen):</para>
 
-          <screen>
+          <informalexample>
+            <screen>
 $ svn copy foo.txt bar.txt
 A         bar.txt
 $ svn status
 A  +   bar.txt
 </screen>
+          </informalexample>
 
 <!--
           <para>Copy several files in a working copy into a
@@ -2909,12 +2867,14 @@ A  +   bar.txt
           <para>Kopieren mehrerer Dateien der Arbeitskopie in ein
             Unterverzeichnis:</para>
 
-          <screen>
-$ svn cp bat.c baz.c qux.c src
+          <informalexample>
+            <screen>
+$ svn copy bat.c baz.c qux.c src
 A         src/bat.c
 A         src/baz.c
 A         src/qux.c
 </screen>
+          </informalexample>
 
 <!--
           <para>Copy revision 8 of <filename>bat.c</filename> into your
@@ -2923,10 +2883,12 @@ A         src/qux.c
           <para>Kopieren von <filename>bat.c</filename>, Revision 8 in
             Ihre Arbeitskopie unter einem anderen Namen:</para>
 
-          <screen>
-$ svn cp -r 8 bat.c ya-old-bat.c
+          <informalexample>
+            <screen>
+$ svn copy -r 8 bat.c ya-old-bat.c
 A         ya-old-bat.c
 </screen>
+          </informalexample>
 
 <!--
           <para>Copy an item in your working copy to a URL in the
@@ -2937,18 +2899,16 @@ A         ya-old-bat.c
             URL im Projektarchiv (dies ist eine sofortige Übergabe, so
             dass Sie eine Protokollnachricht angeben müssen):</para>
 
+          <informalexample>
+            <screen>
+$ svn copy near.txt file:///var/svn/repos/test/far-away.txt -m "Remote copy."
+
 <!--
-          <screen>
-$ svn copy near.txt file:///var/svn/repos/test/far-away.txt -m "Remote copy."
-
 Committed revision 8.
-</screen>
 -->
-          <screen>
-$ svn copy near.txt file:///var/svn/repos/test/far-away.txt -m "Remote copy."
-
 Revision 8 übertragen.
 </screen>
+          </informalexample>
 
 <!--
           <para>Copy an item from the repository to your working
@@ -2959,10 +2919,12 @@ Revision 8 übertragen.
             Arbeitskopie (dies merkt die Kopie nur vor &ndash; vor der
             Übergabe gelangt nichts ins Projektarchiv):</para>
 
-          <screen>
+          <informalexample>
+            <screen>
 $ svn copy file:///var/svn/repos/test/far-away -r 6 near-here
 A         near-here
 </screen>
+          </informalexample>
 
           <tip>
 <!--
@@ -2978,35 +2940,29 @@ A         near-here
 -->
           <para>Schließlich eine Kopie zwischen zwei URLs:</para>
 
+          <informalexample>
+            <screen>
+$ svn copy file:///var/svn/repos/test/far-away \
+           file:///var/svn/repos/test/over-there -m "remote copy."
+
 <!--
-          <screen>
-$ svn copy file:///var/svn/repos/test/far-away \
-           file:///var/svn/repos/test/over-there -m "remote copy."
-
 Committed revision 9.
-</screen>
 -->
-          <screen>
-$ svn copy file:///var/svn/repos/test/far-away \
-           file:///var/svn/repos/test/over-there -m "remote copy."
-
 Revision 9 übertragen.
 </screen>
+          </informalexample>
+
+          <informalexample>
+            <screen>
+$ svn copy file:///var/svn/repos/test/trunk \
+           file:///var/svn/repos/test/tags/0.6.32-prerelease -m "tag tree"
 
 <!--
-          <screen>
-$ svn copy file:///var/svn/repos/test/trunk \
-           file:///var/svn/repos/test/tags/0.6.32-prerelease -m "tag tree"
-
 Committed revision 12.
-</screen>
 -->
-          <screen>
-$ svn copy file:///var/svn/repos/test/trunk \
-           file:///var/svn/repos/test/tags/0.6.32-prerelease -m "tag tree"
-
 Revision 12 übertragen.
 </screen>
+          </informalexample>
 
           <tip>
 <!--
@@ -3032,29 +2988,29 @@ Revision 12 übertragen.
             können immer eine ältere Revision angeben und jederzeit
             ein Tag vergeben:</para>
 
+          <informalexample>
+            <screen>
+$ svn copy -r 11 file:///var/svn/repos/test/trunk \
+           file:///var/svn/repos/test/tags/0.6.32-prerelease \
+           -m "Forgot to tag at rev 11"
+
 <!--
-          <screen>
-$ svn copy -r 11 file:///var/svn/repos/test/trunk \
-           file:///var/svn/repos/test/tags/0.6.32-prerelease \
-           -m "Forgot to tag at rev 11"
-
 Committed revision 13.
-</screen>
 -->
-          <screen>
-$ svn copy -r 11 file:///var/svn/repos/test/trunk \
-           file:///var/svn/repos/test/tags/0.6.32-prerelease \
-           -m "Forgot to tag at rev 11"
-
 Revision 13 übertragen.
 </screen>
+          </informalexample>
         </refsect1>
       </refentry>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svn.c.delete">
 
         <indexterm>
           <primary>svn</primary>
+<!--
+          <secondary>subcommands</secondary>
+-->
           <secondary>Unterbefehle</secondary>
           <tertiary>delete</tertiary>
         </indexterm>
@@ -3073,8 +3029,8 @@ Revision 13 übertragen.
           <title>Synopsis</title>
 -->
           <title>Aufruf</title>
-          <programlisting>svn delete PATH...</programlisting>
-          <programlisting>svn delete URL...</programlisting>
+          <para><literal>svn delete PATH...</literal></para>
+          <para><literal>svn delete URL...</literal></para>
         </refsect1>
         <refsect1>
 <!--
@@ -3115,53 +3071,24 @@ Revision 13 übertragen.
 
         <refsect1>
 <!--
-          <title>Alternate names</title>
--->
-          <title>Alternativnamen</title>
-          <para><command>del</command>, <command>remove</command>, <command>rm</command></para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Changes</title>
--->
-          <title>Änderungen</title>
-<!--
-          <para>Working copy if operating on files; repository if
-            operating on URLs</para>
--->
-          <para>Arbeitskopie bei Dateien; Projektarchiv bei URLs</para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Accesses repository</title>
--->
-          <title>Projektarchiv-Zugriff</title>
-<!--
-          <para>Only if operating on URLs</para>
--->
-          <para>Nur bei URLs</para>
-        </refsect1>
-
-        <refsect1>
-<!--
           <title>Options</title>
 -->
           <title>Optionen</title>
 
-          <screen>
---editor-cmd EDITOR
+          <informalexample>
+            <screen>
+--editor-cmd CMD
 --encoding ENC
---file (-F) FILE
+--file (-F) FILENAME
 --force
 --force-log
 --keep-local
---message (-m) TEXT
+--message (-m) MESSAGE
 --quiet (-q)
 --targets FILENAME
 --with-revprop ARG
 </screen>
+          </informalexample>
         </refsect1>
 
         <refsect1>
@@ -3183,26 +3110,22 @@ Revision 13 übertragen.
             aus dem Projektarchiv vor. Bei der Übergabe wird die Datei im
             Projektarchiv gelöscht.</para>
 
-<!--
-          <screen>
+          <informalexample>
+            <screen>
 $ svn delete myfile
 D         myfile
 
 $ svn commit -m "Deleted file 'myfile'."
+<!--
 Deleting       myfile
 Transmitting file data .
 Committed revision 14.
-</screen>
 -->
-          <screen>
-$ svn delete myfile
-D         myfile
-
-$ svn commit -m "Deleted file 'myfile'."
 Lösche         myfile
 Übertrage Daten .
 Revision 14 übertragen.
 </screen>
+          </informalexample>
 
 <!--
           <para>Deleting a URL, however, is immediate, so you have
@@ -3211,20 +3134,17 @@ Revision 14 übertragen.
           <para>Das Löschen eines URLs wird jedoch sofort wirksam, so
             dass Sie eine Protokollnachricht angeben müssen:</para>
 
+          <informalexample>
+            <screen>
+$ svn delete -m "Deleting file 'yourfile'" \
+             file:///var/svn/repos/test/yourfile
+
 <!--
-          <screen>
-$ svn delete -m "Deleting file 'yourfile'" \
-             file:///var/svn/repos/test/yourfile
-
 Committed revision 15.
-</screen>
 -->
-          <screen>
-$ svn delete -m "Deleting file 'yourfile'" \
-             file:///var/svn/repos/test/yourfile
-
 Revision 15 übertragen.
 </screen>
+          </informalexample>
 
 <!--
           <para>Here's an example of how to force deletion of a file
@@ -3233,30 +3153,67 @@ Revision 15 übertragen.
           <para>Hier ist ein Beispiel, wie die Löschung einer Datei
             mit lokalen Änderungen erzwungen werden kann:</para>
 
-<!--
-          <screen>
+          <informalexample>
+            <screen>
 $ svn delete over-there 
+<!--
 svn: Attempting restricted operation for modified resource
 svn: Use - -force to override this restriction
 svn: 'over-there' has local modifications
-
-$ svn delete - -force over-there 
-D         over-there
-</screen>
 -->
-          <screen>
-$ svn delete over-there 
 svn: Versuch, eine beschränkte Operation für veränderte Ressource auszuführen
 svn: Benutzen Sie »--force«, um diese Einschränkung aufzuheben
 svn: »over-there« hat lokale Änderungen
 
-$ svn delete --force over-there 
+$ svn delete - -force over-there 
 D         over-there
 </screen>
+          </informalexample>
 
+<!--
+          <para>Use the <option>- -keep-local</option> option to
+            override the default <command>svn delete</command>
+            behavior of also removing the target file that was
+            scheduled for versioned deletion.  This is helpful when
+            you realize that you've accidentally committed the
+            addition of a file that you need to keep around in your
+            working copy, but which shouldn't have been added to
+            version control.</para>
+-->
+          <para>Verwenden Sie die Option
+            <option>--keep-local</option>, um das standardmäßige
+            Verhalten von <command>svn delete</command> zu verhindern,
+            dass auch die Zieldatei entfernt wird, die für eine
+            versionierte Löschung vorgemerkt war. Das ist in dem Fall
+            nützlich, falls Sie feststellen, dass Sie versehentlich
+            eine hinzugefügte Datei übergeben haben, die Sie zwar in
+            Ihrer Arbeitskopie benötigen, jedoch nicht unter
+            Versionskontrolle stehen soll.</para>
+
+          <informalexample>
+            <screen>
+$ svn delete --keep-local conf/program.conf
+D         conf/program.conf
+
+$ svn commit -m "Remove accidentally-added configuration file."
+<!--
+Deleting       conf/program.conf
+Transmitting file data .
+Committed revision 21.
+-->
+Lösche         conf/program.conf
+Übertrage Daten .
+Revision 21 übertragen.
+$ svn status
+?       conf/program.conf
+$
+</screen>
+          </informalexample>
+          
         </refsect1>
       </refentry>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svn.c.diff">
 
         <indexterm>
@@ -4051,7 +4008,6 @@ Exportiert, Revision 15.
 
         </refsect1>
       </refentry>
-
 
 
       <refentry id="svn.ref.svn.c.help">
@@ -7197,7 +7153,6 @@ Eigenschaft »owner-pic« für »moo.c« gesetzt\n"
 
         </refsect1>
       </refentry>
-
       <refentry id="svn.ref.svn.c.resolve">
 
         <indexterm>
@@ -9351,7 +9306,6 @@ Aktualisiert zu Revision 30.
         </refsect1>
       </refentry>
     </sect2>
-
   </sect1>
 
   <!-- ================================================================= -->
