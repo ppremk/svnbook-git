@@ -8814,13 +8814,17 @@ Aktualisiert zu Revision 30.
         </refsect1>
       </refentry>
     </sect2>
+    
   </sect1>
 
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.ref.svnadmin">
-    <title>svnadmin</title>
+<!--
+    <title>svnadmin&mdash;Subversion Repository Administration</title>
+-->
+    <title>svnadmin &ndash; Subversion Projektarchiv-Verwaltung</title>
 
 <!--
     <para><command>svnadmin</command> is the administrative tool for
@@ -8848,12 +8852,12 @@ Aktualisiert zu Revision 30.
     <!-- =============================================================== -->
     <sect2 id="svn.ref.svnadmin.sw">
 <!--
-      <title><command>svnadmin</command> Options</title> 
+      <title>svnadmin Options</title> 
 -->
       <title>svnadmin-Optionen</title> 
 
 <!--
-      <para>Options in <command>svmadin</command> are global, just
+      <para>Options in <command>svnadmin</command> are global, just
         as they are in <command>svn</command>:</para>
 -->
       <para>Optionen für <command>svmadin</command> sind global, genau
@@ -8921,8 +8925,58 @@ Aktualisiert zu Revision 30.
           </listitem>
         </varlistentry>
 
-        <!-- TODO config-dir?  Only 'svnadmin create' accepts it, and -->
-        <!-- the underlying logic doesn't even use it.                -->
+        <varlistentry>
+          <!-- Only 'svnadmin create' accepts it, and the underlying
+               logic doesn't even use it.  Weird. -->
+          <term><option>--config-dir</option> <replaceable>DIR</replaceable></term>
+          <listitem>
+<!--
+            <para>Instructs Subversion to read configuration
+              information from the specified directory instead of the
+              default location (<filename>.subversion</filename> in
+              the user's home directory).</para>
+-->
+            <para>Veranlasst Subversion, Informationen zur
+              Konfiguration aus dem angegebenen Verzeichnis zu lesen,
+              statt aus dem standardmäßigen Ort
+              (<filename>.subversion</filename> im Heimverzeichnis des
+              Anwenders.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--deltas</option></term>
+          <listitem>
+<!--
+            <para>When creating a repository dump file, specify
+              changes in versioned properties and file contents as
+              deltas against their previous state.</para>
+-->
+            <para>Bei der Erstellung einer Auszugsdatei sollen die
+              Änderungen an versionierten Eigenschaften und
+              Dateiinhalten als Deltas zum vorherigen Zustand
+              angegeben werden.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--fs-type</option> <replaceable>ARG</replaceable></term>
+          <listitem>
+<!--
+            <para>When creating a repository,
+              use <replaceable>ARG</replaceable> as the requested
+              filesyste type.  <replaceable>ARG</replaceable> may be
+              either <literal>bdb</literal>
+              or <literal>fsfs</literal>.</para>
+-->
+            <para>Bei der Erstellung eines Projektarchivs soll
+              <replaceable>ARG</replaceable> als gewünschter
+              Dateisystem-Typ verwendet werden. 
+              <replaceable>ARG</replaceable> kann entweder
+              <literal>bdb</literal> oder <literal>fsfs</literal>
+              sein.</para>
+          </listitem>
+        </varlistentry>
 
         <varlistentry>
           <term><option>--force-uuid</option></term>
@@ -8930,19 +8984,16 @@ Aktualisiert zu Revision 30.
 <!--
             <para>By default, when loading data into repository that
               already contains revisions, <command>svnadmin</command>
-              will ignore the <literal>UUID</literal> from the dump
-              stream.  This option will cause the repository's
-              <literal>UUID</literal> to be set to the
-              <literal>UUID</literal> from the stream.</para>
+              will ignore the UUID from the dump stream.  This option
+              will cause the repository's UUID to be set to the UUID
+              from the stream.</para>
 -->
             <para>Beim Laden von Daten in ein Projektarchiv, das bereits
-              Revisionen enthält, ignoriert
-              <command>svnadmin</command> standardmäßig die
-              <literal>UUID</literal> aus dem Auszugs-Datenstrom.
-              Diese Option führt dazu, dass die
-              <literal>UUID</literal> des Projektarchivs auf die
-              <literal>UUID</literal> des Datenstroms gesetzt wird.
-            </para>
+              Revisionen enthält, ignoriert <command>svnadmin</command>
+              standardmäßig die UUID aus dem Auszugs-Datenstrom.
+              Diese Option führt dazu, dass die UUID des
+              Projektarchivs auf die UUID des Datenstroms gesetzt
+              wird.</para>
           </listitem>
         </varlistentry>
 
@@ -8950,20 +9001,16 @@ Aktualisiert zu Revision 30.
           <term><option>--ignore-uuid</option></term>
           <listitem>
 <!--
-            <para>By default, when loading an empty repository,
-              <command>svnadmin</command> will ignore the
-              <literal>UUID</literal> from the dump stream.  This
-              option will force that UUID to be ignored (useful for
-              overriding your configuration file if it has
-              <option>- -force-uuid</option> set).</para>
+            <para>By default, when loading data into an empty repository,
+              <command>svnadmin</command> will set the repository's UUID
+              to the UUID from the dump stream.  This option will cause
+              the UUID from the stream to be ignored.</para>
 -->
-            <para>Beim Laden eines leeren Projektarchivs ignoriert
-              <command>svnadmin</command> standardmäßig die
-              <literal>UUID</literal> aus dem Auszugs-Datenstrom.
-              Diese Option erzwingt, dass diese UUID ignoriert wird
-              (dies ist nützlich, um die Option
-              <option>--force-uuid</option> aus der
-              Konfigurationsdatei aufzuheben).</para>
+            <para>Beim Laden von Daten in ein leeres Projektarchivs
+              setzt <command>svnadmin</command> standardmäßig die UUID
+              des Projektarchivs auf die UUID des Auszugs-Datenstroms.
+              Diese Option erzwingt, dass die UUID aus dem Datenstrom
+              ignoriert wird,</para>
           </listitem>
         </varlistentry>
 
@@ -9024,6 +9071,20 @@ Aktualisiert zu Revision 30.
         </varlistentry>
 
         <varlistentry>
+          <term><option>--pre-1.6-compatible</option></term>
+          <listitem>
+<!--
+            <para>When creating a new repository, use a format that is
+              compatible with versions of Subversion earlier than
+              Subversion 1.6.</para>
+-->
+            <para>Verwendet beim Erstellen eines Projektarchiv ein
+              Format, das zu älteren Versionen als Subversion 1.5
+              kompatibel ist.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term><option>--revision</option> (<option>-r</option>)
           <replaceable>ARG</replaceable></term>
           <listitem>
@@ -9037,7 +9098,7 @@ Aktualisiert zu Revision 30.
         </varlistentry>
 
         <varlistentry>
-          <term><option>--quiet</option></term>
+          <term><option>--quiet</option> (<option>-q</option>)</term>
           <listitem>
 <!--
             <para>Do not show normal progress&mdash;show only
@@ -9108,6 +9169,23 @@ Aktualisiert zu Revision 30.
               vorher der <literal>pre-revprop-change</literal>-Hook
               des Projektarchivs aufgerufen. Falls der Hook fehlschlägt,
               wird die Änderung abgebrochen und beendet.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--wait</option></term>
+          <listitem>
+<!--
+            <para>For operations which require exclusive repository
+              access, wait until the requisite repository lock has
+              been obtained instead of immediately erroring out when
+              it cannot be.</para>
+-->
+            <para>Bei Operationen, die einen exklusiven Zugriff auf
+              das Projektarchiv erfordern, soll gewartet werden, bis
+              die benötigte Sperre des Projektarchivs verfügbar ist,
+              anstatt bei Nichtverfügbarkeit sofort mit einer
+              Fehlermeldung abzubrechen.</para>
           </listitem>
         </varlistentry>
 
