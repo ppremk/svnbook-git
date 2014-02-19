@@ -13106,8 +13106,10 @@ $ svnlook youngest /var/svn/repos/
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.ref.svnsync">
-
-    <title>svnsync</title>
+<!--
+    <title>svnsync&mdash;Subversion Repository Mirroring</title>
+-->
+    <title>svnsync &ndash; Subversion Projektarchiv-Spiegelung</title>
 
 <!--
     <para><command>svnsync</command> is the Subversion remote
@@ -13315,6 +13317,19 @@ $ svnlook youngest /var/svn/repos/
           </listitem>
         </varlistentry>
 
+        <varlistentry>
+          <term><option>--trust-server-cert</option></term>
+          <listitem>
+<!--
+            <para>Used with <option>- -non-interactive</option> to accept
+              any unknown SSL server certificates without prompting.</para>
+-->
+            <para>In Verbindung mit <option>--non-interactive</option>
+              zum Akzeptieren eines unbekannten
+              SSL-Server-Zertifikates ohne Nachfrage.</para>
+          </listitem>
+        </varlistentry>
+
       </variablelist>
 
     </sect2>
@@ -13337,6 +13352,9 @@ $ svnlook youngest /var/svn/repos/
 
         <indexterm>
           <primary>svnsync</primary>
+<!--
+          <secondary>subcommands</secondary>
+-->
           <secondary>Unterbefehle</secondary>
           <tertiary>copy-revprops</tertiary>
         </indexterm>
@@ -13358,7 +13376,8 @@ $ svnlook youngest /var/svn/repos/
           <title>Synopsis</title>
 -->
           <title>Aufruf</title>
-          <programlisting>svnsync copy-revprops DEST_URL [REV[:REV2]</programlisting>
+          <para><literal>svnsync copy-revprops DEST_URL
+            [REV[:REV2]]</literal></para>
         </refsect1>
         <refsect1>
 <!--
@@ -13414,7 +13433,8 @@ $ svnlook youngest /var/svn/repos/
 -->
           <title>Optionen</title>
 
-          <screen>
+          <informalexample>
+            <screen>
 --config-dir DIR
 --no-auth-cache
 --non-interactive
@@ -13423,7 +13443,9 @@ $ svnlook youngest /var/svn/repos/
 --source-username ARG
 --sync-password ARG
 --sync-username ARG
+--trust-server-cert
 </screen>
+          </informalexample>
         </refsect1>
 
         <refsect1>
@@ -13438,35 +13460,38 @@ $ svnlook youngest /var/svn/repos/
           <para>Revisions-Eigenschaften einer einzelnen Revision erneut
             synchronisieren:</para>
 
+          <informalexample>
+            <screen>
+$ svnsync copy-revprops file:///var/svn/repos-mirror 6
 <!--
-          <screen>
-$ svnsync copy-revprops file:///var/svn/repos-mirror 6
 Copied properties for revision 6.
-$
-</screen>
 -->
-          <screen>
-$ svnsync copy-revprops file:///var/svn/repos-mirror 6
 Eigenschaften für Revision 6 kopiert.
 $
 </screen>
+          </informalexample>
 
         </refsect1>
       </refentry>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svnsync.c.help">
 
         <indexterm>
           <primary>svnsync</primary>
+<!--
+          <secondary>subcommands</secondary>
+-->
           <secondary>Unterbefehle</secondary>
           <tertiary>help</tertiary>
         </indexterm>
 
         <refnamediv>
+          <refname>svnsync help</refname>
 <!--
-          <refname>svnsync help</refname> <refpurpose>Help!</refpurpose>
+          <refpurpose>Help!</refpurpose>
 -->
-          <refname>svnsync help</refname> <refpurpose>Hilfe!</refpurpose>
+          <refpurpose>Hilfe!</refpurpose>
         </refnamediv>
         <refsect1>
 
@@ -13474,7 +13499,7 @@ $
           <title>Synopsis</title>
 -->
           <title>Aufruf</title>
-          <programlisting>svnsync help</programlisting>
+          <para><literal>svnsync help</literal></para>
         </refsect1>
         <refsect1>
 <!--
@@ -13501,17 +13526,6 @@ $
 
         <refsect1>
 <!--
-          <title>Alternate name</title>
--->
-          <title>Alternativname</title>
-<!--
-          <para>None</para>
--->
-          <para>Keiner</para>
-        </refsect1>
-
-        <refsect1>
-<!--
           <title>Options</title>
 -->
           <title>Optionen</title>
@@ -13523,16 +13537,117 @@ $
 
       </refentry>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <refentry id="svn.ref.svnsync.c.info">
+
+        <indexterm>
+          <primary>svnsync</primary>
+          <secondary>subcommands</secondary>
+<!--
+          <secondary>Unterbefehle</secondary>
+-->
+          <tertiary>info</tertiary>
+        </indexterm>
+
+        <refnamediv>
+          <refname>svnsync info</refname>
+<!--
+          <refpurpose>Print information about the synchronization
+            of a destination repository.</refpurpose>
+-->
+          <refpurpose>Informationen über die Synchronisierung eines
+            Ziel-Projektarchivs ausgeben.</refpurpose>
+        </refnamediv>
+        <refsect1>
+<!--
+          <title>Synopsis</title>
+-->
+          <title>Aufruf</title>
+          <para><literal>svnsync info DEST_URL</literal></para>
+        </refsect1>
+        <refsect1>
+<!--
+          <title>Description</title>
+-->
+          <title>Beschreibung</title>
+          
+<!--
+          <para>Print the synchronization source URL, source repository
+            UUID and the last revision merged from the source to the
+            destination repository at <replaceable>DEST_URL</replaceable>.</para>
+-->
+          <para>Ausgabe der Synchronisierungs-Quell-URL, der UUID des
+            Quell-Projektarchivs sowie der letzten Revision die aus
+            der Quelle mit dem Ziel-Projektarchiv bei
+            <replaceable>DEST_URL</replaceable> zusammengeführt
+            wurde.</para>
+        </refsect1>
+        
+        <refsect1>
+<!--
+          <title>Options</title>
+-->
+          <title>Optionen</title>
+
+          <informalexample>
+            <screen>
+--config-dir DIR
+--no-auth-cache
+--non-interactive
+--source-password ARG
+--source-username ARG
+--sync-password ARG
+--sync-username ARG
+--trust-server-cert
+</screen>
+          </informalexample>
+        </refsect1>
+
+        <refsect1>
+<!--
+          <title>Examples</title>
+-->
+          <title>Beispiele</title>
+
+<!--
+          <para>Print the synchronization information of a mirror
+            repository:</para>
+-->
+          <para>Ausgabe der Synchronisierungs-Informationen eines
+            gespiegelten Projektarchivs:</para>
+
+          <informalexample>
+            <screen>
+$ svnsync info file:///var/svn/repos-mirror
+<!--
+Source URL: http://svn.example.com/repos
+Source Repository UUID: e7fe1b91-8cd5-0310-98dd-2f12e793c5e8
+Last Merged Revision: 47
+-->
+Quell-URL: http://svn.example.com/repos
+UUID des Quellprojektarchivs: e7fe1b91-8cd5-0310-98dd-2f12e793c5e8
+Letzte zusammengeführte Revision: 47
+$
+</screen>
+          </informalexample>
+
+        </refsect1>
+      </refentry>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svnsync.c.init">
 
         <indexterm>
           <primary>svnsync</primary>
+<!--
+          <secondary>subcommands</secondary>
+-->
           <secondary>Unterbefehle</secondary>
           <tertiary>initialize</tertiary>
         </indexterm>
 
         <refnamediv>
-          <refname>svnsync initialize</refname>
+          <refname>svnsync initialize (init)</refname>
 <!--
           <refpurpose>Initialize a mirror repository for
             synchronization from the source repository.</refpurpose>
@@ -13545,7 +13660,7 @@ $
           <title>Synopsis</title>
 -->
           <title>Aufruf</title>
-          <programlisting>svnsync initialize MIRROR_URL SOURCE_URL</programlisting>
+          <para><literal>svnsync initialize MIRROR_URL SOURCE_URL</literal></para>
         </refsect1>
         <refsect1>
 <!--
@@ -13559,10 +13674,11 @@ $
             repository&mdash;that it has no previous existing version
             history and that it allows revision property
             modifications&mdash;and records the initial administrative
-            information that associates the mirror repository with
-            the source repository.  This is the first
-            <command>svnsync</command> operation you run on a would-be
-            mirror repository.</para>
+            information that associates the mirror repository with the
+            source repository (specified
+            by <replaceable>SOURCE_URL</replaceable>).  This is the
+            first <command>svnsync</command> operation you run on a
+            would-be mirror repository.</para>
 -->
           <para><command>svnsync initialize</command> überprüft,
             ob ein Projektarchiv die Voraussetzungen eines neuen
@@ -13570,19 +13686,32 @@ $
             bestehende Versionsgeschichte hat und dass es Änderungen
             an Revisions-Eigenschaften zulässt &ndash; und legt die
             anfängliche Verwaltungsinformation an, welche das
-            Spiegel-Projektarchiv mit dem Quell-Projektarchiv verknüpft.
-            Dies ist der erste <command>svnsync</command>-Befehl, den
-            Sie auf einem künftigen Spiegel-Projektarchiv laufen
-            lassen.</para>
+            Spiegel-Projektarchiv mit dem Quell-Projektarchiv (durch
+            <replaceable>SOURCE_URL</replaceable> angegeben)
+            verknüpft.  Dies ist der erste
+            <command>svnsync</command>-Befehl, den Sie auf einem
+            künftigen Spiegel-Projektarchiv laufen lassen.</para>
+
+<!--
+          <para>Ordinarily, <replaceable>SOURCE_URL</replaceable> is
+            the URL of the root directory of the Subversion repository
+            you wish to mirror.  Subversion 1.5 and newer allow you to
+            use <command>svnsync</command> for partial repository
+            mirroring, though &mdash; simply specify the URL of the
+            source repository subdirectory you wish to mirror
+            as <replaceable>SOURCE_URL</replaceable>.</para>
+-->
+          <para>Normalerweise ist
+            <replaceable>SOURCE_URL</replaceable> der URL des
+            Wurzelverzeichnisses des Subversion Projektarchivs, das
+            Sie spiegeln möchten. Subversion 1.5 und neuer erlauben
+            jedoch auch, <command>svnsync</command> für teilweise
+            Projektarchiv-Spiegelungen zu verwenden; geben Sie einfach mit
+            <replaceable>SOURCE_URL</replaceable> den URL des
+            Unterverzeichnisses des Quell-Projektarchivs an, das Sie
+            spiegeln möchten.</para>
         </refsect1>
 
-        <refsect1>
-<!--
-          <title>Alternate name</title>
--->
-          <title>Alternativname</title>
-          <para><command>init</command></para>
-        </refsect1>
 
         <refsect1>
 <!--
@@ -13590,7 +13719,8 @@ $
 -->
           <title>Optionen</title>
 
-          <screen>
+          <informalexample>
+            <screen>
 --config-dir DIR
 --no-auth-cache
 --non-interactive
@@ -13599,7 +13729,9 @@ $
 --source-username ARG
 --sync-password ARG
 --sync-username ARG
+--trust-server-cert
 </screen>
+          </informalexample>
         </refsect1>
 
         <refsect1>
@@ -13616,21 +13748,19 @@ $
             Spiegel-Projektarchivs, da sich Revisions-Eigenschaften nicht
             ändern lassen:</para>
 
-<!--
-          <screen>
+          <informalexample>
+            <screen>
 $ svnsync initialize file:///var/svn/repos-mirror http://svn.example.com/repos
+<!--
 svnsync: Repository has not been enabled to accept revision propchanges;
 ask the administrator to create a pre-revprop-change hook
-$
-</screen>
 -->
-          <screen>
-$ svnsync initialize file:///var/svn/repos-mirror http://svn.example.com/repos
 Das Projektarchiv lässt keine Änderungen an Revisionseigenschaften zu.
 Bitten Sie den Administrator darum, eine Aktion »pre-revprop-change«
 einzurichten."
 $
 </screen>
+          </informalexample>
 
 <!--
           <para>Initialize a repository as a mirror, having already
@@ -13642,32 +13772,34 @@ $
             bereitgestellt wurde, der alle Änderungen an
             Revisions-Eigenschaften zulässt:</para>
 
+          <informalexample>
+            <screen>
+$ svnsync initialize file:///var/svn/repos-mirror http://svn.example.com/repos
 <!--
-          <screen>
-$ svnsync initialize file:///var/svn/repos-mirror http://svn.example.com/repos
 Copied properties for revision 0.
-$
-</screen>
 -->
-          <screen>
-$ svnsync initialize file:///var/svn/repos-mirror http://svn.example.com/repos
 Eigenschaften für Revision 0 kopiert.
 $
 </screen>
+          </informalexample>
 
         </refsect1>
       </refentry>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svnsync.c.sync">
 
         <indexterm>
           <primary>svnsync</primary>
+<!--
+          <secondary>subcommands</secondary>
+-->
           <secondary>Unterbefehle</secondary>
           <tertiary>synchronize</tertiary>
         </indexterm>
 
         <refnamediv>
-          <refname>svnsync synchronize</refname>
+          <refname>svnsync synchronize (sync)</refname>
 <!--
           <refpurpose>Transfer all pending revisions from the source
             repository to the mirror repository.</refpurpose>
@@ -13681,7 +13813,7 @@ $
           <title>Synopsis</title>
 -->
           <title>Aufruf</title>
-          <programlisting>svnsync synchronize DEST_URL</programlisting>
+          <para><literal>svnsync synchronize DEST_URL</literal></para>
         </refsect1>
         <refsect1>
 <!--
@@ -13712,26 +13844,6 @@ $
           <para><command>svnsync synchronize</command> kann sauber
             abgebrochen und erneut gestartet werden.</para>
 
-<!--
-          <para>As of Subversion 1.5, you can limit <command>svnsync</command> to a
-            subdirectory of the source repository by specifying the
-            subdirectory as part of
-            the <replaceable>SOURCE_URL</replaceable>.</para>
--->
-          <para>Seit Subversion 1.5 können Sie
-            <command>svnsync</command> auf ein Unterverzeichnis des
-            Quell-Projektarchivs begrenzen, indem Sie das
-            Unterverzeichnis als Teil des
-            <replaceable>SOURCE_URL</replaceable> angeben.</para>
-
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Alternate name</title>
--->
-          <title>Alternativname</title>
-          <para><command>sync</command></para>
         </refsect1>
 
         <refsect1>
@@ -13740,7 +13852,8 @@ $
 -->
           <title>Optionen</title>
 
-          <screen>
+          <informalexample>
+            <screen>
 --config-dir DIR
 --no-auth-cache
 --non-interactive
@@ -13749,7 +13862,9 @@ $
 --source-username ARG
 --sync-password ARG
 --sync-username ARG
+--trust-server-cert
 </screen>
+          </informalexample>
         </refsect1>
 
         <refsect1>
@@ -13765,9 +13880,10 @@ $
           <para>Unsynchronisierte Revisionen aus dem Quell- ins
             Spiegel-Projektarchiv kopieren.</para>
 
-<!--
-          <screen>
+          <informalexample>
+            <screen>
 $ svnsync synchronize file:///var/svn/repos-mirror
+<!--
 Committed revision 1.
 Copied properties for revision 1.
 Committed revision 2.
@@ -13781,11 +13897,7 @@ Committed revision 46.
 Copied properties for revision 46.
 Committed revision 47.
 Copied properties for revision 47.
-$
-</screen>
 -->
-          <screen>
-$ svnsync synchronize file:///var/svn/repos-mirror
 Revision 1 übertragen.
 Eigenschaften für Revision 1 kopiert.
 Revision 2 übertragen.
@@ -13801,6 +13913,7 @@ Revision 47 übertragen.
 Eigenschaften für Revision 47 kopiert.
 $
 </screen>
+          </informalexample>
 
         </refsect1>
 
