@@ -15035,9 +15035,12 @@ exported
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.ref.mod_dav_svn">
+<!--
+    <title>mod_dav_svn&mdash;Subversion Apache HTTP Server Module</title>
+-->
+    <title>mod_dav_svn &ndash; Subversion Apache HTTP-Server-Modul</title>
 
-    <title>mod_dav_svn</title>
-
+    <!-- =============================================================== -->
     <refentry id="svn.ref.mod_dav_svn.conf">
       <refnamediv>
 
@@ -15108,6 +15111,67 @@ exported
                 <command>httpd</command> auf, das Subversion-Backend
                 von <literal>mod_dav</literal> zur Auftragsabwicklung
                 zu verwenden.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNActivitiesDB
+              <replaceable>directory-path</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Specifies the location in the filesystem where the
+                activities database should be stored.  By default,
+                <command>mod_dav_svn</command> creates and uses a directory in the
+                repository
+                called <filename>dav/activities.d</filename>.  The
+                path specified with this option must be an absolute
+                path.</para>
+-->
+              <para>Bestimmt den Ort im Dateisystem, an dem die
+                Datenbank für Aktivitäten abgelegt werden soll.
+                Standardmäßig erzeugt und verwendet
+                <command>mod_dav_svn</command> ein Verzeichnis im
+                Projektarchiv namens
+                <filename>dav/activities.d</filename>. Der durch diese
+                Option angegebene Pfad muss absolut sein.</para>
+
+<!--
+              <para>If specified for
+                an <literal>SVNParentPath</literal> area, <command>mod_dav_svn</command>
+                appends the basename of the repository to the path
+                specified here.  For example:</para>
+-->
+
+              <para>Falls ein <literal>SVNParentPath</literal>-Bereich
+                angegeben wurde, hängt <command>mod_dav_svn</command>
+                den Basisnamen des Projektarchivs an diesen Pfad an,
+                beispielsweise:</para>
+
+              <informalexample>
+          <screen>
+&lt;Location /svn&gt;
+  DAV svn
+
+<!--
+  # any "/svn/foo" URL will map to a repository in 
+  # /net/svn.nfs/repositories/foo
+-->
+  # jeder "/svn/foo" URL wird auf ein Projektarchiv in
+  # /net/svn.nfs/repositories/foo abgebildet
+  SVNParentPath         "/net/svn.nfs/repositories"
+
+<!--
+  # any "/svn/foo" URL will map to an activities db in
+  #  /var/db/svn/activities/foo
+-->
+  # jeder "/svn/foo" URL wird auf eine Aktivitäten-Datenbank in
+  #  /var/db/svn/activities/foo abgebildet
+  SVNActivitiesDB       "/var/db/svn/activities"
+&lt;/Location&gt;
+</screen>
+        </informalexample>
 
             </listitem>
           </varlistentry>
@@ -15222,85 +15286,6 @@ exported
           </varlistentry>
 
           <varlistentry>
-            <term><literal>SVNPath
-              <replaceable>directory-path</replaceable></literal></term>
-            <listitem>
-
-<!--
-              <para>Specifies the location in the
-                filesystem for a Subversion repository's files.  In a
-                configuration block for a Subversion repository,
-                either this directive or
-                <literal>SVNParentPath</literal> must be present, but
-                not both.</para>
--->
-              <para>Gibt den Ort im Dateisystem an, an dem die Dateien
-                eines Subversion-Projektarchivs liegen. In einem
-                Konfigurationsblock für ein Subversion-Projektarchiv muss
-                entweder diese Direktive oder
-                <literal>SVNParentPath</literal> vorhanden sein,
-                jedoch nicht beide.</para>
-
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term><literal>SVNSpecialURI
-              <replaceable>component</replaceable></literal></term>
-            <listitem>
-
-<!--
-              <para>Specifies the URI component (namespace) for
-                special Subversion resources.  The default is
-                <literal>!svn</literal>, and most
-                administrators will never use this directive.  Set
-                this only if there is a pressing need to have a file
-                named <filename>!svn</filename> in your repository.
-                If you change this on a server already in use, it will
-                break all of the outstanding working copies, and your
-                users will hunt you down with pitchforks and flaming
-                torches.</para>
--->
-              <para>Spezifiziert die URI-Komponente (Namensraum) für
-                besondere Subversion-Ressourcen. Der Standardwert ist
-                <literal>!svn</literal>, und die meisten
-                Administratoren werden diese Direktive nie verwenden.
-                Setzen Sie sie nur, falls die dringende Notwendigkeit
-                besteht, eine Datei namens <filename>!svn</filename>
-                in Ihrem Projektarchiv zu haben. Falls Sie diese
-                Direktive auf einem Server ändern, der bereits in
-                Gebrauch ist, werden alle offenstehenden Arbeitskopien
-                unbrauchbar gemacht, und Ihre Benutzer werden Sie mit
-                Mistgabeln und Fackeln zur Strecke bringen.</para>
-
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term><literal>SVNReposName
-              <replaceable>name</replaceable></literal></term>
-            <listitem>
-
-<!--
-              <para>Specifies the name of a Subversion repository for
-                use in <literal>HTTP GET</literal> responses.  This
-                value will be prepended to the title of all directory
-                listings (which are served when you navigate to a
-                Subversion repository with a web browser).  This
-                directive is optional.</para>
--->
-              <para>Spezifiziert den Namen eines
-                Subversion-Projektarchivs zur Verwendung für
-                <literal>HTTP GET</literal>-Antworten. Dieser Wert
-                wird dem Titel aller Verzeichnisauflistungen
-                vorangestellt (die übertragen werden, wenn Sie mit
-                einem Browser zu einem Subversion-Projektarchiv
-                navigieren). Diese Direktive ist optional.</para>
-
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
             <term><literal>SVNIndexXSLT
               <replaceable>directory-path</replaceable></literal></term>
             <listitem>
@@ -15311,55 +15296,6 @@ exported
 -->
               <para>Spezifiziert den URI einer XSL-Transformation für
                 Verzeichnisindexe. Diese Direktive ist optional.</para>
-
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term><literal>SVNParentPath
-              <replaceable>directory-path</replaceable></literal></term>
-            <listitem>
-
-<!--
-              <para>Specifies the location in the filesystem of a
-                parent directory whose child directories are
-                Subversion repositories.  In a configuration block for
-                a Subversion repository, either this directive or
-                <literal>SVNPath</literal> must be present, but not
-                both.</para>
--->
-              <para>Spezifiziert den Ort im Dateisystem, an dem ein
-                Elternverzeichnis liegt, dessen Kindverzeichnisse
-                Subversion-Projektarchive sind. In einem
-                Konfigurationsblock für ein Subversion-Projektarchiv muss
-                entweder diese Direktive oder
-                <literal>SVNPath</literal> vorhanden sein, jedoch
-                nicht beide.</para>
-
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term><literal>SVNPathAuthz On|Off|short_circuit</literal></term>
-            <listitem>
-
-<!--
-              <para>Controls path-based authorization by enabling
-                subrequests (<literal>On</literal>), disabling
-                subrequests (<literal>Off</literal>; see <xref
-                linkend="svn.serverconfig.httpd.authz.pathauthzoff"/>),
-                or querying <command>mod_authz_svn</command> directly
-                (<literal>short_circuit</literal>).  The default
-                value of this directive is <literal>On</literal>.</para>
--->
-              <para>Kontrolliert pfadbasierte Autorisierung, indem
-                Unteranfragen ermöglicht (<literal>On</literal>) oder
-                abgeschaltet (<literal>Off</literal>; siehe <xref
-                linkend="svn.serverconfig.httpd.authz.pathauthzoff"/>)
-                werden oder bei <command>mod_authz_svn</command>
-                direkt nachgefragt wird
-                (<literal>short_circuit</literal>). Der Standardwert
-                dieser Direktive ist <literal>On</literal>.</para>
 
             </listitem>
           </varlistentry>
@@ -15402,238 +15338,135 @@ exported
           </varlistentry>
 
           <varlistentry>
-            <term><literal>SVNActivitiesDB
+            <term><literal>SVNParentPath
               <replaceable>directory-path</replaceable></literal></term>
             <listitem>
 
 <!--
-              <para>Specifies the location in the filesystem where the
-                activities database should be stored.  By default,
-                <command>mod_dav_svn</command> creates and uses a directory in the
-                repository
-                called <filename>dav/activities.d</filename>.  The
-                path specified with this option must be an absolute
-                path.</para>
+              <para>Specifies the location in the filesystem of a
+                parent directory whose child directories are
+                Subversion repositories.  In a configuration block for
+                a Subversion repository, either this directive or
+                <literal>SVNPath</literal> must be present, but not
+                both.</para>
 -->
-              <para>Spezifiziert den Ort im Dateisystem, an dem die
-                Datenbank für Aktivitäten abgelegt werden soll.
-                Standardmäßig erzeugt und verwendet
-                <command>mod_dav_svn</command> ein Verzeichnis im
-                Projektarchiv namens
-                <filename>dav/activities.d</filename>. Der durch diese
-                Option angegebene Pfad muss absolut sein.</para>
+              <para>Spezifiziert den Ort im Dateisystem, an dem ein
+                Elternverzeichnis liegt, dessen Kindverzeichnisse
+                Subversion-Projektarchive sind. In einem
+                Konfigurationsblock für ein Subversion-Projektarchiv muss
+                entweder diese Direktive oder
+                <literal>SVNPath</literal> vorhanden sein, jedoch
+                nicht beide.</para>
 
-              <para>Falls sie für einen
-                <literal>SVNParentPath</literal>-Bereich angegeben
-                wird, hängt <command>mod_dav_svn</command> den
-                Basisnamen des Projektarchivs an den hier angegebenen
-                Pfad. Zum Beispiel:</para>
+            </listitem>
+          </varlistentry>
 
-        <screen>
-&lt;Location /svn&gt;
-  DAV svn
+          <varlistentry>
+            <term><literal>SVNPath
+              <replaceable>directory-path</replaceable></literal></term>
+            <listitem>
 
-  # any "/svn/foo" URL will map to a repository in 
-  # /net/svn.nfs/repositories/foo
-  SVNParentPath         "/net/svn.nfs/repositories"
+<!--
+              <para>Specifies the location in the
+                filesystem for a Subversion repository's files.  In a
+                configuration block for a Subversion repository,
+                either this directive or
+                <literal>SVNParentPath</literal> must be present, but
+                not both.</para>
+-->
+              <para>Gibt den Ort im Dateisystem an, an dem die Dateien
+                eines Subversion-Projektarchivs liegen. In einem
+                Konfigurationsblock für ein Subversion-Projektarchiv muss
+                entweder diese Direktive oder
+                <literal>SVNParentPath</literal> vorhanden sein,
+                jedoch nicht beide.</para>
 
-  # any "/svn/foo" URL will map to an activities db in
-  #  /var/db/svn/activities/foo
-  SVNActivitiesDB       "/var/db/svn/activities"
-&lt;/Location&gt;
-</screen>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNPathAuthz On|Off|short_circuit</literal></term>
+            <listitem>
+
+<!--
+              <para>Controls path-based authorization by enabling
+                subrequests (<literal>On</literal>), disabling
+                subrequests (<literal>Off</literal>; see <xref
+                linkend="svn.serverconfig.httpd.authz.pathauthzoff"/>),
+                or querying <command>mod_authz_svn</command> directly
+                (<literal>short_circuit</literal>).  The default
+                value of this directive is <literal>On</literal>.</para>
+-->
+              <para>Kontrolliert pfadbasierte Autorisierung, indem
+                Unteranfragen ermöglicht (<literal>On</literal>) oder
+                abgeschaltet (<literal>Off</literal>; siehe <xref
+                linkend="svn.serverconfig.httpd.authz.pathauthzoff"/>)
+                werden oder bei <command>mod_authz_svn</command>
+                direkt nachgefragt wird
+                (<literal>short_circuit</literal>). Der Standardwert
+                dieser Direktive ist <literal>On</literal>.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNReposName
+              <replaceable>name</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Specifies the name of a Subversion repository for
+                use in <literal>HTTP GET</literal> responses.  This
+                value will be prepended to the title of all directory
+                listings (which are served when you navigate to a
+                Subversion repository with a web browser).  This
+                directive is optional.</para>
+-->
+              <para>Spezifiziert den Namen eines
+                Subversion-Projektarchivs zur Verwendung für
+                <literal>HTTP GET</literal>-Antworten. Dieser Wert
+                wird dem Titel aller Verzeichnisauflistungen
+                vorangestellt (die übertragen werden, wenn Sie mit
+                einem Browser zu einem Subversion-Projektarchiv
+                navigieren). Diese Direktive ist optional.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNSpecialURI
+              <replaceable>component</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Specifies the URI component (namespace) for
+                special Subversion resources.  The default is
+                <literal>!svn</literal>, and most
+                administrators will never use this directive.  Set
+                this only if there is a pressing need to have a file
+                named <filename>!svn</filename> in your repository.
+                If you change this on a server already in use, it will
+                break all of the outstanding working copies, and your
+                users will hunt you down with pitchforks and flaming
+                torches.</para>
+-->
+              <para>Spezifiziert die URI-Komponente (Namensraum) für
+                besondere Subversion-Ressourcen. Der Standardwert ist
+                <literal>!svn</literal>, und die meisten
+                Administratoren werden diese Direktive nie verwenden.
+                Setzen Sie sie nur, falls die dringende Notwendigkeit
+                besteht, eine Datei namens <filename>!svn</filename>
+                in Ihrem Projektarchiv zu haben. Falls Sie diese
+                Direktive auf einem Server ändern, der bereits in
+                Gebrauch ist, werden alle offenstehenden Arbeitskopien
+                unbrauchbar gemacht, und Ihre Benutzer werden Sie mit
+                Mistgabeln und Fackeln zur Strecke bringen.</para>
 
             </listitem>
           </varlistentry>
 
         </variablelist>
       </refsect1>
-
-      <refsect1 id="svn.ref.mod_dav_svn.conf.logging">
-<!--
-        <title>High-level logging</title>
--->
-        <title>Protokollierung auf hoher Ebene</title>
-
-<!--
-        <para>This is a list of Subversion action log messages
-          produced by Apache's high-level logging mechanism, followed
-          by an example of the log message.  See <xref
-          linkend="svn.serverconfig.httpd.extra.logging"/> for details
-          on logging.</para>
--->
-        <para>Dies ist eine Liste mit Protokollnachrichten von
-          Subversion-Aktionen, die von Apaches Protokollmechanismus
-          auf hoher Ebene erzeugt werden, gefolgt durch ein Beispiel
-          einer Protokollnachricht. Siehe <xref
-          linkend="svn.serverconfig.httpd.extra.logging"/> für Details
-          zur Protokollierung.</para>
-
-        <variablelist>
-
-          <varlistentry>
-<!--
-            <term>Checkout or export</term>
--->
-            <term>Checkout oder Export</term>
-            <listitem>
-              <para><literal>checkout-or-export /path r62
-            depth=infinity</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-<!--
-            <term>Commit</term>
--->
-            <term>Übergabe</term>
-            <listitem>
-              <para><literal>commit harry r100</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Diffs</term>
-            <listitem>
-              <para><literal>diff /path r15:20 depth=infinity ignore-ancestry</literal></para>
-              <para><literal>diff /path1@15 /path2@20 depth=infinity ignore-ancestry</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-<!--
-            <term>Fetch a directory</term>
--->
-            <term>Holen eines Verzeichnisses</term>
-            <listitem>
-              <para><literal>get-dir /trunk r17 text</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-<!--
-            <term>Fetch a file</term>
--->
-            <term>Holen einer Datei</term>
-            <listitem>
-              <para><literal>get-file /path r20 props</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-<!--
-            <term>Fetch a file revision</term>
--->
-            <term>Holen einer Dateirevision</term>
-            <listitem>
-              <para><literal>get-file-revs /path r12:15 include-merged-revisions</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-<!--
-            <term>Fetch merge information</term>
--->
-            <term>Holen von Informationen über eine Zusammenführung</term>
-            <listitem>
-              <para><literal>get-mergeinfo (/path1 /path2)</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-<!--
-            <term>Lock</term>
--->
-            <term>Sperre</term>
-            <listitem>
-              <para><literal>lock /path steal</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-<!--
-            <term>Log</term>
--->
-            <term>Protokoll</term>
-            <listitem>
-              <para><literal>log (/path1,/path2,/path3) r20:90
-            discover-changed-paths revprops=()</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-<!--
-            <term>Replay revisions (svnsync)</term>
--->
-            <term>Wiederholen von Revisionen (svnsync)</term>
-            <listitem>
-              <para><literal>replay /path r19</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-<!--
-            <term>Revision property change</term>
--->
-            <term>Änderung einer Revisions-Eigenschaft</term>
-            <listitem>
-              <para><literal>change-rev-prop r50
-            propertyname</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-<!--
-            <term>Revision property list</term>
--->
-            <term>Liste von Revisions-Eigenschaften</term>
-            <listitem>
-              <para><literal>rev-proplist r34</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Status</term>
-            <listitem>
-              <para><literal>status /path r62
-                depth=infinity</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-<!--
-            <term>Switch</term>
--->
-            <term>Umschalten</term>
-            <listitem>
-              <para><literal>switch /pathA /pathB@50 depth=infinity</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-<!--
-            <term>Unlock</term>
--->
-            <term>Entsperren</term>
-            <listitem>
-              <para><literal>unlock /path break</literal></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-<!--
-            <term>Update</term>
--->
-            <term>Aktualisieren</term>
-            <listitem>
-              <para><literal>update /path r17 send-copyfrom-args</literal></para>
-            </listitem>
-          </varlistentry>
-
-        </variablelist>
-
-      </refsect1>
-
     </refentry>
   </sect1>
 
@@ -15641,8 +15474,12 @@ exported
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.ref.mod_authz_svn">
+<!--
+    <title>mod_authz_svn&mdash;Subversion Apache HTTP Authorization Module</title>
+-->
+    <title>mod_authz_svn &ndash; Subversion Apache HTTP-Autorisierungs-Modul</title>
 
-    <title>mod_authz_svn</title>
+    <!-- =============================================================== -->
 
     <refentry id="svn.ref.mod_authz_svn.conf">
       <refnamediv>
@@ -15671,7 +15508,7 @@ exported
         <para>This section briefly describes each Apache configuration
           directive offered by <command>mod_authz_svn</command>.  For
           an in-depth description of using path-based authorization in
-          Subversion, see <xref linkend="svn.serverconfig.pathbasedauthz"/>.)</para>
+          Subversion, see <xref linkend="svn.serverconfig.pathbasedauthz"/>.</para>
 -->
         <para>Dieser Abschnitt beschreibt kurz jede
           Apache-Konfigurationsanweisung, die
@@ -15697,6 +15534,34 @@ exported
           <command>mod_authz_svn</command> gültig sind:</para>
 
         <variablelist>
+
+          <varlistentry>
+            <term><literal>AuthzForceUsernameCase Upper|Lower</literal></term>
+            <listitem>
+
+<!--
+              <para>Set to <literal>Upper</literal>
+                or <literal>Lower</literal> to perform case conversion
+                of the specified sort on the authenticated username
+                before checking it for authorization.  While usernames
+                are compared in a case-sensitive fashion against those
+                referenced in the authorization rules file, this
+                directive can at least normalize variably-cased
+                usernames into something consistent.</para>
+-->
+              <para>Entweder <literal>Upper</literal>
+                oder <literal>Lower</literal>, um die entsprechende
+                Umwandlung des authentifizierten Anwendernamens vor
+                der Autorisierungsprüfung in Klein- oder
+                Großschreibung vorzunehmen. Während Anwendernamen
+                unter Beachtung der Klein- oder Großschreibung mit
+                denjenigen in der Autorisierungs-Regel-Datei
+                verglichen werden, kann diese Direktive zumindest
+                gemischt geschriebene Anwendernamen in irgendetwas
+                konsistentes normalisieren.</para>
+
+            </listitem>
+          </varlistentry>
 
           <varlistentry>
             <term><literal>AuthzSVNAccessFile
@@ -15962,33 +15827,19 @@ exported
 <!--
             <para>If present on a file, indicates that the file is not
               an ordinary file, but a symbolic link or other special
-              object.
-              <footnote>
-                <para>As of this writing, symbolic links are indeed
-                  the only <quote>special</quote> objects.  But there
-                  might be more in future releases of
-                  Subversion.</para>
-              </footnote>
-            </para>
+              object.<footnote><para>As of this writing, symbolic
+              links are indeed the only <quote>special</quote>
+              objects.  But there might be more in future releases of
+              Subversion.</para></footnote></para>
 -->
             <para>Falls diese Eigenschaft für eine Datei vergeben ist,
               zeigt es an, dass die Datei keine gewöhnliche Datei ist,
               sondern ein symbolischer Link oder ein anderes
-              besonderes Objekt.
-              <footnote>
-<!--
-                <para>As of this writing, symbolic links are indeed
-                  the only <quote>special</quote> objects.  But there
-                  might be more in future releases of
-                  Subversion.</para>
--->
-                <para>Zum Zeitpunkt der Drucklegung sind symbolische
-                  Links tatsächlich die einzigen
-                  <quote>besonderen</quote> Objekte. Allerdings
-                  könnten in künftigen Ausgaben von Subversion mehr
-                  davon hinzukommen.</para>
-              </footnote>
-            </para>
+              besonderes Objekt.<footnote><para>Zum Zeitpunkt der
+              Drucklegung sind symbolische Links tatsächlich die
+              einzigen <quote>besonderen</quote> Objekte. Allerdings
+              könnten in künftigen Ausgaben von Subversion mehr davon
+              hinzukommen.</para></footnote></para>
 
           </listitem>
         </varlistentry>
@@ -16071,6 +15922,22 @@ exported
         </varlistentry>
 
         <varlistentry>
+          <term><literal>svn:autoversioned</literal></term>
+          <listitem>
+
+<!--
+            <para>If present, the revision was created via the
+              autoversioning feature.  See
+              <xref linkend="svn.webdav.autoversioning"/>.</para>
+-->
+            <para>Falls vorhanden, wurde die Revision durch die
+              Autoversionierungsfunktion erzeugt. Siehe <xref
+              linkend="svn.webdav.autoversioning"/>.</para>
+
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term><literal>svn:date</literal></term>
           <listitem>
 
@@ -16098,22 +15965,106 @@ exported
 -->
             <para>Beinhaltet die Protokollnachricht, die die Revision
               beschreibt.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><literal>svn:sync-currently-copying</literal></term>
+          <listitem>
+
+<!--
+            <para>Contains the revision number from the source
+              repository which is currently being mirrored to this one
+              by the <command>svnsync</command> tool.  (This property
+              is only relevant when it appears on revision 0.)</para>
+-->
+            <para>Beinhaltet die Revisionsnummer des
+              Quell-Projektarchivs, das momentan mit dem Programm
+              <command>svnsync</command> in dieses gespiegelt wird.
+              (Diese Eigenschaft ist nur relevant, wenn sie bei
+              Revision 0 gesetzt ist.)</para>
 
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term><literal>svn:autoversioned</literal></term>
+          <term><literal>svn:sync-from-uuid</literal></term>
           <listitem>
 
 <!--
-            <para>If present, the revision was created via the
-              autoversioning feature.  See
-              <xref linkend="svn.webdav.autoversioning"/>.</para>
+            <para>Contains the UUID of the repository of which this
+              repository has been initialized as a mirror by
+              the <command>svnsync</command> tool.  (This property is
+              only relevant when it appears on revision 0.)</para>
 -->
-            <para>Falls vorhanden, wurde die Revision durch die
-              Autoversionierungsfunktion erzeugt. Siehe <xref
-              linkend="svn.webdav.autoversioning"/>.</para>
+            <para>Beinhaltet die UUID des Projektarchivs, durch das
+              dieses Projektarchiv mit dem Programm
+              <command>svnsync</command> als Spiegel initialisiert
+              wurde. (Diese Eigenschaft ist nur relevant, wenn sie bei
+              Revision 0 gesetzt ist.)</para>
+
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><literal>svn:sync-from-url</literal></term>
+          <listitem>
+
+<!--
+            <para>Contains the URL of the repository directory of
+              which this repository has been initialized as a mirror
+              by the <command>svnsync</command> tool.  (This property
+              is only relevant when it appears on revision 0.)</para>
+-->
+            <para>Beinhaltet den URL des Projektarchivs, durch das
+              dieses Projektarchiv mit dem Programm
+              <command>svnsync</command> als Spiegel initialisiert
+              wurde. (Diese Eigenschaft ist nur relevant, wenn sie bei
+              Revision 0 gesetzt ist.)</para>
+
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><literal>svn:sync-last-merged-rev</literal></term>
+          <listitem>
+
+<!--
+            <para>Contains the revision of the source repository which
+              was most recently and successfully mirrored to this one.
+              (This property is only relevant when it appears on
+              revision 0.)</para>
+-->
+            <para>Beinhaltet die Revision des Projektarchivs, das
+              zuletzt erfolgreich in dieses gespiegelt wurde. (Diese
+              Eigenschaft ist nur relevant, wenn sie bei Revision 0
+              gesetzt ist.)</para>
+
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><literal>svn:sync-lock</literal></term>
+          <listitem>
+
+<!--
+            <para>Used to temporarily enforce mutually exclusive
+              access to the repository by <command>svnsync</command>
+              mirroring operations.  This property is generally only
+              observed when such an operation is active&mdash;or when
+              an <command>svnsync</command> command failed to cleanly
+              disconnect from the repository.  (This property is
+              only relevant when it appears on revision 0.)</para>
+-->
+            <para>Wird verwendet, um vorübergehend einen gegenseitigen
+              Ausschluss für den Zugriff auf das Projektarchiv durch 
+              Spiegelungsoperationen von <command>svnsync</command> zu
+              erzwingen. Diese Eigenschaft wird im Allgemeinen nur
+              dann beachtet, falls eine solche Aktion aktiv ist, oder
+              falls ein <command>svnsync</command>-Befehl es nicht
+              schaffte, sich sauber vom Projektarchiv abzumelden.
+              (Diese Eigenschaft ist nur relevant, wenn sie bei
+              Revision 0 gesetzt ist.)</para>
 
           </listitem>
         </varlistentry>
