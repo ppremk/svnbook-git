@@ -16193,6 +16193,10 @@ exported
 -->
         <title>Übliche Verwendung</title>
 
+<!--
+        <para>Access control (e.g., temporarily lock out commits for
+          some reason).</para>
+-->
         <para>Zugriffskontrolle (d.h., für das vorübergehende Sperren
           von Übergaben aus bestimmten Gründen).</para>
 
@@ -16293,6 +16297,31 @@ exported
             <para>Name der Übergabetransaktion</para>
           </listitem>
         </orderedlist>
+
+<!--
+        <para>Additionally, Subversion passes any lock tokens provided
+          by the committing client to the hook script via standard
+          input.  When present, these are formatted as a single line
+          containing the string <literal>LOCK-TOKENS:</literal>,
+          followed by additional lines&mdash;one per lock
+          token&mdash;which contain the lock token information.  Each
+          lock token information line consists of the URI-escaped
+          repository filesystem path associated with the lock,
+          followed by the pipe (<literal>|</literal>) separator
+          character, and finally the lock token string.</para>
+-->
+        <para>Darüberhinaus leitet Subversion alle vom übertragenden
+          Client eingereichten Sperrnarken über die Standard-Eingabe
+          an das Hook-Skript. Falls vorhanden, werden diese als eine
+          Zeile formatiert, die die Zeichenkette
+          <literal>LOCK-TOKENS:</literal> beinhaltet, gefolgt von
+          zusätzlichen Zeilen, eine pro Sperrmarke, die die
+          Informationen zur Sperrmarke enthält. Jede Zeile mit
+          Sperrmarken-Informationen besteht aus dem mit der Sperre
+          verbundenen, URI-maskierten Projektarchiv-Pfad, gefolgt vom
+          senkrechten Strich (<literal>|</literal>) als Trennzeichen
+          und schließlich der Zeichenkette der Sperrmarke.</para>
+
       </refsect1>
 
       <refsect1>
@@ -16742,8 +16771,8 @@ exported
 <!--
         <para>If the <literal>pre-lock</literal> hook program returns
           a nonzero exit value, the lock action is aborted and
-          anything printed to <filename>stderr</filename> is marshalled back to the
-          client.</para>
+          anything printed to <filename>stderr</filename> is
+          marshalled back to the client.</para>
 -->
         <para>Falls das Hook-Programm <literal>pre-lock</literal>
           einen Rückgabewert ungleich Null liefert, wird der
@@ -16751,6 +16780,49 @@ exported
           <filename>stderr</filename> ausgegeben wird, zum Client
           umgeleitet.</para>
 
+<!--
+        <para>The hook program may optionally dictate the lock token
+          which will be assigned to the lock by printing the desired
+          lock token to standard output.  Because of this,
+          implementations of this hook should carefully avoid
+          unexpected output sent to standard output.</para>
+-->
+        <para>Das Hook-Programm darf optional die Sperrmarke
+          bestimmen, die der Sperre zugewiesen wird, indem die
+          gewünschte Sperrmarke zur Standard-Ausgabe geschickt wird.
+          Daher sollten Implementierungen dieses Hooks sorgfältig
+          darauf achten, keine unerwarteten Ausgaben an die
+          Standard-Ausgabe zu schicken.</para>
+
+<!--
+        <warning>
+          <para>If the <literal>pre-lock</literal> script takes
+            advantage of lock token dictation feature, the
+            responsibility of generating a <emphasis>unique</emphasis>
+            lock token falls to the script itself.  Failure to
+            generate unique lock tokens may result in
+            undefined&mdash;and very likely,
+            undesired&mdash;behavior.</para>
+        </warning>
+-->
+        <warning>
+<!--
+          <para>If the <literal>pre-lock</literal> script takes
+            advantage of lock token dictation feature, the
+            responsibility of generating a <emphasis>unique</emphasis>
+            lock token falls to the script itself.  Failure to
+            generate unique lock tokens may result in
+            undefined&mdash;and very likely,
+            undesired&mdash;behavior.</para>
+-->
+          <para>Falls das <literal>pre-lock</literal>-Skript von der
+            Möglichkeit der Bestimmung der Sperrmarke gebrauch macht,
+            liegt die Verantwortung zur Erzeugung einer
+            <emphasis>eindeutigen</emphasis> Sperrmarke beim Skript
+            selbst. Die Erstellung einer nicht eindeutigen Sperrmarke
+            kann zu undefinierten &ndash; und sehr wahrscheinlich
+            unerwünschten &ndash; Verhalten führen.</para>
+        </warning>
       </refsect1>
 
       <refsect1>
@@ -16786,6 +16858,22 @@ exported
 -->
             <para>Authentifizierter Name des Benutzers, der sperren
               möchte</para>
+          </listitem>
+          <listitem>
+<!--
+            <para>Comment provided when the lock was created</para>
+-->
+            <para>Kommentar bei Erstellung der Sperre</para>
+          </listitem>
+          <listitem>
+<!--
+            <para><literal>1</literal> if the user is attempting to
+              steal an existing lock; <literal>0</literal>
+              otherwise</para>
+-->
+            <para><literal>1</literal> falls der Anwender versucht,
+              eine bestehende Sperre zu stehlen, sonst
+              <literal>0</literal></para>
           </listitem>
         </orderedlist>
       </refsect1>
@@ -17004,10 +17092,27 @@ exported
           <listitem>
 <!--
             <para>Authenticated username of the person attempting the 
-              lock</para>
+              unlock</para>
 -->
             <para>Authentifizierter Name des Benutzers, der die Sperre
               aufheben will</para>
+          </listitem>
+          <listitem>
+<!--
+            <para>Lock token associated with the lock which is to be
+              removed</para>
+-->
+            <para>Die mit der aufzuhebenden Sperre verbundene
+              Sperrmarke</para>
+          </listitem>
+          <listitem>
+<!--
+            <para><literal>1</literal> if the user is attempting to
+              break the lock; <literal>0</literal> otherwise</para>
+-->
+            <para><literal>1</literal> falls der Anwender versucht,
+              die Entsperrung einer bestehende Sperre zu erzwingen,
+              sonst <literal>0</literal></para>
           </listitem>
         </orderedlist>
       </refsect1>
