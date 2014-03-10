@@ -833,7 +833,7 @@ $
         Verzeichnisinhalten dieses Verzeichnis nicht an, es ist aber
         trotzdem ein wichtiges Verzeichnis. Egal was Sie machen,
         löschen oder ändern Sie nichts in diesem Verwaltungsbereich!
-        Subversion verwendet dieses Verzeichnis und seinen Ingalt zum
+        Subversion verwendet dieses Verzeichnis und seinen Inhalt zum
         Verwalten Ihrer Arbeitskopie.</para>
     </sidebar>
 
@@ -4522,7 +4522,7 @@ $
           and (optionally) the datestamp of the revision in which that
           line was last modified.</para>
 -->
-        <para>Sehr ähnlich wie der im vorangegangenen Abschniitt
+        <para>Sehr ähnlich wie der im vorangegangenen Abschnitt
           besprochene Befehl <command>svn cat</command> ist der Befehl
           <command>svn annotate</command>. Auch dieser Befehl zeigt
           den Inhalt einer versionierten Datei an, jedoch macht er das
@@ -4639,7 +4639,7 @@ $ svn blame rules.txt -r 2
           die Funktionalität von <command>svn annotate</command> stark
           an das Konzept von <quote>Zeilen</quote> mit Text in einer
           menschenlesbaren Datei gebunden. Somit führt der Versuch,
-          disen Befehl auf eine Datei anzuwenden, die Subversion als
+          diesen Befehl auf eine Datei anzuwenden, die Subversion als
           <emphasis>nicht</emphasis> menschenlesbar (über die
           Dateieigenschaft <literal>svn:mime-type</literal> &ndash;
           siehe <xref linkend="svn.advanced.props.special.mime-type"
@@ -5112,14 +5112,13 @@ M       somedir/foo.c
         see the sidebar
         <xref linkend="svn.advanced.locking.meanings"/> for
         clarification.</para>
-
+-->
       <para>Verwechseln Sie diese administrativen Sperren nicht mit
         den anwenderverwalteten Sperren, die Subversion-Anwender
         anlegen, wenn sie das sperren-ändern-freigeben-Modell der
         gleichzeitigen Versionskontrolle verwenden; zur Klärung siehe
         den Kasten <xref
         linkend="svn.advanced.locking.meanings"/>.</para>
--->
     </sect2>
 
   </sect1>
@@ -5303,7 +5302,7 @@ $
         Datei <filename>bar.c</filename> in <filename>baz.c</filename>
         um. Sie merken das noch nicht. Wie sich herausstellt, sind Sie
         in Ihrer Arbeitskopie damit beschäftigt, eine Menge
-        unterschiedlicher änderungen vorzunehmen, von denen einige
+        unterschiedlicher Änderungen vorzunehmen, von denen einige
         auch <filename>bar.c</filename> berühren:</para>
 
       <informalexample>
@@ -5453,9 +5452,9 @@ $
         einer Verschiebung sein oder eine tatsächliche Löschung. Es
         ist wichtig, herauszufinden, welche semantische Änderung genau
         am Projektarchiv vorgenommen wurde &ndash; Sie sollten wissen,
-        wie sich Ihre änderungen in das Gesamtbild des Projektes
+        wie sich Ihre Änderungen in das Gesamtbild des Projektes
         einpassen lassen. Lesen Sie also die Protokokllnachrichten, 
-        halten Sie mit Ihren Kollegen Rückspracher, begutachten Sie
+        halten Sie mit Ihren Kollegen Rücksprache, begutachten Sie
         die zeilenbasierten Änderungen &ndash; machen Sie, was auch
         immer zu tun ist &ndash; um Ihre nächsten Schritte zu
         bestimmen.</para>
@@ -5581,56 +5580,127 @@ $
       </informalexample>
 
 <!--
-      <para>So how can this conflict be resolved?  You can either agree
-        or disagree with the move Harry made.  In case you agree, you can
-        delete <filename>bar.c</filename> and mark the tree conflict as
-        resolved:</para>
+      <para>To resolve this conflict, you must either agree or
+        disagree with the move that Harry made.</para>
 -->
-      <para>Wie kann denn dieser Konflikt nun aufgelöst werden? Sie
-        können entweder mit Harrys Vorgehen einverstanden sein oder
-        nicht. Falls ja, löschen Sie <filename>bar.c</filename> und
-        markieren den Baumkonflikt als aufgelöst:</para>
+
+      <para>Um diesen Konflikt aufzulösen, müssen Sie entweder mit
+        Harrys Vorgehen einverstanden sein oder nicht.</para>
 
 <!--
+      <para>If you agree with the move, your <filename>bar.c</filename>
+        is superfluous.  You'll want to delete it and mark the tree
+        conflict as resolved.  But wait:  you made changes to that
+        file!  Before deleting <filename>bar.c</filename>, you need to
+        decide if the changes you made to it need to be applied
+        elsewhere, for example to the new <filename>baz.c</filename>
+        file where all of <filename>bar.c</filename>'s code now lives.
+        Let's assume that your changes do need to <quote>follow the
+        move</quote>.  Subversion isn't smart enough to do this work
+        for you<footnote><para>In some cases, Subversion 1.5 and 1.6
+        <emphasis>would</emphasis> actually handle this for you, but
+        this somewhat hit-or-miss functionality was removed in
+        Subversion 1.7.</para></footnote>, so you need to migrate your
+        changes manually.</para>
+-->
+      <para>Falls Sie mit dem Vorgehen einverstanden sind, ist Ihr
+        <filename>bar.c</filename> überflüssig. Sie können es löschen
+        und den Baumkonflikt als aufgelöst markieren. Aber halt: Sie
+        haben Änderungen an der Datei vorgenommen! Bevor Sie
+        <filename>bar.c</filename> löschen, müssen Sie entscheiden, ob
+        die von Ihnen gemachten Änderungen an einer anderen Stelle
+        vorgenommen werden müssen, zum Beispiel an der neuen Datei
+        <filename>baz.c</filename>, in der sich nun der Code aus
+        <filename>bar.c</filename> befindet. Wir nehmen einmal an,
+        dass Ihre Änderungen tatsächlich müssen <quote>der
+        Verschiebung folgen</quote> müssen. Subversion ist nicht
+        schlau genug, um diese Arbeit für Sie zu
+        übernehmen<footnote><para>In manchen Fällen
+        <emphasis>hätten</emphasis> Subversion 1.5 und 1.6 das für Sie
+        gemacht, doch ist diese Aufs-Geratewohl-Funktionalität in
+        Subversion 1.7 entfernt worden.</para></footnote>, so dass Sie
+        Ihre Änderungen manuell übertragen müssen.</para>
+
+<!--
+      <para>In our example, you could manually re-make your change
+        to <filename>bar.c</filename> pretty easily&mdash;it was,
+        after all, a single-line change.  That's not always the case,
+        though, so we'll show a more scalable approach.  We'll first
+        use <command>svn diff</command> to create a patch file.  Then
+        we'll edit the headers of that patch file to point to the new
+        name of our renamed file.  Finally, we re-apply the modified
+        patch to our working copy.</para>
+-->
+      <para>In unserem Beispiel könnten Sie einfach Ihre Änderungen an
+        <filename>bar.c</filename> noch einmal vornehmen &ndash; es
+        war schließlich nur eine Änderung in einer Zeile. Das ist
+        allerdings nicht immer der Fall, weshalb wir einen
+        skalierbareren Ansatz zeigen. Zunächst erzeugen wir mit
+        <command>svn diff</command> eine Patch-Datei. Dann bearbeiten
+        wir die Kopfzeilen dieser Patch-Datei, so dass sie auf den
+        neuen Namen der umbenannten Datei zeigen. Schließlich wenden
+        wir den modifizierten Patch erneut auf unsere Arbeitskopie
+        an.</para>
+
       <informalexample>
         <screen>
-$ svn delete - -force code/bar.c
-D         code/bar.c
-$ svn resolve - -accept=working code/bar.c
-Resolved conflicted state of 'code/bar.c'
-$ svn status
-M       code/foo.c
-M       code/baz.c
-$ svn diff
-Index: code/foo.c
+$ svn diff code/bar.c > PATCHFILE
+$ cat PATCHFILE
+Index: code/bar.c
 ===================================================================
-- - - code/foo.c  (revision 5)
-+++ code/foo.c  (working copy)
-@@ -3,5 +3,5 @@
- int main(int argc, char *argv[])
- {
-        printf("I don't like being moved around!\n%s", bar());
--       return 0;
-+       return 1;
- }
-Index: code/baz.c
-===================================================================
-- - - code/baz.c  (revision 5)
-+++ code/baz.c  (working copy)
+--- code/bar.c	(working copy)
++++ code/bar.c	(working copy)
 @@ -1,4 +1,4 @@
  const char *bar(void)
  {
--       return "Me neither!\n";
-+       return "Well, I do like being moved around!\n";
+-    return "Me neither!\n";
++    return "Well, I do like being moved around!\n";
  }
+<!--
+$ ### Edit PATCHFILE to refer to code/baz.c instead of code/bar.c
+-->
+$ ### PATCHFILE bearbeiten, so dass es sich auf code/baz.c statt auf code/bar.c bezieht
+$ cat PATCHFILE
+Index: code/baz.c
+===================================================================
+--- code/baz.c	(working copy)
++++ code/baz.c	(working copy)
+@@ -1,4 +1,4 @@
+ const char *bar(void)
+ {
+-    return "Me neither!\n";
++    return "Well, I do like being moved around!\n";
+ }
+$ svn patch PATCHFILE
+U         code/baz.c
+$
 </screen>
       </informalexample>
+
+<!--
+      <para>Now that the changes you originally made
+        to <filename>bar.c</filename> have been successfully
+        reproduced in <filename>baz.c</filename>, you can
+        delete <filename>bar.c</filename> and resolve the conflict,
+        instructing the resolution logic to accept what is currently
+        in the working copy as the desired result.</para>
 -->
+      <para>Da nun die ursprünglich an to <filename>bar.c</filename>
+        vorgenommenen Änderungen erfolgreich in
+        <filename>baz.c</filename> reproduziert wurden, können Sie
+        <filename>bar.c</filename> löschen und den Konflikt auflösen,
+        indem Sie die Auflösungslogik anweisen, den aktuellen Inhalt
+        der Arbeitskopie als das gewünschte Ergebnis zu
+        akzeptieren.</para>
+
       <informalexample>
         <screen>
 $ svn delete --force code/bar.c
 D         code/bar.c
 $ svn resolve --accept=working code/bar.c
+<!--
+Resolved conflicted state of 'code/bar.c'
+-->
 Konflikt von »code/bar.c« aufgelöst
 $ svn status
 M       code/foo.c
@@ -5638,37 +5708,38 @@ M       code/baz.c
 $ svn diff
 Index: code/foo.c
 ===================================================================
---- code/foo.c  (revision 5)
+--- code/foo.c  (revision 14)
 +++ code/foo.c  (working copy)
 @@ -3,5 +3,5 @@
  int main(int argc, char *argv[])
  {
-        printf("I don't like being moved around!\n%s", bar());
--       return 0;
-+       return 1;
+     printf("I don't like being moved around!\n%s", bar());
+-    return 0;
++    return 1;
  }
 Index: code/baz.c
 ===================================================================
---- code/baz.c  (revision 5)
+--- code/baz.c  (revision 14)
 +++ code/baz.c  (working copy)
 @@ -1,4 +1,4 @@
  const char *bar(void)
  {
--       return "Me neither!\n";
-+       return "Well, I do like being moved around!\n";
+-    return "Me neither!\n";
++    return "Well, I do like being moved around!\n";
  }
+$
 </screen>
       </informalexample>
 
 <!--
-      <para>If you do not agree with the move, you can delete
-        <filename>baz.c</filename> instead, after making sure any
-        changes made to it after it was renamed are either preserved
-        or not worth keeping.  Do not forget to revert the changes
-        Harry made to the <filename>Makefile</filename>.
+      <para>But what if you do not agree with the move?  Well, in that
+        case, you can delete <filename>baz.c</filename> instead, after
+        making sure any changes made to it after it was renamed are
+        either preserved or not worth keeping.  (Do not forget to also
+        revert the changes Harry made to <filename>Makefile</filename>.)
         Since <filename>bar.c</filename> is already scheduled for
-        re-addition, there is nothing else left to do, and the conflict
-        can be marked resolved:</para>
+        re-addition, there is nothing else left to do, and the
+        conflict can be marked resolved:</para>
 -->
       <para>Falls Sie mit dem Vorgehen nicht einverstanden sind,
         können Sie stattdessen <filename>baz.c</filename> löschen,
@@ -5681,65 +5752,14 @@ Index: code/baz.c
         vorgemerkt ist, bleibt nichts mehr zu tun, und der Konflikt
         kann als aufgelöst markiert werden:</para>
 
-<!--
-      <informalexample>
-        <screen>
-$ svn delete - -force code/baz.c
-D         code/baz.c
-$ svn resolve - -accept=working code/bar.c
-Resolved conflicted state of 'code/bar.c'
-$ svn status
-M       code/foo.c
-A  +    code/bar.c
-D       code/baz.c
-M       Makefile
-$ svn diff
-Index: code/foo.c
-===================================================================
-- - - code/foo.c	(revision 5)
-+++ code/foo.c	(working copy)
-@@ -3,5 +3,5 @@
- int main(int argc, char *argv[])
- {
- 	printf("I don't like being moved around!\n%s", bar());
--	return 0;
-+	return 1;
- }
-Index: code/bar.c
-===================================================================
-- - - code/bar.c	(revision 5)
-+++ code/bar.c	(working copy)
-@@ -1,4 +1,4 @@
- const char *bar(void)
- {
--	return "Me neither!\n";
-+	return "Well, I do like being moved around!\n";
- }
-Index: code/baz.c
-===================================================================
-- - - code/baz.c	(revision 5)
-+++ code/baz.c	(working copy)
-@@ -1,4 +0,0 @@
--const char *bar(void)
--{
--	return "Me neither!\n";
--}
-Index: Makefile
-===================================================================
-- - - Makefile	(revision 5)
-+++ Makefile	(working copy)
-@@ -1,2 +1,2 @@
- foo: 
--	$(CC) -o $@ code/foo.c code/baz.c
-+	$(CC) -o $@ code/foo.c code/bar.c
-</screen>
-      </informalexample>
--->
       <informalexample>
         <screen>
 $ svn delete --force code/baz.c
 D         code/baz.c
 $ svn resolve --accept=working code/bar.c
+<!--
+Resolved conflicted state of 'code/bar.c'
+-->
 Konflikt von »code/bar.c« aufgelöst
 $ svn status
 M       code/foo.c
@@ -5749,37 +5769,37 @@ M       Makefile
 $ svn diff
 Index: code/foo.c
 ===================================================================
---- code/foo.c	(revision 5)
+--- code/foo.c	(revision 14)
 +++ code/foo.c	(working copy)
 @@ -3,5 +3,5 @@
  int main(int argc, char *argv[])
  {
- 	printf("I don't like being moved around!\n%s", bar());
--	return 0;
-+	return 1;
+     printf("I don't like being moved around!\n%s", bar());
+-    return 0;
++    return 1;
  }
 Index: code/bar.c
 ===================================================================
---- code/bar.c	(revision 5)
+--- code/bar.c	(revision 14)
 +++ code/bar.c	(working copy)
 @@ -1,4 +1,4 @@
  const char *bar(void)
  {
--	return "Me neither!\n";
-+	return "Well, I do like being moved around!\n";
+-    return "Me neither!\n";
++    return "Well, I do like being moved around!\n";
  }
 Index: code/baz.c
 ===================================================================
---- code/baz.c	(revision 5)
+--- code/baz.c	(revision 14)
 +++ code/baz.c	(working copy)
 @@ -1,4 +0,0 @@
 -const char *bar(void)
 -{
--	return "Me neither!\n";
+-    return "Me neither!\n";
 -}
 Index: Makefile
 ===================================================================
---- Makefile	(revision 5)
+--- Makefile	(revision 14)
 +++ Makefile	(working copy)
 @@ -1,2 +1,2 @@
  foo: 
@@ -5789,14 +5809,13 @@ Index: Makefile
       </informalexample>
 
 <!--
-      <para>In either case, you have now resolved your first tree
-        conflict!  You can commit your changes and tell Harry during
-        tea break about all the extra work he caused for you.</para>
+      <para>You've now resolved your first tree conflict!  You can
+        commit your changes and tell Harry during tea break about all
+        the extra work he caused for you.</para>
 -->
-      <para>In jedem Fall haben Sie nun Ihren ersten Baumkonflikt
-        aufgelöst! Sie können Ihre Änderungen übergeben und Harry in
-        der Kaffeepause erzählen, welche Mehrarbeit er Ihnen bereitet
-        hat.</para>
+      <para>Sie haben nun Ihren ersten Baumkonflikt aufgelöst! Sie
+        können Ihre Änderungen übergeben und Harry in der Kaffeepause
+        erzählen, welche Mehrarbeit er Ihnen bereitet hat.</para>
 
     </sect2>
   </sect1>
