@@ -2932,13 +2932,13 @@ $
         es bei Dateien, deren Inhalt nicht aus Text besteht, oft nicht
         das Konzept einer <quote>Zeile</quote>. Damit versucht
         Subversion während einer Aktualisierung keine
-        kontextabhängige Zusammenführungen für versionierte Dateien,
+        kontextabhängigen Zusammenführungen für versionierte Dateien,
         deren Eigenschaft <literal>svn:mime-type</literal> auf einen
         nicht-textuellen MIME-Typen gesetzt ist (normalerweise etwas,
         das nicht mit <literal>text/</literal> beginnt, obwohl es
         Ausnahmen gibt). Stattdessen wird jedes Mal, wenn eine von
         Ihnen lokal veränderte binäre Datei in der Arbeitskopie
-        aktualisiert werden soll, diese Datei nicht angerührt, sondern
+        aktualisiert werden soll, diese nicht angerührt, sondern
         Subversion erzeugt zwei neue Dateien. Eine davon hat die
         Dateiendung <filename>.oldrev</filename> und beinhaltet die
         BASE-Revision der Datei. Die andere Datei hat eine
@@ -2948,6 +2948,39 @@ $
         Versuchen, kontextabhängige Zusammenführungen mit Dateien zu
         machen, die einfach nicht kontextabhängig zusammengeführt
         werden können.</para>
+
+<!--
+      <para>Additionally, since the acts of displaying line-based
+        differences and line-based change attribution are, rather
+        obviously, dependent on there being a meaningful definition
+        of <quote>line</quote> for a given file, files with nontextual
+        MIME types will by default trigger errors when used as the
+        targets of <command>svn diff</command> and <command>svn
+        annotate</command> operations.  This can be especially
+        frustrating for users with XML files whose
+        <literal>svn:mime-type</literal> property is set to something
+        such as <literal>application/xml</literal> which is not
+        unambiguously human-readable and as such is treated as
+        nontextual by Subversion.  Fortunately, those subcommands
+        offer a <option>- -force</option> option for forcing
+        Subversion to attempt the operations in spite of the apparent
+        non-human-readability of the files.</para>
+-->
+      <para>Darüber hinaus rufen Dateien nicht-textuellen MIME-Typs
+        Fehler hervor, wenn Sie als Ziele von Operatinen wie
+        <command>svn diff</command> und <command>svn
+        annotate</command> verwendet werden, da zeilenbasierte
+        Unterschiede und Anmerkungen offensichtlich an eine sinnvolle
+        Definition von <quote>Zeile</quote> für eine gegebene Datei
+        geknüpft sind. Das kann besonders frustrierend für Anwender
+        von XML-Dateien sein, deren Eigenschaft
+        <literal>svn:mime-type</literal> einen Wert wie etwa
+        <literal>application/xml</literal> besitzt, der nicht
+        eindeutig menschenlesbar ist und somit von Subversion als
+        nicht-textuell behandelt wird. Glücklicherweise bieten diese
+        Unterbefehle eine Option <option>--force</option> an, die
+        Subversion zwingen, diese Operationen trotz der anscheinenden
+        Nicht-Menschenlesbarkeit der Dateien zu versuchen.</para>
 
       <warning>
 <!--
@@ -3156,7 +3189,7 @@ $
       <para>This sensitivity to foreign EOL markers can be
         frustrating for folks who share a file across different
         operating systems.  For example, consider a source code
-        file, and developers that edit this file on both Windows and
+        file, and developers who edit this file on both Windows and
         Unix systems.  If all the developers always use tools that
         preserve the line-ending style of the file, no problems
         occur.</para>
@@ -3546,38 +3579,11 @@ $
         beobachten. Es folgen einige Beispiele von Mustern
         für verschiedene Dinge:</para>
 
+      <informalexample>
+        <screen>
 <!--
-      <informalexample>
-        <screen>
 $ ls   ### the book sources
-appa-quickstart.xml             ch06-server-configuration.xml
-appb-svn-for-cvs-users.xml      ch07-customizing-svn.xml
-appc-webdav.xml                 ch08-embedding-svn.xml
-book.xml                        ch09-reference.xml
-ch00-preface.xml                ch10-world-peace-thru-svn.xml
-ch01-fundamental-concepts.xml   copyright.xml
-ch02-basic-usage.xml            foreword.xml
-ch03-advanced-topics.xml        images/
-ch04-branching-and-merging.xml  index.xml
-ch05-repository-admin.xml       styles.css
-$ ls ch*   ### the book chapters
-ch00-preface.xml                ch06-server-configuration.xml
-ch01-fundamental-concepts.xml   ch07-customizing-svn.xml
-ch02-basic-usage.xml            ch08-embedding-svn.xml
-ch03-advanced-topics.xml        ch09-reference.xml
-ch04-branching-and-merging.xml  ch10-world-peace-thru-svn.xml
-ch05-repository-admin.xml
-$ ls ch?0-*   ### the book chapters whose numbers end in zero
-ch00-preface.xml  ch10-world-peace-thru-svn.xml
-$ ls ch0[3578]-*   ### the book chapters that Mike is responsible for
-ch03-advanced-topics.xml   ch07-customizing-svn.xml
-ch05-repository-admin.xml  ch08-embedding-svn.xml
-$
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
 $ ls   ### die Quelltextdateien des Buchs
 appa-quickstart.xml             ch06-server-configuration.xml
 appb-svn-for-cvs-users.xml      ch07-customizing-svn.xml
@@ -3589,6 +3595,9 @@ ch02-basic-usage.xml            foreword.xml
 ch03-advanced-topics.xml        images/
 ch04-branching-and-merging.xml  index.xml
 ch05-repository-admin.xml       styles.css
+<!--
+$ ls ch*   ### the book chapters
+-->
 $ ls ch*   ### die Kapitel des Buchs
 ch00-preface.xml                ch06-server-configuration.xml
 ch01-fundamental-concepts.xml   ch07-customizing-svn.xml
@@ -3596,21 +3605,26 @@ ch02-basic-usage.xml            ch08-embedding-svn.xml
 ch03-advanced-topics.xml        ch09-reference.xml
 ch04-branching-and-merging.xml  ch10-world-peace-thru-svn.xml
 ch05-repository-admin.xml
+<!--
+$ ls ch?0-*   ### the book chapters whose numbers end in zero
+-->
 $ ls ch?0-*   ### die Kapitel, deren Namen auf Null enden
 ch00-preface.xml  ch10-world-peace-thru-svn.xml
+<!--
+$ ls ch0[3578]-*   ### the book chapters that Mike is responsible for
+-->
 $ ls ch0[3578]-*   ### die Kapitel, für die Mike zuständig ist
 ch03-advanced-topics.xml   ch07-customizing-svn.xml
 ch05-repository-admin.xml  ch08-embedding-svn.xml
 $
 </screen>
       </informalexample>
-<!--
 
+<!--
       <para>File pattern matching is a bit more complex than what
         we've described here, but this basic usage level tends to suit
         the majority of Subversion users.</para>
 -->
-
       <para>Dateimuster-Abgleich ist zwar ein bisschen komplizierter
         als hier beschrieben, jedoch ist Beschränkung auf diese
         grundlegende Ebene für die Mehrheit der Subversion-Benutzer
@@ -3710,18 +3724,12 @@ $
         die Datei <filename>.cvsignore</filename> als Eingabe für den
         Befehl <command>svn propset</command> verwenden:</para>
 
+      <informalexample>
+        <screen>
+$ svn propset svn:ignore -F .cvsignore .
 <!--
-      <informalexample>
-        <screen>
-$ svn propset svn:ignore -F .cvsignore .
 property 'svn:ignore' set on '.'
-$
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn propset svn:ignore -F .cvsignore .
 Eigenschaft »svn:ignore« für ».« gesetzt
 $
 </screen>
@@ -3910,7 +3918,7 @@ I       calc/debug_log.3.gz
       lists&mdash;to determine which files should not be swept into
       the version control system as part of a larger recursive
       addition or import operation.  And here again, you can use the
-      <option>- -no-ignore</option> option to tell Subversion ignore
+      <option>- -no-ignore</option> option to tell Subversion to disregard
       its ignores list and operate on all the files and directories
       present.</para>
 -->
@@ -3960,14 +3968,14 @@ I       calc/debug_log.3.gz
         einem Befehl verwenden. Shell-Jokerzeichen werden zu einer
         expliziten Liste aus Zielobjekten erweitert, bevor Subversion
         sie bearbeitet, so dass der Aufruf von <userinput>svn
-          <replaceable>SUBCOMMAND</replaceable> *</userinput> genau so
+        <replaceable>SUBCOMMAND</replaceable> *</userinput> genau so
         funktioniert wie der Aufruf <userinput>svn
-          <replaceable>SUBCOMMAND</replaceable> file1 file2 file3
-          &hellip;</userinput>. Im Fall des Befehls <command>svn
-          add</command> hat das einen ähnlichen Effekt, wie die Option 
+        <replaceable>SUBCOMMAND</replaceable> file1 file2 file3
+        &hellip;</userinput>. Im Fall des Befehls <command>svn
+        add</command> hat das einen ähnlichen Effekt, wie die Option 
         <option>--no-ignore</option> zu übergeben. Statt Jokerzeichen
         zu benutzen sollten Sie also <userinput>svn add --force
-          .</userinput> verwenden, um eine größere Menge
+        .</userinput> verwenden, um eine größere Menge
         unversionierter Dinge für die Versionskontrolle vorzumerken.
         Das ausdrückliche Ziel stellt sicher, dass das aktuelle
         Verzeichnis nicht übersehen wird, weil es schon lange unter
@@ -3978,7 +3986,7 @@ I       calc/debug_log.3.gz
         Laufzeit-Konfigurations-Variable
         <literal>global-ignores</literal> berücksichtigt werden.
         Stellen Sie sicher, dass Sie dem Befehl <command>svn
-          add</command> auch die Option <option>--depth files</option>
+        add</command> auch die Option <option>--depth files</option>
         mitgeben, falls Sie zum Hinzufügen kein vollständig rekursives
         Durchwandern wünschen.</para>
 
@@ -4190,8 +4198,7 @@ I       calc/debug_log.3.gz
             of the item, identical to <literal>HeadURL</literal>. 
             Its substitution looks something like <literal>$Header: 
             http://svn.example.com/repos/trunk/calc.c 
-            148 2006-07-28 21:30:43Z sally $</literal>.
-          </para>
+            148 2006-07-28 21:30:43Z sally $</literal>.</para>
 -->
           <para>Dieses Schlüsselwort ist ähnlich zu
             <literal>Id</literal>, enthält aber den vollständigen URL
@@ -4199,8 +4206,7 @@ I       calc/debug_log.3.gz
             <literal>HeadURL</literal>. Seine Ersetzung sieht etwa aus
             wie <literal>$Header:
             http://svn.example.com/repos/trunk/calc.c 148 2006-07-28
-            21:30:43Z sally $</literal>.
-          </para>
+            21:30:43Z sally $</literal>.</para>
         </listitem>
       </varlistentry>
     </variablelist>
@@ -4273,18 +4279,14 @@ I       calc/debug_log.3.gz
       <filename>weather.txt</filename>, die folgendermaßen
       aussieht:</para>
 
-<!--
     <informalexample>
       <programlisting>
+<!--
 Here is the latest report from the front lines.
 $LastChangedDate$
 $Rev$
 Cumulus clouds are appearing more frequently as summer approaches.
-</programlisting>
-    </informalexample>
 -->
-    <informalexample>
-      <programlisting>
 Hier ist der neueste Bericht von der vordersten Front.
 $LastChangedDate$
 $Rev$
@@ -4303,18 +4305,12 @@ Cumulus-Wolken entstehen öfter, wenn der Sommer naht.
       schalten wir die Ersetzung des Schlüsselwortes
       <literal>LastChangedDate</literal> ein.</para>
 
+    <informalexample>
+      <screen>
+$ svn propset svn:keywords "Date Author" weather.txt
 <!--
-    <informalexample>
-      <screen>
-$ svn propset svn:keywords "Date Author" weather.txt
 property 'svn:keywords' set on 'weather.txt'
-$
-</screen>
-    </informalexample>
 -->
-    <informalexample>
-      <screen>
-$ svn propset svn:keywords "Date Author" weather.txt
 Eigenschaft »svn:keywords« für »weather.txt« gesetzt
 $
 </screen>
@@ -4377,23 +4373,19 @@ $
       Alias <literal>$LastChangedDate$</literal> verwendete und
       trotzdem korrekt erweitert wurde:</para>
 
-<!--
     <informalexample>
-      <screen>
+      <programlisting>
+<!--
 Here is the latest report from the front lines.
 $LastChangedDate: 2006-07-22 21:42:37 -0700 (Sat, 22 Jul 2006) $
 $Rev$
 Cumulus clouds are appearing more frequently as summer approaches.
-</screen>
-    </informalexample>
 -->
-    <informalexample>
-      <screen>
 Hier ist der neueste Bericht von der vordersten Front.
 $LastChangedDate: 2006-07-22 21:42:37 -0700 (Sat, 22 Jul 2006) $
 $Rev$
 Cumulus-Wolken entstehen öfter, wenn der Sommer naht.
-</screen>
+</programlisting>
     </informalexample>
 
 <!--
@@ -4456,7 +4448,8 @@ Cumulus-Wolken entstehen öfter, wenn der Sommer naht.
         can use this program, plus some additional tooling, to embed
         that revision information into your files.  For more
         information on <command>svnversion</command>, see <xref
-        linkend="svn.ref.svnversion"/>.</para>
+        linkend="svn.ref.svnversion"/> in
+        <xref linkend="svn.ref"/>.</para>
 -->
       <para>Dies bedarf einer externen Behandlung. Subversion liefert
         das Werkzeug <command>svnversion</command> mit, das allein für
@@ -4466,7 +4459,8 @@ Cumulus-Wolken entstehen öfter, wenn der Sommer naht.
         Programmierung drumherum verwenden, um diese
         Revisions-Information in Ihre Dateien einzufügen. Für
         weitergehende Informationen zu <command>svnversion</command>,
-        siehe <xref linkend="svn.ref.svnversion"/>.</para>
+        siehe <xref linkend="svn.ref.svnversion"/> in
+        <xref linkend="svn.ref"/>.</para>
 
     </sidebar>
 
@@ -4513,21 +4507,17 @@ Cumulus-Wolken entstehen öfter, wenn der Sommer naht.
       für die Schlüsselwort-Ersetzung von Subversion würde die Datei
       etwa so aussehen:</para>
 
-<!--
     <informalexample>
-      <screen>
+      <programlisting>
+<!--
 $Rev$:     Revision of last commit
 $Author$:  Author of last commit
 $Date$:    Date of last commit
-</screen>
-    </informalexample>
 -->
-    <informalexample>
-      <screen>
 $Rev$:     Revision der letzten Übertragung
 $Author$:  Autor der letzten Übertragung
 $Date$:    Datum der letzten Übertragung
-</screen>
+</programlisting>
     </informalexample>
 
 <!--
@@ -4539,21 +4529,17 @@ $Date$:    Datum der letzten Übertragung
       allerdings (natürlich mit aktivierter Schlüsselwort-Ersetzung)
       übertragen, sehen Sie:</para>
 
-<!--
     <informalexample>
-      <screen>
+      <programlisting>
+<!--
 $Rev: 12 $:     Revision of last commit
 $Author: harry $:  Author of last commit
 $Date: 2006-03-15 02:33:03 -0500 (Wed, 15 Mar 2006) $:    Date of last commit
-</screen>
-    </informalexample>
 -->
-    <informalexample>
-      <screen>
 $Rev: 12 $:     Revision der letzten Übertragung
 $Author: harry $:  Autor der letzten Übertragung
 $Date: 2006-03-15 02:33:03 -0500 (Wed, 15 Mar 2006) $:    Datum der letzten Übertragung
-</screen>
+</programlisting>
     </informalexample>
 
 <!--
@@ -4579,21 +4565,17 @@ $Date: 2006-03-15 02:33:03 -0500 (Wed, 15 Mar 2006) $:    Datum der letzten Übe
       Sie die neue Schlüsselwort-Syntax mit fester Länge verwenden und
       vernünftige Feldlängen definieren, etwa:</para>
 
-<!--
     <informalexample>
-      <screen>
+      <programlisting>
+<!--
 $Rev::               $:  Revision of last commit
 $Author::            $:  Author of last commit
 $Date::              $:  Date of last commit
-</screen>
-    </informalexample>
 -->
-    <informalexample>
-      <screen>
 $Rev::               $:  Revision der letzten Übertragung
 $Author::            $:  Autor der letzten Übertragung
 $Date::              $:  Datum der letzten Übertragung
-</screen>
+</programlisting>
     </informalexample>
 
 <!--
@@ -4618,21 +4600,17 @@ $Date::              $:  Datum der letzten Übertragung
       <literal>Date</literal> wird mit einem Nummernzeichen
       abgeschnitten:</para>
 
-<!--
     <informalexample>
-      <screen>
+      <programlisting>
+<!--
 $Rev:: 13            $:  Revision of last commit
 $Author:: harry      $:  Author of last commit
 $Date:: 2006-03-15 0#$:  Date of last commit
-</screen>
-    </informalexample>
 -->
-    <informalexample>
-      <screen>
 $Rev:: 13            $:  Revision der letzten Übertragung
 $Author:: harry      $:  Autor der letzten Übertragung
 $Date:: 2006-03-15 0#$:  Datum der letzten Übertragung
-</screen>
+</programlisting>
     </informalexample>
 
 <!--
@@ -4754,38 +4732,22 @@ $Date:: 2006-03-15 0#$:  Datum der letzten Übertragung
       Befehl <command>svn checkout</command> würde uns eine
       Arbeitskopie mit dem gesamten Baum geben:</para>
 
+    <informalexample>
+      <screen>
+$ svn checkout file:///var/svn/repos mom
+A    mom/son
+A    mom/son/grandson
+A    mom/daughter
+A    mom/daughter/granddaughter1
+A    mom/daughter/granddaughter1/bunny1.txt
+A    mom/daughter/granddaughter1/bunny2.txt
+A    mom/daughter/granddaughter2
+A    mom/daughter/fishie.txt
+A    mom/kitty1.txt
+A    mom/doggie1.txt
 <!--
-    <informalexample>
-      <screen>
-$ svn checkout file:///var/svn/repos mom
-A    mom/son
-A    mom/son/grandson
-A    mom/daughter
-A    mom/daughter/granddaughter1
-A    mom/daughter/granddaughter1/bunny1.txt
-A    mom/daughter/granddaughter1/bunny2.txt
-A    mom/daughter/granddaughter2
-A    mom/daughter/fishie.txt
-A    mom/kitty1.txt
-A    mom/doggie1.txt
 Checked out revision 1.
-$
-</screen>
-    </informalexample>
 -->
-    <informalexample>
-      <screen>
-$ svn checkout file:///var/svn/repos mom
-A    mom/son
-A    mom/son/grandson
-A    mom/daughter
-A    mom/daughter/granddaughter1
-A    mom/daughter/granddaughter1/bunny1.txt
-A    mom/daughter/granddaughter1/bunny2.txt
-A    mom/daughter/granddaughter2
-A    mom/daughter/fishie.txt
-A    mom/kitty1.txt
-A    mom/doggie1.txt
 Ausgecheckt, Revision 1.
 $
 </screen>
@@ -4800,18 +4762,12 @@ $
       dieses Mal jedoch sagen wir Subversion, dass wir nur das oberste
       Verzeichnis ohne irgendeines seine Kinder haben möchten:</para>
 
-<!--
-    <informalexample>
-      <screen>
-$ svn checkout file:///var/svn/repos mom-empty - -depth empty
-Checked out revision 1
-$
-</screen>
-    </informalexample>
--->
     <informalexample>
       <screen>
 $ svn checkout file:///var/svn/repos mom-empty --depth empty
+<!--
+Checked out revision 1
+-->
 Ausgecheckt, Revision 1
 $
 </screen>
@@ -4949,22 +4905,16 @@ $
         die unendliche Rekursion hat, zeigt <command>svn
           info</command> eine Zeile mit dem Wert an:</para>
 
+      <informalexample>
+        <screen>
+$ svn info mom-immediates | grep "^Depth:"
 <!--
-      <informalexample>
-        <screen>
-$ svn info mom-immediates | grep "^Depth:"
 Depth: immediates
-$
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn info mom-immediates | grep "^Depth:"
 Tiefe: immediates
 $
 </screen>
-    </informalexample>
+      </informalexample>
     </tip>
 
 <!--
@@ -4978,34 +4928,23 @@ $
         checkout</command>) sowie leerer Tiefe. Lassen Sie uns nun
       Beispiele für die anderen Tiefenwerte ansehen:</para>
 
-<!--
-    <informalexample>
-      <screen>
-$ svn checkout file:///var/svn/repos mom-files - -depth files
-A    mom-files/kitty1.txt
-A    mom-files/doggie1.txt
-Checked out revision 1.
-$ svn checkout file:///var/svn/repos mom-immediates - -depth immediates
-A    mom-immediates/son
-A    mom-immediates/daughter
-A    mom-immediates/kitty1.txt
-A    mom-immediates/doggie1.txt
-Checked out revision 1.
-$
-</screen>
-    </informalexample>
--->
     <informalexample>
       <screen>
 $ svn checkout file:///var/svn/repos mom-files --depth files
 A    mom-files/kitty1.txt
 A    mom-files/doggie1.txt
-Ausgecjheckt. Revision 1.
-$ svn checkout file:///var/svn/repos mom-immediates --depth immediates
+<!--
+Checked out revision 1.
+-->
+Ausgecheckt. Revision 1.
+$ svn checkout file:///var/svn/repos mom-immediates - -depth immediates
 A    mom-immediates/son
 A    mom-immediates/daughter
 A    mom-immediates/kitty1.txt
 A    mom-immediates/doggie1.txt
+<!--
+Checked out revision 1.
+-->
 Ausgecheckt. Revision 1.
 $
 </screen>
@@ -5069,55 +5008,44 @@ $
 -->
     <para>Zusätzlich zur Option <option>--depth</option> akzeptieren
       die Unterbefehle <command>svn update</command> und <command>svn
-        switch</command> eine zweite Option, die mit Tiefe zu tun hat:
+      switch</command> eine zweite Option, die mit Tiefe zu tun hat:
       <option>--set-depth</option>. Mit dieser Option können Sie die
       anhaftende Tiefe eines Objektes der Arbeitskopie ändern. Sehen
       Sie, was passiert, wenn wir unseren leeren Checkout nehmen und
       ihn mit <userinput>svn update --set-depth
-        <replaceable>NEW-DEPTH</replaceable>
-        <replaceable>TARGET</replaceable></userinput> schrittweise
+      <replaceable>NEW-DEPTH</replaceable>
+      <replaceable>TARGET</replaceable></userinput> schrittweise
       tiefer gehen lassen:</para>
 
-<!--
-    <informalexample>
-      <screen>
-$ svn update - -set-depth files mom-empty
-A    mom-empty/kittie1.txt
-A    mom-empty/doggie1.txt
-Updated to revision 1.
-$ svn update - -set-depth immediates mom-empty
-A    mom-empty/son
-A    mom-empty/daughter
-Updated to revision 1.
-$ svn update - -set-depth infinity mom-empty
-A    mom-empty/son/grandson
-A    mom-empty/daughter/granddaughter1
-A    mom-empty/daughter/granddaughter1/bunny1.txt
-A    mom-empty/daughter/granddaughter1/bunny2.txt
-A    mom-empty/daughter/granddaughter2
-A    mom-empty/daughter/fishie1.txt
-Updated to revision 1.
-$
-</screen>
-    </informalexample>
--->
     <informalexample>
       <screen>
 $ svn update --set-depth files mom-empty
+Updating 'mom-empty':
 A    mom-empty/kittie1.txt
 A    mom-empty/doggie1.txt
+<!--
+Updated to revision 1.
+-->
 Aktualisiert zu Revision 1.
 $ svn update --set-depth immediates mom-empty
+Updating 'mom-empty':
 A    mom-empty/son
 A    mom-empty/daughter
+<!--
+Updated to revision 1.
+-->
 Aktualisiert zu Revision 1.
 $ svn update --set-depth infinity mom-empty
+Updating 'mom-empty':
 A    mom-empty/son/grandson
 A    mom-empty/daughter/granddaughter1
 A    mom-empty/daughter/granddaughter1/bunny1.txt
 A    mom-empty/daughter/granddaughter1/bunny2.txt
 A    mom-empty/daughter/granddaughter2
 A    mom-empty/daughter/fishie1.txt
+<!--
+Updated to revision 1.
+-->
 Aktualisiert zu Revision 1.
 $
 </screen>
@@ -5156,42 +5084,36 @@ $
       rekursiv darstellen und andere Teile beschnitten (nicht auf der
       Festplatte) lassen können.</para>
 
-<!--
-    <informalexample>
-      <screen>
-$ rm -rf mom-empty
-$ svn checkout file:///var/svn/repos mom-empty - -depth empty
-Checked out revision 1.
-$ svn update - -set-depth empty mom-empty/son
-A    mom-empty/son
-Updated to revision 1.
-$ svn update - -set-depth empty mom-empty/daughter
-A    mom-empty/daughter
-Updated to revision 1.
-$ svn update - -set-depth infinity mom-empty/daughter/granddaughter1
-A    mom-empty/daughter/granddaughter1
-A    mom-empty/daughter/granddaughter1/bunny1.txt
-A    mom-empty/daughter/granddaughter1/bunny2.txt
-Updated to revision 1.
-$
-</screen>
-    </informalexample>
--->
     <informalexample>
       <screen>
 $ rm -rf mom-empty
 $ svn checkout file:///var/svn/repos mom-empty --depth empty
+<!--
+Checked out revision 1.
+-->
 Ausgecheckt. Revision 1.
 $ svn update --set-depth empty mom-empty/son
+Updating 'mom-empty/son':
 A    mom-empty/son
+<!--
+Updated to revision 1.
+-->
 Aktualisiert zu Revision 1.
 $ svn update --set-depth empty mom-empty/daughter
+Updating 'mom-empty/daughter':
 A    mom-empty/daughter
+<!--
+Updated to revision 1.
+-->
 Aktualisiert zu Revision 1.
 $ svn update --set-depth infinity mom-empty/daughter/granddaughter1
+Updating 'mom-empty/daughter/granddaughter1':
 A    mom-empty/daughter/granddaughter1
 A    mom-empty/daughter/granddaughter1/bunny1.txt
 A    mom-empty/daughter/granddaughter1/bunny2.txt
+<!--
+Updated to revision 1.
+-->
 Aktualisiert zu Revision 1.
 $
 </screen>
@@ -5330,21 +5252,6 @@ $
       Wirktiefe hochsetzen, mit Ausnahme desjenigen, welches Sie nicht
       haben möchten.</para>
 
-<!--
-    <informalexample>
-      <screen>
-$ svn checkout http://svn.example.com/repos/many-dirs - -depth empty
-&hellip;
-$ svn update - -set-depth infinity many-dirs/wanted-dir-1
-&hellip;
-$ svn update - -set-depth infinity many-dirs/wanted-dir-2
-&hellip;
-$ svn update - -set-depth infinity many-dirs/wanted-dir-3
-&hellip;
-### and so on, and so on, ...
-</screen>
-    </informalexample>
--->
     <informalexample>
       <screen>
 $ svn checkout http://svn.example.com/repos/many-dirs --depth empty
@@ -5355,6 +5262,9 @@ $ svn update --set-depth infinity many-dirs/wanted-dir-2
 &hellip;
 $ svn update --set-depth infinity many-dirs/wanted-dir-3
 &hellip;
+<!--
+### and so on, and so on, ...
+-->
 ### usw., usw., ...
 </screen>
     </informalexample>
@@ -5377,15 +5287,15 @@ $ svn update --set-depth infinity many-dirs/wanted-dir-3
       Aktualisierung der Arbeitskopie davon nichts mit.</para>
 
 <!--
-    <para>With Subversion 1.6, you could take a different approach.
-      First, you'd check out the directory in full.  Then you would
+    <para>Beginning with Subversion 1.6, you can take a different
+      approach.  First, check out the directory in full.  Then
       run <userinput>svn update - -set-depth exclude</userinput> on the
       one subdirectory you don't care about.</para>
 -->
-    <para>Mit Subversion 1.6 könnten Sie einen anderen Ansatz wählen.
-      Zunächst würden Sie das Verzeichnis vollständig auschecken. Dann
-      würden Sie <userinput>svn update --set-depth exclude</userinput>
-      für das Unterverzeichnis aufrufen, das Sie nicht haben
+    <para>Ab Subversion 1.6 können Sie einen anderen Ansatz wählen.
+      Zunächst checken Sie das Verzeichnis vollständig aus. Dann
+      rufen Sie <userinput>svn update --set-depth exclude</userinput>
+      für das Unterverzeichnis auf, das Sie nicht haben
       möchten.</para>
 
     <informalexample>
@@ -5905,12 +5815,12 @@ $
         <option>--message</option> (<option>-m</option>) an 
         <command>svn lock</command> übergeben hat. Ähnlich wie
         <command>svn commit</command> kann der Befehl <command>svn
-          lock</command> Kommentare annehmen, entweder über 
+        lock</command> Kommentare annehmen, entweder über 
         <option>--message</option> (<option>-m</option>) oder
         <option>--file</option> (<option>-F</option>), um den Grund
         für die Dateisperre zu beschreiben. Im Gegensatz zu
         <command>svn commit</command> verlangt <command>svn
-          lock</command> jedoch nicht nach einer Nachricht, indem es
+        lock</command> jedoch nicht nach einer Nachricht, indem es
         Ihren bevorzugten Texteditor aufruft. Sperrkommentare sind
         zwar optional, aber zur Unterstützung der Kommunikation
         empfohlen.</para>
@@ -5943,21 +5853,22 @@ $
         info</command> reporting subcommands.</para>
 -->
       <para>Wie Sie sehen können, gibt der Befehl <command>svn
-          lock</command> eine Bestätigung bei einer erfolgreichen
+        lock</command> eine Bestätigung bei einer erfolgreichen
         Sperrung aus. An dieser Stelle wird die Tatsache, dass die
         Datei gesperrt ist, durch die Ausgabe der berichtenden
         Unterbefehle <command>svn status</command> und <command>svn
         info</command> offensichtlich.</para>
 
-<!--
       <informalexample>
         <screen>
 $ svn status
-     K banana.jpg
+     K  banana.jpg
 
 $ svn info banana.jpg
+<!--
 Path: banana.jpg
 Name: banana.jpg
+Working Copy Root Path: /home/harry/project
 URL: http://svn.example.com/repos/project/banana.jpg
 Repository Root: http://svn.example.com/repos/project
 Repository UUID: edb2f264-5ef2-0310-a47a-87b0ce17a8ec
@@ -5974,20 +5885,10 @@ Lock Token: opaquelocktoken:0c0f600b-88f9-0310-9e48-355b44d4a58e
 Lock Owner: harry
 Lock Created: 2006-06-14 17:20:31 -0500 (Wed, 14 Jun 2006)
 Lock Comment (1 line):
-Editing file for tomorrow's release.
-
-$
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn status
-     K banana.jpg
-
-$ svn info banana.jpg
 Pfad: banana.jpg
 Name: banana.jpg
+Working Copy Root Path: /home/harry/project
 URL: http://svn.example.com/repos/project/banana.jpg
 Basis des Projektarchivs: http://svn.example.com/repos/project
 UUID des Projektarchivs: edb2f264-5ef2-0310-a47a-87b0ce17a8ec
@@ -6100,31 +6001,23 @@ $
       <para>Da Harry nun <filename>banana.jpg</filename> gesperrt hat,
         kann Sally diese Datei weder ändern noch löschen:</para>
 
+      <informalexample>
+        <screen>
+$ svn delete banana.jpg
+D         banana.jpg
+$ svn commit -m "Delete useless file."
 <!--
-      <informalexample>
-        <screen>
-$ svn delete banana.jpg
-D         banana.jpg
-$ svn commit -m "Delete useless file."
 Deleting       banana.jpg
-svn: Commit failed (details follow):
-svn: Server sent unexpected return value (423 Locked) in response to DELETE\
- request for '/repos/project/!svn/wrk/64bad3a9-96f9-0310-818a-df4224ddc35d/\
-banana.jpg'
-$
-</screen>
-      </informalexample>
+svn: E175002: Commit failed (details follow):
+svn: E175002: Server sent unexpected return value (423 Locked) in response to
+DELETE request for '/repos/project/!svn/wrk/64bad3a9-96f9-0310-818a-df4224ddc
+35d/banana.jpg'
 -->
-      <informalexample>
-        <screen>
-$ svn delete banana.jpg
-D         banana.jpg
-$ svn commit -m "Delete useless file."
 Lösche         banana.jpg
-svn: Übertragen schlug fehl (Details folgen):
-svn: Der Server hat einen unerwarteten Rückgabewert (423 Locked) in Antwort auf die "
- Anfrage DELETE für »/repos/project/!svn/wrk/64bad3a9-96f9-0310-818a-df4224ddc35d/\
-banana.jpg« zurückgeliefert"
+svn: E175002: Übertragen schlug fehl (Details folgen):
+svn: E175002: Der Server hat einen unerwarteten Rückgabewert (423 Locked) in
+Antwort auf die Anfrage DELETE für »/repos/project/!svn/wrk/64bad3a9-96f9-031
+0-818a-df4224ddc35d/banana.jpg« zurückgeliefert"
 $
 </screen>
       </informalexample>
@@ -6141,25 +6034,16 @@ $
         hat, und weil seine Arbeitskopie die korrekte Sperrmarke
         beinhaltet:</para>
 
-<!--
       <informalexample>
         <screen>
 $ svn status
-M    K banana.jpg
+M    K  banana.jpg
 $ svn commit -m "Make banana more yellow"
+<!--
 Sending        banana.jpg
 Transmitting file data .
 Committed revision 2201.
-$ svn status
-$
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn status
-M    K banana.jpg
-$ svn commit -m "Make banana more yellow"
 Sende          banana.jpg
 Übertrage Daten .
 Revision 2201 übertragen.
@@ -6218,13 +6102,13 @@ $
 -->
       <para>Dieses Verhalten der automatischen Sperrfreigabe kann mit
         der Option <option>--no-unlock</option> von <command>svn
-          commit</command> unterbunden werden. Diese Option wird am
+        commit</command> unterbunden werden. Diese Option wird am
         besten dann verwendet, wenn Sie Änderungen übertragen möchten,
         aber trotzdem weitere Änderungen planen und die Sperren
         deshalb beibehalten werden sollen. Sie können das auch zum
         Standardverhalten machen, indem Sie die Laufzeitoption
         <literal>no-unlock</literal> setzen (siehe <xref
-          linkend="svn.advanced.confarea" />).</para>
+        linkend="svn.advanced.confarea" />).</para>
 
 <!--
       <para>Of course, locking a file doesn't oblige one to commit a
@@ -6236,17 +6120,12 @@ $
         Die Sperre kann jederzeit mit einem einfachen <command>svn
           unlock</command> freigegeben werden:</para>
 
+      <informalexample>
+        <screen>
+$ svn unlock banana.c
 <!--
-      <informalexample>
-        <screen>
-$ svn unlock banana.c
 'banana.c' unlocked.
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn unlock banana.c
 »banana.c« freigegeben.
 </screen>
       </informalexample>
@@ -6271,30 +6150,21 @@ $ svn unlock banana.c
         <userinput>svn status --show-updates</userinput>
         aufzurufen:</para>
 
+      <informalexample>
+        <screen>
+$ svn status -u
+M               23   bar.c
+M    O          32   raisin.jpg
+        *       72   foo.h
 <!--
-      <informalexample>
-        <screen>
-$ svn status -u
-M               23   bar.c
-M    O          32   raisin.jpg
-        *       72   foo.h
 Status against revision:     105
-$
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn status -u
-M               23   bar.c
-M    O          32   raisin.jpg
-        *       72   foo.h
 Status bezogen auf Revision:     105
 $
 </screen>
       </informalexample>
-<!--
 
+<!--
       <para>In this example, Sally can see not only that her copy of
         <filename>foo.h</filename> is out of date, but also that one of the
         two modified files she plans to commit is locked in the
@@ -6319,10 +6189,10 @@ $
         wann und warum angelegt hat. Auch hierzu liefert <command>svn
           info</command> die Antwort:</para>
 
-<!--
       <informalexample>
         <screen>
 $ svn info ^/raisin.jpg
+<!--
 Path: raisin.jpg
 Name: raisin.jpg
 URL: http://svn.example.com/repos/project/raisin.jpg
@@ -6337,14 +6207,7 @@ Lock Token: opaquelocktoken:fc2b4dee-98f9-0310-abf3-653ff3226e6b
 Lock Owner: harry
 Lock Created: 2006-02-16 13:29:18 -0500 (Thu, 16 Feb 2006)
 Lock Comment (1 line):
-Need to make a quick tweak to this image.
-$
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn info ^/raisin.jpg
 Pfad: raisin.jpg
 Name: raisin.jpg
 URL: http://svn.example.com/repos/project/raisin.jpg
@@ -6452,35 +6315,17 @@ $
         zu diesen Werkzeugen unter <xref
           linkend="svn.reposadmin.maint.tk"/>.)</para>
 
-<!--
       <informalexample>
         <screen>
 $ svnadmin lslocks /var/svn/repos
+<!--
 Path: /project2/images/banana.jpg
 UUID Token: opaquelocktoken:c32b4d88-e8fb-2310-abb3-153ff1236923
 Owner: frank
 Created: 2006-06-15 13:29:18 -0500 (Thu, 15 Jun 2006)
 Expires: 
 Comment (1 line):
-Still improving the yellow color.
-
-Path: /project/raisin.jpg
-UUID Token: opaquelocktoken:fc2b4dee-98f9-0310-abf3-653ff3226e6b
-Owner: harry
-Created: 2006-02-16 13:29:18 -0500 (Thu, 16 Feb 2006)
-Expires: 
-Comment (1 line):
-Need to make a quick tweak to this image.
-
-$ svnadmin rmlocks /var/svn/repos /project/raisin.jpg
-Removed lock on '/project/raisin.jpg'.
-$
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svnadmin lslocks /var/svn/repos
 Pfad: /project2/images/banana.jpg
 UUID Marke: opaquelocktoken:c32b4d88-e8fb-2310-abb3-153ff1236923
 Eigentümer: frank
@@ -6489,6 +6334,14 @@ Läuft ab:
 Kommentar (1 Zeile):
 Still improving the yellow color.
 
+<!--
+Path: /project/raisin.jpg
+UUID Token: opaquelocktoken:fc2b4dee-98f9-0310-abf3-653ff3226e6b
+Owner: harry
+Created: 2006-02-16 13:29:18 -0500 (Thu, 16 Feb 2006)
+Expires: 
+Comment (1 line):
+-->
 Pfad: /project/raisin.jpg
 UUID Marke: opaquelocktoken:fc2b4dee-98f9-0310-abf3-653ff3226e6b
 Eigentümer: harry
@@ -6498,6 +6351,9 @@ Kommentar (1 Zeile):
 Need to make a quick tweak to this image.
 
 $ svnadmin rmlocks /var/svn/repos /project/raisin.jpg
+<!--
+Removed lock on '/project/raisin.jpg'.
+-->
 Sperre für »/project/raisin.jpg« entfernt.
 $
 </screen>
@@ -6512,43 +6368,35 @@ $
       <para>Die interessantere Option ist, es den Benutzern zu
         erlauben, gegenseitig über das Netz die Freigabe zu erzwingen.
         Um das zu machen, muss Sally dem Befehl <command>svn
-          unlock</command> einfach ein <option>--force</option>
+        unlock</command> einfach ein <option>--force</option>
         mitgeben:</para>
 
+      <informalexample>
+        <screen>
+$ svn status -u
+M               23   bar.c
+M    O          32   raisin.jpg
+        *       72   foo.h
 <!--
-      <informalexample>
-        <screen>
-$ svn status -u
-M              23   bar.c
-M    O         32   raisin.jpg
-       *       72   foo.h
 Status against revision:     105
-$ svn unlock raisin.jpg
-svn: 'raisin.jpg' is not locked in this working copy
-$ svn info raisin.jpg | grep URL
-URL: http://svn.example.com/repos/project/raisin.jpg
-$ svn unlock http://svn.example.com/repos/project/raisin.jpg
-svn: Unlock request failed: 403 Forbidden (http://svn.example.com)
-$ svn unlock - -force http://svn.example.com/repos/project/raisin.jpg
-'raisin.jpg' unlocked.
-$
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn status -u
-M              23   bar.c
-M    O         32   raisin.jpg
-       *       72   foo.h
 Status bezogen auf Revision:     105
 $ svn unlock raisin.jpg
-svn: »raisin.jpg« ist in dieser Arbeitskopie nicht gesperrt.
+<!--
+svn: E195013: 'raisin.jpg' is not locked in this working copy
+-->
+svn: E195013: '»raisin.jpg« ist in dieser Arbeitskopie nicht gesperrt.
 $ svn info raisin.jpg | grep URL
 URL: http://svn.example.com/repos/project/raisin.jpg
 $ svn unlock http://svn.example.com/repos/project/raisin.jpg
-svn: Sperrfreigabe gescheitert: 403 Forbidden (http://svn.example.com)
+<!--
+svn: warning: W160039: Unlock failed on 'raisin.jpg' (403 Forbidden)
+-->
+svn: Warnung: W160039: USperrfreigabe gescheitert: 403 Forbidden (http://svn.example.com)
 $ svn unlock --force http://svn.example.com/repos/project/raisin.jpg
+<!--
+'raisin.jpg' unlocked.
+-->
 »raisin.jpg« freigegeben.
 $
 </screen>
@@ -6605,22 +6453,19 @@ $
         das zu tun, übergibt Sally die Option <option>--force</option>
         an <command>svn lock</command>:</para>
 
+      <informalexample>
+        <screen>
+$ svn lock raisin.jpg
 <!--
-      <informalexample>
-        <screen>
-$ svn lock raisin.jpg
-svn: Lock request failed: 423 Locked (http://svn.example.com)
-$ svn lock - -force raisin.jpg
-'raisin.jpg' locked by user 'sally'.
-$
-</screen>
-      </informalexample>
+svn: warning: W160035: Path '/project/raisin.jpg' is already locked by user 'h
+arry' in filesystem '/var/svn/repos/db'
 -->
-      <informalexample>
-        <screen>
-$ svn lock raisin.jpg
-svn: Sperranforderung gescheitert: 423 Locked (http://svn.example.com)
+svn: Warnung: W160035: Pfad »/project/raisin.jpg« ist bereits vom Benutzer »ha
+rry« im Dateisystem »/var/svn/repos/db« gesperrt
 $ svn lock --force raisin.jpg
+<!--
+'raisin.jpg' locked by user 'sally'.
+-->
 »raisin.jpg« gesperrt durch »sally«.
 $
 </screen>
@@ -6649,31 +6494,22 @@ $
         sehen, wenn er <command>svn status</command> auffordert,
         Kontakt zum Projektarchiv aufzunehmen:</para>
 
+      <informalexample>
+        <screen>
+$ svn status
+     K  raisin.jpg
+$ svn status -u
+     B          32   raisin.jpg
 <!--
-      <informalexample>
-        <screen>
-$ svn status
-     K  raisin.jpg
-$ svn status -u
-     B          32   raisin.jpg
 Status against revision:     105
-$ svn update
-  B  raisin.jpg
-Updated to revision 105.
-$ svn status
-$
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn status
-     K  raisin.jpg
-$ svn status -u
-     B          32   raisin.jpg
 Status bezogen auf Revision:     105
 $ svn update
+Updating '.':
   B  raisin.jpg
+<!--
+Updated to revision 105.
+-->
 Aktualisiert zu Revision 105.
 $ svn status
 $
@@ -6863,25 +6699,6 @@ $
         sie daran, die Datei vor dem Ändern zu sperren, wobei sie die
         bereits bestehende Sperre entdeckt:</para>
 
-<!--
-      <informalexample>
-        <screen>
-$ /usr/local/bin/gimp raisin.jpg
-gimp: error: file is read-only!
-$ ls -l raisin.jpg
--r- -r- -r- -   1 sally   sally   215589 Jun  8 19:23 raisin.jpg
-$ svn lock raisin.jpg
-svn: Lock request failed: 423 Locked (http://svn.example.com)
-$ svn info http://svn.example.com/repos/project/raisin.jpg | grep Lock
-Lock Token: opaquelocktoken:fc2b4dee-98f9-0310-abf3-653ff3226e6b
-Lock Owner: harry
-Lock Created: 2006-06-08 07:29:18 -0500 (Thu, 08 June 2006)
-Lock Comment (1 line):
-Making some tweaks.  Locking for the next two hours.
-$
-</screen>
-      </informalexample>
--->
       <informalexample>
         <screen>
 $ /usr/local/bin/gimp raisin.jpg
@@ -6889,8 +6706,19 @@ gimp: error: file is read-only!
 $ ls -l raisin.jpg
 -r--r--r--   1 sally   sally   215589 Jun  8 19:23 raisin.jpg
 $ svn lock raisin.jpg
-svn: "Sperranforderung gescheitert: 423 Locked (http://svn.example.com)
+<!--
+svn: warning: W160035: Path '/project/raisin.jpg' is already locked by user 'h
+arry' in filesystem '/var/svn/repos/db'
+-->
+svn: Warnung: W160035: Pfad »/project/raisin.jpg« ist bereits vom Benutzer »ha
+rry« im Dateisystem »/var/svn/repos/db« gesperrt
 $ svn info http://svn.example.com/repos/project/raisin.jpg | grep Lock
+<!--
+Lock Token: opaquelocktoken:fc2b4dee-98f9-0310-abf3-653ff3226e6b
+Lock Owner: harry
+Lock Created: 2006-06-08 07:29:18 -0500 (Thu, 08 June 2006)
+Lock Comment (1 line):
+-->
 Sperrmarke: opaquelocktoken:fc2b4dee-98f9-0310-abf3-653ff3226e6b
 Sperreigner: harry
 Sperre erzeugt: 2006-06-08 07:29:18 -0500 (Thu, 08 June 2006)
@@ -7131,39 +6959,21 @@ third-party/skins/toolkit -r21 http://svn.example.com/skin-maker
       fährt Subversion damit fort, die Objekte in der
       Externals-Definition auszuchecken.</para>
 
+    <informalexample>
+      <screen>
+$ svn checkout http://svn.example.com/repos/calc
+A    calc
+A    calc/Makefile
+A    calc/integer.c
+A    calc/button.c
 <!--
-    <informalexample>
-      <screen>
-$ svn checkout http://svn.example.com/repos/calc
-A    calc
-A    calc/Makefile
-A    calc/integer.c
-A    calc/button.c
 Checked out revision 148.
-
-Fetching external item into calc/third-party/sounds
-A    calc/third-party/sounds/ding.ogg
-A    calc/third-party/sounds/dong.ogg
-A    calc/third-party/sounds/clang.ogg
-&hellip;
-A    calc/third-party/sounds/bang.ogg
-A    calc/third-party/sounds/twang.ogg
-Checked out revision 14.
-
-Fetching external item into calc/third-party/skins
-&hellip;
-</screen>
-      </informalexample>
 -->
-    <informalexample>
-      <screen>
-$ svn checkout http://svn.example.com/repos/calc
-A    calc
-A    calc/Makefile
-A    calc/integer.c
-A    calc/button.c
 Ausgecheckt. Revision 148.
 
+<!--
+Fetching external item into calc/third-party/sounds
+-->
 Hole externen Verweis nach calc/third-party/sounds
 A    calc/third-party/sounds/ding.ogg
 A    calc/third-party/sounds/dong.ogg
@@ -7171,12 +6981,18 @@ A    calc/third-party/sounds/clang.ogg
 &hellip;
 A    calc/third-party/sounds/bang.ogg
 A    calc/third-party/sounds/twang.ogg
+<!--
+Checked out revision 14.
+-->
 Ausgecheckt. Revision 14.
 
+<!--
+Fetching external item into calc/third-party/skins
+-->
 Hole externen Verweis nach calc/third-party/skins
 &hellip;
 </screen>
-      </informalexample>
+    </informalexample>
 
 <!--
     <para>As of Subversion 1.5, though, a new format of the
@@ -7308,7 +7124,6 @@ http://svn.example.com/skin-maker@21 third-party/skins/toolkit
       wiederum die letzte Revision eines anderen Unterverzeichnisses
       verfolgt (<filename>my-project/external-dir</filename>).</para>
 
-<!--
     <informalexample>
       <screen>
 $ svn checkout http://svn.example.com/projects .
@@ -7316,27 +7131,16 @@ A    my-project
 A    my-project/some-dir
 A    my-project/external-dir
 &hellip;
+<!--
 Fetching external item into 'my-project/some-dir/subdir'
 Checked out external at revision 11.
-
-Checked out revision 11.
-$ svn propget svn:externals my-project/some-dir
-subdir http://svn.example.com/projects/my-project/external-dir
-
-$
-</screen>
-    </informalexample>
 -->
-    <informalexample>
-      <screen>
-$ svn checkout http://svn.example.com/projects .
-A    my-project
-A    my-project/some-dir
-A    my-project/external-dir
-&hellip;
 Hole externen Verweis nach »my-project/some-dir/subdir«
 Externer Verweis ausgecheckt, Revision 11.
 
+<!--
+Checked out revision 11.
+-->
 Ausgecheckt, Revision 11.
 $ svn propget svn:externals my-project/some-dir
 subdir http://svn.example.com/projects/my-project/external-dir
@@ -7359,35 +7163,36 @@ $
       <filename>my-project</filename>, obwohl das Verzeichnis nicht
       mehr existiert.</para>
 
-<!--
     <informalexample>
       <screen>
 $ svn move -q my-project renamed-project
 $ svn commit -m "Rename my-project to renamed-project."
+<!--
 Deleting       my-project
 Adding         renamed-project
-
-Committed revision 12.
-$ svn update
-
-Fetching external item into 'renamed-project/some-dir/subdir'
-svn: Target path does not exist
-$
-</screen>
-    </informalexample>
 -->
-    <informalexample>
-      <screen>
-$ svn move -q my-project renamed-project
-$ svn commit -m "Rename my-project to renamed-project."
 Lösche         my-project
 Hinzufügen     renamed-project
 
-Revision 12 übertragen.
+Committed revision 12.
 $ svn update
+Updating '.':
 
-Hole externen Verweis nach »renamed-project/some-dir/subdir«
-svn: Zielpfad existiert nicht
+<!--
+svn: warning: W200000: Error handling externals definition for 'renamed-projec
+t/some-dir/subdir':
+svn: warning: W170000: URL 'http://svn.example.com/projects/my-project/externa
+l-dir' at revision 12 doesn't exist
+At revision 12.
+svn: E205011: Failure occurred processing one or more externals definitions
+-->
+svn: Warnung: W200000: Fehler beim Umgang mit der Definition des externen Verwe
+ises für »renamed-project/some-dir/subdir«:"
+svn: warning: W170000: URL »http://svn.example.com/projects/my-project/external
+-dir« existiert nicht in Revision 12
+Revision 12.
+svn: E205011: Kann eine oder mehrere »svn:externals«-Definitionen nicht verarbe
+iten"
 $
 </screen>
     </informalexample>
@@ -7407,8 +7212,8 @@ $
       be checking out via <literal>http://</literal> because his
       client doesn't support <literal>https://</literal> will be
       unable to fetch the external items.  Be aware, too, that if you
-      need to reparent your working copy (using <command>svn switch</command>
-      with the <option>- -relocate</option> option), externals definitions will
+      need to reparent your working copy (using <command>svn
+      relocate</command>), externals definitions will
       <emphasis>not</emphasis> also be reparented.</para>
 -->
     <para>Absolute URLs können außerdem Probleme bei Projektarchiven
@@ -7426,8 +7231,7 @@ $
       auscheckt, da sein Client <literal>https://</literal> nicht
       unterstützt, die externen Verweise nicht heranziehen. Beachten
       Sie ferner, dass beim Umhängen Ihrer Arbeitskopie (mit
-      <command>svn switch</command> und der Option
-      <option>--relocate</option>) die Externals-Definitionen
+      <command>svn relocate</command>) die Externals-Definitionen
       <emphasis>nicht</emphasis> automatisch umgehängt werden.</para>
 
 <!--
@@ -7491,6 +7295,22 @@ $
       </varlistentry>
     </variablelist>
 
+      <varlistentry>
+        <term><literal>^/../<replaceable>REPO-NAME</replaceable></literal></term> 
+<!--
+        <listitem><para>Relative to a sibling repository beneath the
+          same <literal>SVNParentPath</literal> location as the
+          repository in which the <literal>svn:externals</literal> is
+          defined.</para></listitem>
+-->
+        <listitem><para>Relativ zu einem Geschwister-Projektarchiv
+          unterhalb desselben <literal>SVNParentPath</literal>-Ortes
+          wie das Projektarchiv, in dem
+          <literal>svn:externals</literal> definiert
+          wird.</para></listitem>
+      </varlistentry>
+    </variablelist>
+
 <!--
     <para>So, looking a fourth time at our previous externals
       definition example, and making use of the new absolute URL
@@ -7512,8 +7332,8 @@ $
     </informalexample>
 
 <!--
-    <para>Subversion 1.6 brings two more improvements to externals
-      definitions.  First, it adds a quoting and escape mechanism to
+    <para>Subversion 1.6 brought two more improvements to externals
+      definitions.  First, it added a quoting and escape mechanism to
       the syntax so that the path of the external working copy may
       contain whitespace.  This was previously problematic, of course,
       because whitespace is used to delimit the fields in an externals
@@ -7525,8 +7345,8 @@ $
       definition, you should use the standard URI-encoding mechanism
       to represent those.</para>
 -->
-    <para>Subversion 1.6 bringt zwei weitere Verbesserungen für
-      Externals-Definitionen. Zunächst erweitert es die Syntax um
+    <para>Subversion 1.6 brachte zwei weitere Verbesserungen für
+      Externals-Definitionen. Zunächst erweiterte es die Syntax um
       einen Zitier- und Maskierungsmechanismus, so dass der Pfad der
       externen Arbeitskopie Leerzeichen enthalten darf. Das war vorher
       natürlich problematisch, da Leerzeichen zum Begrenzen von
@@ -7581,32 +7401,26 @@ $
     <para>Die hierfür benötigte Externals-Definition sollte nun
       vertraut aussehen:</para>
 
-<!--
     <informalexample>
       <screen>
 $ svn propget svn:externals www/
 ^/trunk/bikeshed/blue.html@40 green.html
 $ svn update
-Fetching external item into 'www'
-E    www/green.html
-Updated external to revision 40.
+Updating '.':
 
-Update to revision 103.
-$ svn status
-    X   www/green.html
-$
-</screen>
-    </informalexample>
+<!--
+Fetching external item into 'www'
 -->
-    <informalexample>
-      <screen>
-$ svn propget svn:externals www/
-^/trunk/bikeshed/blue.html@40 green.html
-$ svn update
 Hole externen Verweis nach »www«
 E    www/green.html
+<!--
+Updated external to revision 40.
+-->
 Externer Verweis aktualisiert zu Revision 40.
 
+<!--
+Update to revision 103.
+-->
 Aktualisiert zu Revision 103.
 $ svn status
     X   www/green.html
@@ -7658,6 +7472,7 @@ $
 $ svn info www/green.html 
 Path: www/green.html
 Name: green.html
+Working Copy Root Path: /home/harry/projects/my-project
 URL: http://svn.example.com/projects/my-project/trunk/bikeshed/blue.html
 Repository Root: http://svn.example.com/projects/my-project
 Repository UUID: b2a368dc-7564-11de-bb2b-113435390e17
@@ -7691,27 +7506,19 @@ $
       Revision, so dass der Versuch scheitert, das External zu
       übergeben:</para>
 
+    <informalexample>
+      <screen>
+$ svn status
+M   X   www/green.html
+$ svn commit -m "change the color" www/green.html
 <!--
-    <informalexample>
-      <screen>
-$ svn status
-M   X   www/green.html
-$ svn commit -m "change the color" www/green.html
 Sending        www/green.html
-svn: Commit failed (details follow):
-svn: File '/trunk/bikeshed/blue.html' is out of date
-$
-</screen>
-    </informalexample>
+svn: E155011: Commit failed (details follow):
+svn: E155011: File '/trunk/bikeshed/blue.html' is out of date
 -->
-    <informalexample>
-      <screen>
-$ svn status
-M   X   www/green.html
-$ svn commit -m "change the color" www/green.html
 Sende          www/green.html
-svn: Übertragen schlug fehl (Details folgen)::
-svn: Datei »/trunk/bikeshed/blue.html« ist veraltet
+svn: E155011: Übertragen schlug fehl (Details folgen)::
+svn: E155011: Datei »/trunk/bikeshed/blue.html« ist veraltet
 $
 </screen>
     </informalexample>
@@ -7743,8 +7550,7 @@ $
       must always be in the same repository as the URL that the file
       external will be inserted into. Also, file externals cannot be
       moved or deleted. The <literal>svn:externals</literal> property
-      must be modified instead. However, file externals can be copied.
-    </para>
+      must be modified instead. However, file externals can be copied.</para>
 -->
     <para>Leider bleibt die Unterstützung für Externals-Definitionen
       in Subversions alles andere als ideal. Sowohl Datei- als auch
