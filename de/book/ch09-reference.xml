@@ -1774,10 +1774,11 @@ $ svn log -r 1729:{2002-02-17}
       <title>svn-Unterbefehle</title>
 
 <!--
-      <para>Here are the various subcommands for the <command>svn</command> program.  For the sake of
-        brevity, we omit the global options (described in <xref
-        linkend="svn.ref.svn.sw" />) from the subcommand descriptions
-        which follow.</para>
+      <para>Here are the various subcommands for
+        the <command>svn</command> program.  For the sake of brevity,
+        we omit the global options (described in
+        <xref linkend="svn.ref.svn.sw" />) from the subcommand
+        descriptions which follow.</para>
 -->
       <para>Hier sind die verschiedenen Unterbefehle für das Programm
         <command>svn</command>. Der Kürze halber lassen wir die
@@ -1824,7 +1825,7 @@ $ svn log -r 1729:{2002-02-17}
             uploaded and added to the repository on your next commit.
             If you add something and change your mind before
             committing, you can unschedule the addition using
-            <command>svn revert</command>.
+            <command>svn revert</command>.</para>
 -->
           <para>Dateien, Verzeichnisse oder symbolische Links in Ihrer
             Arbeitskopie werden zum Hinzufügen ins Projektarchiv
@@ -1832,8 +1833,7 @@ $ svn log -r 1729:{2002-02-17}
             Projektarchiv geladen. Wenn Sie etwas hinzufügen möchten, es
             sich vor der Übergabe aber anders überlegen sollten,
             können Sie die Vormerkung mit <command>svn
-            revert</command> rückgängig machen.
-          </para>
+            revert</command> rückgängig machen.</para>
         </refsect1>
 
         <refsect1>
@@ -1844,14 +1844,14 @@ $ svn log -r 1729:{2002-02-17}
 
           <informalexample>
             <screen>
---auto-props
---depth ARG
---force
---no-auto-props
---no-ignore
---parents
---quiet (-q)
---targets FILENAME
+<xref linkend="svn.ref.svn.sw.auto_props" />
+<xref linkend="svn.ref.svn.sw.depth" />
+<xref linkend="svn.ref.svn.sw.force" />
+<xref linkend="svn.ref.svn.sw.no_auto_props" />
+<xref linkend="svn.ref.svn.sw.no_ignore" />
+<xref linkend="svn.ref.svn.sw.parents" />
+<xref linkend="svn.ref.svn.sw.quiet" />
+<xref linkend="svn.ref.svn.sw.targets" />
 </screen>
           </informalexample>
         </refsect1>
@@ -1907,31 +1907,41 @@ A         otherdir
           </informalexample>
 
 <!--
-          <para>Normally, the command <userinput>svn add *</userinput>
-            will skip over any directories that are already under
-            version control.  Sometimes, however, you may want to add
-            every unversioned object in your working copy, including
-            those hiding deeper.  Passing the
-            <option>- -force</option> option makes <command>svn
-            add</command> recurse into versioned directories:
-          </para>
+          <para>Attempts to schedule the addition of an item which is
+            already versioned will fail by default.  This behavior
+            foils the most common scenario under which users attempt
+            this: when trying to get to Subversion to recursively
+            examine a versioned directory and add any unversioned
+            items inside of it.  To override the default behavior and
+            force Subversion to recurse into already-versioned
+            directories, pass the <option>- -force</option>
+            option:</para>
 -->
-          <para>Normalerweise überspringt der Befehl <userinput>svn
-            add *</userinput> Verzeichnisse, die sich bereits unter
-            Versionskontrolle befinden. Manchmal möchten Sie jedoch
-            jedes unversionierte Objekt in Ihrer Arbeitskopie
-            hinzufügen, auch solche, die tiefer verborgen sind. Die
-            Option <option>--force</option> veranlasst <command>svn
-            add</command>, rekursiv versionierte Verzeichnisse zu
-            bearbeiten:
+          <para>Standardmäßig scheitern Versuche, ein bereits unter
+            Versionskontrolle befindliches Objekt für die
+            Versionierung vorzumerken. Dieses Verhalten verhindert das
+            verbreitetste Szenario, in dem Anwender dieses versuchen:
+            Subversion rekursiv ein versioniertes Verzeichnis zu
+            durchlaufen und alle darin befindlichen noch nicht
+            versionierten Objekte hinzuzufügen. Um das
+            Standardverhalten zu umgehen und Subversion zu zwingen, in
+            bereits versionierte Verzeichnisse herabzusteigen, geben
+            Sie die Option <option>--force</option> an:
           </para>
 
           <informalexample>
             <screen>
-$ svn add * --force
-A         foo.c
-A         somedir/bar.c
-A  (bin)  otherdir/docs/baz.doc
+$ svn add versioned-dir
+<!--
+svn: warning: W150002: '/home/cmpilato/projects/subversion/site' is already un\
+der version control
+-->
+svn: Warnung: W150002: '»/home/cmpilato/projects/subversion/site« befindet sic\
+h bereits unter Versionskontrolle
+$ svn add versioned-dir --force
+A         versioned-dir/foo.c
+A         versioned-dir/somedir/bar.c
+A  (bin)  versioned-dir/otherdir/docs/baz.doc
 &hellip;
 </screen>
           </informalexample>
