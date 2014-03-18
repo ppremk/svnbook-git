@@ -1937,7 +1937,7 @@ svn: warning: W150002: '/home/cmpilato/projects/subversion/site' is already un\
 der version control
 -->
 svn: Warnung: W150002: '»/home/cmpilato/projects/subversion/site« befindet sic\
-h bereits unter Versionskontrolle
+bereits unter Versionskontrolle
 $ svn add versioned-dir --force
 A         versioned-dir/foo.c
 A         versioned-dir/somedir/bar.c
@@ -2004,13 +2004,13 @@ A  (bin)  versioned-dir/otherdir/docs/baz.doc
 
           <informalexample>
             <screen>
---extensions (-x) ARG
---force
---incremental
---revision (-r) REV
---use-merge-history (-g)
---verbose (-v)
---xml
+<xref linkend="svn.ref.svn.sw.extensions" />
+<xref linkend="svn.ref.svn.sw.force" />
+<xref linkend="svn.ref.svn.sw.incremental" />
+<xref linkend="svn.ref.svn.sw.revision" />
+<xref linkend="svn.ref.svn.sw.use_merge_history" />
+<xref linkend="svn.ref.svn.sw.verbose" />
+<xref linkend="svn.ref.svn.sw.xml" />
 </screen>
           </informalexample>
         </refsect1>
@@ -2034,26 +2034,94 @@ A  (bin)  versioned-dir/otherdir/docs/baz.doc
             <screen>
 $ svn blame http://svn.red-bean.com/repos/test/readme.txt
      3      sally This is a README file.
-     5      harry You should read this.
+     5      harry Don't bother reading it.  The boss is a knucklehead.
+     3      sally 
+&hellip;
 </screen>
           </informalexample>
 
 <!--
-          <para>Even if <command>svn blame</command> says that Harry
-            last modified <filename>readme.txt</filename> in revision
-            5, you'll have to examine exactly what the revision
-            changed to be sure that Harry changed
-            the <emphasis>context</emphasis> of the line&mdash;he may
-            have adjusted just the whitespace.
-          </para>
+          <para>Now, just because <command>svn blame</command> says
+            that Harry last modified <filename>readme.txt</filename>
+            in revision 5, understand that this subcommand is by
+            default very picky about what constitutes a change.
+            Before clubbing Harry over the head for what appears to be
+            insubordination, first consider that perhaps the change he
+            made to the file might have been only to its specific
+            character content, not to its overall semantic meaning.
+            Perhaps his changes were the result of blindly running a
+            whitespace cleanup script on this file.  You might need
+            to examine the specific differences and related log
+            message to understand exactly what Harry did to this file
+            in revision 5.</para>
 -->
-          <para>Auch wenn <command>svn blame</command> behauptet, dass
+          <para>Nur weil <command>svn blame</command> behauptet, dass
             Harry <filename>readme.txt</filename> zuletzt in Revision
-            5 geändert habe, sollten Sie genau prüfen, was diese
-            Revision geändert hat, um sicherzugehen, dass Harry den
-            <emphasis>Kontext</emphasis> der Zeile geändert hat
-            &ndash; es könnte sein, dass er nur Leerzeichen angepasst
-            hat.</para>
+            5 geändert habe, sollten Sie verstehen, das dieser
+            Unterbefehl standardmäßig sehr pingelig bei der Bewertung,
+            was eine Änderung ist. Bevor Harry für die anscheinende
+            Aufmüpfigkeit Prügel bezieht, sollten Sie bedenken, dass
+            die Änderung, die er an der Datei vornahm, sich auf den
+            Zeicheninhalt und nicht auf den gesamten semantischen
+            Inhalt bezog. Vielleicht war seine Änderung das Ergebnis
+            einer unbedachten Behandlung dieser Datei durch ein Skript
+            zur Leerraum-Bereinigung. Zum genauen Verständnis dessen,
+            was Harry an dieser Datei in Revision 5 geändert hat,
+            sollten Sie die einzelnen Änderungen und die damit
+            verbundenen Protokollnachrichten untersuchen.</para>
+
+          <informalexample>
+            <screen>
+$ svn log -c 5 http://svn.red-bean.com/repos/test/readme.txt
+------------------------------------------------------------------------
+r5 | harry | 2008-05-29 07:26:12 -0600 (Thu, 29 May 2008) | 1 line
+
+Commit the results of 'double-space-after-period.sh'.
+
+------------------------------------------------------------------------
+$ svn diff -c 5 http://svn.red-bean.com/repos/test/readme.txt
+Index: http://svn.red-bean.com/repos/test/readme.txt
+===================================================================
+--- http://svn.red-bean.com/repos/test/readme.txt	(revision 4)
++++ http://svn.red-bean.com/repos/test/readme.txt	(revision 5)
+@@ -1,5 +1,5 @@
+ This is a README file.
+-Don't bother reading it. The boss is a knucklehead.
++Don't bother reading it.  The boss is a knucklehead.
+  
+ INSTRUCTIONS
+ ============
+$
+</screen>
+          </informalexample>
+
+<!--
+          <para>Sure enough, Harry only changed the whitespace in that
+            line.  Fortunately, the <option>- -extensions</option>
+            (<option>-x</option>) option can help you better determine
+            the last time that a <emphasis>meaningful</emphasis>
+            change was made to a given line of text.  For example,
+            here's how you can see the annotation information while
+            disregarding mere whitespace changes:</para>
+-->
+          <para>Klar, dass Harry nur die Leerzeichen in dieser Zeile
+            geändert hat. Glücklicherweise kann Ihnen die Option
+            <option>--extensions</option> (<option>-x</option>) dabei
+            helfen, besser herauszufindern, wann eine
+            <emphasis>bedeutende</emphasis> Änderung an einer
+            Textzeile vorgenommen wurde. Hier ist beispielsweise die
+            Anmerkung ohne Berücksichtigung von bloßen
+            Leerraum-Änderungen::</para>
+
+          <informalexample>
+            <screen>
+$ svn blame -x -b http://svn.red-bean.com/repos/test/readme.txt
+     3      sally This is a README file.
+     4       jess Don't bother reading it.  The boss is a knucklehead.
+     3      sally 
+&hellip;
+</screen>
+          </informalexample>
 
 <!--
           <para>If you use the <option>- -xml</option> option, you can
@@ -2084,7 +2152,7 @@ $ svn blame --xml http://svn.red-bean.com/repos/test/readme.txt
 &lt;commit
    revision="5"&gt;
 &lt;author&gt;harry&lt;/author&gt;
-&lt;date&gt;2008-05-29T03:26:12.293121Z&lt;/date&gt;
+&lt;date&gt;2008-05-29T13:26:12.293121Z&lt;/date&gt;
 &lt;/commit&gt;
 &lt;/entry&gt;
 &lt;/target&gt;
