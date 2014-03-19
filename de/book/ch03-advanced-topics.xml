@@ -7925,31 +7925,19 @@ $
         <command>svn changelist</command> die selbe, frei wählbare
         Änderungsliste zuweist:</para>
 
+      <informalexample>
+        <screen>
+$ svn changelist math-fixes integer.c mathops.c
+A [math-fixes] integer.c
+A [math-fixes] mathops.c
+$ svn status
+
 <!--
-      <informalexample>
-        <screen>
-$ svn changelist math-fixes integer.c mathops.c
-Path 'integer.c' is now a member of changelist 'math-fixes'.
-Path 'mathops.c' is now a member of changelist 'math-fixes'.
-$ svn status
-
-- - Changelist 'math-fixes':
-M      integer.c
-M      mathops.c
-$
-</screen>
-      </informalexample>
+- - - Changelist 'math-fixes':
 -->
-      <informalexample>
-        <screen>
-$ svn changelist math-fixes integer.c mathops.c
-Pfad »integer.c« ist nun ein Element der Änderungsliste »math-fixes«.
-Pfad »mathops.c« ist nun ein Element der Änderungsliste »math-fixes«.
-$ svn status
-
 --- Änderungsliste »math-fixes«:
-M      integer.c
-M      mathops.c
+M       integer.c
+M       mathops.c
 $
 </screen>
       </informalexample>
@@ -7974,28 +7962,15 @@ $
         derselben Änderungsliste wie den beiden vorigen Dateien
         zu:</para>
 
+      <informalexample>
+        <screen>
+$ svn changelist math-fixes button.c
+A [math-fixes] button.c
+$ svn status
+
 <!--
-      <informalexample>
-        <screen>
-$ svn changelist math-fixes button.c
-Path 'button.c' is now a member of changelist 'math-fixes'.
-$ svn status
-
-- - Changelist 'math-fixes':
-        button.c
-M       integer.c
-M       mathops.c
-$
-</screen>
-      </informalexample>
+- - - Changelist 'math-fixes':
 -->
-      <informalexample>
-        <screen>
-$ svn changelist math-fixes button.c
-Pfad »button.c« ist nun ein Element der Änderungsliste
-»math-fixes«.
-$ svn status
-
 --- Änderungsliste »math-fixes«:
         button.c
 M       integer.c
@@ -8015,23 +7990,12 @@ $
         Änderungsliste von <filename>button.c</filename> lösen und
         dann einen unterschiedlichen Listennamen zuweisen:</para>
 
-<!--
-      <informalexample>
-        <screen>
-$ svn changelist - -remove button.c
-Path 'button.c' is no longer a member of a changelist.
-$ svn changelist ui-fix button.c
-Path 'button.c' is now a member of changelist 'ui-fix'.
-$
-</screen>
-      </informalexample>
--->
       <informalexample>
         <screen>
 $ svn changelist --remove button.c
-Pfad »button.c« ist nicht länger ein Element einer Änderungsliste.
+D [math-fixes] button.c
 $ svn changelist ui-fix button.c
-msgstr "Pfad »button.c« ist nun ein Element der Änderungsliste »ui-fix«.
+A [ui-fix] button.c
 $
 </screen>
       </informalexample>
@@ -8047,34 +8011,22 @@ $
         Subversion Harry warnen, dass <filename>button.c</filename>
         von der ersten Änderungsliste entfernt wird:</para>
 
+      <informalexample>
+        <screen>
+$ svn changelist ui-fix button.c
+D [math-fixes] button.c
+A [ui-fix] button.c
+$ svn status
+
 <!--
-      <informalexample>
-        <screen>
-$ svn changelist ui-fix button.c
-svn: warning: Removing 'button.c' from changelist 'math-fixes'.
-Path 'button.c' is now a member of changelist 'ui-fix'.
-$ svn status
-
-- - Changelist 'ui-fix':
-        button.c
-
-- - Changelist 'math-fixes':
-M       integer.c
-M       mathops.c
-$
-</screen>
-      </informalexample>
+- - - Changelist 'ui-fix':
 -->
-      <informalexample>
-        <screen>
-$ svn changelist ui-fix button.c
-svn: warnung: Entferne »button.c« aus Änderungsliste »math-fixes«.
-Pfad »button.c« ist nun ein Element der Änderungsliste »ui-fix«.
-$ svn status
-
 --- Änderungsliste »ui-fix«:
         button.c
 
+<!--
+- - - Changelist 'math-fixes':
+-->
 --- Änderungsliste »math-fixes«:
 M       integer.c
 M       mathops.c
@@ -8111,28 +8063,19 @@ $
       <para>Harry behebt nun das Problem der Benutzerschnittstelle in
         <filename>button.c</filename>.</para>
 
+      <informalexample>
+        <screen>
+$ svn status
+
 <!--
-      <informalexample>
-        <screen>
-$ svn status
-
 - - Changelist 'ui-fix':
-M      button.c
-
-- - Changelist 'math-fixes':
-M      integer.c
-M      mathops.c
-$
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn status
-
 --- Änderungsliste »ui-fix«:
 M       button.c
 
+<!--
+- - Changelist 'math-fixes':
+-->
 --- Änderungsliste »math-fixes«:
 M       integer.c
 M       mathops.c
@@ -8251,22 +8194,15 @@ $
         Änderungsliste zu beschränken. Er könnte seine Fehlerbehebung
         an der Benutzerschnittstelle etwa so übertragen:</para>
 
-<!--
       <informalexample>
         <screen>
-$ svn ci -m "Fix a UI bug found while working on math logic." \
-      - -changelist ui-fix
+$ svn commit -m "Fix a UI bug found while working on math logic." \
+             --changelist ui-fix
+<!--
 Sending        button.c
 Transmitting file data .
 Committed revision 1158.
-$
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn ci -m "Fix a UI bug found while working on math logic." \
-      --changelist ui-fix
 Sende          button.c
 Übertrage Daten .
 Revision 1158 übertragen.
@@ -8296,25 +8232,16 @@ $
         berührt die Übertragung von Dateien einer Änderungsliste alle
         anderen Änderungslisten nicht.</para>
 
+      <informalexample>
+        <screen>
+$ svn status
+
 <!--
-      <informalexample>
-        <screen>
-$ svn status
-
 - - Changelist 'math-fixes':
-M      integer.c
-M      mathops.c
-$
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn status
-
 --- Änderungsliste »math-fixes«:
-M      integer.c
-M      mathops.c
+M       integer.c
+M       mathops.c
 $
 </screen>
       </informalexample>
@@ -8366,31 +8293,16 @@ $
         das schnelle Umbenennen oder Entfernen einer
         Änderungsliste:</para>
 
-<!--
-      <informalexample>
-        <screen>
-$ svn changelist math-bugs - -changelist math-fixes - -depth infinity .
-svn: warning: Removing 'integer.c' from changelist 'math-fixes'.
-Path 'integer.c' is now a member of changelist 'math-bugs'.
-svn: warning: Removing 'mathops.c' from changelist 'math-fixes'.
-Path 'mathops.c' is now a member of changelist 'math-bugs'.
-$ svn changelist - -remove - -changelist math-bugs - -depth infinity .
-Path 'integer.c' is no longer a member of a changelist.
-Path 'mathops.c' is no longer a member of a changelist.
-$
-</screen>
-      </informalexample>
--->
       <informalexample>
         <screen>
 $ svn changelist math-bugs --changelist math-fixes --depth infinity .
-svn: warnung: Entferne »integer.c« aus Änderungsliste »math-fixes«.
-Pfad »integer.c« ist nun ein Element der Änderungsliste »math-bugs«.
-svn: warnung: Entferne »mathops.c« aus Änderungsliste »math-fixes«.
-Pfad »mathops.c« ist nun ein Element der Änderungsliste »math-bugs«.
+D [math-fixes] integer.c
+A [math-bugs] integer.c
+D [math-fixes] mathops.c
+A [math-bugs] mathops.c
 $ svn changelist --remove --changelist math-bugs --depth infinity .
-Pfad »integer.c« ist nicht länger ein Element einer Änderungsliste
-Pfad »mathops.c« ist nicht länger ein Element einer Änderungsliste
+D [math-bugs] integer.c
+D [math-bugs] mathops.c
 $
 </screen>
       </informalexample>
