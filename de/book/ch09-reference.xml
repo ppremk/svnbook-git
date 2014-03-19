@@ -5426,19 +5426,24 @@ tree.jpg' locked by user 'harry'.
 
           <informalexample>
             <screen>
---change (-c) ARG
---incremental
---limit (-l) NUM
---quiet (-q)
---revision (-r) REV
---stop-on-copy
---targets FILENAME
---use-merge-history (-g)
---verbose (-v)
---with-all-revprops
---with-no-revprops
---with-revprop ARG
---xml
+<xref linkend="svn.ref.svn.sw.change" />
+<xref linkend="svn.ref.svn.sw.depth" />
+<xref linkend="svn.ref.svn.sw.diff" />
+<xref linkend="svn.ref.svn.sw.diff_cmd" />
+<xref linkend="svn.ref.svn.sw.extensions" />
+<xref linkend="svn.ref.svn.sw.incremental" />
+<xref linkend="svn.ref.svn.sw.internal_diff" />
+<xref linkend="svn.ref.svn.sw.limit" />
+<xref linkend="svn.ref.svn.sw.quiet" />
+<xref linkend="svn.ref.svn.sw.revision" />
+<xref linkend="svn.ref.svn.sw.stop_on_copy" />
+<xref linkend="svn.ref.svn.sw.targets" />
+<xref linkend="svn.ref.svn.sw.use_merge_history" />
+<xref linkend="svn.ref.svn.sw.verbose" />
+<xref linkend="svn.ref.svn.sw.with_all_revprops" />
+<xref linkend="svn.ref.svn.sw.with_no_revprops" />
+<xref linkend="svn.ref.svn.sw.with_revprop" />
+<xref linkend="svn.ref.svn.sw.xml" />
 </screen>
           </informalexample>
         </refsect1>
@@ -5801,6 +5806,60 @@ Made a change.
             </informalexample>
           </tip>
 
+<!--
+          <para>Beginning with Subversion 1.7, users can take
+            advantage of a special output mode which combines the
+            information from <command>svn log</command> with what you
+            would see when running <command>svn diff</command> on the
+            same targets for each revision of the log.  Simply
+            invoke <command>svn log</command> with
+            the <option>- -diff</option> option to trigger this output
+            mode.</para>
+-->
+          <para>Beginnend mit Subversion 1.7, können Anwender sich
+            einen besonderen Ausgabemodus zunutze machen, der die
+            Invormationen von <command>svn log</command> damit
+            kombiniert, was Sie sehen würden, wenn Sie <command>svn
+            diff</command> für jede Revision auf dieselben Ziele
+            anwenden würden. Rufen Sie einfach <command>svn
+            log</command> mit der Option <option>--diff</option>
+            auf, um diesen Ausgabemodus zu erhalten.</para>
+
+          <informalexample>
+            <screen>
+$ svn log -r 20 touched.txt --diff
+------------------------------------------------------------------------
+r20 | sally | 2003-01-17 22:56:19 -0600 (Fri, 17 Jan 2003) | 1 line
+
+Made a change.
+
+Index: touched.txt
+===================================================================
+--- touched.txt	(revision 19)
++++ touched.txt	(revision 20)
+@@ -1 +1,2 @@
+ This is the file 'touched.txt'.
++We add such exciting text to files around here!
+------------------------------------------------------------------------
+$
+</screen>
+          </informalexample>
+
+<!--
+          <para>As with <command>svn diff</command>, you may also make
+            use of many of the various options which control the way
+            the difference is generated,
+            including <option>- -depth</option>, <option>- -diff-cmd</option>,
+            and <option>- -extensions</option>
+            (<option>-x</option>).</para>
+-->
+          <para>Wie bei <command>svn diff</command> können Sie auch
+            hier viele der verschiedenen Optionen angeben, die
+            kontrollieren, wie die Unterschiede ermittelt werden,
+            darunter <option>--depth</option>, <option>--diff-cmd</option>
+            und <option>--extensions</option>
+            (<option>-x</option>).</para>
+
         </refsect1>
       </refentry>
 
@@ -5830,9 +5889,9 @@ Made a change.
           <title>Synopsis</title>
 -->
           <title>Aufruf</title>
-          <para><literal>svn merge sourceURL1[@N] sourceURL2[@M] [WCPATH]</literal></para>
-          <para><literal>svn merge sourceWCPATH1@N sourceWCPATH2@M [WCPATH]</literal></para>
-          <para><literal>svn merge [[-c M]... | [-r N:M]...] [SOURCE[@REV] [WCPATH]]</literal></para>
+          <para><literal>svn merge [-c M[,N...] | -r N:M ...] SOURCE[@REV] [TARGET_WCPATH]</literal></para>
+          <para><literal>svn merge --reintegrate SOURCE[@REV] [TARGET_WCPATH]</literal></para>
+          <para><literal>svn merge SOURCE1[@N] SOURCE2[@M] [TARGET_WCPATH]</literal></para>
         </refsect1>
         <refsect1>
 <!--
@@ -5841,98 +5900,157 @@ Made a change.
           <title>Beschreibung</title>
 
 <!--
-          <para>In the first form, the source URLs are specified at
-            revisions <replaceable>N</replaceable> and <replaceable>M</replaceable>.
-            These are the two sources to be compared.  The revisions
-            default to <literal>HEAD</literal> if omitted.</para>
--->
-          <para>In der ersten Form werden für die Quell-URLs die
-            Revisionen <replaceable>N</replaceable> und
-            <replaceable>M</replaceable> angegeben. Dabei handelt es
-            sich um die zu vergleichenden Quelltexte. Wenn sie nicht
-            angegeben werden, haben die Revisionen den Standardwert
-            <literal>HEAD</literal>.</para>
-
-<!--
-          <para>In the second form, the URLs corresponding to the
-            source working copy paths define the sources to be
-            compared.  The revisions must be specified.</para>
--->
-          <para>In der zweiten Form bestimmen die URLs, die den
-            Arbeitskopiepfaden der Quellen entsprechen, die zu
-            vergleichenden Quelltexte. Die Revisionen müssen angegeben
-            werden.</para>
-
-<!--
-          <para>In the third form, <replaceable>SOURCE</replaceable>
-            can be either a URL or a working copy path (in which case
-            its corresponding URL is used).  If not specified,
-            <replaceable>SOURCE</replaceable> will be the same as
-            <replaceable>WCPATH</replaceable>.
-            <replaceable>SOURCE</replaceable> in revision
-            <replaceable>REV</replaceable> is compared as it existed
-            between revisions <replaceable>N</replaceable> and
-            <replaceable>M</replaceable> for each revision range
-            provided.  If <replaceable>REV</replaceable> is not
-            specified, <literal>HEAD</literal> is assumed.</para>
--->
-          <para>In der dritten Form kann
-            <replaceable>SOURCE</replaceable> entweder ein URL oder
-            ein Arbeitskopiepfad (wobei der entsprechende URL
-            verwendet wird) sein. Falls nicht angegeben, wird für
-            <replaceable>SOURCE</replaceable> dasselbe wie für
-            <replaceable>WCPATH</replaceable> angenommen.
-            <replaceable>SOURCE</replaceable> in Revision
-            <replaceable>REV</replaceable> wird verglichen, wie sie
-            zwischen den Revisionen <replaceable>N</replaceable> und
-            <replaceable>M</replaceable> für jeden angegebenen
-            Revisionsbereich existiert hat. Falls
-            <replaceable>REV</replaceable> nicht angegeben ist, wird
-            <literal>HEAD</literal> angenommen.</para>
-
-<!--
-          <para><literal>-c M</literal> is equivalent to <literal>-r
-            &lt;M-1&gt;:M</literal>, and <literal>-c -M</literal> does
-            the reverse: <literal>-r M:&lt;M-1&gt;</literal>.  If no
-            revision ranges are specified, the default range of
-            <literal>1:HEAD</literal> is used.  Multiple
-            <literal>-c</literal> and/or <literal>-r</literal>
-            instances may be specified, and mixing of forward and
-            reverse ranges is allowed&mdash;the ranges are internally
-            compacted to their minimum representation before merging
-            begins (which may result in no-op).</para>
--->
-          <para><literal>-c M</literal> ist äquivalent zu <literal>-r
-            &lt;M-1&gt;:M</literal>, und <literal>-c -M</literal>
-            macht das Umgekehrte: <literal>-r M:&lt;M-1&gt;</literal>.
-            Falls keine Revisionsbereiche angegeben werden, ist der
-            Standardbereich <literal>1:HEAD</literal>. Mehrere
-            Instanzen von <literal>-c</literal> und/oder
-            <literal>-r</literal> können angegeben werden, und das
-            Mischen von Vorwärts- und Rückwärtsbereichen ist erlaubt
-            &ndash; die Bereiche werden intern auf die
-            Minimalrepräsentation gestaucht bevor die Zusammenführung
-            beginnt (was eine Nulloperation ergeben kann).</para>
-
-<!--
-          <para><replaceable>WCPATH</replaceable> is the working copy
-            path that will receive the changes.  If
-            <replaceable>WCPATH</replaceable> is omitted, a default
-            value of <quote><filename>.</filename></quote> is assumed,
+          <para>In all three forms
+            <replaceable>TARGET_WCPATH</replaceable> is
+            the working copy path that will receive the differences. If
+            <replaceable>TARGET_WCPATH</replaceable> is omitted, the
+            changes are applied to the current working directory,
             unless the sources have identical basenames that match a
-            file within <quote><filename>.</filename></quote>.  In
+            file within the current working directory.  In
             this case, the differences will be applied to that
             file.</para>
 -->
-          <para><replaceable>WCPATH</replaceable> ist der Pfad der
-            Arbeitskopie, auf den die Änderungen angewendet werden.
-            Wird <replaceable>WCPATH</replaceable> ausgelassen, wird
-            der Wert <quote><filename>.</filename></quote> angenommen,
-            es sei denn, die Quellen haben identische Basisnamen, die
-            auf eine Datei innerhalb von
-            <quote><filename>.</filename></quote> passen. In diesem
-            Fall werden die Änderungen auf diese Datei angewendet.
-          </para>
+          <para>In allen drei Formen ist
+            <replaceable>TARGET_WCPATH</replaceable> der Pfad der
+            Arbeitskopie, der die Unterschiede erhalten wird. Wird
+            <replaceable>TARGET_WCPATH</replaceable> weggelassen,
+            werden die Änderungen auf das aktuelle Verzeichnis
+            angewendet, es sei denn, die Quellen haben identische
+            Basisnamen, die auf eine Datei im aktuellen
+            Arbeitsverzeichnis passen. In diesem Fall werden die
+            Änderungen auf diese Datei angewendet.</para>
+
+<!--
+          <para>In the first two forms, <replaceable>SOURCE</replaceable>
+            can be either a URL or a working copy path (in which case its
+            corresponding URL is used).  If the peg revision
+            <replaceable>REV</replaceable> is not specified, then
+            <literal>HEAD</literal> is assumed.  In the third form the
+            same rules apply for
+            <replaceable>SOURCE1</replaceable>,
+            <replaceable>SOURCE2</replaceable>,
+            <replaceable>M</replaceable>, and <replaceable>N</replaceable>
+            with the only difference being that if either source is a
+            working copy path, then the peg revisions
+            <emphasis>must</emphasis> be explicitly stated.</para>
+-->
+          <para>In den ersten beiden Formen kann
+            <replaceable>SOURCE</replaceable> entweder ein URL oder
+            ein Arbeitskopiepfad sein (wobei dessen entsprechende URL
+            verwendet wird). Falls die Peg-Revision
+            <replaceable>REV</replaceable> nicht angegeben ist, wird
+            <literal>HEAD</literal> angenommen. In der dritten Form
+            treffen dieselben Regeln auf
+            <replaceable>SOURCE1</replaceable>,
+            <replaceable>SOURCE2</replaceable>,
+            <replaceable>M</replaceable> und
+            <replaceable>N</replaceable> zu, mit dem einzigen
+            Unterschied, dass, falls irgendeine Quelle ein
+            Arbeitskopiepfad ist, die Peg-Revision explizit angegeben
+            werden <emphasis>muss</emphasis>.</para>
+
+          <itemizedlist>
+            <listitem>
+<!--
+              <para>Sync and Cherrypick Merges</para>
+-->
+              <para>Zusammenführungen yum Synchronisieren und Rosinenpicken</para>
+<!--
+              <para>The first form, when used without either the
+                <option>-c</option> or <option>-r</option> options, is
+                called a <quote>sync</quote> merge and
+                <literal>-r 1:REV</literal> is implied. This variant is
+                used to merge all eligible changes to a branch from its
+                immediate ancestor branch, see
+                <xref linkend="svn.branchemerge.basicmerging.stayinsync"/>.
+              </para>
+-->
+              <para>Die erste Form ohne irgendeine der Optionen
+                <option>-c</option> oder <option>-r</option> wird
+                <quote>Synschronisierungs</quote>-Zusammenführung
+                genannt und es wird <literal>-r 1:REV</literal>
+                impliziert. Diese Variante wird verwendet, um auf
+                einem Zweig alle in Frage kommenden Änderungen von
+                seinem unmittelbaren Vorgänger-Zweig unterzubringen,
+                siehe
+                <xref linkend="svn.branchemerge.basicmerging.stayinsync"/>.
+              </para>
+<!--
+              <para>When the first form is used with the
+                <option>-c</option> or <option>-r</option> options, this
+                is called a <quote>cherrypick</quote> merge and is used
+                to merge an explicitly defined set of changes from one
+                branch to another, see
+                <xref linkend="svn.branchmerge.cherrypicking"/></para>
+-->
+              <para>Wird die erste Form mit den Optionen
+                <option>-c</option> oder <option>-r</option>
+                verwendet, ist das eine Zusammenführung zum
+                <quote>Rosinenpicken</quote> und wird verwendet, um
+                eine explizit definierte Menge von Änderungen von
+                einem Zweig zu einem anderen zu bringen, siehe
+                <xref linkend="svn.branchmerge.cherrypicking"/></para>
+              <tip>
+<!--
+                <para>Multiple <literal>-c</literal> and/or
+                  <literal>-r</literal> instances may be specified, and
+                  mixing of forward and reverse ranges is allowed&mdash;
+                  the ranges are internally compacted to their minimum
+                  representation before merging begins (which may result
+                  in a no-op merge or conflicts that cause the merge to
+                  stop before merging all of the requested revisions).</para>
+-->
+                <para>Mehrfache Instanzen von <literal>-c</literal>
+                  und/oder <literal>-r</literal> können angegeben
+                  werden und Vorwärts- können mit Rückwärtsbereichen
+                  gemischt werden &ndash; die Bereiche werden intern
+                  auf ihre Minimalrepräsentierung komprimiert, bevor
+                  die Zusammenführung beginnt (die als Ergebnis eine
+                  leere Zusammenführung oder Konflikte bewirken kann,
+                  die die Zusammenführung beenden, bevor alle
+                  verlangten Revisionen zusammengeführt
+                  werden).</para>
+              </tip>
+              <para>In both variants of the first form,
+                <replaceable>SOURCE</replaceable> in revision
+                <replaceable>REV</replaceable> is compared as it existed
+                between revisions <replaceable>N</replaceable> and
+                <replaceable>M</replaceable> for each revision range
+                provided.</para>
+            </listitem>
+            <listitem>
+              <para>Reintegrate Merges</para>
+              <para>The second form is called a <quote>reintegrate
+                merge</quote> and is used to bring changes from a feature
+                branch (<replaceable>SOURCE</replaceable>)
+                back into the feature branch's immediate ancestor branch
+                (<replaceable>TARGET_WCPATH</replaceable>).</para>
+              <tip>
+                <para>Reintegrate merges support only this specialized
+                  use case and as such have a number of special
+                  requirements and limitations that the other two merge
+                  forms do not posses. See
+                  <xref linkend="svn.branchemerge.basicmerging.stayinsync"/>,
+                  <xref linkend="svn.branchemerge.basicmerging.reintegrate"/>,
+                  <xref linkend="svn.branchmerge.advanced.reintegratetwice"/>,
+                  and
+                  <xref linkend="svn.branchmerge.commonpatterns.feature"/>.
+                </para>
+              </tip>
+            </listitem>
+            <listitem>
+              <para>2-URL Merges</para>
+              <para>In the third form, called a <quote>2-URL Merge</quote>,
+                the difference between <replaceable>SOURCE1</replaceable>
+                at revision <replaceable>N</replaceable> and
+                <replaceable>SOURCE2</replaceable> at revision
+                <replaceable>M</replaceable> is generated and applied to
+                <replaceable>TARGET_WCPATH</replaceable>.  The revisions
+                default to <literal>HEAD</literal> if omitted.</para>
+            </listitem>
+          </itemizedlist>
+
+
 
 <!--
           <para>Subversion will internally track metadata about
@@ -5968,18 +6086,19 @@ Made a change.
 
           <informalexample>
             <screen>
---accept ACTION
---change (-c) REV
---depth ARG
---diff3-cmd CMD
---dry-run
---extensions (-x) ARG
---force
---ignore-ancestry
---quiet (-q)
---record-only
---reintegrate
---revision (-r) REV
+<xref linkend="svn.ref.svn.sw.accept" />
+<xref linkend="svn.ref.svn.sw.allow_mixed_revisions" />
+<xref linkend="svn.ref.svn.sw.change" />
+<xref linkend="svn.ref.svn.sw.depth" />
+<xref linkend="svn.ref.svn.sw.diff3_cmd" />
+<xref linkend="svn.ref.svn.sw.dry_run" />
+<xref linkend="svn.ref.svn.sw.extensions" />
+<xref linkend="svn.ref.svn.sw.force" />
+<xref linkend="svn.ref.svn.sw.ignore_ancestry" />
+<xref linkend="svn.ref.svn.sw.quiet" />
+<xref linkend="svn.ref.svn.sw.record_only" />
+<xref linkend="svn.ref.svn.sw.reintegrate" />
+<xref linkend="svn.ref.svn.sw.revision" />
 </screen>
           </informalexample>
         </refsect1>
