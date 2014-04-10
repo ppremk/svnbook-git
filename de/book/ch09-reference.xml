@@ -3661,7 +3661,7 @@ mit or revert them first
 svn: Versuch, eine beschränkte Operation für veränderte Ressource auszuführen
 svn: E195006: Benutzen Sie »--force«, um diese Einschränkung aufzuheben (loka\
 le Änderu ngen könnten verloren gehen)
-svn: E195006: »over-there« hat lokale Änderungen -- zuerst übertragen oder zu/
+svn: E195006: »over-there« hat lokale Änderungen -- zuerst übertragen oder zu\
 rücksetzen
 
 $ svn delete --force over-there 
@@ -5954,7 +5954,7 @@ $
 <!--
               <para>Sync and Cherrypick Merges</para>
 -->
-              <para>Zusammenführungen yum Synchronisieren und Rosinenpicken</para>
+              <para>Zusammenführungen zum Synchronisieren und Rosinenpicken</para>
 <!--
               <para>The first form, when used without either the
                 <option>-c</option> or <option>-r</option> options, is
@@ -6107,25 +6107,52 @@ $
             merge operations when the two merge sources are ancestrally
             related&mdash;if the first source is an ancestor of the
             second or vice versa&mdash;this is guaranteed to be the case
-            when using the first two forms.  Unlike <command>svn
-            diff</command>, the merge command takes the ancestry of a
-            file into consideration when performing a merge operation.
-            This is very important when you're merging changes from
-            one branch into another and you've renamed a file on one
-            branch but not the other.</para>
+            when using the first two forms.  Subversion will also take
+            preexisting merge metadata on the working copy target into
+            account when determining what revisions to merge and in an
+            effort to avoid repeat merges and needless conflicts it may
+            only merge a subset of the requested ranges.</para>
 -->
-          <para>Subversion zeichnet intern Metadaten über die
-            Zusammenführung nur auf, falls die beiden Quellen
+          <para>Falls
+            <xref linkend="svn.branchmerge.basicmerging.mergetracking"/>
+            aktiviert ist, zeichnet Subversion intern Metadaten (d.h.,
+            die Eigenschaft <literal>svn:mergeinfo</literal>) über die
+            Zusammenführung auf, falls die beiden Quellen
             abstammungsmäßig in Beziehung stehen &ndash; falls die
             erste Quelle ein Vorgänger der zweiten ist oder umgekehrt.
-            Bei Verwendung der dritten Form ist das gewährleistet.
-            Anders als <command>svn diff</command> berücksichtigt der
+            Bei Verwendung der ersten beiden Formen ist das
+            gewährleistet. Subversion berücksichtigt ebenfalls bereits
+            bestehende Metadaten über Zusammenführungen beim Ziel in
+            der Arbeitskopie, wenn es die zusammenzuführenden
+            Revisionen bestimmt; um wiederholte Zusammenführungen und
+            unnütze Konflikte zu vermeiden kann es sein, dass nur eine
+            Teilmenge der verlangten Bereiche zusammengeführt
+            wird</para>
+
+          <tip>
+<!--
+            <para><xref linkend="svn.branchmerge.basicmerging.mergetracking"/>
+              can be disabled by using the <option>- -ignore-ancestry</option>
+              option.</para>
+-->
+            <para><xref linkend="svn.branchmerge.basicmerging.mergetracking"/>
+              kann durch die Option <option>--ignore-ancestry</option>
+              abgestellt werden.</para>
+          </tip>
+
+<!--
+          <para>Unlike <command>svn diff</command>, the merge command
+            takes the ancestry of a file into consideration when
+            performing a merge operation.  This is very important when
+            you're merging changes from one branch into another and you've
+            renamed a file on one branch but not the other.</para>
+-->
+          <para>Anders als <command>svn diff</command> berücksichtigt der
             Zusammenführungsbefehl die Herkunft einer Datei beim
             Zusammenführen. Dies ist sehr wichtig, falls Sie
             Änderungen von einem Zweig auf einen anderen übertragen
             und eine Datei auf einem Zweig  umbenannt haben, jedoch
             nicht auf dem anderen.</para>
-
         </refsect1>
 
         <refsect1>
@@ -6211,9 +6238,15 @@ Revision 391 übertragen.
 
         <informalexample>
           <screen>
-$ cd myproj
-$ svn merge -r 30:31 thhgttg.txt 
-U  thhgttg.txt
+$ svn merge -c 31 ^/trunk/thhgttg.txt thhgttg.txt 
+<!--
+- - - Merging r31 into 'thhgttg.txt':
+-->
+-- Zusammenführen von r31 in »thhgttg.txt«:
+U    thhgttg.txt
+--- Recording mergeinfo for merge of r31 into 'thhgttg.txt':
+-- Aufzeichnung der Informationen für Zusammenführung von r31 in »thhgttg.txt«:
+ U   thhgttg.txt
 </screen>
         </informalexample>
 
