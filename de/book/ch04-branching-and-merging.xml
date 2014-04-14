@@ -1740,7 +1740,11 @@ $
         übergeben.</para>
 
       <sidebar id="svn.branchemerge.basicmerging.stayinsync.subtree">
+<!--
         <title>Subtree Merges and Subtree Mergeinfo</title>
+-->
+        <title>Zusammenführen von Teilbäumen und Informationen darüber</title>
+<!--
         <para>
           <indexterm>
             <primary>subtree merge</primary>
@@ -1764,25 +1768,55 @@ $
           to get a full accounting.  Fortunately Subversion does this
           for you and rarely will you need to concern yourself with
           it.  A brief example will help explain:</para>
+-->
+        <para>
+          <indexterm>
+            <primary>Zusammenführen von Teilbäumen</primary>
+          </indexterm>
+          <indexterm>
+            <primary>Informationen über das Zusammenführen von Teilbäumen</primary>
+          </indexterm>
+          In den meisten Beispielen dieses Kapitels ist das Ziel einer
+          Zusammenführung das Wurzelverzeichnis eines Zweigs (siehe
+          <xref linkend="svn.branchmerge.whatis"/>). Obwohl es sich
+          dabei um eine empfohlene Vorgehensweise handelt, kann es
+          vorkommen, dass Sie gelegentlich eine Zusammenführung direkt
+          in irgendein Kindverzeichnis der Wurzel des Zweigs vornehmen
+          müssen. Diese Art der Zusammenführung wird
+          <firstterm>Teilbaum-Zusammenführung</firstterm> genannt, und
+          die aufgezeichneten Informationen dazu
+          <firstterm>Teilbaum-Zusammenführungs-Information</firstterm>.
+          Es gibt weder Besonderheiten beim Zusammenführen von
+          Teilbäumen noch bei den Informationen dazu. Es gibt hierbei
+          tatsächlich nur einen wichtigen Punkt bei diesen Konzepten
+          zu beachten: die vollständigen Aufzeichnungen über
+          Zusammenführungen auf einen Zweig müssen nicht
+          notwendigerweise in den Informationen der Wurzel des Zweigs
+          vorliegen. Für eine vollständige Übersicht müssen Sie alle
+          Zusammenführungs-Informationen der Teilbäume untersuchen.
+          Glücklicherweise erledigt das Subversion für Sie, so dass
+          Sie sich in den seltensten Fällen selbst darum kümmern
+          müssen. Ein kurzes Beispiel hilft bei der Erklärung:</para>
 
+<!--
         <informalexample>
           <screen>
 # We need to merge r958 from trunk to branches/proj-X/doc/INSTALL,
 # but that revision also affects main.c, which we don't want to merge:
-$ svn log --verbose --quiet -r 958 ^/
-------------------------------------------------------------------------
+$ svn log - -verbose - -quiet -r 958 ^/
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 r958 | bruce | 2011-10-20 13:28:11 -0400 (Thu, 20 Oct 2011)
 Changed paths:
    M /trunk/doc/INSTALL
    M /trunk/src/main.c
-------------------------------------------------------------------------
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 # No problem, we'll do a subtree merge targeting the INSTALL file
 # directly, but first take a note of what mergeinfo exists on the
 # root of the branch:
 $ cd branches/proj-X
 
-$ svn propget svn:mergeinfo --recursive
+$ svn propget svn:mergeinfo - -recursive
 Properties on '.':
   svn:mergeinfo
     /trunk:651-652
@@ -1790,13 +1824,13 @@ Properties on '.':
 # Now we perform the subtree merge, note that merge source
 # and target both point to INSTALL:
 $ svn merge ^/trunk/doc/INSTALL doc/INSTALL -c 958
---- Merging r958 into 'doc/INSTALL':
+- - Merging r958 into 'doc/INSTALL':
 U    doc/INSTALL
---- Recording mergeinfo for merge of r958 into 'doc/INSTALL':
+- - Recording mergeinfo for merge of r958 into 'doc/INSTALL':
  G   doc/INSTALL
 
 # Once the merge is complete there is now subtree mergeinfo on INSTALL:
-$ svn propget svn:mergeinfo --recursive
+$ svn propget svn:mergeinfo - -recursive
 Properties on '.':
   svn:mergeinfo
     /trunk:651-652
@@ -1809,9 +1843,68 @@ Properties on 'doc/INSTALL':
 # branch, Subversion notices the subtree mergeinfo on INSTALL and doesn't
 # try to merge any changes to it, only the changes to main.c are merged:
 $ svn merge ^/subversion/trunk . -c 958
---- Merging r958 into '.':
+- - Merging r958 into '.':
 U    src/main.c
---- Recording mergeinfo for merge of r958 into '.':
+- - Recording mergeinfo for merge of r958 into '.':
+ U   .
+- - Eliding mergeinfo from 'doc/INSTALL':
+ U   doc/INSTALL
+</screen>
+        </informalexample>
+-->
+        <informalexample>
+          <screen>
+# Wir müssen r958 von trunk und branches/proj-X/doc/INSTALL
+# zusammenführen, doch beeinflusst diese Revision auch main.c, das
+# wir jedoch nicht zusammenführen wollen:
+$ svn log --verbose --quiet -r 958 ^/
+------------------------------------------------------------------------
+r958 | bruce | 2011-10-20 13:28:11 -0400 (Do, 20 Okt 2011)
+Geänderte Pfade:
+   M /trunk/doc/INSTALL
+   M /trunk/src/main.c
+------------------------------------------------------------------------
+
+# Kein Problem. Wir führen einen Teilbaum direkt auf der Datei INSTALL
+# zusammen, doch merken uns zunächst, welche
+# Zusammenführungs-Informationen für die Wurzel des Zweigs vorhanden
+# ist:
+$ cd branches/proj-X
+
+$ svn propget svn:mergeinfo --recursive
+Eigenschaften zu ».«:
+  svn:mergeinfo
+    /trunk:651-652
+
+# Nun führen wir den Teilbaum zusammen; beachten Sie, dass sowohl
+# Quelle als auch Ziel auf  INSTALL zeigen:
+$ svn merge ^/trunk/doc/INSTALL doc/INSTALL -c 958
+-- Zusammenführen von r958 in »doc/INSTALL«:
+U    doc/INSTALL
+-- Aufzeichnung der Informationen für Zusammenführung von r958 in »doc/INSTALL«:
+ G   doc/INSTALL
+
+# Sobald die Zusammenführung abgeschlossen ist, gibt es Informationen
+# zur Zusammenführung an INSTALL:
+$ svn propget svn:mergeinfo --recursive
+Eigenschaften zu ».«:
+  svn:mergeinfo
+    /trunk:651-652
+Eigenschaften zu »doc/INSTALL«:
+  svn:mergeinfo
+    /trunk/doc/INSTALL:651-652,958
+
+# Was, wenn wir und dann entscheiden, alles von r958 haben zu wollen?
+# Ganz einfach, alles, was wir tun müssen, ist, die Zusammenführung
+# dieser Revision zu wiederholen, diesen mal allerdings auf der Wurzel
+# des Zweigs. Subversion erkennt die Information zur Zusammenführung
+# des Teilbaums an INSTALL und versucht nicht, irgendwelche Änderungen
+# hineinzubringen, sondern es führt nur die Änderungen an main.c
+# zusammen:
+$ svn merge ^/subversion/trunk . -c 958
+-- Zusammenführen von r958 in ».«:
+U    src/main.c
+-- Aufzeichnung der Informationen für Zusammenführung von r958 in ».«:
  U   .
 --- Eliding mergeinfo from 'doc/INSTALL':
  U   doc/INSTALL
@@ -1819,9 +1912,13 @@ U    src/main.c
         </informalexample>
 
         <indexterm>
+<!--
           <primary>mergeinfo elision</primary>
+-->
+          <primary>Auslassung von Zusammenführungs-Informationen</primary>
         </indexterm>
 
+<!--
         <para>You might be wondering why <filename>INSTALL</filename>
           in the above example has mergeinfo for r651-652, when we
           only merged r958. This is due to mergeinfo inheritance,
@@ -1832,10 +1929,26 @@ U    src/main.c
           <quote>elided</quote>.  This is called
           <firstterm>mergeinfo elision</firstterm> and it occurs
           whenever Subversion detects redundant subtree mergeinfo.</para>
+-->
+        <para>Sie haben sich vielleicht gefragt, warum im obigen
+          Beispiel <filename>INSTALL</filename> Informationen zur
+          Zusammenführung für r651-652 besitzt, wenn wir nur r958
+          zusammengeführt haben. Das liegt an der Vererbung der
+          Information zur Zusammenführung, die wir in
+          <xref linkend="svn.branchmerge.basicmerging.mergeinfo.inheritance"
+          /> behandeln. Beachten Sie weiterhin, dass die Information
+          zur Teilbaum-Zusammenführung von
+          <filename>doc/INSTALL</filename> entfernt, oder
+          <quote>ausgelassen</quote> wurde. Das nennt sich
+          <firstterm>Auslassung von
+          Zusammenführungs-Informationen</firstterm> und passiert
+          immer dann, wenn Subversion redundante Informationen über
+          Teilbaum-Zusammenführungen entdeckt.</para>
 
       </sidebar>
 
       <tip>
+<!--
         <para>Prior to Subversion 1.7, merges unconditionally updated
           <emphasis>all</emphasis> of the subtree mergeinfo under the
           target to describe the merge. For users with a lot of subtree
@@ -1853,6 +1966,29 @@ U    src/main.c
           target; the merge target's mergeinfo is always updated to
           describe the merge, even if the applied difference made no
           changes.</para>
+-->
+        <para>vor Subversion 1.7 haben Zusammenführungen bedingungslos
+          <emphasis>die gesamten</emphasis> Informationen über
+          Teilbaum-Zusammenführungen unter dem Ziel aktualisiert, um
+          die Zusammenführung zu beschreiben. Für Anwender mit vielen
+          Informationen zu Teilbaum-Zusammenführungen bedeutete das,
+          dass auch relativ <quote>einfache</quote> Zusammenführungen
+          (z.B. bei der ein Diff auf eine einzige Datei angewendet
+          wurde) Änderungen der Zusammenführungs-Informationen in
+          jedem Teilbaum nach sich zog, selbst bei denen, die keine
+          Eltern des betroffenen Pfades waren. Dies führte zu einiger
+          Verwirrung und Frustration. Subversion 1.7 geht dieses
+          Problem an, indem es nur die Informationen an den Teilbäumen
+          aktualisiert, die Eltern der von der Zusammenführung
+          betroffenen Pfade sind (d.h., durch die Anwendung der
+          Differenz geänderte, hinzugefügte oder gelöschte Pfade,
+          siehe
+          <xref linkend="svn.branchmerge.advanced.advancedsyntax"/>).
+          Die einzige Ausnahme von diesem Verhalten betrifft das
+          eigentlilche Ziel der Zusammenführung; dessen Informationen
+          werden stets aktualisiert, um die Zusammenführung zu
+          beschreiben, auch wenn die angewandte Differenz keine
+          Änderung nach sich zog.</para>
       </tip>
 
     </sect2>
