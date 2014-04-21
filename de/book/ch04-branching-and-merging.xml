@@ -2005,8 +2005,15 @@ U    src/main.c
         Your new feature is done, and you're ready to merge your
         branch changes back to the trunk (so your team can enjoy the
         bounty of your labor).  The process is simple.  First, bring
-        your branch in sync with the trunk again, just as you've been
-        doing all along:</para>
+        your branch into sync with the trunk again, just as you've been
+        doing all along<footnote><para>With Subversion 1.7 you don't
+        absolutely have to do all your sync merges to the root of your
+        branch as we do in this example.  <emphasis>If</emphasis> your
+        branch is effectively synced via a series of subtree
+        merges then the reintegrate will work, but ask yourself, if the
+        branch is effectively synced, then why are you doing subtree
+        merges? Doing so is almost always needlessly
+        complex.</para></footnote>:</para>
 -->
       <para>Was passiert jedoch, wenn Sie schließlich Ihre Arbeit
         abgeschlossen haben? Ihre neue Funktion ist fertig, und Sie
@@ -2014,15 +2021,31 @@ U    src/main.c
         Stamm zu überführen (so dass Ihr Team die Früchte Ihrer Arbeit
         genießen kann). Die Vorgehensweise ist einfach. Zunächst
         synchronisieren Sie Ihren Zweig noch einmal mit dem Stamm, wie
-        Sie es bisher gemacht haben:</para>
+        Sie es bisher gemacht haben:<footnote><para>Mit Subversion 1.7
+        brauchen Sie nicht unbedingt alle Ihre
+        Synchronisierungs-Zusammenführungen in die Wurzel Ihres Zweigs
+        zu bringen wie in diesem Beispiel.  <emphasis>Falls</emphasis>
+        Ihr Zweig effektiv durch eine Reihe von
+        Teilbaum-Zusammenführungen synchronisiert ist, wird die
+        Reintegration funktionieren, doch fragen Sie sich einmal,
+        warum Sie Teilbäume zusammenführen, wenn doch der Zweig
+        effektiv synchronisiert wird. Diese Vorgehensweise ist oft
+        unnötig kompliziert.</para></footnote></para>
 
-<!--
       <informalexample>
         <screen>
 $ svn merge ^/calc/trunk
+<!--
 - - - Merging r381 through r385 into '.':
+-->
+--- Zusammenführen von r381 bis r385 in ».«:
 U    button.c
 U    README
+<!--
+- - - Recording mergeinfo for merge of r381 through r385 into '.':
+-->
+-- Aufzeichnung der Informationen für Zusammenführung von r381 bis r385 in ».«:
+ U   .
 
 $ # build, test, ...
 
@@ -2034,42 +2057,24 @@ Transmitting file data ..
 Committed revision 390.
 </screen>
       </informalexample>
--->
-      <informalexample>
-        <screen>
-$ svn merge ^/calc/trunk
---- Zusammenführen von r381 bis r385 in ».«:
-U    button.c
-U    README
-
-$ # bauen, testen, ...
-
-$ svn commit -m "Letzte Zusammenführung der Änderungen von trunk changes in my-calc-branch."
-Sende          .
-Sende          button.c
-Sende          README
-Übertrage Daten ..
-Revision 390 übertragen.
-</screen>
-      </informalexample>
 
 <!--
-      <para>Now, you use <command>svn merge</command> with the
-        <option>- -reintegrate</option> option to replicate your
-        branch changes back into the trunk.  You'll need a working
-        copy of <filename>/trunk</filename>.  You can do this by
-        either doing an <command>svn checkout</command>, dredging up
-        an old trunk working copy from somewhere on your disk, or
-        using <command>svn switch</command>
-        (see <xref linkend="svn.branchmerge.switchwc"/>).
-        Your trunk working copy cannot have any local edits or be at
-        mixed-revisions
-        (see <xref linkend="svn.basic.in-action.mixedrevs"/>).  While
-        these are typically best practices for merging, they are
-        <emphasis>required</emphasis> when using the
+      <para>Now, use <command>svn merge</command> with the
+        <option>- -reintegrate</option> option to replicate your branch
+        changes back into the trunk.  You'll need a working copy
+        of <filename>/trunk</filename>.  You can get one by doing
+        an <command>svn checkout</command>, dredging up an old trunk
+        working copy from somewhere on your disk, or
+        using <command>svn switch</command> (see
+        <xref linkend="svn.branchmerge.switchwc" />).  Your trunk
+        working copy cannot have any local edits or contain a mixture
+        of revisions (see
+        <xref linkend="svn.basic.in-action.mixedrevs" />).  While
+        these are typically best practices for merging anyway, they
+        are <emphasis>required</emphasis> when using the
         <option>- -reintegrate</option> option.</para>
 -->
-      <para>Nun verwenden Sie <command>svn merge</command> mit der
+      <para>Verwenden Sie jetzt <command>svn merge</command> mit der
         Option <option>--reintegrate</option> , um Ihre
         Änderungen vom Zweig zurück auf den Stamm zu überführen. Sie
         benötigen eine Arbeitskopie von <filename>/trunk</filename>.
@@ -2083,8 +2088,8 @@ Revision 390 übertragen.
         (siehe <xref linkend="svn.basic.in-action.mixedrevs"/>).
         Obwohl es sich dabei normalerweise um die bewährten
         Vorgehensweisen beim Zusammenführen handelt, sind sie bei der
-        Verwendung der Option <option>--reintegrate</option> zwingend
-        notwendig.</para>
+        Verwendung der Option <option>--reintegrate</option>
+        <emphasis>zwingend</emphasis> notwendig.</para>
 
 <!--
       <para>Once you have a clean working copy of the trunk, you're
@@ -2093,24 +2098,38 @@ Revision 390 übertragen.
       <para>Sobald Sie eine saubere Arbeitskopie des Stamms haben,
         sind Sie bereit, Ihren Zweig damit zusammenzuführen:</para>
 
-<!--
       <informalexample>
         <screen>
 $ pwd
 /home/user/calc-trunk
 
 $ svn update  # (make sure the working copy is up to date)
+Updating '.':
+<!--
 At revision 390.
+-->
+Revision 390.
 
-$ svn merge - -reintegrate ^/calc/branches/my-calc-branch
+$ svn merge --reintegrate ^/calc/branches/my-calc-branch
+<!--
 - - - Merging differences between repository URLs into '.':
+-->
+-- Zusammenführen der Unterschiede zwischen Projektarchiv-URLs in ».«:
 U    button.c
 U    integer.c
 U    Makefile
+<!--
+- - - Recording mergeinfo for merge between repository URLs into '.':
+-->
+-- Aufzeichnung der Informationen für Zusammenführung zwischen Projektarchiv-URLs in ».«:
  U   .
 
+<!--
 $ # build, test, verify, ...
+-->
+$ # bauen, testen, überprüfen, ...
 
+<!--
 $ svn commit -m "Merge my-calc-branch back into trunk!"
 Sending        .
 Sending        button.c
@@ -2118,26 +2137,7 @@ Sending        integer.c
 Sending        Makefile
 Transmitting file data ..
 Committed revision 391.
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ pwd
-/home/user/calc-trunk
-
-$ svn update  # (stellen Sie sicher, dass die Arbeitskopie aktuell ist)
-Revision 390.
-
-$ svn merge --reintegrate ^/calc/branches/my-calc-branch
--- Zusammenführen der Unterschiede zwischen Projektarchiv-URLs in ».«:
-U    button.c
-U    integer.c
-U    Makefile
- U   .
-
-$ # bauen, testen, überprüfen, ...
-
 $ svn commit -m "my-calc-branch mit Stamm zusammenführen!"
 Sende          .
 Sende          button.c
@@ -2149,14 +2149,14 @@ Revision 391 übertragen.
       </informalexample>
 
 <!--
-      <para>Congratulations, your branch has now been remerged back
-        into the main line of development.  Notice our use of
-        the <option>- -reintegrate</option> option this time around.
-        The option is critical for reintegrating changes from a branch
-        back into its original line of development&mdash;don't forget
-        it!  It's needed because this sort of <quote>merge
-        back</quote> is a different sort of work than what you've been
-        doing up until now.  Previously, we had been
+      <para>Congratulations, your branch-specific changes have now
+        been merged back into the main line of development.  Notice
+        our use of the <option>- -reintegrate</option> option this time
+        around.  The option is critical for reintegrating changes from
+        a branch back into its original line of
+        development&mdash;don't forget it!  It's needed because this
+        sort of <quote>merge back</quote> is a different sort of work
+        than what you've done up until now.  Previously, we were
         asking <command>svn merge</command> to grab the <quote>next
         set</quote> of changes from one line of development (the
         trunk) and duplicate them to another (your branch).  This is
@@ -2167,28 +2167,29 @@ Revision 391 übertragen.
         available range, 356:380.  When doing the final sync, it
         merges the range 380:385.</para>
 -->
-      <para>Gratulation! Ihr Zweig ist nun zurück in die
-        Hauptentwicklungslinie überführt worden. Beachten Sie, dass
-        dieses Mal die Option <option>--reintegrate</option> verwendet
-        wurde. Diese Option ist kritisch, wenn Änderungen von einem
-        Zweig in die ursprüngliche Entwicklungslinie reintegriert
-        werden &ndash; vergessen Sie sie nicht! Sie wird benötigt, da
-        diese Art der <quote>Rücküberführung</quote> etwas anderes
-        ist, als was Sie bisher gemacht haben. Vorher haben wir
-        <command>svn merge</command> aufgefordert, die <quote>nächste
-        Änderungsmenge</quote> von einer Entwicklungslinie (dem Stamm)
-        zu holen und sie mit einer anderen (Ihrem Zweig)
-        abzugleichen. Das ist recht überschaubar, und Subversion weiß
-        jedesmal, wo es wieder ansetzen soll. Bei unseren
-        vorangehenden Beispielen können Sie sehen, dass es erst die
-        Intervalle 345:356 vom Stamm auf den Zweig überführte; später
-        fuhr es mit dem nächsten verfügbaren aufeinanderfolgenden
-        Intervall 356:380 fort.  Wenn Sie die letzte Synchronisierung
-        machen, wird es das Intervall 380:385 zusammenführen.</para>
+      <para>Gratulation! Ihre Änderungen vom Zweig sind nun zurück in
+        die Hauptentwicklungslinie überführt worden. Beachten Sie,
+        dass dieses Mal die Option <option>--reintegrate</option>
+        verwendet wurde. Diese Option ist kritisch, wenn Änderungen
+        von einem Zweig in die ursprüngliche Entwicklungslinie
+        reintegriert werden &ndash; vergessen Sie sie nicht! Sie wird
+        benötigt, da diese Art der <quote>Rücküberführung</quote>
+        etwas anderes ist, als was Sie bisher gemacht haben. Vorher
+        haben wir <command>svn merge</command> aufgefordert, die
+        <quote>nächste Änderungsmenge</quote> von einer
+        Entwicklungslinie (dem Stamm) zu holen und sie mit einer
+        anderen (Ihrem Zweig) abzugleichen. Das ist recht
+        überschaubar, und Subversion weiß jedesmal, wo es wieder
+        ansetzen soll. Bei unseren vorangehenden Beispielen können Sie
+        sehen, dass es erst die Intervalle 345:356 vom Stamm auf den
+        Zweig überführte; später fuhr es mit dem nächsten verfügbaren
+        aufeinanderfolgenden Intervall 356:380 fort.  Wenn Sie die
+        letzte Synchronisierung machen, wird es das Intervall 380:385
+        zusammenführen.</para>
 
 <!--
       <para>When merging your branch back to the trunk, however, the
-        underlying mathematics is quite different.  Your feature
+        underlying mathematics are quite different.  Your feature
         branch is now a mishmash of both duplicated trunk changes and
         private branch changes, so there's no simple contiguous range
         of revisions to copy over.  By specifying
@@ -2218,7 +2219,12 @@ Revision 391 übertragen.
         nature of most Subversion subcommand options.  It supports the
         use case described above, but has little applicability outside
         of that.  Because of this narrow focus, in addition to
-        requiring an up-to-date working copy with no mixed-revisions,
+        requiring an up-to-date working copy<footnote><para>Reintegrate
+        merges are allowed if the target is a shallow checkout (see
+        <xref linkend="svn.advanced.sparsedirs"/>) but any paths affected
+        by the diff which are <quote>missing</quote> due to the sparse
+        working copy will be skipped, probably <emphasis>not</emphasis>
+        what you intended!</para></footnote> with no mixed-revisions,
         it will not function in combination with most of the other
         <command>svn merge</command> options. You'll get an error if you
         use any non-global options but these: <option>- -accept</option>,
@@ -2232,15 +2238,22 @@ Revision 391 übertragen.
         recht spezialisiert ist. Sie unterstützt den oben
         beschriebenen Anwendungsfall, hat daneben jedoch wenig
         Verwendungsmöglichkeiten. Wegen dieses engen Einsatzgebietes
-        sowie der Tatsache, das eine aktualisierte Arbeitskopie ohne
+        sowie der Tatsache, das eine aktualisierte
+        Arbeitskopie<footnote><para>Reintegrations-Zusammenführungen
+        sind erlaubt, falls das Ziel ein flacher Checkout ist (siehe
+        <xref linkend="svn.advanced.sparsedirs"/>), doch sämtliche vom
+        Diff betroffene, durch die auf einen Teilbaum beschränkte
+        Arbeitskopie <quote>fehlende</quote> Pfade werden
+        übersprungen, was wahrscheinlich <emphasis>nicht</emphasis>
+        von Ihnen beabsichtigt ist!</para></footnote> ohne
         gemischte Revisionen erforderlich ist, wird diese Option nicht
         mit den meisten anderen Optionen von <command>svn
-        merge</command> funktionieren. options. Sie werden einen
-        Fehler bekommen, falls Sie andere nicht-globale Optionen
-        verwenden, als die folgenden: <option>--accept</option>,
+        merge</command> funktionieren. Sie werden einen Fehler
+        bekommen, falls Sie andere nicht-globale Optionen verwenden,
+        als die folgenden: <option>--accept</option>,
         <option>--dry-run</option>, <option>--diff3-cmd</option>,
         <option>--extensions</option> oder <option>--quiet</option>.
-        </para>
+      </para>
 
 <!--
       <para>Now that your private branch is merged to trunk, you may
@@ -2250,18 +2263,13 @@ Revision 391 übertragen.
         zusammengeführt wurde, können Sie ihn aus dem Projektarchiv
         löschen:</para>
 
-<!--
       <informalexample>
         <screen>
 $ svn delete ^/calc/branches/my-calc-branch \
+<!--
       -m "Remove my-calc-branch, reintegrated with trunk in r391."
 Committed revision 392.
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn delete ^/calc/branches/my-calc-branch \
       -m "my-calc-branch entfernt, auf Stamm zurüchgeführt in r391."
 Revision 392 übertragen.
 </screen>
@@ -2312,28 +2320,22 @@ Revision 392 übertragen.
         zerstören und erneut aus dem Stamm erzeugen, wenn Sie weiter
         auf dem Zweig arbeiten wollen:</para>
 
-<!--
       <informalexample>
         <screen>
 $ svn delete http://svn.example.com/repos/calc/branches/my-calc-branch \
+<!--
       -m "Remove my-calc-branch, reintegrated with trunk in r391."
 Committed revision 392.
-
-$ svn copy http://svn.example.com/repos/calc/trunk \
-           http://svn.example.com/repos/calc/branches/my-calc-branch
-      -m "Recreate my-calc-branch from trunk@HEAD."
-Committed revision 393.
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn delete http://svn.example.com/repos/calc/branches/my-calc-branch \
       -m "my-calc-branch löschen, zurückgeführt auf Stamm."
 Revision 392 übertragen.
 
 $ svn copy http://svn.example.com/repos/calc/trunk \
            http://svn.example.com/repos/calc/branches/my-calc-branch
+<!--
+      -m "Recreate my-calc-branch from trunk@HEAD."
+Committed revision 393.
+-->
       -m "my-calc-branch erneut von trunk@HEAD abgezweigt."
 Revision 393 übertragen.
 </screen>
