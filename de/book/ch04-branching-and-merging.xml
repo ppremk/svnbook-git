@@ -2358,7 +2358,7 @@ Revision 393 übertragen.
 <!--
       <title>Mergeinfo and Previews</title>
 -->
-      <title>Zusammenführungsinformation und Vorschauen</title>
+      <title>Zusammenführungs-Information und Vorschauen</title>
 
 <!--
       <para>The basic mechanism Subversion uses to track
@@ -2397,7 +2397,7 @@ $
 
 <!--
       <warning>
-        <para>While is possible to
+        <para>While it is possible to
           modify <literal>svn:mergeinfo</literal> just as you might
           any other versioned property, we strongly discourage doing
           so unless you <emphasis>really</emphasis> know what you're
@@ -2411,6 +2411,30 @@ $
           <emphasis>wirklich</emphasis>, was Sie da machen.</para>
       </warning>
 
+      <tip>
+<!--
+        <para>The amount of <literal>svn:mergeinfo</literal> on a single
+          path can get quite large, as can the output of a
+          <command>svn propget - -recursive</command> or
+          <command>svn proplist - -recursive</command> when dealing with
+          large amounts of subtree mergeinfo, see
+          <xref linkend="svn.branchemerge.basicmerging.stayinsync.subtree"/>
+          . The formatted output produced by the
+          <option>- -verbose</option> option with either of these
+          subcommands is often very helpful in these cases.</para>
+-->
+        <para>Der Umfang von <literal>svn:mergeinfo</literal> auf
+          einem einzelnen Pfad kann recht groß werden, so wie die
+          Ausgabe eines <command>svn propget --recursive</command>
+          oder <command>svn proplist --recursive</command> falls man
+          es mit umfangreichen Informationen zur Zusammenführung auf
+          Teilbäumen zu tun hat, siehe
+          <xref linkend="svn.branchemerge.basicmerging.stayinsync.subtree"/>
+          . Die durch die Option <option>--verbose</option> erzeugte
+          formatierte Ausgabe mit jedem dieser Unterbefehle ist in
+          diesen Fällen oft sehr hilfreich.</para>
+      </tip>
+
 <!--
       <para>The <literal>svn:mergeinfo</literal> property is
         automatically maintained by Subversion whenever you
@@ -2420,7 +2444,23 @@ $
         which is the source of the merged changes is
         <filename>/trunk</filename> and the directory which has
         received the changes is
-        <filename>/branches/my-calc-branch</filename>.</para>
+        <filename>/branches/my-calc-branch</filename>.
+        Earlier versions of Subversion maintained the
+        <literal>svn:mergeinfo</literal> property silently. You could
+        still detect the changes, after a merge completed, with the
+        <command>svn diff</command> or <command>svn status</command>
+        subcommands, but the merge itself gave no indication when it
+        changed the <literal>svn:mergeinfo</literal> property. This is no
+        longer true in Subversion 1.7, which has several new notifications
+        to alert you when a merge updates the
+        <literal>svn:mergeinfo</literal> property. These notifications
+        all begin with <quote>- - - Recording mergeinfo for</quote>
+        and appear at the end of the merge.  Unlike other merge
+        notifications, these don't describe the application of a
+        difference to a working copy
+        (see <xref linkend="svn.branchmerge.advanced.advancedsyntax"/>),
+        but instead describe "housekeeping" changes made to keep
+        track of what was merged.</para>
 -->
 
       <para>Die Eigenschaft <literal>svn:mergeinfo</literal> wird
@@ -2431,11 +2471,29 @@ $
         vorangegangenen Beispiel ist <filename>/trunk</filename> der
         Ursprungspfad der zusammengeführten Änderungen und
         <filename>/branches/my-calc-branch</filename> das
-        Zielverzeichnis.</para>
+        Zielverzeichnis. Frühere Versionen von Subversion pflegten die
+        Eigenschaft <literal>svn:mergeinfo</literal> im Hintergrund.
+        Sie konnten die Änderungen nach einer abgeschlossenen
+        Zusammenführung mit <command>svn diff</command> oder
+        <command>svn status</command> zwar entdecken, doch gab die
+        eigentliche Zusammenführung keinerlei Hinweis, dass sie die
+        Eigenschaft <literal>svn:mergeinfo</literal> geändert hat. In
+        Subversion 1.7 stimmt das nicht mehr, da es verschiedene neue
+        Mitteilungen vorhält, um Sie zu benachrichtigen, wenn eine
+        Zusammenführung die Eigenschaft
+        <literal>svn:mergeinfo</literal> ändert. Diese Mitteilungen
+        beginnen alle mit <quote>-- Aufzeichnung der Informationen für
+        Zusammenführung</quote> und tauchen am Ende einer
+        Zusammenführung auf. Im Gegensatz zu anderen Mitteilungen bei
+        Zusammenführungen beschreiben diese kein Anwenden eines Diffs
+        auf eine Arbeitskopie
+        (siehe <xref linkend="svn.branchmerge.advanced.advancedsyntax"/>),
+        sondern Änderungen zur Buchhaltung, um festzuhalten, was
+        zusammengeführt wurde.</para>
 
 <!--
       <para>Subversion also provides a subcommand, <command>svn
-        mergeinfo</command>, which can be helpful in seeing not only
+        mergeinfo</command>, which is helpful in seeing not only
         which changesets a directory has absorbed, but also which
         changesets it's still eligible to receive.  This gives a sort
         of preview of which changes a subsequent <command>svn
@@ -2443,44 +2501,21 @@ $
         branch.</para>
 -->
       <para>Subversion stellt auch den Unterbefehl, <command>svn
-        mergeinfo</command> zur Verfügung, der dabei hilfreich sein
-        kann, nicht nur die in ein Verzeichnis eingeflossenen
+        mergeinfo</command> zur Verfügung, der dabei hilfreich ist,
+        nicht nur die in ein Verzeichnis eingeflossenen
         Änderungsmengen anzuzeigen, sondern auch, welche
         Änderungsmengen noch für einen Abgleich bereit stehen. Das
         ergibt eine Art Vorschau der nächsten Änderungsmengen, die
         <command>svn merge</command> auf Ihren Zweig abgleichen
         wird.</para>
 
+      <informalexample>
+        <screen>
+$ cd my-calc-branch
+
 <!--
-      <informalexample>
-        <screen>
-$ cd my-calc-branch
-
 # Which changes have already been merged from trunk to branch?
-$ svn mergeinfo ^/calc/trunk
-r341
-r342
-r343
-&hellip;
-r388
-r389
-r390
-
-# Which changes are still eligible to merge from trunk to branch?
-$ svn mergeinfo ^/calc/trunk - -show-revs eligible
-r391
-r392
-r393
-r394
-r395
-$
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ cd my-calc-branch
-
 # Welche Änderungen wurden bereits vom Stamm auf den Zweig abgeglichen?
 $ svn mergeinfo ^/calc/trunk
 r341
@@ -2491,6 +2526,9 @@ r388
 r389
 r390
 
+<!--
+# Which changes are still eligible to merge from trunk to branch?
+-->
 # Welche Änderungen kommen für einen Abgleich vom Stamm auf den Zweig noch in Frage?
 $ svn mergeinfo ^/calc/trunk --show-revs eligible
 r391
@@ -2504,9 +2542,9 @@ $
 
 <!--
       <para>The <command>svn mergeinfo</command> command requires
-        a <quote>source</quote> URL (where the changes would be coming
+        a <quote>source</quote> URL (where the changes come
         from), and takes an optional <quote>target</quote> URL (where
-        the changes would be merged to).  If no target URL is given,
+        the changes merge to).  If no target URL is given,
         it assumes that the current working directory is the
         target.  In the prior example, because we're querying our
         branch working copy, the command assumes we're interested in
@@ -2514,9 +2552,9 @@ $
         from the specified trunk URL.</para>
 -->
       <para>Der Befehl <command>svn mergeinfo</command> erwartet einen
-        <quote>Quell</quote>-URL (woher die Änderungen kommen würden)
+        <quote>Quell</quote>-URL (woher die Änderungen kommen)
         und einen optionalen <quote>Ziel</quote>-URL (wohin die
-        Änderungen abgeglichen würden). Falls kein Ziel-URL angegeben
+        Änderungen abgeglichen werden). Falls kein Ziel-URL angegeben
         ist, wird das aktuelle Arbeitsverzeichnis als Ziel angenommen.
         Da wir im vorangegangenen Beispiel unser dem Zweig
         entsprechenden Arbeitsverzeichnis abfragen, geht der Befehl
@@ -2525,12 +2563,19 @@ $
         <filename>/branches/mybranch</filename> zu erhalten.</para>
 
       <sidebar id="svn.branchmerge.basicmerging.mergeinfo.inheritance">
+<!--
         <title>Mergeinfo Inheritance</title>
+-->
+        <title>Vererbung der Zusammenführungs-Information</title>
 
         <indexterm>
+<!--
           <primary>mergeinfo inheritance</primary>
+-->
+          <primary>Vererbung von Zusammenführungs-Information</primary>
         </indexterm>
 
+<!--
         <para>When a path has the <literal>svn:mergeinfo</literal>
           property set on it we say it has <firstterm>explicit
           mergeinfo</firstterm>.  This explicit mergeinfo describes
@@ -2538,27 +2583,48 @@ $
           directory, but also all the children of that directory
           (because those children inherit the mergeinfo of their
           parent path).  For example:</para>
+-->
+        <para>Besitzt ein Pfad die gesetzte Eigenschaft
+          <literal>svn:mergeinfo</literal>, sagen wir, er hat 
+          <firstterm>explizite Informationen zur
+          Zusammenführung</firstterm>. Diese expliziten Informationen
+          beschreiben nicht nur, welche Änderungen in dieses bestimmte
+          Verzeichnis gebracht worden sind, sondern auch in welche
+          Kindverzeichnisse desselben (da diese Kinder die
+          Informationen ihres Elternpfades erben). Zum
+          Beispiel:</para>
 
         <informalexample>
           <screen>
+<!--
 # What explicit mergeinfo exists on a branch?
+-->
+# Welche expliziten Zusammenführungs-Informationen gibt es auf dem Zweig?
 $ svn propget svn:mergeinfo ^/branches/proj-X --recursive
 /trunk:651-652
 
+<!--
 # What children does proj-X have?
+-->
+# Welche Kinder hat proj-X?
 $ svn list --recursive ^/branches/proj-X
 doc/
 doc/INSTALL
 README
 src/main.c
 
+<!--
 # Ask what revs were merged to a file with no explicit mergeinfo
+-->
+# Frage nach den Revisionen, die ohne explizite Zusammenführungs-Informationen
+# in eine Datei eingepflegt wurden
 $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
 651
 652
 </screen>
         </informalexample>
 
+<!--
         <para>Notice from our first subcommand that only the root of
           <filename>/branches/proj-X</filename> has any explicit
           mergeinfo.  However, when we use
@@ -2570,7 +2636,24 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
           no explicit mergeinfo of its own, inherits the mergeinfo from
           its nearest parent with explicit mergeinfo,
           <filename>/branches/proj-X</filename>.</para>
+-->
+        <para>Beachten Sie, dass bei unserem ersten Unterbefehl
+          lediglich die Wurzel von
+          <filename>/branches/proj-X</filename> überhaupt explizite
+          Zusammenführungs-Information hat. Dennoch, wenn wir
+          <command>svn mergeinfo</command> aufrufen, um nachzusehen,
+          was in <filename>/branches/proj-X/src/main.c</filename>
+          eingepflegt wurde,  werden die zwei Revisionen aus der
+          expliziten Information von
+          <filename>/branches/proj-X</filename> angezeigt. Das liegt
+          daran, weil
+          <filename>/branches/proj-X/src/main.c</filename>, das
+          keinerlei eigene Zusammenführungs-Informationen besitzt, die
+          Informationen des nächsten Elternteils mit expliziten
+          Informationen erbt, nämlich
+          <filename>/branches/proj-X</filename>.</para>
 
+<!--
         <para>There are two cases in which mergeinfo is not inherited.
           First, if a path has explicit mergeinfo, then it never inherits
           mergeinfo. Another way to think of this is that explicit
@@ -2582,70 +2665,142 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
           the <literal>svn:mergeinfo</literal> property is set (and it's
           only directories, non-inheritable mergeinfo is never set on
           files). For example:</para>
+-->
+        <para>In zwei Fällen werden die Informationen nicht vererbt.
+          Erstens, sofern ein Pfad explizite
+          Zusammenführungs-Informationen besitzt, erbt er sie nie. Auf
+          eine andere Art betrachtet, handelt es sich
+          dabei um eine vollständige Aufzeichnung der
+          Zusammenführungen auf diesen Pfad, die, sobald sie
+          existiert, jegliche eventuell zu erbende Information
+          überschreibt. Der zweite Fall liegt vor, wenn es um
+          nichterbliche Zusammenführungs-Informationen geht, einer
+          besonderen Art der expliziten Informationen, die
+          <emphasis>nur</emphasis> auf das Verzeichnis anwendbar ist,
+          bei dem die Eigenschaft <literal>svn:mergeinfo</literal>
+          gesetzt ist (und nur bei Verzeichnissen; nichterbliche
+          Zusammenführungs-Informationen wird nie an Dateien gesetzt).
+          Zum Beispiel:</para>
 
         <informalexample>
           <screen>
+<!--
 # The '*' decorator indicates non-inheritable mergeinfo
+-->
+"*" markiert nichterbliche Zusammenführungs-Informationen
 $ svn propget svn:mergeinfo ^/branches/proj-X
 /trunk:651-652,758*
 
+<!--
 # Revision 758 is non-inheritable, but still applies to the path it is
 # set on. Here the '*' decorator signals that r758 is only partially
 # merged from trunk. 
+-->
+# Revision 758 ist nicht erblich, doch trotzdem auf den Pfad, auf dem
+# es gesetzt ist, anwendbar. Hier zeigt "*" an, dass r758 nur
+# teilweise mit dem Stamm zusammengeführt wurde.
 $ svn mergeinfo ^/trunk ^/branches/proj-X
 651
 652
 758*
 
+<!--
 # Revision 758 is not reported as merged because it is non-inheritable
 # and applies only to ^/trunk
+-->
+# Revision 758 wird nicht als zusammengeführt angezeigt, da sie
+# nicht erblich und nur auf ^/trunk anwendbar ist.
 $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
 651
 652
 </screen>
         </informalexample>
 
+<!--
         <para>You might never have to think about mergeinfo inheritance
           or encounter non-inheritable mergeinfo in your own repository.
           A discussion of the full ramifications of mergeinfo inheritance
           are beyond the scope of this book.  If you have more questions
           check out some of the references mentioned in
           <xref linkend="svn.branchmerge.advanced.finalword"/></para>
+-->
+        <para>Es mag sein, dass Sie sich niemals Gedanken über die
+          Vererbung von Informationen zur Zusammenführung machen
+          müssen oder Ihnen nichterbliche
+          Zusammenführungs-Informationen in Ihrem Projektarchiv
+          begegnen. Eine Erörterung der vollständigen Auswirkungen der
+          Vererbung von Zusammenführungs-Informationen würden den
+          Rahmen dieses Buches sprengen. Sollten Sie weitere Fragen
+          haben, schauen Sie einige der in
+          <xref linkend="svn.branchmerge.advanced.finalword"/>
+          aufgeführten Referenzen an.</para>
       </sidebar>
 
+<!--
       <para>With the release of Subversion 1.7, the
         <command>svn mergeinfo</command> subcommand can also account for
         subtree mergeinfo and non-inheritable mergeinfo.  It accounts for
-        subtree mergeinfo by use of the <option>--recursive</option> or
-        <option>--depth</option> options, while non-inheritable mergeinfo
+        subtree mergeinfo by use of the <option>- -recursive</option> or
+        <option>- -depth</option> options, while non-inheritable mergeinfo
         is considered by default.</para>
+-->
+      <para>Mit dem Erscheinen von Subversion 1.7 kann der Unterbefehl
+        <command>svn mergeinfo</command> auch Informationen zur
+        Zusammenführung auf Teilbäumen und nichterbliche Informationen
+        berücksichtigen. Tewilbaum-Informationen werden durch die
+        Optionen <option>--recursive</option> oder
+        <option>--depth</option> berücksichtigt, während nichterbliche
+        standardmäßig beachtet wird.</para>
 
+<!--
       <para>Let's say we have a branch with both subtree and
         non-inheritable mergeinfo:</para>
+-->
+      <para>Angenommen, wir haben einen Zweig sowohl mit Teilbaum- als
+        auch nichterblichen Zusammenführungs-Informationen:</para>
 
         <informalexample>
           <screen>
 $ svn propget svn:mergeinfo --recursive -v
+<!--
 # Non-inheritable mergeinfo
 Properties on '.':
+-->
+# Nichterbliche Zusammenführungs-Informationen
+Eigenschaften zu ».«
   svn:mergeinfo
     /trunk:651-652,758*
+<!--
 # Subtree mergeinfo
 Properties on 'doc/INSTALL':
+-->
+# Zusammenführungs-Informationen für Teilbaum
+Eigenschaften zu »doc/INSTALL«
   svn:mergeinfo
     /trunk/doc/INSTALL:651-652,958,1060
 </screen>
         </informalexample>
 
+<!--
       <para>From the above mergeinfo we see that r758 has only been
         merged into the root of the branch, but not any of the root's
         children.  We also see that both r958 and r1060 have been
         merged only to the <filename>doc/INSTALL</filename> file.
         When we use <command>svn mergeinfo</command> with the
-        <option>--recursive</option> option to see what has been merged
+        <option>- -recursive</option> option to see what has been merged
         from <filename>^/trunk</filename> to this branch, we see two
         revisions are flagged with the <literal>*</literal> marker:</para>
-      
+-->
+      <para>Aus den obigen Informationen geht hervor, dass r758 nur
+        in die Wurzel des Zweigs eingepflegt wurde, aber in keins der
+        Kindverzeichnisse. Ferner ist erkennbar, dass sowohl r958 als
+        auch r1060 nur in die Datei <filename>doc/INSTALL</filename>
+        eingearbeitet wurde. Wenn wir <command>svn mergeinfo</command>
+        mit der Option <option>--recursive</option> verwenden, um
+        nachzusehen, was von <filename>^/trunk</filename> in diesen Zweig
+        eingepflegt wurde, erkennen wir zwei Revisionen, die mit der
+        Markierung <literal>*</literal> versehen sind:</para>
+
         <informalexample>
           <screen>
 $ svn mergeinfo --show-revs=merged ^/trunk . --recursive
@@ -2657,6 +2812,7 @@ $ svn mergeinfo --show-revs=merged ^/trunk . --recursive
 </screen>
         </informalexample>
 
+<!--
       <para>The <literal>*</literal> indicates revisions that are only
         <emphasis>partially</emphasis> merged to the target in question
         (the meaning is the same if we are checking for eligible
@@ -2671,7 +2827,23 @@ $ svn mergeinfo --show-revs=merged ^/trunk . --recursive
         update the mergeinfo on the root of the branch, but it would be
         inoperative in the sense that no diff would be
         applied.</para></footnote></para>
-
+-->
+      <para><literal>*</literal> markiert Revisionen, die nur
+        <emphasis>teilweise</emphasis> in das in Frage kommende Ziel
+        eingepflegt worden sind (die Bedeutung ist die gleiche wie bei
+        der Überprüfung nach in Frage kommenden Revisionen). In diesem
+        Beispiel bedeutet das, dass beim Versuch r758 oder r958 von
+        <filename>^/trunk</filename> einzupflegen, mehr Änderungen
+        angefallen wären. Ebenso wissen wir, da r1060
+        <emphasis>nicht</emphasis> mit <literal>*</literal> markiert
+        ist, dass nur <filename>doc/INSTALL</filename> betroffen ist,
+        und der Versuch, sie einzupflegen, keine Auswirkung
+        hätte.<footnote><para>Das wird häufig eine
+        <quote>unwirksame</quote> Zusammenführung genannt. Obwohl in
+        diesem Beispiel das Zusammenführen von r1060 etwas bewirkte:
+        es würde die Informationen zur Zusammenführung an der Wurzel
+        des Zweigs aktualisieren, jedoch hinsichtlich der Anwendung
+        eines Diffs unwirksam sein.</para></footnote></para>
 
 <!--
       <para>Another way to get a more precise preview of a merge
@@ -2682,23 +2854,19 @@ $ svn mergeinfo --show-revs=merged ^/trunk . --recursive
         Abgleich zu bekommen, ist die Verwendung der Option
         <option>--dry-run</option>:</para>
 
-<!--
-      <informalexample>
-        <screen>
-$ svn merge ^/calc/trunk - -dry-run
-U    integer.c
-
-$ svn status
-#  nothing printed, working copy is still unchanged.
-</screen>
-      </informalexample>
--->
       <informalexample>
         <screen>
 $ svn merge ^/calc/trunk --dry-run
+<!--
+- - Merging r391 through r395 into 'branch':
+-->
+-- Zusammenführen von r391 bis r395ld in »branch«:
 U    integer.c
 
 $ svn status
+<!--
+#  nothing printed, working copy is still unchanged.
+-->
 #  es wird nichts ausgegeben, die Arbeitskopie ist unverändert
 </screen>
       </informalexample>
@@ -2728,7 +2896,7 @@ $ svn status
           - -depth=empty <replaceable>/path/to/merge/target</replaceable></userinput>
           to see only the changes to the immediate target of your
           merge.  If your merge target was a directory, only property
-          differences will be displayed.  This is a handy way to see
+          differences are displayed.  This is a handy way to see
           the changes to the
           <literal>svn:mergeinfo</literal> property recorded by the
           merge operation, which will remind you about what you've
@@ -2751,8 +2919,8 @@ $ svn status
       <para>Of course, the best way to preview a merge operation is to
         just do it!  Remember, running <command>svn merge</command>
         isn't an inherently risky thing (unless you've made local
-        modifications to your working copy&mdash;but we've already
-        stressed that you shouldn't be merging into such an
+        modifications to your working copy&mdash;but we already
+        stressed that you shouldn't merge into such an
         environment).  If you don't like the results of the merge,
         simply run <userinput>svn revert . -R</userinput> to revert
         the changes from your working copy and retry the command with
@@ -2773,41 +2941,6 @@ $ svn status
         endgültig, bis Sie mit <command>svn commit</command> das
         Ergebnis übergeben.</para>
 
-      <tip>
-<!--
-        <para>While it's perfectly fine to experiment with merges by
-          running <command>svn merge</command> and <command>svn
-          revert</command> over and over, you may run into some
-          annoying (but easily bypassed) roadblocks.  For example, if
-          the merge operation adds a new file (i.e., schedules it for
-          addition), <command>svn revert</command> won't actually
-          remove the file; it simply unschedules the addition.  You're
-          left with an unversioned file.  If you then attempt to run
-          the merge again, you may get conflicts due to the
-          unversioned file <quote>being in the way.</quote> Solution?
-          After performing a revert, be sure to clean up the working
-          copy and remove unversioned files and directories.  The
-          output of <command>svn status</command> should be as clean
-          as possible, ideally showing no output.</para>
--->
-        <para>Während es vollkommen in Ordnung ist, durch wiederholte
-          Aufrufe von <command>svn merge</command> und <command>svn
-          revert</command> mit Abgleichen zu experimentieren, könnte
-          es allerdings sein, dass Sie über einige lästige (aber
-          leicht zu umgehende) Fallstricke stolpern. Wenn zum Beispiel
-          durch den Abgleich eine neue Datei hinzugefügt wird (d.h.,
-          sie wird zum Hinzufügen markiert), so wird <command>svn
-          revert</command> sie nicht wirklich entfernen; es entfernt
-          lediglich die Markierung zum Hinzufügen. Was übrig bleibt,
-          ist eine unversionierte Datei. Wenn Sie dann den Abgleich
-          erneut versuchen, könnten Sie einen Konflikt bekommen, weil
-          die unversionierte Datei <quote>im Weg steht</quote>. Die
-          Lösung? Nach dem Rückgängigmachen sollten Sie die
-          Arbeitskopie aufräumen und unversionierte Dateien und
-          Verzeichnisse entfernen. Die Ausgabe von <command>svn
-          status</command> sollte so sauber wie möglich sein und
-          idealerweise gar nichts anzeigen.</para>
-      </tip>
 
     </sect2>
 
@@ -3898,7 +4031,7 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
 <!--
       <title>Merges Without Mergeinfo</title>
 -->
-      <title>Zusammenführen ohne Zusammenführungsinformationen</title>
+      <title>Zusammenführen ohne Zusammenführungs-Informationen</title>
 
 <!--
       <para>Subversion tries to generate merge metadata whenever it
@@ -4032,7 +4165,7 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
               <userinput>svn merge . -c -5</userinput> rückgängig
               machen), hat dies keine Auswirkungen auf die
               aufgezeichneten
-              Zusammenführungsinformationen.<footnote><para>Interessanterweise
+              Zusammenführungs-Informationen.<footnote><para>Interessanterweise
               werden wir nach dem Zurücknehmen einer Revision auf
               diese Art nicht in der Lage sein, diese Revision erneut
               mit <userinput>svn merge . -c 5</userinput> anzuwenden,
@@ -4054,7 +4187,7 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
 <!--
         <title>Natural History and Implicit Mergeinfo</title>
 -->
-        <title>Natürliche Historie und implizite Zusammenführungsinformation</title>
+        <title>Natürliche Historie und implizite Zusammenführungs-Information</title>
 
 <!--
         <para>When a path has the <literal>svn:mergeinfo</literal>
@@ -4070,15 +4203,15 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
 -->
         <para>Wenn bei einem Pfad die Eigenschaft
           <literal>svn:mergeinfo</literal> gwsetzt ist, nennen wir das
-          <quote>explizite</quote> Zusammenführungsinformation. Ja,
+          <quote>explizite</quote> Zusammenführungs-Information. Ja,
           das bedeutet, dass ein Pfad auch <quote>implizite</quote>
-          Zusammenführungsinformation haben kann! Implizite
-          Zusammenführungsinformation, oder <firstterm>natürliche
+          Zusammenführungs-Information haben kann! Implizite
+          Zusammenführungs-Information, oder <firstterm>natürliche
           Historie</firstterm>, ist einfach die dem Pfad eigene
           Historie (siehe <xref linkend="svn.tour.history" />) die als
           Information zur Verfolgung von Zusammenführungen
           interpretiert wird. Obwohl es sich bei impliziter
-          Zusammenführungsinformation größtenteils um Details der
+          Zusammenführungs-Information größtenteils um Details der
           Implementierung handelt, kann es als nützliche Abstraktion
           für das Verstehen des Verhaltens der
           Zusammenführungsverfolgung dienen.</para>
@@ -4121,10 +4254,10 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
 -->
         <para>Mit jeder dem Projektarchiv hinzugefügten neuen Revision
           wird die natųrliche Historie &ndash; und somit die implizite
-          Zusammenführungsinformation &ndash; des Zweigs durch diese
+          Zusammenführungs-Information &ndash; des Zweigs durch diese
           Revisionen stetig erweitert, bis zu dem Tag, an dem der
           Zweig gelöscht wird. So würde die implizite
-          Zusammenführungsinformation unseres Zweiges aussehen, wenn
+          Zusammenführungs-Information unseres Zweiges aussehen, wenn
           die <literal>HEAD</literal>-Revision des Projektarchivs bis
           auf 234 angewachsen wäre:</para>
 
@@ -4149,7 +4282,7 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
           changes <emphasis>is</emphasis> the primary goal of
           Subversion's merge tracking feature!</para>
 -->
-        <para>Implizite Zusammenführungsinformation taucht nicht
+        <para>Implizite Zusammenführungs-Information taucht nicht
           wirklich in der Eigenschaft <literal>svn:mergeinfo</literal>
           auf, doch Subversion handelt so, als tauchte sie dort auf.
           Das ist der Grund dafür, dass nichts passiert, wenn Sie 
@@ -5285,7 +5418,7 @@ U   .
         anschließende Übergabe das Ergebnis einer Zusammenführung ist,
         wird dem Projektarchiv nichts über die duplizierten Änderungen
         mitgeteilt &ndash; diese Information ist verloren. Wenn später
-        Clients, die Zusammenführungsinformationen auswerten,
+        Clients, die Zusammenführungs-Informationen auswerten,
         automatische Zusammenführungen versuchen, werden Sie
         wahrscheinlich in alle möglichen Konflikte laufen, die durch
         wiederholte Zusammenführungen hervorgerufen wurden.</para>
