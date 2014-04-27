@@ -3545,23 +3545,19 @@ Index: integer.c
         Sie die gleiche Option an <command>svn merge</command>
         übergeben:</para>
 
+      <informalexample>
+        <screen>
+$ svn merge -c 355 ^/calc/trunk
 <!--
-      <informalexample>
-        <screen>
-$ svn merge -c 355 ^/calc/trunk
-- - Merging r355 into '.':
-U    integer.c
-
-$ svn status
-M       integer.c
-</screen>
-      </informalexample>
+- - - Merging r355 into '.':
 -->
-      <informalexample>
-        <screen>
-$ svn merge -c 355 ^/calc/trunk
 --- Zusammenführen von r355 in ».«:
 U    integer.c
+<!--
+- - - Recording mergeinfo for merge of r355 into '.':
+-->
+-- Aufzeichnung der Informationen für Zusammenführung von r355 in ».«:
+ U   .
 
 $ svn status
 M       integer.c
@@ -3586,7 +3582,6 @@ M       integer.c
         derselben Änderung auf denselben Zweig führt fast immer zu
         einem Konflikt!)</para>
 
-<!--
       <informalexample>
         <screen>
 $ cd my-calc-branch
@@ -3594,39 +3589,10 @@ $ cd my-calc-branch
 $ svn propget svn:mergeinfo .
 /trunk:341-349,355
 
+<!--
 # Notice that r355 isn't listed as "eligible" to merge, because
 # it's already been merged.
-$ svn mergeinfo ^/calc/trunk - -show-revs eligible
-r350
-r351
-r352
-r353
-r354
-r356
-r357
-r358
-r359
-r360
-
-$ svn merge ^/calc/trunk
-- - - Merging r350 through r354 into '.':
- U   .
-U    integer.c
-U    Makefile
-- - - Merging r356 through r360 into '.':
- U   .
-U    integer.c
-U    button.c
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ cd my-calc-branch
-
-$ svn propget svn:mergeinfo .
-/trunk:341-349,355
-
 # Beachten Sie, dass r355 nicht als Zusammenführungs-Kandidat aufgeführt wird
 # da es bereits zusammengeführt wurde.
 $ svn mergeinfo ^/calc/trunk --show-revs eligible
@@ -3642,10 +3608,16 @@ r359
 r360
 
 $ svn merge ^/calc/trunk
+<!--
+- - - Merging r350 through r354 into '.':
+-->
 --- Zusammenführen von r350 bis r354 in ».«:
  U   .
 U    integer.c
 U    Makefile
+<!--
+- - - Merging r356 through r360 into '.':
+-->
 --- Zusammenführen von r356 bis r360 in ».«:
  U   .
 U    integer.c
@@ -3674,8 +3646,8 @@ U    button.c
       <warning>
 <!--
         <para>Did you notice how, in the last example, the merge
-          invocation caused two distinct ranges of merges to be
-          applied?  The <command>svn merge</command> command applied
+          invocation merged two distinct ranges?
+          The <command>svn merge</command> command applied
           two independent patches to your working copy to skip over
           changeset 355, which your branch already contained.  There's
           nothing inherently wrong with this, except that it has the
@@ -3686,28 +3658,28 @@ U    button.c
           changes.  If you postpone a conflict from the first wave of
           changes, the whole merge command will bail out with an error
           message.<footnote><para>At least, this is true in Subversion
-          1.6 at the time of this writing.  This behavior may improve
+          1.7 at the time of this writing.  This behavior may improve
           in future versions of Subversion.</para></footnote></para>
 -->
         <para>Haben Sie bemerkt, wie im letzten Beispiel der Aufruf
-          von <command>svn merge</command> dazu geführt hat, zwei
-          unterschiedliche Abgleichsintervalle anzuwenden? Der Befehl
-          führte zwei unabhängige Patches auf Ihrer Arbeitskopie aus,
-          um die Änderungsmenge 355 zu überspringen, die Ihr Zweig
-          bereits beinhaltete. An und für sich ist daran nichts
-          falsch, bis auf die Tatsache, dass die Möglichkeit besteht,
-          eine Konfliktauflösung komplizierter zu machen. Falls das
-          erste Änderungsintervall Konflikte erzeugt,
+          von <command>svn merge</command> zwei unterschiedliche
+          Abgleichsintervalle zusammengeführt hat? Der Befehl führte
+          zwei unabhängige Patches auf Ihrer Arbeitskopie aus, um die
+          Änderungsmenge 355 zu überspringen, die Ihr Zweig bereits
+          beinhaltete. An und für sich ist daran nichts falsch, bis
+          auf die Tatsache, dass die Möglichkeit besteht, eine
+          Konfliktauflösung komplizierter zu machen. Falls das erste
+          Änderungsintervall Konflikte erzeugt,
           <emphasis>müssen</emphasis> Sie diese interaktiv auflösen,
           um die Zusammenführung fortzusetzen und das zweite
           Änderungsintervall anzuwenden. Wenn Sie die
           Konfliktauflösung der ersten Phase aufschieben, wird der
           komplette Zusammenführungsbefehl mit einer Fehlermeldung
           abbrechen.<footnote><para>Zumindest trifft das zur Zeit für
-          Subversion 1.6 zu.  Dieses Verhalten könnte sich in
+          Subversion 1.7 zu.  Dieses Verhalten könnte sich in
           künftigen Versionen von Subversion
           verbessern.</para></footnote></para>
-      </warning>
+  </warning>
 
 <!--
       <para>A word of warning: while <command>svn diff</command> and
