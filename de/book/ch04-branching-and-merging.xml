@@ -5677,20 +5677,16 @@ sys.exit(0)
       <para>The bottom line is that Subversion's merge-tracking
         feature has an extremely complex internal implementation, and
         the <literal>svn:mergeinfo</literal> property is the only
-        window the user has into the machinery.  Because the feature
-        is relatively new, a numbers of edge cases and
-        possible unexpected behaviors may pop up.</para>
+        window the user has into the machinery.</para>
 -->
       <para>Unter dem Strich bedeutet das, dass die Fähigkeit von
         Subversion zur Zusammenführungs-Verfolgung eine höchst
         komplexe interne Implementierung besitzt und die Eigenschaft
         <literal>svn:mergeinfo</literal> das einzige Fenster zu diesem
-        Räderwerk ist. Da diese Fähigkeit relativ neu ist, kann eine
-        Anzahl von Randfällen und mögliche unerwartete
-        Verhaltensweisen auftauchen.</para>
+        Räderwerk ist.</para>
 
 <!--
-      <para>Sometimes mergeinfo will appear on files that you didn't
+      <para>Sometimes mergeinfo will appear on paths that you didn't
         expect to be touched by an operation.  Sometimes mergeinfo
         won't be generated at all, when you expect it to.
         Furthermore, the management of mergeinfo metadata has a whole
@@ -5702,7 +5698,7 @@ sys.exit(0)
         even <quote>inheritance</quote> from parent to child
         directories.</para>
 -->
-      <para>Manchmal erscheint Mergeinfo auf Dateien, von denen Sie
+      <para>Manchmal erscheint Mergeinfo auf Pfaden, von denen Sie
         nicht erwartet hätten, dass sie durch eine Operation berührt
         worden wären. Manchmal wird Mergeinfo überhaupt nicht erzeugt,
         obwohl Sie es erwartet hätten. Darüberhinaus umgibt die
@@ -5716,26 +5712,24 @@ sys.exit(0)
         Kindverzeichnissen.</para>
 
 <!--
-      <para>We've chosen not to cover these detailed topics in this
-        book for a couple of reasons.  First, the level of detail is
-        absolutely overwhelming for a typical user.  Second, as
-        Subversion continues to improve, we feel that a typical user
-        <emphasis>shouldn't</emphasis> have to understand these
-        concepts; they'll eventually fade into the background as pesky
-        implementation details.  All that said, if you enjoy this sort
-        of thing, you can get a fantastic overview in a paper posted
-        at CollabNet's website: <ulink
+      <para>We've chosen to only briefly cover, if at all, these detailed
+        topics for a couple of reasons.  First, the level of detail is
+        absolutely overwhelming for a typical user.  Second, and more
+        importantly, the typical user <emphasis>shouldn't</emphasis> have
+        to understand these concepts; they should typically remain in the
+        background as pesky implementation details.  All that said, if you
+        enjoy this sort of thing, you can get a fantastic overview in a
+        paper posted at CollabNet's website: <ulink
         url="http://www.collab.net/community/subversion/articles/merge-info.html"
         />.</para>
 -->
       <para>Wir haben uns entschieden, diese detaillierten Themen aus
-        einer Reihe von Gründen nicht in diesem Buch zu behandeln.
+        einer Reihe von Gründen nur kurz anzureißen.
         Erstens ist der Detaillierungsgrad für einen normalen
-        Benutzer absolut erdrückend. Zweitens glauben wir, dass das
-        Verständnis diese Konzepte für einen typischen Benutzer nicht
-        unbedingt erforderlich sein <emphasis>sollte</emphasis> während
-        Subversion sich verbessert; letztendlich werden sie als
-        nervige Implementierugsdetails in den Hintergrund treten. Wenn
+        Benutzer absolut erdrückend. Zweitens, und das ist wichtiger,
+        <emphasis>sollte</emphasis> der typische Benutzer diese
+        Konzepte nicht verstehen müssen; sie sollten als
+        nervige Implementierugsdetails im Hintergrund bleiben. Wenn
         Sie, nachdem dies gesagt ist, diese Dinge mögen, können Sie
         einen fantastischen Überblick in einer Arbeit nachlesen, die
         auf der Webseite von CollabNet veröffentlicht ist:<ulink
@@ -5743,14 +5737,13 @@ sys.exit(0)
         />.</para>
 
 <!--
-      <para>For now, if you want to steer clear of bugs and odd
-        behaviors in automatic merging, the CollabNet article
-        recommends that you stick to these simple best practices:</para>
+      <para>For now, if you want to steer clear of the complexities of
+        merge tracking, we recommend that you follow these simple best
+        practices:</para>
 -->
-      <para>Fürs Erste empfiehlt CollabNet, sich an die folgenden
-        bewährten Praktiken zu halten, wenn Sie Fehler und
-        merkwürdiges Verhalten bei automatischen Zusammenführungen
-        vermeiden wollen:</para>
+      <para>Fürs Erste empfehlen wir, sich an die folgenden
+        bewährten Praktiken zu halten, sofern Sie die Komplexitäten
+        der Verfolgung von Zusammenführungen umgehen möchten:</para>
 
       <itemizedlist>
         <listitem>
@@ -5765,42 +5758,26 @@ sys.exit(0)
         </listitem>
         <listitem>
 <!--
-          <para>For long-lived release branches (as described in
-            <xref linkend="svn.branchmerge.commonpatterns"/>),
-            perform merges only on the root of the branch, not on
-            subdirectories.</para>
+          <para>Avoid subtree merges and subtree mergeinfo, perform
+            merges only on the root of your branches, not on
+            subdirectories or files (see <xref
+            linkend="svn.branchemerge.basicmerging.stayinsync.subtree"/>)
+            .</para>
 -->
-          <para>Machen Sie Zusammenführungen langlebiger
-            Release-Zweige (wie in  <xref
-            linkend="svn.branchmerge.commonpatterns"/> beschrieben)
-            nur im Wurzelverzeichnis des Zweigs und nicht in
-            Unterverzeichnissen.</para>
-        </listitem>
-        <listitem>
-<!--
-          <para>Never merge into working copies with a mixture of
-            working revision numbers, or with
-            <quote>switched</quote> subdirectories (as described next
-            in <xref linkend="svn.branchmerge.switchwc"/>).  A merge
-            target should be a working copy which represents
-            a <emphasis>single</emphasis> location in the repository
-            at a single point in time.</para>
--->
-          <para>Machen Sie Zusammenführungen in Arbeitsverzeichnisse
-            niemals mit einer Mischung aus Arbeitsrevisionsnummern oder
-            <quote>umgeschalteten</quote> Unterverzeichnissen (wie als
-            Nächstes in <xref linkend="svn.branchmerge.switchwc"/>
-            beschrieben). Das Ziel einer Zusammenführung sollte eine
-            Arbeitskopie sein, die einen <emphasis>einzigen</emphasis>
-            Ort zu einem einzelnen Zeitpunkt im Projektarchiv
-            repräsentiert.</para>
+          <para>Vermeiden Sie Zusammenführungen von Teilbäumen und
+            deren Zusammenführungs-Informationen; führen Sie
+            Zusammenführungen nur im Wurzelverzeichnis Ihrer Zweige
+            durch und nicht in Unterverzeichnissen oder auf Dateien
+            (siehe <xref
+            linkend="svn.branchemerge.basicmerging.stayinsync.subtree"/>).
+          </para>
         </listitem>
         <listitem>
 <!--
           <para>Don't ever edit the <literal>svn:mergeinfo</literal>
             property directly; use <command>svn
-            merge</command> with the <option>- -record-only</option> option to effect a desired change
-            to the metadata (as demonstrated in
+            merge</command> with the <option>- -record-only</option> option
+            to effect a desired change to the metadata (as demonstrated in
             <xref linkend="svn.branchmerge.advanced.blockchanges"/>).</para>
 -->
           <para>Editieren Sie niemals direkt die Eigenschaft
@@ -5813,14 +5790,63 @@ sys.exit(0)
         </listitem>
         <listitem>
 <!--
-          <para>Always make sure you have complete read access to
-            all of your merge sources, and that your target working
-            copy has no sparse directories.</para>
+          <para>Your merge target should be a working copy which
+            represents the root of a <emphasis>complete</emphasis> tree
+            representing a <emphasis>single</emphasis> location in the
+            repository at a single point in time:
 -->
-          <para>Stellen Sie jederzeit sicher, dass Sie vollständigen
-            Lesezugriff auf die Quellen für die Zusammenführung haben
-            und dass Ihre Ziel-Arbeitskopie keine dünn besetzten
-            Verzeichnisse besitzt.</para>
+          <para>Das Ziel Ihrer Zusammenführung sollte eine
+            Arbeitskopie sein, die einen
+            <emphasis>vollständigen</emphasis> Baum eines
+            <emphasis>einzigen</emphasis> Ortes zu einem einzelnen
+            Zeitpunkt im Projektarchiv repräsentiert:
+            <itemizedlist>
+              <listitem>
+<!--
+                <para>Don't use the <option>- -allow-mixed-revisions</option>
+                option to merge into mixed-revision working copies.</para>
+-->
+                <para>Verwenden Sie nicht die Option
+                  <option>--allow-mixed-revisions</option>, um in
+                  Arbeitskopien mit gemischten Revisionen
+                  zurückzuführen.</para>
+              </listitem>
+              <listitem>
+<!--
+                <para>Don't merge to targets with <quote>switched</quote>
+                subdirectories (as described next in
+                <xref linkend="svn.branchmerge.switchwc"/>).</para>
+-->
+                <para>Führen Sie nicht auf Ziele mit
+                  <quote>umgestellten</quote> Unterverzeichnissen
+                  zusammen (wie gleich in 
+                  <xref linkend="svn.branchmerge.switchwc"/> beschrieben
+                  wird).</para>
+              </listitem>
+              <listitem>
+<!--
+                <para>Avoid merges to targets with sparse directories.
+                  Likewise, don't merge to depths other than
+                  <option>- -depth=infinity</option></para>
+-->
+                <para>Vermeiden Sie Zusammenführungen in Ziele mit
+                  Teilverzeichnissen. Das Gleiche gilt für
+                  Zusammenführungen mit anderen Tiefen als 
+                  <option>--depth=infinity</option></para>
+              </listitem>
+              <listitem>
+<!--
+                <para>Be sure you have read access to all of the merge
+                  source and read/write access to all of the merge
+                  target.</para>
+-->
+                <para>Stellen Sie sicher, dass Sie vollständigen
+                  Lesezugriff auf die Quellen sowie Lwse- und
+                  Schreibzugriff auf alle Ziele der Zusammenführung
+                  haben.</para>
+              </listitem>
+            </itemizedlist>
+          </para>
         </listitem>
       </itemizedlist>
 
