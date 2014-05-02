@@ -5535,9 +5535,11 @@ U    .
 
 <!--
       <para>If you've just upgraded your server to Subversion 1.5 or
-        later, there's a significant risk that pre-1.5 Subversion
-        clients can mess up your automated merge tracking.  Why is
-        this?  When a pre-1.5 Subversion client performs <command>svn
+        later, there's a risk that pre-1.5 Subversion
+        clients can cause problems with
+        <xref linkend="svn.branchmerge.basicmerging.mergetracking"/>.
+        This is because pre-1.5 clients don't support this feature;
+        when one of these older clients performs <command>svn
         merge</command>, it doesn't modify the value of
         the <literal>svn:mergeinfo</literal> property at all.  So the
         subsequent commit, despite being the result of a merge,
@@ -5548,19 +5550,22 @@ U    .
         resulting from repeated merges.</para>
 -->
       <para>Wenn Sie gerade Ihren Server auf Subversion 1.5 oder
-        größer umgestellt haben, besteht ein signifikantes Risiko,
-        dass Subversion-Clients einer kleineren Version als 1.5 Ihre
-        automatische Zusammenführungs-Verfolgung durcheinander bringen
-        können. Warum? Wenn ein älterer Subversion-Client <command>svn
-        merge</command> ausführt, modifiziert er nicht den Wert der
-        Eigenschaft <literal>svn:mergeinfo</literal>.  Obwohl die
-        anschließende Übergabe das Ergebnis einer Zusammenführung ist,
-        wird dem Projektarchiv nichts über die duplizierten Änderungen
-        mitgeteilt &ndash; diese Information ist verloren. Wenn später
-        Clients, die Zusammenführungs-Informationen auswerten,
-        automatische Zusammenführungen versuchen, werden Sie
-        wahrscheinlich in alle möglichen Konflikte laufen, die durch
-        wiederholte Zusammenführungen hervorgerufen wurden.</para>
+        größer umgestellt haben, besteht ein Risiko,
+        dass Subversion-Clients einer älteren Version als 1.5 Probleme
+        mit
+        <xref linkend="svn.branchmerge.basicmerging.mergetracking"/>
+        bereiten können. Das liegt daran, dass Clients vor 1.5 diese
+        Funktionalität nicht unterstützen; wenn einer dieser älteren
+        Clients <command>svn merge</command> ausführt, modifiziert er
+        nicht den Wert der Eigenschaft <literal>svn:mergeinfo</literal>.
+        Obwohl die anschließende Übergabe das Ergebnis einer
+        Zusammenführung ist, wird dem Projektarchiv nichts über die
+        duplizierten Änderungen mitgeteilt &ndash; diese Information
+        ist verloren. Wenn später Clients, die
+        Zusammenführungs-Informationen auswerten, automatische
+        Zusammenführungen versuchen, werden Sie wahrscheinlich in alle
+        möglichen Konflikte laufen, die durch wiederholte
+        Zusammenführungen hervorgerufen wurden.</para>
 
 <!--
       <para>If you and your team are relying on the merge-tracking
@@ -5575,7 +5580,22 @@ U    .
         deny the commit.
         <xref linkend="svn.branchmerge.advanced.hook-ex1" /> gives an
         example of such a hook script:</para>
+-->
+      <para>Wenn Sie und Ihr Team auf die Zusammenführungs-Verfolgung
+        von Subversion angewiesen sind, sollten Sie Ihr Projektarchiv
+        dergestalt konfigurieren, dass ältere Clients daran gehindert
+        werden, Änderungen zu übergeben. Die einfache Methode hierfür
+        ist es, den <quote>Fähigkeiten</quote>-Parameter im
+        <literal>start-commit</literal> Hook-Skript zu untersuchen.
+        Wenn der Client meldet, dass er mit
+        <literal>mergeinfo</literal> umgehen kann, kann das Skript den
+        Beginn der Übergabe erlauben.  Wenn der Client diese Fähigkeit
+        nicht meldet, wird die Übergabe abgelehnt.
+        <xref linkend="svn.branchmerge.advanced.hook-ex1" /> zeigt ein
+        Beispiel für ein solches Hook-Skript:</para>
 
+
+<!--
       <example id="svn.branchmerge.advanced.hook-ex1">
         <title>Merge-tracking gatekeeper start-commit hook script</title>
 
@@ -5603,22 +5623,7 @@ if "mergeinfo" not in capabilities:
 sys.exit(0)
 </programlisting>
       </example>
-
-      <para>For more information about hook scripts, see
-        <xref linkend="svn.reposadmin.create.hooks"/>.</para>
 -->
-      <para>Wenn Sie und Ihr Team auf die Zusammenführungs-Verfolgung
-        von Subversion angewiesen sind, sollten Sie Ihr Projektarchiv
-        dergestalt konfigurieren, dass ältere Clients daran gehindert
-        werden, Änderungen zu übergeben. Die einfache Methode hierfür
-        ist es, den <quote>Fähigkeiten</quote>-Parameter im
-        <literal>start-commit</literal> Hook-Skript zu untersuchen.
-        Wenn der Client meldet, dass er mit
-        <literal>mergeinfo</literal> umgehen kann, kann das Skript den
-        Beginn der Übergabe erlauben.  Wenn der Client diese Fähigkeit
-        nicht meldet, wird die Übergabe abgelehnt.
-        <xref linkend="svn.branchmerge.advanced.hook-ex1" /> zeigt ein
-        Beispiel für ein solches Hook-Skript:</para>
 
       <example id="svn.branchmerge.advanced.hook-ex1">
         <title>Hook-Skript zum Start der Übertragung als Torwächter für die Zusammenführungs-Verfolgung</title>
@@ -5651,6 +5656,10 @@ sys.exit(0)
 </programlisting>
       </example>
 
+<!--
+      <para>For more information about hook scripts, see
+        <xref linkend="svn.reposadmin.create.hooks"/>.</para>
+-->
       <para>Für weitergehende Informationen zu Hook-Skripten, siehe
         nächsten Kapitel erfahren; siehe
         <xref linkend="svn.reposadmin.create.hooks"/>.</para>
