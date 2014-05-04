@@ -5867,7 +5867,7 @@ sys.exit(0)
     <para>The <command>svn switch</command> command transforms an
       existing working copy to reflect a different branch.  While this
       command isn't strictly necessary for working with branches, it
-      provides a nice shortcut.  In our earlier example,
+      provides a nice shortcut.  In one of our earlier examples,
       after creating your private branch, you checked out a fresh
       working copy of the new repository directory.  Instead, you can
       simply ask Subversion to change your working copy of
@@ -5878,43 +5878,27 @@ sys.exit(0)
       bestehende Arbeitskopie, so dass sie einen anderen Zweig
       repräsentiert. Obwohl dieser Befehl strenggenommen für die
       Arbeit mit Zweigen nicht notwendig ist, stellt er eine nette
-      Abkürzung dar. In unserem früheren Beispiel haben Sie nach dem
+      Abkürzung dar. In einem unserer früheren Beispiele haben Sie nach dem
       Anlegen Ihres eigenen privaten Zweigs eine frische Arbeitskopie
       des neuen Projektarchiv-Verzeichnisses ausgecheckt. Stattdessen
       können Sie Subversion einfach mitteilen, dass es Ihre
       Arbeitskopie von <filename>/calc/trunk</filename> ändern soll,
       um den neuen Ort des Zweigs widerzuspiegeln:</para>
 
+    <informalexample>
+      <screen>
+$ cd calc
+
+$ svn info | grep URL
+URL: http://svn.example.com/repos/calc/trunk
+
+$ svn switch ^/calc/branches/my-calc-branch
+U    integer.c
+U    button.c
+U    Makefile
 <!--
-    <informalexample>
-      <screen>
-$ cd calc
-
-$ svn info | grep URL
-URL: http://svn.example.com/repos/calc/trunk
-
-$ svn switch ^/calc/branches/my-calc-branch
-U    integer.c
-U    button.c
-U    Makefile
 Updated to revision 341.
-
-$ svn info | grep URL
-URL: http://svn.example.com/repos/calc/branches/my-calc-branch
-</screen>
-    </informalexample>
 -->
-    <informalexample>
-      <screen>
-$ cd calc
-
-$ svn info | grep URL
-URL: http://svn.example.com/repos/calc/trunk
-
-$ svn switch ^/calc/branches/my-calc-branch
-U    integer.c
-U    button.c
-U    Makefile
 Aktualisiert zu Revision 341.
 
 $ svn info | grep URL
@@ -6012,12 +5996,33 @@ URL: http://svn.example.com/repos/calc/branches/my-calc-branch
       Mischung unterschiedlicher Revisionen enthalten, sondern auch
       eine Mischung unterschiedlicher Projektarchiv-Orte.</para>
 
+    <tip>
+<!--
+      <para>Typically switched subdirectories share common ancestry with
+        the location which is switched <quote>away</quote> from.  However
+        <command>svn switch</command> can switch a subdirectory to mirror
+        a repository location which it shares no common ancestry with.
+        To do this you need to use the
+        <option>- -ignore-ancestry</option> option.
+    </para>
+-->
+      <para>Typischerweise teilen sich umgestellte Unterverzeichnisse
+        eine gemeinsame Herkunft mit dem Ort von dem sie
+        <quote>wegbewegt</quote> werden. Allerdings kann ein
+        Unterverzeichnis mit <command>svn switch</command> so
+        umgestellt werden, dass es einen Ort im Projektarchiv
+        widerspiegelt, mit dem es keinerlei gemeinsame Herkunft teilt.
+        Um das zu bewerkstelligen, müssen Sie die Option
+        <option>--ignore-ancestry</option> verwenden.
+    </para>
+    </tip>
+
 <!--
     <para>If your working copy contains a number of switched subtrees
       from different repository locations, it continues to function as
       normal.  When you update, you'll receive patches to each subtree
-      as appropriate.  When you commit, your local changes will still
-      be applied as a single, atomic change to the repository.</para>
+      as appropriate.  When you commit, your local changes are still
+      applied as a single, atomic change to the repository.</para>
 -->
     <para>Falls Ihre Arbeitskopie eine Anzahl umgeschalteter
       Unterverzeichnisse aus unterschiedlichen Projektarchiv-Orten
@@ -6034,26 +6039,53 @@ URL: http://svn.example.com/repos/calc/branches/my-calc-branch
       repositories aren't yet able to communicate with one another;
       that feature is planned for the
       future.<footnote><para>You <emphasis>can</emphasis>, however,
-      use <command>svn switch</command> with
-      the <option>- -relocate</option> option if the URL of your server
+      use <command>svn relocate</command> if the URL of your server
       changes and you don't want to abandon an existing working copy.
-      See <xref linkend="svn.ref.svn.c.switch"/> for more information
-      and an example.</para></footnote></para>
+      See <xref linkend="svn.ref.svn.c.relocate"/> in
+      <xref linkend="svn.ref"/> for more information and an
+      example.</para></footnote></para>
 -->
-    <!-- ### TODO: Recommend 'svn relocate' in 1.7 -->
-    <para>Während es normal ist, das eine Arbeitskopie eine Mischung
-      unterschiedlicher Projektarchiv-Orte repräsentiert, ist darauf zu
-      achten, dass all diese Orte sich innerhalb
+    <para>Beachten Sie, dass, obwohl es normal ist, dass eine
+      Arbeitskopie eine Mischung unterschiedlicher Projektarchiv-Orte
+      repräsentiert, all diese Orte sich innerhalb
       <emphasis>desselben</emphasis> Projektarchivs befinden.
       Subversion-Projektarchive können noch nicht miteinander
       kommunizieren; diese Möglichkeit ist für die Zukunft geplant.
       <footnote><para>Sie <emphasis>können</emphasis> jedoch
-      <command>svn switch</command> mit der Option
-      <option>--relocate</option> verwenden, falls sich der URL Ihres
-      Servers geändert hat, und Sie die bestehende Arbeitskopie nicht
-      aufgeben wollen.  Siehe <xref linkend="svn.ref.svn.c.switch"/>
-      für weitere Informationen und ein
+      <command>svn relocate</command> verwenden, falls sich der URL
+      Ihres Servers geändert hat, und Sie die bestehende Arbeitskopie
+      nicht aufgeben wollen.  Siehe
+      <xref linkend="svn.ref.svn.c.relocate"/> in
+      <xref linkend="svn.ref"/> für weitere Informationen und ein
       Beispiel.</para></footnote></para>
+
+    <tip>
+<!--
+      <para>Administrators who need to change the URL of a repository
+        which is accessed via HTTP are encouraged to add to
+        their <filename>httpd.conf</filename> configuration file a
+        permanent redirect from the old URL location to the new one
+        (via the <literal>RedirectPermanent</literal> directive).
+        Subversion clients will generally display the new repository
+        URL in error messages generated when the user attempts to use
+        working copies which still reflect the old URL location.  In
+        fact, Subversion 1.7 clients will go a step further,
+        automatically relocating the working copy to the new
+        URL.</para>
+-->
+      <para>Administratoren, die den URL eines Projektarchivs ändern
+        müssen, auf das über HTTP zugegriffen wird, sei empfohlen,
+        ihrer Konfigurationsdatei <filename>httpd.conf</filename> eine
+        ständige Weiterleitung vom alten URL zum neuen einzurichten
+        (mit der Anweisung <literal>RedirectPermanent</literal>). Im
+        Allgemeinen werden Subversion-Clients den neuen URL des
+        Projektarchivs in Fehlermeldungen anzeigen, die erzeugt
+        werden, falls der Anwender versucht, auf Arbeitskopien
+        zuzugreifen, die immer noch den alten URL widerspiegeln.
+        Subversion 1.7 Clients gehen hier tatsächlich noch einen
+        Schritt weiter, indem sie automatisch die Arbeitskopie auf den
+        neuen URL umziehen lassen.</para>
+    </tip>
 
     <sidebar>
 <!--
@@ -6142,35 +6174,30 @@ URL: http://svn.example.com/repos/calc/branches/my-calc-branch
       <para>Have you ever found yourself making some complex edits (in
         your <filename>/trunk</filename> working copy) and suddenly
         realized, <quote>Hey, these changes ought to be in their own
-        branch?</quote> A great technique to do this can be summarized
-        in two steps:</para>
+        branch?</quote> There is a great two step technique to do
+        this:</para>
 -->
         <para>Haben Sie sich jemals dabei ertappt, dass Sie (in Ihrer
           <filename>/trunk</filename>-Arbeitskopie) komplexe
           Änderungen gemacht haben und plötzlich feststellen:
           <quote>Verdammt, diese Änderungen sollten auf einen eigenen
-          Zweig!</quote> Eine gute Technik, um das zu bewerkstelligen,
-          lässt sich in zwei Schritten zusammenfassen:</para>
+          Zweig!</quote> Es gibt eine gute Technik, um das in zwei
+          Schritten zu bewerkstelligen:</para>
 
-<!--
       <informalexample>
         <screen>
 $ svn copy http://svn.example.com/repos/calc/trunk \
            http://svn.example.com/repos/calc/branches/newbranch \
+<!--
       -m "Create branch 'newbranch'."
 Committed revision 353.
-$ svn switch ^/calc/branches/newbranch
-At revision 353.
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn copy http://svn.example.com/repos/calc/trunk \
-           http://svn.example.com/repos/calc/branches/newbranch \
       -m "Zweig 'newbranch' angelegt."
 Revision 353 übertragen.
-$ svn switch http://svn.example.com/repos/calc/branches/newbranch
+$ svn switch ^/calc/branches/newbranch
+<!--
+At revision 353.
+-->
 Revision 353.
 </screen>
       </informalexample>
