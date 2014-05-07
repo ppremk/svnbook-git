@@ -7975,6 +7975,234 @@ $ svn_load_dirs.pl -t libcomplex-1.1                              \
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
+  <sect1 id="svn.branchmerge.when">
+<!--
+    <title>To Branch or Not to Branch?</title>
+-->
+    <title>Verzweigen oder nicht verzweigen?</title>
+
+<!--
+    <para>To branch or not to branch&mdash;that is an interesting
+      question.  This chapter has provided thus far a pretty deep dive
+      into the waters of branching and merging, topics which have
+      historically been the premier source of Subversion user
+      confusion.  As if the rote actions involved in branching and
+      branch management aren't sometimes tricky enough, some users get
+      hung up on deciding whether they need to branch at all.  As
+      you've learned, Subversion can handle common branching and
+      branch management scenarios.  So, the decision of whether or not
+      to branch a project's history is rarely a technical one.
+      Rather, the social impact of the decision often carries more
+      weight.  Let's examine some of the benefits and costs of using
+      branches in a software project.</para>
+-->
+    <para>Verzweigen oder nicht verzweigen &ndash; das ist eine
+      interessante Frage. Bis hierhin hat dieses Kapitel einwn
+      ziwmlich tiefen Tauchgang in die Tiefen des Verzweigens und
+      Zusammenführens geboten. Themen, die historisch die Hauptquellen
+      für die Verwirrung von Subversion-Anwendern waren. Als wären die
+      routinemäßigen Aktionen zum Verzweigen und Verwalten von Zweigen
+      manchmal noch nicht kompliziert genug, bleiben einige Anwender
+      bei der Entscheidung hängen, ob sie überhaupt Verzweigen
+      sollten. Wie Sie gelernt haben, beherrscht Subversion die
+      üblichen Szenarien zum Verzweigen und für die Verwaltung von
+      Zweigen. Die Entscheidung für oder wider das Verzweigen ist also
+      selten technischer Natur. Stattdessen haben die sozialen
+      Auswirkungen ein höheres Gewicht. Lassen Sie uns einmal einige
+      der Vorteile und Kosten der Verwendung von Zweigen in einem
+      Software-Projekt einmal untersuchen.</para>
+
+<!--
+    <para>The most obvious benefit of working on a branch is
+      isolation.  Changes made to the branch don't affect the other
+      lines of development in the project; changes made to those other
+      lines don't affect the branch.  In this way, a branch can serve
+      as a great place to experiment with new features, complex bug
+      fixes, major code rewrites, and so on.  No matter how much stuff
+      Sally breaks on her branch, Harry and the rest of the team can
+      continue with their work unhindered outside the branch.</para>
+-->
+    <para>Der offensichtlichste Vorteil des Arbeitens auf einem Zweig
+      ist Isolation. Auf dem Zweig gemachte Änderungen berühren nicht
+      die anderen Entwicklungslinien des Projektes: Änderungen an
+      diesen anderen Linien berühren nicht den Zweig. Auf diese Weise
+      kann ein Zweig als großartiger Ort zum Experimentieren mit neuen
+      Funktionalitäten, komplizierten Fehlerbehebungen, größeren
+      Refaktorierungen usw. dienen. Egal, wieviel Sally auf ihrem
+      Zweig kaputt macht, Harry und der Rest der Mannschaft können mit
+      ihrer Arbeit ungehindert außerhalb des Zweigs
+      weitermachen.</para>
+
+<!--
+    <para>Branches also provide a great way to organize related
+      changes into readily identifiable collections.  For example, the
+      changes which comprise the complete solution to a particular bug
+      might be a list of non-sequential revision numbers.  You might
+      describe them in human language as <quote>revisions 1534, 1543,
+      1587 and 1588</quote>.  You'd probably reproduce those numbers
+      manually (or otherwise) in the issue tracker artifact which
+      tracks the bug.  When porting the bug fix to other product
+      versions, you'd need to make sure to port all those revisions.
+      But had those changes been made on a unique branch, you'd find
+      yourself referring only to that branch by its name in
+      conversation, in issue tracker comments, and when porting
+      changes.</para>
+-->
+    <para>Zweige bieten auch eine großartige Möglichkeit, verwandte
+      Änderungen in leicht handhabbare Sammlungen zu organisieren.
+      Beispielsweise könnten die Änderungen, die die Komplettlösung
+      eines bestimmten Fehlers ausmachen, eine Liste
+      nicht-aufeinanderfolgender Revisionsnummern sein. Sie könnten
+      diese natürlichsprachlich als <quote>Revisionen 1534, 1543,
+      1587 und 1588</quote> bezeichnen. Sehrwahrscheinlich werden Sie
+      diese Nummern manuell (oder auf andere Weise) in einem
+      Fehlerverfolgungs-Dokument festhalten. Wenn Sie die
+      Fehlerbehebung auf andere Produktversionen anwenden möchten,
+      müssen Sie sicherstellen, dass all diese Revisionen
+      berücksichtigt werden. Wären diese Änderungen jedoch auf einem
+      eindeutigen Zweig gemacht worden, könnten Sie sich bei
+      Gesprächen, in Fehlerverfolgungs-Kommentaren und beim Portieren
+      von Änderungen lediglich auf den Namen dieses Zweigs
+      beziehen.</para>
+
+<!--
+    <para>The unfortunate downside of branches, though, is that the
+      very isolation that makes them so
+      useful <emphasis>can</emphasis> be at odds with the
+      collaborative needs of the project team.  Depending on the work
+      habits of your project peers, changes made to branches might not
+      get the kind of constructive review, criticism, and testing that
+      changes made to the main line of development do.  The isolation
+      of a branch can encourage users to forsake certain version
+      control <quote>best practices</quote>, leading to version
+      history which is difficult to review <foreignphrase>post
+      facto</foreignphrase>.  Developers on long-lived branches
+      sometimes need to work extra hard to ensure that the
+      evolutionary direction of their isolated copy of the codebase is
+      in harmony with the direction their peers are steering the main
+      code lines.  Now, these drawbacks might be less of an issue for
+      true exploratory branches aimed at experimenting with the future
+      of a codebase with no expectation of reintegrating the results
+      back into the main development lines&mdash;mere policy needn't
+      be a vision-killer!  But the simple fact remains that projects
+      generally benefit from an orderly approach to version control
+      where code and code changes enjoy the review and comprehension
+      of more than one team member.</para>
+-->
+    <para>Es ist jedoch die unglückliche Kehrseite von Zweigen, dass
+      eben jene Isolation, die sie so nützlich macht, zum Nachteil der
+      kollaborativen Bedürfnisse der Projektmitarbeiter gereichen
+      <emphasis>kann</emphasis>. Abhängig von den Arbeitsgewohnheiten
+      Ihrer Kollegen im Projekt, könnte es sein, dass Änderungen, die
+      auf Zweigen gemacht werden, nicht die Art konstruktiver
+      Durchsicht, Kritik und Überprüfung erfahren, wie Änderungen an
+      der Hauptentwicklungslinie. Die Isolation eines Zweigs kann
+      Anwender dazu verleiten, bestimmte <quote>beste
+      Vorgehensweisen</quote> bei der Versionskontrolle aufzugeben,
+      was zu einer Versionsgeschichte führt, die nachträglich
+      schwierig zu überprüfen ist. Entwickler auf langlebigen Zweigen
+      müssen manchmal besonders schwer arbeiten, um sicherzustellen,
+      dass die Richtung der Entwicklung ihrer isolierten Kopie der
+      Quellen immer noch mit der Richtung harmoniert, die ihre
+      Kollegen auf den Hauptentwicklungslinien einschlagen. Diese
+      Nachteile mögen für wahre Versuchszweige weniger problematisch
+      sein, die zum Experimentieren mit den künftigen Quellen ohne die
+      Absicht der Rückführung in die Hauptentwicklungslinie angelegt
+      werden &ndash; bloße Richtlinien brauchen keine Visionen
+      abwürgen! Doch ws bleibt die einfache Tatsache, dass Projekte
+      allgemein von einem geordneten Ansatz für Versionskontrolle
+      profitieren, bei dem der Quelltext und Änderungen daran die
+      Begutachtung und das Verstehen von mehr als einem Teammitglied
+      genießen.</para>
+
+<!--
+    <para>That's not to say that there are no technical penalties to
+      branching.  Pardon us while we <quote>go meta</quote> for a bit
+      here.  If you think about it, every time you checkout a
+      Subversion working copy, you're creating a branch of sorts of
+      your project.  It's a special sort of branch.  It lives only on
+      your client machine; not in the repository.  You synchronize
+      this branch with changes made in the repository
+      using <command>svn update</command>&mdash;which acts almost like
+      a special-cased, simplified form of an <command>svn
+      merge</command> command.<footnote><para>Actually, you
+      <emphasis>could</emphasis> use <userinput>svn merge
+      -r<replaceable>LAST_UPDATED_REV</replaceable>:HEAD .</userinput>
+      in your working copy to quite literally merge in all the
+      repository changes since your last update if really wanted
+      to!</para></footnote> You effectively reintegrate your branch
+      each time you run <command>svn commit</command>.  So, in that
+      special sense, Subversion users deal with branches and merges
+      all the time.  Given the similarities between updating and
+      merging, it's no surprise, then, that the areas in which
+      Subversion seems to have the most shortcomings&mdash;namely,
+      handling file and directory renames and dealing with tree
+      conflicts in general&mdash;are problematic for both
+      the <command>svn update</command> and <command>svn
+      merge</command> operations.  Unfortunately, <command>svn
+      merge</command> has a harder time of it precisely because of the
+      fact that, for every way in which <command>svn update</command>
+      is a special-cased, simplified kind of generic merge operation,
+      a true Subversion merge is neither special-cased nor simplified.
+      For this reason, merges perform much more slowly than updates,
+      require explicit tracking (via
+      the <literal>svn:mergeinfo</literal> property we've discussed in
+      this chapter) and history-crunching arithmetic, and generally
+      offer more opportunities for something to go awry.</para>
+-->
+    <para>Das bedeutet nicht, dass es beim Verzweigen keine Einbußen
+      gibt. Verzeihen Sie bitte, wenn wir hier für einen Augenblick
+      auf <quote>die Metaebene gehen</quote>. Wenn Sie darüber
+      nachdenken, erzeugen Sie jedes Mal irgendwie einen Zweig, wenn
+      Sie eine Subversion-Arbeitskopie auschecken. Es ist ein
+      besonderer Zweig. Er lebt nur auf Ihrem Client-Rechner, nicht im
+      Projektarchiv. Sie synchronisieren diesen Zweig mit Änderungen
+      im Projektarchiv, indem Sie <command>svn update</command>
+      aufrufen &ndash; das sich beinahe als Spezialfall wie eine
+      vereinfachte Form eines <command>svn merge</command>-Befehls
+      verhält.<footnote><para>Tatsächlich <emphasis>könnten</emphasis>
+      Sie <userinput>svn merge
+      -r<replaceable>LAST_UPDATED_REV</replaceable>:HEAD
+      .</userinput> in Ihrer Arbeitskopie verwenden,  um buchstäblich
+      alle Änderungen im Projektarchiv seit Ihrer letzten
+      Aktualisierung hineinzubringen, wenn Sie
+      wollten!</para></footnote> Gewissemaßen reintegrieren Sie Ihren
+      Zweig jedes Mal, wenn Sie <command>svn commit</command>
+      aufrufen. In diesem Sinn haben Anwender von Subversion ständig
+      mit Zweigen und Zusammenführungen zu tun. Angesichts der
+      Ähnlichkeiten der Aktualisierung und Zusammenführung ist es
+      deshalb nicht überraschend, dass die Bereiche in denen
+      Subversion die meisten Schwächen zu haben scheint &ndash;
+      nämlich die Behandlung von Umbenennungen von Dateien und
+      Verzeichnissen sowie, generell, bei Baumkonflikten &ndash;
+      sowohl für die Operationen <command>svn update</command> und
+      <command>svn merge</command> problematisch sind.
+      Unglücklicherweise hat es hierbei <command>svn merge</command>
+      schwerer, da im Gegensatz zum vereinfachten Sonderfall einer
+      Zusammenführungsoperation mit <command>svn update</command> eine
+      echte Zusammenführung in Subversion weder ein besonderer Fall
+      noch vereinfacht ist. Aus diesem Grund verlaufen
+      Zusammenführungen auch wesentlich langsamer als
+      Aktualisierungen, erfordern die explizite Aufzeichnung (über die
+      Eigenschaft <literal>svn:mergeinfo</literal>, die wir in diesem
+      Kapitel erörtert haben) sowie Arithmetik zur
+      Geschichtsbearbeitung und bieten im Allgemeinen viel mehr
+      Angriffsfläche für etwas, das schiefgehen kann.</para>
+
+<!--
+    <para>To branch or not to branch?  Ultimately, that depends on
+      what your team needs in order to find that sweet balance of
+      collaboration and isolation.</para>
+-->
+    <para>Verzweigen oder nicht verzweigen? Letztendlich hängt es
+      davon ab, was Ihr Team benötigt, um das süße Gleichgewicht
+      zwischen Zusammenarbeit und Isolation zu finden.</para>
+
+  </sect1>
+
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
   <sect1 id="svn.branchmerge.summary">
 <!--
     <title>Summary</title>
