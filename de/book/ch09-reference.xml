@@ -9493,27 +9493,42 @@ $ svn status --xml wc
 <!--
           <para>The first variant of this subcommand (without the
             <option>- -relocate</option> option) updates your working
-            copy to point to a new URL&mdash;usually a URL that
-            shares a common ancestor with your working copy, although
-            not necessarily.  This is the Subversion way to
-            make a working copy begin tracking a new branch.  If specified,
-            <replaceable>PEGREV</replaceable> determines in which
-            revision the target is first looked up.  See <xref
-            linkend="svn.branchmerge.switchwc"/> for an in-depth look
-            at switching.</para>
+            copy to point to a new URL.  This is the Subversion way to
+            make a working copy begin tracking a new branch.  If
+            specified, <replaceable>PEGREV</replaceable> determines in
+            which revision the target is first looked up.  See
+            <xref linkend="svn.branchmerge.switchwc"/> for an in-depth
+            look at switching.</para>
 -->
           <para>Die erste Variante dieses Unterbefehls (ohne die
             Option <option>--relocate</option>) aktualisiert Ihre
-            Arbeitskopie so, dass sie auf einen neuen URL zeigt
-            &ndash; normalerweise ein URL, der, allerdings nicht
-            notwendigerweise,  einen gemeinsamen Vorgänger mit Ihrer
-            Arbeitskopie hat. Auf diese Weise lässt Subversion eine
-            Arbeitskopie einen neuen Zweig verfolgen. Wenn
-            <replaceable>PEGREV</replaceable> angegeben wird,
-            bezeichnet es die Revision, bei der das Ziel zuerst
-            gesucht wird. Siehe <xref
-            linkend="svn.branchmerge.switchwc"/> für eine detaillierte
-            Betrachtung des Umschaltens.</para>
+            Arbeitskopie so, dass sie auf einen neuen URL zeigt Auf
+            diese Weise lässt Subversion eine Arbeitskopie einen neuen
+            Zweig verfolgen. Wenn <replaceable>PEGREV</replaceable>
+            angegeben wird, bezeichnet es die Revision, bei der das
+            Ziel zuerst gesucht wird. Siehe
+            <xref linkend="svn.branchmerge.switchwc"/> für eine
+            detaillierte Betrachtung des Umschaltens.</para>
+
+          <note>
+<!--
+            <para>Beginning with Subversion 1.7, the <command>svn
+              switch</command> command will demand by default that the
+              URL to which you are switching your working copy shares
+              a common ancestry with item that the working copy
+              currently reflects.  You can override this behavior by
+              specifying the <option>- -ignore-ancestry</option>
+              option.</para>
+-->
+            <para>Beginnend mit Subversion 1.7 verlangt der Befehl
+              <command>svn switch</command> standardmäßig, dass der
+              URL auf den Sie Ihre Arbeitskopie umstellen, eine
+              gemeinsame Herkunft mit demjenigen teilt, den die
+              Arbeitskopie gegenwärtig widerspiegelt. Dieses Verhalten
+              können Sie durch Angabe der Option
+              <option>--ignore-ancestry</option> außer Kraft
+              setzen.</para>
+          </note>
 
 <!--
           <para>If <option>- -force</option> is used, unversioned
@@ -9563,22 +9578,16 @@ $ svn status --xml wc
             festzulegen.</para>
 
 <!--
-          <para>The <option>- -relocate</option> option causes
-            <command>svn switch</command> to do something different:
-            it updates your working copy to point to <emphasis>the
-            same</emphasis> repository directory, only at a different
-            URL (typically because an administrator has moved the
-            repository to another server, or to another URL on the
-            same server).</para>
+          <para>The <option>- -relocate</option> option is deprecated
+            as of Subversion 1.7.  Use <command>svn relocate</command>
+            (described in <xref linkend="svn.ref.svn.c.relocate" />)
+            to perform working copy relocation instead.</para>
 -->
-          <para>Die Option <option>--relocate</option> veranlasst
-            <command>svn switch</command>, etwas ganz anderes zu
-            machen: es aktualisiert Ihre Arbeitskopie so, dass es auf
-            <emphasis>das gleiche</emphasis> Verzeichnis im Projektarchiv
-            zeigt, allerdings unter einem anderen Projektarchiv-URL
-            (typischerweise weil ein Administrator das Projektarchiv
-            entweder auf einen anderen Server verschoben oder den URL
-            geändert hat).</para>
+          <para>Die Option <option>--relocate</option> ist seit
+            Subversion 1.7 überholt. Verwenden Sie stattdessen
+            <command>svn relocate</command> (in
+            <xref linkend="svn.ref.svn.c.relocate" /> beschrieben),
+            um die Arbeitskopie zu verlagern.</para>
 
         </refsect1>
 
@@ -9590,15 +9599,16 @@ $ svn status --xml wc
 
           <informalexample>
             <screen>
---accept ACTION
---depth ARG
---diff3-cmd CMD
---force
---ignore-externals
---quiet (-q)
---relocate
---revision (-r) REV
---set-depth ARG
+<xref linkend="svn.ref.svn.sw.accept" />
+<xref linkend="svn.ref.svn.sw.depth" />
+<xref linkend="svn.ref.svn.sw.diff3_cmd" />
+<xref linkend="svn.ref.svn.sw.force" />
+<xref linkend="svn.ref.svn.sw.ignore_ancestry" />
+<xref linkend="svn.ref.svn.sw.ignore_externals" />
+<xref linkend="svn.ref.svn.sw.quiet" />
+<xref linkend="svn.ref.svn.sw.relocate" />
+<xref linkend="svn.ref.svn.sw.revision" />
+<xref linkend="svn.ref.svn.sw.set_depth" />
 </screen>
           </informalexample>
         </refsect1>
@@ -9623,8 +9633,7 @@ $ svn status --xml wc
 
           <informalexample>
             <screen>
-$ svn switch http://svn.red-bean.com/repos/branches/vendors-with-fix .
-<!--
+$ svn switch http://svn.red-bean.com/repos/branches/vendors-with-fix .  <!--
 U    myproj/foo.txt
 U    myproj/bar.txt
 U    myproj/baz.c
@@ -9650,8 +9659,7 @@ $ svn switch http://svn.red-bean.com/repos/trunk/vendors .
 U    myproj/foo.txt
 U    myproj/bar.txt
 U    myproj/baz.c
-U    myproj/qux.c
-<!--
+U    myproj/qux.c <!--
 Updated to revision 31.
 -->
 Aktualisiert zu Revision 31.
@@ -9660,128 +9668,23 @@ Aktualisiert zu Revision 31.
 
           <tip>
 <!--
-            <para>You can switch just part of your working copy to a
-              branch if you don't want to switch your entire working
-              copy.</para>
+            <para>You <emphasis>can</emphasis> switch just part of
+              your working copy to a branch if you don't want to
+              switch your entire working copy, but this is not
+              generally recommended.  It's too easy to forget that
+              you've done this and wind up accidentally making and
+              committing changes both to the switched and unswitched
+              portions of your tree.</para>
 -->
-            <para>Sie können auch nur einen Teil Ihrer Arbeitskopie
-              auf einen Zweig umschalten, falls Sie nicht Ihre gesamte
-              Arbeitskopie nehmen wollen.</para>
+            <para>Sie <emphasis>können</emphasis> auch bloß einen Teil
+              Ihrer Arbeitskopie auf einen Zweig umschalten, falls Sie
+              nicht Ihre gesamte Arbeitskopie nehmen wollen, doch wird
+              das generell nicht empfohlen. Es ist viel zu leicht, zu
+              vergessen, dass Sie das getan haben, so dass es damit
+              endet, dass Sie versehentlich Änderungen an die
+              umgeschalteten und originalen Teile Ihres Baums
+              übergeben.</para>
           </tip>
-
-<!--
-          <para>Sometimes an administrator might change the location
-            (or apparent location) of your repository&mdash;in other
-            words, the content of the repository doesn't change, but
-            the repository's root URL does.  For example, the hostname
-            may change, the URL scheme may change, or any part of the
-            URL that leads to the repository itself may change.
-            Rather than check out a new working copy, you can have the
-            <command>svn switch</command> command
-            <quote>rewrite</quote> your working copy's administrative
-            metadata to refer to the new repository location.  If you
-            use the <option>- -relocate</option> option to <command>svn
-            switch</command>, Subversion will contact the repository
-            to validate the relocation request (looking for the
-            repository at the new URL, of course), and then do this
-            metadata rewriting.  No file contents will be changed as
-            the result of this type of switch operation&mdash;this is
-            a metadata-only modification to the working copy.</para>
--->
-          <para>Manchmal kann es vorkommen, dass ein Administrator den
-            Ort (oder den scheinbaren Ort) Ihres Projektarchivs ändert
-            &ndash; mit anderen Worten: der Inhalt des Projektarchivs
-            ändert sich nicht, wohl aber der Wurzel-URL des
-            Projektarchivs. So kann sich beispielsweise der Name des
-            Wirtsrechners, das URL-Schema oder irgend ein Teil des
-            URL, der auf das Projektarchiv zeigt, ändern. Statt eine neue
-            Arbeitskopie auszuchecken, können Sie den Befehl
-            <command>svn switch</command> dazu verwenden, die
-            Metadaten im Verwaltungsbereich Ihrer Arbeitskopie
-            <quote>überschreiben</quote> zu lassen, damit diese auf
-            den neuen Ort des Projektarchivs verweisen. Falls Sie
-            <command>svn switch</command> die Option
-            <option>--relocate</option> mitgeben, nimmt Subversion
-            Verbindung mit dem Projektarchiv auf, um die Gültigkeit der
-            Anfrage zu bestätigen (indem es im Projektarchiv natürlich
-            unter dem neuen URL nachfragt) und anschließend die
-            Metadaten zu überschreiben. Durch diese Operation werden
-            keinerlei Dateiinhalte verändert &ndash; es werden
-            lediglich die Metadaten der Arbeitskopie verändert.</para>
-
-          <informalexample>
-            <screen>
-$ svn checkout file:///var/svn/repos test
-A    test/a
-A    test/b
-&hellip;
-
-$ mv /var/svn/repos /var/svn/newlocation
-
-$ svn update test/
-<!--
-svn: Unable to open an ra_local session to URL
-svn: Unable to open repository 'file:///var/svn/repos'
--->
-svn: Kann keine ra_local-Verbindung zu einer URL aufbauen
-svn: Projektarchiv »file:///var/svn/repos« kann nicht geöffnet werden
-
-$ svn switch --relocate file:///var/svn/repos \
-                        file:///var/svn/tmp/newlocation test/
-
-$ svn update test/
-<!--
-At revision 3.
--->
-Revision 3.
-</screen>
-          </informalexample>
-
-          <warning>
-<!--
-            <para>Be careful when using the
-            <option>- -relocate</option> option.  If you mistype the
-            argument, you might end up creating nonsensical URLs
-            within your working copy that render the whole workspace
-            unusable and tricky to fix.  It's also important to
-            understand exactly when one should or shouldn't use
-            <option>- -relocate</option>.  Here's the rule of
-            thumb:</para>
--->
-            <para>Seien Sie vorsichtig, wenn Sie die Option
-              <option>--relocate</option> verwenden. Falls Sie sich
-              beim Argument vertippen, kann es dazu führen, dass Sie
-              in der Arbeitskopie unsinnige URLs erzeugen, die Ihren
-              Arbeitsbereich unbrauchbar machen, so dass er nur schwer
-              wiederherzustellen ist. Es ist auch wichtig zu
-              verstehen, wann <option>--relocate</option> zu verwenden
-              ist und wann nicht. Hier ist die Faustregel:</para>
-
-            <itemizedlist>
-<!--
-              <listitem><para>If the working copy needs to reflect a
-                  new directory <emphasis>within</emphasis> the
-                  repository, use just <command>svn
-                  switch</command>.</para></listitem>
--->
-              <listitem><para>Falls die Arbeitskopie ein neues
-                Verzeichnis <emphasis>innerhalb</emphasis> des
-                Projektarchivs repräsentieren soll, verwenden Sie nur
-                <command>svn switch</command>.</para></listitem>
-
-<!--
-              <listitem><para>If the working copy still reflects the
-                  same repository directory, but the location of the
-                  repository itself has changed, use <command>svn
-                  switch</command> with the <option>- -relocate</option> option.</para></listitem>
--->
-              <listitem><para>Falls die Arbeitskopie das gleiche
-                Verzeichnis im Projektarchiv repräsentiert, sich jedoch
-                der Ort des Projektarchivs selbst geändert hat, verwenden
-                Sie <command>svn switch</command> mit der Option
-                <option>--relocate</option>.</para></listitem>
-            </itemizedlist>
-          </warning>
 
         </refsect1>
       </refentry>
