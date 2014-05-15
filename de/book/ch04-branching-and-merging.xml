@@ -2377,7 +2377,7 @@ Revision 393 übertragen.
 <!--
       <title>Mergeinfo and Previews</title>
 -->
-      <title>Zusammenführungs-Information und Vorschauen</title>
+      <title>Mergeinfo und Vorschauen</title>
 
 <!--
       <para>The basic mechanism Subversion uses to track
@@ -2446,10 +2446,10 @@ $
           einem einzelnen Pfad kann recht groß werden, so wie die
           Ausgabe eines <command>svn propget --recursive</command>
           oder <command>svn proplist --recursive</command> falls man
-          es mit umfangreichen Informationen zur Zusammenführung auf
-          Teilbäumen zu tun hat, siehe
-          <xref linkend="svn.branchemerge.basicmerging.stayinsync.subtree"/>
-          . Die durch die Option <option>--verbose</option> erzeugte
+          es mit umfangreicher Mergeinfo auf Teilbäumen zu tun hat,
+          siehe
+          <xref linkend="svn.branchemerge.basicmerging.stayinsync.subtree"/>.
+          Die durch die Option <option>--verbose</option> erzeugte
           formatierte Ausgabe mit jedem dieser Unterbefehle ist in
           diesen Fällen oft sehr hilfreich.</para>
       </tip>
@@ -2492,21 +2492,21 @@ $
         <filename>/branches/my-calc-branch</filename> das
         Zielverzeichnis. Frühere Versionen von Subversion pflegten die
         Eigenschaft <literal>svn:mergeinfo</literal> im Hintergrund.
-        Sie konnten die Änderungen nach einer abgeschlossenen
-        Zusammenführung mit <command>svn diff</command> oder
-        <command>svn status</command> zwar entdecken, doch gab die
-        eigentliche Zusammenführung keinerlei Hinweis, dass sie die
-        Eigenschaft <literal>svn:mergeinfo</literal> geändert hat. In
-        Subversion 1.7 stimmt das nicht mehr, da es verschiedene neue
-        Mitteilungen vorhält, um Sie zu benachrichtigen, wenn eine
-        Zusammenführung die Eigenschaft
-        <literal>svn:mergeinfo</literal> ändert. Diese Mitteilungen
-        beginnen alle mit <quote>-- Aufzeichnung der Informationen für
+        Sie konnten die Änderungen nach einem abgeschlossenen
+        Merge mit <command>svn diff</command> oder <command>svn
+        status</command> zwar entdecken, doch gab die eigentliche
+        Zusammenführung keinerlei Hinweis, dass sie die Eigenschaft
+        <literal>svn:mergeinfo</literal> geändert hat. In Subversion
+        1.7 stimmt das nicht mehr, da es verschiedene neue
+        Mitteilungen vorhält, um Sie zu benachrichtigen, wenn ein
+        Merge die Eigenschaft <literal>svn:mergeinfo</literal>
+        ändert. Diese Mitteilungen beginnen alle mit
+        <quote>-- Aufzeichnung der Informationen für
         Zusammenführung</quote> und tauchen am Ende einer
         Zusammenführung auf. Im Gegensatz zu anderen Mitteilungen bei
-        Zusammenführungen beschreiben diese kein Anwenden eines Diffs
-        auf eine Arbeitskopie
-        (siehe <xref linkend="svn.branchmerge.advanced.advancedsyntax"/>),
+        Merges beschreiben diese kein Anwenden eines Diffs auf eine
+        Arbeitskopie (siehe
+        <xref linkend="svn.branchmerge.advanced.advancedsyntax"/>),
         sondern Änderungen zur Buchhaltung, um festzuhalten, was
         zusammengeführt wurde.</para>
 
@@ -2583,13 +2583,13 @@ $
 <!--
         <title>Mergeinfo Inheritance</title>
 -->
-        <title>Vererbung der Zusammenführungs-Information</title>
+        <title>Vererbung von Mergeinfo</title>
 
         <indexterm>
 <!--
           <primary>mergeinfo inheritance</primary>
 -->
-          <primary>Vererbung von Zusammenführungs-Information</primary>
+          <primary>Vererbung von Mergeinfo</primary>
         </indexterm>
 
 <!--
@@ -2603,19 +2603,18 @@ $
 -->
         <para>Besitzt ein Pfad die gesetzte Eigenschaft
           <literal>svn:mergeinfo</literal>, sagen wir, er hat 
-          <firstterm>explizite Informationen zur
-          Zusammenführung</firstterm>. Diese expliziten Informationen
-          beschreiben nicht nur, welche Änderungen in dieses bestimmte
-          Verzeichnis gebracht worden sind, sondern auch in welche
-          Kindverzeichnisse desselben (da diese Kinder die
-          Informationen ihres Elternpfades erben). Zum
+          <firstterm>explizite Mergeinfo</firstterm>. Diese expliziten
+          Informationen beschreiben nicht nur, welche Änderungen in
+          dieses bestimmte Verzeichnis gebracht worden sind, sondern
+          auch in welche Kindverzeichnisse desselben (da diese Kinder
+          die Informationen ihres Elternpfades erben). Zum
           Beispiel:</para>
 
         <informalexample>
           <screen> <!--
 # What explicit mergeinfo exists on a branch?
 -->
-# Welche expliziten Zusammenführungs-Informationen gibt es auf dem Zweig?
+# Welche expliziten Mergeinfo gibt es auf dem Zweig?
 $ svn propget svn:mergeinfo ^/branches/proj-X --recursive
 /trunk:651-652
 <!--
@@ -2630,7 +2629,7 @@ src/main.c
 <!--
 # Ask what revs were merged to a file with no explicit mergeinfo
 -->
-# Frage nach den Revisionen, die ohne explizite Zusammenführungs-Informationen
+# Frage nach den Revisionen, die ohne explizite Mergeinfo
 # in eine Datei eingepflegt wurden
 $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
 651
@@ -2654,18 +2653,16 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
         <para>Beachten Sie, dass bei unserem ersten Unterbefehl
           lediglich die Wurzel von
           <filename>/branches/proj-X</filename> überhaupt explizite
-          Zusammenführungs-Information hat. Dennoch, wenn wir
-          <command>svn mergeinfo</command> aufrufen, um nachzusehen,
-          was in <filename>/branches/proj-X/src/main.c</filename>
-          eingepflegt wurde,  werden die zwei Revisionen aus der
-          expliziten Information von
-          <filename>/branches/proj-X</filename> angezeigt. Das liegt
-          daran, weil
+          Mergeinfo besitzt. Dennoch, wenn wir <command>svn
+          mergeinfo</command> aufrufen, um nachzusehen, was in
+          <filename>/branches/proj-X/src/main.c</filename> eingepflegt
+          wurde,  werden die zwei Revisionen aus der expliziten
+          Information von <filename>/branches/proj-X</filename>
+          angezeigt. Das liegt daran, weil
           <filename>/branches/proj-X/src/main.c</filename>, das
-          keinerlei eigene Zusammenführungs-Informationen besitzt, die
-          Informationen des nächsten Elternteils mit expliziten
-          Informationen erbt, nämlich
-          <filename>/branches/proj-X</filename>.</para>
+          keinerlei eigene Mergeinfo besitzt, die Informationen des
+          nächsten Elternteils mit expliziten Informationen erbt,
+          nämlich <filename>/branches/proj-X</filename>.</para>
 
 <!--
         <para>There are two cases in which mergeinfo is not inherited.
@@ -2681,26 +2678,24 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
           files). For example:</para>
 -->
         <para>In zwei Fällen werden die Informationen nicht vererbt.
-          Erstens, sofern ein Pfad explizite
-          Zusammenführungs-Informationen besitzt, erbt er sie nie. Auf
-          eine andere Art betrachtet, handelt es sich
-          dabei um eine vollständige Aufzeichnung der
-          Zusammenführungen auf diesen Pfad, die, sobald sie
-          existiert, jegliche eventuell zu erbende Information
-          überschreibt. Der zweite Fall liegt vor, wenn es um
-          nichterbliche Zusammenführungs-Informationen geht, einer
+          Erstens, sofern ein Pfad explizite Mergeinfo besitzt, erbt
+          er sie nie. Auf eine andere Art betrachtet, handelt es sich
+          dabei um eine vollständige Aufzeichnung der Merges auf
+          diesen Pfad, die, sobald sie existiert, jegliche eventuell
+          zu erbende Information überschreibt. Der zweite Fall liegt
+          vor, wenn es um nichterbliche Mergeinfo geht, einer
           besonderen Art der expliziten Informationen, die
           <emphasis>nur</emphasis> auf das Verzeichnis anwendbar ist,
           bei dem die Eigenschaft <literal>svn:mergeinfo</literal>
           gesetzt ist (und nur bei Verzeichnissen; nichterbliche
-          Zusammenführungs-Informationen wird nie an Dateien gesetzt).
-          Zum Beispiel:</para>
+          Mergeingo wird nie an Dateien gesetzt).  Zum
+          Beispiel:</para>
 
         <informalexample>
           <screen> <!--
 # The '*' decorator indicates non-inheritable mergeinfo
 -->
-"*" markiert nichterbliche Zusammenführungs-Informationen
+"*" markiert nichterbliche Mergeinfo
 $ svn propget svn:mergeinfo ^/branches/proj-X
 /trunk:651-652,758*
 <!--
@@ -2736,16 +2731,13 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
           <xref linkend="svn.branchmerge.advanced.finalword"/></para>
 -->
         <para>Es mag sein, dass Sie sich niemals Gedanken über die
-          Vererbung von Informationen zur Zusammenführung machen
-          müssen oder Ihnen nichterbliche
-          Zusammenführungs-Informationen in Ihrem Projektarchiv
-          begegnen. Eine Erörterung der vollständigen Auswirkungen der
-          Vererbung von Zusammenführungs-Informationen würden den
-          Rahmen dieses Buches sprengen. Sollten Sie weitere Fragen
-          haben, schauen Sie einige der in
+          Vererbung von Mergeinfo machen müssen oder Ihnen
+          nichterbliche Mergeinfo in Ihrem Projektarchiv begegnen.
+          Eine Erörterung der vollständigen Auswirkungen der Vererbung
+          von Mergeinfo würden den Rahmen dieses Buches sprengen.
+          Sollten Sie weitere Fragen haben, schauen Sie einige der in
           <xref linkend="svn.branchmerge.advanced.finalword"/>
-          aufgeführten Referenzen an.</para>
-      </sidebar>
+          aufgeführten Referenzen an.</para> </sidebar>
 
 <!--
       <para>With the release of Subversion 1.7, the
@@ -2756,10 +2748,9 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
         is considered by default.</para>
 -->
       <para>Mit dem Erscheinen von Subversion 1.7 kann der Unterbefehl
-        <command>svn mergeinfo</command> auch Informationen zur
-        Zusammenführung auf Teilbäumen und nichterbliche Informationen
-        berücksichtigen. Teilbaum-Informationen werden durch die
-        Optionen <option>--recursive</option> oder
+        <command>svn mergeinfo</command> auch Teilbaum-Mergeinfo und
+        nichterbliche Mergeinfo berücksichtigen. Teilbaum-Mergeinfo
+        werden durch die Optionen <option>--recursive</option> oder
         <option>--depth</option> berücksichtigt, während nichterbliche
         standardmäßig beachtet wird.</para>
 
@@ -2768,7 +2759,7 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
         non-inheritable mergeinfo:</para>
 -->
       <para>Angenommen, wir haben einen Zweig sowohl mit Teilbaum- als
-        auch nichterblichen Zusammenführungs-Informationen:</para>
+        auch nichterblichen Mergeinfo:</para>
 
         <informalexample>
           <screen>
@@ -2776,14 +2767,14 @@ $ svn propget svn:mergeinfo --recursive -v <!--
 # Non-inheritable mergeinfo
 Properties on '.':
 -->
-# Nichterbliche Zusammenführungs-Informationen
+# Nichterbliche Mergeinfo
 Eigenschaften zu ».«
   svn:mergeinfo
     /trunk:651-652,758* <!--
 # Subtree mergeinfo
 Properties on 'doc/INSTALL':
 -->
-# Zusammenführungs-Informationen für Teilbaum
+# Teilbaum-Mergeinfo
 Eigenschaften zu »doc/INSTALL«
   svn:mergeinfo
     /trunk/doc/INSTALL:651-652,958,1060
@@ -2847,12 +2838,12 @@ $ svn mergeinfo --show-revs=merged ^/trunk . --recursive
         <emphasis>nicht</emphasis> mit <literal>*</literal> markiert
         ist, dass nur <filename>doc/INSTALL</filename> betroffen ist,
         und der Versuch, sie einzupflegen, keine Auswirkung
-        hätte.<footnote><para>Das wird häufig eine
-        <quote>unwirksame</quote> Zusammenführung genannt. Obwohl in
-        diesem Beispiel das Zusammenführen von r1060 etwas bewirkte:
-        es würde die Informationen zur Zusammenführung an der Wurzel
-        des Zweigs aktualisieren, jedoch hinsichtlich der Anwendung
-        eines Diffs unwirksam sein.</para></footnote></para>
+        hätte.<footnote><para>Das wird häufig
+        <quote>unwirksamer</quote> Merge genannt. Obwohl in diesem
+        Beispiel das Zusammenführen von r1060 etwas bewirkte: es würde
+        die Mergeinfo an der Wurzel des Zweigs aktualisieren, jedoch
+        hinsichtlich der Anwendung eines Diffs unwirksam
+        sein.</para></footnote></para>
 
 <!--
       <para>Another way to get a more precise preview of a merge
@@ -2887,7 +2878,7 @@ $ svn status <!--
         when running <command>svn diff</command> gives too much
         detail.</para>
 -->
-      <para>Die Option <option>--dry-run</option> macht tatsächlich
+        <para>Die Option <option>--dry-run</option> macht tatsächlich
         überhaupt keine lokalen Änderungen an der Arbeitskopie. Sie
         zeigt nur Status-Codes, die ausgegeben
         <emphasis>würden</emphasis>, wenn ein echter Abgleich
@@ -2909,16 +2900,15 @@ $ svn status <!--
           merge operation, which will remind you about what you've
           just merged.</para>
 -->
-        <para>Nach dem Durchführen eines Abgleichs, aber vor der
-          Übergabe des Ergebnisses, können Sie <userinput>svn diff
-          --depth=empty
+        <para>Nach dem Merge, aber vor der Übergabe des Ergebnisses,
+          können Sie <userinput>svn diff --depth=empty
           <replaceable>/pfad/zum/abgleichs/ziel</replaceable></userinput>
           verwenden, um nur die Änderungen am unmittelbaren Ziel des
-          Abgleichs zu sehen. Falls das Ziel ein Verzeichnis war,
+          Merges zu sehen. Falls das Ziel ein Verzeichnis war,
           werden nur Unterschiede von Eigenschaften angezeigt. Das ist
           eine praktische Methode, um sich die Änderungen an der
           Eigenschaft <literal>svn:mergeinfo</literal> anzusehen, die
-          dort durch den Abgleich vermerkt wurden, und die Sie daran
+          dort durch den Merge vermerkt wurden, und die Sie daran
           erinnern, was Sie eben abgeglichen haben.</para>
       </tip>
 
@@ -2935,7 +2925,7 @@ $ svn status <!--
         actually <command>svn commit</command> the results.</para>
 -->
       <para>Natürlich ist die beste Methode, eine Vorschau eines
-        Abgleichs zu erhalten, ihn zu machen! Denken Sie daran, dass
+        Merges zu erhalten, ihn zu machen! Denken Sie daran, dass
         der Aufruf von <command>svn merge</command> an sich nichts
         Riskantes ist (es sei denn, sie haben lokale Änderungen an
         Ihrer Arbeitskopie gemacht &ndash; aber wir haben bereits
@@ -3478,7 +3468,7 @@ Aktualisiert zu Revision 1390.
         sich auch darauf beziehen, eine bestimmte Menge von (nicht
         notwendigerweise angrenzenden) Änderungsmengen von einem auf
         einen anderen Zweig zu duplizieren. Dies steht im Gegensatz zu
-        den üblicheren Zusammenführungs-Szenarien, bei denen der
+        den üblicheren Merge-Szenarien, bei denen der
         <quote>nächste</quote> zusammenhängende Bereich von Revisionen
         automatisch dupliziert wird.</para>
 
@@ -3572,10 +3562,9 @@ M       integer.c
         diese Änderung an den Zweig übergeben. Nach der Übergabe merkt
         sich Subversion, dass r355 mit dem Zweig zusammengeführt
         wurde, so dass künftige <quote>magische</quote>
-        Zusammenführungen, die Ihren Zweig mit dem Stamm
-        synchronisieren, r355 überspringen. (Das Zusammenführen
-        derselben Änderung auf denselben Zweig führt fast immer zu
-        einem Konflikt!)</para>
+        Merges, die Ihren Zweig mit dem Stamm synchronisieren, r355
+        überspringen. (Das Mergen derselben Änderung auf
+        denselben Zweig führt fast immer zu einem Konflikt!)</para>
 
       <informalexample>
         <screen>
@@ -3587,7 +3576,7 @@ $ svn propget svn:mergeinfo .
 # Notice that r355 isn't listed as "eligible" to merge, because
 # it's already been merged.
 -->
-# Beachten Sie, dass r355 nicht als Zusammenführungs-Kandidat aufgeführt wird
+# Beachten Sie, dass r355 nicht als Merge-Kandidat aufgeführt wird,
 # da es bereits zusammengeführt wurde.
 $ svn mergeinfo ^/calc/trunk --show-revs eligible
 r350
@@ -3663,13 +3652,12 @@ U    button.c
           Konfliktauflösung komplizierter zu machen. Falls das erste
           Änderungsintervall Konflikte erzeugt,
           <emphasis>müssen</emphasis> Sie diese interaktiv auflösen,
-          um die Zusammenführung fortzusetzen und das zweite
-          Änderungsintervall anzuwenden. Wenn Sie die
-          Konfliktauflösung der ersten Phase aufschieben, wird der
-          komplette Zusammenführungsbefehl mit einer Fehlermeldung
-          abbrechen.<footnote><para>Zumindest trifft das zur Zeit für
-          Subversion 1.7 zu.  Dieses Verhalten könnte sich in
-          künftigen Versionen von Subversion
+          um dwn Merge fortzusetzen und das zweite Änderungsintervall
+          anzuwenden. Wenn Sie die Konfliktauflösung der ersten Phase
+          aufschieben, wird der komplette Merge-Befehl mit einer
+          Fehlermeldung abbrechen.<footnote><para>Zumindest trifft das
+          zur Zeit für Subversion 1.7 zu.  Dieses Verhalten könnte
+          sich in künftigen Versionen von Subversion
           verbessern.</para></footnote></para>
   </warning>
 
@@ -3944,8 +3932,8 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
       <para>Obwohl das erste Beispiel die <quote>vollständige</quote>
         Syntax von <command>svn merge</command> zeigt, verwenden Sie
         sie sehr sorgfältig; es können hierbei
-        Zusammenführungen entstehen, bei denen keinerlei
-        <literal>svn:mergeinfo</literal> Metadaten aufgezeichnet
+        Merges entstehen, bei denen keinerlei
+        <literal>svn:mergeinfo</literal>-Metadaten aufgezeichnet
         werden. Der nächste Abschnitt geht näher darauf ein.</para>
 
     </sect2>
@@ -3955,7 +3943,7 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
 <!--
       <title>Merges Without Mergeinfo</title>
 -->
-      <title>Zusammenführen ohne Zusammenführungs-Informationen</title>
+      <title>Mergen ohne Mergeinfo</title>
 
 <!--
       <para>Subversion tries to generate merge metadata whenever it
@@ -3994,8 +3982,8 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
               erzeugt und auf die Arbeitskopie angewendet, allerdings
               werden keine Metadaten erzeugt. Es gibt keine gemeinsame
               Geschichte der zwei Quellen, und spätere
-              <quote>schlaue</quote> Zusammenführungen hängen von
-              dieser gemeinsamen Geschichte ab.</para>
+              <quote>kluge</quote> Merges hängen von dieser
+              gemeinsamen Geschichte ab.</para>
           </listitem>
         </varlistentry>
 
@@ -4043,11 +4031,11 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
               <xref linkend="svn.branchmerge.advanced.ancestry"/>.</para>
 -->
           <para>Wenn diese Option an <command>svn merge</command>
-            übergeben wird, veranlasst das die Zusammenführungs-Logik,
-            ohne nachzudenken Unterschiede auf dieselbe Art zu
-            erzeugen, wie es <command>svn diff</command> macht, und
-            ignoriert dabei irgendwelche historischen Verbindungen.
-            Wir werden das später in diesem Kapitel in
+            übergeben wird, veranlasst das die Merge-Logik, ohne
+            nachzudenken Unterschiede auf dieselbe Art zu erzeugen,
+            wie es <command>svn diff</command> macht, und ignoriert
+            dabei irgendwelche historischen Verbindungen.  Wir werden
+            das später in diesem Kapitel in
             <xref linkend="svn.branchmerge.advanced.ancestry"/>
             erörtern.</para>
           </listitem>
@@ -4089,12 +4077,12 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
               <userinput>svn merge . -c -5</userinput> rückgängig
               machen), hat dies keine Auswirkungen auf die
               aufgezeichneten
-              Zusammenführungs-Informationen.<footnote><para>Interessanterweise
-              werden wir nach dem Zurücknehmen einer Revision auf
-              diese Art nicht in der Lage sein, diese Revision erneut
-              mit <userinput>svn merge . -c 5</userinput> anzuwenden,
-              da aus den Metadaten hervorgeht, dass r5 bereits
-              angewendet wurde. Wir müssten die Option
+              Mergeinfo.<footnote><para>Interessanterweise werden wir
+              nach dem Zurücknehmen einer Revision auf diese Art nicht
+              in der Lage sein, diese Revision erneut mit
+              <userinput>svn merge . -c 5</userinput> anzuwenden, da
+              aus den Metadaten hervorgeht, dass r5 bereits angewendet
+              wurde. Wir müssten die Option
               <option>--ignore-ancestry</option> verwenden, damit der
               Befehl die bestehenden Metadaten
               ignoriert.</para></footnote></para>
@@ -4111,7 +4099,7 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
 <!--
         <title>Natural History and Implicit Mergeinfo</title>
 -->
-        <title>Natürliche Historie und implizite Zusammenführungs-Information</title>
+        <title>Natürliche Historie und implizite Mergeinfo</title>
 
 <!--
         <para>As we mentioned earlier when discussing
@@ -4130,19 +4118,18 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
         <para>Wie wir bei der Erörterung von
           <xref linkend="svn.branchmerge.basicmerging.mergeinfo.inheritance"/>
           bereits erwähnten, sagt man, dass ein Pfad mit der gesetzten
-          Eigenschaft <literal>svn:mergeinfo</literal> 
-          <quote>explizite</quote> Zusammenführungs-Information
-          besitzt. Ja, das bedeutet, dass ein Pfad auch
-          <quote>implizite</quote> Zusammenführungs-Information haben
-          kann! Implizite Zusammenführungs-Information, oder
+          Eigenschaft <literal>svn:mergeinfo</literal>
+          <quote>explizite</quote> Mergeinfo besitzt. Ja, das
+          bedeutet, dass ein Pfad auch <quote>implizite</quote>
+          Mergeinfo haben kann! Implizite Mergeinfo oder
           <firstterm>natürliche Historie</firstterm>, ist einfach die
           dem Pfad eigene Historie (siehe
           <xref linkend="svn.tour.history" />) die als Information zur
           Verfolgung von Zusammenführungen interpretiert wird. Obwohl
-          es sich bei impliziter Zusammenführungs-Information
-          größtenteils um Details der Implementierung handelt, kann es
-          als nützliche Abstraktion für das Verstehen des Verhaltens
-          der Zusammenführungsverfolgung dienen.</para>
+          es sich bei impliziter Mergeinfo größtenteils um Details der
+          Implementierung handelt, kann es als nützliche Abstraktion
+          für das Verstehen des Verhaltens der
+          Zusammenführungsverfolgung dienen.</para>
 
 <!--
         <para>Let's say you created <filename>^/trunk</filename> in
@@ -4182,12 +4169,11 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
 -->
         <para>Mit jeder dem Projektarchiv hinzugefügten neuen Revision
           wird die natürliche Historie &ndash; und somit die implizite
-          Zusammenführungs-Information &ndash; des Zweigs durch diese
-          Revisionen stetig erweitert, bis zu dem Tag, an dem der
-          Zweig gelöscht wird. So würde die implizite
-          Zusammenführungs-Information unseres Zweiges aussehen, wenn
-          die <literal>HEAD</literal>-Revision des Projektarchivs bis
-          auf 234 angewachsen wäre:</para>
+          Mergeinfo &ndash; des Zweigs durch diese Revisionen stetig
+          erweitert, bis zu dem Tag, an dem der Zweig gelöscht wird.
+          So würde die implizite Mergeinfo unseres Zweiges aussehen,
+          wenn die <literal>HEAD</literal>-Revision des Projektarchivs
+          bis auf 234 angewachsen wäre:</para>
 
         <informalexample>
           <literallayout>
@@ -4210,10 +4196,10 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
           changes <emphasis>is</emphasis> the primary goal of
           Subversion's merge tracking feature!</para>
 -->
-        <para>Implizite Zusammenführungs-Information taucht nicht
-          wirklich in der Eigenschaft <literal>svn:mergeinfo</literal>
-          auf, doch Subversion handelt so, als tauchte sie dort auf.
-          Das ist der Grund dafür, dass nichts passiert, wenn Sie 
+        <para>Implizite Mergeinfo taucht nicht wirklich in der
+          Eigenschaft <literal>svn:mergeinfo</literal> auf, doch
+          Subversion handelt so, als tauchte sie dort auf.  Das ist
+          der Grund dafür, dass nichts passiert, wenn Sie
           <filename>^/branches/feature-branch</filename> auschecken
           und dann <userinput>svn merge ^/trunk -c 58</userinput> in
           der so erstellten Arbeitskopie aufrufen. Subversion weiß,
@@ -4222,8 +4208,8 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
           des Ziels vorhanden sind, so dass sie nicht erneut
           zusammengeführt werden müssen. Letzten Endes
           <emphasis>ist</emphasis> es das primäre Ziel der
-          Zusammenführungsverfolgungs-Funktionalität von Subversion,
-          unnötige Zusammenführungen zu vermeiden!</para>
+          Merge-Verfolgungs-Funktionalität von Subversion, unnötige
+          Zusammenführungen zu vermeiden!</para>
 
       </sidebar>
 
@@ -4573,12 +4559,11 @@ $ svn commit -m "Das Zusammenführen von r3328 mit dem Zweig verhindern."
 -->
       <para>Beginnend mit Subversion 1.7 sind Zusammenführungen mit
         <option>--record-only</option> transitiv. Das bedeutet, dass
-        zusätzlich zur Aufzeichnung der
-        Zusammenführungs-Informationen, die die blockierte(n)
-        Revision(en) beschreiben, alle Unterschiede der Eigenschaft
-        <literal>svn:mergeinfo</literal> der Quelle ebenfalls
-        angewendet werden. Sagen wir zum Beispiel mal, dass wir die
-        Zusammenführung der "Frazzle"-Funktionalität von
+        zusätzlich zur Aufzeichnung der Mergeinfo die die
+        blockierte(n) Revision(en) beschreiben, alle Unterschiede der
+        Eigenschaft <literal>svn:mergeinfo</literal> der Quelle
+        ebenfalls angewendet werden. Sagen wir zum Beispiel mal, dass
+        wir die Zusammenführung der "Frazzle"-Funktionalität von
         <filename>^/trunk</filename> mit unserem
         <filename>^/branches/proj-X</filename> Zweig für immer
         blockieren möchten. Wir wissen, dass die gesamte Arbeit an
@@ -4651,14 +4636,14 @@ Modifiziert: svn:mergeinfo
         da jemand r996:1003 direkt von
         <filename>^/branches/frazzle-feature-branch</filename>
         zusammenführen könnte. Glücklicherweise wird das durch die
-        transitive Natur der Zusammenführungen mit
-        <option>--record-only</option> in Subversion 1.7 verhindert:
-        die Zusammenführung mit <option>--record-only</option> wendet
-        den <literal>svn:mergeinfo</literal>-Diff von Revision 1055
-        an, und blockiert somit sowohl direkte Zusammenführungen vom
-        frazzle-Zweig <emphasis>als auch</emphasis>, wie es vor
-        Subversion 1.7 schon immer war, Zusammenführungen der Revision
-        1055 direkt von <filename>^/trunk</filename>:</para>
+        transitive Natur der Merges mit <option>--record-only</option>
+        in Subversion 1.7 verhindert: die Zusammenführung mit
+        <option>--record-only</option> wendet den
+        <literal>svn:mergeinfo</literal>-Diff von Revision 1055 an,
+        und blockiert somit sowohl direkte Merges vom frazzle-Zweig
+        <emphasis>als auch</emphasis>, wie es vor Subversion 1.7 schon
+        immer war, Merges der Revision 1055 direkt von
+        <filename>^/trunk</filename>:</para>
 
       <informalexample>
         <screen>
@@ -4765,7 +4750,7 @@ Geändert: svn:mergeinfo
         Änderungen an dem Zweig beinhalten. Vor der Reintegration des
         Zweigs zurück auf die Hauptentwicklungslinie haben Sie eine
         abschließende Zusammenführung von dort auf Ihren Zweig
-        vollzogen und das Ergebnis dieser Zusammenführung als Revision
+        vollzogen und das Ergebnis dieser Merges als Revision
         <emphasis>B</emphasis> übertragen.</para>
 
 <!--
@@ -4799,8 +4784,8 @@ Geändert: svn:mergeinfo
         Hauptentwicklungslinie mit Ihrem Zweig zusammenzuführen, wird
         Subversion die in Revision <emphasis>X</emphasis>
         vorgenommenen Änderungen als Kandidaten für die
-        Zusammenführung betrachten. Da Ihr Zweig jedoch bereits alle
-        in Revision <emphasis>X</emphasis> vorgenommenen Änderungen
+        Merges betrachten. Da Ihr Zweig jedoch bereits alle in
+        Revision <emphasis>X</emphasis> vorgenommenen Änderungen
         enthält, kann das Zusammenführen dieser Änderungen
         fälschlicherweise zu Konflikten führen! Bei diesen Konflikten
         handelt es sich oft um Baumkonflikte, besonders dann, wenn
@@ -4817,8 +4802,8 @@ Geändert: svn:mergeinfo
       <para>Wie soll also damit umgegangen werden? Wir müssen
         sicherstellen, dass Subversion nicht versucht, die Revision
         <emphasis>X</emphasis> mit dem Zweig zusammenzuführen. Das
-        wird mit der Zusammenführungs-Option
-        <option>--record-only</option> erreicht, die in
+        wird mit der Merge-Option <option>--record-only</option>
+        erreicht, die in
         <xref linkend="svn.branchmerge.advanced.blockchanges"/>
         vorgestellt wurde.</para>
 
@@ -4844,8 +4829,8 @@ Geändert: svn:mergeinfo
         <xref linkend="svn.branchemerge.basicmerging.reintegrate"/>,
         where revision <emphasis>X</emphasis> was revision 391:</para>
 -->
-      <para>Diese Zusammenführung verwendet die Syntax zum
-        Herauspicken der Rosinen, wie sie in
+      <para>Dieser Merge verwendet die Syntax zum Herauspicken der
+        Rosinen, wie sie in
         <xref linkend="svn.branchmerge.cherrypicking"/> vorgestellt
         wurde. Um mit dem aktuellen Beispiel aus
         <xref linkend="svn.branchemerge.basicmerging.reintegrate"/>
@@ -4892,9 +4877,9 @@ Revision 394 übertragen.
         Hauptentwicklungslinie aufzunehmen. Nach einer weiteren
         Synchronisierung Ihres Zweigs auf die Hauptentwicklungslinie
         können Sie sogar ein zweites Mal Ihren Zweig reintegrieren.
-        Falls notwendig, können Sie eine weitere, nur vermerkte
-        Zusammenführung machen, um den Zweig am Leben zu erhalten.
-        Spülen und wiederholen.</para>
+        Falls notwendig, können Sie einen weiteren, nur vermerkten
+        Merge machen, um den Zweig am Leben zu erhalten.  Spülen und
+        wiederholen.</para>
 
 <!--
       <para>It should now also be apparent why deleting the branch and
@@ -5055,8 +5040,8 @@ Letzte Zusammenführung der Änderungen von trunk changes in my-calc-branch.
         changes that were part of the merge.</para>
 -->
       <para>Wir wissen, dass diese Zusammenführung in den Zweig nichts
-        anderes war als eine Zusammenführung von Änderungen vom Stamm.
-        Wie können wir zusätzlich diese Änderungen sehen? Die Antwort
+        anderes war als ein Merge von Änderungen vom Stamm.  Wie
+        können wir zusätzlich diese Änderungen sehen? Die Antwort
         lautet, die Option <option>--use-merge-history</option>
         (<option>-g</option>) zu verwenden. Diese Option expandiert
         diejenigen <quote>Teil</quote>-Änderungen, aus denen die
@@ -5078,7 +5063,7 @@ Geänderte Pfade:
    M /branches/my-calc-branch/button.c
    M /branches/my-calc-branch/README
 
-Letzte Zusammenführung der Änderungen von trunk changes in my-calc-branch.
+Letzte Zusammenführung der Änderungen von trunk in my-calc-branch.
 ------------------------------------------------------------------------ <!--
 r383 | sally | 2002-11-21 03:19:00 -0600 (Thu, 21 Nov 2002) | 2 lines
 Changed paths:
@@ -5528,10 +5513,10 @@ U    .  <!--
         Zusammenführung ist, wird dem Projektarchiv nichts über die
         duplizierten Änderungen mitgeteilt &ndash; diese Information
         ist verloren. Wenn später Clients, die
-        Zusammenführungs-Informationen auswerten, automatische
-        Zusammenführungen versuchen, werden Sie wahrscheinlich in alle
-        möglichen Konflikte laufen, die durch wiederholte
-        Zusammenführungen hervorgerufen wurden.</para>
+        Mergeinfo auswerten, automatische
+        Merges versuchen, werden Sie wahrscheinlich in alle
+        möglichen Konflikte laufen, die durch wiederholtes
+        Mergeb hervorgerufen wurden.</para>
 
 <!--
       <para>If you and your team are relying on the merge-tracking
@@ -5547,8 +5532,8 @@ U    .  <!--
         <xref linkend="svn.branchmerge.advanced.hook-ex1" /> gives an
         example of such a hook script:</para>
 -->
-      <para>Wenn Sie und Ihr Team auf die Zusammenführungs-Verfolgung
-        von Subversion angewiesen sind, sollten Sie Ihr Projektarchiv
+      <para>Wenn Sie und Ihr Team auf die Merge-Verfolgung von
+        Subversion angewiesen sind, sollten Sie Ihr Projektarchiv
         dergestalt konfigurieren, dass ältere Clients daran gehindert
         werden, Änderungen zu übergeben. Die einfache Methode hierfür
         ist es, den <quote>Fähigkeiten</quote>-Parameter im
@@ -5592,7 +5577,7 @@ sys.exit(0)
 -->
 
       <example id="svn.branchmerge.advanced.hook-ex1">
-        <title>Hook-Skript zum Start der Übertragung als Torwächter für die Zusammenführungs-Verfolgung</title>
+        <title>Hook-Skript zum Start der Übertragung als Torwächter für die Merge-Verfolgung</title>
 
         <programlisting>
 #!/usr/bin/env python
@@ -5637,7 +5622,7 @@ sys.exit(0)
 <!--
       <title>The Final Word on Merge Tracking</title>
 -->
-      <title>Das abschließende Wort zur Zusammenführungs-Verfolgung</title>
+      <title>Das abschließende Wort zur Merge-Verfolgung</title>
 
 <!--
       <para>The bottom line is that Subversion's merge-tracking
@@ -5646,8 +5631,8 @@ sys.exit(0)
         window the user has into the machinery.</para>
 -->
       <para>Unter dem Strich bedeutet das, dass die Fähigkeit von
-        Subversion zur Zusammenführungs-Verfolgung eine höchst
-        komplexe interne Implementierung besitzt und die Eigenschaft
+        Subversion zur Merge-Verfolgung eine höchst komplexe interne
+        Implementierung besitzt und die Eigenschaft
         <literal>svn:mergeinfo</literal> das einzige Fenster zu diesem
         Räderwerk ist.</para>
 
@@ -5730,9 +5715,8 @@ sys.exit(0)
             linkend="svn.branchemerge.basicmerging.stayinsync.subtree"/>)
             .</para>
 -->
-          <para>Vermeiden Sie Zusammenführungen von Teilbäumen und
-            deren Zusammenführungs-Informationen; führen Sie
-            Zusammenführungen nur im Wurzelverzeichnis Ihrer Zweige
+          <para>Vermeiden Sie Teilbaum-Merges und Teilbaum-Mergeinfo
+            führen Sie Merges nur im Wurzelverzeichnis Ihrer Zweige
             durch und nicht in Unterverzeichnissen oder auf Dateien
             (siehe <xref
             linkend="svn.branchemerge.basicmerging.stayinsync.subtree"/>).
@@ -7699,7 +7683,7 @@ $ svn commit -m "libcomplex-1.1 mit dem Hauptzweig zusammenführen"
         allgemeinen Verwaltung von Lieferanten-Zweigen erwähnten, um
         zu gewährleisten, dass es dabei zu möglichst wenig Fehlern
         kommt. Sie werden zwar immer noch dafür verantwortlich sein,
-        mit den Zusammenführungs-Befehlen die neuen Versionen der
+        mit den Merge-Befehlen die neuen Versionen der
         Drittanbieter-Daten in Ihren Hauptentwicklungszweig
         einzupflegen, jedoch kann Ihnen
         <command>svn_load_dirs.pl</command> dabei helfen, diesen Punkt
@@ -8114,32 +8098,31 @@ $ svn_load_dirs.pl -t libcomplex-1.1                              \
       vereinfachte Form eines <command>svn merge</command>-Befehls
       verhält.<footnote><para>Tatsächlich <emphasis>könnten</emphasis>
       Sie <userinput>svn merge
-      -r<replaceable>LAST_UPDATED_REV</replaceable>:HEAD
-      .</userinput> in Ihrer Arbeitskopie verwenden,  um buchstäblich
-      alle Änderungen im Projektarchiv seit Ihrer letzten
-      Aktualisierung hineinzubringen, wenn Sie
-      wollten!</para></footnote> Gewissermaßen reintegrieren Sie Ihren
-      Zweig jedes Mal, wenn Sie <command>svn commit</command>
-      aufrufen. In diesem Sinn haben Anwender von Subversion ständig
-      mit Zweigen und Zusammenführungen zu tun. Angesichts der
-      Ähnlichkeiten der Aktualisierung und Zusammenführung ist es
-      deshalb nicht überraschend, dass die Bereiche in denen
-      Subversion die meisten Schwächen zu haben scheint &ndash;
-      nämlich die Behandlung von Umbenennungen von Dateien und
-      Verzeichnissen sowie, generell, bei Baumkonflikten &ndash;
-      sowohl für die Operationen <command>svn update</command> und
-      <command>svn merge</command> problematisch sind.
+      -r<replaceable>LAST_UPDATED_REV</replaceable>:HEAD .</userinput>
+      in Ihrer Arbeitskopie verwenden,  um buchstäblich alle
+      Änderungen im Projektarchiv seit Ihrer letzten Aktualisierung
+      hineinzubringen, wenn Sie wollten!</para></footnote>
+      Gewissermaßen reintegrieren Sie Ihren Zweig jedes Mal, wenn Sie
+      <command>svn commit</command> aufrufen. In diesem Sinn haben
+      Anwender von Subversion ständig mit Zweigen und Merges zu tun.
+      Angesichts der Ähnlichkeiten der Aktualisierung und
+      Zusammenführung ist es deshalb nicht überraschend, dass die
+      Bereiche in denen Subversion die meisten Schwächen zu haben
+      scheint &ndash; nämlich die Behandlung von Umbenennungen von
+      Dateien und Verzeichnissen sowie, generell, bei Baumkonflikten
+      &ndash; sowohl für die Operationen <command>svn update</command>
+      und <command>svn merge</command> problematisch sind.
       Unglücklicherweise hat es hierbei <command>svn merge</command>
       schwerer, da im Gegensatz zum vereinfachten Sonderfall einer
-      Zusammenführungsoperation mit <command>svn update</command> eine
-      echte Zusammenführung in Subversion weder ein besonderer Fall
-      noch vereinfacht ist. Aus diesem Grund verlaufen
-      Zusammenführungen auch wesentlich langsamer als
-      Aktualisierungen, erfordern die explizite Aufzeichnung (über die
-      Eigenschaft <literal>svn:mergeinfo</literal>, die wir in diesem
-      Kapitel erörtert haben) sowie Arithmetik zur
-      Geschichtsbearbeitung und bieten im Allgemeinen viel mehr
-      Angriffsfläche für etwas, das schiefgehen kann.</para>
+      Merge-Operation mit <command>svn update</command> eine echte
+      Zusammenführung in Subversion weder ein besonderer Fall noch
+      vereinfacht ist. Aus diesem Grund verlaufen Merges auch
+      wesentlich langsamer als Aktualisierungen, erfordern die
+      explizite Aufzeichnung (über die Eigenschaft
+      <literal>svn:mergeinfo</literal>, die wir in diesem Kapitel
+      erörtert haben) sowie Arithmetik zur Geschichtsbearbeitung und
+      bieten im Allgemeinen viel mehr Angriffsfläche für etwas, das
+      schiefgehen kann.</para>
 
 <!--
     <para>To branch or not to branch?  Ultimately, that depends on
@@ -8250,7 +8233,7 @@ $ svn_load_dirs.pl -t libcomplex-1.1                              \
             <entry>See merge history or eligible changesets</entry>
             <entry><userinput>svn mergeinfo <replaceable>SOURCE</replaceable> <replaceable>TARGET</replaceable></userinput></entry>
 -->
-            <entry>Anzeige der Zusammenführungs-Geschichte oder in
+            <entry>Anzeige der Merge-Geschichte oder in
               Frage kommender Änderungsmengen</entry>
             <entry><userinput>svn mergeinfo <replaceable>SOURCE</replaceable> <replaceable>TARGET</replaceable></userinput></entry>
           </row>
