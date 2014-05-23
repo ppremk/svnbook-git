@@ -2754,17 +2754,15 @@ $
           (found in the <filename>tools/server-side</filename>
           directory of the Subversion source distribution) is a useful
           performance tuning tool for administrators of FSFS-backed
-          Subversion repositories.  FSFS repositories contain files
-          that describe the changes made in a single revision, and
-          files that contain the revision properties associated with
-          a single revision.  Repositories created in versions of
-          Subversion prior to 1.5 keep these files in two
-          directories&mdash;one for each type of file.  As new
-          revisions are committed to the repository, Subversion drops
-          more files into these two directories&mdash;over time, the
-          number of these files in each directory can grow to be quite
-          large.  This has been observed to cause performance problems
-          on certain network-based filesystems.</para>
+          Subversion repositories.  As described in the sidebar
+          <xref linkend="svn.reposadmin.basics.backends.fsfs.revfiles"/>,
+          FSFS repositories use individual files to house information
+          about each revision.  Sometimes these files all live in a
+          single directory; sometimes they are sharded across many
+          directories.  But the neat thing is that the number of
+          directories used to house these files is configurable.
+          That's where <command>fsfs-reshard.py</command> comes
+          in.</para>
 -->
         <para>Obwohl es kein offizielles Glied in der Werkzeugkette
           von Subversion ist, handelt es sich bei dem Skript
@@ -2772,55 +2770,42 @@ $
           <filename>tools/server-side</filename> des
           Subversion-Quelltext-Paketes) um ein nützliches Werkzeug zur
           Leistungssteigerung für Administratoren von FSFS-basierten
-          Subversion-Projektarchiven. FSFS-Projektarchive enthalten Dateien,
-          die die Änderungen in einer einzelnen Revision beschreiben
-          sowie Dateien, die die zu einer Revision gehörenden Eigenschaften
-          beinhalten. Projektarchive, die in einer früheren Version als
-          Subversion 1.5 erzeugt wurden, legen diese Dateien in zwei
-          Verzeichnissen ab &ndash; eins pro Dateityp. Während neue
-          Revisionen an das Projektarchiv übergeben werden, legt
-          Subversion dort immer mehr Dateien ab &ndash; im Lauf der
-          Zeit kann die Anzahl der Dateien recht groß werden. Es wurde
-          festgestellt, dass dies bei bestimmten netzbasierten
-          Dateisystemen zu Leistungseinbußen kommen kann.</para>
+          Subversion-Projektarchiven. Wie in der Randnotiz
+          <xref linkend="svn.reposadmin.basics.backends.fsfs.revfiles"/>
+          beschrieben, verwenden FSFS-Projektarchive einzelne Dateien,
+          die die zu einer Revision gehörenden Eigenschaften
+          beherbergen. Manchmal liegen alle dieser Dateien in einem
+          einzelnen Verzeichnis; manchmal werden sie über viele
+          Verzeichnisse verteilt. Eine saubere Sache ist, dass die
+          Anzahl der Verzeichnisse zur Aufnahme dieser Dateien
+          konfiguriert werden kann.</para>
 
 <!--
-        <para>Subversion 1.5 creates FSFS-backed repositories using a
-          slightly modified layout in which the contents of these two
-          directories are <firstterm>sharded</firstterm>, or scattered
-          across several subdirectories.  This can greatly reduce the
-          time it takes the system to locate any one of these files,
-          and therefore increases the overall performance of
-          Subversion when reading from the repository.  The number of
-          subdirectories used to house these files is configurable,
-          though, and that's where
-          <command>fsfs-reshard.py</command> comes in.  This script
-          reshuffles the repository's file structure into a new
-          arrangement that reflects the requested number of sharding
-          subdirectories.  This is especially useful for converting an
-          older Subversion repository into the new Subversion 1.5
-          sharded layout (which Subversion will not automatically do
-          for you) or for fine-tuning an already sharded
+        <para><command>fsfs-reshard.py</command> reshuffles the
+          repository's file structure into a new arrangement that
+          reflects the requested number of sharding subdirectories and
+          updates the repository configuration to preserve this
+          change.  When used in conjunction with the <command>svnadmin
+          upgrade</command> command, this is especially useful for
+          upgrading a pre-1.5 Subversion (unsharded) repository to the
+          latest filesystem format and sharding its data files (which
+          Subversion will not automatically do for you).  This script
+          can also be used for fine-tuning an already sharded
           repository.</para>
 -->
-        <para>Subversion 1.5 legt FSFS-basierte Projektarchive mit einer
-          geringfügig veränderten Struktur an, in der der Inhalt
-          dieser beiden Verzeichnisse
-          <firstterm>aufgebrochen</firstterm> ist, d.h. über mehrere
-          Unterverzeichnisse aufgeteilt ist.  Das kann die Zeit
-          erheblich beschleunigen, die benötigt wird, um eine dieser
-          Dateien zu finden und führt somit zu einer allgemeinen
-          Leistungssteigerung beim Lesen aus dem Projektarchiv. Die
-          Anzahl der Unterverzeichnisse für diese Dateien ist jedoch
-          konfigurierbar, und hier setzt
-          <command>fsfs-reshard.py</command> an. Dieses Skript mischt
-          die Dateistruktur des Projektarchivs und ordnet sie gemäß der
-          Anzahl der gewünschten Unterverzeichnisse neu an. Das ist
-          insbesondere dann nützlich, wenn ein älteres Projektarchiv in
-          die neue Struktur von Subversion 1.5 überführt werden soll
-          (was Subversion nicht automatisch für Sie macht) oder falls
-          ein bereits aufgeteiltes Projektarchiv noch feiner eingestellt
-          werden soll.</para>
+        <para><command>fsfs-reshard.py</command> mischt
+          die Dateistruktur des Projektarchivs, indem es sie gemäß der
+          Anzahl der gewünschten Unterverzeichnisse neu anordnet und
+          die Konfiguration des Projektarchivs aktualisiert, um diese
+          Änderung zu bewahren. In Verbindung mit dem Befehl
+          <command>svnadmin upgrade</command> erweist sich das als
+          besonders nützlich, wenn ein Projektarchiv aus der Zeit vor
+          Subversion 1.5 (mit unverteilten Verwaltungsdateien) in
+          das neueste Dateisystem-Format überführt werden soll und
+          dessen Dateien aufteilt (was Subversion nicht automatisch
+          für Sie macht). Dieses Skript kann ebenfalls dazu verwendet
+          werden, um ein bereits aufgeteiltes Projektarchiv noch
+          feiner einzustelen.</para>
 
       </sect3>
 
