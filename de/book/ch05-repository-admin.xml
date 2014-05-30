@@ -3991,8 +3991,8 @@ Die neueste Revision des Projektarchivs ist 19.
         modification&mdash;between repositories.  And Subversion
         provides the tools necessary for creating and loading these
         dump streams: the <command>svnadmin dump</command> and
-        <command>svnadmin load</command> subcommands,
-        respectively.</para>
+        <command>svnadmin load</command> subcommands, respectively,
+        and the <command>svnrdump</command> program.</para>
 -->
       <para>Subversion stellt solche Funktionen durch
         <firstterm>Projektarchiv-Auszugs-Datenströme</firstterm>
@@ -4008,7 +4008,7 @@ Die neueste Revision des Projektarchivs ist 19.
         Projektarchiven. Und Subversion stellt die Werkzeuge zum Erzeugen
         und Laden dieser Datenströme zur Verfügung: die Unterbefehle
         <command>svnadmin dump</command> bzw.  <command>svnadmin
-        load</command>.</para>
+        load</command> und das Programm <command>svnrdump</command>.</para>
 
       <warning>
 <!--
@@ -4028,7 +4028,8 @@ Die neueste Revision des Projektarchivs ist 19.
           Binärformat, das sehr empfindlich gegenüber Herumgepfusche
           ist. Beispielsweise würden viele Texteditoren die Datei
           beschädigen, indem sie automatisch die Zeilenenden
-          umformen.</para> </warning>
+          umformen.</para>
+      </warning>
 
 <!--
       <para>There are many reasons for dumping and loading Subversion
@@ -4093,33 +4094,73 @@ Die neueste Revision des Projektarchivs ist 19.
           Hook-Skripten) usw.</para></note>
 
 <!--
-      <para>Whatever your reason for migrating repository history,
-        using the <command>svnadmin dump</command> and
-        <command>svnadmin load</command> subcommands is
-        straightforward.  <command>svnadmin dump</command> will output
-        a range of repository revisions that are formatted using
-        Subversion's custom filesystem dump format.  The dump format
-        is printed to the standard output stream, while informative
-        messages are printed to the standard error stream.  This
-        allows you to redirect the output stream to a file while
-        watching the status output in your terminal window.  For
-        example:</para>
+      <para>The Subversion repository dump format also enables
+        conversion from a different storage mechanism or version
+        control system altogether.  Because the dump file format is,
+        for the most part, human-readable, it should be relatively
+        easy to describe generic sets of changes&mdash;each of which
+        should be treated as a new revision&mdash;using this file
+        format.  In fact, the <command>cvs2svn</command> utility (see
+        <xref linkend="svn.forcvs.convert" />) uses the dump format to
+        represent the contents of a CVS repository so that those
+        contents can be copied into a Subversion repository.</para>
 -->
-      <para>Welche Gründe für den Umzug der Projektarchiv-Historie für
-        Sie auch immer eine Rolle spielen, die Verwendung der
-        Unterbefehle <command>svnadmin dump</command> und
-        <command>svnadmin load</command> sind der direkte Weg.
-        <command>svnadmin dump</command> gibt ein Intervall von
-        Projektarchiv-Revisionen im speziellen Subversion-Auszugsformat
-        aus. Der Auszug wird zur Standardausgabe geschrieben, während
-        Mitteilungen an die Standardfehlerausgabe gehen. Das erlaubt
-        Ihnen, den Ausgabestrom in eine Datei umzuleiten, während Sie
-        Statusausgaben im Terminalfenster verfolgen können. Zum
-        Beispiel:</para>
+      <para>Das Auszugsformat eines Subversion Projektarchivs erlaubt
+        ebenfalls die Umwandlung aus einem vollständig
+        unterschiedlichen Speichermechanismus oder
+        Versionskontrollsystem. Da das Format der Auszugsdatei
+        größtenteils menschenlesbar ist, sollte es relativ einfach
+        sein, in diesem Dateiformat generische Änderungsmengen zu
+        beschreiben, wobei jede als neue Revision behandelt werden
+        sollte. Tatsächlich verwendet das Werkzeug
+        <command>cvs2svn</command> (siehe
+        <xref linkend="svn.forcvs.convert" />) das Auszugsformat, um den
+        Inhalt eines CVS Projektarchivs zu repräsentieren, so dass
+        dieser Inhalt in ein Subversion Projektarchiv kopiert werden
+        kann.</para>
 
 <!--
-      <informalexample>
-        <screen>
+      <para>For now, we'll concern ourselves only with migration of
+        repository data between Subversion repositories, which we'll
+        describe in detail in the sections which follow.</para>
+-->
+      <para>Momentan beschäftigen wir uns lediglich mit der Migration
+        von Projektarchiv-Daten zwischen Subversion Projektarchiven,
+        die wir detailliert in den folgenden Abschnitten beschreiben
+        werden.</para>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.reposadmin.maint.migrate.svnadmin">
+        <title>Repository data migration using svnadmin</title>
+
+<!--
+        <para>Whatever your reason for migrating repository history,
+          using the <command>svnadmin dump</command> and
+          <command>svnadmin load</command> subcommands is
+          straightforward.  <command>svnadmin dump</command> will output
+          a range of repository revisions that are formatted using
+          Subversion's custom filesystem dump format.  The dump format
+          is printed to the standard output stream, while informative
+          messages are printed to the standard error stream.  This
+          allows you to redirect the output stream to a file while
+          watching the status output in your terminal window.  For
+          example:</para>
+-->
+        <para>Welche Gründe für den Umzug der Projektarchiv-Historie für
+          Sie auch immer eine Rolle spielen, die Verwendung der
+          Unterbefehle <command>svnadmin dump</command> und
+          <command>svnadmin load</command> sind der direkte Weg.
+          <command>svnadmin dump</command> gibt ein Intervall von
+          Projektarchiv-Revisionen im speziellen Subversion-Auszugsformat
+          aus. Der Auszug wird zur Standardausgabe geschrieben, während
+          Mitteilungen an die Standardfehlerausgabe gehen. Das erlaubt
+          Ihnen, den Ausgabestrom in eine Datei umzuleiten, während Sie
+          Statusausgaben im Terminalfenster verfolgen können. Zum
+          Beispiel:</para>
+
+<!--
+        <informalexample>
+          <screen>
 $ svnlook youngest myrepos
 26
 $ svnadmin dump myrepos &gt; dumpfile
@@ -4130,10 +4171,10 @@ $ svnadmin dump myrepos &gt; dumpfile
 * Dumped revision 25.
 * Dumped revision 26.
 </screen>
-      </informalexample>
+        </informalexample>
 -->
-      <informalexample>
-        <screen>
+        <informalexample>
+          <screen>
 $ svnlook youngest myrepos
 26
 $ svnadmin dump myrepos &gt; dumpfile
@@ -4144,45 +4185,45 @@ $ svnadmin dump myrepos &gt; dumpfile
 * Revision 25 ausgegeben.
 * Revision 26 ausgegeben.
 </screen>
-      </informalexample>
+        </informalexample>
 
 <!--
-      <para>At the end of the process, you will have a single file
-        (<filename>dumpfile</filename> in the previous example) that
-        contains all the data stored in your repository in the
-        requested range of revisions.  Note that <command>svnadmin
-        dump</command> is reading revision trees from the repository
-        just like any other <quote>reader</quote> process would
-        (e.g., <command>svn checkout</command>), so it's safe
-        to run this command at any time.</para>
+        <para>At the end of the process, you will have a single file
+          (<filename>dumpfile</filename> in the previous example) that
+          contains all the data stored in your repository in the
+          requested range of revisions.  Note that <command>svnadmin
+          dump</command> is reading revision trees from the repository
+          just like any other <quote>reader</quote> process would
+          (e.g., <command>svn checkout</command>), so it's safe
+          to run this command at any time.</para>
 -->
-      <para>Am Ende haben Sie eine einzelne Datei (im vorangegangenen
-        Beispiel <filename>dumpfile</filename>), die alle im
-        Projektarchiv gespeicherten Daten aus dem gewählten Intervall von
-        Revisionen beinhaltet. Beachten Sie, dass <command>svnadmin
-        dump</command> wie jeder andere <quote>lesende</quote> Prozess
-        (z.B. <command>svn checkout</command>) Revisionsbäume aus dem
-        Projektarchiv liest, so dass Sie diesen Befehl jederzeit aufrufen
-        können.</para>
+        <para>Am Ende haben Sie eine einzelne Datei (im vorangegangenen
+          Beispiel <filename>dumpfile</filename>), die alle im
+          Projektarchiv gespeicherten Daten aus dem gewählten Intervall von
+          Revisionen beinhaltet. Beachten Sie, dass <command>svnadmin
+          dump</command> wie jeder andere <quote>lesende</quote> Prozess
+          (z.B. <command>svn checkout</command>) Revisionsbäume aus dem
+          Projektarchiv liest, so dass Sie diesen Befehl jederzeit aufrufen
+          können.</para>
 
 <!--
-      <para>The other subcommand in the pair, <command>svnadmin
-        load</command>, parses the standard input stream as a
-        Subversion repository dump file and effectively replays those
-        dumped revisions into the target repository for that
-        operation.  It also gives informative feedback, this time
-        using the standard output stream:</para>
+        <para>The other subcommand in the pair, <command>svnadmin
+          load</command>, parses the standard input stream as a
+          Subversion repository dump file and effectively replays those
+          dumped revisions into the target repository for that
+          operation.  It also gives informative feedback, this time
+          using the standard output stream:</para>
 -->
-      <para>Der andere Unterbefehl dieses Paars, <command>svnadmin
-        load</command>, liest den Standardeingabestrom als eine
-        Subversion-Projektarchiv-Auszugsdatei und spielt diese Revisionen
-        aus dem Auszug gewissermaßen neu in das Ziel-Projektarchiv. Auch
-        dieser Befehl erzeugt Meldungen, dieses Mal aber über die
-        Standardausgabe:</para>
+        <para>Der andere Unterbefehl dieses Paars, <command>svnadmin
+          load</command>, liest den Standardeingabestrom als eine
+          Subversion-Projektarchiv-Auszugsdatei und spielt diese Revisionen
+          aus dem Auszug gewissermaßen neu in das Ziel-Projektarchiv. Auch
+          dieser Befehl erzeugt Meldungen, dieses Mal aber über die
+          Standardausgabe:</para>
 
 <!--
-      <informalexample>
-        <screen>
+        <informalexample>
+          <screen>
 $ svnadmin load newrepos &lt; dumpfile
 &lt;&lt;&lt; Started new txn, based on original revision 1
      * adding path : A ... done.
@@ -4210,10 +4251,10 @@ $ svnadmin load newrepos &lt; dumpfile
 - - - - Committed new rev 26 (loaded from original rev 26) &gt;&gt;&gt;
 
 </screen>
-      </informalexample>
+        </informalexample>
 -->
-      <informalexample>
-        <screen>
+        <informalexample>
+          <screen>
 $ svnadmin load newrepos &lt; dumpfile
 &lt;&lt;&lt; Neue Transaktion basierend auf Originalrevision 1 gestartet
      * Füge Pfad hinzu: A ... erledigt.
@@ -4241,319 +4282,309 @@ $ svnadmin load newrepos &lt; dumpfile
 ------- Neue Revision 26 übertragen (geladen aus Original 26) &gt;&gt;&gt;
 
 </screen>
-      </informalexample>
+        </informalexample>
 
 <!--
-      <para>The result of a load is new revisions added to a
-        repository&mdash;the same thing you get by making commits
-        against that repository from a regular Subversion client.
-        Just as in a commit, you can use hook programs to perform
-        actions before and after each of the commits made during a
-        load process.  By passing the
-        <option>- -use-pre-commit-hook</option> and
-        <option>- -use-post-commit-hook</option> options to
-        <command>svnadmin load</command>, you can instruct Subversion
-        to execute the pre-commit and post-commit hook programs,
-        respectively, for each loaded revision.  You might use these,
-        for example, to ensure that loaded revisions pass through the
-        same validation steps that regular commits pass through.  Of
-        course, you should use these options with care&mdash;if your
-        post-commit hook sends emails to a mailing list for each new
-        commit, you might not want to spew hundreds or thousands of
-        commit emails in rapid succession at that list!  You can read
-        more about the use of hook scripts in
-        <xref linkend="svn.reposadmin.create.hooks"/>.</para>
+        <para>The result of a load is new revisions added to a
+          repository&mdash;the same thing you get by making commits
+          against that repository from a regular Subversion client.
+          Just as in a commit, you can use hook programs to perform
+          actions before and after each of the commits made during a
+          load process.  By passing the
+          <option>- -use-pre-commit-hook</option> and
+          <option>- -use-post-commit-hook</option> options to
+          <command>svnadmin load</command>, you can instruct Subversion
+          to execute the pre-commit and post-commit hook programs,
+          respectively, for each loaded revision.  You might use these,
+          for example, to ensure that loaded revisions pass through the
+          same validation steps that regular commits pass through.  Of
+          course, you should use these options with care&mdash;if your
+          post-commit hook sends emails to a mailing list for each new
+          commit, you might not want to spew hundreds or thousands of
+          commit emails in rapid succession at that list!  You can read
+          more about the use of hook scripts in
+          <xref linkend="svn.reposadmin.create.hooks"/>.</para>
 -->
-      <para>Das Ergebnis eines Ladevorgangs sind neue Revisionen, die
-        dem Projektarchiv hinzugefügt wurden &ndash; dasselbe, was Sie
-        erhalten, wenn Sie mit einem normalen Subversion-Client
-        Übergaben an das Projektarchiv machen. Ebenso wie bei einer
-        Übergabe können können Sie Hook-Programme verwenden, um
-        Aktionen vor und nach jeder Übergabe während des Ladevorgangs
-        auszuführen. Indem Sie die Optionen
-        <option>--use-pre-commit-hook</option> und
-        <option>--use-post-commit-hook</option> an <command>svnadmin
-        load</command> übergeben, können Sie Subversion befehlen, für
-        jede zu ladende Revision die Hook-Programme pre-commit bzw.
-        post-commit auszuführen. Sie könnten diese beispielsweise
-        verwenden, um sicherzustellen, dass die geladenen Revisionen
-        dieselben Validierungsschritte durchlaufen müssen wie reguläre
-        Übergaben. Natürlich sollten Sie diese Optionen mit Sorgfalt
-        verwenden &ndash; wenn Ihr post-commit-Hook für jede neue
-        Übergabe E-Mails an eine Mailing-Liste verschickt, wollen Sie
-        bestimmt nicht, das innerhalb kürzester Zeit hunderte oder
-        tausende Übergabe-E-Mails in diese Liste hineinhageln! Sie
-        können mehr über Hook-Skripte in
-        <xref linkend="svn.reposadmin.create.hooks"/> lesen.</para>
+        <para>Das Ergebnis eines Ladevorgangs sind neue Revisionen, die
+          dem Projektarchiv hinzugefügt wurden &ndash; dasselbe, was Sie
+          erhalten, wenn Sie mit einem normalen Subversion-Client
+          Übergaben an das Projektarchiv machen. Ebenso wie bei einer
+          Übergabe können können Sie Hook-Programme verwenden, um
+          Aktionen vor und nach jeder Übergabe während des Ladevorgangs
+          auszuführen. Indem Sie die Optionen
+          <option>--use-pre-commit-hook</option> und
+          <option>--use-post-commit-hook</option> an <command>svnadmin
+          load</command> übergeben, können Sie Subversion befehlen, für
+          jede zu ladende Revision die Hook-Programme pre-commit bzw.
+          post-commit auszuführen. Sie könnten diese beispielsweise
+          verwenden, um sicherzustellen, dass die geladenen Revisionen
+          dieselben Validierungsschritte durchlaufen müssen wie reguläre
+          Übergaben. Natürlich sollten Sie diese Optionen mit Sorgfalt
+          verwenden &ndash; wenn Ihr post-commit-Hook für jede neue
+          Übergabe E-Mails an eine Mailing-Liste verschickt, wollen Sie
+          bestimmt nicht, das innerhalb kürzester Zeit hunderte oder
+          tausende Übergabe-E-Mails in diese Liste hineinhageln! Sie
+          können mehr über Hook-Skripte in
+          <xref linkend="svn.reposadmin.create.hooks"/> lesen.</para>
 
 <!--
-      <para>Note that because <command>svnadmin</command> uses
-        standard input and output streams for the repository dump and
-        load processes, people who are feeling especially saucy can try
-        things such as this (perhaps even using different versions of
-        <command>svnadmin</command> on each side of the pipe):</para>
+        <para>Note that because <command>svnadmin</command> uses
+          standard input and output streams for the repository dump and
+          load processes, people who are feeling especially saucy can try
+          things such as this (perhaps even using different versions of
+          <command>svnadmin</command> on each side of the pipe):</para>
 -->
-      <para>Beachten Sie, dass Menschen, die sich besonders gewitzt
-        fühlen, weil <command>svnadmin</command> für den Auszug und
-        den Ladevorgang den Standardeingabe- und den
-        Standardausgabestrom benutzt, Dinge wie dieses ausprobieren
-        können (vielleicht sogar unterschiedliche Versionen von
-        <command>svnadmin</command> auf jeder Seite der Pipe):</para>
+        <para>Beachten Sie, dass Menschen, die sich besonders gewitzt
+          fühlen, weil <command>svnadmin</command> für den Auszug und
+          den Ladevorgang den Standardeingabe- und den
+          Standardausgabestrom benutzt, Dinge wie dieses ausprobieren
+          können (vielleicht sogar unterschiedliche Versionen von
+          <command>svnadmin</command> auf jeder Seite der Pipe):</para>
 
-      <informalexample>
-        <screen>
+        <informalexample>
+          <screen>
 $ svnadmin create newrepos
 $ svnadmin dump oldrepos | svnadmin load newrepos
 </screen>
-      </informalexample>
+        </informalexample>
 
 <!--
-      <para>By default, the dump file will be quite large&mdash;much
-        larger than the repository itself.  That's because by default
-        every version of every file is expressed as a full text in the
-        dump file.  This is the fastest and simplest behavior, and
-        it's nice if you're piping the dump data directly into some other
-        process (such as a compression program, filtering program, or
-        loading process).  But if you're creating a dump file
-        for longer-term storage, you'll likely want to save disk space
-        by using the <option>- -deltas</option> option.  With this
-        option, successive revisions of files will be output as
-        compressed, binary differences&mdash;just as file revisions
-        are stored in a repository.  This option is slower, but it
-        results in a dump file much closer in size to the original
-        repository.</para>
+        <para>By default, the dump file will be quite large&mdash;much
+          larger than the repository itself.  That's because by default
+          every version of every file is expressed as a full text in the
+          dump file.  This is the fastest and simplest behavior, and
+          it's nice if you're piping the dump data directly into some other
+          process (such as a compression program, filtering program, or
+          loading process).  But if you're creating a dump file
+          for longer-term storage, you'll likely want to save disk space
+          by using the <option>- -deltas</option> option.  With this
+          option, successive revisions of files will be output as
+          compressed, binary differences&mdash;just as file revisions
+          are stored in a repository.  This option is slower, but it
+          results in a dump file much closer in size to the original
+          repository.</para>
 -->
-      <para>Im Normalfall wird die Auszugsdatei ziemlich groß &ndash;
-        viel größer als das Projektarchiv selbst. Das liegt daran, dass
-        standardmäßig jede Version jeder Datei als vollständiger Text
-        in der Auszugsdatei dargestellt wird. Dies ist das schnellste
-        und einfachste Verhalten, und es ist nett, wenn Sie die
-        Auszugsdaten über eine Pipe direkt an einen weiteren Prozess
-        weiterleiten (etwa ein Komprimierprogramm, ein Filterprogramm
-        oder einen Prozess zum Laden). Wenn Sie jedoch eine
-        Auszugsdatei für die Langzeitspeicherung erzeugen, möchten Sie
-        wahrscheinlich Plattenplatz sparen, indem Sie die Option
-        <option>--deltas</option> verwenden. Mit dieser Option werden
-        aufeinanderfolgende Revisionen von Dateien als komprimierte
-        binäre Unterschiede ausgegeben &ndash; so wie Dateirevisionen
-        im Projektarchiv gespeichert werden. Diese Option ist langsamer,
-        führt jedoch zu einer Größe der Auszugsdatei, die der Größe
-        des Original-Projektarchivs näher kommt.</para>
+        <para>Im Normalfall wird die Auszugsdatei ziemlich groß &ndash;
+          viel größer als das Projektarchiv selbst. Das liegt daran, dass
+          standardmäßig jede Version jeder Datei als vollständiger Text
+          in der Auszugsdatei dargestellt wird. Dies ist das schnellste
+          und einfachste Verhalten, und es ist nett, wenn Sie die
+          Auszugsdaten über eine Pipe direkt an einen weiteren Prozess
+          weiterleiten (etwa ein Komprimierprogramm, ein Filterprogramm
+          oder einen Prozess zum Laden). Wenn Sie jedoch eine
+          Auszugsdatei für die Langzeitspeicherung erzeugen, möchten Sie
+          wahrscheinlich Plattenplatz sparen, indem Sie die Option
+          <option>--deltas</option> verwenden. Mit dieser Option werden
+          aufeinanderfolgende Revisionen von Dateien als komprimierte
+          binäre Unterschiede ausgegeben &ndash; so wie Dateirevisionen
+          im Projektarchiv gespeichert werden. Diese Option ist langsamer,
+          führt jedoch zu einer Größe der Auszugsdatei, die der Größe
+          des Original-Projektarchivs näher kommt.</para>
 
 <!--
-      <para>We mentioned previously that <command>svnadmin
-        dump</command> outputs a range of revisions.  Use the
-        <option>- -revision</option> (<option>-r</option>) option to
-        specify a single revision, or a range of revisions, to dump.
-        If you omit this option, all the existing repository revisions
-        will be dumped.</para>
+        <para>We mentioned previously that <command>svnadmin
+          dump</command> outputs a range of revisions.  Use the
+          <option>- -revision</option> (<option>-r</option>) option to
+          specify a single revision, or a range of revisions, to dump.
+          If you omit this option, all the existing repository revisions
+          will be dumped.</para>
 -->
-      <para>Wir haben eben erwähnt, dass <command>svnadmin
-        dump</command> einen Bereich von Revisionen ausgibt. Verwenden
-        Sie die Option <option>--revision</option>
-        (<option>-r</option>), um eine einzelne Revision oder einen
-        Bereich von Revisionen für den Auszug anzugeben. Wenn Sie
-        diese Option weglassen, wird ein Auszug aller
-        Projektarchiv-Revisionen erstellt.</para>
+        <para>Wir haben eben erwähnt, dass <command>svnadmin
+          dump</command> einen Bereich von Revisionen ausgibt. Verwenden
+          Sie die Option <option>--revision</option>
+          (<option>-r</option>), um eine einzelne Revision oder einen
+          Bereich von Revisionen für den Auszug anzugeben. Wenn Sie
+          diese Option weglassen, wird ein Auszug aller
+          Projektarchiv-Revisionen erstellt.</para>
 
-      <informalexample>
-        <screen>
+        <informalexample>
+          <screen>
 $ svnadmin dump myrepos -r 23 &gt; rev-23.dumpfile
 $ svnadmin dump myrepos -r 100:200 &gt; revs-100-200.dumpfile
 </screen>
-      </informalexample>
+        </informalexample>
 
 <!--
-      <para>As Subversion dumps each new revision, it outputs only
-        enough information to allow a future loader to re-create that
-        revision based on the previous one.  In other words, for any
-        given revision in the dump file, only the items that were
-        changed in that revision will appear in the dump.  The only
-        exception to this rule is the first revision that is dumped
-        with the current <command>svnadmin dump</command>
-        command.</para>
+        <para>As Subversion dumps each new revision, it outputs only
+          enough information to allow a future loader to re-create that
+          revision based on the previous one.  In other words, for any
+          given revision in the dump file, only the items that were
+          changed in that revision will appear in the dump.  The only
+          exception to this rule is the first revision that is dumped
+          with the current <command>svnadmin dump</command>
+          command.</para>
 -->
-      <para>Beim Erstellen eines Auszugs jeder Revision gibt
-        Subversion gerade soviel Information aus, dass später ein
-        Ladeprozess in der Lage ist, diese Revision auf der Basis der
-        Vorgängerrevision wiederherzustellen. Mit anderen Worten: Für
-        jede Revision befinden sich nur die Dinge in der Auszugsdatei,
-        die sich in dieser Revision geändert haben. Die einzige
-        Ausnahme von dieser Regel ist die erste Revision, die mit dem
-        aktuellen <command>svnadmin dump</command> erstellt
-        wird.</para>
+        <para>Beim Erstellen eines Auszugs jeder Revision gibt
+          Subversion gerade soviel Information aus, dass später ein
+          Ladeprozess in der Lage ist, diese Revision auf der Basis der
+          Vorgängerrevision wiederherzustellen. Mit anderen Worten: Für
+          jede Revision befinden sich nur die Dinge in der Auszugsdatei,
+          die sich in dieser Revision geändert haben. Die einzige
+          Ausnahme von dieser Regel ist die erste Revision, die mit dem
+          aktuellen <command>svnadmin dump</command> erstellt
+          wird.</para>
 
 <!--
-      <para>By default, Subversion will not express the first dumped
-        revision as merely differences to be applied to the previous
-        revision.  For one thing, there is no previous revision in the
-        dump file!  And second, Subversion cannot know the state of
-        the repository into which the dump data will be loaded (if it
-        ever is).  To ensure that the output of each
-        execution of <command>svnadmin dump</command> is
-        self-sufficient, the first dumped revision is, by default, a
-        full representation of every directory, file, and property in
-        that revision of the repository.</para>
+        <para>By default, Subversion will not express the first dumped
+          revision as merely differences to be applied to the previous
+          revision.  For one thing, there is no previous revision in the
+          dump file!  And second, Subversion cannot know the state of
+          the repository into which the dump data will be loaded (if it
+          ever is).  To ensure that the output of each
+          execution of <command>svnadmin dump</command> is
+          self-sufficient, the first dumped revision is, by default, a
+          full representation of every directory, file, and property in
+          that revision of the repository.</para>
 -->
-      <para>Standardmäßig wird Subversion den Auszug der ersten
-        Revision nicht bloß als Unterschied ausdrücken, der auf die
-        Vorgängerrevision anzuwenden ist. Zum Ersten gibt es keine
-        Vorgängerrevision in der Auszugsdatei. Und zum Zweiten kann
-        Subversion den Zustand des Projektarchivs, in das der Auszug
-        (falls überhaupt) geladen werden soll, nicht kennen. Um
-        sicherzustellen, dass die Ausgabe jedes Aufrufs von
-        <command>svnadmin dump</command> unabhängig ist, ist der
-        Auszug der ersten Revision standardmäßig eine vollständige
-        Darstellung jedes Verzeichnisses, jeder Datei und jeder
-        Eigenschaft aus dieser Revision im Projektarchiv.</para>
+        <para>Standardmäßig wird Subversion den Auszug der ersten
+          Revision nicht bloß als Unterschied ausdrücken, der auf die
+          Vorgängerrevision anzuwenden ist. Zum Ersten gibt es keine
+          Vorgängerrevision in der Auszugsdatei. Und zum Zweiten kann
+          Subversion den Zustand des Projektarchivs, in das der Auszug
+          (falls überhaupt) geladen werden soll, nicht kennen. Um
+          sicherzustellen, dass die Ausgabe jedes Aufrufs von
+          <command>svnadmin dump</command> unabhängig ist, ist der
+          Auszug der ersten Revision standardmäßig eine vollständige
+          Darstellung jedes Verzeichnisses, jeder Datei und jeder
+          Eigenschaft aus dieser Revision im Projektarchiv.</para>
 
 <!--
-      <para>However, you can change this default behavior.  If you add
-        the <option>- -incremental</option> option when you dump your
-        repository, <command>svnadmin</command> will compare the first
-        dumped revision against the previous revision in the
-        repository&mdash;the same way it treats every other revision that
-        gets dumped.  It will then output the first revision exactly
-        as it does the rest of the revisions in the dump
-        range&mdash;mentioning only the changes that occurred in that
-        revision.  The benefit of this is that you can create several
-        small dump files that can be loaded in succession, instead of
-        one large one, like so:</para>
+        <para>However, you can change this default behavior.  If you add
+          the <option>- -incremental</option> option when you dump your
+          repository, <command>svnadmin</command> will compare the first
+          dumped revision against the previous revision in the
+          repository&mdash;the same way it treats every other revision that
+          gets dumped.  It will then output the first revision exactly
+          as it does the rest of the revisions in the dump
+          range&mdash;mentioning only the changes that occurred in that
+          revision.  The benefit of this is that you can create several
+          small dump files that can be loaded in succession, instead of
+          one large one, like so:</para>
 -->
-      <para>Sie können dieses Standardverhalten jedoch ändern. Falls
-        Sie die Option <option>--incremental</option> angeben,
-        vergleicht <command>svnadmin</command> die erste Revision für
-        die ein Auszug erstellt werden soll mit der vorhergehenden
-        Revision im Projektarchiv &ndash; auf dieselbe Art und Weise, wie
-        jede andere Revision behandelt wird, für die ein Auszug
-        erstellt werden soll &ndash; indem lediglich die Änderungen
-        aus dieser Revision erwähnt werden. Der Vorteil dabei ist,
-        dass Sie mehrere kleinere Auszugsdateien erstellen können, die
-        hintereinander geladen werden können, anstatt eine
-        große:</para>
+        <para>Sie können dieses Standardverhalten jedoch ändern. Falls
+          Sie die Option <option>--incremental</option> angeben,
+          vergleicht <command>svnadmin</command> die erste Revision für
+          die ein Auszug erstellt werden soll mit der vorhergehenden
+          Revision im Projektarchiv &ndash; auf dieselbe Art und Weise, wie
+          jede andere Revision behandelt wird, für die ein Auszug
+          erstellt werden soll &ndash; indem lediglich die Änderungen
+          aus dieser Revision erwähnt werden. Der Vorteil dabei ist,
+          dass Sie mehrere kleinere Auszugsdateien erstellen können, die
+          hintereinander geladen werden können, anstatt eine
+          große:</para>
 
-      <informalexample>
-        <screen>
+        <informalexample>
+          <screen>
 $ svnadmin dump myrepos -r 0:1000 &gt; dumpfile1
 $ svnadmin dump myrepos -r 1001:2000 --incremental &gt; dumpfile2
 $ svnadmin dump myrepos -r 2001:3000 --incremental &gt; dumpfile3
 </screen>
-      </informalexample>
+        </informalexample>
 
 <!--
-      <para>These dump files could be loaded into a new repository
-        with the following command sequence:</para>
+        <para>These dump files could be loaded into a new repository
+          with the following command sequence:</para>
 -->
-      <para>Diese Auszugsdateien können mit der folgenden Befehlsfolge
-        in ein neues Projektarchiv geladen werden:</para>
+        <para>Diese Auszugsdateien können mit der folgenden Befehlsfolge
+          in ein neues Projektarchiv geladen werden:</para>
 
-      <informalexample>
-        <screen>
+        <informalexample>
+          <screen>
 $ svnadmin load newrepos &lt; dumpfile1
 $ svnadmin load newrepos &lt; dumpfile2
 $ svnadmin load newrepos &lt; dumpfile3
 </screen>
-      </informalexample>
+        </informalexample>
 
 <!--
-      <para>Another neat trick you can perform with this
-        <option>- -incremental</option> option involves appending to an
-        existing dump file a new range of dumped revisions.  For
-        example, you might have a <literal>post-commit</literal> hook
-        that simply appends the repository dump of the single revision
-        that triggered the hook.  Or you might have a script that runs
-        nightly to append dump file data for all the revisions that
-        were added to the repository since the last time the script
-        ran.  Used like this, <command>svnadmin dump</command> can be
-        one way to back up changes to your repository over time in case
-        of a system crash or some other catastrophic event.</para>
+        <para>Another neat trick you can perform with this
+          <option>- -incremental</option> option involves appending to an
+          existing dump file a new range of dumped revisions.  For
+          example, you might have a <literal>post-commit</literal> hook
+          that simply appends the repository dump of the single revision
+          that triggered the hook.  Or you might have a script that runs
+          nightly to append dump file data for all the revisions that
+          were added to the repository since the last time the script
+          ran.  Used like this, <command>svnadmin dump</command> can be
+          one way to back up changes to your repository over time in case
+          of a system crash or some other catastrophic event.</para>
 -->
-      <para>Ein weiterer toller Trick, den Sie mit der Option
-        <option>--incremental</option> anwenden können besteht darin,
-        einen neuen Bereich von Revisionsauszügen an eine existierende
-        Revisionsdatei anzuhängen. Beispielsweise könnten Sie einen
-        <literal>post-commit</literal>-Hook haben, der der Datei einen
-        Auszug derjenigen Revision anfügt, die den Hook ausgelöst hat.
-        Oder Sie haben ein Skript, das jede Nacht läuft, um Auszüge
-        sämtlicher Revisionen seit dem letzten Lauf anzufügen. Wenn es
-        auf diese Weise verwendet wird, stellt <command>svnadmin
-        dump</command> eine Möglichkeit dar, laufend die Änderungen an
-        Ihrem Projektarchiv für den Fall eines Systemabsturzes oder eines
-        anderen katastrophalen Ereignisses zu sichern.</para>
+        <para>Ein weiterer toller Trick, den Sie mit der Option
+          <option>--incremental</option> anwenden können besteht darin,
+          einen neuen Bereich von Revisionsauszügen an eine existierende
+          Revisionsdatei anzuhängen. Beispielsweise könnten Sie einen
+          <literal>post-commit</literal>-Hook haben, der der Datei einen
+          Auszug derjenigen Revision anfügt, die den Hook ausgelöst hat.
+          Oder Sie haben ein Skript, das jede Nacht läuft, um Auszüge
+          sämtlicher Revisionen seit dem letzten Lauf anzufügen. Wenn es
+          auf diese Weise verwendet wird, stellt <command>svnadmin
+          dump</command> eine Möglichkeit dar, laufend die Änderungen an
+          Ihrem Projektarchiv für den Fall eines Systemabsturzes oder eines
+          anderen katastrophalen Ereignisses zu sichern.</para>
+
 <!--
-      <para>The dump format can also be used to merge the contents of
-        several different repositories into a single repository.  By
-        using the <option>- -parent-dir</option> option of
-        <command>svnadmin load</command>, you can specify a new
-        virtual root directory for the load process.  That means if
-        you have dump files for three repositories&mdash;say
-        <filename>calc-dumpfile</filename>,
-        <filename>cal-dumpfile</filename>, and
-        <filename>ss-dumpfile</filename>&mdash;you can first create a new
-        repository to hold them all:</para>
-
+        <para>The dump format can also be used to merge the contents of
+          several different repositories into a single repository.  By
+          using the <option>- -parent-dir</option> option of
+          <command>svnadmin load</command>, you can specify a new
+          virtual root directory for the load process.  That means if
+          you have dump files for three repositories&mdash;say
+          <filename>calc-dumpfile</filename>,
+          <filename>cal-dumpfile</filename>, and
+          <filename>ss-dumpfile</filename>&mdash;you can first create a new
+          repository to hold them all:</para>
 -->
-      <para>Das Auszugsformat kann auch dazu verwendet werden, um die
-        Inhalte mehrerer verschiedener Projektarchive in ein Projektarchiv
-        zusammenzuführen. Indem Sie die Option
-        <option>--parent-dir</option> von <command>svnadmin
-        load</command> benutzen, können Sie ein neues virtuelles
-        Wurzelverzeichnis für den Ladevorgang angeben. Das heißt,
-        falls Sie beispielsweise die Auszugsdateien von drei
-        Projektarchiven haben &ndash; etwa
-        <filename>calc-dumpfile</filename>,
-        <filename>cal-dumpfile</filename> und
-        <filename>ss-dumpfile</filename> &ndash; können Sie zunächst
-        ein Projektarchiv anlegen, das alle beherbergt:</para>
+        <para>Das Auszugsformat kann auch dazu verwendet werden, um die
+          Inhalte mehrerer verschiedener Projektarchive in ein Projektarchiv
+          zusammenzuführen. Indem Sie die Option
+          <option>--parent-dir</option> von <command>svnadmin
+          load</command> benutzen, können Sie ein neues virtuelles
+          Wurzelverzeichnis für den Ladevorgang angeben. Das heißt,
+          falls Sie beispielsweise die Auszugsdateien von drei
+          Projektarchiven haben &ndash; etwa
+          <filename>calc-dumpfile</filename>,
+          <filename>cal-dumpfile</filename> und
+          <filename>ss-dumpfile</filename> &ndash; können Sie zunächst
+          ein Projektarchiv anlegen, das alle beherbergt:</para>
 
-      <informalexample>
-        <screen>
+        <informalexample>
+          <screen>
 $ svnadmin create /var/svn/projects
 $
 </screen>
-      </informalexample>
+        </informalexample>
 
 <!--
-      <para>Then, make new directories in the repository that will
-        encapsulate the contents of each of the three previous
-        repositories:</para>
+        <para>Then, make new directories in the repository that will
+          encapsulate the contents of each of the three previous
+          repositories:</para>
 -->
-      <para>Erstellen Sie dann neue Verzeichnisse im Projektarchiv, die
-        den Inhalt der vorherigen drei Projektarchive aufnehmen
-        werden:</para>
+        <para>Erstellen Sie dann neue Verzeichnisse im Projektarchiv, die
+          den Inhalt der vorherigen drei Projektarchive aufnehmen
+          werden:</para>
 
-<!--
-      <informalexample>
-        <screen>
+        <informalexample>
+          <screen>
 $ svn mkdir -m "Initial project roots" \
-      file:///var/svn/projects/calc \
-      file:///var/svn/projects/calendar \
-      file:///var/svn/projects/spreadsheet
+            file:///var/svn/projects/calc \
+            file:///var/svn/projects/calendar \
+            file:///var/svn/projects/spreadsheet <!--
 Committed revision 1.
-$ 
-</screen>
-      </informalexample>
 -->
-      <informalexample>
-        <screen>
-$ svn mkdir -m "Initial project roots" \
-      file:///var/svn/projects/calc \
-      file:///var/svn/projects/calendar \
-      file:///var/svn/projects/spreadsheet
 Revision 1 übertragen.
 $ 
 </screen>
-      </informalexample>
+        </informalexample>
 
 <!--
-      <para>Lastly, load the individual dump files into their
-        respective locations in the new repository:</para>
+        <para>Lastly, load the individual dump files into their
+          respective locations in the new repository:</para>
 -->
-      <para>Laden Sie schließlich die Auszugsdateien an ihren
-        jeweiligen Ort im neuen Projektarchiv:</para>
+        <para>Laden Sie schließlich die Auszugsdateien an ihren
+          jeweiligen Ort im neuen Projektarchiv:</para>
 
-      <informalexample>
-        <screen>
+        <informalexample>
+          <screen>
 $ svnadmin load /var/svn/projects --parent-dir calc &lt; calc-dumpfile
 &hellip;
 $ svnadmin load /var/svn/projects --parent-dir calendar &lt; cal-dumpfile
@@ -4562,34 +4593,152 @@ $ svnadmin load /var/svn/projects --parent-dir spreadsheet &lt; ss-dumpfile
 &hellip;
 $
 </screen>
-      </informalexample>
+        </informalexample>
+
+      </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.reposadmin.maint.migrate.svnrdump">
+<!--
+        <title>Repository data migration using svnrdump</title>
+-->
+        <title>Projektarchiv-Daten-Migration mit svnrdump</title>
 
 <!--
-      <para>We'll mention one final way to use the Subversion
-        repository dump format&mdash;conversion from a different
-        storage mechanism or version control system altogether.
-        Because the dump file format is, for the most part,
-        human-readable, it should be relatively easy to describe
-        generic sets of changes&mdash;each of which should be treated
-        as a new revision&mdash;using this file format.  In fact, the
-        <command>cvs2svn</command> utility (see <xref
-        linkend="svn.forcvs.convert"/>) uses the dump format to
-        represent the contents of a CVS repository so that those
-        contents can be copied into a Subversion repository.</para>
+        <para>In Subversion 1.7, <command>svnrdump</command> joined
+          the set of stock Subversion tools.  It offers fairly
+          specialized functionality, essentially as a network-aware
+          version of the <command>svnadmin dump</command>
+          and <command>svnadmin load</command> commands which we
+          discuss in depth in
+          <xref linkend="svn.reposadmin.maint.migrate.svnadmin"
+          />.  <command>svnrdump dump</command> will generate a dump
+          stream from a remote repository, spewing it to standard
+          output; <command>svnrdump load</command> will read a dump
+          stream from standard input and load it into a remote
+          repository.  Using <command>svnrdump</command>, you can
+          generate incremental dumps just as you might
+          with <command>svnadmin dump</command>.  You can even dump a
+          subtree of the repository&mdash;something
+          that <command>svnadmin dump</command> cannot do.</para>
 -->
-      <para>Zum Schluss erwähnen wir noch einen Anwendungsfall für
-        das Auszugsformat &ndash; die Umwandlung aus einem
-        unterschiedlichen Speicherverfahren oder gar aus einem
-        unterschiedlichen Versionskontrollsystem. Da das Format der
-        Auszugsdatei größtenteils menschenlesbar ist, sollte es
-        einfach sein, gewöhnliche Änderungsmengen &ndash; von denen
-        jede als Revision behandelt werden sollte &ndash; mit diesem
-        Format zu beschreiben. Tatsächlich verwendet das
-        Dienstprogramm <command>cvs2svn</command> (siehe <xref
-        linkend="svn.forcvs.convert"/>) dieses Auszugsformat, um den
-        Inhalt eines CVS-Projektarchivs darzustellen, so dass er in ein
-        Subversion-Projektarchiv kopiert werden kann.</para>
+        <para>In Subversion 1.7 kam <command>svnrdump</command> zu der
+          Menge von mitgelieferten Subversion-Werkzeugen hinzu. Es
+          bietet eine ziemlich spezialisierte Funktionalität, im
+          Wesentlichen als netzwerkfähige Version der Befehle
+          <command>svnadmin dump</command> und <command>svnadmin
+          load</command>, die wir im Detail in
+          <xref linkend="svn.reposadmin.maint.migrate.svnadmin"
+          /> erörtern.  <command>svnrdump dump</command> erzeugt einen
+          Auszugsztrom eines Fern-Projektarchivs und schreibt ihn in
+          den Standard-Ausgabekanal; <command>svnrdump load</command>
+          liest einen Auszugsstrom aus dem Standard-Eingabekanal und
+          lädt ihn in ein Fern-Projektarchiv. Mit
+          <command>svnrdump</command> können Sie inkrementelle Auszüge
+          erstellen, wie mit <command>svnadmin dump</command>. Sie
+          können sogar einen Auszug eines Teilbaums des Projektarchivs
+          erstellen, was <command>svnadmin dump</command> nicht
+          kann.</para>
 
+<!--
+        <para>The primary difference is that instead of requiring
+          direct access to the repository, <command>svnrdump</command>
+          operates remotely, using the very same Repository Access
+          (RA) protocols that the Subversion client does.  As such,
+          you might need to provide authentication credentials.  Also,
+          your remote interations are subject to any authorization
+          limitations configured on the Subversion server.</para>
+-->
+        <para>Der Hauptunterschied besteht darin, dass
+          <command>svnrdump</command> ohne einen Direktzugriff auf
+          das Projektarchiv zu benötigen, aus der Ferne arbeitet,
+          wobei es die selben Repository Access (RA) Protokolle
+          verwendet wie der Subversion-Client. Daher kann es sein,
+          dass Sie Authentifizierungs-Informationen bereitstellen
+          müssen. Darüber hinaus unterliegen Ihre Aktionen aus der
+          Ferne den konfigurierten Autorisierungs-Einschränkungen des
+          Subversion-Servers.</para>
+
+        <note>
+<!--
+          <para><command>svnrdump dump</command> requires that the
+            remote server be running Subversion 1.4 or newer.  It
+            currently generates dump streams only of the sort which
+            are created when you pass the <option>- -deltas</option>
+            option to <command>svnadmin dump</command>.  This isn't
+            interesting in the typical use-cases, but might impact
+            specific types of custom transformations you might wish to
+            apply to the resulting dump stream.</para>
+-->
+          <para><command>svnrdump dump</command> erfordert einen
+            Fern-Server mit Subversion 1.4 oder neuer. Gegenwärtig
+            erzeugt es nur Auszugsströme der Art wie Sie sie bekommen,
+            wenn Sie <command>svnadmin dump</command> die Option
+            <option>--deltas</option> mitgeben. In den typischen
+            Anwendungsfällen ist das nicht von Interesse, jedoch kann
+            es Auswirkungen auf bestimmte Arten besonderer
+            Transformationen haben, die Sie auf den Auszugsstrom
+            anwenden möchten.</para>
+        </note>
+
+        <note>
+<!--
+          <para>Because it modifies revision properties after
+            committing new revisions, <command>svnrdump load</command>
+            requires that the target repository have revision property
+            changes enabled via the pre-revprop-change hook.  See
+            <xref linkend="svn.ref.reposhooks.pre-revprop-change" /> in
+            <xref linkend="svn.ref"/> for details.</para>
+-->
+          <para>Da es nach der Übergabe neuer Revisionen die
+            Revisions-Eigenschaften ändert, verlangt <command>svnrdump
+            load</command>, dass im Ziel-Projektarchiv Änderungen an
+            Revisions-Eigenschaften mittels des Hooks
+            pre-revprop-change ermöglicht sind. Zu Details, siehe
+            <xref linkend="svn.ref.reposhooks.pre-revprop-change" /> in
+            <xref linkend="svn.ref"/>.</para>
+        </note>
+
+<!--
+        <para>As you might expect, you can use
+          <command>svnadmin</command> and <command>svnrdump</command>
+          in concert.  You can, for example, use <command>svnrdump
+          dump</command> to generate a dump stream from a remote
+          repository, and pipe the results thereof through
+          <command>svnadmin load</command> to copy all that repository
+          history into a local repository.  Or you can do the reverse,
+          copying history from a local repository into a remote
+          one.</para>
+-->
+        <para>Wie Sie wohl erwartet haben, können Sie 
+          <command>svnadmin</command> und <command>svnrdump</command>
+          in Verbindung verwenden. Sie können beispielsweise
+          <command>svnrdump dump</command> verwenden, um einen
+          Auszugsstrom eines Fern-Projektarchivs zu erstellen und das
+          Ergebnis an <command>svnadmin load</command> weiterleiten,
+          um die Historie jenes Projektarchivs in das lokale
+          Projektarchiv zu kopieren. Oder Sie können im Gegenzug die
+          Historie eines lokalen Projektarchivs in ein fernes
+          kopieren.</para>
+
+        <tip>
+<!--
+          <para>By using <literal>file://</literal>
+            URLs, <command>svnrdump</command> can also access local
+            repositories, but it will be doing so via Subversion's
+            Repository Access (RA) abstraction layer&mdash;you'll get
+            better performance out of <command>svnadmin</command> in
+            such situations.</para>
+-->
+          <para>Durch die Verwendung von <literal>file://</literal>
+            URLs kann <command>svnrdump</command> auch auf lokale
+            Projektarchive zugreifen, allerdings wird hierfür auf
+            Subversions Abstraktionsebene Repository Access (RA)
+            zugegriffen; mit  <command>svnadmin</command> ist in
+            solchen Fällen der Durchsatz besser.</para>
+        </tip>
+
+      </sect3>
     </sect2>
 
     <!-- =============================================================== -->
