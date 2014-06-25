@@ -5944,28 +5944,15 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
             werden, sondern normale Übergaben von der IP-Adresse des
             Masters (und nur von dort) angenommen werden:</para>
 
-<!--
           <informalexample>
             <programlisting>
 &lt;Location /svn-proxy-sync&gt;
   DAV svn
   SVNPath /var/svn/repos
   Order deny,allow
-  Deny from all
+  Deny from all <!--
   # Only let the server's IP address access this Location:
-  Allow from 10.20.30.40
-  &hellip;
-&lt;/Location&gt;
-</programlisting>
-          </informalexample>
 -->
-          <informalexample>
-            <programlisting>
-&lt;Location /svn-proxy-sync&gt;
-  DAV svn
-  SVNPath /var/svn/repos
-  Order deny,allow
-  Deny from all
   # Nur Zugriffe auf diese Location von der IP-Adresse des Servers erlauben:
   Allow from 10.20.30.40
   &hellip;
@@ -5985,21 +5972,19 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
           <para>Now that you've configured
             your <literal>Location</literal> blocks on master and
             slaves, you need to configure the master to replicate to
-            the slaves.  This is done the usual way&mdash;
-            using <command>svnsync</command>.  If you're not familiar
-            with this tool, see
-            <xref linkend="svn.reposadmin.maint.replication"/> for
-            details.</para>
+            the slaves.  Our walkthough uses <command>svnsync</command>,
+            which is covered in more detail in
+            <xref linkend="svn.reposadmin.maint.replication.svnsync"
+            />.</para>
 -->
           <para>Nachdem Sie nun Ihre
             <literal>Location</literal>-Blöcke auf Mastern und Slaves
             konfiguriert haben, müssen Sie nun Ihren Master für die
-            Replizierung zu den Slaves einrichten. Das geschieht auf
-            die übliche Weise &ndash; mit <command>svnsync</command>.
-            Wenn Sie dieses Werkzeug noch nicht kennen, können Sie
-            Details unter 
-            <xref linkend="svn.reposadmin.maint.replication"/>
-            nachlesen.</para>
+            Replizierung zu den Slaves einrichten. Unser
+            Anwendungsbeispiel verwendet <command>svnsync</command>,
+            welches detailliert in
+            <xref linkend="svn.reposadmin.maint.replication.svnsync"/>
+            behandelt wird.</para>
 
 <!--
           <para>First, make sure that each slave repository has a
@@ -6022,59 +6007,37 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
             Master-Projektarchiv auf der lokalen Platte
             empfangen:</para>
 
-<!--
           <informalexample>
             <screen>
-$ svnsync init http://slave1.example.com/svn-proxy-sync file:///var/svn/repos
+$ svnsync init http://slave1.example.com/svn-proxy-sync \
+               file:///var/svn/repos <!--
 Copied properties for revision 0.
-$ svnsync init http://slave2.example.com/svn-proxy-sync file:///var/svn/repos
-Copied properties for revision 0.
-$ svnsync init http://slave3.example.com/svn-proxy-sync file:///var/svn/repos
-Copied properties for revision 0.
-
-# Perform the initial replication
-
-$ svnsync sync http://slave1.example.com/svn-proxy-sync
-Transmitting file data ....
-Committed revision 1.
-Copied properties for revision 1.
-Transmitting file data .......
-Committed revision 2.
-Copied properties for revision 2.
-&hellip;
-
-$ svnsync sync http://slave2.example.com/svn-proxy-sync
-Transmitting file data ....
-Committed revision 1.
-Copied properties for revision 1.
-Transmitting file data .......
-Committed revision 2.
-Copied properties for revision 2.
-&hellip;
-
-$ svnsync sync http://slave3.example.com/svn-proxy-sync
-Transmitting file data ....
-Committed revision 1.
-Copied properties for revision 1.
-Transmitting file data .......
-Committed revision 2.
-Copied properties for revision 2.
-&hellip;
-</screen>
-          </informalexample>
 -->
-          <informalexample>
-            <screen>
-$ svnsync init http://slave1.example.com/svn-proxy-sync file:///var/svn/repos
 Eigenschaften für Revision 0 kopiert.
-$ svnsync init http://slave2.example.com/svn-proxy-sync file:///var/svn/repos
+$ svnsync init http://slave2.example.com/svn-proxy-sync \
+               file:///var/svn/repos <!--
+Copied properties for revision 0.
+-->
 Eigenschaften für Revision 0 kopiert.
-$ svnsync init http://slave3.example.com/svn-proxy-sync file:///var/svn/repos
+$ svnsync init http://slave3.example.com/svn-proxy-sync \
+               file:///var/svn/repos <!--
+Copied properties for revision 0.
+-->
 Eigenschaften für Revision 0 kopiert.
-
+<!--
+# Perform the initial replication
+-->
 # Die initiale Replizierung durchführe
 
-$ svnsync sync http://slave1.example.com/svn-proxy-sync
+$ svnsync sync http://slave1.example.com/svn-proxy-sync \
+$ svnsync sync http://slave1.example.com/svn-proxy-sync <!--
+Transmitting file data ....
+Committed revision 1.
+Copied properties for revision 1.
+Transmitting file data .......
+Committed revision 2.
+Copied properties for revision 2.
+-->
 Übertrage Daten ....
 Revision 1 übertragen.
 Eigenschaften für Revision 1 kopiert.
@@ -6083,7 +6046,15 @@ Revision 2 übertragen.
 Eigenschaften für Revision 2 kopiert.
 &hellip;
 
-$ svnsync sync http://slave2.example.com/svn-proxy-sync
+$ svnsync sync http://slave2.example.com/svn-proxy-sync \
+               file:///var/svn/repos  <!--
+Transmitting file data ....
+Committed revision 1.
+Copied properties for revision 1.
+Transmitting file data .......
+Committed revision 2.
+Copied properties for revision 2.
+-->
 Übertrage Daten ....
 Revision 1 übertragen.
 Eigenschaften für Revision 1 kopiert.
@@ -6092,7 +6063,15 @@ Revision 2 übertragen.
 Eigenschaften für Revision 2 kopiert.
 &hellip;
 
-$ svnsync sync http://slave3.example.com/svn-proxy-sync
+$ svnsync sync http://slave3.example.com/svn-proxy-sync \
+               file:///var/svn/repos <!--
+Transmitting file data ....
+Committed revision 1.
+Copied properties for revision 1.
+Transmitting file data .......
+Committed revision 2.
+Copied properties for revision 2.
+-->
 Übertrage Daten ....
 Revision 1 übertragen.
 Eigenschaften für Revision 1 kopiert.
@@ -6114,26 +6093,19 @@ Eigenschaften für Revision 2 kopiert.
             <command>svnsync</command> auf jedem Slave-Server
             aufgerufen wird:</para>
 
-<!--
           <informalexample>
             <programlisting>
-#!/bin/sh
+#!/bin/sh <!--
 # Post-commit script to replicate newly committed revision to slaves
-
-svnsync sync http://slave1.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1 &amp;
-svnsync sync http://slave2.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1 &amp;
-svnsync sync http://slave3.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1 &amp;
-</programlisting>
-          </informalexample>
 -->
-          <informalexample>
-            <programlisting>
-#!/bin/sh
 # Post-Commit-Skript zum Replizieren der neu übergebenen Revision an die Slaves
 
-svnsync sync http://slave1.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1 &amp;
-svnsync sync http://slave2.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1 &amp;
-svnsync sync http://slave3.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1 &amp;
+svnsync sync http://slave1.example.com/svn-proxy-sync \
+             file:///var/svn/repos &gt; /dev/null 2&gt;&amp;1 &amp;
+svnsync sync http://slave2.example.com/svn-proxy-sync \
+             file:///var/svn/repos &gt; /dev/null 2&gt;&amp;1 &amp;
+svnsync sync http://slave3.example.com/svn-proxy-sync \
+             file:///var/svn/repos &gt; /dev/null 2&gt;&amp;1 &amp;
 </programlisting>
           </informalexample>
 
@@ -6159,28 +6131,23 @@ svnsync sync http://slave3.example.com/svn-proxy-sync &gt; /dev/null 2&gt;&amp;1
             Protokollnachricht verändert, die Slave-Server diese
             Änderung ebenfalls mitbekommen:</para>
 
-<!--
           <informalexample>
             <programlisting>
-#!/bin/sh
+#!/bin/sh <!--
 # Post-revprop-change script to replicate revprop-changes to slaves
-
-REV=${2}
-svnsync copy-revprops http://slave1.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1 &amp;
-svnsync copy-revprops http://slave2.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1 &amp;
-svnsync copy-revprops http://slave3.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1 &amp;
-</programlisting>
-          </informalexample>
 -->
-          <informalexample>
-            <programlisting>
-#!/bin/sh
 # Post-revprop-Change-Skript zur Weitergabe der Änderung an den Revisionseigenschaften an die Slaves
 
 REV=${2}
-svnsync copy-revprops http://slave1.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1 &amp;
-svnsync copy-revprops http://slave2.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1 &amp;
-svnsync copy-revprops http://slave3.example.com/svn-proxy-sync ${REV} &gt; /dev/null 2&gt;&amp;1 &amp;
+svnsync copy-revprops http://slave1.example.com/svn-proxy-sync \
+                      file:///var/svn/repos \
+                      -r ${REV} &gt; /dev/null 2&gt;&amp;1 &amp;
+svnsync copy-revprops http://slave2.example.com/svn-proxy-sync \
+                      file:///var/svn/repos \
+                      -r ${REV} &gt; /dev/null 2&gt;&amp;1 &amp;
+svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
+                      file:///var/svn/repos \
+                      -r ${REV} &gt; /dev/null 2&gt;&amp;1 &amp;
 </programlisting>
           </informalexample>
 
