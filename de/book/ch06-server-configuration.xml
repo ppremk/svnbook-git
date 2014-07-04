@@ -6643,11 +6643,11 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
     </sidebar>
 
 <!--
-    <para>Once your server knows where to find your rules file, it's
+    <para>Once your server knows where to find your access file, it's
       time to define the rules.</para>
 
 -->
-    <para>Sobald Ihr Server weiß, wo sich Ihre Regeldateien befinden,
+    <para>Sobald Ihr Server weiß, wo sich Ihre Zugangsdatei befindet,
       ist es an der Zeit, die Regeln zu definieren.</para>
 
 <!--
@@ -6691,21 +6691,25 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
          von Abschnittsüberschriften wird Klein-/Großschreibung berücksichtigt. -->
 <!--
     <warning>
-      <para>Subversion treats repository names and paths in a
-        case-insensitive fashion for the purposes of access control,
-        converting them to lower case internally before comparing them
-        against the contents of your access file.  Use lower case for
-        the contents of the section headers in your access
-        file.</para>
+      <para>Prior to version 1.7, Subversion treated repository names
+        and paths in a case-insensitive fashion for the purposes of
+        access control, converting them to lower case internally
+        before comparing them against the contents of your access
+        file.  It now does these comparisons case-sensitively.  If you
+        upgraded to Subversion 1.7 from an older version, you should
+        review your access files for case correctness.</para>
     </warning>
 -->
     <warning>
-      <para>Für Zwecke der Zugriffskontrolle beachtet Subversion bei
+      <para>Vor Version 1.7 hat Subversion bei
         Namen und Pfaden von Projektarchiven nicht die Groß- oder
-        Kleinschreibung, indem sie vor dem Vergleich mit dem Inhalt
-        der Zugriffsdatei in Kleinbuchstaben umgewandelt werden.
-        Verwenden Sie Kleinbuchstaben für die Inhalte der
-        Abschnittsüberschriften Ihrer Zugriffsdatei.</para>
+        Kleinschreibung beachtet, da sie vor dem Vergleich mit dem Inhalt
+        der Zugangsdatei in Kleinbuchstaben umgewandelt wurden. Nun
+        werden Vergleiche unter Berücksichtigung der Groß- und
+        Kleinschreibung vorgenommen. Falls Sie eine ältere
+        Version auf Subversion 1.7 aktualisiert haben, sollten Sie
+        Ihre Zugangsdateien auf die korrekte Groß- und Kleinschreibung
+        überprüfen.</para>
     </warning>
 
 <!--
@@ -6988,7 +6992,7 @@ jane = r
       access.  Combined with the <literal>jane = r</literal> rule,
       this still gives Jane read/write access.  Permissions for group
       members can only be extended beyond the permissions the group
-      already has.  Restricting users who are part of a group to less
+      already has. Restricting users who are part of a group to less
       than their group's permissions is impossible.</para>
 
 -->
@@ -7186,35 +7190,21 @@ $authenticated = rw
     <para>Ein weniger offensichtliches Beispiel könnte wie folgt
       aussehen:</para>
 
+    <informalexample>
+      <programlisting>
+[groups]
+calc-developers = &amp;harry, &amp;sally, &amp;joe
+calc-owners = &amp;hewlett, &amp;packard
+calc = @calc-developers, @calc-owners
 <!--
-    <informalexample>
-      <programlisting>
-[groups]
-calc-developers = &amp;harry, &amp;sally, &amp;joe
-calc-owners = &amp;hewlett, &amp;packard
-calc = @calc-developers, @calc-owners
-
 # Any calc participant has read-write access...
-[calc:/projects/calc]
-@calc = rw
-
-# ...but only allow the owners to make and modify release tags.
-[calc:/projects/calc/tags]
-~@calc-owners = r
-</programlisting>
-    </informalexample>
 -->
-    <informalexample>
-      <programlisting>
-[groups]
-calc-developers = &amp;harry, &amp;sally, &amp;joe
-calc-owners = &amp;hewlett, &amp;packard
-calc = @calc-developers, @calc-owners
-
 # jeder calc-Teilnehmer hat Lese- und Schreibzugriff...
 [calc:/projects/calc]
 @calc = rw
-
+<!--
+# ...but only allow the owners to make and modify release tags.
+-->
 # ...doch nur die Eigentümer dürfen Release-Tags erstellen und ändern.
 [calc:/projects/calc/tags]
 ~@calc-owners = r
