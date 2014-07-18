@@ -7594,12 +7594,16 @@ update /path r17 send-copyfrom-args
       Benutzerfreundlichkeit&hellip;.</para></footnote>. In diesem
       Abschnitt erörtern wir einige Maßnahmen, wie Sie Ihre Subversion
       Server-Konfiguration dergestalt anpassen können, dass eine noch
-      bessete Leistung und Erweiterbarkeit verfügbar ist.</para>
+      bessere Leistung und Erweiterbarkeit verfügbar ist.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.optimization.caching">
+<!--
       <title>Data Caching</title>
+-->
+      <title>Datenpufferung</title>
 
+<!--
       <para>Generally speaking, the most expensive part of a
         Subversion server's job is fetching data from the repository.
         Subversion 1.6 attempted to offset this cost by introducing
@@ -7609,15 +7613,37 @@ update /path r17 send-copyfrom-args
         operations, but also by providing in each of the available
         servers the means by which fine-tune the size and some
         behaviors of the cache.</para>
+-->
+      <para>Im Allgemeinen ist der teuerste Teil der Arbeit eines
+        Subversion Servers das Abrufen von Daten aus dem
+        Projektarchiv. Subversion 1.6 versuchte, diese Kosten durch
+        die Einführung einer Pufferung bestimmter aus dem
+        Projektarchiv gelesener Datenklassen im Speicher
+        auszugleichen. Subversion 1.7 geht hier jedoch weiter, indem
+        nicht nur die Ergebnisse der kostenintensiveren Operationen
+        gepuffert werden, sondern außerdem in jedem der verfügbaren
+        Server die Werkzeuge zur Feinjustierung der Größe und einiger
+        Verhaltensweisen des Puffers zur Verfügung gestellt
+        wird.</para>
 
+<!--
       <para>For <command>svnserve</command>, you can specify the size
-        of the cache using the <option>--memory-cache-size</option>
+        of the cache using the <option>- -memory-cache-size</option>
         (<option>-M</option>) command-line option.  You can also
         dictate whether <command>svnserve</command> should attempt to
         cache content fulltexts and deltas via the
-        boolean <option>--cache-fulltexts</option>
-        and <option>--cache-txdeltas</option> options,
+        boolean <option>- -cache-fulltexts</option>
+        and <option>- -cache-txdeltas</option> options,
         respectively.</para>
+-->
+      <para>Für <command>svnserve</command> können Sie die Puffergröße
+        mit der Kommendozeilenoption
+        <option>--memory-cache-size</option> (<option>-M</option>)
+        angeben. Sie können über die boolschen Optionen
+        <option>--cache-fulltexts</option> und
+        <option>--cache-txdeltas</option> auch vorgeben, ob
+        <command>svnserve</command> den Volltext bzw. die Deltas von
+        Inhalten puffern soll.</para>
 
       <informalexample>
         <screen>
@@ -7630,6 +7656,7 @@ $
 </screen>
       </informalexample>
 
+<!--
       <para><command>mod_dav_svn</command> provides the same degree of
         cache configurability via <filename>httpd.conf</filename>
         directives.
@@ -7638,11 +7665,22 @@ $
         and <literal>SVNCacheTextDeltas</literal> directives may be
         used at the server configuration level to control Subversion's
         data cache characteristics:</para>
+-->
+      <para><command>mod_dav_svn</command> stellt denselben
+        Konfigurationsgrad über
+        <filename>httpd.conf</filename>-Direktiven zur Verfügung.  Die
+        Direktiven <literal>SVNInMemoryCacheSize</literal>,
+        <literal>SVNCacheFullTexts</literal> und
+        <literal>SVNCacheTextDeltas</literal> können auf der Ebene der
+        Server-Konfiguration verwendet werden, um die Charakteristik
+        der Datenpufferung von Subversion zu kontrollieren.</para>
 
       <informalexample>
         <programlisting>
-&lt;IfModule dav_svn_module&gt;
+&lt;IfModule dav_svn_module&gt;<!--
   # Enable a 1 Gb Subversion data cache for both fulltext and deltas.
+-->
+  # Einen 1 Gb Subversion Datenpuffer sowohl für Volltext als auch Deltas bereitstellen.
   SVNInMemoryCacheSize 1048576
   SVNCacheTextDeltas On
   SVNCacheFullTexts On
@@ -7650,6 +7688,7 @@ $
 </programlisting>
       </informalexample>
 
+<!--
       <para>So what settings should you use?  Certainly you need to
         consider what resources are available on your server.  To get
         any benefit out of the cache at all, you'll probably want to
@@ -7657,18 +7696,38 @@ $
         which are most commonly accessed in your repository (for
         example, your project's <filename>trunk</filename> directory
         tree).</para>
+-->
+      <para>Also, welche Einstellungen sollten Sie verwenden?
+        Natürlich müssen Sie die auf Ihrem Server zur Verfügung
+        stehenden Ressourcen berücksichtigen. Um überhaupt einen
+        Vorteil aus der Pufferung ziehen zu können, sollten Sie den
+        Puffer mindestens so groß lassen, dass er alle Dateien, auf
+        die am häufigsten zugegriffen wird, aufnehmen kann (z.B. den
+        <filename>trunk</filename>-Dateibaum Ihres Projektes).</para>
 
       <tip>
+<!--
         <para>Setting the memory cache size to <literal>0</literal>
           will disable this enhanced caching mechanism and cause
           Subversion to fall back to using the older cache mechanisms
           introduced in Subversion 1.6.</para>
+-->
+        <para>Wenn Sie die Größe des Puffers im Speicher auf
+          <literal>0</literal> setzen, wird der erweiterte
+          Puffermechanismus außer Kraft gesetzt und bewirkt, dass
+          Subversion auf die alten in Subversion 1.6 eingeführten
+          Puffermechanismen zurückgreift.</para>
       </tip>
 
       <note>
+<!--
         <para>Currently, only repositories which make use of the FSFS
           backend data store make use of this data caching
           functionality.</para>
+-->
+        <para>Momentan verwenden lediglich Projektarchive, die das
+          FSFS-Backend benutzen, diese Funktionalität der
+          Datenpufferung.</para>
       </note>
 
     </sect2>
