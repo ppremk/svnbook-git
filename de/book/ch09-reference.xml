@@ -15846,7 +15846,8 @@ $
           <title>Synopsis</title>
 -->
           <title>Aufruf</title>
-          <para><literal>svnsync synchronize DEST_URL</literal></para>
+          <para><literal>svnsync synchronize DEST_URL
+            [SOURCE_URL]</literal></para>
         </refsect1>
         <refsect1>
 <!--
@@ -15877,6 +15878,49 @@ $
           <para><command>svnsync synchronize</command> kann sauber
             abgebrochen und erneut gestartet werden.</para>
 
+<!--
+          <para>When <replaceable>SOURCE_URL</replaceable> is
+            provided, <command>svnsync</command> will use it as the
+            repository URL which the destination repository is
+            mirroring. Generally, <replaceable>SOURCE_URL</replaceable>
+            will be exactly the same source URL as was used with
+            the <command>svnsync initialize</command> command when the
+            mirror was first set up.  You may choose, however, to
+            omit <replaceable>SOURCE_URL</replaceable>, in which
+            case <command>svnsync</command> will consult the mirror
+            repository's records to determine the source URL which
+            should be used.</para>
+-->
+          <para>Wenn <replaceable>SOURCE_URL</replaceable> angegeben
+            wird, verwendet es <command>svnsync</command> als den URL
+            des Projektarchivs, welches das Ziel-Projektarchiv
+            spiegelt. Im Allgemeinen wird
+            <replaceable>SOURCE_URL</replaceable> genau der selbe
+            Quell-URL sein, der beim Befehl <command>svnsync
+            initialize</command> benutzt wurde, als der Spiegel
+            erstmalig eingerichtet wurde. Sie können wahlweise auch
+            <replaceable>SOURCE_URL</replaceable> weglassen, so dass
+            <command>svnsync</command> in den Einträgen des
+            Spiegel-Projektarchivs nach dem zu verwendenden Quell-URL
+            sucht.</para>
+
+          <warning>
+<!--
+            <para>We strongly recommend that you specify the source
+              URL on the command-line, especially when untrusted users
+              have write access to the revision 0 properties
+              which <command>svnsync</command> uses to coordinate its
+              efforts.</para>
+-->
+            <para>Wir empfehlen dringend, dass Sie den Quell-URL auf
+              der Kommandozeile angeben, besonders dann, wenn nicht
+              vertrauenswürdige Anwender Schreibzugriff auf die
+              Eigenschaften von Revision 0 besitzen, die
+              <command>svnsync</command> verwendet, um seine
+              Tätigkeiten zu koordinieren.</para>
+          </warning>
+
+
         </refsect1>
 
         <refsect1>
@@ -15887,15 +15931,19 @@ $
 
           <informalexample>
             <screen>
---config-dir DIR
---no-auth-cache
---non-interactive
---quiet (-q)
---source-password ARG
---source-username ARG
---sync-password ARG
---sync-username ARG
---trust-server-cert
+<xref linkend="svn.ref.svnsync.sw.config_dir" />
+<xref linkend="svn.ref.svnsync.sw.config_option" />
+<xref linkend="svn.ref.svnsync.sw.disable_locking" />
+<xref linkend="svn.ref.svnsync.sw.no_auth_cache" />
+<xref linkend="svn.ref.svnsync.sw.non_interactive" />
+<xref linkend="svn.ref.svnsync.sw.quiet" />
+<xref linkend="svn.ref.svnsync.sw.source_password" />
+<xref linkend="svn.ref.svnsync.sw.source_prop_encoding" />
+<xref linkend="svn.ref.svnsync.sw.source_username" />
+<xref linkend="svn.ref.svnsync.sw.steal_lock" />
+<xref linkend="svn.ref.svnsync.sw.sync_password" />
+<xref linkend="svn.ref.svnsync.sw.sync_username" />
+<xref linkend="svn.ref.svnsync.sw.trust_server_cert" />
 </screen>
           </informalexample>
         </refsect1>
@@ -15915,8 +15963,8 @@ $
 
           <informalexample>
             <screen>
-$ svnsync synchronize file:///var/svn/repos-mirror
-<!--
+$ svnsync synchronize file:///var/svn/repos-mirror \
+                      http://svn.example.com/repos<!--
 Committed revision 1.
 Copied properties for revision 1.
 Committed revision 2.
