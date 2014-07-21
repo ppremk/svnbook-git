@@ -15288,6 +15288,7 @@ $ svnlook youngest /var/svn/repos/
       <para>Hier sind die verschiedenen Unterbefehle für das Programm
         <command>svnsync</command>.</para>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svnsync.c.copy-revprops">
 
         <indexterm>
@@ -15317,7 +15318,9 @@ $ svnlook youngest /var/svn/repos/
 -->
           <title>Aufruf</title>
           <para><literal>svnsync copy-revprops DEST_URL
-            [REV[:REV2]]</literal></para>
+            [SOURCE_URL]</literal></para>
+          <para><literal>svnsync copy-revprops DEST_URL
+            REV[:REV2]</literal></para>
         </refsect1>
         <refsect1>
 <!--
@@ -15355,6 +15358,48 @@ $ svnlook youngest /var/svn/repos/
             Verwenden Sie es, um die Revisions-Eigenschaften einer
             bestimmten Revision oder eines Revisionsbereiches erneut
             zu synchronisieren.</para>
+
+<!--
+          <para>When <replaceable>SOURCE_URL</replaceable> is
+            provided, <command>svnsync</command> will use it as the
+            repository URL which the destination repository is
+            mirroring. Generally, <replaceable>SOURCE_URL</replaceable>
+            will be exactly the same source URL as was used with
+            the <command>svnsync initialize</command> command when the
+            mirror was first set up.  You may choose, however, to
+            omit <replaceable>SOURCE_URL</replaceable>, in which
+            case <command>svnsync</command> will consult the mirror
+            repository's records to determine the source URL which
+            should be used.</para>
+-->
+          <para>Wenn <replaceable>SOURCE_URL</replaceable> angegeben
+            wird, verwendet <command>svnsync</command> es als den URL
+            des Projektarchivs, welches das Ziel-Projektarchiv
+            spiegelt. Im Allgemeinen wird <replaceable>SOURCE_URL</replaceable>
+            genau der selbe Quell-URL sein, der mit dem Befehl
+            <command>svnsync initialize</command> bei der Erstellung
+            des Spiegels verwendet wurde. Sie können sich jedoch
+            entscheiden, <replaceable>SOURCE_URL</replaceable>
+            wegzulassen, wobei dann <command>svnsync</command> in den
+            Aufzeichnungen des Spiegels nachsieht, welcher Quell-URL
+            verwendet werden soll.</para>
+
+          <warning>
+<!--
+            <para>We strongly recommend that you specify the source
+              URL on the command-line, especially when untrusted users
+              have write access to the revision 0 properties
+              which <command>svnsync</command> uses to coordinate its
+              efforts.</para>
+-->
+            <para>Wir empfehlen dringend, dass Sie den Quell-URL auf
+              der Kommandozeile angeben, besonders dann, wenn nicht
+              vertrauenswürdige Anwender Schreibzugriff auf die
+              Eigenschaften von Revision 0 besitzen, die
+              <command>svnsync</command> verwendet, um seine
+              Tätigkeiten zu koordinieren.</para>
+          </warning>
+
         </refsect1>
 
         <refsect1>
@@ -15365,15 +15410,20 @@ $ svnlook youngest /var/svn/repos/
 
           <informalexample>
             <screen>
---config-dir DIR
---no-auth-cache
---non-interactive
---quiet (-q)
---source-password ARG
---source-username ARG
---sync-password ARG
---sync-username ARG
---trust-server-cert
+<xref linkend="svn.ref.svnsync.sw.config_dir" />
+<xref linkend="svn.ref.svnsync.sw.config_option" />
+<xref linkend="svn.ref.svnsync.sw.disable_locking" />
+<xref linkend="svn.ref.svnsync.sw.no_auth_cache" />
+<xref linkend="svn.ref.svnsync.sw.non_interactive" />
+<xref linkend="svn.ref.svnsync.sw.quiet" />
+<xref linkend="svn.ref.svnsync.sw.revision" />
+<xref linkend="svn.ref.svnsync.sw.source_password" />
+<xref linkend="svn.ref.svnsync.sw.source_prop_encoding" />
+<xref linkend="svn.ref.svnsync.sw.source_username" />
+<xref linkend="svn.ref.svnsync.sw.steal_lock" />
+<xref linkend="svn.ref.svnsync.sw.sync_password" />
+<xref linkend="svn.ref.svnsync.sw.sync_username" />
+<xref linkend="svn.ref.svnsync.sw.trust_server_cert" />
 </screen>
           </informalexample>
         </refsect1>
@@ -15385,15 +15435,17 @@ $ svnlook youngest /var/svn/repos/
           <title>Beispiele</title>
 
 <!--
-          <para>Resynchronize revision properties for a single revision:</para>
+          <para>Resynchronize the revision properties associated with
+            a single revision (r6):</para>
 -->
-          <para>Revisions-Eigenschaften einer einzelnen Revision erneut
+          <para>Die Revisions-Eigenschaften, die mit einer einzelnen
+            Revision (r6) in Verbindung stehen, erneut
             synchronisieren:</para>
 
           <informalexample>
             <screen>
-$ svnsync copy-revprops file:///var/svn/repos-mirror 6
-<!--
+$ svnsync copy-revprops -r 6 file:///var/svn/repos-mirror \
+                             http://svn.example.com/repos<!--
 Copied properties for revision 6.
 -->
 Eigenschaften für Revision 6 kopiert.
