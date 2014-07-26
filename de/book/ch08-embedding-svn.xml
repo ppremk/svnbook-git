@@ -1201,253 +1201,6 @@ $
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
-  <sect1 id="svn.developer.insidewc">
-<!--
-    <title>Inside the Working Copy Administration Area</title>
--->
-    <title>Innerhalb des Verwaltungsbereichs für Arbeitskopien</title>
-
-<!--
-    <para>As we mentioned earlier, each directory of a Subversion
-      working copy contains a special subdirectory called
-      <filename>.svn</filename> that houses administrative data about
-      that working copy directory.  Subversion uses the information in
-      <filename>.svn</filename> to keep track of things such as:</para>
--->
-    <para>Wie bereits erwähnt, besitzt jedes Verzeichnis einer
-      Subversion-Arbeitskopie ein besonderes Unterverzeichnis namens
-      <filename>.svn</filename>,  das Verwaltungsdaten zum
-      Arbeitskopieverzeichnis beherbergt. Subversion verwendet die
-      Informationen in <filename>.svn</filename>, um Dinge wie diese
-      zu verfolgen:</para>
-
-    <itemizedlist>
-      <listitem>
-<!--
-        <para>Which repository location(s) are represented by the
-          files and subdirectories in the working copy
-          directory</para>
--->
-        <para>welche Orte des Projektarchivs durch die Dateien und
-          Unterverzeichnisse der Arbeitskopie repräsentiert
-          werden</para>
-      </listitem>
-      <listitem>
-<!--
-        <para>What revision of each of those files and directories is
-          currently present in the working copy</para>
--->
-        <para>welche Revision jeder dieser Dateien und Verzeichnisse
-          momentan in der Arbeitskopie vorhanden ist</para>
-      </listitem>
-      <listitem>
-<!--
-        <para>Any user-defined properties that might be attached
-          to those files and directories</para>
--->
-        <para>irgendwelche benutzerdefinierten Eigenschaften, die diesen
-          Dateien und Verzeichnissen zugewiesen sein könnten</para>
-      </listitem>
-      <listitem>
-<!--
-        <para>Pristine (unedited) copies of the working copy
-          files</para>
--->
-        <para>ursprüngliche (unbearbeitete) Kopien der Dateien in der
-          Arbeitskopie</para>
-      </listitem>
-    </itemizedlist>
-
-<!--
-    <para>The Subversion working copy administration area's layout and
-      contents are considered implementation details not really
-      intended for human consumption.  Developers are encouraged to
-      use Subversion's public APIs, or the tools that Subversion
-      provides, to access and manipulate the working copy data,
-      instead of directly reading or modifying those files.  The file
-      formats employed by the working copy library for its
-      administrative data do change from time to time&mdash;a fact
-      that the public APIs do a great job of hiding from the average
-      user.  In this section, we expose some of these implementation
-      details sheerly to appease your overwhelming curiosity.</para>
--->
-    <para>Die Struktur sowie der Inhalt des Verwaltungsbereichs einer
-      Subversion-Arbeitskopie werden als Implementierungsdetails
-      betrachtet, die nicht für menschliche Bearbeitung vorgesehen
-      sind. Entwicklern wird nahegelegt, die öffentlichen APIs oder
-      die von Subversion zur Verfügung gestellten Werkzeuge zu
-      benutzen, um die Daten der Arbeitskopie zu bearbeiten, statt
-      diese Dateien direkt zu lesen und zu verändern. Die von der
-      Arbeitskopie-Bibliothek für ihre Verwaltungsdaten verwendeten
-      Dateiformate ändern sich hin und wieder &ndash; eine Tatsache,
-      die dem  Durchschnittsanwender dank der öffentlichen APIs
-      verborgen bleibt. Nur um Ihre unbändige Neugier zu stillen,
-      werden wir in diesem Abschnitt einige dieser
-      Implementierungsdetails offenlegen.</para>
-
-    <!-- =============================================================== -->
-    <sect2 id="svn.developer.insidewc.entries">
-<!--
-      <title>The Entries File</title>
--->
-      <title>Die Datei entries</title>
-
-<!--
-      <para>Perhaps the single most important file in the
-        <filename>.svn</filename> directory is the
-        <filename>entries</filename> file.  It
-        contains the bulk of the administrative
-        information about the versioned items in a working copy
-        directory.  This one file tracks the repository
-        URLs, pristine revision, file checksums, pristine text and
-        property timestamps, scheduling and conflict state
-        information, last-known commit information (author, revision,
-        timestamp), local copy history&mdash;practically everything
-        that a Subversion client is interested in knowing about a
-        versioned (or to-be-versioned) resource!</para>
--->
-      <para>Die vielleicht wichtigste Datei im Verzeichnis
-        <filename>.svn</filename> ist die Datei
-        <filename>entries</filename>. Sie enthält den größten Teil der
-        Verwaltungsinformationen zu den versionierten Elementen in
-        einem Verzeichnis der Arbeitskopie. Diese eine Datei verfolgt
-        die Projektarchiv-URLs, die ursprüngliche Revision, Prüfsummen
-        von Dateien, ursprünglichen Text und Zeitstempel von
-        Eigenschaften, Informationen zur Ablaufkoordination und zu
-        Konfliktzuständen, Informationen zur letzten Übergabe (Autor,
-        Revision, Zeitstempel), die Geschichte der lokalen Kopie
-        &ndash; praktisch alles, was ein Subversion-Client über eine
-        versionierte (oder noch zu versionierende) Ressource wissen
-        möchte!</para>
-
-<!--
-      <para>Folks familiar with CVS's administrative directories will
-        have recognized at this point that Subversion's
-        <filename>.svn/entries</filename> file serves the purposes of,
-        among other things, CVS's <filename>CVS/Entries</filename>,
-        <filename>CVS/Root</filename>, and
-        <filename>CVS/Repository</filename> files combined.</para>
--->
-      <para>Kenner der Verwaltungsverzeichnisse von CVS werden zu
-        diesem Zeitpunkt bemerkt haben, dass die Datei
-        <filename>.svn/entries</filename> von Subversion neben anderen
-        Dingen denselben Zweck verfolgt wie eine Vereinigung der
-        CVS-Dateien <filename>CVS/Entries</filename>,
-        <filename>CVS/Root</filename> und
-        <filename>CVS/Repository</filename>.</para>
-
-<!--
-      <para>The format of the <filename>.svn/entries</filename> file
-        has changed over time.  Originally an XML file, it now uses a
-        custom&mdash;though still human-readable&mdash;file format.
-        While XML was a great choice for early developers of
-        Subversion who were frequently debugging the file's contents
-        (and Subversion's behavior in light of them), the need for
-        easy developer debugging has diminished as Subversion has
-        matured and has been replaced by the user's need for snappier
-        performance.  Be aware that Subversion's working copy library
-        automatically upgrades working copies from one format to
-        another&mdash;it reads the old formats and writes the
-        new&mdash;which saves you the hassle of checking out a new
-        working copy, but can also complicate situations where
-        different versions of Subversion might be trying to use the
-        same working copy.</para>
--->
-      <para>Das Format der Datei <filename>.svn/entries</filename> hat
-        sich im Laufe der Zeit geändert. Als ursprüngliche XML-Datei
-        verwendet sie nun ein angepasstes &ndash; doch immer noch
-        menschenlesbares &ndash; Dateiformat. Obwohl XML eine gute
-        Wahl für die ersten Entwickler von Subversion war, die
-        regelmäßig den Inhalt der Datei (und abhängig davon,
-        Subversions Verhalten) debuggen mussten, ist mittlerweile die
-        Notwendigkeit der Fehlersuche aus der frühen Entwicklungsphase
-        dem Wunsch der Benutzer nach einer flotteren Ausführung
-        gewichen. Ihnen sollte bewusst sein, dass die
-        Arbeitskopie-Bibliothek automatisch Arbeitskopien auf ein
-        neueres Format bringt &ndash; sie liest das alte Format und
-        schreibt das neue &ndash; was Ihnen einerseits die
-        Bereitstellung einer neuen Arbeitskopie erspart, andererseits
-        allerdings zu Komplikationen führen kann, falls verschiedene
-        Versionen von Subversion dieselbe Arbeitskopie verwenden
-        wollen.</para>
-
-    </sect2>
-
-    <!-- =============================================================== -->
-    <sect2 id="svn.developer.insidewc.base-and-props">
-<!--
-      <title>Pristine Copies and Property Files</title>
--->
-      <title>Unveränderte Kopien und Eigenschafts-Dateien</title>
-
-<!--
-      <para>As mentioned before, the <filename>.svn</filename>
-        directory also holds the pristine <quote>text-base</quote>
-        versions of files.  You can find those in
-        <filename>.svn/text-base</filename>.  The benefits of these
-        pristine copies are multiple&mdash;network-free checks for
-        local modifications and difference reporting, network-free
-        reversion of modified or missing files, more efficient
-        transmission of changes to the server&mdash;but they come at the
-        cost of having each versioned file stored at least twice on
-        disk.  These days, this seems to be a negligible penalty for
-        most files.  However, the situation gets uglier as the size of
-        your versioned files grows.  Some attention is being given to
-        making the presence of the <quote>text-base</quote> an option.
-        Ironically, though, it is as your versioned files' sizes get
-        larger that the existence of the <quote>text-base</quote>
-        becomes more crucial&mdash;who wants to transmit a huge file
-        across a network just because she wants to commit a tiny
-        change to it?</para>
--->
-      <para>Wie bereits erwähnt, enthält das Verzeichnis
-        <filename>.svn</filename> auch die unveränderten Versionen
-        <quote>textbasierter</quote> Dateien. Sie finden diese in
-        <filename>.svn/text-base</filename>. Die Vorteile dieser
-        unveränderten Kopien sind vielfältig &ndash; Überprüfung
-        lokaler Änderungen und Vergleiche ohne Netzzugriff,
-        Wiederherstellung veränderter oder verlorengegangener Dateien
-        ohne Netzzugriff, effizientere Übertragung von Änderungen an
-        den Server &mdash; jedoch zu dem Preis, dass jede versionierte
-        Datei mindestens zweimal auf der Platte gespeichert wird.
-        Heutzutage scheint das jedoch für die meisten Dateien ein
-        vernachlässigbarer Nachteil zu sein. Jedoch sieht es nicht
-        mehr so schön aus, wenn die Größe Ihrer Dateien anwächst. Es
-        wird daher überlegt, die Anwesenheit der Datei
-        <quote>text-base</quote> optional zu machen. Ironischerweise
-        jedoch wird das Vorhandensein von <quote>text-base</quote> mit
-        dem Anwachsen der Größe Ihrer versionierten Dateien immer
-        ausschlaggebender &mdash; wer möchte schon eine riesige Datei
-        über das Netz versenden, obwohl nur eine winzige Änderung
-        übergeben werden soll?</para>
-
-<!--
-      <para>Similar in purpose to the <quote>text-base</quote> files
-        are the property files and their pristine
-        <quote>prop-base</quote> copies, located in
-        <filename>.svn/props</filename> and
-        <filename>.svn/prop-base</filename>, respectively.  Since
-        directories can have properties too, there are also
-        <filename>.svn/dir-props</filename> and
-        <filename>.svn/dir-prop-base</filename> files.</para>
--->
-      <para>Einen ähnlichen Zweck wie die
-        <quote>text-base</quote>-Dateien verfolgen die
-        Eigenschafts-Dateien und deren unveränderte Kopien
-        <quote>prop-base</quote>, die in
-        <filename>.svn/props</filename> bzw.
-        <filename>.svn/prop-base</filename> untergebracht sind. Da
-        selbst Verzeichnisse Eigenschaften haben können, gibt es auch die
-        Dateien <filename>.svn/dir-props</filename> und
-        <filename>.svn/dir-prop-base</filename>.</para>
-
-    </sect2>
-
-  </sect1>
-
-  <!-- ================================================================= -->
-  <!-- ================================================================= -->
-  <!-- ================================================================= -->
   <sect1 id="svn.developer.usingapi">
 <!--
     <title>Using the APIs</title>
@@ -1780,10 +1533,12 @@ $
         office,</quote> it could just as well mean <quote>across the
         globe.</quote> To facilitate this, all of Subversion's public
         interfaces that accept path arguments expect those paths to be
-        canonicalized&mdash;which is most easily accomplished by passing
-        them through the <function>svn_path_canonicalize()</function>
-        function&mdash;and encoded in UTF-8.  This means, for example, that
-        any new client binary that drives the
+        canonicalized&mdash;which is most easily accomplished by
+        passing them through <function>svn_dirent_canonicalize()</function>
+        or <function>svn_uri_canonicalize()</function> (depending on
+        whether you are canonicalizing a local system path or a URL,
+        respectively)&mdash;and encoded in UTF-8.  This means, for
+        example, that any new client binary that drives the
         <filename>libsvn_client</filename> interface needs to first
         convert paths from the locale-specific encoding to UTF-8
         before passing those paths to the Subversion libraries, and
@@ -1804,7 +1559,10 @@ $
         Subversion, die Pfadargumente annehmen, dass diese Pfade im
         kanonischen Format vorliegen &ndash; was am besten gelingt,
         wenn sie durch die Funktion
-        <function>svn_path_canonicalize()</function> geschickt werden
+        <function>svn_dirent_canonicalize()</function> oder
+        <function>svn_uri_canonicalize()</function> geschickt werden
+        (abhängig davon, ob Sie einen lokalen Systempfad bzw. einen
+        URL in das kanonische Format umwandeln möchten)
         &ndash; und in UTF-8 kodiert sind. Das bedeutet
         beispielsweise, dass ein neuer Client, der die Schnittstelle
         <filename>libsvn_client</filename> benutzt, zunächst Pfade aus
