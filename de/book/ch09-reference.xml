@@ -17225,12 +17225,13 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
 
           <informalexample>
             <screen>
---drop-empty-revs
---preserve-revprops
---quiet
---renumber-revs
---skip-missing-merge-sources
---targets ARG
+<xref linkend="svn.ref.svndumpfilter.sw.drop_empty_revs" />
+<xref linkend="svn.ref.svndumpfilter.sw.pattern" />
+<xref linkend="svn.ref.svndumpfilter.sw.preserve_revprops" />
+<xref linkend="svn.ref.svndumpfilter.sw.quiet" />
+<xref linkend="svn.ref.svndumpfilter.sw.renumber_revs" />
+<xref linkend="svn.ref.svndumpfilter.sw.skip_missing_merge_sources" />
+<xref linkend="svn.ref.svndumpfilter.sw.targets" />
 </screen>
           </informalexample>
         </refsect1>
@@ -17242,20 +17243,20 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
           <title>Beispiel</title>
 
 <!--
-        <para>If we have a dump file from a repository with a number of
-          different picnic-related directories in it, but we want to keep
-          everything <emphasis>except</emphasis>
-          the <filename>sandwiches</filename> part of the repository,
-          we'll exclude only that path:</para>
+          <para>If we have a dump file from a repository with a number
+            of different picnic-related directories in it, but we want
+            to keep everything <emphasis>except</emphasis>
+            the <filename>sandwiches</filename> part of the
+            repository, we'll exclude only that path:</para>
 -->
-        <para>Falls wir eine Auszugsdatei eines Projektarchivs haben, das
-          über eine Anzahl verschiedener Verzeichnisse mit Bezug zum
-          Picknicken verfügt, wir jedoch alles
-          <emphasis>außer</emphasis> dem Teil im Projektarchiv mit
-          <filename>sandwiches</filename>  haben möchten, werden wir
-          nur diesen Pfad verwerfen:</para>
+          <para>Falls wir eine Auszugsdatei eines Projektarchivs
+            haben, das über eine Anzahl verschiedener Verzeichnisse
+            mit Bezug zum Picknicken verfügt, wir jedoch alles
+            <emphasis>außer</emphasis> dem Teil im Projektarchiv mit
+            <filename>sandwiches</filename>  haben möchten, werden wir
+            nur diesen Pfad verwerfen:</para>
 
-        <informalexample>
+          <informalexample>
             <screen>
 $ svndumpfilter exclude sandwiches &lt; dumpfile &gt; filtered-dumpfile
 <!--
@@ -17281,6 +17282,54 @@ Revision 4 als 4 übertragen.
 
 1 Knoten verworfen:
    '/sandwiches'
+$
+</screen>
+          </informalexample>
+
+<!--
+          <para>Beginning in Subversion 1.7,
+            <command>svndumpfilter</command> can optionally treat
+            the <replaceable>PATH_PREFIX</replaceable>s not merely as
+            explicit substrings, but as file patterns instead.  So,
+            for example, if you wished to filter out paths which ended
+            with <filename>.OLD</filename>, you would do the
+            following:</para>
+-->
+          <para>Seit Subversion 1.7 kann
+            <command>svndumpfilter</command> optional die
+            <replaceable>PATH_PREFIX</replaceable>e nicht bloß als
+            ausdrückliche Teilzeichenketten behandeln, sondern
+            stattdessen als Dateinamensmuster. Wenn Sie also
+            beispielsweise alle Pfade herausfiltern mïchten, die auf
+            <filename>.OLD</filename> enden, würden Sie folgendes
+            machen:</para>
+
+          <informalexample>
+            <screen>
+$ svndumpfilter exclude --pattern "*.OLD" &lt; dumpfile &gt; filtered-dumpfile <!--
+Excluding prefix patterns:
+   '/*.OLD'
+
+Revision 0 committed as 0.
+Revision 1 committed as 1.
+Revision 2 committed as 2.
+Revision 3 committed as 3.
+Revision 4 committed as 4.
+
+Dropped 3 node(s):
+   '/condiments/salt.OLD'
+   '/condiments/pepper.OLD'
+   '/toppings/cheese.OLD'
+-->
+Präfixmuster ausschließen:
+   '/*.OLD'
+
+Revision 0 als 0 übertragen.
+Revision 1 als 1 übertragen.
+Revision 2 als 2 übertragen.
+Revision 3 als 3 übertragen.
+Revision 4 als 4 übertragen.
+$
 </screen>
           </informalexample>
 
@@ -17339,12 +17388,13 @@ Revision 4 als 4 übertragen.
 
           <informalexample>
             <screen>
---drop-empty-revs
---preserve-revprops
---quiet
---renumber-revs
---skip-missing-merge-sources
---targets ARG
+<xref linkend="svn.ref.svndumpfilter.sw.drop_empty_revs" />
+<xref linkend="svn.ref.svndumpfilter.sw.pattern" />
+<xref linkend="svn.ref.svndumpfilter.sw.preserve_revprops" />
+<xref linkend="svn.ref.svndumpfilter.sw.quiet" />
+<xref linkend="svn.ref.svndumpfilter.sw.renumber_revs" />
+<xref linkend="svn.ref.svndumpfilter.sw.skip_missing_merge_sources" />
+<xref linkend="svn.ref.svndumpfilter.sw.targets" />
 </screen>
           </informalexample>
         </refsect1>
@@ -17380,7 +17430,7 @@ Revision 2 committed as 2.
 Revision 3 committed as 3.
 Revision 4 committed as 4.
 
-Dropped 3 node(s):
+Dropped 12 node(s):
 -->
 Präfixe einschließen:
    '/sandwiches'
@@ -17392,9 +17442,76 @@ Revision 3 als 3 übertragen.
 Revision 4 als 4 übertragen.
 
 3 Knoten verworfen:
+   '/condiments'
+   '/condiments/pepper'
+   '/condiments/pepper.OLD'
+   '/condiments/salt'
+   '/condiments/salt.OLD'
    '/drinks'
    '/snacks'
    '/supplies'
+   '/toppings'
+   '/toppings/cheese'
+   '/toppings/cheese.OLD'
+   '/toppings/lettuce'
+$
+</screen>
+          </informalexample>
+
+<!--
+          <para>Beginning in Subversion 1.7,
+            <command>svndumpfilter</command> can optionally treat
+            the <replaceable>PATH_PREFIX</replaceable>s not merely as
+            explicit substrings, but as file patterns instead.  So,
+            for example, if you wished to include only paths which ended
+            with <filename>ks</filename>, you would do the
+            following:</para>
+-->
+          <para>Seit Subversion 1.7 kann
+            <command>svndumpfilter</command> optional die
+            <replaceable>PATH_PREFIX</replaceable>e nicht bloß als
+            ausdrückliche Teilzeichenketten behandeln, sondern
+            stattdessen als Dateinamensmuster. Wenn Sie also
+            beispielsweise alle Pfade einschließen mïchten, die auf
+            <filename>ks</filename> enden, würden Sie folgendes
+            machen:</para>
+
+          <informalexample>
+            <screen>
+$ svndumpfilter include --pattern "*ks" &lt; dumpfile &gt; filtered-dumpfile <!--
+Including prefix patterns:
+   '/*ks'
+
+Revision 0 committed as 0.
+Revision 1 committed as 1.
+Revision 2 committed as 2.
+Revision 3 committed as 3.
+Revision 4 committed as 4.
+
+Dropped 11 node(s):
+-->
+Präfixe einschließen:
+   '/*ks'
+
+Revision 0 als 0 übertragen.
+Revision 1 als 1 übertragen.
+Revision 2 als 2 übertragen.
+Revision 3 als 3 übertragen.
+Revision 4 als 4 übertragen.
+
+11 Knoten verworfen:
+   '/condiments'
+   '/condiments/pepper'
+   '/condiments/pepper.OLD'
+   '/condiments/salt'
+   '/condiments/salt.OLD'
+   '/sandwiches'
+   '/supplies'
+   '/toppings'
+   '/toppings/cheese'
+   '/toppings/cheese.OLD'
+   '/toppings/lettuce'
+$
 </screen>
           </informalexample>
 
