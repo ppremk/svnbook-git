@@ -1815,16 +1815,1171 @@ $ svn log -r 1729:{2002-02-17}
     </variablelist>
 
   </partintro>
+    
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.svn.c.add">
+
+    <indexterm>
+      <primary>svn</primary>
 <!--
-      <para>The rest of the options apply and are accepted by only a
-        subset of the subcommand.  They are as follows:</para>
+      <secondary>subcommands</secondary>
 -->
-      <para>Der Rest der Optionen ist nur auf eine Teilmenge der
-        Unterbefehle anwendbar und wird auch nur von einer Teilmenge
-        der Unterbefehle akzeptiert. Diese sind:</para>
+      <secondary>Unterbefehle</secondary>
+      <tertiary>add</tertiary>
+    </indexterm>
 
-      <variablelist>
+    <refnamediv>
+      <refname>svn add</refname>
+<!--
+      <refpurpose>Add files, directories, or symbolic links.</refpurpose>
+-->
+      <refpurpose>Dateien, Verzeichnisse oder symbolische Links
+        hinzufügen.</refpurpose>
+    </refnamediv>
 
+    <refsynopsisdiv>
+      <para><literal>svn add PATH...</literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Description</title>
+-->
+      <title>Beschreibung</title>
+
+<!--
+      <para>Schedule files, directories, or symbolic links in your
+        working copy for addition to the repository.  They will be
+        uploaded and added to the repository on your next commit.
+        If you add something and change your mind before
+        committing, you can unschedule the addition using
+        <command>svn revert</command>.</para>
+-->
+      <para>Dateien, Verzeichnisse oder symbolische Links in Ihrer
+        Arbeitskopie werden zum Hinzufügen ins Projektarchiv
+        vorgemerkt. Bei Ihrer nächsten Übergabe werden sie in das
+        Projektarchiv geladen. Wenn Sie etwas hinzufügen möchten, es
+        sich vor der Übergabe aber anders überlegen sollten,
+        können Sie die Vormerkung mit <command>svn
+        revert</command> rückgängig machen.</para>
+    </refsect1>
+
+    <refsect1>
+<!--
+      <title>Options</title>
+-->
+      <title>Optionen</title>
+
+      <informalexample>
+        <screen>
+<xref linkend="svn.ref.svn.sw.auto_props" />
+<xref linkend="svn.ref.svn.sw.depth" />
+<xref linkend="svn.ref.svn.sw.force" />
+<xref linkend="svn.ref.svn.sw.no_auto_props" />
+<xref linkend="svn.ref.svn.sw.no_ignore" />
+<xref linkend="svn.ref.svn.sw.parents" />
+<xref linkend="svn.ref.svn.sw.quiet" />
+<xref linkend="svn.ref.svn.sw.targets" />
+</screen>
+      </informalexample>
+    </refsect1>
+
+    <refsect1>
+<!--
+      <title>Examples</title>
+-->
+      <title>Beispiele</title>
+
+<!--
+      <para>To add a file to your working copy:</para>
+-->
+      <para>Eine Datei zur Arbeitskopie hinzufügen:</para>
+
+      <informalexample>
+        <screen>
+$ svn add foo.c 
+A         foo.c
+</screen>
+      </informalexample>
+
+<!--
+      <para>When adding a directory, the default behavior of
+        <command>svn add</command> is to recurse:</para>
+-->
+      <para>Beim Hinzufügen eines Verzeichnisses ist Rekursion das
+        Standardverhalten von <command>svn add</command>:</para>
+
+      <informalexample>
+        <screen>
+$ svn add testdir
+A         testdir
+A         testdir/a
+A         testdir/b
+A         testdir/c
+A         testdir/d
+</screen>
+      </informalexample>
+
+<!--
+      <para>You can add a directory without adding its
+        contents:</para>
+-->
+      <para>Sie können ein Verzeichnis ohne seinen Inhalt
+        hinzufügen:</para>
+
+      <informalexample>
+        <screen>
+$ svn add --depth=empty otherdir
+A         otherdir
+</screen>
+      </informalexample>
+
+<!--
+      <para>Attempts to schedule the addition of an item which is
+        already versioned will fail by default.  This behavior
+        foils the most common scenario under which users attempt
+        this: when trying to get to Subversion to recursively
+        examine a versioned directory and add any unversioned
+        items inside of it.  To override the default behavior and
+        force Subversion to recurse into already-versioned
+        directories, pass the <option>- -force</option>
+        option:</para>
+-->
+      <para>Standardmäßig scheitern Versuche, ein bereits unter
+        Versionskontrolle befindliches Objekt für die
+        Versionierung vorzumerken. Dieses Verhalten verhindert das
+        verbreitetste Szenario, in dem Anwender dieses versuchen:
+        Subversion rekursiv ein versioniertes Verzeichnis zu
+        durchlaufen und alle darin befindlichen noch nicht
+        versionierten Objekte hinzuzufügen. Um das
+        Standardverhalten zu umgehen und Subversion zu zwingen, in
+        bereits versionierte Verzeichnisse herabzusteigen, geben
+        Sie die Option <option>--force</option> an:
+      </para>
+
+      <informalexample>
+        <screen>
+$ svn add versioned-dir <!--
+svn: warning: W150002: '/home/cmpilato/projects/subversion/site' is already un\
+der version control
+-->
+svn: Warnung: W150002: '»/home/cmpilato/projects/subversion/site« befindet sic\
+h bereits unter Versionskontrolle
+$ svn add versioned-dir --force
+A         versioned-dir/foo.c
+A         versioned-dir/somedir/bar.c
+A  (bin)  versioned-dir/otherdir/docs/baz.doc
+&hellip;
+</screen>
+      </informalexample>
+
+    </refsect1>
+  </refentry>
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.svn.c.blame">
+
+    <indexterm>
+      <primary>svn</primary>
+<!--
+      <secondary>subcommands</secondary>
+-->
+      <secondary>Unterbefehle</secondary>
+      <tertiary>blame</tertiary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>svn blame (praise, annotate, ann)</refname>
+<!--
+      <refpurpose>Show author and revision information inline
+        for the specified files or URLs.</refpurpose>
+-->
+      <refpurpose>Autor- und Revisions-Informationen innerhalb
+        der angegebenen Dateien oder URLs ausgeben.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>svn blame TARGET[@REV]...</literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Description</title>
+-->
+      <title>Beschreibung</title>
+
+<!--
+      <para>Show author and revision information inline for the
+        specified files or URLs.  Each line of text is annotated
+        at the beginning with the author (username) and the
+        revision number for the last change to that line.</para>
+-->
+      <para>Autor- und Revisions-Informationen innerhalb
+        der angegebenen Dateien oder URLs ausgeben. Jede Textzeile
+        erhält am Zeilenanfang eine Anmerkung mit dem Autor
+        (Anwendernamen) und der Revisionsnummer der letzten
+        Änderung.</para>
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Options</title>
+-->
+      <title>Optionen</title>
+
+      <informalexample>
+        <screen>
+<xref linkend="svn.ref.svn.sw.extensions" />
+<xref linkend="svn.ref.svn.sw.force" />
+<xref linkend="svn.ref.svn.sw.incremental" />
+<xref linkend="svn.ref.svn.sw.revision" />
+<xref linkend="svn.ref.svn.sw.use_merge_history" />
+<xref linkend="svn.ref.svn.sw.verbose" />
+<xref linkend="svn.ref.svn.sw.xml" />
+</screen>
+      </informalexample>
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Examples</title>
+-->
+      <title>Beispiele</title>
+
+<!--
+      <para>If you want to see blame-annotated source for
+        <filename>readme.txt</filename> in your test
+        repository:</para>
+-->
+      <para>Wenn Sie den Quelltext von
+        <filename>readme.txt</filename> in Ihrem Test-Projektarchiv
+        mit Anmerkungen sehen wollen:</para>
+
+      <informalexample>
+        <screen>
+$ svn blame http://svn.red-bean.com/repos/test/readme.txt
+     3      sally This is a README file.
+     5      harry Don't bother reading it.  The boss is a knucklehead.
+     3      sally 
+&hellip;
+</screen>
+      </informalexample>
+
+<!--
+      <para>Now, just because <command>svn blame</command> says
+        that Harry last modified <filename>readme.txt</filename>
+        in revision 5, understand that this subcommand is by
+        default very picky about what constitutes a change.
+        Before clubbing Harry over the head for what appears to be
+        insubordination, first consider that perhaps the change he
+        made to the file might have been only to its specific
+        character content, not to its overall semantic meaning.
+        Perhaps his changes were the result of blindly running a
+        whitespace cleanup script on this file.  You might need
+        to examine the specific differences and related log
+        message to understand exactly what Harry did to this file
+        in revision 5.</para>
+-->
+      <para>Nur weil <command>svn blame</command> behauptet, dass
+        Harry <filename>readme.txt</filename> zuletzt in Revision
+        5 geändert habe, sollten Sie verstehen, das dieser
+        Unterbefehl standardmäßig sehr pingelig bei der Bewertung,
+        was eine Änderung ist. Bevor Harry für die anscheinende
+        Aufmüpfigkeit Prügel bezieht, sollten Sie bedenken, dass
+        die Änderung, die er an der Datei vornahm, sich auf den
+        Zeicheninhalt und nicht auf den gesamten semantischen
+        Inhalt bezog. Vielleicht war seine Änderung das Ergebnis
+        einer unbedachten Behandlung dieser Datei durch ein Skript
+        zur Leerraum-Bereinigung. Zum genauen Verständnis dessen,
+        was Harry an dieser Datei in Revision 5 geändert hat,
+        sollten Sie die einzelnen Änderungen und die damit
+        verbundenen Protokollnachrichten untersuchen.</para>
+
+      <informalexample>
+        <screen>
+$ svn log -c 5 http://svn.red-bean.com/repos/test/readme.txt
+------------------------------------------------------------------------ <!--
+r5 | harry | 2008-05-29 07:26:12 -0600 (Thu, 29 May 2008) | 1 line
+-->
+r5 | harry | 2008-05-29 07:26:12 -0600 (Do, 29. May 2008) | 1 Zeile
+
+Commit the results of 'double-space-after-period.sh'.
+
+------------------------------------------------------------------------
+$ svn diff -c 5 http://svn.red-bean.com/repos/test/readme.txt
+Index: http://svn.red-bean.com/repos/test/readme.txt
+===================================================================
+--- http://svn.red-bean.com/repos/test/readme.txt	(revision 4)
++++ http://svn.red-bean.com/repos/test/readme.txt	(revision 5)
+@@ -1,5 +1,5 @@
+ This is a README file.
+-Don't bother reading it. The boss is a knucklehead.
++Don't bother reading it.  The boss is a knucklehead.
+  
+ INSTRUCTIONS
+ ============
+$
+</screen>
+      </informalexample>
+
+<!--
+      <para>Sure enough, Harry only changed the whitespace in that
+        line.  Fortunately, the <option>- -extensions</option>
+        (<option>-x</option>) option can help you better determine
+        the last time that a <emphasis>meaningful</emphasis>
+        change was made to a given line of text.  For example,
+        here's how you can see the annotation information while
+        disregarding mere whitespace changes:</para>
+-->
+      <para>Klar, dass Harry nur die Leerzeichen in dieser Zeile
+        geändert hat. Glücklicherweise kann Ihnen die Option
+        <option>--extensions</option> (<option>-x</option>) dabei
+        helfen, besser herauszufinden, wann eine
+        <emphasis>bedeutende</emphasis> Änderung an einer
+        Textzeile vorgenommen wurde. Hier ist beispielsweise die
+        Anmerkung ohne Berücksichtigung von bloßen
+        Leerraum-Änderungen::</para>
+
+      <informalexample>
+        <screen>
+$ svn blame -x -b http://svn.red-bean.com/repos/test/readme.txt
+     3      sally This is a README file.
+     4       jess Don't bother reading it.  The boss is a knucklehead.
+     3      sally 
+&hellip;
+</screen>
+      </informalexample>
+
+<!--
+      <para>If you use the <option>- -xml</option> option, you can
+        get XML output describing the blame annotations, but not
+        the contents of the lines themselves:</para>
+-->
+      <para>Falls Sie die Option <option>--xml</option> benutzen,
+        bekommen Sie die Anmerkungen als XML-Ausgabe, jedoch nicht
+        den eigentlichen Inhalt der Zeilen:</para>
+
+      <informalexample>
+        <screen>
+$ svn blame --xml http://svn.red-bean.com/repos/test/readme.txt
+&lt;?xml version="1.0"?&gt;
+&lt;blame&gt;
+&lt;target
+   path="readme.txt"&gt;
+&lt;entry
+   line-number="1"&gt;
+&lt;commit
+   revision="3"&gt;
+&lt;author&gt;sally&lt;/author&gt;
+&lt;date&gt;2008-05-25T19:12:31.428953Z&lt;/date&gt;
+&lt;/commit&gt;
+&lt;/entry&gt;
+&lt;entry
+   line-number="2"&gt;
+&lt;commit
+   revision="5"&gt;
+&lt;author&gt;harry&lt;/author&gt;
+&lt;date&gt;2008-05-29T13:26:12.293121Z&lt;/date&gt;
+&lt;/commit&gt;
+&lt;/entry&gt;
+&lt;entry
+   line-number="3"&gt;
+&hellip;
+&lt;/entry&gt;
+&lt;/target&gt;
+&lt;/blame&gt;
+$
+</screen>
+      </informalexample>
+
+    </refsect1>
+  </refentry>
+
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.svn.c.cat">
+
+    <indexterm>
+      <primary>svn</primary>
+<!--
+      <secondary>subcommands</secondary>
+-->
+      <secondary>Unterbefehle</secondary>
+      <tertiary>cat</tertiary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>svn cat</refname>
+<!--
+      <refpurpose>Output the contents of the specified files or
+        URLs.</refpurpose>
+-->
+      <refpurpose>Ausgeben des Inhalts der angegebenen Datei oder
+        des URLs.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>svn cat TARGET[@REV]...</literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Description</title>
+-->
+      <title>Beschreibung</title>
+
+<!--
+      <para>Output the contents of the specified files or URLs.
+        For listing the contents of directories, see <command>svn
+        list</command> later in this chapter.</para>
+-->
+      <para>Ausgeben des Inhalts der angegebenen Datei oder des
+        URLs. Um den Inhalt von Verzeichnissen aufzulisten, siehe
+        <command>svn list</command> später in diesem
+        Kapitel.</para>
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Options</title>
+-->
+      <title>Optionen</title>
+
+      <informalexample>
+        <screen>
+<xref linkend="svn.ref.svn.sw.revision" />
+</screen>
+      </informalexample>
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Examples</title>
+-->
+      <title>Beispiele</title>
+
+<!--
+      <para>If you want to view <filename>readme.txt</filename> in
+        your repository without checking it out:</para>
+-->
+      <para>Wenn Sie die Datei <filename>readme.txt</filename> in
+        Ihrem Projektarchiv ansehen möchten, ohne sie auszuchecken:
+      </para>
+
+      <informalexample>
+        <screen>
+$ svn cat http://svn.red-bean.com/repos/test/readme.txt
+This is a README file.
+Don't bother reading it.  The boss is a knucklehead.
+
+INSTRUCTIONS
+============
+
+Step 1:  Do this.
+
+Step 2:  Do that.
+$
+</screen>
+      </informalexample>
+
+<!--
+      <para>You can view specific versions of files, too.</para>
+-->
+      <para>Sie können sich auch bestimmte Versionen einer Datei
+        ansehen.</para>
+
+      <informalexample>
+        <screen>
+$ svn cat -r 3 http://svn.red-bean.com/repos/test/readme.txt
+This is a README file.
+ 
+INSTRUCTIONS
+============
+
+Step 1:  Do this.
+
+Step 2:  Do that.
+$
+</screen>
+      </informalexample>
+
+      <note>
+<!--
+        <para>You might develop a reflex action of
+          using <command>svn cat</command> to view your working
+          file contents.  But keep in mind that the default peg
+          revision for <command>svn cat</command> when used on a
+          working copy file target is <literal>BASE</literal>, the
+          unmodified base revision of that file.  Don't be
+          surprised when a simple <userinput>svn cat
+          /path/to/file</userinput> invocation fails to display
+          your local modifications to that file!</para>
+-->
+        <para>Es kann sein, dass Sie sich angewöhnen, reflexartig
+          <command>svn cat</command> zu verwenden, um sich den
+          Inhalt der Dateien in Ihrer Arbeitskopie anzusehen.
+          Denken Sie jedoch daran, dass die standardmäßige
+          Peg-Revision für <command>svn cat</command> bei Dateien
+          der Arbeitskopie <literal>BASE</literal> ist, die
+          unmodifizierte Basis-Revision dieser Datei. Seien Sie
+          nicht überrascht, wenn ein einfacher Aufruf von
+          <userinput>svn cat /path/to/file</userinput> Ihnen nicht
+          Ihre lokalen Änderungen an dieser Datei anzeigt!</para>
+      </note>
+
+      <tip>
+<!--
+        <para>If your working copy is out of date (or you have
+          local modifications) and you want to see the
+          <literal>HEAD</literal> revision of a file in your
+          working copy, use the <option>- -revision</option>
+          (<option>-r</option>) option:  <userinput>svn cat -r
+          HEAD <replaceable>FILENAME</replaceable></userinput></para>
+-->
+        <para>Falls Ihre Arbeitskopie nicht mehr aktuell ist (oder
+          falls Sie lokale Änderungen haben) und Sie die 
+          <literal>HEAD</literal>-Revision einer Datei in Ihrer
+          Arbeitskopie sehen möchten, verwenden Sie die Option
+          <option>--revision</option> (<option>-r</option>):
+          <userinput>svn cat -r HEAD
+          <replaceable>FILENAME</replaceable></userinput></para>
+      </tip>
+
+    </refsect1>
+  </refentry>
+
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.svn.c.changelist">
+
+    <indexterm>
+      <primary>svn</primary>
+<!--
+      <secondary>subcommands</secondary>
+-->
+      <secondary>Unterbefehle</secondary>
+      <tertiary>changelist</tertiary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>svn changelist (cl)</refname>
+<!--
+      <refpurpose>Associate (or deassociate) local paths with a
+        changelist.</refpurpose>
+-->
+      <refpurpose>Hinzufügen (oder Entfernen) lokaler Pfade zu
+        (oder von) einer Änderungsliste.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>changelist CLNAME TARGET...</literal></para>
+      <para><literal>changelist --remove TARGET...</literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Description</title>
+-->
+      <title>Beschreibung</title>
+
+<!--
+      <para>Used for dividing files in a working copy into a
+        changelist (logical named grouping) in order to allow
+        users to easily work on multiple file collections within a
+        single working copy.</para>
+-->
+      <para>Verwendet zum Aufteilen von Dateien einer Arbeitskopie
+        in eine Änderungsliste (eine logisch benannte
+        Gruppierung), um Benutzern die Möglichkeit zu geben, auf
+        einfache Weise mit mehreren Dateisammlungen innerhalb
+        einer einzigen Arbeitskopie zu arbeiten.</para>
+
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Options</title>
+-->
+      <title>Optionen</title>
+
+      <informalexample>
+        <screen>
+<xref linkend="svn.ref.svn.sw.changelist" />
+<xref linkend="svn.ref.svn.sw.depth" />
+<xref linkend="svn.ref.svn.sw.quiet" />
+<xref linkend="svn.ref.svn.sw.recursive" />
+<xref linkend="svn.ref.svn.sw.remove" />
+<xref linkend="svn.ref.svn.sw.targets" />
+</screen>
+      </informalexample>
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Example</title>
+-->
+      <title>Beispiel</title>
+
+<!--
+      <para>Edit three files, add them to a changelist, then
+        commit only files in that changelist:</para>
+-->
+      <para>Ändern Sie drei Dateien, fügen Sie sie einer
+        Änderungsliste hinzu und übergeben dann nur die Dateien
+        auf dieser Änderungsliste:</para>
+
+      <informalexample>
+        <screen>
+$ svn changelist issue1729 foo.c bar.c baz.c
+A [issue1729] foo.c
+A [issue1729] bar.c
+A [issue1729] baz.c
+$ svn status
+A       someotherfile.c
+A       test/sometest.c
+<!--
+- - - Changelist 'issue1729':
+-->
+--- Änderungsliste 'issue1729':
+A       foo.c
+A       bar.c
+A       baz.c
+$ svn commit --changelist issue1729 -m "Fixing Issue 1729." <!--
+Adding         bar.c
+Adding         baz.c
+Adding         foo.c
+Transmitting file data ...
+Committed revision 2.
+-->
+Hinzufügen     bar.c
+Hinzufügen     baz.c
+Hinzufügen     foo.c
+Übertrage Daten...
+Revision 2 übertragen.
+$ svn status
+A       someotherfile.c
+A       test/sometest.c
+$
+</screen>
+      </informalexample>
+
+<!--
+      <para>Note that in the previous example, only the files in
+        changelist <literal>issue1729</literal> were
+        committed.</para>
+-->
+      <para>Beachten Sie, dass im vorigen Beispiel nur die Dateien
+        der Änderungsliste <literal>issue1729</literal> übergeben
+        wurden.
+      </para>
+
+    </refsect1>
+  </refentry>
+
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.svn.c.checkout">
+
+    <indexterm>
+      <primary>svn</primary>
+<!--
+      <secondary>subcommands</secondary>
+-->
+      <secondary>Unterbefehle</secondary>
+      <tertiary>checkout</tertiary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>svn checkout (co)</refname>
+<!--
+      <refpurpose>Check out a working copy from a repository.</refpurpose>
+-->
+      <refpurpose>Auschecken einer Arbeitskopie aus einem
+        Projektarchiv.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>svn checkout URL[@REV]... [PATH]</literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Description</title>
+-->
+      <title>Beschreibung</title>
+
+<!--
+      <para>Check out a working copy from a repository.  If
+        <replaceable>PATH</replaceable> is omitted, the
+        basename of the URL will be used as the destination.
+        If multiple URLs are given, each will be checked out into a
+        subdirectory of <replaceable>PATH</replaceable>, with the
+        name of the subdirectory being the basename of the
+        URL.</para>
+-->
+      <para>Checkt eine Arbeitskopie aus einem Projektarchiv aus.
+        Wird <replaceable>PATH</replaceable> ausgelassen, wird der
+        Basisname des URL als Ziel verwendet. Werden mehrere URLs
+        angegeben, wird jeder in ein Unterverzeichnis von
+        <replaceable>PATH</replaceable> ausgecheckt, wobei der
+        Name des Unterverzeichnisses dem Basisnamen des URL
+        entspricht.</para>
+
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Options</title>
+-->
+      <title>Optionen</title>
+
+      <informalexample>
+        <screen>
+<xref linkend="svn.ref.svn.sw.depth" />
+<xref linkend="svn.ref.svn.sw.force" />
+<xref linkend="svn.ref.svn.sw.ignore_externals" />
+<xref linkend="svn.ref.svn.sw.quiet" />
+<xref linkend="svn.ref.svn.sw.revision" />
+</screen>
+      </informalexample>
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Examples</title>
+-->
+      <title>Beispiele</title>
+
+<!--
+      <para>Check out a working copy into a directory called
+        <filename>mine</filename>:</para>
+-->
+      <para>Eine Arbeitskopie in ein Verzeichnis
+        <filename>mine</filename> auschecken:</para>
+
+      <informalexample>
+        <screen>
+$ svn checkout file:///var/svn/repos/test mine
+A    mine/a
+A    mine/b
+A    mine/c
+A    mine/d <!--
+Checked out revision 20.
+-->
+Ausgecheckt. Revision 20.
+$ ls
+mine
+$
+</screen>
+      </informalexample>
+
+<!--
+      <para>Check out two different directories into two separate
+        working copies:</para>
+-->
+      <para>Zwei unterschiedliche Verzeichnisse in zwei getrennte
+        Arbeitskopien auschecken:</para>
+
+      <informalexample>
+        <screen>
+$ svn checkout file:///var/svn/repos/test \
+               file:///var/svn/repos/quiz
+A    test/a
+A    test/b
+A    test/c
+A    test/d <!--
+Checked out revision 20.
+-->
+Ausgecheckt. Revision 20.
+A    quiz/l
+A    quiz/m <!--
+Checked out revision 13.
+-->
+Ausgecheckt. Revision 13.
+$ ls
+quiz  test
+$
+</screen>
+      </informalexample>
+
+<!--
+      <para>Check out two different directories into two separate
+        working copies, but place both into a directory called
+        <filename>working-copies</filename>:</para>
+-->
+      <para>Zwei unterschiedliche Verzeichnisse in zwei getrennte
+        Arbeitskopien auschecken, jedoch beide in ein Verzeichnis
+        <filename>working-copies</filename>:</para>
+
+      <informalexample>
+        <screen>
+$ svn checkout file:///var/svn/repos/test \
+               file:///var/svn/repos/quiz \
+               working-copies
+A    working-copies/test/a
+A    working-copies/test/b
+A    working-copies/test/c
+A    working-copies/test/d <!--
+Checked out revision 20.
+-->
+Ausgecheckt. Revision 20.
+A    working-copies/quiz/l
+A    working-copies/quiz/m <!--
+Checked out revision 13.
+-->
+Ausgecheckt. Revision 13.
+$ ls
+working-copies
+</screen>
+      </informalexample>
+
+<!--
+      <para>If you interrupt a checkout (or something else
+        interrupts your checkout, such as loss of connectivity,
+        etc.), you can restart it either by issuing the identical
+        checkout command again or by updating the incomplete
+        working copy:</para>
+-->
+      <para>Falls Sie das Auschecken unterbrechen (oder das
+        Auschecken durch irgendetwas anderes unterbrochen wird,
+        etwa durch Verlust der Netzverbindung o.ä.), können Sie es
+        erneut durch Eingabe des gleichen Befehls oder durch die
+        Aktualisierung der unvollständigen Arbeitskopie
+        wiederholen:</para>
+
+      <informalexample>
+        <screen>
+$ svn checkout file:///var/svn/repos/test mine
+A    mine/a
+A    mine/b
+^C <!--
+svn: E200015: Caught signal
+-->
+svn: E200015: Abbruchsignal empfangen
+$ svn checkout file:///var/svn/repos/test mine
+A    mine/c
+^C <!--
+svn: E200015: Caught signal
+-->
+svn: E200015: Abbruchsignal empfangen
+$ svn update mine
+Updating 'mine':
+A    mine/d <!--
+Updated to revision 20.
+-->
+Aktualisiert zu Revision 20.
+$
+</screen>
+      </informalexample>
+
+<!--
+      <para>If you wish to check out some revision other than the
+        most recent one, you can do so by providing the
+        <option>- -revision</option> (<option>-r</option>) option
+        to the <command>svn checkout</command> command:</para>
+-->
+      <para>Falls Sie eine andere als die letzte Revision
+        auschecken möchten, können Sie dem Befehl <command>svn
+        checkout</command> die Option <option>--revision</option>
+        (<option>-r</option>) mitgeben:</para>
+
+      <informalexample>
+        <screen>
+$ svn checkout -r 2 file:///var/svn/repos/test mine
+A    mine/a <!--
+Checked out revision 2.
+-->
+Ausgecheckt. Revision 2.
+$
+</screen>
+      </informalexample>
+
+<!--
+      <para>Prior to version 1.7, Subversion would complain by
+        default if you try to check out a directory atop an
+        existing directory which contains files or subdirectories
+        that the checkout itself would have created.  Subversion
+        1.7 handles this situation differently, allowing the
+        checkout to proceed but marking any obstructing objects as
+        tree conflicts.  Use the <option>- -force</option> option
+        to override this safeguard.  When you check out with
+        the <option>- -force</option> option, any unversioned file
+        in the checkout target tree which ordinarily would
+        obstruct the checkout will still become versioned, but
+        Subversion will preserve its contents as-is.  If those
+        contents differ from the repository file at that path
+        (which was downloaded as part of the checkout), the file
+        will appear to have local modifications&mdash;the changes
+        required to transform the versioned file you checked out
+        into the unversioned file you had before checking
+        out&mdash;when the checkout completes.</para>
+-->
+      <para>Vor Version 1.7 würde sich Subversion standardmäßig
+        beschweren, falls Sie versuchen, ein Verzeichnis auf einem
+        bestehenden Verzeichnis auszuchecken, das Dateien oder
+        Unterverzeichnisse beinhaltet, die der Checkout selbst
+        angelegt hätte. Subversion behandelt diese Situation
+        unterschiedlich, indem es das Auschecken weiterlaufen
+        lässt, aber Objekte, die im Weg liegen, als Baumkonflikte
+        markiert. Verwenden Sie die Option
+        <option>--force</option>, um diese Schutzmaßnahme zu
+        umgehen. Wenn Sie mit der Option <option>--force</option>
+        auschecken, gerät jede unversionierte Dateien im
+        Checkout-Zielverzeichnisbaum, die normalerweise den
+        Checkout verhindert hätte, unter Versionskontrolle, jedoch
+        ändert Subversion ihren Inhalt nicht. Wenn dieser Inhalt
+        sich vom Inhalt der Datei an dieser Stelle im
+        Projektarchiv unterscheidet (der als Teil des Checkouts
+        heruntergeladen wurde), erscheint die Datei nach
+        vollendetem Checkout als lokal geändert, wobei die
+        Änderungen der Überführung der versionierten,
+        ausgecheckten Datei in die unversionierte Datei vor dem
+        Checkout entsprechen.</para>
+
+      <informalexample>
+        <screen>
+$ mkdir project
+$ mkdir project/lib
+$ touch project/lib/file.c
+$ svn checkout file:///var/svn/repos/project/trunk project <!--
+svn: Failed to add directory 'project/lib': an unversioned directory of the sa
+me name already exists
+-->
+svn: Verzeichnis »project/lib« konnte nicht hinzugefügt werden: ein nicht versi
+oniertes Verzeichnis mit demselben Namen existiert bereits
+$ svn checkout file:///var/svn/repos/project/trunk project --force
+E    project/lib
+A    project/lib/subdir
+E    project/lib/file.c
+A    project/lib/anotherfile.c
+A    project/include/header.h <!--
+Checked out revision 21.
+-->
+Ausgecheckt, Revision 21.
+$ svn status wc
+M       project/lib/file.c
+$ svn diff wc
+Index: project/lib/file.c
+===================================================================
+--- project/lib/file.c	(revision 1)
++++ project/lib/file.c	(working copy)
+@@ -3 +0,0 @@
+-/* file.c: Code for acting file-ishly. */
+-#include &lt;stdio.h&gt;
+-/* Not feeling particularly creative today. */
+
+$
+</screen>
+      </informalexample>
+
+<!--
+      <para>As in another other working copy, you have the choices
+        typically available:  reverting some or all of those
+        local <quote>modifications</quote>, committing them, or
+        continuing to modify your working copy.</para>
+-->
+      <para>Wie auch bei anderen Arbeitskopien haben Sie die
+        üblichen Möglichkeiten zur Auswahl: die lokalen
+        <quote>Änderungen</quote> teilweise oder vollständig
+        rückgängig machen, sie übergeben oder mit Änderungen in
+        Ihrer Arbeitskopie fortfahren.</para>
+
+<!--
+      <para>This feature is especially useful for performing
+        in-place imports of unversioned directory trees.  By first
+        importing the tree into the repository, and then checking
+        out new repository location atop the unversioned tree with
+        the <option>- -force</option> option, you effectively
+        transform the unversioned tree into a working
+        copy.</para>
+-->
+      <para>Besonders nützlich ist diese Funktionalität, um vor
+        Ort unversionierte Verzeichnisbäume zu importieren. Indem
+        zunächst der Baum in das Projektarchiv importiert und dann
+        über den unversionierten Baum mit der Option
+        <option>--force</option> ausgecheckt wird, bewirken Sie
+        hiermit eine Überführung des unversionierten Baums in eine
+        Arbeitskopie.</para>
+
+      <informalexample>
+        <screen>
+$ svn mkdir -m "Create newproject project root." \
+  file://var/svn/repos/newproject
+$ svn import -m "Import initial newproject codebase." newproject \
+  file://var/svn/repos/newproject/trunk <!--
+Adding         newproject/include
+Adding         newproject/include/newproject.h
+Adding         newproject/lib
+Adding         newproject/lib/helpers.c
+Adding         newproject/lib/base.c
+Adding         newproject/notes
+Adding         newproject/notes/README
+-->
+Hinzufügen     newproject/include
+Hinzufügen     newproject/include/newproject.h
+Hinzufügen     newproject/lib
+Hinzufügen     newproject/lib/helpers.c
+Hinzufügen     newproject/lib/base.c
+Hinzufügen     newproject/notes
+Hinzufügen     newproject/notes/README
+<!--
+Committed revision 22.
+-->
+Revision 22 übertragen.
+$ svn checkout file://`pwd`/repos-1.6/newproject/trunk newproject --force
+E    newproject/include
+E    newproject/include/newproject.h
+E    newproject/lib
+E    newproject/lib/helpers.c
+E    newproject/lib/base.c
+E    newproject/notes
+E    newproject/notes/README <!--
+Checked out revision 2.
+-->
+Ausgecheckt. Revision 2.
+$ svn status newproject
+$
+</screen>
+      </informalexample>
+
+    </refsect1>
+  </refentry>
+
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.svn.c.cleanup">
+
+    <indexterm>
+      <primary>svn</primary>
+<!--
+      <secondary>subcommands</secondary>
+-->
+      <secondary>Unterbefehle</secondary>
+      <tertiary>cleanup</tertiary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>svn cleanup</refname>
+<!--
+      <refpurpose>Recursively clean up the working copy</refpurpose>
+-->
+      <refpurpose>Die Arbeitskopie rekursiv aufräumen.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>svn cleanup [PATH...]</literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Description</title>
+-->
+      <title>Beschreibung</title>
+
+<!--
+      <para>Recursively clean up the working copy, removing
+        working copy locks and resuming unfinished operations.  If
+        you ever get a <literal>working copy locked</literal>
+        error, run this command to remove stale locks and get your
+        working copy into a usable state again.</para>
+-->
+      <para>Die Arbeitskopie rekursiv aufräumen, wobei Sperren der
+        Arbeitskopie aufgehoben werden und unvollendete
+        Operationen wiederaufgenommen werden. Falls Sie jemals
+        die Fehlermeldung <literal>Arbeitskopie gesperrt</literal>
+        bekommen sollten, rufen Sie diesen Befehl auf, um alte
+        Sperren zu entfernen und Ihre Arbeitskopie wieder in einen
+        benutzbaren Zustand zu überführen.</para>
+
+<!--
+      <para>If, for some reason, an <command>svn update</command>
+        fails due to a problem running an external diff program
+        (e.g., user input or network failure), pass the
+        <option>- -diff3-cmd</option> to allow the cleanup process
+        to complete any required merging using your external diff
+        program.  You can also specify any configuration directory
+        with the <option>- -config-dir</option> option, but you
+        should need these options extremely infrequently.</para>
+-->
+      <para>Falls aus irgendwelchen Gründen
+        <command>svn update</command> wegen eines Problems mit
+        einem externen diff-Programm fehlschlagen sollte (z.B.,
+        durch Anwendereingaben oder Netzprobleme), übergeben Sie
+        die Option <option>--diff3-cmd</option>, um dem
+        cleanup-Prozess die Möglichkeit zu geben, notwendige
+        Zusammenführungen mit Ihrem externen diff-Programm
+        abzuschließen. Sie können mit der Option
+        <option>--config-dir</option> auch irgendein
+        Konfigurationsverzeichnis angeben, allerdings sollten Sie
+        diese Optionen nur äußerst selten benötigen.</para>
+
+
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Options</title>
+-->
+      <title>Optionen</title>
+
+      <informalexample>
+        <screen>
+<xref linkend="svn.ref.svn.sw.diff3_cmd" />
+</screen>
+      </informalexample>
+
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Examples</title>
+-->
+      <title>Beispiele</title>
+
+<!--
+      <para>Well, there's not much to the examples here, as
+        <command>svn cleanup</command> generates no output.  If
+        you pass no <replaceable>PATH</replaceable>, then
+        <quote><filename>.</filename></quote> is used:</para>
+-->
+      <para>An dieser Stelle gibt es nicht viel an Beispielen, da
+        <command>svn cleanup</command> keine Ausgaben erzeugt.
+        Falls Sie <replaceable>PATH</replaceable> nicht angeben,
+        wird <quote><filename>.</filename></quote> verwendet:
+      </para>
+
+      <informalexample>
+        <screen>
+$ svn cleanup
+$ svn cleanup /var/svn/working-copy
+</screen>
+      </informalexample>
+
+    </refsect1>
+  </refentry>
         <varlistentry id="svn.ref.svn.sw.accept">
           <term><option>--accept</option> <replaceable>ACTION</replaceable></term>
           <listitem>
@@ -3247,987 +4402,14 @@ A  (bin)  versioned-dir/otherdir/docs/baz.doc
       </refentry>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <refentry id="svn.ref.svn.c.blame">
-
-        <indexterm>
-          <primary>svn</primary>
-<!--
-          <secondary>subcommands</secondary>
--->
-          <secondary>Unterbefehle</secondary>
-          <tertiary>blame</tertiary>
-        </indexterm>
-
-        <refnamediv>
-          <refname>svn blame (praise, annotate, ann)</refname>
-<!--
-          <refpurpose>Show author and revision information inline
-            for the specified files or URLs.</refpurpose>
--->
-          <refpurpose>Autor- und Revisions-Informationen innerhalb
-            der angegebenen Dateien oder URLs ausgeben.</refpurpose>
-        </refnamediv>
-        <refsect1>
-<!--
-          <title>Synopsis</title>
--->
-          <title>Aufruf</title>
-          <para><literal>svn blame TARGET[@REV]...</literal></para>
-        </refsect1>
-        <refsect1>
-<!--
-          <title>Description</title>
--->
-          <title>Beschreibung</title>
-
-<!--
-          <para>Show author and revision information inline for the
-            specified files or URLs.  Each line of text is annotated
-            at the beginning with the author (username) and the
-            revision number for the last change to that line.</para>
--->
-          <para>Autor- und Revisions-Informationen innerhalb
-            der angegebenen Dateien oder URLs ausgeben. Jede Textzeile
-            erhält am Zeilenanfang eine Anmerkung mit dem Autor
-            (Anwendernamen) und der Revisionsnummer der letzten
-            Änderung.</para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Options</title>
--->
-          <title>Optionen</title>
-
-          <informalexample>
-            <screen>
-<xref linkend="svn.ref.svn.sw.extensions" />
-<xref linkend="svn.ref.svn.sw.force" />
-<xref linkend="svn.ref.svn.sw.incremental" />
-<xref linkend="svn.ref.svn.sw.revision" />
-<xref linkend="svn.ref.svn.sw.use_merge_history" />
-<xref linkend="svn.ref.svn.sw.verbose" />
-<xref linkend="svn.ref.svn.sw.xml" />
-</screen>
-          </informalexample>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Examples</title>
--->
-          <title>Beispiele</title>
-
-<!--
-          <para>If you want to see blame-annotated source for
-            <filename>readme.txt</filename> in your test
-            repository:</para>
--->
-          <para>Wenn Sie den Quelltext von
-            <filename>readme.txt</filename> in Ihrem Test-Projektarchiv
-            mit Anmerkungen sehen wollen:</para>
-
-          <informalexample>
-            <screen>
-$ svn blame http://svn.red-bean.com/repos/test/readme.txt
-     3      sally This is a README file.
-     5      harry Don't bother reading it.  The boss is a knucklehead.
-     3      sally 
-&hellip;
-</screen>
-          </informalexample>
-
-<!--
-          <para>Now, just because <command>svn blame</command> says
-            that Harry last modified <filename>readme.txt</filename>
-            in revision 5, understand that this subcommand is by
-            default very picky about what constitutes a change.
-            Before clubbing Harry over the head for what appears to be
-            insubordination, first consider that perhaps the change he
-            made to the file might have been only to its specific
-            character content, not to its overall semantic meaning.
-            Perhaps his changes were the result of blindly running a
-            whitespace cleanup script on this file.  You might need
-            to examine the specific differences and related log
-            message to understand exactly what Harry did to this file
-            in revision 5.</para>
--->
-          <para>Nur weil <command>svn blame</command> behauptet, dass
-            Harry <filename>readme.txt</filename> zuletzt in Revision
-            5 geändert habe, sollten Sie verstehen, das dieser
-            Unterbefehl standardmäßig sehr pingelig bei der Bewertung,
-            was eine Änderung ist. Bevor Harry für die anscheinende
-            Aufmüpfigkeit Prügel bezieht, sollten Sie bedenken, dass
-            die Änderung, die er an der Datei vornahm, sich auf den
-            Zeicheninhalt und nicht auf den gesamten semantischen
-            Inhalt bezog. Vielleicht war seine Änderung das Ergebnis
-            einer unbedachten Behandlung dieser Datei durch ein Skript
-            zur Leerraum-Bereinigung. Zum genauen Verständnis dessen,
-            was Harry an dieser Datei in Revision 5 geändert hat,
-            sollten Sie die einzelnen Änderungen und die damit
-            verbundenen Protokollnachrichten untersuchen.</para>
-
-          <informalexample>
-            <screen>
-$ svn log -c 5 http://svn.red-bean.com/repos/test/readme.txt
------------------------------------------------------------------------- <!--
-r5 | harry | 2008-05-29 07:26:12 -0600 (Thu, 29 May 2008) | 1 line
--->
-r5 | harry | 2008-05-29 07:26:12 -0600 (Do, 29. May 2008) | 1 Zeile
-
-Commit the results of 'double-space-after-period.sh'.
-
-------------------------------------------------------------------------
-$ svn diff -c 5 http://svn.red-bean.com/repos/test/readme.txt
-Index: http://svn.red-bean.com/repos/test/readme.txt
-===================================================================
---- http://svn.red-bean.com/repos/test/readme.txt	(revision 4)
-+++ http://svn.red-bean.com/repos/test/readme.txt	(revision 5)
-@@ -1,5 +1,5 @@
- This is a README file.
--Don't bother reading it. The boss is a knucklehead.
-+Don't bother reading it.  The boss is a knucklehead.
-  
- INSTRUCTIONS
- ============
-$
-</screen>
-          </informalexample>
-
-<!--
-          <para>Sure enough, Harry only changed the whitespace in that
-            line.  Fortunately, the <option>- -extensions</option>
-            (<option>-x</option>) option can help you better determine
-            the last time that a <emphasis>meaningful</emphasis>
-            change was made to a given line of text.  For example,
-            here's how you can see the annotation information while
-            disregarding mere whitespace changes:</para>
--->
-          <para>Klar, dass Harry nur die Leerzeichen in dieser Zeile
-            geändert hat. Glücklicherweise kann Ihnen die Option
-            <option>--extensions</option> (<option>-x</option>) dabei
-            helfen, besser herauszufinden, wann eine
-            <emphasis>bedeutende</emphasis> Änderung an einer
-            Textzeile vorgenommen wurde. Hier ist beispielsweise die
-            Anmerkung ohne Berücksichtigung von bloßen
-            Leerraum-Änderungen::</para>
-
-          <informalexample>
-            <screen>
-$ svn blame -x -b http://svn.red-bean.com/repos/test/readme.txt
-     3      sally This is a README file.
-     4       jess Don't bother reading it.  The boss is a knucklehead.
-     3      sally 
-&hellip;
-</screen>
-          </informalexample>
-
-<!--
-          <para>If you use the <option>- -xml</option> option, you can
-            get XML output describing the blame annotations, but not
-            the contents of the lines themselves:</para>
--->
-          <para>Falls Sie die Option <option>--xml</option> benutzen,
-            bekommen Sie die Anmerkungen als XML-Ausgabe, jedoch nicht
-            den eigentlichen Inhalt der Zeilen:</para>
-
-          <informalexample>
-            <screen>
-$ svn blame --xml http://svn.red-bean.com/repos/test/readme.txt
-&lt;?xml version="1.0"?&gt;
-&lt;blame&gt;
-&lt;target
-   path="readme.txt"&gt;
-&lt;entry
-   line-number="1"&gt;
-&lt;commit
-   revision="3"&gt;
-&lt;author&gt;sally&lt;/author&gt;
-&lt;date&gt;2008-05-25T19:12:31.428953Z&lt;/date&gt;
-&lt;/commit&gt;
-&lt;/entry&gt;
-&lt;entry
-   line-number="2"&gt;
-&lt;commit
-   revision="5"&gt;
-&lt;author&gt;harry&lt;/author&gt;
-&lt;date&gt;2008-05-29T13:26:12.293121Z&lt;/date&gt;
-&lt;/commit&gt;
-&lt;/entry&gt;
-&lt;/target&gt;
-&lt;/blame&gt;
-</screen>
-          </informalexample>
-
-        </refsect1>
-      </refentry>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <refentry id="svn.ref.svn.c.cat">
-
-        <indexterm>
-          <primary>svn</primary>
-<!--
-          <secondary>subcommands</secondary>
--->
-          <secondary>Unterbefehle</secondary>
-          <tertiary>cat</tertiary>
-        </indexterm>
-
-        <refnamediv>
-          <refname>svn cat</refname>
-<!--
-          <refpurpose>Output the contents of the specified files or
-            URLs.</refpurpose>
--->
-          <refpurpose>Ausgeben des Inhalts der angegebenen Datei oder
-            des URLs.</refpurpose>
-        </refnamediv>
-        <refsect1>
-<!--
-          <title>Synopsis</title>
--->
-          <title>Aufruf</title>
-          <para><literal>svn cat TARGET[@REV]...</literal></para>
-        </refsect1>
-        <refsect1>
-<!--
-          <title>Description</title>
--->
-          <title>Beschreibung</title>
-
-<!--
-          <para>Output the contents of the specified files or URLs.
-            For listing the contents of directories, see <command>svn
-            list</command> later in this chapter.</para>
--->
-          <para>Ausgeben des Inhalts der angegebenen Datei oder des
-            URLs. Um den Inhalt von Verzeichnissen aufzulisten, siehe
-            <command>svn list</command> später in diesem
-            Kapitel.</para>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Options</title>
--->
-          <title>Optionen</title>
-
-          <informalexample>
-            <screen>
-<xref linkend="svn.ref.svn.sw.revision" />
-</screen>
-          </informalexample>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Examples</title>
--->
-          <title>Beispiele</title>
-
-<!--
-          <para>If you want to view <filename>readme.txt</filename> in
-            your repository without checking it out:</para>
--->
-          <para>Wenn Sie die Datei <filename>readme.txt</filename> in
-            Ihrem Projektarchiv ansehen möchten, ohne sie auszuchecken:
-          </para>
-
-          <informalexample>
-            <screen>
-$ svn cat http://svn.red-bean.com/repos/test/readme.txt
-This is a README file.
-Don't bother reading it.  The boss is a knucklehead.
- 
-INSTRUCTIONS
-============
-
-Step 1:  Do this.
-
-Step 2:  Do that.
-$
-</screen>
-          </informalexample>
-
-<!--
-          <para>You can view specific versions of files, too.</para>
--->
-          <para>Sie können sich auch bestimmte Versionen einer Datei
-            ansehen.</para>
-
-          <informalexample>
-            <screen>
-$ svn cat -r 3 http://svn.red-bean.com/repos/test/readme.txt
-This is a README file.
- 
-INSTRUCTIONS
-============
-
-Step 1:  Do this.
-
-Step 2:  Do that.
-$
-</screen>
-          </informalexample>
-
-          <note>
-<!--
-            <para>You might develop a reflex action of
-              using <command>svn cat</command> to view your working
-              file contents.  But keep in mind that the default peg
-              revision for <command>svn cat</command> when used on a
-              working copy file target is <literal>BASE</literal>, the
-              unmodified base revision of that file.  Don't be
-              surprised when a simple <userinput>svn cat
-              /path/to/file</userinput> invocation fails to display
-              your local modifications to that file!</para>
--->
-            <para>Es kann sein, dass Sie sich angewöhnen, reflexartig
-              <command>svn cat</command> zu verwenden, um sich den
-              Inhalt der Dateien in Ihrer Arbeitskopie anzusehen.
-              Denken Sie jedoch daran, dass die standardmäßige
-              Peg-Revision für <command>svn cat</command> bei Dateien
-              der Arbeitskopie <literal>BASE</literal> ist, die
-              unmodifizierte Basis-Revision dieser Datei. Seien Sie
-              nicht überrascht, wenn ein einfacher Aufruf von
-              <userinput>svn cat /path/to/file</userinput> Ihnen nicht
-              Ihre lokalen Änderungen an dieser Datei anzeigt!</para>
-          </note>
-
-          <tip>
-<!--
-            <para>If your working copy is out of date (or you have
-              local modifications) and you want to see the
-              <literal>HEAD</literal> revision of a file in your
-              working copy, use the <option>- -revision</option>
-              (<option>-r</option>) option:  <userinput>svn cat -r
-              HEAD <replaceable>FILENAME</replaceable></userinput></para>
--->
-            <para>Falls Ihre Arbeitskopie nicht mehr aktuell ist (oder
-              falls Sie lokale Änderungen haben) und Sie die 
-              <literal>HEAD</literal>-Revision einer Datei in Ihrer
-              Arbeitskopie sehen möchten, verwenden Sie die Option
-              <option>--revision</option> (<option>-r</option>):
-              <userinput>svn cat -r HEAD
-              <replaceable>FILENAME</replaceable></userinput></para>
-          </tip>
-
-        </refsect1>
-      </refentry>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <refentry id="svn.ref.svn.c.changelist">
-
-        <indexterm>
-          <primary>svn</primary>
-<!--
-          <secondary>subcommands</secondary>
--->
-          <secondary>Unterbefehle</secondary>
-          <tertiary>changelist</tertiary>
-        </indexterm>
-
-        <refnamediv>
-          <refname>svn changelist (cl)</refname>
-<!--
-          <refpurpose>Associate (or deassociate) local paths with a
-            changelist.</refpurpose>
--->
-          <refpurpose>Hinzufügen (oder Entfernen) lokaler Pfade zu
-            (oder von) einer Änderungsliste.</refpurpose>
-        </refnamediv>
-        <refsect1>
-<!--
-          <title>Synopsis</title>
--->
-          <title>Aufruf</title>
-          <para><literal>changelist CLNAME TARGET...</literal></para>
-          <para><literal>changelist --remove TARGET...</literal></para>
-        </refsect1>
-        <refsect1>
-<!--
-          <title>Description</title>
--->
-          <title>Beschreibung</title>
-
-<!--
-          <para>Used for dividing files in a working copy into a
-            changelist (logical named grouping) in order to allow
-            users to easily work on multiple file collections within a
-            single working copy.</para>
--->
-          <para>Verwendet zum Aufteilen von Dateien einer Arbeitskopie
-            in eine Änderungsliste (eine logisch benannte
-            Gruppierung), um Benutzern die Möglichkeit zu geben, auf
-            einfache Weise mit mehreren Dateisammlungen innerhalb
-            einer einzigen Arbeitskopie zu arbeiten.</para>
-
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Options</title>
--->
-          <title>Optionen</title>
-
-          <informalexample>
-            <screen>
-<xref linkend="svn.ref.svn.sw.changelist" />
-<xref linkend="svn.ref.svn.sw.depth" />
-<xref linkend="svn.ref.svn.sw.quiet" />
-<xref linkend="svn.ref.svn.sw.recursive" />
-<xref linkend="svn.ref.svn.sw.remove" />
-<xref linkend="svn.ref.svn.sw.targets" />
-</screen>
-          </informalexample>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Example</title>
--->
-          <title>Beispiel</title>
-
-<!--
-          <para>Edit three files, add them to a changelist, then
-            commit only files in that changelist:</para>
--->
-          <para>Ändern Sie drei Dateien, fügen Sie sie einer
-            Änderungsliste hinzu und übergeben dann nur die Dateien
-            auf dieser Änderungsliste:</para>
-
-          <informalexample>
-            <screen>
-$ svn changelist issue1729 foo.c bar.c baz.c
-A [issue1729] foo.c
-A [issue1729] bar.c
-A [issue1729] baz.c
-$ svn status
-A       someotherfile.c
-A       test/sometest.c
-<!--
-- - - Changelist 'issue1729':
--->
---- Änderungsliste 'issue1729':
-A       foo.c
-A       bar.c
-A       baz.c
-$ svn commit --changelist issue1729 -m "Fixing Issue 1729." <!--
-Adding         bar.c
-Adding         baz.c
-Adding         foo.c
-Transmitting file data ...
-Committed revision 2.
--->
-Hinzufügen     bar.c
-Hinzufügen     baz.c
-Hinzufügen     foo.c
-Übertrage Daten...
-Revision 2 übertragen.
-$ svn status
-A       someotherfile.c
-A       test/sometest.c
-$
-</screen>
-          </informalexample>
-
-<!--
-          <para>Note that in the previous example, only the files in
-            changelist <literal>issue1729</literal> were
-            committed.</para>
--->
-          <para>Beachten Sie, dass im vorigen Beispiel nur die Dateien
-            der Änderungsliste <literal>issue1729</literal> übergeben
-            wurden.
-          </para>
-
-        </refsect1>
-      </refentry>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <refentry id="svn.ref.svn.c.checkout">
-
-        <indexterm>
-          <primary>svn</primary>
-<!--
-          <secondary>subcommands</secondary>
--->
-          <secondary>Unterbefehle</secondary>
-          <tertiary>checkout</tertiary>
-        </indexterm>
-
-        <refnamediv>
-          <refname>svn checkout (co)</refname>
-<!--
-          <refpurpose>Check out a working copy from a repository.</refpurpose>
--->
-          <refpurpose>Auschecken einer Arbeitskopie aus einem
-            Projektarchiv.</refpurpose>
-        </refnamediv>
-        <refsect1>
-<!--
-          <title>Synopsis</title>
--->
-          <title>Aufruf</title>
-          <para><literal>svn checkout URL[@REV]... [PATH]</literal></para>
-        </refsect1>
-        <refsect1>
-<!--
-          <title>Description</title>
--->
-          <title>Beschreibung</title>
-
-<!--
-          <para>Check out a working copy from a repository.  If
-            <replaceable>PATH</replaceable> is omitted, the
-            basename of the URL will be used as the destination.
-            If multiple URLs are given, each will be checked out into a
-            subdirectory of <replaceable>PATH</replaceable>, with the
-            name of the subdirectory being the basename of the
-            URL.</para>
--->
-          <para>Checkt eine Arbeitskopie aus einem Projektarchiv aus.
-            Wird <replaceable>PATH</replaceable> ausgelassen, wird der
-            Basisname des URL als Ziel verwendet. Werden mehrere URLs
-            angegeben, wird jeder in ein Unterverzeichnis von
-            <replaceable>PATH</replaceable> ausgecheckt, wobei der
-            Name des Unterverzeichnisses dem Basisnamen des URL
-            entspricht.</para>
-
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Options</title>
--->
-          <title>Optionen</title>
-
-          <informalexample>
-            <screen>
-<xref linkend="svn.ref.svn.sw.depth" />
-<xref linkend="svn.ref.svn.sw.force" />
-<xref linkend="svn.ref.svn.sw.ignore_externals" />
-<xref linkend="svn.ref.svn.sw.quiet" />
-<xref linkend="svn.ref.svn.sw.revision" />
-</screen>
-          </informalexample>
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Examples</title>
--->
-          <title>Beispiele</title>
-
-<!--
-          <para>Check out a working copy into a directory called
-            <filename>mine</filename>:</para>
--->
-          <para>Eine Arbeitskopie in ein Verzeichnis
-            <filename>mine</filename> auschecken:</para>
-
-          <informalexample>
-            <screen>
-$ svn checkout file:///var/svn/repos/test mine
-A    mine/a
-A    mine/b
-A    mine/c
-A    mine/d <!--
-Checked out revision 20.
--->
-Ausgecheckt. Revision 20.
-$ ls
-mine
-$
-</screen>
-          </informalexample>
-
-<!--
-          <para>Check out two different directories into two separate
-            working copies:</para>
--->
-          <para>Zwei unterschiedliche Verzeichnisse in zwei getrennte
-            Arbeitskopien auschecken:</para>
-
-          <informalexample>
-            <screen>
-$ svn checkout file:///var/svn/repos/test \
-               file:///var/svn/repos/quiz
-A    test/a
-A    test/b
-A    test/c
-A    test/d <!--
-Checked out revision 20.
--->
-Ausgecheckt. Revision 20.
-A    quiz/l
-A    quiz/m <!--
-Checked out revision 13.
--->
-Ausgecheckt. Revision 13.
-$ ls
-quiz  test
-$
-</screen>
-          </informalexample>
-
-<!--
-          <para>Check out two different directories into two separate
-            working copies, but place both into a directory called
-            <filename>working-copies</filename>:</para>
--->
-          <para>Zwei unterschiedliche Verzeichnisse in zwei getrennte
-            Arbeitskopien auschecken, jedoch beide in ein Verzeichnis
-            <filename>working-copies</filename>:</para>
-
-          <informalexample>
-            <screen>
-$ svn checkout file:///var/svn/repos/test \
-               file:///var/svn/repos/quiz \
-               working-copies
-A    working-copies/test/a
-A    working-copies/test/b
-A    working-copies/test/c
-A    working-copies/test/d <!--
-Checked out revision 20.
--->
-Ausgecheckt. Revision 20.
-A    working-copies/quiz/l
-A    working-copies/quiz/m <!--
-Checked out revision 13.
--->
-Ausgecheckt. Revision 13.
-$ ls
-working-copies
-</screen>
-          </informalexample>
-
-<!--
-          <para>If you interrupt a checkout (or something else
-            interrupts your checkout, such as loss of connectivity,
-            etc.), you can restart it either by issuing the identical
-            checkout command again or by updating the incomplete
-            working copy:</para>
--->
-          <para>Falls Sie das Auschecken unterbrechen (oder das
-            Auschecken durch irgendetwas anderes unterbrochen wird,
-            etwa durch Verlust der Netzverbindung o.ä.), können Sie es
-            erneut durch Eingabe des gleichen Befehls oder durch die
-            Aktualisierung der unvollständigen Arbeitskopie
-            wiederholen:</para>
-
-          <informalexample>
-            <screen>
-$ svn checkout file:///var/svn/repos/test mine
-A    mine/a
-A    mine/b
-^C <!--
-svn: E200015: Caught signal
--->
-svn: E200015: Abbruchsignal empfangen
-$ svn checkout file:///var/svn/repos/test mine
-A    mine/c
-^C <!--
-svn: E200015: Caught signal
--->
-svn: E200015: Abbruchsignal empfangen
-$ svn update mine
-Updating 'mine':
-A    mine/d <!--
-Updated to revision 20.
--->
-Aktualisiert zu Revision 20.
-$
-</screen>
-          </informalexample>
-
-<!--
-          <para>If you wish to check out some revision other than the
-            most recent one, you can do so by providing the
-            <option>- -revision</option> (<option>-r</option>) option
-            to the <command>svn checkout</command> command:</para>
--->
-          <para>Falls Sie eine andere als die letzte Revision
-            auschecken möchten, können Sie dem Befehl <command>svn
-            checkout</command> die Option <option>--revision</option>
-            (<option>-r</option>) mitgeben:</para>
-
-          <informalexample>
-            <screen>
-$ svn checkout -r 2 file:///var/svn/repos/test mine
-A    mine/a <!--
-Checked out revision 2.
--->
-Ausgecheckt. Revision 2.
-$
-</screen>
-          </informalexample>
-
-<!--
-          <para>Prior to version 1.7, Subversion would complain by
-            default if you try to check out a directory atop an
-            existing directory which contains files or subdirectories
-            that the checkout itself would have created.  Subversion
-            1.7 handles this situation differently, allowing the
-            checkout to proceed but marking any obstructing objects as
-            tree conflicts.  Use the <option>- -force</option> option
-            to override this safeguard.  When you check out with
-            the <option>- -force</option> option, any unversioned file
-            in the checkout target tree which ordinarily would
-            obstruct the checkout will still become versioned, but
-            Subversion will preserve its contents as-is.  If those
-            contents differ from the repository file at that path
-            (which was downloaded as part of the checkout), the file
-            will appear to have local modifications&mdash;the changes
-            required to transform the versioned file you checked out
-            into the unversioned file you had before checking
-            out&mdash;when the checkout completes.</para>
--->
-          <para>Vor Version 1.7 würde sich Subversion standardmäßig
-            beschweren, falls Sie versuchen, ein Verzeichnis auf einem
-            bestehenden Verzeichnis auszuchecken, das Dateien oder
-            Unterverzeichnisse beinhaltet, die der Checkout selbst
-            angelegt hätte. Subversion behandelt diese Situation
-            unterschiedlich, indem es das Auschecken weiterlaufen
-            lässt, aber Objekte, die im Weg liegen, als Baumkonflikte
-            markiert. Verwenden Sie die Option
-            <option>--force</option>, um diese Schutzmaßnahme zu
-            umgehen. Wenn Sie mit der Option <option>--force</option>
-            auschecken, gerät jede unversionierte Dateien im
-            Checkout-Zielverzeichnisbaum, die normalerweise den
-            Checkout verhindert hätte, unter Versionskontrolle, jedoch
-            ändert Subversion ihren Inhalt nicht. Wenn dieser Inhalt
-            sich vom Inhalt der Datei an dieser Stelle im
-            Projektarchiv unterscheidet (der als Teil des Checkouts
-            heruntergeladen wurde), erscheint die Datei nach
-            vollendetem Checkout als lokal geändert, wobei die
-            Änderungen der Überführung der versionierten,
-            ausgecheckten Datei in die unversionierte Datei vor dem
-            Checkout entsprechen.</para>
-
-          <informalexample>
-            <screen>
-$ mkdir project
-$ mkdir project/lib
-$ touch project/lib/file.c
-$ svn checkout file:///var/svn/repos/project/trunk project <!--
-svn: Failed to add directory 'project/lib': an unversioned directory of the sa
-me name already exists
--->
-svn: Verzeichnis »project/lib« konnte nicht hinzugefügt werden: ein nicht versi
-oniertes Verzeichnis mit demselben Namen existiert bereits
-$ svn checkout file:///var/svn/repos/project/trunk project --force
-E    project/lib
-A    project/lib/subdir
-E    project/lib/file.c
-A    project/lib/anotherfile.c
-A    project/include/header.h <!--
-Checked out revision 21.
--->
-Ausgecheckt, Revision 21.
-$ svn status wc
-M       project/lib/file.c
-$ svn diff wc
-Index: project/lib/file.c
-===================================================================
---- project/lib/file.c	(revision 1)
-+++ project/lib/file.c	(working copy)
-@@ -3 +0,0 @@
--/* file.c: Code for acting file-ishly. */
--#include &lt;stdio.h&gt;
--/* Not feeling particularly creative today. */
-
-$
-</screen>
-          </informalexample>
-
-<!--
-          <para>As in another other working copy, you have the choices
-            typically available:  reverting some or all of those
-            local <quote>modifications</quote>, committing them, or
-            continuing to modify your working copy.</para>
--->
-          <para>Wie auch bei anderen Arbeitskopien haben Sie die
-            üblichen Möglichkeiten zur Auswahl: die lokalen
-            <quote>Änderungen</quote> teilweise oder vollständig
-            rückgängig machen, sie übergeben oder mit Änderungen in
-            Ihrer Arbeitskopie fortfahren.</para>
-
-<!--
-          <para>This feature is especially useful for performing
-            in-place imports of unversioned directory trees.  By first
-            importing the tree into the repository, and then checking
-            out new repository location atop the unversioned tree with
-            the <option>- -force</option> option, you effectively
-            transform the unversioned tree into a working
-            copy.</para>
--->
-          <para>Besonders nützlich ist diese Funktionalität, um vor
-            Ort unversionierte Verzeichnisbäume zu importieren. Indem
-            zunächst der Baum in das Projektarchiv importiert und dann
-            über den unversionierten Baum mit der Option
-            <option>--force</option> ausgecheckt wird, bewirken Sie
-            hiermit eine Überführung des unversionierten Baums in eine
-            Arbeitskopie.</para>
-
-          <informalexample>
-            <screen>
-$ svn mkdir -m "Create newproject project root." \
-      file://var/svn/repos/newproject
-$ svn import -m "Import initial newproject codebase." newproject \
-      file://var/svn/repos/newproject/trunk <!--
-Adding         newproject/include
-Adding         newproject/include/newproject.h
-Adding         newproject/lib
-Adding         newproject/lib/helpers.c
-Adding         newproject/lib/base.c
-Adding         newproject/notes
-Adding         newproject/notes/README
--->
-Hinzufügen     newproject/include
-Hinzufügen     newproject/include/newproject.h
-Hinzufügen     newproject/lib
-Hinzufügen     newproject/lib/helpers.c
-Hinzufügen     newproject/lib/base.c
-Hinzufügen     newproject/notes
-Hinzufügen     newproject/notes/README
-<!--
-Committed revision 22.
--->
-Revision 22 übertragen.
-$ svn checkout file://`pwd`/repos-1.6/newproject/trunk newproject --force
-E    newproject/include
-E    newproject/include/newproject.h
-E    newproject/lib
-E    newproject/lib/helpers.c
-E    newproject/lib/base.c
-E    newproject/notes
-E    newproject/notes/README <!--
-Checked out revision 2.
--->
-Ausgecheckt. Revision 2.
-$ svn status newproject
-$
-</screen>
-          </informalexample>
-
-        </refsect1>
-      </refentry>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <refentry id="svn.ref.svn.c.cleanup">
-
-        <indexterm>
-          <primary>svn</primary>
-<!--
-          <secondary>subcommands</secondary>
--->
-          <secondary>Unterbefehle</secondary>
-          <tertiary>cleanup</tertiary>
-        </indexterm>
-
-        <refnamediv>
-          <refname>svn cleanup</refname>
-<!--
-          <refpurpose>Recursively clean up the working copy</refpurpose>
--->
-          <refpurpose>Die Arbeitskopie rekursiv aufräumen.</refpurpose>
-        </refnamediv>
-        <refsect1>
-<!--
-          <title>Synopsis</title>
--->
-          <title>Aufruf</title>
-          <para><literal>svn cleanup [PATH...]</literal></para>
-        </refsect1>
-        <refsect1>
-<!--
-          <title>Description</title>
--->
-          <title>Beschreibung</title>
-
-<!--
-          <para>Recursively clean up the working copy, removing
-            working copy locks and resuming unfinished operations.  If
-            you ever get a <literal>working copy locked</literal>
-            error, run this command to remove stale locks and get your
-            working copy into a usable state again.</para>
--->
-          <para>Die Arbeitskopie rekursiv aufräumen, wobei Sperren der
-            Arbeitskopie aufgehoben werden und unvollendete
-            Operationen wiederaufgenommen werden. Falls Sie jemals
-            die Fehlermeldung <literal>Arbeitskopie gesperrt</literal>
-            bekommen sollten, rufen Sie diesen Befehl auf, um alte
-            Sperren zu entfernen und Ihre Arbeitskopie wieder in einen
-            benutzbaren Zustand zu überführen.</para>
-
-<!--
-          <para>If, for some reason, an <command>svn update</command>
-            fails due to a problem running an external diff program
-            (e.g., user input or network failure), pass the
-            <option>- -diff3-cmd</option> to allow the cleanup process
-            to complete any required merging using your external diff
-            program.  You can also specify any configuration directory
-            with the <option>- -config-dir</option> option, but you
-            should need these options extremely infrequently.</para>
--->
-          <para>Falls aus irgendwelchen Gründen
-            <command>svn update</command> wegen eines Problems mit
-            einem externen diff-Programm fehlschlagen sollte (z.B.,
-            durch Anwendereingaben oder Netzprobleme), übergeben Sie
-            die Option <option>--diff3-cmd</option>, um dem
-            cleanup-Prozess die Möglichkeit zu geben, notwendige
-            Zusammenführungen mit Ihrem externen diff-Programm
-            abzuschließen. Sie können mit der Option
-            <option>--config-dir</option> auch irgendein
-            Konfigurationsverzeichnis angeben, allerdings sollten Sie
-            diese Optionen nur äußerst selten benötigen.</para>
-
-
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Options</title>
--->
-          <title>Optionen</title>
-
-          <informalexample>
-            <screen>
-<xref linkend="svn.ref.svn.sw.diff3_cmd" />
-</screen>
-          </informalexample>
-
-        </refsect1>
-
-        <refsect1>
-<!--
-          <title>Examples</title>
--->
-          <title>Beispiele</title>
-
-<!--
-          <para>Well, there's not much to the examples here, as
-            <command>svn cleanup</command> generates no output.  If
-            you pass no <replaceable>PATH</replaceable>, then
-            <quote><filename>.</filename></quote> is used:</para>
--->
-          <para>An dieser Stelle gibt es nicht viel an Beispielen, da
-            <command>svn cleanup</command> keine Ausgaben erzeugt.
-            Falls Sie <replaceable>PATH</replaceable> nicht angeben,
-            wird <quote><filename>.</filename></quote> verwendet:
-          </para>
-
-          <informalexample>
-            <screen>
-$ svn cleanup
-$ svn cleanup /var/svn/working-copy
-</screen>
-          </informalexample>
-
-        </refsect1>
-      </refentry>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <refentry id="svn.ref.svn.c.commit">
