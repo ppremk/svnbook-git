@@ -6093,9 +6093,9 @@ $
             <quote>Rosinenpicken</quote> genannt und wird verwendet, um
             eine explizit definierte Menge von Änderungen von
             einem Zweig zu einem anderen zu bringen.
-           <replaceable>SOURCE</replaceable> in Revision
+            <replaceable>SOURCE</replaceable> in Revision
             <replaceable>REV</replaceable> wird für jedes angegebene
-            Revisionsintervall verglichen, wie sie zwischen den
+            Revisionsbereich verglichen, wie sie zwischen den
             Revisionen <replaceable>N</replaceable> und
             <replaceable>M</replaceable> existierte.  Siehe
             <xref linkend="svn.branchmerge.cherrypicking"/> für
@@ -6121,64 +6121,7 @@ $
               verlangten Revisionen zusammengeführt
               werden).</para>
           </tip>
-<!--
-          <para>In both variants of the first form,
-            <replaceable>SOURCE</replaceable> in revision
-            <replaceable>REV</replaceable> is compared as it existed
-            between revisions <replaceable>N</replaceable> and
-            <replaceable>M</replaceable> for each revision range
-            provided.</para>
--->
-          <para>In beiden Varianten der ersten Form wird
-            <replaceable>SOURCE</replaceable> in Revision
-            <replaceable>REV</replaceable> verglichen, wie sie
-            zwischen den Revisionen <replaceable>N</replaceable>
-            und <replaceable>M</replaceable> für jeden angegebenen
-            Revisionsbereich existiert hat.</para>
-        </listitem>
         <listitem>
-<!--
-          <para>Reintegrate Merges</para>
--->
-          <para>Zusammenführung zur Reintegration</para>
-<!--
-          <para>The second form is called a <quote>reintegrate
-            merge</quote> and is used to bring changes from a feature
-            branch (<replaceable>SOURCE</replaceable>)
-            back into the feature branch's immediate ancestor branch
-            (<replaceable>TARGET_WCPATH</replaceable>).</para>
--->
-          <para>Die zweite Form wird
-            <quote>Reintegrations-Zusammenführung</quote> genannt
-            und wird verwendet, um Änderungen von einem Zweig
-            (<replaceable>SOURCE</replaceable>) zurück auf den
-            unmittelbaren Vorgänger-Zweig
-            (<replaceable>TARGET_WCPATH</replaceable>) zu
-            bringen.</para>
-          <tip>
-<!--
-            <para>Reintegrate merges support only this specialized
-              use case and as such have a number of special
-              requirements and limitations that the other two merge
-              forms do not posses. See
-              <xref linkend="svn.branchemerge.basicmerging.stayinsync"/>,
-              <xref linkend="svn.branchemerge.basicmerging.reintegrate"/>,
-              <xref linkend="svn.branchmerge.advanced.reintegratetwice"/>,
-              and
-              <xref linkend="svn.branchmerge.commonpatterns.feature"/>.
-            </para>
--->
-            <para>Zusammenführungen zur Reintegration unterstützen
-              nur diesen speziellen Anwendungsfall und besitzen
-              deshalb eine Reihe besonderer Anforderungen und
-              Einschränkungen, die die anderen beiden Formen der
-              Zusammenführung nicht haben. Siehe
-              <xref linkend="svn.branchemerge.basicmerging.stayinsync"/>,
-              <xref linkend="svn.branchemerge.basicmerging.reintegrate"/>,
-              <xref linkend="svn.branchmerge.advanced.reintegratetwice"/>,
-              und
-              <xref linkend="svn.branchmerge.commonpatterns.feature"/>.
-            </para>
           </tip>
         </listitem>
         <listitem>
@@ -6217,7 +6160,7 @@ $
         merge operations when the two merge sources are ancestrally
         related&mdash;if the first source is an ancestor of the
         second or vice versa&mdash;this is guaranteed to be the case
-        when using the first two forms.  Subversion will also take
+        when performing automatic merges.  Subversion will also take
         preexisting merge metadata on the working copy target into
         account when determining what revisions to merge and in an
         effort to avoid repeat merges and needless conflicts it may
@@ -6230,7 +6173,7 @@ $
         Zusammenführung auf, falls die beiden Quellen
         abstammungsmäßig in Beziehung stehen &ndash; falls die
         erste Quelle ein Vorgänger der zweiten ist oder umgekehrt.
-        Bei Verwendung der ersten beiden Formen ist das
+        Bei Verwendung automatischer Zusammenführungen ist das
         gewährleistet. Subversion berücksichtigt ebenfalls bereits
         bestehende Metadaten über Zusammenführungen beim Ziel in
         der Arbeitskopie, wenn es die zusammenzuführenden
@@ -6238,17 +6181,6 @@ $
         unnütze Konflikte zu vermeiden kann es sein, dass nur eine
         Teilmenge der verlangten Bereiche zusammengeführt
         wird</para>
-
-      <tip>
-<!--
-        <para><xref linkend="svn.branchmerge.basicmerging.mergetracking"/>
-          can be disabled by using the <option>- -ignore-ancestry</option>
-          option.</para>
--->
-        <para><xref linkend="svn.branchmerge.basicmerging.mergetracking"/>
-          kann durch die Option <option>--ignore-ancestry</option>
-          abgestellt werden.</para>
-      </tip>
 
 <!--
       <para>Unlike <command>svn diff</command>, the merge command
@@ -6263,8 +6195,25 @@ $
         Änderungen von einem Zweig auf einen anderen übertragen
         und eine Datei auf einem Zweig  umbenannt haben, jedoch
         nicht auf dem anderen.</para>
+
+      <tip>
+<!--
+        <para>The <option>- -ignore-ancestry</option> option will cause
+        <xref linkend="svn.branchmerge.basicmerging.mergetracking"/>
+        to be disabled and makes merge act like
+        <command>svn diff</command>, ignoring the ancestry of files
+        when merging.</para>
+-->
+        <para>Die Option <option>--ignore-ancestry</option> schaltet
+          <xref linkend="svn.branchmerge.basicmerging.mergetracking"/>
+          ab und führt dazu, dass sich eine Zusammenführung verhält wie
+          <command>svn diff</command>, wobei der Stammbaum von Dateien
+          beim Zusammenführen ignoriert wird.</para>
+      </tip>
+
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Options</title>
@@ -6286,10 +6235,12 @@ $
 <xref linkend="svn.ref.svn.sw.record_only" />
 <xref linkend="svn.ref.svn.sw.reintegrate" />
 <xref linkend="svn.ref.svn.sw.revision" />
+<xref linkend="svn.ref.svn.sw.verbose" />
 </screen>
       </informalexample>
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Examples</title>
@@ -6297,47 +6248,50 @@ $
       <title>Beispiele</title>
 
 <!--
-      <para>Merge a branch back into the trunk (assuming that
-        you have an up-to-date working copy of the trunk):</para>
+      <para>Reintegrate a branch back into the trunk&mdash;assuming
+        that you have an up-to-date working copy of the trunk (the
+        <option>- -verbose</option> option prints additional
+        information regarding what the merge is doing prior to
+        actually applying any diff; useful in very large which
+        might take a significant amount of time to complete):</para>
 -->
-      <para>Zurückführen eines Zweigs auf den Stamm (unter der
-        Annahme, dass Sie eine aktuelle Arbeitskopie des Stamms
-        haben):</para>
+      <para>Reintegration eines Zweigs zurück auf den Stamm &ndash;
+        unter der Annahme, dass Sie eine aktuelle Arbeitskopie des
+        Stamms haben (die Option <option>--verbose</option> gibt
+        zusätzliche Informationen dazu aus, was die Zusammenführung
+        vor der eigentlichen Anwendung eines Diffs macht;
+        normalerweise ist das sehr umfangreich und kann bis zur
+        Vervollständigung einige Zeit dauern):</para>
 
       <informalexample>
         <screen>
-$ svn merge --reintegrate \
-        http://svn.example.com/repos/calc/branches/my-calc-branch <!--
-- - - Merging differences between repository URLs into '.':
--->
---- Zusammenführen der Unterschiede zwischen Projektarchiv-URLs in ».«:
-U    button.c
-U    integer.c
-U    Makefile
-U   .  <!--
-- - - Recording mergeinfo for merge between repository URLs into '.':
--->
--- Aufzeichnung der Informationen für Zusammenführung zwischen Projektarchiv-URLs in ».«:
-U   .
-<!--
+$ svn merge ^/branches/feature-branch-calc-enhancements trunk --verbose <!--
+checking branch relationship...
+calculating automatic merge...
+merging...
+- - - Merging r12 through r37 into 'trunk':
+U    trunk/calc/brush.c
+- - - Recording mergeinfo for merge of r12 through r37 into 'trunk':
+ U   trunk
+
 $ # build, test, verify, ...
 -->
+Überprüfung des Verhältnisses der Zweige...
+Berechnung der automatischen Zusammenführung...
+Zusammenführung...
+
 $ # bauen, testen, verifizieren, ...
 
-$ svn commit -m "Merge my-calc-branch back into trunk!" <!--
-Sending        .
-Sending        button.c
-Sending        integer.c
-Sending        Makefile
-Transmitting file data ..
-Committed revision 391.
+$ svn commit trunk -m "Reintegrate the calc enhancements back to trunk!" <!--
+Sending        trunk
+Sending        trunk/calc/brush.c
+Transmitting file data .
+Committed revision 38.
 -->
-Sende          .
-Sende          button.c
-Sende          integer.c
-Sende          Makefile
-Übertrage Daten ..
-Revision 391 übertragen.
+Sende          trunk
+Sende          trunk/calc/brush.c
+Übertrage Daten .
+Revision 38 übertragen.
 </screen>
       </informalexample>
 
