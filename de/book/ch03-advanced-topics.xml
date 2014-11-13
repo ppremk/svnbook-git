@@ -1376,7 +1376,7 @@ Index: frabnaggilywort/IDEA
       these properties are mentioned elsewhere in this or other
       chapters as part of the more general topics to which they are
       related.  For an exhaustive list of Subversion's predefined
-      properties, see <xref linkend="svn.ref.properties" /> in
+      properties, see <xref linkend="svn.advanced.props" /> in
       <xref linkend="svn.ref"/>.</para>
 -->
     <para>Subversion besitzt keine besondere Richtlinie zur Verwendung
@@ -1395,7 +1395,7 @@ Index: frabnaggilywort/IDEA
       in anderen Kapiteln im Rahmen allgemeinerer Themen erwähnt, mit
       denen sie zusammenhängen. Eine erschöpfende Aufstellung der
       vordefinierten Eigenschaften von Subversion finden Sie unter
-      <xref linkend="svn.ref.properties" /> in
+      <xref linkend="svn.advanced.props" /> in
       <xref linkend="svn.ref"/>.</para>
 
 <!--
@@ -2649,7 +2649,7 @@ $
           that the properties added to and modified on files and
           directories match the administrator's preferred policies,
           rejecting commits which are non-compliant in this fashion.
-          (See <xref linkend="svn.reposadmin.create.hooks" /> for more
+          (See <xref linkend="svn.reposadmin.hooks" /> for more
           about hook scripts.)  But there's no way to automatically
           dictate those preferences to Subversion clients
           beforehand.</para>
@@ -2667,12 +2667,461 @@ $
           Verzeichnissen hinzugefügten und geänderten Eigenschaften
           den von den Administratoren vorgegebenen Richtlinien
           entsprechen, und Übergaben ablehnen, die dagegen verstoßen.
-          (Siehe <xref linkend="svn.reposadmin.create.hooks" /> für
+          (Siehe <xref linkend="svn.reposadmin.hooks" /> für
           mehr zu Hook-Scripten.) Es besteht aber keinerlei
           Möglichkeit, diese Richtlinien im Voraus für
           Subversion-Clients für verbindlich zu erklären.</para>
       </note>
 
+    </sect2>
+
+    <!-- ================================================================= -->
+    <sect2 id="svn.advanced.props.ref">
+
+  <!--
+      <title>Subversion's Reserved Properties</title>
+  -->
+      <title>Reservierte Subversion-Eigenschaften</title>
+
+  <!--
+      <para>Subversion allows users to invent arbitrarily named
+        versioned properties on files and directories, as well as
+        unversioned properties on revisions.  The only restriction is on
+        properties whose names begin with <literal>svn:</literal> (those
+        are reserved for Subversion's own use).  While these properties
+        may be set by users to control Subversion's behavior, users may
+        not invent new <literal>svn:</literal> properties.</para>
+  -->
+      <para>Subversion gestattet seinen Benutzern, beliebig benannte,
+        versionierte Eigenschaften für Dateien und Verzeichnisse sowie
+        unversionierte Eigenschaften für Revisionen zu erfinden. Die einzige
+        Einschränkung gilt für Eigenschaften, die mit
+        <literal>svn:</literal> beginnen (diese sind für die Benutzung
+        durch Subversion reserviert). Obwohl diese Eigenschaften durch
+        Benutzer geändert werden dürfen, um das Verhalten von Subversion
+        zu steuern, dürfen Benutzer keine neuen
+        <literal>svn:</literal>-Eigenschaften erfinden.</para>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.advanced.props.ref.versioned">
+  <!--
+        <title>Versioned properties</title>
+  -->
+        <title>Versionierte Eigenschaften</title>
+
+  <!--
+        <para>These are the versioned properties that Subversion reserves
+          for its own use:</para>
+  -->
+        <para>Dies sind die versionierten Eigenschaften, die Subversion für
+          die eigene Verwendung reserviert:</para>
+
+        <variablelist>
+
+          <varlistentry>
+            <term><literal>svn:executable</literal></term>
+            <listitem>
+
+  <!--
+              <para>If present on a file, the client will make the
+                file executable in Unix-hosted working copies.  See
+                <xref
+                linkend="svn.advanced.props.special.executable"/>.</para>
+  -->
+              <para>Falls diese Eigenschaft für eine Datei vergeben ist,
+                wird der Client die Datei in Arbeitskopien auf
+                Unix-Wirtssystemen ausführbar machen. Siehe <xref
+                linkend="svn.advanced.props.special.executable"/>.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:mime-type</literal></term>
+            <listitem>
+
+  <!--
+              <para>If present on a file, the value indicates the
+                file's MIME type.  This allows the client to decide
+                whether line-based contextual merging is safe to
+                perform during updates, and can also affect how the
+                file behaves when fetched via a web browser.  See
+                <xref
+                linkend="svn.advanced.props.special.mime-type"/>.</para>
+  -->
+              <para>Falls diese Eigenschaft für eine Datei vergeben ist,
+                zeigt der Wert den MIME-Typen der Datei an. Das erlaubt
+                dem Client die Entscheidung, ob es während einer
+                Aktualisierung sicher ist, eine zeilenbasierte
+                Zusammenführung durchzuführen; es kann auch Auswirkungen
+                auf das Verhalten der Datei haben, wenn sie über einen
+                Web-Browser geladen wird. Siehe <xref
+                linkend="svn.advanced.props.special.mime-type"/>.
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:ignore</literal></term>
+            <listitem>
+
+  <!--
+              <para>If present on a directory, the value is a list of
+                <emphasis>unversioned</emphasis> file patterns to be ignored
+                by <command>svn status</command> and other
+                subcommands.  See
+                <xref
+                linkend="svn.advanced.props.special.ignore"/>.</para>
+  -->
+              <para>Falls diese Eigenschaft für ein Verzeichnis vergeben
+                ist, enthält der Wert eine Liste von Namensmustern
+                <emphasis>unversionierter</emphasis> Dateien, die von
+                <command>svn status</command> und anderen Unterbefehlen
+                zu ignorieren sind. Siehe <xref
+                linkend="svn.advanced.props.special.ignore"/>.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:keywords</literal></term>
+            <listitem>
+
+  <!--
+              <para>If present on a file, the value tells the client
+                how to expand particular keywords within the file.
+                See
+                <xref
+                linkend="svn.advanced.props.special.keywords"/>.</para>
+  -->
+              <para>Falls diese Eigenschaft für eine Datei vergeben ist,
+                teilt dessen Wert dem Client mit, wie bestimmte
+                Schlüsselworte in der Datei zu expandieren sind. Siehe
+                <xref linkend="svn.advanced.props.special.keywords"/>.
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:eol-style</literal></term>
+            <listitem>
+
+  <!--
+              <para>If present on a file, the value tells the client how
+                to manipulate the file's line-endings in the working
+                copy and in exported trees.  See <xref
+                linkend="svn.advanced.props.special.eol-style"/> and
+                <xref linkend="svn.ref.svn.c.export" /> earlier in this chapter.</para>
+  -->
+              <para>Falls diese Eigenschaft für eine Datei vergeben ist,
+                teilt dessen Wert dem Client mit, wie die Zeilenenden
+                der Datei in der Arbeitskopie und in exportierten Bäumen
+                zu behandeln sind. Siehe <xref
+                linkend="svn.advanced.props.special.eol-style"/> und
+                <xref linkend="svn.ref.svn.c.export" /> weiter oben in
+                diesem Kapitel.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:externals</literal></term>
+            <listitem>
+
+  <!--
+              <para>If present on a directory, the value is a multiline
+                list of other paths and URLs the client should check
+                out.  See
+                <xref linkend="svn.advanced.externals"/>.</para>
+  -->
+              <para>Falls diese Eigenschaft für ein Verzeichnis vergeben
+                ist, besteht dessen Wert aus einer Liste anderer Pfade
+                und URLs, die der Client auschecken soll. Siehe <xref
+                linkend="svn.advanced.externals"/>.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:special</literal></term>
+            <listitem>
+
+  <!--
+              <para>If present on a file, indicates that the file is not
+                an ordinary file, but a symbolic link or other special
+                object.<footnote><para>As of this writing, symbolic
+                links are indeed the only <quote>special</quote>
+                objects.  But there might be more in future releases of
+                Subversion.</para></footnote></para>
+  -->
+              <para>Falls diese Eigenschaft für eine Datei vergeben ist,
+                zeigt es an, dass die Datei keine gewöhnliche Datei ist,
+                sondern ein symbolischer Link oder ein anderes
+                besonderes Objekt.<footnote><para>Zum Zeitpunkt der
+                Drucklegung sind symbolische Links tatsächlich die
+                einzigen <quote>besonderen</quote> Objekte. Allerdings
+                könnten in künftigen Ausgaben von Subversion mehr davon
+                hinzukommen.</para></footnote></para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:needs-lock</literal></term>
+            <listitem>
+
+  <!--
+              <para>If present on a file, tells the client to make the
+                file read-only in the working copy, as a reminder that
+                the file should be locked before editing begins.  See
+                <xref
+                linkend="svn.advanced.locking.lock-communication"/>.</para>
+  -->
+              <para>Falls diese Eigenschaft für eine Datei vergeben ist,
+                teilt es dem Client mit, die Datei in der Arbeitskopie
+                schreibgeschützt abzulegen, um daran zu erinnern, die
+                Datei vor der Bearbeitung zu sperren. Siehe <xref
+                linkend="svn.advanced.locking.lock-communication"/>.
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:mergeinfo</literal></term>
+            <listitem>
+
+  <!--
+              <para>Used by Subversion to track merge data.  See
+                <xref linkend="svn.branchmerge.basicmerging.mergeinfo"/>
+                for details, but you should never edit this property
+                unless you <emphasis>really</emphasis> know what you're
+                doing.</para>
+  -->
+              <para>Wird von Subversion verwendet, um
+                Zusammenführungsdaten festzuhalten. Siehe <xref
+                linkend="svn.branchmerge.basicmerging.mergeinfo"/> für
+                Details, jedoch sollten Sie diese Eigenschaft nie
+                bearbeiten, es sei denn, Sie wissen
+                <emphasis>wirklich</emphasis> was Sie machen.</para>
+
+            </listitem>
+          </varlistentry>
+
+        </variablelist>
+      </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.advanced.props.ref.unversioned">
+  <!--
+        <title>Unversioned Properties</title>
+  -->
+        <title>Unversionierte Eigenschaften</title>
+
+  <!--
+        <para>These are the unversioned properties that Subversion reserves
+          for its own use:</para>
+  -->
+        <para>Dies sind die unversionierten Eigenschaften, die Subversion
+          für die eigene Verwendung reserviert:</para>
+
+        <variablelist>
+
+          <varlistentry>
+            <term><literal>svn:author</literal></term>
+            <listitem>
+
+  <!--
+              <para>If present, contains the authenticated username of
+                the person who created the revision.  (If not present,
+                the revision was committed anonymously.)</para>
+  -->
+              <para>Falls vorhanden, beinhaltet es den authentifizierten
+                Anwendernamen der Person, die die Revision erzeugt hat.
+                (Falls nicht vorhanden, wurde die Revision anonym
+                übergeben.)</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:autoversioned</literal></term>
+            <listitem>
+
+  <!--
+              <para>If present, the revision was created via the
+                autoversioning feature.  See
+                <xref linkend="svn.webdav.autoversioning"/>.</para>
+  -->
+              <para>Falls vorhanden, wurde die Revision durch die
+                Autoversionierungs-Funktion erzeugt. Siehe <xref
+                linkend="svn.webdav.autoversioning"/>.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:date</literal></term>
+            <listitem>
+
+  <!--
+              <para>Contains the UTC time the revision was created, in
+                ISO 8601 format.  The value comes from the
+                <emphasis>server</emphasis> machine's clock, not the
+                client's.</para>
+  -->
+              <para>Beinhaltet den Erstellungszeitpunkt der Revision in
+                UTC-Zeit im ISO-8601-Format. Der Wert kommt von der Uhr
+                der <emphasis>Server</emphasis>-Maschine, nicht der des
+                Clients.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:log</literal></term>
+            <listitem>
+
+  <!--
+              <para>Contains the log message describing the
+                revision.</para>
+  -->
+              <para>Beinhaltet die Protokollnachricht, die die Revision
+                beschreibt.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:rdump-lock</literal></term>
+            <listitem>
+
+  <!--
+              <para>Used to temporarily enforce mutually exclusive
+                access to the repository by <command>svnrdump
+                load</command>.  This property is generally only
+                observed when such an operation is active&mdash;or when
+                an <command>svnrdump</command> command failed to cleanly
+                disconnect from the repository.  (This property is only
+                relevant when it appears on revision 0.)</para>
+  -->
+              <para>Wird verwendet, um vorübergehend einen gegenseitig
+                ausschließenden Zugriff auf das Projektarchiv durch
+                <command>svnrdump load</command> zu erzwingen. Diese
+                Eigenschaft wird im Allgemeinen nur dann berücksichtigt,
+                falls eine solche Operation aktiv ist &ndash; oder,
+                falls ein <command>svnrdump</command>-Befehl sich nicht
+                sauber vom Projektarchiv abmelden konnte. (Diese
+                Eigenschaft ist nur dann relevant, falls sie auf
+                Revision 0 liegt.)</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:sync-currently-copying</literal></term>
+            <listitem>
+
+  <!--
+              <para>Contains the revision number from the source
+                repository which is currently being mirrored to this one
+                by the <command>svnsync</command> tool.  (This property
+                is only relevant when it appears on revision 0.)</para>
+  -->
+              <para>Beinhaltet die Revisionsnummer des
+                Quell-Projektarchivs, das momentan mit dem Programm
+                <command>svnsync</command> in dieses gespiegelt wird.
+                (Diese Eigenschaft ist nur relevant, wenn sie bei
+                Revision 0 gesetzt ist.)</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:sync-from-uuid</literal></term>
+            <listitem>
+
+  <!--
+              <para>Contains the UUID of the repository of which this
+                repository has been initialized as a mirror by
+                the <command>svnsync</command> tool.  (This property is
+                only relevant when it appears on revision 0.)</para>
+  -->
+              <para>Beinhaltet die UUID des Projektarchivs, durch das
+                dieses Projektarchiv mit dem Programm
+                <command>svnsync</command> als Spiegel initialisiert
+                wurde. (Diese Eigenschaft ist nur relevant, wenn sie bei
+                Revision 0 gesetzt ist.)</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:sync-from-url</literal></term>
+            <listitem>
+
+  <!--
+              <para>Contains the URL of the repository directory of
+                which this repository has been initialized as a mirror
+                by the <command>svnsync</command> tool.  (This property
+                is only relevant when it appears on revision 0.)</para>
+  -->
+              <para>Beinhaltet den URL des Projektarchivs, durch das
+                dieses Projektarchiv mit dem Programm
+                <command>svnsync</command> als Spiegel initialisiert
+                wurde. (Diese Eigenschaft ist nur relevant, wenn sie bei
+                Revision 0 gesetzt ist.)</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:sync-last-merged-rev</literal></term>
+            <listitem>
+
+  <!--
+              <para>Contains the revision of the source repository which
+                was most recently and successfully mirrored to this one.
+                (This property is only relevant when it appears on
+                revision 0.)</para>
+  -->
+              <para>Beinhaltet die Revision des Projektarchivs, das
+                zuletzt erfolgreich in dieses gespiegelt wurde. (Diese
+                Eigenschaft ist nur relevant, wenn sie bei Revision 0
+                gesetzt ist.)</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>svn:sync-lock</literal></term>
+            <listitem>
+
+  <!--
+              <para>Used to temporarily enforce mutually exclusive
+                access to the repository by <command>svnsync</command>
+                mirroring operations.  This property is generally only
+                observed when such an operation is active&mdash;or when
+                an <command>svnsync</command> command failed to cleanly
+                disconnect from the repository.  (This property is
+                only relevant when it appears on revision 0.)</para>
+  -->
+              <para>Wird verwendet, um vorübergehend einen gegenseitigen
+                Ausschluss für den Zugriff auf das Projektarchiv durch 
+                Spiegelungsoperationen von <command>svnsync</command> zu
+                erzwingen. Diese Eigenschaft wird im Allgemeinen nur
+                dann beachtet, falls eine solche Aktion aktiv ist, oder
+                falls ein <command>svnsync</command>-Befehl es nicht
+                schaffte, sich sauber vom Projektarchiv abzumelden.
+                (Diese Eigenschaft ist nur relevant, wenn sie bei
+                Revision 0 gesetzt ist.)</para>
+
+            </listitem>
+          </varlistentry>
+
+        </variablelist>
+      </sect3>
     </sect2>
   </sect1>
 
@@ -6527,7 +6976,7 @@ $
           <filename>post-unlock</filename> hooks are also available,
           and can be used to send email after locking actions.  To
           learn more about repository hooks, see <xref
-          linkend="svn.reposadmin.create.hooks" />.</para>
+          linkend="svn.reposadmin.hooks" />.</para>
 -->
         <para>Subversion geht standardmäßig den
           <quote>weicheren</quote> Weg, erlaubt es jedoch
@@ -6543,7 +6992,7 @@ $
           <filename>post-unlock</filename> Aktionen sind ebenfalls
           verfügbar und können verwendet werden, um nach Sperraktionen
           E-Mails zu versenden. Um mehr über Projektarchiv-Aktionen zu
-          erfahren, siehe <xref linkend="svn.reposadmin.create.hooks"
+          erfahren, siehe <xref linkend="svn.reposadmin.hooks"
             />.</para>
 
       </sidebar>
@@ -8408,7 +8857,7 @@ $
         author of the revision.  That is, the authenticated user's
         name is stored as the value of the
         <literal>svn:author</literal> property on the new revision
-        (see <xref linkend="svn.ref.properties"/> in
+        (see <xref linkend="svn.advanced.props"/> in
         <xref linkend="svn.ref"/>).  If the client was not
         authenticated (i.e., if the server never issued an
         authentication challenge), the revision's
@@ -8421,7 +8870,7 @@ $
         als Autor der Revision. Das bedeutet, dass der Name des
         authentifizierten Benutzers als Wert der Eigenschaft
         <literal>svn:author</literal> der neuen Revision zugewiesen
-        wird (siehe <xref linkend="svn.ref.properties"/> in
+        wird (siehe <xref linkend="svn.advanced.props"/> in
         <xref linkend="svn.ref"/>). Falls der Client nicht
         authentifiziert wurde (d.h., falls der Server niemals eine
         Authentisierungs-Aufforderung ausgegeben hat), bleibt die
