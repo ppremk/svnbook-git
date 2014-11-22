@@ -6426,7 +6426,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
           to mention in this chapter.  For a complete list of
           all <filename>httpd.conf</filename> directives
           that <command>mod_dav_svn</command> responds to, see
-          <xref linkend="svn.ref.mod_dav_svn.conf.directives"/> in
+          <xref linkend="svn.serverconfig.httpd.ref.mod_dav_svn"/> in
           <xref linkend="svn.ref"/>.</para>
 
 -->
@@ -6437,14 +6437,610 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
           vollständige Liste aller <filename>httpd.conf</filename>
           Direktiven, auf die <command>mod_dav_svn</command> reagiert,
           finden Sie unter
-          <xref linkend="svn.ref.mod_dav_svn.conf.directives"/> in
+          <xref linkend="svn.serverconfig.httpd.ref.mod_dav_svn"/> in
           <xref linkend="svn.ref"/>.</para>
 
       </sect3>
-
     </sect2>
 
+    <!-- =============================================================== -->
+    <sect2 id="svn.serverconfig.httpd.ref">
+<!--
+      <title>Subversion Apache HTTP Server Configuration Reference</title>
+-->
+      <title>Subversion Apache HTTP Server Konfigurations~Referenz</title>
+
+<!--
+      <para>In the previous sections, we've mentioned numerous
+        directives that administrators can use in their
+        <filename>httpd.conf</filename> files to enable and configure
+        their Subversion server offering, introducing each directive
+        as we also introduce the functionality it toggles.  In this
+        section, we'll quickly summarize <emphasis>all</emphasis> the
+        configuration directives supported by both of the Apache HTTP
+        Server modules which are provided as part of the standard
+        Subversion distribution.</para>
+-->
+      <para>In den vorhergehenden Abschnitten erwähnten wir eine Vielzahl an
+        Direktiven, die Administratoren in Ihren
+        <filename>httpd.conf</filename>-Dateien verwenden können files to
+        enable and configure
+        their Subversion server offering, introducing each directive
+        as we also introduce the functionality it toggles.  In this
+        section, we'll quickly summarize <emphasis>all</emphasis> the
+        configuration directives supported by both of the Apache HTTP
+        Server modules which are provided as part of the standard
+        Subversion distribution.</para>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.serverconfig.httpd.ref.mod_dav_svn">
+        <title>mod_dav_svn configuration directives</title>
+
+        <para>The following configuration directives are recognized
+          and supported by Subversion's Apache HTTP Server module,
+          <command>mod_dav_svn</command>.</para>
+
+        <variablelist>
+
+          <varlistentry>
+            <term><literal>DAV svn</literal></term>
+            <listitem>
+
+<!--
+              <para>Must be included in any
+                <literal>Directory</literal> or <literal>Location</literal>
+                block for a Subversion repository.  It
+                tells <command>httpd</command> to use the Subversion
+                backend for <literal>mod_dav</literal> to handle all
+                requests.</para>
+-->
+              <para>Muss in jedem <literal>Directory</literal>- oder
+                <literal>Location</literal>-Abschnitt für ein
+                Subversion-Projektarchiv enthalten sein. Sie fordert
+                <command>httpd</command> auf, das Subversion-Backend
+                von <literal>mod_dav</literal> zur Auftragsabwicklung
+                zu verwenden.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNActivitiesDB
+              <replaceable>directory-path</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Specifies the location in the filesystem where the
+                activities database should be stored.  By default,
+                <command>mod_dav_svn</command> creates and uses a
+                directory in the repository
+                called <filename>dav/activities.d</filename>.  The
+                path specified with this option must be an absolute
+                path.</para>
+-->
+              <para>Bestimmt den Ort im Dateisystem, an dem die
+                Datenbank für Aktivitäten abgelegt werden soll.
+                Standardmäßig erzeugt und verwendet
+                <command>mod_dav_svn</command> ein Verzeichnis im
+                Projektarchiv namens
+                <filename>dav/activities.d</filename>. Der durch diese
+                Option angegebene Pfad muss absolut sein.</para>
+
+<!--
+              <para>If specified for
+                an <literal>SVNParentPath</literal>
+                area, <command>mod_dav_svn</command> appends the
+                basename of the repository to the path specified here.
+                For example:</para>
+-->
+
+              <para>Falls ein <literal>SVNParentPath</literal>-Bereich
+                angegeben wurde, hängt <command>mod_dav_svn</command>
+                den Basisnamen des Projektarchivs an diesen Pfad an,
+                beispielsweise:</para>
+
+              <informalexample>
+          <screen>
+&lt;Location /svn&gt;
+  DAV svn
+
+<!--
+  # any "/svn/foo" URL will map to a repository in 
+  # /net/svn.nfs/repositories/foo
+-->
+  # jeder "/svn/foo" URL wird auf ein Projektarchiv in
+  # /net/svn.nfs/repositories/foo abgebildet
+  SVNParentPath         "/net/svn.nfs/repositories"
+
+<!--
+  # any "/svn/foo" URL will map to an activities db in
+  #  /var/db/svn/activities/foo
+-->
+  # jeder "/svn/foo" URL wird auf eine Aktivitäten-Datenbank in
+  #  /var/db/svn/activities/foo abgebildet
+  SVNActivitiesDB       "/var/db/svn/activities"
+&lt;/Location&gt;
+</screen>
+        </informalexample>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNAdvertiseV2Protocol On|Off</literal></term>
+            <listitem>
+
+<!--
+              <para>New to Subversion 1.7, this toggles
+                whether <command>mod_dav_svn</command> advertises its
+                support for the new version of its HTTP protocol also
+                introduced in that version.  Most admins will not wish
+                to use this directive (which is <literal>On</literal>
+                by default), choosing instead to enjoy the performance
+                benefits that the new protocol offers.  However, whena
+                configuring a server as a write-through proxy to
+                another server which does not support the new
+                protocol, set this directive's value
+                to <literal>Off</literal>.</para>
+-->
+              <para>Neu in Subversion 1.7. Schaltet die
+                Benachrichtigung ein oder aus, dass
+                <command>mod_dav_svn</command> die neue Version seines
+                ebenfalls in dieser Version vorgestellten
+                HTTP-Protokolls unterstützt. Die meisten
+                Administratoren werden diese Direktive nicht verwenden
+                wollen (deren Standardwert <literal>On</literal> ist),
+                da sie lieber die Leistungsverbesserung des neuen
+                Protokolls nutzen möchten. Falls jedoch ein Server als
+                Durchschreib-Proxy für einen anderen Server, der das
+                neue Protokoll nicht unterstützt, eingerichtet werden
+                soll, ist der Wert dieser Direktive auf
+                <literal>Off</literal> zu setzen.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNAllowBulkUpdates On|Off</literal></term>
+            <listitem>
+
+<!--
+              <para>Toggles support for all-inclusive
+                responses to update-style <literal>REPORT</literal>
+                requests.  Subversion clients use
+                <literal>REPORT</literal> requests to get information
+                about directory tree checkouts and updates from
+                <command>mod_dav_svn</command>.  They can ask the
+                server to send that information in one of two ways:
+                with the entirety of the tree's information in one
+                massive response, or with a
+                <firstterm>skelta</firstterm> (a skeletal
+                representation of a tree delta) which contains just
+                enough information for the client to know what
+                <emphasis>additional</emphasis> data to request from
+                the server.  When this directive is included with a
+                value of <literal>Off</literal>,
+                <command>mod_dav_svn</command> will only ever respond
+                to these <literal>REPORT</literal> requests with
+                skelta responses, regardless of the type of responses
+                requested by the client.</para>
+-->
+              <para>Ändert die Unterstützung für vollständige
+                Antworten auf <literal>REPORT</literal>-Anfragen im
+                Stil von Aktualisierungen. Subversion-Clients
+                verwenden <literal>REPORT</literal>-Anfragen, um von
+                <command>mod_dav_svn</command> Informationen über
+                Checkouts und Aktualisierungen von Verzeichnisbäumen
+                zu erhalten. Dabei kann vom Server verlangt werden,
+                diese Information auf zwei mögliche Weisen zu senden:
+                entweder mit den Informationen zum gesamten Teilbaum
+                in einer umfangreichen Antwort oder als ein
+                <firstterm>Skelta</firstterm> (eine skelettierte
+                Repräsentation eines Baum-Deltas), das dem Client
+                gerade genug Informationen liefert, so dass er weiß,
+                welche <emphasis>zusätzlichen</emphasis> Daten er vom
+                Server abfragen muss. Wird diese Direktive mit dem
+                Wert <literal>Off</literal> versehen, werden
+                <literal>REPORT</literal>-Anfragen von
+                <command>mod_dav_svn</command> ausschließlich mit
+                Skeltas beantwortet, egal welche Art der Antwort vom
+                Client verlangt wurde.</para>
+
+<!--
+              <para>Most folks won't need to use this directive at
+                all.  It primarily exists for administrators who
+                wish&mdash;for security or auditing reasons&mdash;to
+                force Subversion clients to fetch individually all the
+                files and directories needed for updates and
+                checkouts, thus leaving an audit trail of
+                <literal>GET</literal> and <literal>PROPFIND</literal>
+                requests in Apache's logs.  The default value of this
+                directive is <literal>On</literal>.</para>
+-->
+              <para>Die Meisten werden diese Direktive überhaupt nicht
+                benötigen. Sie existiert hauptsächlich für
+                Administratoren, die &ndash; aus Gründen der
+                Sicherheit oder Nachprüfbarkeit &ndash;
+                Subversion-Clients dazu zwingen möchten, alle für
+                Checkouts oder Aktualisierungen benötigten Dateien und
+                Verzeichnisse individuell abzurufen, um somit eine
+                Spur aus <literal>GET</literal>- und
+                <literal>PROPFIND</literal>-Anfragen in den
+                Protokolldateien von Apache zu hinterlassen. Der
+                Standardwert dieser Direktive ist
+                <literal>On</literal>.</para>
+
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>SVNAutoversioning On|Off</literal></term>
+            <listitem>
+
+<!--
+              <para>When its value is
+                <literal>On</literal>, allows write requests from
+                WebDAV clients to result in automatic commits.  A
+                generic log message is auto-generated and attached to
+                each revision.  If you enable autoversioning, you'll
+                likely want to set <literal>ModMimeUsePathInfo
+                On</literal> so that <literal>mod_mime</literal> can
+                set <literal>svn:mime-type</literal> to the correct
+                MIME type automatically (as best as
+                <literal>mod_mime</literal> is able to, of course).
+                For more information, see <xref
+                linkend="svn.webdav"/>.  The default value of this
+                directive is <literal>Off</literal>.</para>
+-->
+              <para>Wenn der Wert <literal>On</literal> ist, führen
+                Schreibanfragen von WebDAV-Clients zu automatischen
+                Übergaben ins Projektarchiv. Eine automatisch erzeugte,
+                generische Protokollnachricht wird mit jeder Revision
+                verknüpft. Falls Sie automatische Versionierung
+                ermöglichen, werden Sie sicherlich auch
+                <literal>ModMimeUsePathInfo On</literal> setzen
+                wollen, so dass <literal>mod_mime</literal>
+                <literal>svn:mime-type</literal> automatisch auf den
+                richtigen MIME-Typen setzen kann (natürlich nur so
+                gut, wie es <literal>mod_mime</literal> kann).  Für
+                weitere Informationen, siehe <xref
+                linkend="svn.webdav"/>.  Der Standardwert dieser
+                Direktive ist <literal>Off</literal>.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNCacheFullTexts On|Off</literal></term>
+            <listitem>
+
+<!--
+              <para>When set to <literal>On</literal>, this tells
+                Subversion to cache content fulltexts if sufficient
+                in-memory cache is available, which could offer a
+                significant performance benefit to the server.  (See
+                also the <literal>SVNInMemoryCacheSize</literal>
+                directive.)  The default value of this directive
+                is <literal>Off</literal>.</para>
+-->
+              <para>Der Wert <literal>On</literal> teilt Subversion
+                mit, Volltextinhalt zwischenzuspeichern, sofern
+                ausreichend Zwischenspeicherplatz vorhanden ist, was
+                dem Server einen deutlichen Leistungsvorteil
+                bescheren könnte. (Siehe hierzu auch die Direktive
+                <literal>SVNInMemoryCacheSize</literal>.) Der
+                Standardwert dieser Direktive ist
+                <literal>Off</literal>.</para>
+
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><literal>SVNCacheTextDeltas On|Off</literal></term>
+            <listitem>
+
+<!--
+              <para>When set to <literal>On</literal>, this tells
+                Subversion to cache content deltas if sufficient
+                in-memory cache is available, which could offer a
+                significant performance benefit to the server.  (See
+                also the <literal>SVNInMemoryCacheSize</literal>
+                directive.)  The default value of this directive
+                is <literal>Off</literal>.</para>
+-->
+              <para>Der Wert <literal>On</literal> teilt Subversion
+                mit, Deltas von Inhalten zwischenzuspeichern, sofern
+                ausreichend Zwischenspeicherplatz vorhanden ist, was
+                dem Server einen deutlichen Leistungsvorteil
+                bescheren könnte. (Siehe hierzu auch die Direktive
+                <literal>SVNInMemoryCacheSize</literal>.) Der
+                Standardwert dieser Direktive ist
+                <literal>Off</literal>.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNCompressionLevel
+              <replaceable>level</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Specifies the compression level used when sending
+                file content over the network.  A value
+                of <literal>0</literal> disables compression
+                altogether, and <literal>9</literal> is the maximum
+                value.  <literal>5</literal> is the default
+                value.</para>
+-->
+              <para>Spezifiziert den Kompressionsgrad wenn
+                Dateiinhalte über das Netz gesendet werden. Der Wert
+                <literal>0</literal> unterbindet die Kompression
+                vollständig und <literal>9</literal> ist der
+                Maximalwert.  <literal>5</literal> ist der
+                Standardwert.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNIndexXSLT
+              <replaceable>directory-path</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Specifies the URI of an XSL transformation for
+                directory indexes.  This directive is optional.</para>
+-->
+              <para>Spezifiziert den URI einer XSL-Transformation für
+                Verzeichnisindexe. Diese Direktive ist optional.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNInMemoryCacheSize
+              <replaceable>size</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Specifies the maximum size (in kbytes) per process
+                of Subversion's in-memory object cache.  The default
+                value is <literal>16384</literal>; use a value
+                of <literal>0</literal> to deactivate this cache
+                altogether.</para>
+-->
+              <para>Spezifiziert die Maximalgröße des
+                Zwischenspeichers von Subversion (in kBytes) pro
+                Prozess. Der Standardwert ist
+                <literal>16384</literal>; verwenden Sie den Wert
+                <literal>0</literal>, um die Zwischenspeicherung
+                vollständig zu unterbinden.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNListParentPath On|Off</literal></term>
+            <listitem>
+
+<!--
+              <para>When set to <literal>On</literal>, allows
+                a <literal>GET</literal>
+                of <literal>SVNParentPath</literal>, which results in
+                a listing of all repositories under that path.  The
+                default setting is
+                <literal>Off</literal>.</para>
+-->
+              <para>Wenn sie auf <literal>On</literal> gesetzt ist,
+                wird ein <literal>GET</literal> von
+                <literal>SVNParentPath</literal> erlaubt, was zu einer
+                Auflistung aller Projektarchive unter diesem Pfad führt.
+                Der Standardwert ist <literal>Off</literal>.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNMasterURI
+              <replaceable>url</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Specifies a URI to the master Subversion
+                repository (used for a write-through proxy).</para>
+-->
+              <para>Der URI des Master-Subversion-Projektarchivs
+                (verwendet für einen Proxy, über den geschrieben
+                wird).</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNParentPath
+              <replaceable>directory-path</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Specifies the location in the filesystem of a
+                parent directory whose child directories are
+                Subversion repositories.  In a configuration block for
+                a Subversion repository, either this directive or
+                <literal>SVNPath</literal> must be present, but not
+                both.</para>
+-->
+              <para>Spezifiziert den Ort im Dateisystem, an dem ein
+                Elternverzeichnis liegt, dessen Kindverzeichnisse
+                Subversion-Projektarchive sind. In einem
+                Konfigurationsblock für ein Subversion-Projektarchiv muss
+                entweder diese Direktive oder
+                <literal>SVNPath</literal> vorhanden sein, jedoch
+                nicht beide.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNPath
+              <replaceable>directory-path</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Specifies the location in the
+                filesystem for a Subversion repository's files.  In a
+                configuration block for a Subversion repository,
+                either this directive or
+                <literal>SVNParentPath</literal> must be present, but
+                not both.</para>
+-->
+              <para>Gibt den Ort im Dateisystem an, an dem die Dateien
+                eines Subversion-Projektarchivs liegen. In einem
+                Konfigurationsblock für ein Subversion-Projektarchiv muss
+                entweder diese Direktive oder
+                <literal>SVNParentPath</literal> vorhanden sein,
+                jedoch nicht beide.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNPathAuthz On|Off|short_circuit</literal></term>
+            <listitem>
+
+<!--
+              <para>Controls path-based authorization by enabling
+                subrequests (<literal>On</literal>), disabling
+                subrequests (<literal>Off</literal>; see <xref
+                linkend="svn.serverconfig.httpd.authz.pathauthzoff"/>),
+                or querying <command>mod_authz_svn</command> directly
+                (<literal>short_circuit</literal>).  The default
+                value of this directive is <literal>On</literal>.</para>
+-->
+              <para>Kontrolliert pfadbasierte Autorisierung, indem
+                Unteranfragen ermöglicht (<literal>On</literal>) oder
+                abgeschaltet (<literal>Off</literal>; siehe <xref
+                linkend="svn.serverconfig.httpd.authz.pathauthzoff"/>)
+                werden oder bei <command>mod_authz_svn</command>
+                direkt nachgefragt wird
+                (<literal>short_circuit</literal>). Der Standardwert
+                dieser Direktive ist <literal>On</literal>.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNReposName
+              <replaceable>name</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Specifies the name of a Subversion repository for
+                use in <literal>HTTP GET</literal> responses.  This
+                value will be prepended to the title of all directory
+                listings (which are served when you navigate to a
+                Subversion repository with a web browser).  This
+                directive is optional.</para>
+-->
+              <para>Spezifiziert den Namen eines
+                Subversion-Projektarchivs zur Verwendung für
+                <literal>HTTP GET</literal>-Antworten. Dieser Wert
+                wird dem Titel aller Verzeichnisauflistungen
+                vorangestellt (die übertragen werden, wenn Sie mit
+                einem Browser zu einem Subversion-Projektarchiv
+                navigieren). Diese Direktive ist optional.</para>
+
+               <note>
+<!--
+                 <para>Subversion will not use the repository name as
+                   configured via this directive when trying to match
+                   rules in access control files.  The repository names
+                   used in that file's syntax are always derived from
+                   the repository URL.  See
+                   <xref linkend="svn.serverconfig.pathbasedauthz.getting-started"
+                   /> for details.</para>
+-->
+                 <para>Beim Suchen nach passenden Regeln in
+                   Zugriffskontroll-Dateien wird Subversion den über diese
+                   Direktive konfigurierten Namen des Projektarchivs nicht
+                   verwenden. Die in der Syntax dieser Datei verwendeten
+                   Projektarchiv-Namen werden stets vom URL des Projektarchivs
+                   abgeleitet. Zu Details, siehe
+                   <xref linkend="svn.serverconfig.pathbasedauthz.getting-started"
+                   />.</para>
+               </note>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNSpecialURI
+              <replaceable>component</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Specifies the URI component (namespace) for
+                special Subversion resources.  The default is
+                <literal>!svn</literal>, and most
+                administrators will never use this directive.  Set
+                this only if there is a pressing need to have a file
+                named <filename>!svn</filename> in your repository.
+                If you change this on a server already in use, it will
+                break all of the outstanding working copies, and your
+                users will hunt you down with pitchforks and flaming
+                torches.</para>
+-->
+              <para>Spezifiziert die URI-Komponente (Namensraum) für
+                besondere Subversion-Ressourcen. Der Standardwert ist
+                <literal>!svn</literal>, und die meisten
+                Administratoren werden diese Direktive nie verwenden.
+                Setzen Sie sie nur, falls die dringende Notwendigkeit
+                besteht, eine Datei namens <filename>!svn</filename>
+                in Ihrem Projektarchiv zu haben. Falls Sie diese
+                Direktive auf einem Server ändern, der bereits in
+                Gebrauch ist, werden alle offenstehenden Arbeitskopien
+                unbrauchbar gemacht, und Ihre Benutzer werden Sie mit
+                Mistgabeln und Fackeln zur Strecke bringen.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNUseUTF8 On|Off</literal></term>
+            <listitem>
+
+              <para>When set to <literal>On</literal>,
+                <command>mod_dav_svn</command> will communicate with
+                hook scripts using repository root paths encoded in
+                UTF-8, and will expect those scripts to likewise
+                generate output (such as error messages) encoded in
+                UTF-8.  The default value of this option
+                is <literal>Off</literal>, which means
+                that <command>mod_dav_svn</command> assumes a 7-bit
+                ASCII encoding for its hook script interactions.  This
+                option is available as of Subversion 1.8.</para>
+
+              <note>
+                <para>Administrators should ensure that the character
+                  set and encoding expectations of hook scripts match
+                  all the ways they might be invoked.  For example, if
+                  one repository is served by both <command>httpd</command>
+                  and <command>svnserve</command>, <command>svnserve</command>
+                  should also be configured to use UTF-8 (by setting
+                  an appropriate locale in its environment) if this
+                  option is enabled for <command>mod_dav_svn</command>.
+                  Also, local filesystem paths containing non-ASCII
+                  characters which will be accessed by those scripts
+                  (such as repository root paths) must be properly
+                  encoded in the filesystem to match the scripts'
+                  expectations.</para>
+              </note>
+
+            </listitem>
+          </varlistentry>
+
+        </variablelist>
+      </sect3>
+    </sect2>
   </sect1>
+
 
   <!-- ================================================================= -->
   <!-- ================================================================= -->
@@ -6643,165 +7239,183 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
 
     </sidebar>
 
-<!--
-    <para>Once your server knows where to find your access file, it's
-      time to define the rules.</para>
+    <!-- =============================================================== -->
+    <sect2 id="svn.serverconfig.pathbasedauthz.getting-started">
 
--->
-    <para>Sobald Ihr Server weiß, wo sich Ihre Zugangsdatei befindet,
-      ist es an der Zeit, die Regeln zu definieren.</para>
+      <title>Getting Started with Path-Based Access Control</title>
 
-<!--
-    <para>The syntax of the file is the same familiar one used
-      by <filename>svnserve.conf</filename> and the runtime
-      configuration files.  Lines that start with a hash
-      (<literal>#</literal>) are ignored.  In its simplest form, each
-      section names a repository and path within it, as well as the
-      authenticated usernames are the option names within each
-      section.  The value of each option describes the user's level of
-      access to the repository path: either
-      <literal>r</literal> (read-only) or <literal>rw</literal>
-      (read/write).  If the user is not mentioned at all, no access is
-      allowed.</para>
+      <para>Subversion offers path-based access control in Apache via
+        the <command>mod_authz_svn</command> module, which must be
+        loaded using the <literal>LoadModule</literal> directive
+        in <filename>httpd.conf</filename> in the same fashion
+        that <command>mod_dav_svn</command> itself is loaded.  To
+        enable the use of this module for your repositories, you'll
+        add the <literal>AuthzSVNAccessFile</literal> directive (again
+        within the <filename>httpd.conf</filename> file) pointing to
+        your own access rules file.  (For a full explanation, see
+        <xref linkend="svn.serverconfig.httpd.authz.perdir"/>.)</para>
 
--->
-    <para>Die Syntax der Datei ist dieselbe wie bei
-      <filename>svnserve.conf</filename> und den
-      Laufzeit-Konfigurationsdateien. Zeilen, die mit einer
-      Raute (<literal>#</literal>) beginnen, werden ignoriert. In der
-      einfachsten Form benennt jeder Abschnitt ein Projektarchiv und
-      einen Pfad darin. Die authentifizierten Anwendernamen sind die
-      Optionen und der entsprechende Wert beschreibt das Zugriffsrecht
-      des Anwenders auf den Pfad im Projektarchiv, entweder
-      <literal>r</literal> (nur lesend) oder <literal>rw</literal>
-      (lesend und schreibend). Wird der Anwender gar nicht erwähnt,
-      ist kein Zugriff erlaubt.</para>
+      <para>To configure path-based authorization
+        in <command>svnserve</command>, simply point
+        the <literal>authz-db</literal> configuration variable (within
+        your <filename>svnserve.conf</filename> file) to your access
+        rules file.</para>
 
 <!--
-    <para>To be more specific: the value of the section names is
-      either of the form <literal>[repos-name:path]</literal> or of the
-      form <literal>[path]</literal>.</para>
+      <para>Once your server knows where to look for your access
+        rules, it's time to define those rules.</para>
 -->
-    <para>Genauer gesagt: Der Wert des Abschnittnamens hat entweder
-      das Format <literal>[projektarchiv-name:pfad]</literal> oder
-      <literal>[pfad]</literal>.</para>
+      <para>Sobald Ihr Server weiß, wo sich Ihre Zugangsdatei befindet, ist
+        es an der Zeit, die Regeln zu definieren.</para>
+
+<!--
+      <para>The syntax of the file is the same familiar one used by
+        <filename>svnserve.conf</filename> and the runtime configuration files.
+        Lines that start with a hash (<literal>#</literal>) are ignored.  In
+        its simplest form, each section names a repository and path within it,
+        as well as the authenticated usernames are the option names within each
+        section.  The value of each option describes the user's level of access
+        to the repository path: either <literal>r</literal> (read-only) or
+        <literal>rw</literal> (read/write).  If the user is not mentioned at
+        all, no access is allowed.</para>
+
+-->
+      <para>Die Syntax der Datei ist dieselbe wie bei
+        <filename>svnserve.conf</filename> und den
+        Laufzeit-Konfigurationsdateien. Zeilen, die mit einer Raute
+        (<literal>#</literal>) beginnen, werden ignoriert. In der einfachsten
+        Form benennt jeder Abschnitt ein Projektarchiv und einen Pfad darin.
+        Die authentifizierten Anwendernamen sind die Optionen und der
+        entsprechende Wert beschreibt das Zugriffsrecht des Anwenders auf den
+        Pfad im Projektarchiv, entweder <literal>r</literal> (nur lesend) oder
+        <literal>rw</literal> (lesend und schreibend). Wird der Anwender gar
+        nicht erwähnt, ist kein Zugriff erlaubt.</para>
+
+<!--
+      <para>To be more specific: the value of the section names is either of
+        the form <literal>[repos-name:path]</literal> or of the form
+        <literal>[path]</literal>.</para>
+-->
+      <para>Genauer gesagt: Der Wert des Abschnittnamens hat entweder das
+        Format <literal>[projektarchiv-name:pfad]</literal> oder
+        <literal>[pfad]</literal>.</para>
 
     <!-- TODO: This was fixed in Subversion 1.7: it does
          case-sensitive comparison against the section headers. -->
     <!-- TODO: Das wurde in Subversion 1.7 behoben: beim Vergleich
          von Abschnittsüberschriften wird Klein-/Großschreibung berücksichtigt. -->
 <!--
-    <warning>
-      <para>Prior to version 1.7, Subversion treated repository names
-        and paths in a case-insensitive fashion for the purposes of
-        access control, converting them to lower case internally
-        before comparing them against the contents of your access
-        file.  It now does these comparisons case-sensitively.  If you
-        upgraded to Subversion 1.7 from an older version, you should
-        review your access files for case correctness.</para>
-    </warning>
+      <warning>
+        <para>Prior to version 1.7, Subversion treated repository names
+          and paths in a case-insensitive fashion for the purposes of
+          access control, converting them to lower case internally
+          before comparing them against the contents of your access
+          file.  It now does these comparisons case-sensitively.  If you
+          upgraded to Subversion 1.7 from an older version, you should
+          review your access files for case correctness.</para>
+      </warning>
 -->
-    <warning>
-      <para>Vor Version 1.7 hat Subversion bei
-        Namen und Pfaden von Projektarchiven nicht die Groß- oder
-        Kleinschreibung beachtet, da sie vor dem Vergleich mit dem Inhalt
-        der Zugangsdatei in Kleinbuchstaben umgewandelt wurden. Nun
-        werden Vergleiche unter Berücksichtigung der Groß- und
-        Kleinschreibung vorgenommen. Falls Sie eine ältere
-        Version auf Subversion 1.7 aktualisiert haben, sollten Sie
-        Ihre Zugangsdateien auf die korrekte Groß- und Kleinschreibung
-        überprüfen.</para>
-    </warning>
+      <warning>
+        <para>Vor Version 1.7 hat Subversion bei
+          Namen und Pfaden von Projektarchiven nicht die Groß- oder
+          Kleinschreibung beachtet, da sie vor dem Vergleich mit dem Inhalt
+          der Zugangsdatei in Kleinbuchstaben umgewandelt wurden. Nun
+          werden Vergleiche unter Berücksichtigung der Groß- und
+          Kleinschreibung vorgenommen. Falls Sie eine ältere
+          Version auf Subversion 1.7 aktualisiert haben, sollten Sie
+          Ihre Zugangsdateien auf die korrekte Groß- und Kleinschreibung
+          überprüfen.</para>
+      </warning>
 
 <!--
-    <para>If you're using the
-      <literal>SVNParentPath</literal> directive, it's important
-      to specify the repository names in your sections.  If you omit
-      them, a section such as
-      <literal>[/some/dir]</literal> will match the path
-      <filename>/some/dir</filename> in <emphasis>every</emphasis>
-      repository.  If you're using the <literal>SVNPath</literal>
-      directive, however, it's fine to only define paths in your
-      sections&mdash;after all, there's only one repository.</para>
+      <para>If you're using the
+        <literal>SVNParentPath</literal> directive, it's important
+        to specify the repository names in your sections.  If you omit
+        them, a section such as
+        <literal>[/some/dir]</literal> will match the path
+        <filename>/some/dir</filename> in <emphasis>every</emphasis>
+        repository.  If you're using the <literal>SVNPath</literal>
+        directive, however, it's fine to only define paths in your
+        sections&mdash;after all, there's only one repository.</para>
 
 -->
-    <para>Falls Sie die Direktive
-      <literal>SVNParentPath</literal> verwenden, ist es wichtig, die
-      Namen der Projektarchive in den Abschnitten anzugeben. Falls Sie
-      sie weglassen, wird ein Abschnitt wie etwa
-      <literal>[/some/dir]</literal> auf den Pfad
-      <filename>/some/dir</filename> <emphasis>jedes</emphasis>
-      Projektarchivs zutreffen. Falls Sie jedoch die Direktive
-      <literal>SVNPath</literal> verwenden, ist es in Ordnung, in den
-      Abschnitten nur Pfade zu definieren, da es ja schließlich nur
-      ein einziges Projektarchiv gibt.</para>
+      <para>Falls Sie die Direktive
+        <literal>SVNParentPath</literal> verwenden, ist es wichtig, die
+        Namen der Projektarchive in den Abschnitten anzugeben. Falls Sie
+        sie weglassen, wird ein Abschnitt wie etwa
+        <literal>[/some/dir]</literal> auf den Pfad
+        <filename>/some/dir</filename> <emphasis>jedes</emphasis>
+        Projektarchivs zutreffen. Falls Sie jedoch die Direktive
+        <literal>SVNPath</literal> verwenden, ist es in Ordnung, in den
+        Abschnitten nur Pfade zu definieren, da es ja schließlich nur
+        ein einziges Projektarchiv gibt.</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [calc:/branches/calc/bug-142]
 harry = rw
 sally = r
 </programlisting>
-    </informalexample>
-
-<!--
-    <para>In this first example, the user <literal>harry</literal> has
-      full read and write access on the
-      <filename>/branches/calc/bug-142</filename> directory in the
-      <literal>calc</literal> repository, but the user
-      <literal>sally</literal> has read-only access.  Any other users
-      are blocked from accessing this directory.</para>
-
--->
-    <para>Im ersten Beispiel hat der Anwender <literal>harry</literal>
-      vollständigen Lese- und Schreibzugriff auf das Verzeichnis
-      <filename>/branches/calc/bug-142</filename> im Projektarchiv
-      <literal>calc</literal>, die Anwenderin <literal>sally</literal>
-      hat jedoch nur Lesezugriff. Allen anderen Anwendern ist der
-      Zugriff auf dieses Verzeichnis nicht gestattet.</para>
-
-    <warning>
-<!--
-      <para><command>mod_dav_svn</command> offers a directive,
-        <literal>SVNReposName</literal>, which allows administrators
-        to define a more human-friendly name, of sorts, for a
-        repository:</para>
--->
-      <para><command>mod_dav_svn</command> bietet eine Direktive
-        <literal>SVNReposName</literal> an, die es Administratoren
-        ermöglicht, einen etwas menschenlesbareren Namen für ein
-        Projektarchiv festzulegen:</para>
-
-      <informalexample>
-        <programlisting>
-&lt;Location /svn/calc&gt;
-  SVNPath /var/svn/calc
-  SVNReposName "Calculator Application"
-&hellip;
-</programlisting>
       </informalexample>
 
 <!--
-      <para>This allows <command>mod_dav_svn</command> to identify the
-        repository by something other than merely its server directory
-        basename&mdash;<filename>calc</filename>, in the previous
-        example&mdash;when providing directory listings of repository
-        content.  Be aware, however, that when consulting the access
-        file for authorization rules, Subversion uses this repository
-        basename for comparison, <emphasis>not</emphasis> any
-        configured human-friendly name.</para>
+      <para>In this first example, the user <literal>harry</literal> has
+        full read and write access on the
+        <filename>/branches/calc/bug-142</filename> directory in the
+        <literal>calc</literal> repository, but the user
+        <literal>sally</literal> has read-only access.  Any other users
+        are blocked from accessing this directory.</para>
+
 -->
-      <para>Das  gestattet <command>mod_dav_svn</command>, das
-        Projektarchiv durch etwas anderes als den Basisnamen des
-        Serververzeichnisses, im vorangegangenen Beispiel
-        <filename>calc</filename>, zu identifizieren, wenn
-        Verzeichnislisten zum Inhalt des Projektarchivs ausgegeben
-        werden. Denken Sie jedoch daran, dass beim Suchen von
-        Autorisierungsregeln in der Zugriffsdatei Subversion diesen
-        Projektarchiv-Basisnamen verwendet und
-        <emphasis>nicht</emphasis> irgendeinen konfigurierten
-        menschenlesbaren Namen.</para>
-    </warning>
+      <para>Im ersten Beispiel hat der Anwender <literal>harry</literal>
+        vollständigen Lese- und Schreibzugriff auf das Verzeichnis
+        <filename>/branches/calc/bug-142</filename> im Projektarchiv
+        <literal>calc</literal>, die Anwenderin <literal>sally</literal>
+        hat jedoch nur Lesezugriff. Allen anderen Anwendern ist der
+        Zugriff auf dieses Verzeichnis nicht gestattet.</para>
+
+      <warning>
+<!--
+        <para><command>mod_dav_svn</command> offers a directive,
+          <literal>SVNReposName</literal>, which allows administrators
+          to define a more human-friendly name, of sorts, for a
+          repository:</para>
+-->
+        <para><command>mod_dav_svn</command> bietet eine Direktive
+          <literal>SVNReposName</literal> an, die es Administratoren
+          ermöglicht, einen etwas menschenlesbareren Namen für ein
+          Projektarchiv festzulegen:</para>
+
+        <informalexample>
+          <programlisting>
+  &lt;Location /svn/calc&gt;
+    SVNPath /var/svn/calc
+    SVNReposName "Calculator Application"
+  &hellip;
+  </programlisting>
+        </informalexample>
+
+<!--
+        <para>This allows <command>mod_dav_svn</command> to identify the
+          repository by something other than merely its server directory
+          basename&mdash;<filename>calc</filename>, in the previous
+          example&mdash;when providing directory listings of repository
+          content.  Be aware, however, that when consulting the access
+          file for authorization rules, Subversion uses this repository
+          basename for comparison, <emphasis>not</emphasis> any
+          configured human-friendly name.</para>
+-->
+        <para>Das  gestattet <command>mod_dav_svn</command>, das
+          Projektarchiv durch etwas anderes als den Basisnamen des
+          Serververzeichnisses, im vorangegangenen Beispiel
+          <filename>calc</filename>, zu identifizieren, wenn
+          Verzeichnislisten zum Inhalt des Projektarchivs ausgegeben
+          werden. Denken Sie jedoch daran, dass beim Suchen von
+          Autorisierungsregeln in der Zugriffsdatei Subversion diesen
+          Projektarchiv-Basisnamen verwendet und
+          <emphasis>nicht</emphasis> irgendeinen konfigurierten
+          menschenlesbaren Namen.</para>
+      </warning>
 
 <!--
     <para>Of course, permissions are inherited from parent to child
@@ -6825,10 +7439,10 @@ sally = r
 [calc:/branches/calc/bug-142/testing]
 sally = rw
 </programlisting>
-    </informalexample>
+      </informalexample>
 -->
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [calc:/branches/calc/bug-142]
 harry = rw
 sally = r
@@ -6837,34 +7451,30 @@ sally = r
 [calc:/branches/calc/bug-142/testing]
 sally = rw
 </programlisting>
-    </informalexample>
+      </informalexample>
 
 <!--
-    <para>Now Sally can write to the <filename>testing</filename>
-      subdirectory of the branch, but can still only read other parts.
-      Harry, meanwhile, continues to have complete read/write access
-      to the whole branch.</para>
-
+      <para>Now Sally can write to the <filename>testing</filename>
+        subdirectory of the branch, but can still only read other parts.
+        Harry, meanwhile, continues to have complete read/write access
+        to the whole branch.</para>
 -->
-    <para>Nun kann Sally im Verzeichnis <filename>testing</filename>
-      des Zweigs zwar schreiben, an anderen Stellen allerdings immer
-      noch nur lesen.  Andererseits besitzt Harry weiterhin
-      vollständigen Lese- und Schreibzugriff auf den gesamten
-      Zweig.</para>
+      <para>Nun kann Sally im Verzeichnis <filename>testing</filename> des
+        Zweigs zwar schreiben, an anderen Stellen allerdings immer noch nur
+        lesen.  Andererseits besitzt Harry weiterhin vollständigen Lese- und
+        Schreibzugriff auf den gesamten Zweig.</para>
 
 <!--
-    <para>It's also possible to explicitly deny permission to someone
-      via inheritance rules, by setting the username variable to
-      nothing:</para>
-
+      <para>It's also possible to explicitly deny permission to someone
+        via inheritance rules, by setting the username variable to
+        nothing:</para>
 -->
-    <para>Es ist ebenfalls möglich, einer Person über die
-      Vererbungsregeln explizit Berechtigungen zu entziehen, indem die
-      Variable mit dem Anwendernamen auf den leeren Wert gesetzt
-      wird:</para>
+      <para>Es ist ebenfalls möglich, einer Person über die Vererbungsregeln
+        explizit Berechtigungen zu entziehen, indem die Variable mit dem
+        Anwendernamen auf den leeren Wert gesetzt wird:</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [calc:/branches/calc/bug-142]
 harry = rw
 sally = r
@@ -6872,89 +7482,108 @@ sally = r
 [calc:/branches/calc/bug-142/secret]
 harry =
 </programlisting>
-    </informalexample>
+      </informalexample>
 
 <!--
-    <para>In this example, Harry has read/write access to the
-      entire <filename>bug-142</filename> tree, but has absolutely no
-      access at all to the <filename>secret</filename> subdirectory
-      within it.</para>
+      <para>In this example, Harry has read/write access to the
+        entire <filename>bug-142</filename> tree, but has absolutely no
+        access at all to the <filename>secret</filename> subdirectory
+        within it.</para>
 
 -->
-    <para>In diesem Beispiel hat Harry Lese- und Schreibzugriff auf
-      den gesamten Baum <filename>bug-142</filename>, jedoch überhaupt keinen Zugriff auf das darin befindliche Unterverzeichnis <filename>secret</filename>.</para>
+      <para>In diesem Beispiel hat Harry Lese- und Schreibzugriff auf den
+        gesamten Baum <filename>bug-142</filename>, jedoch überhaupt keinen
+        Zugriff auf das darin befindliche Unterverzeichnis
+        <filename>secret</filename>.</para>
 
-    <tip>
+      <tip>
 <!--
-      <para>The thing to remember is that the most specific path
-        always matches first.  The server tries to match the path
-        itself, and then the parent of the path, then the parent of
-        that, and so on.  The net effect is that mentioning a specific
-        path in the access file will always override any permissions
-        inherited from parent directories.</para>
+        <para>The thing to remember is that the most specific path
+          always matches first.  The server tries to match the path
+          itself, and then the parent of the path, then the parent of
+          that, and so on.  The net effect is that mentioning a specific
+          path in the access file will always override any permissions
+          inherited from parent directories.</para>
 -->
-      <para>Man muss sich nur merken, dass der am genauesten
-        angegebene Pfad stets am besten passt. Der Server versucht
-        zunächst, den Pfad selbst abzugleichen, dann das
-        Elternverzeichnis hiervon, dann dessen Elternverzeichnis usw.
-        Unter dem Strich läuft es darauf hinaus, dass die Erwähnung
-        eines bestimmten Pfades in der Zugriffsdatei stets die von
-        Elternverzeichnissen ererbten Berechtigungen überdeckt.</para>
-    </tip>
+        <para>Man muss sich nur merken, dass der am genauesten
+          angegebene Pfad stets am besten passt. Der Server versucht
+          zunächst, den Pfad selbst abzugleichen, dann das
+          Elternverzeichnis hiervon, dann dessen Elternverzeichnis usw.
+          Unter dem Strich läuft es darauf hinaus, dass die Erwähnung
+          eines bestimmten Pfades in der Zugriffsdatei stets die von
+          Elternverzeichnissen ererbten Berechtigungen überdeckt.</para>
+      </tip>
 
 <!--
-    <para>By default, nobody has any access to the repository at all.
-      That means that if you're starting with an empty file, you'll
-      probably want to give at least read permission to all users at
-      the root of the repository.  You can do this by using the
-      asterisk variable (<literal>*</literal>), which means <quote>all
-      users</quote>:</para>
+      <para>By default, nobody has any access to the repository at all.
+        That means that if you're starting with an empty file, you'll
+        probably want to give at least read permission to all users at
+        the root of the repository.  You can do this by using the
+        asterisk variable (<literal>*</literal>), which means <quote>all
+        users</quote>:</para>
 
 -->
-    <para>Standardmäßig hat niemand irgendeine Zugriffsberechtigung
-      auf das Projektarchiv. Das bedeutet, wenn mit einer leeren Datei
-      begonnen wird, sollte mindestens für alle Anwender die
-      Leseberechtigung für die Wurzel des Projektarchivs gewährt
-      werden. Das kann mit der Stern-Variablen (<literal>*</literal>)
-      erreicht werden, die für <quote>alle Anwender</quote>
-      steht:</para>
+      <para>Standardmäßig hat niemand irgendeine Zugriffsberechtigung auf das
+        Projektarchiv. Das bedeutet, wenn mit einer leeren Datei begonnen wird,
+        sollte mindestens für alle Anwender die Leseberechtigung für die Wurzel
+        des Projektarchivs gewährt werden. Das kann mit der Stern-Variablen
+        (<literal>*</literal>) erreicht werden, die für <quote>alle
+          Anwender</quote> steht:</para>
 
     <informalexample>
       <programlisting>
 [/]
 * = r
 </programlisting>
-    </informalexample>
+      </informalexample>
 
 <!--
-    <para>This is a common setup; notice that no repository
-      name is mentioned in the section name.  This makes all repositories
-      world-readable to all users.  Once all users have read access to
-      the repositories, you can give explicit
-      <literal>rw</literal> permission to certain users on specific
-      subdirectories within specific repositories.</para>
-
+      <para>This is a common setup; notice that no repository
+        name is mentioned in the section name.  This makes all repositories
+        world-readable to all users.  Once all users have read access to
+        the repositories, you can give explicit
+        <literal>rw</literal> permission to certain users on specific
+        subdirectories within specific repositories.</para>
 -->
-    <para>Dies ist eine verbreitete Einstellung. Beachten Sie, dass im
-      Abschnittsnamen kein Projektarchiv erwähnt wird. Das führt dazu,
-      dass alle Projektarchive für alle Anwender der Welt lesbar sind.
-      Sobald alle Anwender Lesezugriff auf die Projektarchive haben,
-      können Sie bestimmten Anwendern für ausgewählte Verzeichnisse
-      bestimmter Projektarchive die Berechtigung <literal>rw</literal>
-      geben.</para>
+      <para>Dies ist eine verbreitete Einstellung. Beachten Sie, dass im
+        Abschnittsnamen kein Projektarchiv erwähnt wird. Das führt dazu, dass
+        alle Projektarchive für alle Anwender der Welt lesbar sind.  Sobald
+        alle Anwender Lesezugriff auf die Projektarchive haben, können Sie
+        bestimmten Anwendern für ausgewählte Verzeichnisse bestimmter
+        Projektarchive die Berechtigung <literal>rw</literal> geben.</para>
+
+      <para>Note that while all of the previous examples use
+        directories, that's only because defining access rules on
+        directories is the most common case.  You may similarly
+        restrict access on file paths, too.</para>
+
+      <informalexample>
+        <programlisting>
+[calendar:/projects/calendar/manager.ics]
+harry = rw
+sally = r
+</programlisting>
+      </informalexample>
+
+    </sect2>
+
+    <!-- =============================================================== -->
+    <sect2 id="svn.serverconfig.pathbasedauthz.groups">
+
+      <title>Access Control Groups</title>
 
 <!--
-    <para>The access file also allows you to define whole groups of
-      users, much like the Unix <filename>/etc/group</filename>
-      file:</para>
+      <para>The access file also allows you to define whole groups of
+        users, much like the Unix <filename>/etc/group</filename>
+        file:</para>
 
 -->
-    <para>Die Zugriffsdatei erlaubt es Ihnen auch, ganze
-      Anwendergruppen zu definieren, ähnlich der Unix-Datei
-      <filename>/etc/group</filename>:</para>
+      <para>Die Zugriffsdatei erlaubt es Ihnen auch, ganze Anwendergruppen zu
+        definieren, ähnlich der Unix-Datei
+        <filename>/etc/group</filename>:</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [groups]
 calc-developers = harry, sally, joe
 paint-developers = frank, sally, jane
@@ -7025,7 +7654,14 @@ calc-developers = harry, sally, joe
 paint-developers = frank, sally, jane
 everyone = @calc-developers, @paint-developers
 </programlisting>
-    </informalexample>
+      </informalexample>
+
+    </sect2>
+
+    <!-- =============================================================== -->
+    <sect2 id="svn.serverconfig.pathbasedauthz.aliases">
+
+      <title>Username Aliases</title>
 
 <!--
     <para>Subversion 1.5 brought several useful features to the access
@@ -7123,6 +7759,13 @@ everyone = @calc-developers, @paint-developers
       Such- und Ersetzungsoperation über die gesamte Zugriffsdatei
       vornehmen zu müssen.</para>
 
+    </sect2>
+
+    <!-- =============================================================== -->
+    <sect2 id="svn.serverconfig.pathbasedauthz.authclass-tokens">
+
+      <title>Advanced Access Control Features</title>
+
 <!--
     <para>Subversion also supports some <quote>magic</quote> tokens
       for helping you to make rule assignments based on the user's
@@ -7212,33 +7855,12 @@ calc = @calc-developers, @calc-owners
 </programlisting>
     </informalexample>
 
-<!--
-    <para>All of the above examples use directories, because defining
-      access rules on them is the most common case.  But is similarly
-      able to restrict access on file paths, too.
-    </para>
--->
-    <para>Alle obigen Beispiele verwenden Verzeichnisse, da es sich
-      bei der Definition von Zugriffsrechten hierbei um den
-      verbreitetsten Anwendungsfall handelt. Es ist jedoch ebenfalls
-      möglich, die Zugriffsrechte auf Dateipfade zu beschränken.
-    </para>
+    </sect2>
 
-    <informalexample>
-      <programlisting>
-[calendar:/projects/calendar/manager.ics]
-harry = rw
-sally = r
-</programlisting>
-    </informalexample>
+    <!-- =============================================================== -->
+    <sect2 id="svn.serverconfig.pathbasedauthz.gotchas">
 
-    <!-- ### FIXME: This is very Neon-specific. -->
-
-    <sidebar>
-<!--
-      <title>Partial Readability and Checkouts</title>
--->
-      <title>Teilweise Lesbarkeit und Checkouts</title>
+      <title>Some Gotchas with Access Control</title>
 
 <!--
       <para>If you're using Apache as your Subversion server and have
@@ -7295,7 +7917,7 @@ sally = r
         für jeden lesbar ist; auch hier werden nicht lesbare
         Verzeichnisse übergangen, anstatt zwischendurch zur
         Authentifizierung aufzufordern.</para>
-    </sidebar>
+    </sect2>
 
   </sect1>
 
