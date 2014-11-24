@@ -2,16 +2,68 @@
 
 <reference id="svn.ref.reposhooks">
 <!--
-    <title>Repository Hooks</title>
+  <title>Subversion Repository Hook Reference</title>
 -->
-    <title>Projektarchiv-Hooks</title>
+  <title>Subversion Projektarchiv-Hook-Referenz</title>
 
   <partintro>
+
 <!--
-    <para>These are the repository hooks that Subversion provides:</para>
+    <para>Subversion repositories provide a number of event hooks
+      which are essentially opportunities for administrators to extend
+      Subversion's functionality at key moments of key operations.
+      Repository hooks are implemented as programs executed by
+      Subversion itself at those key moments&mdash;before and after a
+      commit, before and after a user locks a file, and so on.</para>
 -->
-    <para>Dies sind die von Subversion zur Verfügung gestellten
-      Projektarchiv-Hooks:</para>
+    <para>Subversion Projektarchive stellen eine Anzahl von
+      Ereignis-Hooks zur Verfügung, die im Wesentlichen Gelegenheiten
+      für Administratoren sind, um die Funktionalität von Subversion
+      zu Schlüsselzeitpunkten von Schlüsseloperationen zu erweitern.
+      Projektarchiv-Hooks werden als Programme implementiert, die von
+      Subversion selbst zu diesen Schlüsselzeitpunkten ausgeführt
+      werden &ndash; vor und nach einer Übergabe, vor oder nach dem
+      Anlegen einer Sperre, usw.</para>
+
+<!--
+    <para>For each hook it provides, Subversion will attempt to
+      execute the program of that hook's name which is found in
+      the <filename>hooks/</filename> subdirectory of the repository's
+      on-disk directory structure.  For example, on a Unix system, the
+      start-commit hook script would be installed at
+      <filename><replaceable>REPOS_PATH</replaceable>/hooks/start-commit</filename>,
+      where it could be a binary executable program, a shell script, a
+      Python program, etc.  On a Windows system, the program would be
+      installed in the same location, but would be
+      named <filename>START-COMMIT.EXE</filename>
+      or <filename>START-COMMIT.BAT</filename> instead of
+      simply <filename>start-commit</filename>.</para>
+-->
+    <para>Für jeden zur Verfügung gestellten Hook versucht Subversion,
+      das gleichnamige Programm aus dem Unterverzeichnis
+      <filename>hooks/</filename> der Verzeichnisstruktur des
+      Projektarchivs auszuführen. Beispielsweise würde der Hook, der
+      zu Beginn einer Übergabe aufgerufern wird (start-commit) als
+      binäres, ausführbares Programm, ein Shell-Script,
+      Python-Programm usw. unter
+      <filename><replaceable>REPOS_PATH</replaceable>/hooks/start-commit</filename>
+      installiert werden. Auf einem Windows-System würde das Programm
+      am gleichen Ort installiert, allerdings unter dem Namen
+      <filename>START-COMMIT.EXE</filename> oder
+      <filename>START-COMMIT.BAT</filename> statt einfach
+      <filename>start-commit</filename>.</para>
+
+<!--
+    <para>This reference guide describes the various hooks which
+      Subversion offers to administrators, detailing when the hook is
+      invoked, its input parameters, and how its behavior affects the
+      Subversion workflow.</para>
+-->
+    <para>Diese Referenz bwschreibt die verschiedenen Hooks, die
+      Subversion Administratoren anbietet, wobei beschrieben wird,
+      wann der Hook aufgerufen wird, wie seine Eingabeparameter sind
+      und wie sein Verhalten den Arbeitsablauf von Subversion
+      beeinflusst.</para>
 
   </partintro>
 
@@ -22,12 +74,10 @@
 
     <indexterm>
 <!--
-      <primary>repository</primary>
-      <secondary>hooks</secondary>
+      <primary>hook scripts</primary>
 -->
-      <primary>Projektarchiv</primary>
-      <secondary>Hooks</secondary>
-      <tertiary>start-commit</tertiary>
+      <primary>Hook-Scripte</primary>
+      <secondary>start-commit</secondary>
     </indexterm>
 
     <refnamediv>
@@ -39,6 +89,15 @@
       </refpurpose>
     </refnamediv>
 
+    <refsynopsisdiv>
+      <para><literal>start-commit
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>USER</replaceable>
+        <replaceable>CAPABILITIES</replaceable>
+        <replaceable>TXN-NAME</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Description</title>
@@ -46,29 +105,79 @@
       <title>Beschreibung</title>
 
 <!--
-      <para>The start-commit hook is run before the commit
-        transaction is even created.  It is typically used to
-        decide whether the user has commit privileges at all.</para>
+      <para>The start-commit hook is run immediately after the
+        commit transaction is created and its initial properties
+        set.  It is typically used as an early termination
+        mechanism, avoiding what could be a lengthy commit process
+        which would eventually fail at a later phase anyway due to a
+        user's lack of commit privileges or some other commit
+        metadata validation failure.</para>
 -->
-      <para>Der Hook start-commit wird ausgeführt, bevor überhaupt
-        eine Übergabetransaktion erzeugt wird. Er wird üblicherweise
-        verwendet, um zu entscheiden, ob der Benutzer überhaupt die
-        Rechte zur Übergabe hat.</para>
+      <para>Der Hook start-commit wird unmittelbar nach Erstellung der
+        Übergabe-Transaktion mit ihren gesetzten Eigenschaften ausgeführt.
+        Er wird üblicherweise als ein früher Abbruchmechanismus
+        verwendet, der einen eventuell längeren Übergabeprozess
+        vermeidet, der in einer späteren Phase ohnehin scheitern
+        würde, weil ein Anwender nicht die nötigen Rechte hat oder
+        irgendwelche anderen Metadaten für die Übergabe nicht
+        stimmen.</para>
 
 <!--
       <para>If the start-commit hook program returns a nonzero exit
-        value, the commit is stopped before the commit transaction
-        is even created, and anything printed to <filename>stderr</filename> is
-        marshalled back to the client.</para>
+        value, the commit process is stopped, the commit transaction
+        is destroyed, and anything printed to
+        <filename>stderr</filename> is marshalled back to the
+        client.</para>
 -->
       <para>Falls der Hook start-commit einen Rückgabewert ungleich
-        Null zurückgibt, wird die Übergabe gestoppt, bevor die
-        Übergabetransaktion überhaupt erzeugt wird, und alles, was
-        nach <filename>stderr</filename> ausgegeben wird, wird
-        zurück zum Client umgeleitet.</para>
+        Null zurückgibt, wird der Übergabeprozess gestoppt, die
+        Übergabetransaktion zerstört, und alles, was nach
+        <filename>stderr</filename> ausgegeben wird, wird zurück zum
+        Client umgeleitet.</para>
+
+<!--
+      <para>The start-commit hook is not a suitable place to
+        evaluate the substance of a particular commit, as it is
+        invoked before any file or directory change information has
+        been transmitted.  Use the pre-commit hook script (which is
+        described in <xref linkend="svn.ref.reposhooks.pre-commit"
+        /> elsewhere in this reference) for that purpose.</para>
+-->
+      <para>Der Hook start-commit ist kein passender Ort, um den
+        Inhalt einer bestimmten übergabe auszuwerten, da er
+        aufgerufern wird, bevor irgendeine Information über die
+        Änderung einer Datei oder eines Verzeichnisses übertragen
+        wurde. Verwenden Sie zu diesem Zweck das Hook0Script
+        pre-commit (welches in
+        <xref linkend="svn.ref.reposhooks.pre-commit" /> an einer
+        anderen Stelle dieser Referenz beschrieben wird).</para>
+
+      <note>
+<!--
+        <para>Prior to Subversion 1.8, the Subversion invoked the
+          start-commit hook <emphasis>before</emphasis> creating the
+          commit transaction.  Failure of the script resulted in that
+          transaction not being created at all.  This was changed in
+          Subversion 1.8, though, to allow implementations of the
+          start-commit hook access to the transaction's properties,
+          which can include (among other things) the revision log
+          associated with the commit.</para>
+      </note>
+-->
+        <para>Vor Subversion 1.8 rief Subversion den Hook
+          start-commit <emphasis>vor</emphasis> der Erstellung der
+          Übergabetransaktion auf. Das Scheitern des Scriptes führte
+          dazu, dass überhaupt keine Transaktion erstellt wurde. In
+          Subversion 1.8 wurde das jedoch geändert, um
+          Implementierungen des Hooks start-commit Zugriff auf die
+          Eigenschaften der Transaktion zu ermöglichen, die (neben
+          anderen Dingen) das zu der Übergabe gehörige
+          Revisionsprotokoll beinhalten können.</para>
+      </note>
 
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Input Parameter(s)</title>
@@ -102,18 +211,25 @@
             capabilities that a client passes to the server,
             including <literal>depth</literal>,
             <literal>mergeinfo</literal>, and
-            <literal>log-revprops</literal> (new in Subversion 1.5).</para>
+            <literal>log-revprops</literal> (new in Subversion 1.5)</para>
 -->
           <para>Eine durch Doppelpunkte getrennte Liste von
             Fähigkeiten, die der Client an den Server übergibt; dazu
             gehören <literal>depth</literal>,
             <literal>mergeinfo</literal> und
-            <literal>log-revprops</literal> (neu in Subversion 1.5).
+            <literal>log-revprops</literal> (neu in Subversion 1.5)
           </para>
+        </listitem>
+        <listitem>
+<!--
+          <para>Commit transaction name (new in Subversion 1.8)</para>
+-->
+          <para>Name der Übergabetransaktion (neu in Subversion 1.8)</para>
         </listitem>
       </orderedlist>
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Common uses</title>
@@ -137,17 +253,17 @@
 
   </refentry>
 
-  <!-- =============================================================== -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
   <refentry id="svn.ref.reposhooks.pre-commit">
 
     <indexterm>
 <!--
-      <primary>repository</primary>
-      <secondary>hooks</secondary>
+      <primary>hook scripts</primary>
 -->
-      <primary>Projektarchiv</primary>
-      <secondary>Hooks</secondary>
-      <tertiary>pre-commit</tertiary>
+      <primary>Hook-Scripte</primary>
+      <secondary>pre-commit</secondary>
     </indexterm>
 
     <refnamediv>
@@ -159,6 +275,13 @@
       </refpurpose>
     </refnamediv>
 
+    <refsynopsisdiv>
+      <para><literal>pre-commit
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>TXN-NAME</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Description</title>
@@ -197,6 +320,7 @@
 
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Input parameter(s)</title>
@@ -251,6 +375,7 @@
 
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Common uses</title>
@@ -264,17 +389,17 @@
 
   </refentry>
 
-  <!-- =============================================================== -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
   <refentry id="svn.ref.reposhooks.post-commit">
 
     <indexterm>
 <!--
-      <primary>repository</primary>
-      <secondary>hooks</secondary>
+      <primary>hook scripts</primary>
 -->
-      <primary>Projektarchiv</primary>
-      <secondary>Hooks</secondary>
-      <tertiary>post-commit</tertiary>
+      <primary>Hook-Scripte</primary>
+      <secondary>post-commit</secondary>
     </indexterm>
 
     <refnamediv>
@@ -286,6 +411,13 @@
       </refpurpose>
     </refnamediv>
 
+    <refsynopsisdiv>
+      <para><literal>post-commit
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>REVISION</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Description</title>
@@ -326,6 +458,7 @@
 
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Input parameter(s)</title>
@@ -356,6 +489,7 @@
       </orderedlist>
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Common uses</title>
@@ -369,17 +503,17 @@
 
   </refentry>
 
-  <!-- =============================================================== -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
   <refentry id="svn.ref.reposhooks.pre-revprop-change">
 
     <indexterm>
 <!--
-      <primary>repository</primary>
-      <secondary>hooks</secondary>
+      <primary>hook scripts</primary>
 -->
-      <primary>Projektarchiv</primary>
-      <secondary>Hooks</secondary>
-      <tertiary>pre-revprop-change</tertiary>
+      <primary>Hook-Scripte</primary>
+      <secondary>pre-revprop-change</secondary>
     </indexterm>
 
     <refnamediv>
@@ -392,6 +526,16 @@
         Revisions-Eigenschaften.</refpurpose>
     </refnamediv>
 
+    <refsynopsisdiv>
+      <para><literal>pre-revprop-change
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>REVISION</replaceable>
+        <replaceable>USER</replaceable>
+        <replaceable>PROPNAME</replaceable>
+        <replaceable>ACTION</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Description</title>
@@ -417,10 +561,11 @@
         stattfinden kann.</para>
 
 <!--
-      <para>If the <literal>pre-revprop-change</literal> hook
-        doesn't exist, isn't executable, or returns a nonzero exit
-        value, no change to the property will be made, and anything
-        printed to <filename>stderr</filename> is marshalled back to the client.</para>
+      <para>If the <literal>pre-revprop-change</literal> hook doesn't
+        exist, isn't executable, or returns a nonzero exit value, no
+        change to the property will be made, and anything printed
+        to <filename>stderr</filename> is marshalled back to the
+        client.</para>
 -->
       <para>Falls der Hook <literal>pre-revprop-change</literal>
         nicht vorhanden ist, nicht ausführbar ist oder einen
@@ -431,6 +576,7 @@
 
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Input parameter(s)</title>
@@ -493,6 +639,7 @@
 
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Common uses</title>
@@ -507,17 +654,17 @@
 
   </refentry>
 
-  <!-- =============================================================== -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
   <refentry id="svn.ref.reposhooks.post-revprop-change">
 
     <indexterm>
 <!--
-      <primary>repository</primary>
-      <secondary>hooks</secondary>
+      <primary>hook scripts</primary>
 -->
-      <primary>Projektarchiv</primary>
-      <secondary>Hooks</secondary>
-      <tertiary>post-revprop-change</tertiary>
+      <primary>Hook-Scripte</primary>
+      <secondary>post-revprop-change</secondary>
     </indexterm>
 
     <refnamediv>
@@ -530,6 +677,16 @@
         Revisions-Eigenschaft.</refpurpose>
     </refnamediv>
 
+    <refsynopsisdiv>
+      <para><literal>post-revprop-change
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>REVISION</replaceable>
+        <replaceable>USER</replaceable>
+        <replaceable>PROPNAME</replaceable>
+        <replaceable>ACTION</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Description</title>
@@ -575,6 +732,7 @@
 
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Input parameter(s)</title>
@@ -636,6 +794,7 @@
 
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Common uses</title>
@@ -649,17 +808,17 @@
 
   </refentry>
 
-  <!-- =============================================================== -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
   <refentry id="svn.ref.reposhooks.pre-lock">
 
     <indexterm>
 <!--
-      <primary>repository</primary>
-      <secondary>hooks</secondary>
+      <primary>hook scripts</primary>
 -->
-      <primary>Projektarchiv</primary>
-      <secondary>Hooks</secondary>
-      <tertiary>pre-lock</tertiary>
+      <primary>Hook-Scripte</primary>
+      <secondary>pre-lock</secondary>
     </indexterm>
 
     <refnamediv>
@@ -671,6 +830,16 @@
       </refpurpose>
     </refnamediv>
 
+    <refsynopsisdiv>
+      <para><literal>pre-lock
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>PATH</replaceable>
+        <replaceable>USER</replaceable>
+        <replaceable>COMMENT</replaceable>
+        <replaceable>STEAL</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Description</title>
@@ -742,6 +911,7 @@
 
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Input parameter(s)</title>
@@ -795,6 +965,7 @@
       </orderedlist>
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Common uses</title>
@@ -808,17 +979,17 @@
 
   </refentry>
 
-  <!-- =============================================================== -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
   <refentry id="svn.ref.reposhooks.post-lock">
 
     <indexterm>
 <!--
-      <primary>repository</primary>
-      <secondary>hooks</secondary>
+      <primary>hook scripts</primary>
 -->
-      <primary>Projektarchiv</primary>
-      <secondary>Hooks</secondary>
-      <tertiary>post-lock</tertiary>
+      <primary>Hook-Scripte</primary>
+      <secondary>post-lock</secondary>
     </indexterm>
 
     <refnamediv>
@@ -830,6 +1001,13 @@
       </refpurpose>
     </refnamediv>
 
+    <refsynopsisdiv>
+      <para><literal>post-lock
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>USER</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Description</title>
@@ -863,6 +1041,7 @@
 
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Input parameter(s)</title>
@@ -903,6 +1082,7 @@
 
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Common uses</title>
@@ -916,17 +1096,17 @@
 
   </refentry>
 
-  <!-- =============================================================== -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
   <refentry id="svn.ref.reposhooks.pre-unlock">
 
     <indexterm>
 <!--
-      <primary>repository</primary>
-      <secondary>hooks</secondary>
+      <primary>hook scripts</primary>
 -->
-      <primary>Projektarchiv</primary>
-      <secondary>Hooks</secondary>
-      <tertiary>pre-unlock</tertiary>
+      <primary>Hook-Scripte</primary>
+      <secondary>pre-unlock</secondary>
     </indexterm>
 
     <refnamediv>
@@ -938,6 +1118,16 @@
       </refpurpose>
     </refnamediv>
 
+    <refsynopsisdiv>
+      <para><literal>pre-unlock
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>PATH</replaceable>
+        <replaceable>USER</replaceable>
+        <replaceable>TOKEN</replaceable>
+        <replaceable>BREAK-UNLOCK</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Description</title>
@@ -979,6 +1169,7 @@
 
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Input parameter(s)</title>
@@ -1034,6 +1225,7 @@
       </orderedlist>
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Common uses</title>
@@ -1047,17 +1239,17 @@
 
   </refentry>
 
-  <!-- =============================================================== -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
   <refentry id="svn.ref.reposhooks.post-unlock">
 
     <indexterm>
 <!--
-      <primary>repository</primary>
-      <secondary>hooks</secondary>
+      <primary>hook scripts</primary>
 -->
-      <primary>Projektarchiv</primary>
-      <secondary>Hooks</secondary>
-      <tertiary>post-unlock</tertiary>
+      <primary>Hook-Scripts</primary>
+      <secondary>post-unlock</secondary>
     </indexterm>
 
     <refnamediv>
@@ -1069,6 +1261,13 @@
         Pfadsperre.</refpurpose>
     </refnamediv>
 
+    <refsynopsisdiv>
+      <para><literal>post-unlock
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>USER</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Description</title>
@@ -1102,6 +1301,7 @@
 
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Input parameter(s)</title>
@@ -1142,6 +1342,7 @@
 
     </refsect1>
 
+    <!-- =============================================================== -->
     <refsect1>
 <!--
       <title>Common uses</title>
@@ -1156,4 +1357,8 @@
   </refentry>
 </reference>
 
-
+<!--
+local variables: 
+sgml-parent-document: ("book.xml" "reference")
+end:
+-->
