@@ -1,3 +1,5 @@
+<!-- -*- sgml -*- -->
+
 <chapter id="svn.developer">
 <!--
   <title>Embedding Subversion</title>
@@ -5,7 +7,14 @@
   <title>Subversion integrieren</title>
 
 <!--
-  <para>Subversion has a modular design: it's implemented as a
+  <para>
+    <indexterm>
+      <primary>API</primary>
+    </indexterm>
+    <indexterm>
+      <primary>application programming interface</primary>
+      <see>API</see>
+    </indexterm>Subversion has a modular design: it's implemented as a
     collection of libraries written in C.  Each library has a
     well-defined purpose and application programming interface (API),
     and that interface is available not only for Subversion itself to
@@ -15,9 +24,20 @@
     programs written in higher-level languages such as Python, Perl,
     Java, and Ruby.</para>
 -->
-  <para>Subversion ist modular entworfen: Es ist implementiert als
-    eine Sammlung in C geschriebener Bibliotheken. Jede Bibliothek hat
-    einen wohldefinierten Zweck und eine Programmierschnittstelle
+  <para>
+    <indexterm>
+      <primary>API</primary>
+    </indexterm>
+    <indexterm>
+      <primary>Application Programming Interface</primary>
+      <see>API</see>
+    </indexterm>
+    <indexterm>
+      <primary>Programmierschnittstelle</primary>
+      <see>API</see>
+    </indexterm>Subversion ist modular entworfen: Es ist implementiert
+    als eine Sammlung in C geschriebener Bibliotheken. Jede Bibliothek
+    hat einen wohldefinierten Zweck und eine Programmierschnittstelle
     (API), die nicht nur für Subversion selbst sondern auch für andere
     Software zur Verfügung steht, die Subversion integrieren oder
     anderweitig programmseitig kontrollieren möchte. Außerdem ist die
@@ -61,9 +81,13 @@
     <title>Schichtenmodell der Bibliotheken</title>
 
 <!--
-    <para>Each of Subversion's core libraries can be said to exist in
-      one of three main layers&mdash;the Repository layer, the
-      Repository Access (RA) layer, or the Client layer (see
+    <para>
+      <indexterm>
+        <primary>API</primary>
+        <secondary>layers</secondary>
+      </indexterm>Each of Subversion's core libraries can be said to
+      exist in one of three main layers&mdash;the Repository layer,
+      the Repository Access (RA) layer, or the Client layer (see
       <xref linkend="svn.intro.architecture.dia-1" /> in the Preface).
       We will examine these layers shortly, but first, let's briefly
       summarize Subversion's various libraries.  For the sake of
@@ -72,8 +96,12 @@
       (<filename>libsvn_fs</filename>, <filename>libsvn_wc</filename>,
       <filename>mod_dav_svn</filename>, etc.).</para>
 -->
-    <para>Jede der Kernbibliotheken von Subversion gehört zu einer von
-      drei Schichten &ndash; der Projektarchiv-Schicht, der
+    <para>
+      <indexterm>
+        <primary>API</primary>
+        <secondary>Schichten</secondary>
+      </indexterm>Jede der Kernbibliotheken von Subversion gehört zu
+      einer von drei Schichten &ndash; der Projektarchiv-Schicht, der
       Projektarchiv-Zugriffs-Schicht oder der Client-Schicht (siehe
       <xref linkend="svn.intro.architecture.dia-1" /> im Vorwort). Wir
       werden diese Schichten gleich untersuchen, doch zunächst wollen
@@ -156,12 +184,6 @@
       </varlistentry>
       <varlistentry>
         <term>libsvn_ra_neon</term>
-<!--
-        <listitem><para>The WebDAV Repository Access
-          module</para></listitem>
--->
-        <listitem><para>Modul für den
-          WebDAV-Projektarchiv-Zugriff</para></listitem>
       </varlistentry>
       <varlistentry>
         <term>libsvn_ra_serf</term>
@@ -255,14 +277,13 @@
       API without affecting the rest of the code base.  In some sense,
       this happens within Subversion already.  The
       <filename>libsvn_ra_local</filename>,
-      <filename>libsvn_ra_neon</filename>,
       <filename>libsvn_ra_serf</filename>, and
       <filename>libsvn_ra_svn</filename> libraries each implement the
       same interface, all working as plug-ins to
-      <filename>libsvn_ra</filename>.  And all four communicate with
-      the Repository layer&mdash;<filename>libsvn_ra_local</filename> connects to the
-      repository directly; the other three do so over a network.  The
-      <filename>libsvn_fs_base</filename> and
+      <filename>libsvn_ra</filename>.  And all three communicate with
+      the Repository layer&mdash;<filename>libsvn_ra_local</filename>
+      connects to the repository directly; the others do so over a
+      network.  The <filename>libsvn_fs_base</filename> and
       <filename>libsvn_fs_fs</filename> libraries are another pair of
       libraries that implement the same functionality in different
       ways&mdash;both are plug-ins to the common
@@ -274,13 +295,12 @@
       ohne den Rest der Code-Basis zu beeinflussen. Eigentlich
       passiert das bereits mit Subversion. Die Bibliotheken
       <filename>libsvn_ra_local</filename>,
-      <filename>libsvn_ra_neon</filename>,
       <filename>libsvn_ra_serf</filename> und
       <filename>libsvn_ra_svn</filename> implementieren alle die
       gleiche Schnittstelle und funktionieren als Plug-In für
-      <filename>libsvn_ra</filename>.  Alle vier kommunizieren mir der
+      <filename>libsvn_ra</filename>.  Alle drei kommunizieren mit der
       Projektarchiv-Schicht &ndash; <filename>libsvn_ra_local</filename>
-      verbindet sich direkt mit dem Projektarchiv; die drei anderen
+      verbindet sich direkt mit dem Projektarchiv; die anderen
       machen das über das Netz. Die Bibliotheken
       <filename>libsvn_fs_base</filename> und
       <filename>libsvn_fs_fs</filename> sind noch ein Paar, das die
@@ -328,7 +348,12 @@
       <title>Projektarchiv-Schicht</title>
 
 <!--
-      <para>When referring to Subversion's Repository layer, we're
+      <para>
+        <indexterm>
+          <primary>API</primary>
+          <secondary>layers</secondary>
+          <tertiary>Repository Layer</tertiary>
+        </indexterm>When referring to Subversion's Repository layer, we're
         generally talking about two basic concepts&mdash;the versioned
         filesystem implementation (accessed via
         <filename>libsvn_fs</filename>, and supported by its
@@ -342,12 +367,17 @@
         the perspective of the Subversion user, the stuff at the
         <quote>other end of the line.</quote></para>
 -->
-      <para>Wenn wir uns auf die Projektarchiv-Schicht von Subversion
-        beziehen, reden wir üblicherweise über zwei grundlegende
-        Konzepte &ndash; die Implementierung des versionierten
-        Dateisystems (auf das mittels <filename>libsvn_fs</filename>
-        zugegriffen wird, unterstützt durch dessen Plug-Ins
-        <filename>libsvn_fs_base</filename> und
+      <para>
+        <indexterm>
+          <primary>API</primary>
+          <secondary>Schichten</secondary>
+          <tertiary>Projektarchiv-Schicht</tertiary>
+        </indexterm>Wenn wir uns auf die Projektarchiv-Schicht von
+        Subversion beziehen, reden wir üblicherweise über zwei
+        grundlegende Konzepte &ndash; die Implementierung des
+        versionierten Dateisystems (auf das mittels
+        <filename>libsvn_fs</filename> zugegriffen wird, unterstützt
+        durch dessen Plug-Ins <filename>libsvn_fs_base</filename> und
         <filename>libsvn_fs_fs</filename>) und die Logik des
         Projektarchivs, die es umgibt (implementiert in
         <filename>libsvn_repos</filename>). Diese Bibliotheken liefern
@@ -359,7 +389,11 @@
         Leitung</quote> dar.</para>
 
 <!--
-      <para>The Subversion filesystem is not a kernel-level filesystem
+      <para>
+        <indexterm>
+          <primary>repositories</primary>
+          <secondary>filesystem</secondary>
+        </indexterm>The Subversion filesystem is not a kernel-level filesystem
         that one would install in an operating system (such as the
         Linux ext2 or NTFS), but instead is a virtual filesystem.
         Rather than storing <quote>files</quote> and
@@ -380,18 +414,22 @@
         Subversion filesystem plug-in that used Google's ultra-scalable
         Bigtable database for its storage.</para>
 -->
-      <para>Das Dateisystem von Subversion ist kein Dateisystem auf
-        Kernel-Ebene, das im Betriebssystem installiert würde (so wie
-        Linux ext3 oder NTFS), sondern ein virtuelles Dateisystem.
-        Anstatt <quote>Dateien</quote> und
+      <para>
+        <indexterm>
+          <primary>Projektarchive</primary>
+          <secondary>Dateisystem</secondary>
+        </indexterm>Das Dateisystem von Subversion ist kein
+        Dateisystem auf Kernel-Ebene, das im Betriebssystem
+        installiert würde (so wie Linux ext3 oder NTFS), sondern ein
+        virtuelles Dateisystem.  Anstatt <quote>Dateien</quote> und
         <quote>Verzeichnisse</quote> als echte Dateien und
         Verzeichnisse abzulegen (in denen Sie mit Ihrem bevorzugten
         Shell-Programm navigieren können), verwendet es eins von zwei
-        verfügbaren abstrakten Speicherverfahren &ndash; entweder
-        eine Berkeley-DB-Datenbankumgebung oder eine Repräsentation
-        über einfache Dateien. (Um mehr über die zwei Verfahren
+        verfügbaren abstrakten Speicherverfahren &ndash; entweder eine
+        Berkeley-DB-Datenbankumgebung oder eine Repräsentation über
+        einfache Dateien. (Um mehr über die zwei Verfahren
         kennenzulernen, siehe <xref
-        linkend="svn.reposadmin.basics.backends"/>.) Es hat seitens
+          linkend="svn.reposadmin.basics.backends"/>.) Es hat seitens
         der Entwicklergemeinschaft ein beträchtliches Interesse
         bestanden, künftigen Versionen von Subversion die Fähigkeit zu
         verleihen, andere Datenbanksysteme zu verwenden, etwa über
@@ -404,7 +442,11 @@
         Bigtable-Datenbank zum Speichern verwendet.</para>
 
 <!--
-      <para>The filesystem API exported by
+      <para>
+        <indexterm>
+          <primary>repositories</primary>
+          <secondary>filesystem tree</secondary>
+        </indexterm>The filesystem API exported by
         <filename>libsvn_fs</filename> contains the kinds of
         functionality you would expect from any other filesystem
         API&mdash;you can create and remove files and directories,
@@ -420,7 +462,11 @@
         versioning time to (and just beyond) the moment you first
         started adding things to the filesystem.</para>
 -->
-      <para>Die von <filename>libsvn_fs</filename> exportierte
+      <para>
+        <indexterm>
+          <primary>Projektarchive</primary>
+          <secondary>Dateisystem-Baum</secondary>
+        </indexterm>Die von <filename>libsvn_fs</filename> exportierte
         Dateisystem-Programmierschnittstelle enthält die Funktionen,
         die Sie auch von jeder anderen Programmierschnittstelle für
         ein Dateisystem erwarten würden &ndash; Sie können Dateien und
@@ -812,13 +858,17 @@
       <title>Projektarchiv-Zugriffs-Schicht</title>
 
 <!--
-      <para>If the Subversion Repository layer is at <quote>the other
+      <para>
+        <indexterm>
+          <primary>API</primary>
+          <secondary>layers</secondary>
+          <tertiary>Repository Access (RA) Layer</tertiary>
+        </indexterm>If the Subversion Repository layer is at <quote>the other
         end of the line,</quote> the Repository Access (RA) layer is
         the line itself.  Charged with marshaling data between the
         client libraries and the repository, this layer includes the
         <filename>libsvn_ra</filename> module loader library, the RA
         modules themselves (which currently includes
-        <filename>libsvn_ra_neon</filename>,
         <filename>libsvn_ra_local</filename>,
         <filename>libsvn_ra_serf</filename>, and
         <filename>libsvn_ra_svn</filename>), and any additional
@@ -827,14 +877,18 @@
         <filename>libsvn_ra_svn</filename>'s server,
         <command>svnserve</command>).</para>
 -->
-      <para>Wenn die Subversion-Projektarchiv-Schicht das <quote>andere
-        Ende der Leitung</quote> repräsentiert, stellt die
-        Projektarchiv-Zugriffs-Schicht (RA) die Leitung selbst dar. Ihre
-        Aufgabe ist das Umherschaufeln von Daten zwischen den
-        Client-Bibliotheken und dem Projektarchiv. Diese Schicht umfasst
-        die Bibliothek  <filename>libsvn_ra</filename> zum Laden von
-        Modulen, die eigentlichen RA-Module (momentan
-        <filename>libsvn_ra_neon</filename>,
+      <para>
+        <indexterm>
+          <primary>API</primary>
+          <secondary>Schichten</secondary>
+          <tertiary>Projektarchiv-Zugangs-Schicht (RA)</tertiary>
+        </indexterm>Wenn die Subversion-Projektarchiv-Schicht das
+        <quote>andere Ende der Leitung</quote> repräsentiert, stellt
+        die Projektarchiv-Zugriffs-Schicht (RA) die Leitung selbst
+        dar. Ihre Aufgabe ist das Umherschaufeln von Daten zwischen
+        den Client-Bibliotheken und dem Projektarchiv. Diese Schicht
+        umfasst die Bibliothek  <filename>libsvn_ra</filename> zum
+        Laden von Modulen, die eigentlichen RA-Module (momentan
         <filename>libsvn_ra_local</filename>,
         <filename>libsvn_ra_serf</filename> und
         <filename>libsvn_ra_svn</filename>) und alle zusätzlichen
@@ -845,7 +899,10 @@
         <filename>libsvn_ra_svn</filename>).</para>
 
 <!--
-      <para>Since Subversion uses URLs to identify its repository
+      <para>
+        <indexterm>
+          <primary>repository URL</primary>
+        </indexterm>Since Subversion uses URLs to identify its repository
         resources, the protocol portion of the URL scheme (usually
         <literal>file://</literal>, <literal>http://</literal>,
         <literal>https://</literal>, <literal>svn://</literal>, or
@@ -858,7 +915,10 @@
         and what protocols they claim to support, by running
         <userinput>svn - -version</userinput>:</para>
 -->
-      <para>Da Subversion URLs zum Identifizieren seiner
+      <para>
+        <indexterm>
+          <primary>Projektarchiv-URL</primary>
+        </indexterm>Da Subversion URLs zum Identifizieren seiner
         Projektarchiv-Quellen benutzt, wird der Protokollteil des
         URL-Schemas (normalerweise <literal>file://</literal>,
         <literal>http://</literal>, <literal>https://</literal>,
@@ -876,19 +936,16 @@
       <informalexample>
         <screen>
 $ svn - -version
-svn, version 1.7.0
-   compiled Nov 15 2011, 10:10:24
+svn, version 1.8.0-dev (under development)
+   compiled Jan  8 2013, 11:45:25 on i686-pc-linux-gnu
 
-Copyright (C) 2011 The Apache Software Foundation.
-This software consists of contributions made by many people; see the NOTICE
-file for more information.
+Copyright (C) 2013 The Apache Software Foundation.
+This software consists of contributions made by many people;
+see the NOTICE file for more information.
 Subversion is open source software, see http://subversion.apache.org/
 
 The following repository access (RA) modules are available:
 
-* ra_neon : Module for accessing a repository via WebDAV protocol using Neon.
-  - handles 'http' scheme
-  - handles 'https' scheme
 * ra_svn : Module for accessing a repository using the svn network protocol.
   - with Cyrus SASL authentication
   - handles 'svn' scheme
@@ -904,19 +961,16 @@ $
 -->
       <screen>
 $ svn --version
-svn, Version 1.7.0
-   übersetzt Nov 15 2011, 10:10:24
+svn, Version 1.8.0-dev (under development)
+   übersetzt am 8. Jan. 2013, um 10:10:24 auf i686-pc-linux-gnu
 
-Copyright (C) 2011 The Apache Software Foundation.
-This software consists of contributions made by many people; see the NOTICE
-file for more information.
-Subversion is open source software, see http://subversion.apache.org/
+Copyright (C) 2013 The Apache Software Foundation.
+Diese Software besteht aus Beiträgen vieler Personen;
+siehe Datei NOTICE für weitere Informationen.
+Subversion ist Open Source Software, siehe http://subversion.apache.org/
 
 Die folgenden ZugriffsModule (ZM) für Projektarchive stehen zur Verfügung:
 
-* ra_neon : Modul zum Zugriff auf ein Projektarchiv über das Protokoll WebDAV mittels Neon.
-  - behandelt Schema »http«
-  - behandelt Schema »https«
 * ra_svn : Modul zum Zugriff auf ein Projektarchiv über das svn-Netzwerkprotokoll.
   - mit Cyrus-SASL-Authentifizierung
   - behandelt Schema »svn«
@@ -934,8 +988,7 @@ $
         functionality necessary for sending and receiving versioned
         data to and from the repository.  And each of the available RA
         plug-ins is able to perform that task using a specific
-        protocol&mdash;<filename>libsvn_ra_neon</filename>
-        and <filename>libsvn_ra_serf</filename> speak HTTP/WebDAV
+        protocol&mdash;<filename>libsvn_ra_serf</filename> speaks HTTP/WebDAV
         (optionally using SSL encryption) with an Apache HTTP Server
         that is running the <filename>mod_dav_svn</filename>
         Subversion server module; <filename>libsvn_ra_svn</filename>
@@ -947,8 +1000,7 @@ $
         zum und vom Projektarchiv notwendig sind. Jedes der
         verfügbaren RA-Plug-Ins kann diese Aufgabe mithilfe eines
         besonderen Protokolls erledigen &ndash;
-        <filename>libsvn_ra_neon</filename> sowie
-        <filename>libsvn_ra_serf</filename> kommunizieren über
+        <filename>libsvn_ra_serf</filename> kommuniziert über
         HTTP/WebDAV (optional mit SSL-Verschlüsselung) mit einem
         Apache-HTTP-Server auf dem das Subversion-Server-Modul
         <filename>mod_dav_svn</filename> läuft;
@@ -992,7 +1044,12 @@ $
       <title>Client-Schicht</title>
 
 <!--
-      <para>On the client side, the Subversion working copy is where
+      <para>
+        <indexterm>
+          <primary>API</primary>
+          <secondary>layers</secondary>
+          <tertiary>Client Layer</tertiary>
+        </indexterm>On the client side, the Subversion working copy is where
         all the action takes place.  The bulk of functionality
         implemented by the client-side libraries exists for the sole
         purpose of managing working copies&mdash;directories full of
@@ -1001,7 +1058,12 @@ $
         locations&mdash;and propagating changes to and from the
         Repository Access layer.</para>
 -->
-      <para>Auf der Client-Seite finden alle Aktionen in der
+      <para>
+        <indexterm>
+          <primary>API</primary>
+          <secondary>Schichten</secondary>
+          <tertiary>Client-Schicht</tertiary>
+        </indexterm>Auf der Client-Seite finden alle Aktionen in der
         Subversion-Arbeitskopie statt. Der größte Teil der in den
         Client-Bibliotheken implementierten Funktionen dient dem
         alleinigen Zweck, die Arbeitskopien zu verwalten &ndash;
@@ -1012,7 +1074,10 @@ $
         weiterzugeben oder von ihr zu empfangen.</para>
 
 <!--
-      <para>Subversion's working copy library,
+      <para>
+        <indexterm>
+          <primary>administrative directory</primary>
+        </indexterm>Subversion's working copy library,
         <filename>libsvn_wc</filename>, is directly responsible for
         managing the data in the working copies.  To accomplish this,
         the library stores administrative information about the
@@ -1025,7 +1090,10 @@ $
         purpose to the <filename>CVS</filename> administrative
         directories found in CVS working copies.</para>
 -->
-      <para>Die Bibliothek für die Arbeitskopie von Subversion,
+      <para>
+        <indexterm>
+          <primary>Verwaltungsverzeichnis</primary>
+        </indexterm>Die Bibliothek für die Arbeitskopie von Subversion,
         <filename>libsvn_wc</filename>, ist direkt dafür
         verantwortlich, die Daten in den Arbeitskopien zu verwalten.
         Hierzu speichert die Bibliothek Verwaltungsinformationen zur
@@ -1407,7 +1475,11 @@ $
         <title>Programmierung mit Speicher-Pools</title>
 
 <!--
-        <para>Almost every developer who has used the C programming
+        <para>
+          <indexterm>
+            <primary>API</primary>
+            <secondary>memory pools</secondary>
+          </indexterm>Almost every developer who has used the C programming
           language has at some point sighed at the daunting task of
           managing memory usage.  Allocating enough memory to use,
           keeping track of those allocations, freeing the memory when
@@ -1416,7 +1488,11 @@ $
           can result in a program that crashes itself, or worse,
           crashes the computer.</para>
 -->
-        <para>Fast jeder C-Programmierer hat irgendwann mal gestöhnt,
+        <para>
+          <indexterm>
+            <primary>API</primary>
+            <secondary>Speicher-Pools</secondary>
+          </indexterm>Fast jeder C-Programmierer hat irgendwann mal gestöhnt,
           wenn es um die abschreckende Aufgabe der Speicherverwaltung ging.
           Genügend Speicher anzufordern, über den Speicher Buch zu
           führen, den Speicher nach Benutzung wieder freizugeben
@@ -1491,7 +1567,11 @@ $
       <title>Funktionen und Batons</title> 
 
 <!--
-      <para>To facilitate <quote>streamy</quote> (asynchronous) behavior
+      <para>
+        <indexterm>
+          <primary>API</primary>
+          <secondary>batons</secondary>
+        </indexterm>To facilitate <quote>streamy</quote> (asynchronous) behavior
         and provide consumers of the Subversion C API with hooks for
         handling information in customizable ways, many functions in
         the API accept pairs of parameters: a pointer to a callback
@@ -1502,12 +1582,16 @@ $
         function needs but which is not given directly to the callback
         function by the driving API function.</para>
 -->
-      <para>Um ein <quote>datenstromähnliches</quote> (asynchrones)
-        Verhalten zu ermöglichen und Benutzern der Subversion
-        C-Programmierschnittstelle Anknüpfpunkte für eine flexible
-        Informationsverarbeitung zur Verfügung zu stellen, akzeptieren
-        viele Funktionen der Schnittstelle Parameterpaare: ein Zeiger
-        auf eine Rückruffunktion und einen Zeiger auf einen
+      <para>
+        <indexterm>
+          <primary>API</primary>
+          <secondary>batons</secondary>
+        </indexterm>Um ein <quote>datenstromähnliches</quote>
+        (asynchrones) Verhalten zu ermöglichen und Benutzern der
+        Subversion C-Programmierschnittstelle Anknüpfpunkte für eine
+        flexible Informationsverarbeitung zur Verfügung zu stellen,
+        akzeptieren viele Funktionen der Schnittstelle Parameterpaare:
+        ein Zeiger auf eine Rückruffunktion und einen Zeiger auf einen
         Speicherbereich, genannt <firstterm>Baton</firstterm>
         (Staffelstab), der Kontextinformationen für die
         Rückruffunktion beinhaltet. Bei Batons handelt es sich
