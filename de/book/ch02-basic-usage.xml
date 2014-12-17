@@ -1,3 +1,5 @@
+<!-- -*- sgml -*- -->
+
 <chapter id="svn.tour">
 <!--
   <title>Basic Usage</title>
@@ -34,7 +36,7 @@
     encounter.  This chapter assumes that you've read and understood
     <xref linkend="svn.basic"/> and are familiar with the general
     model of Subversion.  For a complete reference of all commands,
-    see <xref linkend="svn.ref"/>.</para>
+    see <xref linkend="svn.ref.svn"/>.</para>
 -->
   <para>Dieses Kapitel ist nicht als erschöpfende Liste aller Befehle
     von Subversion gedacht ist &ndash; es ist eher eine Einführung in
@@ -43,7 +45,7 @@
     <xref linkend="svn.basic"/> gelesen und verstanden haben und dass
     Sie mit dem allgemeinen Subversion-Modell vertraut sind. Für eine
     vollständige Referenz aller Befehle, siehe
-    <xref linkend="svn.ref"/>.</para>
+    <xref linkend="svn.ref.svn"/>.</para>
 
 <!--
   <para>Also, this chapter assumes that the reader is seeking
@@ -135,7 +137,7 @@
     <informalexample>
       <screen>
 $ svn help <!--
-Subversion command-line client, version 1.6.13.
+Subversion command-line client, version 1.7.0.
 Type 'svn help &lt;subcommand&gt;' for help on a specific subcommand.
 Type 'svn - -version' to see the program version and RA modules
   or 'svn - -version - -quiet' to see just the version number.
@@ -147,7 +149,7 @@ command, it recurses on the current directory (inclusive) by default.
 Available subcommands:
 -->
 Aufruf: svn &lt;Unterbefehl&gt; [Optionen] [Parameter]
-Subversion-Kommandozeilenclient, Version 1.6.13.
+Subversion-Kommandozeilenclient, Version 1.7.0.
 Geben Sie »svn help &lt;Unterbefehl&gt;« ein, um Hilfe zu einem Unterbefehl
           zu erhalten.
 Geben Sie »svn --version« ein, um die Programmversion und die Zugriffsmodule
@@ -471,12 +473,24 @@ $
         vorhandenen Daten haben.</para>
 
 <!--
-      <para>To counteract this confusion, we recommend that you follow
-        a repository layout convention (established long ago, in the
-        nascency of the Subversion project itself) in which a handful
-        of strategically named Subversion repository directories
-        convey valuable meaning about the data they hold.  Most
-        projects have a recognizable <quote>main line</quote>,
+      <para>
+        <indexterm>
+          <primary>trunk</primary>
+        </indexterm>
+        <indexterm>
+          <primary>tags</primary>
+        </indexterm>
+        <indexterm>
+          <primary>branches</primary>
+        </indexterm>
+        <indexterm>
+          <primary>project root</primary>
+        </indexterm>To counteract this confusion, we recommend that
+        you follow a repository layout convention (established long
+        ago, in the nascency of the Subversion project itself) in
+        which a handful of strategically named Subversion repository
+        directories convey valuable meaning about the data they hold.
+        Most projects have a recognizable <quote>main line</quote>,
         or <firstterm>trunk</firstterm>, of development;
         some <firstterm>branches</firstterm>, which are divergent
         copies of development lines; and
@@ -498,10 +512,26 @@ $
 
       <para>Here are some examples:</para>
 -->
-      <para>Um dieser Verwirrung entgegenzuwirken, empfehlen wir
-        Ihnen, dass Sie einer Konvention zur Gestaltung des
-        Projektarchivs (bereits vor langer Zeit eingeführt, während der
-        Entstehung der Subversion-Projektes) folgen, in der eine
+      <para>
+        <indexterm>
+          <primary>Trunk</primary>
+        </indexterm>
+        <indexterm>
+          <primary>Tags</primary>
+        </indexterm>
+        <indexterm>
+          <primary>Branches</primary>
+        </indexterm>
+        <indexterm>
+          <primary>Zweige</primary>
+          <see>Branches</see>
+        </indexterm>
+        <indexterm>
+          <primary>Projektwurzel</primary>
+        </indexterm>Um dieser Verwirrung entgegenzuwirken, empfehlen
+        wir Ihnen, dass Sie einer Konvention zur Gestaltung des
+        Projektarchivs (bereits vor langer Zeit eingeführt, während
+        der Entstehung der Subversion-Projektes) folgen, in der eine
         handvoll strategisch benannter Verzeichnisse des
         Subversion-Projektarchivs eine nützliche Aussage über die sich
         darin befindlichen Daten machen. Die meisten Projekte besitzen
@@ -657,6 +687,42 @@ $
         internen Gebrauch zu erzeugen, maskiert er bei Bedarf automatisch
         illegale Zeichen in URL-Pfaden, die Sie eingeben.</para>
 
+      <warning>
+<!--
+        <para>Of course, when it comes to choosing valid path names,
+          Subversion isn't the only limiting factor.  Teams using
+          multiple operating systems need to consider the limitations
+          placed on path names by those operating systems, too.  For
+          example, while Windows disallows the use of colon characters
+          in file names, a user on a Linux system can very easily add
+          such a file to version control, resulting in a dataset that
+          can no longer be checked out on Windows.  Adding multiple
+          files to a directory whose names differ only in their letter
+          casing will likewise cause problems for users checking out
+          working copies onto case-insensitive filesystems.  So, some
+          broad awareness of the various limitations introduced by
+          different operating systems and filesystems, then, is
+          recommended.</para>
+-->
+        <para>Natürlich beschränkt nicht allein Subversion die Wahl
+          gültiger Pfadnamen. Teams, die mehrere Betriebssysteme
+          verwenden, müssen sich auch mit den durch diese
+          Betriebssysteme vorgegebenen Einschränkungen bei der
+          Namenswahl auseinandersetzen. Während beispielsweise Windows
+          die Verwendung von Doppelpunkten in Dateinamen verbietet,
+          kann ein Anwender unter Linux auf einfache Weise eine solche
+          Datei der versionskontrolle übergeben, was dazu führt, das
+          diese Daten nicht mehr unter Windows ausgecheckt werden
+          können. Das Hinzufügen mehrerer Dateien in ein Verzeichnis,
+          deren namen sich lediglich in Groß- und Kleinschreibung
+          unterscheiden führt wahrscheinlich zu Problemen für
+          Anwender, die Arbeitskopien in Dateisysteme auschecken, die
+          keine Unterscheidung zwischen Groß- und Kleinschreibung
+          machen. Deshalb empfiehlt sich ein breiteres Bewusstsein
+          gegenüber diesen vielfältigen Einschränkungen, die durch
+          verschiedene Bertiebssysteme hervorgerufen werden.</para>
+      </warning>
+
     </sect2>
   </sect1>
 
@@ -669,17 +735,13 @@ $
 -->
     <title>Erstellen einer Arbeitskopie</title>
 
-    <indexterm>
-      <primary>svn</primary>
 <!--
-      <secondary>subcommands</secondary>
--->
-      <secondary>Unterbefehle</secondary>
-      <tertiary>checkout</tertiary>
-    </indexterm>
-
-<!--
-    <para>Most of the time, you will start using a Subversion
+    <para>
+      <indexterm>
+        <primary>svn</primary>
+        <secondary>subcommands</secondary>
+        <tertiary>checkout</tertiary>
+      </indexterm>Most of the time, you will start using a Subversion
       repository by performing a <firstterm>checkout</firstterm> of
       your project.  Checking out a directory from a repository
       creates a working copy of that directory on your local machine.
@@ -688,13 +750,18 @@ $
       directory and its children found in the Subversion
       repository:</para>
 -->
-    <para>In den meisten Fällen werden Sie ein Subversion-Projektarchiv
-      zu nutzen beginnen, indem Sie einen
+    <para>
+      <indexterm>
+        <primary>svn</primary>
+        <secondary>Unterbefehle</secondary>
+        <tertiary>checkout</tertiary>
+      </indexterm>In den meisten Fällen werden Sie ein
+      Subversion-Projektarchiv zu nutzen beginnen, indem Sie einen
       <firstterm>Checkout</firstterm> Ihres Projektes vornehmen. Das
-      Auschecken eines Verzeichnisses aus dem Projektarchivs erzeugt eine
-      Arbeitskopie dieses Verzeichnisses auf Ihrem lokalen Rechner.
-      Falls nicht anderweitig angegeben, enthält diese Kopie die
-      jüngste (d.h. zuletzt erzeugte oder geänderte) im
+      Auschecken eines Verzeichnisses aus dem Projektarchivs erzeugt
+      eine Arbeitskopie dieses Verzeichnisses auf Ihrem lokalen
+      Rechner.  Falls nicht anderweitig angegeben, enthält diese Kopie
+      die jüngste (d.h. zuletzt erzeugte oder geänderte) im
       Subversion-Projektarchiv aufgefundene Version des Verzeichnisses
       und seiner Kinder:</para>
 
@@ -1093,7 +1160,7 @@ $
         to bring your working copy up to date.  To find out what these
         letters mean, run <userinput>svn help update</userinput> or
         see <xref linkend="svn.ref.svn.c.update"/> in
-        <xref linkend="svn.ref"/>.</para>
+        <xref linkend="svn.ref.svn"/>.</para>
 -->
       <para>Wenn der Server über <command>svn update</command>
         Änderungen an Ihre Arbeitskopie schickt, wird ein
@@ -1102,7 +1169,7 @@ $
         auf den neuesten Stand zu bringen. Zur Bedeutung der
         Buchstaben, rufen Sie <userinput>svn help update</userinput>
         auf oder schauen sich <xref linkend="svn.ref.svn.c.update"/>
-        in <xref linkend="svn.ref"/> an.</para>
+        in <xref linkend="svn.ref.svn"/> an.</para>
     </sect2>
 
     <!-- =============================================================== -->
@@ -1113,26 +1180,38 @@ $
       <title>Nehmen Sie Ihre Änderungen vor</title>
 
 <!--
-      <para>Now you can get to work and make changes in your working
-        copy.  You can make two kinds of changes to your working
-        copy: <firstterm>file changes</firstterm> and <firstterm>tree
-        changes</firstterm>.  You don't need to tell Subversion that
-        you intend to change a file; just make your changes using your
-        text editor, word processor, graphics program, or whatever
-        tool you would normally use.  Subversion automatically detects
-        which files have been changed, and in addition, it handles
-        binary files just as easily as it handles text files&mdash;and
-        just as efficiently, too.  Tree changes are different, and
-        involve changes to a directory's structure.  Such changes
-        include adding and removing files, renaming files or
-        directories, and copying files or directories to new
+      <para>
+        <indexterm>
+          <primary>file changes</primary>
+        </indexterm>
+        <indexterm>
+          <primary>tree changes</primary>
+        </indexterm>Now you can get to work and make changes in your
+        working copy.  You can make two kinds of changes to your
+        working copy: <firstterm>file changes</firstterm>
+        and <firstterm>tree changes</firstterm>.  You don't need to
+        tell Subversion that you intend to change a file; just make
+        your changes using your text editor, word processor, graphics
+        program, or whatever tool you would normally use.  Subversion
+        automatically detects which files have been changed, and in
+        addition, it handles binary files just as easily as it handles
+        text files&mdash;and just as efficiently, too.  Tree changes
+        are different, and involve changes to a directory's structure.
+        Such changes include adding and removing files, renaming files
+        or directories, and copying files or directories to new
         locations.  For tree changes, you use Subversion operations
         to <quote>schedule</quote> files and directories for removal,
         addition, copying, or moving.  These changes may take place
         immediately in your working copy, but no additions or removals
         will happen in the repository until you commit them.</para>
 -->
-      <para>Nun können Sie loslegen und Änderungen an Ihrer
+      <para>
+        <indexterm>
+          <primary>Dateiänderungen</primary>
+        </indexterm>
+        <indexterm>
+          <primary>Baumänderungen</primary>
+        </indexterm>Nun können Sie loslegen und Änderungen an Ihrer
         Arbeitskopie vornehmen. Sie können zwei Arten von Änderungen
         an Ihrer Arbeitskopie machen:
         <firstterm>Dateiänderungen</firstterm> und
@@ -1162,15 +1241,29 @@ $
         <title>Versionierung symbolischer Links</title>
 
 <!--
-        <para>On non-Windows platforms, Subversion is able to version
-          files of the special type <firstterm>symbolic
+        <para>
+          <indexterm>
+            <primary>svmlink</primary>
+          </indexterm>
+          <indexterm>
+            <primary>svmbolic link</primary>
+            <see>symlink</see>
+          </indexterm>On non-Windows platforms, Subversion is able to
+          version files of the special type <firstterm>symbolic
           link</firstterm> (or <quote>symlink</quote>).  A symlink is
           a file that acts as a sort of transparent reference to some
           other object in the filesystem, allowing programs to read
           and write to those objects indirectly by performing
           operations on the symlink itself.</para>
 -->
-        <para>Auf Nicht-Windows-Systemen kann Subversion den
+        <para>
+          <indexterm>
+            <primary>Symlink</primary>
+          </indexterm>
+          <indexterm>
+            <primary>Symbolischer Link</primary>
+            <see>Symlink</see>
+          </indexterm>Auf Nicht-Windows-Systemen kann Subversion den
           besonderen Dateityp <firstterm>symbolischer Link</firstterm>
           (oder <firstterm>Symlink</firstterm>) versionieren. Ein
           Symlink ist eine Datei, die sich wie eine transparente
@@ -1477,15 +1570,11 @@ $
 -->
       <title>Überprüfen Sie Ihre Änderungen</title>
 
-      <indexterm>
 <!--
-        <primary>log message</primary>
--->
-        <primary>Protokollnachricht</primary>
-      </indexterm>
-
-<!--
-      <para>Once you've finished making changes, you need to commit
+      <para>
+        <indexterm>
+          <primary>log message</primary>
+        </indexterm>Once you've finished making changes, you need to commit
         them to the repository, but before you do so, it's usually a
         good idea to take a look at exactly what you've changed.  By
         examining your changes before you commit, you can compose a
@@ -1500,11 +1589,14 @@ $
         command, and you can dig into the details of those changes by
         using the <command>svn diff</command> command.</para>
 -->
-      <para>Sobald Sie mit Ihren Änderungen fertig sind, müssen Sie
-        sie ins Projektarchiv bringen; es ist normalerweise eine gute
-        Idee, sich die Änderungen zuvor noch einmal anzusehen.
-        Dadurch, dass Sie die Änderungen noch einmal begutachten,
-        können Sie eine genauere
+      <para>
+        <indexterm>
+          <primary>Protokollnachricht</primary>
+        </indexterm>Sobald Sie mit Ihren Änderungen fertig sind,
+        müssen Sie sie ins Projektarchiv bringen; es ist normalerweise
+        eine gute Idee, sich die Änderungen zuvor noch einmal
+        anzusehen.  Dadurch, dass Sie die Änderungen noch einmal
+        begutachten, können Sie eine genauere
         <firstterm>Protokollnachricht</firstterm> schreiben (eine
         menschenlesbare Beschreibung der übergebenen Änderungen, die
         neben ihnen im Projektarchiv gespeichert wird). Es könnte auch
@@ -1541,27 +1633,21 @@ $
           aus anderen Gründen das Projektarchiv über das Netz nicht
           erreichen können.</para>
 
-        <indexterm>
 <!--
-          <primary>text-base</primary>
--->
-          <primary>Text-Base</primary>
-        </indexterm>
-        <indexterm>
-<!--
-          <primary>delta</primary>
--->
-          <primary>Delta</primary>
-        </indexterm>
-
-<!--
-        <para>Subversion does this by keeping private caches of
-          pristine, unmodified versions of each versioned file inside
-          its working copy administrative area (or prior to version 1.7,
-          potentially multiple administrative areas).  This allows
-          Subversion to report&mdash;and revert&mdash;local
-          modifications to those files <emphasis>without network
-          access</emphasis>.  This cache (called the
+        <para>
+          <indexterm>
+            <primary>text-base</primary>
+          </indexterm>
+          <indexterm>
+            <primary>delta</primary>
+          </indexterm>Subversion does this by keeping private caches
+          of pristine, unmodified versions of each versioned file
+          inside its working copy administrative area (or prior to
+          version 1.7, potentially multiple administrative areas).
+          This allows Subversion to report&mdash;and
+          revert&mdash;local modifications to those
+          files <emphasis>without network access</emphasis>.  This
+          cache (called the
           <firstterm>text-base</firstterm>) also allows Subversion to
           send the user's local modifications during a commit to the
           server as a compressed <firstterm>delta</firstterm> (or
@@ -1571,7 +1657,13 @@ $
           to send only a file's changes rather than the whole file to
           the server.</para>
 -->
-        <para>Subversion bewerkstelligt das, indem es private
+        <para>
+          <indexterm>
+            <primary>Text-Base</primary>
+          </indexterm>
+          <indexterm>
+            <primary>Delta</primary>
+          </indexterm>Subversion bewerkstelligt das, indem es private
           Zwischenspeicher der ursprünglichen, unveränderten Versionen
           jeder versionierten Datei innerhalb des Verwaltungsbereichs
           der Arbeitskopie (oder, vor Version 1.7, möglicherweise
@@ -1878,7 +1970,7 @@ Status bezogen auf Revision:   46
           useful information&mdash;because one of those items is also
           one that you have locally modified (the
           file <filename>README</filename>), you'll need to update and
-          get the servers changes for that file before you commit, or
+          get the server's changes for that file before you commit, or
           the repository will reject your commit for being out of
           date.  We discuss this in more detail later.</para>
 -->
@@ -1903,7 +1995,7 @@ Status bezogen auf Revision:   46
           description of <command>svn status</command> and its output,
           run <userinput>svn help status</userinput> or see
           <xref linkend="svn.ref.svn.c.status"/> in
-          <xref linkend="svn.ref"/>.</para>
+          <xref linkend="svn.ref.svn"/>.</para>
 -->
         <para><command>svn status</command> kann viel mehr
           Informationen über Dateien und Verzeichnisse in Ihrer
@@ -1912,7 +2004,7 @@ Status bezogen auf Revision:   46
           status</command> und dessen Ausgabe, rufen Sie
           <userinput>svn help status</userinput> auf oder schauen Sie
           unter <xref linkend="svn.ref.svn.c.status"/> in
-          <xref linkend="svn.ref"/>.</para>
+          <xref linkend="svn.ref.svn"/>.</para>
 
       </sect3>
 
@@ -1923,23 +2015,17 @@ Status bezogen auf Revision:   46
 -->
         <title>Untersuchen Sie die Details Ihrer lokalen Änderungen</title>
 
-        <indexterm>
-          <primary>svn</primary>
 <!--
-          <secondary>subcommands</secondary>
--->
-          <secondary>Unterbefehle</secondary>
-          <tertiary>diff</tertiary>
-        </indexterm>
-        <indexterm>
-<!--
-          <primary>unified diff</primary>
--->
-          <primary>unified-diff-Format</primary>
-        </indexterm>
-
-<!--
-        <para>Another way to examine your changes is with the
+        <para>
+          <indexterm>
+            <primary>svn</primary>
+            <secondary>subcommands</secondary>
+            <tertiary>diff</tertiary>
+          </indexterm>
+          <indexterm>
+            <primary>differences</primary>
+            <secondary>unified diff</secondary>
+          </indexterm>Another way to examine your changes is with the
           <command>svn diff</command> command, which displays
           differences in file content.  When you run <userinput>svn
           diff</userinput> at the top of your working copy with no
@@ -1957,25 +2043,33 @@ Status bezogen auf Revision:   46
           plus-sign-prefixed lines show how the lines looked before
           and after your modifications, respectively.</para>
 -->
-        <para>Eine andere Möglichkeit, Ihre Änderungen zu untersuchen,
-          ist es, den Befehl <command>svn diff</command> zu verwenden,
-          der Unterschiede im Dateiinhalt anzeigt. Wenn Sie
-          <userinput>svn diff</userinput> ganz oben in Ihrer
-          Arbeitskopie ohne Argumente aufrufen, gibt Subversion
-          die von Ihnen gemachten Änderungen an menschenlesbaren
-          Dateien in Ihrer Arbeitskopie aus. Jene Änderungen werden in
-          einem Format namens <firstterm>unified diff</firstterm>
-          angezeigt, welches Änderungen als <quote>Brocken</quote>
-          (oder <quote>Schnipsel</quote>) des Dateiinhalts anzeigt,
-          wobei jeder Textzeile ein Zeichencode vorangestellt wird:
-          ein Leerzeichen, das bedeutet, dass die Zeile nicht geändert
+        <para>
+          <indexterm>
+            <primary>svn</primary>
+            <secondary>Unterbefehle</secondary>
+            <tertiary>diff</tertiary>
+          </indexterm>
+          <indexterm>
+            <primary>Unterschiede</primary>
+            <secondary>unified-diff-Format</secondary>
+          </indexterm>Eine andere Möglichkeit, Ihre Änderungen zu
+          untersuchen, ist es, den Befehl <command>svn diff</command>
+          zu verwenden, der Unterschiede im Dateiinhalt anzeigt. Wenn
+          Sie <userinput>svn diff</userinput> ganz oben in Ihrer
+          Arbeitskopie ohne Argumente aufrufen, gibt Subversion die
+          von Ihnen gemachten Änderungen an menschenlesbaren Dateien
+          in Ihrer Arbeitskopie aus. Jene Änderungen werden in einem
+          Format namens <firstterm>unified diff</firstterm> angezeigt,
+          welches Änderungen als <quote>Brocken</quote> (oder
+          <quote>Schnipsel</quote>) des Dateiinhalts anzeigt, wobei
+          jeder Textzeile ein Zeichencode vorangestellt wird: ein
+          Leerzeichen, das bedeutet, dass die Zeile nicht geändert
           wurde, ein Minus (<literal>-</literal>), das bedeutet, dass
           die Zeile aus der Datei entfernt wurde oder ein Plus
           (<literal>+</literal>), das bedeutet, dass die Zeile der
           Datei hinzugefügt wurde. Im Kontext des Befehls <command>svn
           diff</command> zeigen Ihnen diese Minus- und Pluszeilen, wie
-          die Zeilen vor bzw. nach Ihren Änderungen
-          aussahen.</para>
+          die Zeilen vor bzw. nach Ihren Änderungen aussahen.</para>
 
 <!--
         <para>Here's an example:</para>
@@ -2025,11 +2119,20 @@ Index: stuff/things/bloo.h
 </screen>
         </informalexample>
 
-        <indexterm>
-          <primary>patches</primary>
-        </indexterm>
 <!--
-        <para>The <command>svn diff</command> command produces this
+        <para>
+          <indexterm>
+            <primary>svn</primary>
+            <secondary>subcommands</secondary>
+            <tertiary>patch</tertiary>
+          </indexterm>
+          <indexterm>
+            <primary>patches</primary>
+          </indexterm>
+          <indexterm>
+            <primary>patch file</primary>
+            <see>patches</see>
+          </indexterm>The <command>svn diff</command> command produces this
           output by comparing your working files against its pristine
           text-base.  Files scheduled for addition are displayed as
           files in which every line was added; files scheduled for
@@ -2046,7 +2149,19 @@ Index: stuff/things/bloo.h
           those changes by creating a patch file from the redirected
           output of <command>svn diff</command>:</para>
 -->
-        <para>Der Befehl <command>svn diff</command> erzeugt diese
+        <para>
+          <indexterm>
+            <primary>svn</primary>
+            <secondary>Unterbefehle</secondary>
+            <tertiary>patch</tertiary>
+          </indexterm>
+          <indexterm>
+            <primary>Patches</primary>
+          </indexterm>
+          <indexterm>
+            <primary>Patch-Datei</primary>
+            <see>Patches</see>
+          </indexterm>Der Befehl <command>svn diff</command> erzeugt diese
           Ausgabe, indem er Ihre Arbeitsdateien mit der unveränderten
           Text-Base vergleicht. Dateien, die zum Hinzufügen vorgemerkt
           sind, werden vollständig als hinzugefügter Text dargestellt,
@@ -2132,8 +2247,9 @@ $
         find a copy of how the file looked before you changed it, and
         then copy its contents atop your modified version.  You
         could attempt to apply those changes to the file again in
-        reverse using <userinput>patch -R</userinput>.  And there are
-        probably other approaches you could take.</para>
+        reverse using <userinput>svn patch - -reverse-diff</userinput>
+        or using your operating system's <userinput>patch -R</userinput>.
+        And there are probably other approaches you could take.</para>
 -->
       <para>Angenommen, Sie stellen beim Ansehen der Ausgabe von
         <command>svn diff</command> fest, dass alle Änderungen, die
@@ -2144,10 +2260,11 @@ $
         Änderungen rückgängig machen. Sie könnten versuchen, eine
         Kopie der Datei im Ursprungszustand zu bekommen und deren
         Inhalt über Ihre Änderungen zu kopieren. Sie könnten
-        versuchen, diese Änderungen erneut mit <userinput>patch
-        -R</userinput> rückwärts anzuwenden. Es gibt wahrscheinlich
-        noch andere Herangehensweisen, die Sie ausprobieren
-        könnten.</para>
+        versuchen, diese Änderungen erneut mit <userinput>svn patch
+        --reverse-diff</userinput>, oder mit Ihrem Betriebssystem,
+        <userinput>patch -R</userinput>,  rückwärts anzuwenden. Es
+        gibt wahrscheinlich noch andere Herangehensweisen, die Sie
+        ausprobieren könnten.</para>
 
       <indexterm>
         <primary>svn</primary>
@@ -2228,7 +2345,6 @@ $ svn status README
 
 $ svn delete README
 D         README
-
 $ svn revert README <!--
 Reverted 'README'
 -->
@@ -2262,17 +2378,12 @@ $
 -->
       <title>Lösen Sie etwaige Konflikte auf</title>
 
-      <indexterm>
 <!--
-        <primary>conflicts</primary>
-        <secondary>resolving</secondary>
--->
-        <primary>Konflikte</primary>
-        <secondary>Auflösung</secondary>
-      </indexterm>
-
-<!--
-      <para>We've already seen how <userinput>svn status
+      <para>
+        <indexterm>
+          <primary>conflicts</primary>
+          <secondary>resolving</secondary>
+        </indexterm>We've already seen how <userinput>svn status
         -u</userinput> can predict conflicts, but dealing with those
         conflicts is still something that remains to be done.
         Conflicts can occur any time you attempt to merge or integrate
@@ -2281,23 +2392,27 @@ $
         update</command> creates exactly that sort of
         scenario&mdash;that command's very purpose is to bring your
         working copy up to date with the repository by merging all the
-        changes made since your last update into your working
-        copy.  So how does Subversion report these conflicts to you,
-        and how do you deal with them?</para>
+        changes made since your last update into your working copy.
+        So how does Subversion report these conflicts to you, and how
+        do you deal with them?</para>
 
 -->
-      <para>Wir haben bereits gesehen, wie <userinput>svn status
-        -u</userinput> Konflikte vorhersagen kann, jedoch müssen wir
-        uns noch um diese Konflikte kümmern. Konflikte können
-        jederzeit auftreten, wenn Sie versuchen, Änderungen aus dem
-        Projektarchiv mit Ihrer Arbeitskopie zusammenzuführen oder zu
-        integrieren (in einem sehr allgemeinen Sinn). Bis hierher
+      <para>
+        <indexterm>
+          <primary>Konflikte</primary>
+          <secondary>Auflösung</secondary>
+        </indexterm>Wir haben bereits gesehen, wie <userinput>svn
+        status -u</userinput> Konflikte vorhersagen kann, jedoch
+        müssen wir uns noch um diese Konflikte kümmern. Konflikte
+        können jederzeit auftreten, wenn Sie versuchen, Änderungen aus
+        dem Projektarchiv mit Ihrer Arbeitskopie zusammenzuführen oder
+        zu integrieren (in einem sehr allgemeinen Sinn). Bis hierher
         wissen Sie, dass <command>svn update</command> genau diese Art
         von Szenario hervorruft &ndash; der eigentliche Zweck dieses
         Befehls ist es, Ihre Arbeitskopie mit dem Projektarchiv auf
         einen Stand zu bringen, indem alle Änderungen seit Ihrer
         letzten Aktualisierung mit Ihrer Arbeitskopie zusammengeführt
-        werden. Wie teilt Ihnen Subversion nun diese Konflikte mit,
+        werden.  Wie teilt Ihnen Subversion nun diese Konflikte mit,
         und wie gehen Sie damit um?</para>
 
 <!--
@@ -2653,33 +2768,32 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
 -->
         <title>Interaktive Begutachtung der Konflikte</title>
 
-        <indexterm>
 <!--
-          <primary>conflicts</primary>
-          <secondary>reviewing</secondary>
--->
-          <primary>Konflikte</primary>
-          <secondary>Überprüfung</secondary>
-        </indexterm>
-
-<!--
-        <para>Before deciding how to attack a conflict interactively,
-          odds are that you'd like to see exactly what is in conflict.
-          Two of the commands available at the interactive conflict
-          resolution prompt can assist you here.  The first is
-          the <quote>diff-full</quote> command
+        <para>
+          <indexterm>
+            <primary>conflicts</primary>
+            <secondary>reviewing</secondary>
+          </indexterm>Before deciding how to attack a conflict
+          interactively, odds are that you'd like to see exactly what
+          is in conflict.  Two of the commands available at the
+          interactive conflict resolution prompt can assist you here.
+          The first is the <quote>diff-full</quote> command
           (<userinput>df</userinput>), which displays all the local
           modifications to the file in question plus any conflict
           regions:</para>
 -->
-        <para>Bevor Sie entscheiden, wie Sie einen Konflikt beseitigen
-          wollen, wollen Sie wahrscheinlich genau sehen, worin der
-          Konflikt besteht. Zwei der bei der interaktiven Aufforderung
-          zur Verfügung stehenden Befehle können Ihnen dabei helfen.
-          Der erste ist der Befehl <quote>voller Diff</quote>
-          (<userinput>df</userinput>), der alle lokalen Änderungen an
-          der zu begutachtenden Datei und die in Konflikt stehenden
-          Regionen anzeigt:</para>
+        <para>
+          <indexterm>
+            <primary>Konflikte</primary>
+            <secondary>Überprüfung</secondary>
+          </indexterm>Bevor Sie entscheiden, wie Sie einen Konflikt
+          beseitigen wollen, wollen Sie wahrscheinlich genau sehen,
+          worin der Konflikt besteht. Zwei der bei der interaktiven
+          Aufforderung zur Verfügung stehenden Befehle können Ihnen
+          dabei helfen.  Der erste ist der Befehl <quote>voller
+          Diff</quote> (<userinput>df</userinput>), der alle lokalen
+          Änderungen an der zu begutachtenden Datei und die in
+          Konflikt stehenden Regionen anzeigt:</para>
 
         <informalexample>
           <screen>
@@ -3156,72 +3270,108 @@ svn: E155015: Übertragung abgebrochen: »/home/sally/svn-work/sandwich.txt« bl
         <para>If you've postponed a conflict, you need to resolve the
           conflict before Subversion will allow you to commit your
           changes.  You'll do this with the <command>svn
-          resolve</command> command and one of several arguments to
-          the <option>- -accept</option> option.</para>
+          resolve</command> command.  This command accepts
+          the <option>- -accept</option> option, which allows you
+          specify your desired approach for resolving the conflict.
+          Prior to Subversion 1.8, the <command>svn resolve</command>
+          <emphasis>required</emphasis> the use of this option.
+          Subversion now allows you to run the <command>svn
+          resolve</command> command without that option.  When you do
+          so, Subversion cranks up its interactive conflict resolution
+          mechanism, which you can read about (if you haven't done so
+          already) in the previous section,
+          <xref linkend="svn.tour.cycle.resolve.resolve" />.  We'll
+          take the opportunity in this section, though, to discuss
+          the use of the <option>- -accept</option> option for
+          conflict resolution.</para>
 -->
         <para>Falls Sie eine Konfliktauflösung aufgeschoben haben,
           müssen Sie den Konflikt auflösen, bevor Ihnen Subversion
-          erlaubt, Ihre Änderungen in das Projektarchiv einzustellen. Sie
-          werden dafür den <command>svn resolve</command>-Befehl mit
-          einem von mehreren Argumenten für die
-          <option>--accept</option>-Option aufrufen.</para>
+          erlaubt, Ihre Änderungen in das Projektarchiv einzustellen.
+          Sie werden dafür den Befehl <command>svn resolve</command>
+          aufrufen. Dieser Befehl akzeptiert die Option
+          <option>--accept</option>, die es Ihnen erlaubt, den von
+          Ihnen gewünschten Ansatz zur Konfliktauflösung anzugeben.
+          Vor Subversion 1.8 machte <command>snn resolve</command> die
+          Verwendung dieser Option <emphasis>erforderlich</emphasis>.
+          Jetzt erlaubt Ihnen Subversion, den Befehl <command>svn
+          resolve</command> ohne diese Option aufzurufen. Wenn Sie das
+          tun, startet Subversion seinen interaktiven
+          Konfliktauflösungs-Mechanismus, über den Sie (falls Sie es
+          noch nicht getan haben) im vorigen Abschnitt mehr erfahren:
+          <xref linkend="svn.tour.cycle.resolve.resolve" /></para>
 
-<!--
-        <para>If you want to choose the version of the file that you
-          last checked out before making your edits, choose
-          the <replaceable>base</replaceable> argument.</para>
--->
-        <para>Falls Sie die Dateiversion vor Ihren Änderungen haben
-          möchten, wählen Sie das
-          <replaceable>base</replaceable>-Argument.</para>
+        <para>The <option>--accept</option> option to the <command>svn
+          resolve</command> command instructs Subversion to use one of
+          its pre-packaged approaches to conflict resolution.  If
+          you want Subversion to resolve the conflict using the
+          version of the file that you last checked out before making
+          your edits, use <option>--accept=base</option>.  If you'd
+          prefer instead to keep the version that contains only your
+          edits, use <option>--accept=mine-full</option>.  You can also
+          select the version that your most recent update pulled from
+          the server (discarding your edits entirely)&mdash;that's
+          done using <option>--accept=theirs-full</option>.  There
+          are other <quote>canned</quote> resolution types, too.  See
+          <xref linkend="svn.ref.svn.sw.accept" /> in
+          <xref linkend="svn.ref.svn" /> for details.</para>
 
-<!--
-        <para>If you want to choose the version that contains only
-          your edits, choose the <replaceable>mine-full</replaceable>
-          argument.</para>
--->
-        <para>Falls Sie die Version möchten, die nur Ihre Änderungen
-          enthält, wählen Sie das
-          <replaceable>mine-full</replaceable>-Argument.</para>
-
-<!--
-        <para>If you want to choose the version that your most recent
-          update pulled from the server (and thus discarding your
-          edits entirely), choose
-          the <replaceable>theirs-full</replaceable> argument.</para>
--->
-        <para>Falls Sie die Version möchten, die Ihre letzte
+        <para>Die Option <option>--accept</option> des Befehls
+          <command>svn resolve</command> fordert Subversion auf, einen
+          seiner vorgefertigten Ansätze zur Konfliktauflösung zu
+          verwenden. Falls Sie möchten, dass Subversion den Konflikt
+          dergestalt auflöst, dass die von Ihnen zuletzt ausgecheckte
+          Version vor Ihren Änderungen verwendet wird, wählen Sie
+          <option>--accept=base</option>. Sollten Sie stattdessen die
+          Version behalten möchten, die nur Ihre Änderungen enthält,
+          verwenden Sie <option>--accept=mine-full</option>. Sie
+          können auch die Version wählen, die Ihre letzte
           Aktualisierung vom Server gezogen hat (und somit Ihre
-          Änderungen vollständig verwerfen wollen), wählen Sie das
-          Argument <replaceable>theirs-full</replaceable>.</para>
+          Änderungen vollständig verwerfen); dafür nehmen Sie
+          <option>--accept=theirs-full</option>. Daneben gibt es
+          weitere Auflösungstypen <quote>aus der Dose</quote>. Zu
+          Details, siehe <xref linkend="svn.ref.svn.sw.accept"/> in
+          <xref linkend="svn.ref.svn" />.</para>
 
 <!--
-        <para>However, if you want to pick and choose from your
-          changes and the changes that your update fetched from the
-          server, merge the conflicted text <quote>by hand</quote> (by
-          examining and editing the conflict markers within the file)
-          and then choose the <replaceable>working</replaceable>
-          argument.</para>
+        <para>You aren't limited strictly to all-or-nothing options.
+          If you want to pick and choose from your changes and the
+          changes that your update fetched from the server, you can
+          manually repair the working file, fixing up the conflicted
+          text <quote>by hand</quote> (by examining and editing the
+          conflict markers within the file), then tell Subversion to
+          resolve the conflict by keeping the working file in its
+          current state by running <command>svn resolve</command> with
+          the <option>- -accept=working</option> option.</para>
 -->
-        <para>Wenn Sie jedoch frei aus Ihren Änderungen und den
-          Änderungen vom Server wählen möchten, führen Sie den
-          konfliktbehafteten Text <quote>händisch</quote> zusammen
-          (indem Sie die Konfliktmarken in der Datei begutachten und
-          editieren) und wählen das
-          <replaceable>working</replaceable>-Argument.</para>
+        <para>Sie sind jedoch nicht streng auf die
+          Alles-oder-Nichts-Optionen beschränkt. Wenn Sie frei aus
+          Ihren Änderungen und den Änderungen vom Server wählen
+          möchten, können Sie die Arbeitsdatei manuell durch
+          <quote>händische</quote> Bearbeitung des konfliktbehafteten
+          Textes reparieren (indem Sie die Konfliktmarken in der Datei
+          begutachten und editieren) und anschließend Subversion durch
+          den Befehl <command>svn resolve</command> mit der Option
+          <option>--accept=working</option> mitteilen, den Konflikt
+          dergestalt aufzulösen, dass die Arbeitsdatei im
+          gegenwärtigen Zustand behalten wird.</para>
 
 <!--
         <para><command>svn resolve</command> removes the three
           temporary files and accepts the version of the file that you
-          specified with the <option>- -accept</option> option, and
-          Subversion no longer considers the file to be in a state of
+          specified.  After the command completes
+          successfully&mdash;and assuming you didn't interactively
+          choose to postpone resolution, of course&mdash;Subversion no
+          longer considers the file to be in a state of
           conflict:</para>
 -->
         <para><command>svn resolve</command> entfernt die drei
-          temporären Dateien und akzeptiert die Version, die Sie mit
-          der <option>--accept</option>-Option angeben. Subversion
-          betrachtet die Datei nun als nicht mehr
-          konfliktbehaftet:</para>
+          temporären Dateien und akzeptiert die Version, die Sie
+          angegeben haben. Nach dem erfolgreichen Abschluss des
+          Befehls &ndash; und unter der Annahme, dass Sie die
+          Konfliktauflösung natürlich nicht interaktiv aufgeschoben
+          haben &ndash; betrachtet Subversion die Datei nun als nicht
+          mehr konfliktbehaftet:</para>
 
         <informalexample>
           <screen>
@@ -3237,7 +3387,7 @@ Konflikt von »sandwich.txt« aufgelöst
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.tour.cycle.resolve.byhand">
 <!--
-        <title>Merging conflicts by hand</title>
+        <title>Manual conflict resolution</title>
 -->
         <title>Manuelle Konfliktauflösung</title>
 
@@ -3253,7 +3403,7 @@ Konflikt von »sandwich.txt« aufgelöst
         </indexterm>
 
 <!--
-        <para>Merging conflicts by hand can be quite intimidating the
+        <para>Manually resolving conflicts can be quite intimidating the
           first time you attempt it, but with a little practice, it
           can become as easy as falling off a bike.</para>
 -->
@@ -3406,25 +3556,20 @@ $ svn commit -m "Mach weiter mit meinem Sandwich, vergiss Sallys Änderungen."
         </informalexample>
 
 <!--
-        <para>Note that <command>svn resolve</command>, unlike most of
-          the other commands we deal with in this chapter, requires
-          that you explicitly list any filenames that you wish to
-          resolve.  In any case, you want to be careful and use
-          <command>svn resolve</command> only when you're certain that
-          you've fixed the conflict in your file&mdash;once the
-          temporary files are removed, Subversion will let you commit
-          the file even if it still contains conflict markers.</para>
+        <para>Naturally, you want to be careful that when using
+          <command>svn resolve</command> you don't tell Subversion
+          that you've resolved a conflict when you truly haven't.
+          Once the temporary files are removed, Subversion will let
+          you commit the file even if it still contains conflict
+          markers.</para>
 -->
-        <para>Beachten Sie, dass <command>svn resolve</command>,
-          anders als die meisten anderen Befehle, die wir in diesem
-          Kapitel behandeln, erwartet, dass Sie ausdrücklich alle
-          Dateien aufzählen, deren Konflikt Sie beseitigt haben. Auf
-          alle Fälle sollten Sie sorgfältig vorgehen und
-          <command>svn resolve</command> nur verwenden, falls Sie
-          sicher sind, den Konflikt in Ihrer Datei beseitigt zu haben
-          &ndash; sobald die temporären Dateien entfernt sind, lässt
-          Subversion zu, dass Sie die Datei in das Projektarchiv stellen,
-          selbst wenn sie noch Konfliktmarken enthält.</para>
+        <para>Wenn Sie <command>svn resolve</command> verwenden,
+          sollten Sie tunlichst darauf achten, Subversion nicht zu
+          sagen, dass Sie den Koflikt aufgelöst hätten, wenn Sie es in
+          Wirklichkeit gar nicht getan haben.  Sobald die temporären
+          Dateien entfernt sind, lässt Subversion zu, dass Sie die
+          Datei in das Projektarchiv stellen, selbst wenn sie noch
+          Konfliktmarken enthält.</para>
 
 <!--
         <para>If you ever get confused while editing the conflicted
@@ -3453,26 +3598,24 @@ $ svn commit -m "Mach weiter mit meinem Sandwich, vergiss Sallys Änderungen."
         <title>Verwerfen Ihrer Änderungen zugunsten einer aktualisierten Revision aus dem Projektarchiv</title>
   
 <!--
-        <indexterm>
-          <primary>conflicts</primary>
-          <secondary>resolution</secondary>
-        </indexterm>
-  
-        <para>If you get a conflict and decide that you want to throw
-          out your changes, you can run <userinput>svn resolve
-          - -accept theirs-full
+        <para>
+          <indexterm>
+            <primary>conflicts</primary>
+            <secondary>resolution</secondary>
+          </indexterm>If you get a conflict and decide that you want
+          to throw out your changes, you can run <userinput>svn
+          resolve - -accept theirs-full
           <replaceable>CONFLICTED-PATH</replaceable></userinput> and
           Subversion will discard your edits and remove the temporary
           files:</para>
 -->
-        <indexterm>
-          <primary>Konflikte</primary>
-          <secondary>Auflösung</secondary>
-        </indexterm>
-  
-        <para>Falls Sie einen Konflikt erhalten und entscheiden, dass
-          Sie Ihre Änderungen verwerfen wollen, können Sie
-          <userinput>svn resolve --accept theirs-full
+        <para>
+          <indexterm>
+            <primary>Konflikte</primary>
+            <secondary>Auflösung</secondary>
+          </indexterm>Falls Sie einen Konflikt erhalten und
+          entscheiden, dass Sie Ihre Änderungen verwerfen wollen,
+          können Sie <userinput>svn resolve --accept theirs-full
           <replaceable>CONFLICTED-PATH</replaceable></userinput>
           aufrufen, und Subversion wird Ihre Änderungen ignorieren und
           die temporären Dateien entfernen:</para>
@@ -3520,7 +3663,7 @@ $
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.tour.cycle.resolve.revert">
 <!--
-        <title>Punting: Using svn revert</title>
+        <title>Punting: using svn revert</title>
 -->
         <title>Die Verwendung von svn revert</title>
 
@@ -4218,12 +4361,12 @@ $ svn log http://foo.com/svn/trunk/code/foo.c
 
 <!--
       <para>These will display log messages <emphasis>only</emphasis>
-        for those revisions in which the working file (or URL)
+        for those revisions in which the named file (or directory)
         changed.</para>
 -->
       <para>Diese Befehle zeigen <emphasis>nur</emphasis>
         Protokolleinträge für die Revisionen, in der sich die
-        Arbeitsdatei (oder URL) geändert hat.</para>
+        genannte Datei (oder das Verzeichnis) geändert hat.</para>
 
       <sidebar>
 
@@ -4624,9 +4767,9 @@ $ svn blame rules.txt -r 2
         <informalexample>
           <screen>
 $ svn annotate images/logo.png <!--
-Skipping binary file: 'images/logo.png'
+Skipping binary file (use - -force to treat as text): 'images/logo.png'
 -->
-Überspringe Binärdatei: »images/logo.png«
+Überspringe Binärdatei (--force erzwingt Behandlung als Text): »images/logo.png«
 $
 </screen>
         </informalexample>
@@ -5120,8 +5263,16 @@ M       somedir/foo.c
       Praxis kaum gemacht.</para></footnote></para>
 
 <!--
-    <para>But what happens if your collaborators move or delete a file
-      that you are still working on?  Maybe there was a
+    <para>
+      <indexterm>
+        <primary>tree conflicts</primary>
+      </indexterm>
+      <indexterm>
+        <primary>conflicts</primary>
+        <secondary>tree</secondary>
+        <see>tree conflicts</see>
+      </indexterm>But what happens if your collaborators move or
+      delete a file that you are still working on?  Maybe there was a
       miscommunication, and one person thinks the file should be
       deleted, while another person still wants to commit changes to
       the file.  Or maybe your collaborators did some refactoring,
@@ -5132,7 +5283,15 @@ M       somedir/foo.c
       level rather than at the file content level, and are known
       as <firstterm>tree conflicts</firstterm>.</para>
 -->
-    <para>Was passiert aber, wenn Ihre Mitarbeiter eine Datei
+    <para>
+      <indexterm>
+        <primary>Baumkonflikte</primary>
+      </indexterm>
+      <indexterm>
+        <primary>Konflikte</primary>
+        <secondary>Baum</secondary>
+        <see>Baumkonflikte</see>
+      </indexterm>Was passiert aber, wenn Ihre Mitarbeiter eine Datei
       verschieben oder löschen, an der Sie noch arbeiten? Vielleicht
       gab es ein Verständnisproblem oder die eine Person glaubt, die
       Datei soll gelöscht werden, während die andere Person noch
@@ -5519,14 +5678,13 @@ $
       </informalexample>
 
 <!--
-      <para><filename>bar.c</filename> is now said to be the
-        <firstterm>victim</firstterm> of a tree conflict.
-        It cannot be committed until the conflict is resolved:</para>
+      <para><filename>bar.c</filename> is now said to be the victim of
+        a tree conflict.  It cannot be committed until the conflict is
+        resolved:</para>
 -->
-      <para><filename>bar.c</filename> heißt nun
-        <firstterm>Opfer</firstterm> eines Baumkonfliktes.  Sie kann
-        nicht übergeben werden, bevor der Konflikt aufgelöst
-        wird:</para>
+      <para><filename>bar.c</filename> heißt nun Opfer eines
+        Baumkonfliktes.  Sie kann nicht übergeben werden, bevor der
+        Konflikt aufgelöst wird:</para>
 
       <informalexample>
         <screen>
@@ -5794,21 +5952,21 @@ Index: Makefile
         Notable exceptions are those dealing with branching and
         merging (see <xref linkend="svn.branchmerge"/>) and properties (see
         <xref linkend="svn.advanced.props"/>).  However, you may want to
-        take a moment to skim through <xref linkend="svn.ref"/> to
+        take a moment to skim through <xref linkend="svn.ref.svn"/> to
         get an idea of all the different commands that Subversion
         has&mdash;and how you can use them to make your work
         easier.</para>
 -->
       <para>Nun haben wir die meisten der Subversion-Client-Befehle
         behandelt. Erwähnenswerte Ausnahmen sind diejenigen, die sich
-        mit dem Branchen und Zusammenführen befassen (siehe <xref
-        linkend="svn.branchmerge"/>) sowie mit Eigenschaften (siehe <xref
-        linkend="svn.advanced.props"/>). Jedoch möchten Sie vielleicht
-        einen Augenblick damit verbringen, um durch <xref
-        linkend="svn.ref"/> zu blättern, um ein Gefühl für all die
-        verschiedenen Befehle zu bekommen, über die Subversion verfügt
-        &ndash; und wie Sie sie verwenden können, um Ihre Arbeit zu
-        erleichtern.</para>
+        mit dem Branchen und Zusammenführen befassen (siehe
+        <xref linkend="svn.branchmerge"/>) sowie mit Eigenschaften
+        (siehe <xref linkend="svn.advanced.props"/>). Jedoch möchten
+        Sie vielleicht einen Augenblick damit verbringen, um durch
+        <xref linkend="svn.ref.svn"/> zu blättern, um ein Gefühl für
+        all die verschiedenen Befehle zu bekommen, über die Subversion
+        verfügt &ndash; und wie Sie sie verwenden können, um Ihre
+        Arbeit zu erleichtern.</para>
 
   </sect1>
 
