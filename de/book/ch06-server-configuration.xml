@@ -276,13 +276,13 @@
               repository, or specified per path</entry>
 -->
             <entry>Lese-/Schreibzugriff auf das komplette
-              Projektarchiv oder pfadbasierte Rechtevergabe</entry>
+              Projektarchiv oder pfad-basierte Rechtevergabe</entry>
 <!--
             <entry>Read/write access can be granted over the whole
               repository, or specified per path</entry>
 -->
             <entry>Lese-/Schreibzugriff auf das komplette
-              Projektarchiv oder pfadbasierte Rechtevergabe</entry>
+              Projektarchiv oder pfad-basierte Rechtevergabe</entry>
 <!--
             <entry>Read/write access only grantable over the whole
               repository</entry>
@@ -783,19 +783,36 @@
 
 <!--
       <title>Recommendations</title>
+-->
+    <title>Empfehlungen</title>
 
+<!--
       <para>In general, the authors of this book recommend a vanilla
         <command>svnserve</command> installation for small teams just
         trying to get started with a Subversion server; it's the
         simplest to set up and has the fewest maintenance issues.
         You can always switch to a more complex server
         deployment as your needs change.</para>
+-->
+      <para>Im Allgemeinen empfehlen die Autoren dieses Buches eine
+        einfache <command>svnserve</command>-Installation für kleine
+        Teams, denen an einer schnellen und unkomplizierten  Nutzung
+        von Subversion gelegen ist.  Dies ist die Variante, welche
+        sich am einfachsten einrichten und administrieren lässt.
+        Sollte später Bedarf bestehen, so kann immer noch auf eine
+        komplexere Servervariante gewechselt werden.</para>
 
+<!--
       <para>Here are some general recommendations and tips, based on
         years of supporting users:</para>
+-->
+      <para>Es folgen einige allgemeine Empfehlungen und Tipps,
+        basierend auf mehrjähriger Erfahrung in der
+        Anwenderbetreuung:</para>
 
       <itemizedlist>
         <listitem>
+<!--
           <para>If you're trying to set up the simplest possible server
             for your group, a vanilla <command>svnserve</command>
             installation is the easiest, fastest route.  Note,
@@ -807,16 +824,39 @@
             repository's contents aren't sensitive (e.g., it contains
             only open source code), or that you go the extra mile in
             configuring SASL to encrypt network communications.</para>
+-->
+          <para>Falls Sie für ihr Team die einfachste Servervariante
+            suchen, dann kommen Sie mit einer Standard-Installation
+            von <command>svnserve</command> am schnellsten ans Ziel.
+            Beachten Sie aber, dass der Inhalt ihres Projektarchivs im
+            Klartext über das Netzwerk übertragen wird. Wenn Sie nur
+            innerhalb ihres Firmennetzwerks oder eines VPN arbeiten,
+            so ist dies kein Beinbruch.  Ist ihr Projektarchiv
+            allerdings vom Internet aus erreichbar, so sollten Sie
+            eventuell sicherstellen, dass darin keine sensiblen Daten
+            vorhanden sind (z.B., nur quelloffenen Code o.ä.), oder
+            Sie legen noch einmal Hand an und verschlüsseln mittels
+            SASL die Netzwerkverbindung zur ihrem
+            Projektarchiv.</para>
         </listitem>
 
         <listitem>
+<!--
           <para>If you need to integrate with existing legacy identity
             systems (LDAP, Active Directory, NTLM, X.509, etc.),
             you must use either the Apache-based server
             or <command>svnserve</command> configured with SASL.</para>
+-->
+          <para>Wenn Sie bereits über Systeme zur Authentifizierung
+            (LDAP, Active Directory, NTLM, X.509 usw.) verfügen und
+            Subversion in diese integrieren möchten, so  bleibt Ihnen
+            die Wahl zwischen einer Apache-gestützten Variante oder
+            eines mit SASL vermählten <command>svnserve</command>.
+          </para>
         </listitem>
 
         <listitem>
+<!--
           <para>If you've decided to use either Apache or stock
             <command>svnserve</command>, create a single
             <command>svn</command> user on your system and run the
@@ -826,9 +866,23 @@
             point of view, this keeps the repository data nicely
             siloed and protected by operating system filesystem
             permissions, changeable by only the Subversion server
-            process itself.</para> </listitem>
+            process itself.</para>
+-->
+          <para>Wenn Sie sich für die Verwendung von Apache oder eines
+            Standard-<command>svnserve</command> entschieden haben,
+            dann legen Sie auf ihrem System einen einfachen
+            <command>svn</command>-Nutzer an und lassen den
+            Serverprozess unter diesem Nutzer laufen.  Stellen Sie
+            zudem sicher, dass das gesamte Verzeichnis mit dem
+            Projektarchiv nur diesem <command>svn</command>-Nutzer
+            gehört. Damit wird der Zugriff auf ihr Projektarchiv durch
+            das Dateisystem des Serverbetriebssystems verwaltet, und
+            nur der Serverprozess kann noch Änderungen daran
+            vornehmen.</para>
+        </listitem>
 
         <listitem>
+<!--
           <para>If you have an existing infrastructure that is heavily based
             on SSH accounts, and if your users already have system
             accounts on your server machine, it makes sense to
@@ -841,9 +895,28 @@
             for encrypted communication still draws you to this
             option, we recommend using Apache with SSL or
             <command>svnserve</command> with SASL encryption
-            instead.</para> </listitem>
+            instead.</para>
+-->
+          <para>Wenn Sie bereits über eine aus SSH-Zugängen bestehende
+            Infrastruktur verfügen, und Ihre Nutzer auf dem
+            Subversion-Server schon lokale Zugänge haben, dann ist die
+            Verwendung einer
+            <command>svnserve</command>-über-SSH-Lösung sinnvoll.  Wir
+            empfehlen diese Variante allerdings nur sehr ungern.  Es
+            ist im Allgemeinen sicherer, Ihren Nutzern nur durch
+            <command>svnserve</command> oder Apache verwaltete Zugänge
+            den Zugriff auf Ihr Projektarchiv zu ermöglichen und eben
+            nicht mittels vollwertiger Anwenderzugänge auf dem
+            Serversystem.  Falls der Wunsch nach einer starken
+            Netzwerkverschlüsselung Sie auf die Verwendung des SSH
+            gebracht hat, dann empfehlen wir Ihnen stattdessen die
+            Verwendung von Apache und SSL, bzw. die Kombination aus
+            <command>svnserve</command> und SASL-Verschlüsselung.
+          </para>
+        </listitem>
 
         <listitem>
+<!--
           <para>Do <emphasis>not</emphasis> be seduced by the simple
             idea of having all of your users access a repository
             directly via <literal>file://</literal> URLs.  Even if the
@@ -861,105 +934,35 @@
             the same as local users accessing via
             <literal>file://</literal>, and it can entail all the same
             problems if the administrator isn't careful.</para>
-            </listitem> </itemizedlist>
 -->
-
-    <title>Empfehlungen</title>
-
-    <para>Im Allgemeinen empfehlen die Autoren dieses Buches eine
-      einfache <command>svnserve</command>-Installation für kleine
-      Teams, denen an einer schnellen und unkomplizierten  Nutzung von
-      Subversion gelegen ist.  Dies ist die Variante, welche sich am
-      einfachsten einrichten und administrieren lässt.  Sollte später
-      Bedarf bestehen, so kann immer noch auf eine komplexere
-      Servervariante gewechselt werden.</para>
-
-    <para>Es folgen einige allgemeine Empfehlungen und Tipps,
-      basierend auf mehrjähriger Erfahrung in der
-      Anwenderbetreuung:</para>
-
-    <itemizedlist>
-      <listitem>
-        <para>Falls Sie für ihr Team die einfachste Servervariante
-          suchen, dann kommen Sie mit einer Standard-Installation von
-          <command>svnserve</command> am schnellsten ans Ziel.
-          Beachten Sie aber, dass der Inhalt ihres Projektarchivs im
-          Klartext über das Netzwerk übertragen wird. Wenn Sie nur
-          innerhalb ihres Firmennetzwerks oder eines VPN arbeiten, so
-          ist dies kein Beinbruch.  Ist ihr Projektarchiv allerdings
-          vom Internet aus erreichbar, so sollten Sie eventuell
-          sicherstellen, dass darin keine sensiblen Daten vorhanden
-          sind (z.B., nur quelloffenen Code o.ä.), oder Sie legen noch
-          einmal Hand an und verschlüsseln mittels SASL die
-          Netzwerkverbindung zur ihrem Projektarchiv.</para>
-      </listitem>
-
-      <listitem>
-        <para>Wenn Sie bereits über Systeme zur Authentifizierung
-          (LDAP, Active Directory, NTLM, X.509 usw.) verfügen und
-          Subversion in diese integrieren möchten, so  bleibt Ihnen
-          die Wahl zwischen einer Apache-gestützten Variante oder
-          eines mit SASL vermählten <command>svnserve</command>.
-        </para>
-      </listitem>
-
-      <listitem>
-        <para>Wenn Sie sich für die Verwendung von Apache oder eines
-          Standard-<command>svnserve</command> entschieden haben, dann
-          legen Sie auf ihrem System einen einfachen
-          <command>svn</command>-Nutzer an und lassen den
-          Serverprozess unter diesem Nutzer laufen.  Stellen Sie
-          zudem sicher, dass das gesamte Verzeichnis mit dem
-          Projektarchiv nur diesem <command>svn</command>-Nutzer
-          gehört. Damit wird der Zugriff auf ihr Projektarchiv durch
-          das Dateisystem des Serverbetriebssystems verwaltet, und nur
-          der Serverprozess kann noch Änderungen daran
-          vornehmen.</para>
-      </listitem>
-
-      <listitem>
-        <para>Wenn Sie bereits über eine aus SSH-Zugängen bestehende
-          Infrastruktur verfügen, und Ihre Nutzer auf dem
-          Subversion-Server schon lokale Zugänge haben, dann ist die
-          Verwendung einer <command>svnserve</command>-über-SSH-Lösung
-          sinnvoll.  Wir empfehlen diese Variante allerdings nur sehr
-          ungern.  Es ist im Allgemeinen sicherer, Ihren Nutzern nur
-          durch <command>svnserve</command> oder Apache verwaltete
-          Zugänge den Zugriff auf Ihr Projektarchiv zu ermöglichen und
-          eben nicht mittels vollwertiger Anwenderzugänge auf dem
-          Serversystem.  Falls der Wunsch nach einer starken
-          Netzwerkverschlüsselung Sie auf die Verwendung des SSH
-          gebracht hat, dann empfehlen wir Ihnen stattdessen die
-          Verwendung von Apache und SSL, bzw. die Kombination aus
-          <command>svnserve</command> und SASL-Verschlüsselung.
-        </para>
-      </listitem>
-
-      <listitem>
-        <para>Lassen Sie sich bitte <emphasis>nicht</emphasis> von der
-          Idee verführen, allen Ihren Nutzern direkten Zugriff auf das
-          Projektarchiv mittels der <literal>file://</literal>-Methode
-          zu geben.  Auch wenn der Zugriff auf das Projektarchiv durch
-          eine Netzwerkfreigabe erfolgt, bleibt es immer noch eine
-          schlechte Idee.  Dadurch wird jeglicher Sicherheitspuffer
-          zwischen dem Nutzer und dem Projektarchiv entfernt: Ein
-          Anwender kann ohne (oder auch mit) Absicht die Datenbank des
-          Projektarchivs beschädigen.  Es wird zudem schwierig, das
-          Projektarchiv offline zu nehmen um eine Inspektion oder ein
-          Upgrade durchzuführen.  Zudem kann es Ihnen eine Menge
-          Probleme mit den Dateirechten einbringen (siehe <xref
-          linkend="svn.serverconfig.multimethod"/>).  Beachten Sie
-          bitte auch, dass dies einer der Gründe ist, warum wir vor
-          der Verwendung der <literal>svn+ssh://</literal>-Methode für
-          den Projektarchiv-Zugriff warnen. Vom Standpunkt der
-          Sicherheit ist dies effektiv dasselbe wie die Verwendung von
-          <literal>file://</literal> für den Zugriff durch lokale
-          Anwender und kann zu denselben Problemen führen, wenn der
-          Administrator nicht alle Vorsicht walten lässt.
-        </para>
-      </listitem>
+          <para>Lassen Sie sich bitte <emphasis>nicht</emphasis> von
+            der Idee verführen, allen Ihren Nutzern direkten Zugriff
+            auf das Projektarchiv mittels der
+            <literal>file://</literal>-Methode zu geben.  Auch wenn
+            der Zugriff auf das Projektarchiv durch eine
+            Netzwerkfreigabe erfolgt, bleibt es immer noch eine
+            schlechte Idee.  Dadurch wird jeglicher Sicherheitspuffer
+            zwischen dem Nutzer und dem Projektarchiv entfernt: Ein
+            Anwender kann ohne (oder auch mit) Absicht die Datenbank
+            des Projektarchivs beschädigen.  Es wird zudem schwierig,
+            das Projektarchiv offline zu nehmen um eine Inspektion
+            oder ein Upgrade durchzuführen.  Zudem kann es Ihnen eine
+            Menge Probleme mit den Dateirechten einbringen (siehe
+            <xref linkend="svn.serverconfig.multimethod"/>).  Beachten
+            Sie bitte auch, dass dies einer der Gründe ist, warum wir
+            vor der Verwendung der
+            <literal>svn+ssh://</literal>-Methode für den
+            Projektarchiv-Zugriff warnen. Vom Standpunkt der
+            Sicherheit ist dies effektiv dasselbe wie die Verwendung
+            von <literal>file://</literal> für den Zugriff durch
+            lokale Anwender und kann zu denselben Problemen führen,
+            wenn der Administrator nicht alle Vorsicht walten lässt.
+          </para>
+        </listitem>
       </itemizedlist>
+
     </sect2>
+
   </sect1>
 
   <!-- ================================================================= -->
@@ -997,7 +1000,7 @@
       oder das <literal>svn+ssh://</literal>-Schema. In diesem
       Abschnitt behandeln wir die unterschiedlichen Möglichkeiten,
       <command>svnserve</command> einzusetzen, wie sich die Clients am
-      Server authentisieren und wie die passenden Zugangsrechte zum
+      Server authentisieren und wie die passenden Zugriffsrechte zum
       Projektarchiv korrekt eingerichtet werden.</para>
 
 
@@ -1718,7 +1721,7 @@ C:\&gt; net start svn
 -->
         <para>Ist es als <command>launchd</command>-Job eingerichtet,
           wird <command>svnserve</command> bei Bedarf automatisch
-          gestartet, sobald eingehender Subversion-Netzverkehr mit
+          gestartet, sobald eingehender Subversion-Netzwerkverkehr mit
           <literal>svn://</literal> abgewickelt werden muss. Das ist
           viel einfacher als eine Konfiguration, die voraussetzt, dass
           <command>svnserve</command> als ein langlaufender
@@ -1833,7 +1836,7 @@ $ sudo launchctl load \
           <command>svnserve</command> noch nicht. Sie teilt
           <command>launchd</command> bloß mit, wie
           <command>svnserve</command> gestartet werden soll, falls
-          Netzverkehr auf dem <literal>svn</literal> Netzwerk-Port
+          Netzwerkverkehr auf dem <literal>svn</literal> Netzwerk-Port
           aufschlägt; es wird beendet nachdem der Verkehr abgewickelt
           worden sein wird.</para>
 
@@ -2064,8 +2067,8 @@ $
         <filename>svnserve.conf</filename> in jedem Projektarchiv die
         zentrale Anlaufstelle für alle Regeln im Rahmen der
         Anwenderanmeldung und Rechtevergabe. Die Datei hat dasselbe
-        Format wie die anderen Konfigurationsdateien (siehe <xref
-          linkend="svn.advanced.confarea"/>):
+        Format wie die anderen Konfigurationsdateien
+        (siehe <xref linkend="svn.advanced.confarea"/>):
         Die Abschnittsbezeichnungen sind von eckigen Klammern
         umschlossen (<literal>[</literal> und <literal>]</literal>),
         Kommentare werden mit Rauten (<literal>#</literal>)
@@ -2420,7 +2423,7 @@ authz-db = Auth-Datei
         <para>Cyrus Simple Authentication and Security Layer (einfache
           Cyrus Authentifikations- und Sicherheitsschicht) ist
           quelloffene Software, die von der Carnegie Mellon University
-          geschrieben wurde. Sie fügt beliebigen Netzprotokollen
+          geschrieben wurde. Sie fügt beliebigen Netzwerkprotokollen
           allgemeine Authentifikations- und
           Verschlüsselungsfähigkeiten hinzu, und seit Subversion 1.5
           kann sowohl der <command>svnserve</command>-Server als auch
@@ -2429,8 +2432,8 @@ authz-db = Auth-Datei
           Subversion selber bauen, müssen Sie mindestens Version 2.1
           von SASL auf Ihrem System installiert haben und
           sicherstellen, dass es während des Erstellungsprozesses
-          gefunden wird. Der Subversion Kommandozeilenclient zeigt die
-          Verfügbarkeit von Cyrus SASL an, wenn Sie
+          gefunden wird. Der Subversion Kommandozeilen-Client zeigt
+          die Verfügbarkeit von Cyrus SASL an, wenn Sie
           <userinput>svn --version</userinput> aufrufen; falls Sie
           irgend einen anderen Subversion-Client verwenden, sollten
           sie mit dem Lieferanten des Paketes Rücksprache halten, ob
@@ -2900,14 +2903,14 @@ baz
         über URLs der Form <literal>svn+ssh://</literal> die Abfrage
         zur Authentifikation von <command>ssh</command> kommt und
         <emphasis>nicht</emphasis> vom <command>svn</command>-Client.
-        Das bedeutet, dass es keine automatische Passwortspeicherung
+        Das bedeutet, dass es keine automatische Passwort-Speicherung
         gibt (siehe <xref linkend="svn.serverconfig.netmodel.credcache"/>).
         Der Subversion-Client stellt häufig mehrere Verbindungen mit
         dem Projektarchiv her, wenngleich Anwender das wegen der
         zwischengespeicherten Passwörter normalerweise gar nicht
         mitbekommen. Jedoch könnten Anwender bei Verwendung von
         <literal>svn+ssh://</literal>-URLs durch die wiederholten
-        Passwortanfragen für ausgehende Verbindungen von
+        Passwort-Anfragen für ausgehende Verbindungen von
         <command>ssh</command> etwas genervt sein. Die Lösung besteht
         darin, ein zusätzliches Passwort-Speicherungs-Werkzeug wie
         etwa <command>ssh-agent</command> auf einem Unix-ähnlichen
@@ -2953,7 +2956,7 @@ baz
         setzen.<footnote><para>Beachten Sie, dass die Verwendung
         irgendwelcher durch <command>svnserve</command>
         sichergestellten Zugriffskontrollen nur dann einen Sinn
-        ergibt, fall die Anwender sie nicht umgehen und unter
+        ergibt, falls die Anwender sie nicht umgehen und unter
         Verwendung anderer Werkzeuge (etwa <command>cd</command> und
         <command>vi</command>) direkt auf das
         Projektarchiv-Verzeichnis zugreifen können; die Einrichtung
@@ -3302,7 +3305,7 @@ joessh = $JOESSH /opt/alternate/ssh -p 29934
           want to specify a number of restrictive options immediately
           after the <literal>command</literal>:</para>
 -->
-        <para>Ein letztes Wort zur Warnung: Die Zugangsberechtigung
+        <para>Ein letztes Wort zur Warnung: Die Zugriffsberechtigung
           für einen Anwender über einen öffentlichen Schlüssel und ein
           gemeinsames Konto könnte noch weitere SSH-Zugänge erlauben,
           selbst wenn Sie einen Wert für <literal>command</literal> in
@@ -3695,7 +3698,7 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         <filename>/var/svn</filename> anlegen möchten, auf die über
         URLs wie <uri>http://my.server.com/svn/repos1</uri>,
         <uri>http://my.server.com/svn/repos2</uri> usw. zugegriffen
-        werden soll, könnten Sie die Konfigurationssyntax von
+        werden soll, könnten Sie die Konfigurations-Syntax von
         <filename>httpd.conf</filename> aus dem folgenden Beispiel
         verwenden:</para>
 
@@ -3873,7 +3876,7 @@ ServerName svn.example.com
 -->
       <para>Sie werden ein Berechtigungssystem festlegen müssen, das
         die Anforderungen von Subversion erfüllt, ohne dabei
-        bestehende Webseiten oder Skriptinstallationen zu
+        bestehende Webseiten oder Skript-Installationen zu
         beeinträchtigen. Das kann bedeuten, dass die Berechtigungen
         für Ihr Projektarchiv an die anderen Dinge angepasst werden
         müssen, die Apache für Sie zur Verfügung stellt, oder dass Sie
@@ -4015,7 +4018,7 @@ ServerName svn.example.com
           usernames and passwords.</para>
 -->
         <para>Die einfachste Methode, einen Client zu authentifizieren
-          geht über den HTTP-Basic-Authentifikationsmechanismus, der
+          geht über den HTTP-Basic-Authentifikations-Mechanismus, der
           einfach einen Anwendernamen und ein Passwort verwendet, um
           die Identität eines Anwenders sicherzustellen. Apache stellt
           das Dienstprogramm <command>htpasswd</command><footnote><para>Siehe
@@ -4068,7 +4071,7 @@ $
         <informalexample>
           <screen>
 $ ### Beim 1. Mal: -c verwenden, um die Datei anzulegen
-$ ### -m für die sicherere MD5-Verschlüsselung des Passworts verwenden
+$ ### -m für die sicherere MD5-Verschlüsselung des Passwortes verwenden
 $ htpasswd -c -m /etc/svn-auth.htpasswd harry
 New password: *****
 Re-type new password: *****
@@ -4289,7 +4292,7 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
           die Identität des Clients zu bestätigen, ohne das Passwort
           ungeschützt durch das Netz zu schicken. Sowohl Client als
           auch Server erzeugen einen nicht rückgängig zu machenden
-          MD5-Hashwert des Anwendernamens, Passworts, verlangter URI
+          MD5-Hashwert des Anwendernamens, Passwortes, verlangter URI
           und einer Einwegnummer, die vom Server vergeben wird und
           jedes Mal geändert wird, wenn eine Authentifizierung
           benötigt wird. Der Client sendet seinen Hash an den Server
@@ -4371,18 +4374,21 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
             configuration context.</para>
 -->
           <para>Für die Digest-Authentifizierung wird der Anbieter mit
-            der Direkive <literal>AuthDigestProvider</literal>
+            der Direktive <literal>AuthDigestProvider</literal>
             ausgewählt, wie im vorangegangenen Beispiel gezeigt. Wie
             bei der Direktive <literal>AuthBasicProvider</literal>,
             ist auch hier <literal>file</literal> der Standardwert der
-            Option <literal>AuthDigestProvider</literal> option, so
+            Option <literal>AuthDigestProvider</literal>, so
             dass diese Zeile nicht unbedingt notwendig ist, es sei
             denn, Sie müssen einen aus einem weiteren
             Konfigurations-Kontext ererbten unterschiedlichen Wert
             angeben.</para>
         </note>
 
+<!--
         <para>The password file can be created as follows:</para>
+-->
+        <para>Die Passwort-Datei kann wie folgt erzeugt werden:</para>
 
 <!--
         <informalexample>
@@ -4424,7 +4430,7 @@ $
 <!--
       <title>Authorization Options</title>
 -->
-      <title>Autorisierungsoptionen</title>
+      <title>Autorisierungs-Optionen</title>
 
 <!--
       <para>At this point, you've configured authentication, but not
@@ -4631,7 +4637,7 @@ $
 <!--
         <title>Per-directory access control</title>
 -->
-        <title>Verzeichnisweise Zugangskontrolle</title>
+        <title>Verzeichnisweise Zugriffskontrolle</title>
 
 <!--
         <para>It's possible to set up finer-grained permissions using
@@ -4689,7 +4695,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
         <para>Zur Aktivierung dieses Moduls müssen Sie Ihren
           <literal>&lt;Location&gt;</literal>-Block mit der Direktive
           <literal>AuthzSVNAccessFile</literal> konfigurieren, die
-          eine Datei mit Zugriffsrichtlinien für Pfade in Ihren
+          eine Datei mit Zugriffs-Richtlinien für Pfade in Ihren
           Projektarchiven bezeichnet. (Gleich werden wir auf das
           Format dieser Datei eingehen.)</para>
 
@@ -4707,7 +4713,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           (Die folgenden Beispiele sind sehr einfach gehalten; sehen
           Sie sich die mitgelieferte Apache-Dokumentation an, um
           wesentlich mehr Einzelheiten zu den Authentifikations- und
-          Autorisierungsoptionen von Apache zu erfahren.)</para>
+          Autorisierungs-Optionen von Apache zu erfahren.)</para>
 
 <!--
         <para>The most open approach is to allow access to everyone.
@@ -4716,7 +4722,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-1"
           />.)</para>
 -->
-        <para>Der offenste Ansatz besteht aus Zugang für jeden. Das
+        <para>Der offenste Ansatz besteht aus Zugriff für jeden. Das
           bedeutet, dass Apache niemals Aufforderungen zur
           Authentifikation sendet, so dass alle Anwender als
           <quote>anonymous</quote> behandelt werden.  (Siehe
@@ -4728,7 +4734,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 <!--
           <title>A sample configuration for anonymous access</title>
 -->
-          <title>Eine Beispielkonfiguration für anonymen Zugang</title>
+          <title>Eine Beispielkonfiguration für anonymen Zugriff</title>
 <!--
           <programlisting>
 &lt;Location /repos&gt;
@@ -4749,7 +4755,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 
   # Authentifizierung: keine
 
-  # Autorisierung: pfadbasierte Zugangskontrolle
+  # Autorisierung: pfad-basierte Zugriffskontrolle
   AuthzSVNAccessFile /path/to/access/file
 &lt;/Location&gt;
 </programlisting>
@@ -4776,7 +4782,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 <!--
           <title>A sample configuration for authenticated access</title>
 -->
-          <title>Eine Beispielkonfiguration für authentifizierten Zugang</title>
+          <title>Eine Beispielkonfiguration für authentifizierten Zugriff</title>
 <!--
           <programlisting>
 &lt;Location /repos&gt;
@@ -4804,7 +4810,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
   AuthType Digest
   AuthUserFile /etc/svn-auth.htdigest
 
-  # Autorisierung: pfadbasierte Zugangskontrolle; nur für authentifizierte Anwender
+  # Autorisierung: pfad-basierte Zugriffskontrolle; nur für authentifizierte Anwender
   AuthzSVNAccessFile /path/to/access/file
   Require valid-user
 &lt;/Location&gt;
@@ -4833,7 +4839,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           für heikle Bereichen nur authentifizierte Anwender
           zugelassen werden.  Bei dieser Einstellung greifen alle
           Anwender zunächst anonym auf das Projektarchiv zu. Falls
-          Ihre Zugangsrichtlinien an einer Stelle einen echten
+          Ihre Zugriffsrichtlinien an einer Stelle einen echten
           Anwendernamen erfordern sollte, fordert Apache den Client
           auf, sich zu authentisieren. Eingestellt wird dieses
           Verhalten mit den Direktiven <literal>Satisfy Any</literal>
@@ -4847,7 +4853,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
             authenticated/anonymous access</title>
 -->
           <title>Eine Beispielkonfiguration für gemischten
-            authentifizierten/anonymen Zugang</title>
+            authentifizierten/anonymen Zugriff</title>
 <!--
           <programlisting>
 &lt;Location /repos&gt;
@@ -4877,7 +4883,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
   AuthType Digest
   AuthUserFile /etc/svn-auth.htdigest
 
-  # Autorisierung: pfadbasierte Zugangskontrolle; zunächst anonymen Zugang
+  # Autorisierung: pfad-basierte Zugriffskontrolle; zunächst anonymen Zugriff
   #                versuchen, doch wenn nötig authentifizieren
   AuthzSVNAccessFile /path/to/access/file
   Satisfy Any
@@ -4893,7 +4899,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           <xref linkend="svn.serverconfig.pathbasedauthz"/>.</para>
 -->
         <para>Der nächste Schritt ist, eine Autorisierungsdatei zu
-          erstellen, die Zugangsregeln für bestimmte Pfade innerhalb
+          erstellen, die Zugriffsregeln für bestimmte Pfade innerhalb
           des Projektarchivs enthält. Wie, beschreiben wir später in
           <xref linkend="svn.serverconfig.pathbasedauthz"/>.</para>
 
@@ -4904,7 +4910,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 <!--
         <title>Disabling path-based checks</title>
 -->
-        <title>Abstellen pfadbasierter Prüfungen</title>
+        <title>Abstellen pfad-basierter Prüfungen</title>
 
 <!--
         <para>The <command>mod_dav_svn</command> module goes through a
@@ -5029,7 +5035,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 -->
         <para>Standardmäßig steht die Direktive
           <literal>SVNPathAuthz</literal> auf <quote>on</quote>.  Auf
-          <quote>off</quote> gesetzt, wird die gesamte pfadbasierte
+          <quote>off</quote> gesetzt, wird die gesamte pfad-basierte
           Autorisierungsüberprüfung abgestellt.
           <command>mod_dav_svn</command> beendet den Aufruf von
           Autorisierungsüberprüfungen für jeden entdeckten
@@ -5193,7 +5199,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
             CA nicht automatisch vertrauen kann, oder falls ein
             anderes Problem auftaucht (etwa ein abgelaufenes
             Zertifikat oder ein nicht übereinstimmender Rechnername),
-            fragt Sie der Subversion-Kommandozeilenclient, ob Sie dem
+            fragt Sie der Subversion-Kommandozeilen-Client, ob Sie dem
             Server-Zertifikat dennoch vertrauen möchten:</para>
 
 <!--
@@ -5355,7 +5361,7 @@ Passphrase für »/path/to/my/cert.p12«:  ********
             is to use the OpenSSL command-line tools to convert
             existing certificates into PKCS#12.</para>
 -->
-          <para>Beachten Sie, dass die Zugangsdaten des Clients in
+          <para>Beachten Sie, dass die Zugriffsdaten des Clients in
             einer <literal>.p12</literal>-Datei gespeichert werden. Um
             ein Client-Zertifikat mit Subversion verwenden zu können,
             muss es im PKCS#12-Format vorliegen, was einem portablen
@@ -5431,7 +5437,7 @@ ssl-client-cert-password = somepassword
         verbessern, um noch bessere Ergebnisse beim Anbieten Ihrer
         Subversion-Dienste zu erhalten. In diesem Abschnitt empfehlen
         wir einige zielgerichtete Konfigurations-Änderungen zu
-        erwägen. Seien Sie sich jecoch bewusst, das einige der hier
+        erwägen. Seien Sie sich jedoch bewusst, das einige der hier
         erörterten Konfigurations-Optionen von
         <filename>httpd.conf</filename> Auswirkungen auf das
         allgemeine Verhalten Ihres Servers haben, nicht bloß für den
@@ -5469,8 +5475,8 @@ ssl-client-cert-password = somepassword
           Server nicht trivial sind. Subversion versucht, so viele
           Anfragen wie möglich aus einer Verbindung herauszuquetschen,
           bevor der Server sie beendet. Die Direktive
-          <literal>KeepAlive</literal> ist der boolsche Schalter, der
-          diese Möglichkeit zur Wiederverwendung einer Verbbindung
+          <literal>KeepAlive</literal> ist der boolesche Schalter, der
+          diese Möglichkeit zur Wiederverwendung einer Verbindung
           ermöglicht oder unterbindet. Wie bereits erwähnt ist deren
           Wert standardmäßig <literal>On</literal>.</para>
 
@@ -5542,8 +5548,12 @@ MaxKeepAliveRequests 1000
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.perf.bulk-updates">
+<!--
         <title>Bulk updates</title>
+-->
+        <title>Massen-Aktualisierungen</title>
 
+<!--
         <para>The biggest difference between the way that Subversion
           1.8 clients and pre-1.8 clients behave is in how update-style
           operations (<command>svn checkout</command>, <command>svn
@@ -5556,7 +5566,23 @@ MaxKeepAliveRequests 1000
           and then a <literal>REPORT</literal> request with a massive
           response.  That response was the entire checkout/update
           dataset!</para>
+-->
+        <para>Der größte Unterschied im Verhalten von Subversion 1.8
+          Clients und älteren Clients besteht in der Behandlung von
+          Operationen ähnlich einer Aktualisierung (<command>svn
+          checkout</command>, <command>svn update</command>,
+          <command>svn switch</command> usw.).
+          Ältere Clients, die die Bibliothek Neon HTTP zur
+          Kommunikation verwendeten, bevorzugten es, vom Server
+          die gesamte Informations-Nutzlast mit einer Abfrage
+          anzufordern. Administratoren werden bemerkt haben, dass in
+          den Protokolldateien des Servers zunächst einige
+          Vermittlungsoperationen auftraten und dann eine
+          <literal>REPORT</literal>-Anfrage mit einer massiven Antwort
+          folgte. Diese Antwort umfasste den kompletten Datenumfang
+          des Checkouts bzw. der Aktualisierung!</para>
 
+<!--
         <para>Subversion clients which use the Serf HTTP
           library&mdash;which includes all clients built atop the
           Subversion 1.8&mdash;still send the <literal>REPORT</literal>
@@ -5569,7 +5595,23 @@ MaxKeepAliveRequests 1000
           that <literal>REPORT</literal> is followed by many smaller
           requests (<literal>GET</literal>s and, in older versions of
           Subversion, <literal>PROPFIND</literal>s).</para>
+-->
+        <para>Subversion Clients, die die Bibliothek Serf HTTP
+          verwenden &ndash; zu denen alle auf Subversion 1.8 gebauten
+          Clients gehören &ndash; senden immer noch die
+          <literal>REPORT</literal>-Anfrage, allerdings mit etwas
+          anders gesetzten Schaltern innerhalb der Abfrage. Diese
+          Schalter fordern den Server auf, nicht alle Daten für die
+          Operation zu senden, sondern stattdessen nur eine Checkliste
+          mit anderen, spezifischeren Dingen, die der Client im
+          Folgenden vom Server abrufen muss, um die Operation zu
+          vervollständigen. Im <filename>access_log</filename> des
+          Servers folgen diesem <literal>REPORT</literal> viele
+          kleinere Anfragen (<literal>GET</literal>s und, in älteren
+          Versionen von Subversion,
+          <literal>PROPFIND</literal>s).</para>
 
+<!--
         <para>There are pros and cons to each approach.  As we've
           mentioned, the so-called bulk updates generate considerably
           less information in the server logs, but a given Apache HTTP
@@ -5592,6 +5634,33 @@ MaxKeepAliveRequests 1000
           is set to <literal>Prefer</literal>, supporting clients (1.8
           or newer) will try to use the bulk update approach unless
           otherwise configured.</para>
+-->
+        <para>Jeder dieser Ansätze hat Vor- und Nachteile. Wie bereits
+          erwähnt, erzeugen sogenannte Massen-Aktualisierungen
+          wesentlich weniger Information in den Protokolldateien des
+          Servers, jedoch wird ein gegebener Kindprozess eines
+          Apache-HTTP-Servers für die Dauer einer eventuell längeren
+          Operation vollständig in Anspruch genommen.  Normale
+          Aktualisierungen bieten die Gelegenheit, Zwischenspeicher
+          für Inhalte anzulegen (die an sich die Leistung erhöhen
+          können), erzeugen jedoch eine Protokollnachrichten-Aufkommen
+          auf dem Server, dass erheblich umfangreicher ist als bei dem
+          Ansatz mit den Massen-Aktualisierungen. Aus verschiedenen
+          Gründen könnten Administratoren etwas mehr Einfluss auf den
+          clientseitig verwendeten Ansatz nehmen wollen.  Subversion
+          1.6 führte die <command>mod_dav_svn</command>-Direktive
+          <literal>SVNAllowBulkUpdates</literal> &ndash; ein einfacher
+          boolescher Schalter &ndash; ein, damit Administratoren
+          angeben können, ob der Server Anfragen für
+          Massen-Aktualisierungen zulassen darf.  In Subversion 1.8
+          wurde diese Direktive zusätzlich zu den bereits
+          unterstützten Werten <literal>On</literal> und
+          <literal>Off</literal> um den Wert <literal>Prefer</literal>
+          erweitert.  Wenn <literal>SVNAllowBulkUpdates</literal> auf
+          <literal>Prefer</literal> gesetzt wird, versuchen Clients,
+          die er unterstützen (1.8 oder neuer) den Ansatz der
+          Massen-Aktualisierung, wenn nicht etwas anderes konfiguriert
+          wurde.</para>
 
       </sect3>
     </sect2>
@@ -5802,10 +5871,9 @@ http://host.example.com/repos/project/trunk/renamed-thing.txt?p=123&amp;r=21
             properties.  For folks who require more extensive browsing
             of repositories and their history, there are several
             third-party software packages which offer this.  Some
-            examples include ViewVC
-            (<ulink url="http://viewvc.tigris.org"/>), Trac
-            (<ulink url="http://trac.edgewall.org"/>) and WebSVN
-            (<ulink url="http://websvn.info"/>).  These third-party
+            examples include ViewVC (<ulink url="http://viewvc.org" />),
+            Trac (<ulink url="http://trac.edgewall.org" />) and WebSVN
+            (<ulink url="http://websvn.info" />).  These third-party
             tools don't affect <command>mod_dav_svn</command>'s
             built-in <quote>browseability</quote>, and generally offer
             a much wider set of features, including the display of the
@@ -5822,9 +5890,9 @@ http://host.example.com/repos/project/trunk/renamed-thing.txt?p=123&amp;r=21
             Informationen zum Projektarchiv und seiner Geschichte
             benötigen gibt es hierfür mehrere Softwarepakete von
             Drittanbietern. Hierzu zählen beispielsweise ViewVC
-            (<ulink url="http://viewvc.tigris.org"/>), Trac
-            (<ulink url="http://trac.edgewall.org"/>) und WebSVN
-            (<ulink url="http://websvn.info"/>). Diese Werkzeuge von
+            (<ulink url="http://viewvc.org"/>), Trac (<ulink
+            url="http://trac.edgewall.org"/>) und WebSVN (<ulink
+            url="http://websvn.info"/>). Diese Werkzeuge von
             Drittanbietern beeinträchtigen nicht die eingebaute
             <quote>Stöberfähigkeit</quote> von
             <command>mod_dav_svn</command> und bieten im Allgemeinen
@@ -6074,7 +6142,7 @@ http://host.example.com/repos/project/trunk/renamed-thing.txt?p=123&amp;r=21
         <para>Da Apache im Grunde genommen ein HTTP-Server ist,
           beinhaltet er fantastisch anpassungsfähige
           Protokollierungsmöglichkeiten. Es würde den Rahmen dieses
-          Buches sprengen, alle Protokollierungseinstellungen zu
+          Buches sprengen, alle Protokollierungs-Einstellungen zu
           erörtern, doch soll darauf hingewiesen werden, dass selbst
           die gewöhnlichste <filename>httpd.conf</filename>-Datei 
           Apache veranlasst, zwei Protokolldateien anzulegen:
@@ -6244,27 +6312,167 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
           to one or both of these variables in
           your <literal>CustomLog</literal> format string, too,
           especially if you are combining usage information from
-          multiple repositories into a single log file.</para>
+          multiple repositories into a single log file.  For an
+          exhaustive list of all actions logged, see
+          <xref linkend="svn.serverconfig.operational-logging"/>.</para>
 -->
         <para>Zusätzlich zur Umgebungsvariablen
           <literal>SVN-ACTION</literal> besetzt
           <command>mod_dav_svn</command> auch die Variablen
           <literal>SVN-REPOS</literal> und
           <literal>SVN-REPOS-NAME</literal>, die den Dateisystempfad
-          zum Projektarchiv bzw. dessen Basisnamen beinhalten.
-          Es sei empfohlen, Referenzen auf eine oder beide dieser
-          Variablen in Ihre <literal>CustomLog</literal>
-          Formatbeschreibung einzufügen; besonders dann, falls Sie
-          Informationen aus mehreren Projektarchiven in einer
-          einzelnen Protokolldatei sammeln.</para>
+          zum Projektarchiv bzw. dessen Basisnamen beinhalten.  Es sei
+          empfohlen, Referenzen auf eine oder beide dieser Variablen
+          in Ihre <literal>CustomLog</literal> Formatbeschreibung
+          einzufügen; besonders dann, falls Sie Informationen aus
+          mehreren Projektarchiven in einer einzelnen Protokolldatei
+          sammeln.  Eine vollständige Liste mit allen protokollierten
+          Aktionen finden Sie unter
+          <xref linkend="svn.serverconfig.operational-logging"/>.</para>
 
 <!--
-        <para>For an exhaustive list of all actions logged, see <xref
-          linkend="svn.serverconfig.operational-logging"/>.</para>
+        <para>Obviously, the more information that Apache logs about
+          your Subversion activities, the more disk space on your
+          server those logs consume.  It is non uncommon for
+          high-traffic Subversion servers to generate many gigabytes
+          of log information daily.  Obviously, logs are only valuable
+          if they can be meaningfully processed, and huge log files
+          can quickly become unwieldy.  There are various standard
+          approaches to Apache HTTP Server log management which are
+          outside the scope of this book.  Administrators are
+          encouraged to use the log rotation and archival approach
+          which works best for them.</para>
 -->
-        <para>Eine vollständige Liste mit allen protokollierten
-          Aktionen finden Sie unter <xref
-          linkend="svn.serverconfig.operational-logging"/>.</para>
+        <para>Es leuchtet ein, dass je mehr Informationen Apache über
+          Ihre Aktivitäten mit Subversion protokolliert, desto mehr
+          Speicherplatz durch diese Protokolldateien auf Ihrem Server
+          beansprucht wird. Es ist nicht ungewöhnlich für
+          Subversion-Server mit hohem Verkehrsaufkommen, dass sie
+          täglich mehrere Gigabytes an Protokollinformationen
+          erzeugen. Es ist klar, dass Protokolldateien nur dann von
+          Wert sind, wenn sie auch sinnstiftend ausgewertet werden
+          können, und umfangreiche Protokolldateien können schnell
+          unhandlich werden. Es gibt verschiedene Standardansätze für
+          die Verwaltung der Apache HTTP Server Protokollierung, die
+          durch dieses Buch nicht behandelt werden. Den
+          Administratoren wird nahegelegt, denjenigen Ansatz mit
+          rotierenden und archivierten Protokolldateien zu wählen, der
+          für sie am besten funktioniert.</para>
+
+<!--
+        <para>But what if Subversion is simply generating too much log
+          information to be useful?  For example, in
+          <xref linkend="svn.serverconfig.httpd.perf.bulk-updates" />,
+          we mentioned that certain approaches that Subversion clients
+          may take to checkouts and other update-style operations can
+          cause rapid growth of your server logs as requests for
+          individual pieces of the update data set are individually
+          logged (whereas in previous version of Subversion, they
+          might not have been).  In this case, you might consider
+          using some Apache configuration magic to selectively silence
+          some of that log activity.</para>
+-->
+        <para>Doch was ist, wenn Subversion einfach zu viel
+          Protokolldaten erzeugt, um von Nutzen zu sein? So erwähnten
+          wir beispielsweise in
+          <xref linkend="svn.serverconfig.httpd.perf.bulk-updates" />,
+          dass bestimmte Ansätze, die Subversion-Clients bei Checkouts
+          und anderen Aktualisierungsoperationen wählen könnten, einen
+          rasanten Zuwachs Ihrer Protokolldateien auf dem Server zur
+          Folge haben kann, da Anfragen für individuelle Teile des
+          Aktualisierungs-Datensatzes individuell protokolliert werden
+          (wobei das in früheren Versionen von Subversion nicht
+          geschah). In diesem Fall sollten Sie etwas
+          Apache-Konfigurations-Magie anwenden, um selektiv Teile
+          dieser Protokollaktivitäten ruhig zu stellen.</para>
+
+<!--
+        <para>Apache HTTP Server's
+          <literal>mod_setenvif</literal> module offers
+          a <literal>SetEnvIf</literal> directive which is handy for
+          conditionally setting environment variables.  And as it
+          turns out, the <literal>CustomLog</literal> directive can be
+          told to conditionally log requests based on the state of
+          environment variables.  The following is a sample
+          configuration which instructs the server
+          to <emphasis>not</emphasis> log <literal>GET</literal>
+          and <literal>PROPFIND</literal> requests aimed at private
+          Subversion URLs.</para>
+-->
+        <para>Das Modul <literal>mod_setenvif</literal> des Apache
+          HTTP Servers stellt eine Direktive
+          <literal>SetEnvIf</literal> zur Verfügung, die praktisch
+          ist, um bedingt Umgebungsvariablen zu setzen. Und wie sich
+          herausstellt, kann der Direktive
+          <literal>CustomLog</literal> mitgeteilt werden, Anfragen je
+          nach Zustand von Umgebungsvariablen zu protokollieren. Das
+          Folgende ist eine Beispiel-Konfiguration, die den Server
+          auffordert, <emphasis>keine</emphasis> <literal>GET</literal>-
+          und <literal>PROPFIND</literal>-Anfragen zu protokollieren,
+          die an private Subversion URLs gerichtet sind.</para>
+
+        <informalexample>
+<!--
+          <programlisting>
+# Matches everything, just to initialize the "in_repos" variable.
+SetEnvIf Request_URI "^" in_repos=0
+
+# Set "in_repos" if this is a request for a private Subversion URL.
+SetEnvIf Request_URI "/!svn/" in_repos=1
+
+# Set "do_not_log" for non-public request types we don't care to log.
+SetEnvIf Request_Method "GET" do_not_log
+SetEnvIf Request_Method "PROPFIND" do_not_log
+
+# Unset "do_not_log" for URLs that aren't private Subversion URLs.
+SetEnvIf in_repos 0 !do_not_log
+
+# Log requests, but only if "do_not_log" isn't set.
+CustomLog logs/access_log env=!do_not_log
+</programlisting>
+-->
+          <programlisting>
+# Passt auf alles, nur zur Initialisierung von "in_repos".
+SetEnvIf Request_URI "^" in_repos=0
+
+# "in_repos" setzen, falls Anfrage für private Subversion URL.
+SetEnvIf Request_URI "/!svn/" in_repos=1
+
+# "do_not_log" für nicht-öffentliche Anfragetypen, die nicht protokolliert werden sollen.
+SetEnvIf Request_Method "GET" do_not_log
+SetEnvIf Request_Method "PROPFIND" do_not_log
+
+# "do_not_log" zurücksetzen für nicht-private Subversion URLs
+SetEnvIf in_repos 0 !do_not_log
+
+# Anfragen protokollieren, nuer wenn "do_not_log" nicht gesetzt
+CustomLog logs/access_log env=!do_not_log
+</programlisting>
+        </informalexample>
+
+<!--
+        <para>Using this configuration, <command>httpd</command> would
+          still log <literal>GET</literal> requests aimed at public
+          Subversion URLs.  These are the sorts of requests generated
+          by a web browser as someone navigates the repository
+          directly.  But <literal>GET</literal>
+          and <literal>PROPFIND</literal> requests aimed at so-called
+          "private" Subversion URLs&mdash;which are the very sorts of
+          requests used to fetch each and every individual file during
+          a checkout operation&mdash;won't get logged.</para>
+-->
+        <para>Bei Verwendung dieser Konfiguration würde
+          <command>httpd</command> immer noch
+          <literal>GET</literal>-Anfragen an öffentliche Subversion
+          URLs protokollieren. Das sind die Art Anfragen, wie sie von
+          einem Web-Browser erzeugt werden, wenn jemand direkt im
+          Projektarchiv navigiert. Jedoch werden
+          <literal>GET</literal>- und
+          <literal>PROPFIND</literal>-Anfragen nicht protokolliert,
+          die an sogenannte "private" Subversion-URLs gehen &ndash;
+          das sind genau die Anfragen, die Verwendet werden, um jede
+          einzelne Datei während einer Checkout-Operation zu
+          holen.</para>
 
       </sect3>
 
@@ -6276,7 +6484,22 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
         <title>Proxy mit Weiterleitung beim Schreiben</title>
 
 <!--
-        <para>One of the nice advantages of using Apache as a
+        <para>
+          <indexterm>
+            <primary>WebDAV</primary>
+            <secondary>proxies</secondary>
+            <see>httpd, write-through proxies</see>
+          </indexterm>
+          <indexterm>
+            <primary>httpd</primary>
+            <secondary>write-through proxies</secondary>
+            <tertiary>master</tertiary>
+          </indexterm>
+          <indexterm>
+            <primary>httpd</primary>
+            <secondary>write-through proxies</secondary>
+            <tertiary>slave</tertiary>
+          </indexterm>One of the nice advantages of using Apache as a
           Subversion server is that it can be set up for simple
           replication.  For example, suppose that your team is
           distributed across four offices around the globe.  The
@@ -6296,7 +6519,22 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
           each slave server using the <command>svnsync</command>
           replication tool.</para>
 -->
-        <para>Einer der netten Vorteile von Apache als
+        <para>
+          <indexterm>
+            <primary>WebDAV</primary>
+            <secondary>Proxys</secondary>
+            <see>httpd, Proxys mit Schreib-Weiterleitung</see>
+          </indexterm>
+          <indexterm>
+            <primary>httpd</primary>
+            <secondary>Proxys mit Schreib-Weiterleitung</secondary>
+            <tertiary>Master</tertiary>
+          </indexterm>
+          <indexterm>
+            <primary>httpd</primary>
+            <secondary>Proxys mit Schreib-Weiterleitung</secondary>
+            <tertiary>Slave</tertiary>
+          </indexterm>Einer der netten Vorteile von Apache als
           Subversion-Server ist die Möglichkeit zur Einrichtung eines
           einfachen Abgleichs. Nehmen wir zum Beispiel an, dass Ihr
           Team über vier Standorte auf der Welt verteilt ist. Da das
@@ -6328,7 +6566,7 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
 -->
         <para>Diese Konfiguration bewirkt eine riesige, für Ihre
           Anwender deutlich wahrnehmbare Geschwindigkeitszunahme, da
-          der Netzverkehr von Subversion-Clients normalerweise zu
+          der Netzwerkverkehr von Subversion-Clients normalerweise zu
           80&mdash;90% aus Leseabfragen besteht. Und wenn diese
           Abfragen von einem <emphasis>lokalen</emphasis> Server
           kommen, ist das ein Riesengewinn.</para>
@@ -6366,7 +6604,7 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
             Konfiguration für einen durchreichenden Subversion-Proxy
             einrichten können. Es gibt auch andere Ansätze.  Anstatt
             den Master-Server Änderungen an jeden Slave-Server
-            schicken zu lassen, könnten beispielsweise diee
+            schicken zu lassen, könnten beispielsweise diese
             Slave-Server periodisch diese Änderungen vom Master
             abrufen. Oder vielleicht könnte der Master Änderungen an
             einen einzigen Slave schicken, der dann die selbe Änderung
@@ -6801,7 +7039,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             directive.</para>
 -->
           <para>Eine weitere Einschränkung des Modells eines
-            durchreichenden Proxyeinsatzes betrifft nicht
+            durchreichenden Proxy-Einsatzes betrifft nicht
             übereinstimmende Versionen &ndash; und zwar der
             installierten Subversion-Version &ndash; zwischen dem
             Master und den Slave-Servern. Jede neue Veröffentlichung
@@ -6954,24 +7192,25 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
           Einzelheiten, siehe <xref linkend="svn.webdav"/>.</para>
 
 <!--
-        <para>Note that there are a number of other small tweaks one can
-          make to <command>mod_dav_svn</command> that are too obscure
-          to mention in this chapter.  For a complete list of
+        <para>Note that there are a number of other small tweaks one
+          can make to <command>mod_dav_svn</command> that perhaps do
+          not merit extensive coverage.  For those interested,
+          however, we provide a complete list of
           all <filename>httpd.conf</filename> directives
-          that <command>mod_dav_svn</command> responds to, see
-          <xref linkend="svn.serverconfig.httpd.ref.mod_dav_svn"/> in
-          <xref linkend="svn.ref"/>.</para>
-
+          to which <command>mod_dav_svn</command> responds in
+          <xref linkend="svn.serverconfig.httpd.ref.mod_dav_svn"
+          />.</para>
 -->
         <para>Beachten Sie, dass es noch eine Anzahl weiterer kleiner
           Schräubchen gibt, an denen man bei
-          <command>mod_dav_svn</command> drehen kann, die aber zu
-          verworren sind, um sie hier im Kapitel aufzuführen. Eine
+          <command>mod_dav_svn</command> drehen kann, die aber einer
+          ausführlichen Behandlung nicht Wert sind. Für diejenigen,
+          die es interessiert, stellen wir jedoch eine
           vollständige Liste aller <filename>httpd.conf</filename>
           Direktiven, auf die <command>mod_dav_svn</command> reagiert,
-          finden Sie unter
-          <xref linkend="svn.serverconfig.httpd.ref.mod_dav_svn"/> in
-          <xref linkend="svn.ref"/>.</para>
+          unter
+          <xref linkend="svn.serverconfig.httpd.ref.mod_dav_svn"/> zur
+          Verfügung.</para>
 
       </sect3>
     </sect2>
@@ -6996,22 +7235,32 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
 -->
       <para>In den vorhergehenden Abschnitten erwähnten wir eine Vielzahl an
         Direktiven, die Administratoren in Ihren
-        <filename>httpd.conf</filename>-Dateien verwenden können files to
-        enable and configure
-        their Subversion server offering, introducing each directive
-        as we also introduce the functionality it toggles.  In this
-        section, we'll quickly summarize <emphasis>all</emphasis> the
-        configuration directives supported by both of the Apache HTTP
-        Server modules which are provided as part of the standard
-        Subversion distribution.</para>
+        <filename>httpd.conf</filename>-Dateien verwenden können, um
+        die Angebote ihres Subversion-Servers zu ermöglichen und zu
+        konfigurieren, wobei wir bei der Einführung jeder Direktive
+        auch die Funktionalität vorstellten, die dadurch
+        umgeschaltet wird. In diesem Abschnitt werden wir schnell 
+        <emphasis>alle</emphasis> Direktiven zusammenfassen, die
+        von beiden
+        Apache HTTP-Server-Modulen unterstützt werden, die als Teil
+        des Standardpaketes von Subversion mitgeliefert werden..</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.ref.mod_dav_svn">
+<!--
+        <title>mod_dav_svn configuration directives</title>
+-->
         <title>mod_dav_svn configuration directives</title>
 
+<!--
         <para>The following configuration directives are recognized
           and supported by Subversion's Apache HTTP Server module,
           <command>mod_dav_svn</command>.</para>
+-->
+        <para>Die folgenden Konfigurations-Direktiven werden von
+          Subversions Apache HTTP-Server-Modul
+          <command>mod_dav_svn</command> erkannt und
+          unterstützt.</para>
 
         <variablelist>
 
@@ -7448,7 +7697,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                 (<literal>short_circuit</literal>).  The default
                 value of this directive is <literal>On</literal>.</para>
 -->
-              <para>Kontrolliert pfadbasierte Autorisierung, indem
+              <para>Kontrolliert pfad-basierte Autorisierung, indem
                 Unteranfragen ermöglicht (<literal>On</literal>) oder
                 abgeschaltet (<literal>Off</literal>; siehe <xref
                 linkend="svn.serverconfig.httpd.authz.pathauthzoff"/>)
@@ -7539,6 +7788,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             <term><literal>SVNUseUTF8 On|Off</literal></term>
             <listitem>
 
+<!--
               <para>When set to <literal>On</literal>,
                 <command>mod_dav_svn</command> will communicate with
                 hook scripts using repository root paths encoded in
@@ -7549,8 +7799,21 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                 that <command>mod_dav_svn</command> assumes a 7-bit
                 ASCII encoding for its hook script interactions.  This
                 option is available as of Subversion 1.8.</para>
+-->
+              <para>Wenn auf <literal>On</literal> gesetzt,
+                kommuniziert <command>mod_dav_svn</command> mit
+                Hook-Skripten unter Verwendung von
+                Projektarchiv-Wurzel-Pfaden, die UTF-8-kodiert sind
+                und erwartet, dass diese Skripte ebenso UTF-8-kodierte
+                Ausgaben (etwa Fehlermeldungen) erzeugen. Der
+                Standardwert dieser Option ist <literal>Off</literal>,
+                was bedeutet, dass <command>mod_dav_svn</command> für
+                seine Kommunikation mit Hook-Skripten von einer
+                7-Bit-ASCII-Kodierung ausgeht. Diese Option ist seit
+                Subversion 1.8 verfügbar.</para>
 
               <note>
+<!--
                 <para>Administrators should ensure that the character
                   set and encoding expectations of hook scripts match
                   all the ways they might be invoked.  For example, if
@@ -7564,6 +7827,23 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                   (such as repository root paths) must be properly
                   encoded in the filesystem to match the scripts'
                   expectations.</para>
+-->
+                <para>Administratoren sollten sicherstellen, dass die
+                  Erwartungen bezüglich Zeichensatz und Kodierung von
+                  Hook-Skripten zu allen möglichen Aufruf-Szenarien
+                  passen. Wenn beispielsweise ein Projektarchiv sowohl
+                  von <command>httpd</command> als auch von
+                  <command>svnserve</command> bedient wird, sollte
+                  <command>svnserve</command> ebenfalls so
+                  konfiguriert sein, dass es UTF-8 verwendet (durch
+                  Einstellung der passenden Locale in seiner
+                  Umgebung), falls diese Option für
+                  <command>mod_dav_svn</command> aktiviert ist. Lokale
+                  Dateisystem-Pfade mit nicht-ASCII Zeichen, auf die
+                  von diesen Skripten zugegriffen wird (wie etwa
+                  Projektarchiv-Wurzel-Pfade) müssen passend im
+                  Dateisystem kodiert sein, damit sie den Erwartungen
+                  der Skripte entsprechen.</para>
               </note>
 
             </listitem>
@@ -7571,6 +7851,142 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
 
         </variablelist>
       </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.serverconfig.httpd.ref.mod_authz_svn">
+<!--
+        <title>mod_authz_svn configuration directives</title>
+-->
+        <title>mod_authz_svn Konfigurations-Direktiven</title>
+
+<!--
+        <para>The following configuration directives are provided
+          by <command>mod_authz_svn</command>, Subversion's path-based
+          authorization Apache HTTP Server module.  For an in-depth
+          description of using path-based authorization in Subversion,
+          see <xref linkend="svn.serverconfig.pathbasedauthz"/>.</para>
+-->
+        <para>Die folgenden Konfigurations-Direktiven werden geliefert
+          von <command>mod_authz_svn</command>, Subversions Apache
+          HTTP Server Modul für pfad-basierte Autorisierung. Für eine
+          erschöpfende Beschreibung der Verwendung pfad-basierter
+          Autorisierung in Subversion, siehe
+          <xref linkend="svn.serverconfig.pathbasedauthz"/>.</para>
+
+        <variablelist>
+   
+          <varlistentry>
+            <term><literal>AuthzForceUsernameCase Upper|Lower</literal></term>
+            <listitem>
+
+<!--
+              <para>Set to <literal>Upper</literal>
+                or <literal>Lower</literal> to perform case conversion
+                of the specified sort on the authenticated username
+                before checking it for authorization.  While usernames
+                are compared in a case-sensitive fashion against those
+                referenced in the authorization rules file, this
+                directive can at least normalize variably-cased
+                usernames into something consistent.</para>
+-->
+              <para>Entweder <literal>Upper</literal> oder
+                <literal>Lower</literal>, um die entsprechende
+                Umwandlung des authentifizierten Anwendernamens vor
+                der Autorisierungsprüfung in Klein- oder
+                Großschreibung vorzunehmen. Während Anwendernamen
+                unter Beachtung der Klein- oder Großschreibung mit
+                denjenigen in der Autorisierungs-Regel-Datei
+                verglichen werden, kann diese Direktive zumindest
+                gemischt geschriebene Anwendernamen in irgendetwas
+                konsistentes normalisieren.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>AuthzSVNAccessFile
+              <replaceable>file-path</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Consult <replaceable>file-path</replaceable> for
+                access rules describing the permissions for paths in
+                Subversion repository.</para>
+-->
+              <para>Für Zugriffsregeln, die Rechte auf Pfaden im
+                Subversion-Projektarchiv beschreiben, soll in
+                <replaceable>file-path</replaceable> nachgesehen
+                werden.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>AuthzSVNAnonymous On|Off</literal></term>
+            <listitem>
+
+<!--
+              <para>Set to <literal>Off</literal> to disable two
+                special-case behaviours of this module: interaction
+                with the <literal>Satisfy Any</literal> directive and
+                enforcement of the authorization policy even when no
+                <literal>Require</literal> directives are present.
+                The default value of this directive is
+                <literal>On</literal>.</para>
+-->
+              <para>Um zwei besondere Verhaltensweisen dieses Moduls
+                zu unterbinden, sollte diese Direktive auf
+                <literal>Off</literal> gesetzt werden: Die Interaktion
+                mit der <literal>Satisfy Any</literal>-Anweisung und
+                das Durchsetzen des Autorisierungsverfahrens auch
+                dann, wenn keine <literal>Require</literal>-Direktiven
+                vorhanden sind. Der Standardwert dieser Direktive ist
+                <literal>On</literal>.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>AuthzSVNAuthoritative On|Off</literal></term>
+            <listitem>
+
+<!--
+              <para>Set to <literal>Off</literal> to allow access
+                control to be passed along to lower modules.  The
+                default value of this directive is
+                <literal>On</literal>.</para>
+-->
+              <para>Auf <literal>Off</literal> gesetzt, wird die
+                Weiterleitung der Zugriffskontrolle an tiefere Module
+                erlaubt. Der Standardwert dieser Direktive ist
+                <literal>On</literal>.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>AuthzSVNNoAuthWhenAnonymousAllowed On|Off</literal></term>
+            <listitem>
+
+<!--
+              <para>Set to <literal>On</literal> to suppress
+                authentication and authorization for requests which
+                anonymous users are allowed to perform.  The default
+                value of this directive is
+                <literal>On</literal>.</para>
+-->
+              <para>Auf <literal>On</literal> setzen, um die
+                Authentifizierung und Autorisierung von Anfragen zu
+                unterbinden, die anonyme Benutzer durchführen dürfen.
+                Der Standardwert dieser Direktive ist
+                <literal>On</literal>.</para>
+
+            </listitem>
+          </varlistentry>
+
+        </variablelist>
+      </sect3>
+
     </sect2>
   </sect1>
 
@@ -7589,60 +8005,49 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
     <para>Both Apache and <command>svnserve</command> are capable of
       granting (or denying) permissions to users.  Typically this is
       done over the entire repository: a user can read the repository
-      (or not), and she can write to the repository (or not).  It's
-      also possible, however, to define finer-grained access rules.
-      One set of users may have permission to write to a certain
-      directory in the repository, but not others; another directory
-      might not even be readable by all but a few special
-      people.  As files are paths, too, it's even possible to restrict
-      access on a per file basis.</para>
-
+      (or not), and she can write to the repository (or not).</para>
 -->
     <para>Sowohl Apache als auch <command>svnserve</command> können
       Anwendern Zugriffsrechte gewähren (oder verweigern).
       Normalerweise geschieht das für das gesamte Projektarchiv: ein
       Anwender darf das Projektarchiv lesen (oder auch nicht) und ein
-      Anwender darf in das Projektarchiv schreiben (oder auch nicht).
-      Es ist jedoch ebenfalls möglich, feiner abgestufte
+      Anwender darf in das Projektarchiv schreiben (oder auch
+      nicht).</para>
+
+<!--
+    <para>It's also possible, however, to define finer-grained access
+      rules.  One set of users may have permission to write to a
+      certain directory in the repository, but not others; another
+      directory might not even be readable by all but a few special
+      people.  It's even possible to restrict access on a per file
+      basis.</para>
+-->
+    <para>Es ist jedoch ebenfalls möglich, feiner abgestufte
       Zugriffsregeln zu definieren.  Ein Anwender dürfte nur in ein
       bestimmtes Verzeichnis des Projektarchivs schreiben, aber in
       kein anderes; ein weiteres Verzeichnis könnte bis auf wenige
-      besondere Personen für niemanden lesbar sein. Da es sich auch
-      bei Dateien um Pfade handelt, ist es sogar möglich, den Zugriff
-      dateiabhängig einzurichten.</para>
+      besondere Personen für niemanden lesbar sein.  Es ist sogar
+      möglich, den Zugriff dateiabhängig einzurichten.</para>
 
 <!--
-    <para>Both servers use a common file format to describe these
-      path-based access rules.  In the case of Apache, one needs to
-      load the <command>mod_authz_svn</command> module and then add
-      the <literal>AuthzSVNAccessFile</literal> directive (within
-      the <filename>httpd.conf</filename> file) pointing to your own
-      access rules file.  (For a full explanation, see
-      <xref linkend="svn.serverconfig.httpd.authz.perdir"/>.)  If
-      you're using <command>svnserve</command>, you need to make
-      the <literal>authz-db</literal> variable
-      (within <filename>svnserve.conf</filename>) point to your access
-      rules file.</para>
-
+    <para>Both Subversion servers use a common file format to describe
+      these path-based access rules.  In this section, we will
+      explain that file format, as well how to configure your
+      Subversion server to use it for managing path-based
+      authorization.</para>
 -->
-    <para>Beide Server verwenden ein gemeinsames Dateiformat, um diese
-      pfadbasierten Zugriffsregeln zu beschreiben. Im Falle von Apache
-      muss das Modul <command>mod_authz_svn</command> geladen und dann
-      die Direktive <literal>AuthzSVNAccessFile</literal> (in der
-      Datei <filename>httpd.conf</filename>) hinzugefügt
-      werden, die auf Ihre eigene Zugriffsregeldatei verweist.
-      (Eine vollständige Erklärung finden Sie unter <xref
-      linkend="svn.serverconfig.httpd.authz.perdir"/>.) Falls Sie
-      <command>svnserve</command> verwenden, müssen Sie dafür sorgen,
-      dass die Variable <literal>authz-db</literal> (in
-      <filename>svnserve.conf</filename>) auf Ihre Zugriffsregeldatei
-      zeigt.</para>
+    <para>Beide Subversion-Server verwenden ein gemeinsames
+      Dateiformat, um diese pfad-basierten Zugriffsregeln zu
+      beschreiben. Im diesem Abschnitt erklären wir sowohl dieses
+      Dateiformat als auch, wie Ihr Subversion-Server konfiguriert
+      werden muss, damit er für pfad-basierte Autorisierung benutzt
+      werden kann.</para>
 
     <sidebar>
 <!--
       <title>Do You Really Need Path-Based Access Control?</title>
 -->
-      <title>Benötigen Sie wirklich pfadbasierte Zugriffskontrolle?</title>
+      <title>Benötigen Sie wirklich pfad-basierte Zugriffskontrolle?</title>
 
 <!--
       <para>A lot of administrators setting up Subversion for the
@@ -7656,8 +8061,8 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
 
 -->
       <para>Viele Administratoren, die das erste Mal Subversion
-        einrichten, neigen dazu, sich auf die pfadbasierte
-        Zugangskontrolle zu stützen, ohne einen weiteren Gedanken
+        einrichten, neigen dazu, sich auf die pfad-basierte
+        Zugriffskontrolle zu stützen, ohne einen weiteren Gedanken
         darüber zu verschwenden. Gewöhnlicherweise ist einem
         Administrator bekannt, welche Entwicklerteams in den einzelnen
         Projekten arbeiten, so dass es einfach ist, nur bestimmten
@@ -7766,7 +8171,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         Modell für Vertrauen in einer Gemeinschaft, besonders bei
         Open-Source-Projekten. Selbstverständlich existiert manchmal
         <emphasis>tatsächlich</emphasis> ein legitimes Erfordernis für
-        pfadbasierte Zugriffskontrolle. Im Geschäftsumfeld können
+        pfad-basierte Zugriffskontrolle. Im Geschäftsumfeld können
         bestimmte Daten wirklich vertraulich sein, so dass der Zugriff
         darauf auf eine kleine Gruppe beschränkt werden muss.</para>
 
@@ -7775,8 +8180,12 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.pathbasedauthz.getting-started">
 
+<!--
       <title>Getting Started with Path-Based Access Control</title>
+-->
+      <title>Loslegen mit pfad-basierter Zugriffskontrolle</title>
 
+<!--
       <para>Subversion offers path-based access control in Apache via
         the <command>mod_authz_svn</command> module, which must be
         loaded using the <literal>LoadModule</literal> directive
@@ -7787,56 +8196,121 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         within the <filename>httpd.conf</filename> file) pointing to
         your own access rules file.  (For a full explanation, see
         <xref linkend="svn.serverconfig.httpd.authz.perdir"/>.)</para>
+-->
+      <para>Subversion bietet pfad-basierte Zugriffskontrolle in Apache
+        über das Modul <command>mod_authz_svn</command> an, das mit
+        der Direktive <literal>LoadModule</literal> in
+        <filename>httpd.conf</filename> geladen werden muss, genau so,
+        wie auch <command>mod_dav_svn</command> selbst geladen wird.
+        Um die Verwendung dieses Moduls für Ihre Projektarchive zu
+        ermöglichen, müssen Sie die Direktive
+        <literal>AuthzSVNAccessFile</literal> hinzufügen (auch in der
+        Datei <filename>httpd.conf</filename>), die auf Ihre eigene
+        Datei mit Zugriffsregeln zeigt. (Für eine vollständige
+        Erklärung, siehe
+        <xref linkend="svn.serverconfig.httpd.authz.perdir"/>.)</para>
 
+<!--
       <para>To configure path-based authorization
         in <command>svnserve</command>, simply point
         the <literal>authz-db</literal> configuration variable (within
         your <filename>svnserve.conf</filename> file) to your access
         rules file.</para>
+-->
+      <para>Um pfad-basierte Autorisierung in
+        <command>svnserve</command> zu konfigurieren, müssen Sie
+        einfach die Konfigurationsvariable <literal>authz-db</literal>
+        (in Ihrer Datei <filename>svnserve.conf</filename>e) auf Ihre
+        Datei mit den Zugriffsregeln zeigen lassen.</para>
 
 <!--
       <para>Once your server knows where to look for your access
         rules, it's time to define those rules.</para>
 -->
-      <para>Sobald Ihr Server weiß, wo sich Ihre Zugangsdatei befindet, ist
+      <para>Sobald Ihr Server weiß, wo sich Ihre Zugriffsdatei befindet, ist
         es an der Zeit, die Regeln zu definieren.</para>
 
 <!--
-      <para>The syntax of the file is the same familiar one used by
-        <filename>svnserve.conf</filename> and the runtime configuration files.
-        Lines that start with a hash (<literal>#</literal>) are ignored.  In
-        its simplest form, each section names a repository and path within it,
-        as well as the authenticated usernames are the option names within each
-        section.  The value of each option describes the user's level of access
-        to the repository path: either <literal>r</literal> (read-only) or
-        <literal>rw</literal> (read/write).  If the user is not mentioned at
-        all, no access is allowed.</para>
-
+      <para>The syntax of the Subversion access file is the same
+        familiar one used by <filename>svnserve.conf</filename> and
+        the runtime configuration files.  Lines that start with a hash
+        (<literal>#</literal>) are ignored.  In its simplest form,
+        each section names a versioned path and, optionally, the
+        repository in which that path is found.  In other words,
+        except for a few reserved sections, section names are of one
+        of two forms: either <literal>[repos-name:path]</literal>
+        or <literal>[path]</literal>.  Authenticated usernames are the
+        option names within each section, and an option's value
+        describes that user's level of access to the repository path:
+        either <literal>r</literal> (read-only) or <literal>rw</literal>
+        (read/write).  If the user is not mentioned at all, no access is
+        allowed.</para>
 -->
-      <para>Die Syntax der Datei ist dieselbe wie bei
-        <filename>svnserve.conf</filename> und den
+      <para>Die Syntax der Subversion Zugriffs-Datei ist dieselbe wie
+        bei <filename>svnserve.conf</filename> und den
         Laufzeit-Konfigurationsdateien. Zeilen, die mit einer Raute
-        (<literal>#</literal>) beginnen, werden ignoriert. In der einfachsten
-        Form benennt jeder Abschnitt ein Projektarchiv und einen Pfad darin.
-        Die authentifizierten Anwendernamen sind die Optionen und der
-        entsprechende Wert beschreibt das Zugriffsrecht des Anwenders auf den
-        Pfad im Projektarchiv, entweder <literal>r</literal> (nur lesend) oder
-        <literal>rw</literal> (lesend und schreibend). Wird der Anwender gar
-        nicht erwähnt, ist kein Zugriff erlaubt.</para>
+        (<literal>#</literal>) beginnen, werden ignoriert. In der
+        einfachsten Form benennt jeder Abschnitt einen versionierten
+        Pfad und, optional, das Projektarchiv in dem dieser Pfad sich
+        befindet.  Mit anderen Worten, außer bei ein paar reservierten
+        Abschnitten, haben Abschnittsnamen eins von zwei möglichen
+        Formaten: entweder
+        <literal>[projektarchiv-name:pfad]</literal> oder
+        <literal>[pfad]</literal>.  Authentifizierten Anwendernamen
+        sind die Optionsnamen innerhalb jedes Abschnitts, und der Wert
+        einer Option beschreibt das Zugriffsrecht des Anwenders auf
+        den Pfad im Projektarchiv, entweder <literal>r</literal> (nur
+        lesend) oder <literal>rw</literal> (lesend und schreibend).
+        Wird der Anwender gar nicht erwähnt, ist kein Zugriff
+        erlaubt.</para>
+
+      <note>
+<!--
+        <para>Paths used in access file sections must be specified
+          using Subversion's <quote>internal style</quote>, which
+          mostly just means that they are encoded in UTF-8 and use
+          forward slash (<literal>/</literal>) characters as directory
+          separators (even on Windows systems).  Note also that these
+          paths do not employ any character escaping mechanism (such
+          as URI-encoding)&mdash;spaces in path names should be
+          represented exactly as such in access file section names
+          (<literal>[repos-name:path&nbsp;with&nbsp;spaces]</literal>,
+          e.g.)</para>
+-->
+        <para>Die in Zugriffs-Dateien verwendeten Pfade müssen im
+          <quote>internen Stil</quote> von Subversion angegeben
+          werden, was meist nur bedeutet, dass sie in UTF-8 kodiert
+          sind und Schrägstriche (<literal>/</literal>) als
+          Verzeichnistrenner verwenden (sogar auf Windows-Systemen).
+          Beachten Sie ebenfalls, dass diese Pfade keinerlei
+          Maskierung einsetzen (etwa URI-Kodierung); Leerzeichen in
+          Dateinamen sollen in Abschnittsnamen von Zugriffsdateien
+          exakt wiedergegeben werden (z.B.,
+          <literal>[repos-name:path&nbsp;with&nbsp;spaces]</literal>),
+        </para>
+      </note>
 
 <!--
-      <para>To be more specific: the value of the section names is either of
-        the form <literal>[repos-name:path]</literal> or of the form
-        <literal>[path]</literal>.</para>
+      <para>Here's a simple example demonstrating a piece of the
+        access configuration which grants read access Sally, and
+        read/write access to Harry, for the
+        path <filename>/branches/calc/bug-142</filename> (and all its
+        children) in the repository <literal>calc</literal>:</para>
 -->
-      <para>Genauer gesagt: Der Wert des Abschnittnamens hat entweder das
-        Format <literal>[projektarchiv-name:pfad]</literal> oder
-        <literal>[pfad]</literal>.</para>
+      <para>Hier ist ein einfaches Beispiel eines Teils einer
+        Zugriffskonfiguration, die für den Pfad
+        <filename>/branches/calc/bug-142</filename> (und allen seiner
+        Kinder) im Projektarchiv <literal>calc</literal> Sally
+        Lesezugriff und Harry Schreib- und Lesezugriff gewährt:</para>
 
-    <!-- TODO: This was fixed in Subversion 1.7: it does
-         case-sensitive comparison against the section headers. -->
-    <!-- TODO: Das wurde in Subversion 1.7 behoben: beim Vergleich
-         von Abschnittsüberschriften wird Klein-/Großschreibung berücksichtigt. -->
+      <informalexample>
+        <programlisting>
+[calc:/branches/calc/bug-142]
+harry = rw
+sally = r
+</programlisting>
+      </informalexample>
+
 <!--
       <warning>
         <para>Prior to version 1.7, Subversion treated repository names
@@ -7852,23 +8326,96 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         <para>Vor Version 1.7 hat Subversion bei
           Namen und Pfaden von Projektarchiven nicht die Groß- oder
           Kleinschreibung beachtet, da sie vor dem Vergleich mit dem Inhalt
-          der Zugangsdatei in Kleinbuchstaben umgewandelt wurden. Nun
+          der Zugriffsdatei in Kleinbuchstaben umgewandelt wurden. Nun
           werden Vergleiche unter Berücksichtigung der Groß- und
           Kleinschreibung vorgenommen. Falls Sie eine ältere
           Version auf Subversion 1.7 aktualisiert haben, sollten Sie
-          Ihre Zugangsdateien auf die korrekte Groß- und Kleinschreibung
+          Ihre Zugriffsdateien auf die korrekte Groß- und Kleinschreibung
           überprüfen.</para>
       </warning>
 
 <!--
-      <para>If you're using the
-        <literal>SVNParentPath</literal> directive, it's important
-        to specify the repository names in your sections.  If you omit
-        them, a section such as
+      <para>The name of a repository as evaluated by the authorization
+        subsystem is derived directly from the repository's path.
+        Exactly how this happens differs between to two server
+        options. <command>mod_dav_svn</command> uses only the basename
+        of the repository's root URL<footnote><para>Any human-readable
+        name for a repository configured via
+        the <literal>SVNReposName</literal> <filename>httpd.conf</filename>
+        directive will be ignored by the authorization subsystem.
+        Your access control file sections must refer to repositories
+        by their server-sensitive paths as previously
+        described.</para></footnote>,
+        while <command>svnserve</command> uses the entire relative
+        path from the serving root (as determined by
+        its <option>- -root</option> (<option>-r</option>) command-line
+        option) to the repository.</para>
+-->
+      <para>Der vom Autorisierungs-Subsystem berechnete Name des
+        Projektarchivs wird direkt von seinem Pfad abgeleitet. Es
+        hängt von zwei Server-Optionen ab, wie das genau geschieht.
+        <command>mod_dav_svn</command> verwendet lediglich den
+        Basisnamen des Wurzel-URLs vom
+        Projektarchiv<footnote><para>Irgendein menschenlesbarer Name
+        für ein Projektarchiv, der mit der Direktive
+        <literal>SVNReposName</literal> von
+        <filename>httpd.conf</filename> konfiguriert wurde, wird vom
+        Autorisierungs-Subsystem ignoriert. Die Abschnitte in der
+        Zugriffskontrolldatei müssen sich auf Projektarchive über
+        deren Pfade beziehen, die für Server ,wie oben beschrieben,
+        erkennbar sind.</para></footnote>, während
+        <command>svnserve</command> den vollständigen, relativen Pfad
+        vom Server-Wurzelverzeichnis (wie in der Kommandozeilen-Option
+        <option>--root</option> (<option>-r</option>) angegeben) zum
+        Projektarchiv verwendet.</para>
+
+      <warning>
+<!--
+        <para>The differences in the ways that a repository's name is
+          determined by each of <command>mod_dav_svn</command>
+          and <command>svnserve</command> can cause problems when
+          trying to serve a repository via both servers
+          simultaneously.  Naturally, an administrator would prefer to
+          point both servers' configurations toward a common access
+          file.  However, for this to work, you must ensure that the
+          repository name portion of the file's section names are
+          compatible with each server's idea of what the repository
+          name should be&mdash;for example, by
+          configuring <command>svnserve</command>'s root to be the
+          same as <command>mod_dav_svn</command>'s configured
+          <literal>SVNParentPath</literal>, or by using a different
+          access file per repository so that section names needn't
+          reference the repository at all.</para>
+-->
+        <para>Die unterschiedliche Art, auf die
+          <command>mod_dav_svn</command> und
+          <command>svnserve</command> den Namen eines Projektarchivs
+          zu ermitteln versuchen, können zu Problemen führen, falls
+          ein Projektarchiv von beiden Servern gleichzeitig bedient
+          werden soll. Natürlich würde es ein Administrator
+          bevorzugen, für die Konfiguration beider Server nur eine
+          gemeinsame Zugriffsdatei zu verwenden. Damit das allerdings
+          funktioniert, müssen Sie sicherstellen, dass der Teil mit
+          dem Namen des Projektarchivs in den Abschnittsnamen der
+          Datei kompatibel zu dem ist, was jeder einzelne Server für
+          den Namen des Projektarchivs erachtet &ndash;
+          beispielsweise, indem das Wurzelverzeichnis von
+          <command>svnserve</command> so definiert wird, dass es
+          gleich dem <literal>SVNParentPath</literal> von
+          <command>mod_dav_svn</command> ist, oder indem eine
+          unterschiedliche Zugriffsdatei für jedes Projektarchiv
+          verwendet wird, so dass die Abschnittsnamen sich überhaupt
+          nicht auf ein Projektarchiv beziehen müssen.</para>
+      </warning>
+
+<!--
+      <para>If you're using the <literal>SVNParentPath</literal>
+        directive, it's important to specify the repository names in
+        your sections.  If you omit them, a section such as
         <literal>[/some/dir]</literal> will match the path
         <filename>/some/dir</filename> in <emphasis>every</emphasis>
         repository.  If you're using the <literal>SVNPath</literal>
-        directive, however, it's fine to only define paths in your
+        directive, however, it's fine to provide only paths in your
         sections&mdash;after all, there's only one repository.</para>
 
 -->
@@ -7880,90 +8427,26 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         <filename>/some/dir</filename> <emphasis>jedes</emphasis>
         Projektarchivs zutreffen. Falls Sie jedoch die Direktive
         <literal>SVNPath</literal> verwenden, ist es in Ordnung, in den
-        Abschnitten nur Pfade zu definieren, da es ja schließlich nur
+        Abschnitten nur Pfade anzugeben, da es ja schließlich nur
         ein einziges Projektarchiv gibt.</para>
 
+<!--
+      <para>Permissions are inherited from a path's parent directory.
+        That means we can specify a subdirectory with a different
+        access policy for Sally.  Let's continue our previous
+        example, and grant Sally write access to a child of the branch
+        that she's otherwise permitted only to read:</para>
+-->
+      <para>Berechtigungen werden vom Elternverzeichnis ererbt. Das
+        bedeutet, dass wir ein Unterverzeichnis mit unterschiedlichen
+        Berechtigungen für Sally angeben können. Machen wir mit
+        unserem vorigen Beispiel weiter und geben Sally Schreibzugriff
+        auf ein Kindverzeichnis des Zweigs, auf dass Sie sonst nur
+        lesend zugreifen dürfte:</para>
+
+<!--
       <informalexample>
         <programlisting>
-[calc:/branches/calc/bug-142]
-harry = rw
-sally = r
-</programlisting>
-      </informalexample>
-
-<!--
-      <para>In this first example, the user <literal>harry</literal> has
-        full read and write access on the
-        <filename>/branches/calc/bug-142</filename> directory in the
-        <literal>calc</literal> repository, but the user
-        <literal>sally</literal> has read-only access.  Any other users
-        are blocked from accessing this directory.</para>
-
--->
-      <para>Im ersten Beispiel hat der Anwender <literal>harry</literal>
-        vollständigen Lese- und Schreibzugriff auf das Verzeichnis
-        <filename>/branches/calc/bug-142</filename> im Projektarchiv
-        <literal>calc</literal>, die Anwenderin <literal>sally</literal>
-        hat jedoch nur Lesezugriff. Allen anderen Anwendern ist der
-        Zugriff auf dieses Verzeichnis nicht gestattet.</para>
-
-      <warning>
-<!--
-        <para><command>mod_dav_svn</command> offers a directive,
-          <literal>SVNReposName</literal>, which allows administrators
-          to define a more human-friendly name, of sorts, for a
-          repository:</para>
--->
-        <para><command>mod_dav_svn</command> bietet eine Direktive
-          <literal>SVNReposName</literal> an, die es Administratoren
-          ermöglicht, einen etwas menschenlesbareren Namen für ein
-          Projektarchiv festzulegen:</para>
-
-        <informalexample>
-          <programlisting>
-  &lt;Location /svn/calc&gt;
-    SVNPath /var/svn/calc
-    SVNReposName "Calculator Application"
-  &hellip;
-  </programlisting>
-        </informalexample>
-
-<!--
-        <para>This allows <command>mod_dav_svn</command> to identify the
-          repository by something other than merely its server directory
-          basename&mdash;<filename>calc</filename>, in the previous
-          example&mdash;when providing directory listings of repository
-          content.  Be aware, however, that when consulting the access
-          file for authorization rules, Subversion uses this repository
-          basename for comparison, <emphasis>not</emphasis> any
-          configured human-friendly name.</para>
--->
-        <para>Das  gestattet <command>mod_dav_svn</command>, das
-          Projektarchiv durch etwas anderes als den Basisnamen des
-          Serververzeichnisses, im vorangegangenen Beispiel
-          <filename>calc</filename>, zu identifizieren, wenn
-          Verzeichnislisten zum Inhalt des Projektarchivs ausgegeben
-          werden. Denken Sie jedoch daran, dass beim Suchen von
-          Autorisierungsregeln in der Zugriffsdatei Subversion diesen
-          Projektarchiv-Basisnamen verwendet und
-          <emphasis>nicht</emphasis> irgendeinen konfigurierten
-          menschenlesbaren Namen.</para>
-      </warning>
-
-<!--
-    <para>Of course, permissions are inherited from parent to child
-      directory.  That means we can specify a subdirectory with a
-      different access policy for Sally:</para>
-
--->
-    <para>Selbstverständlich werden Berechtigungen von den Eltern- auf
-      die Kindverzeichnisse vererbt. Das bedeutet, dass wir ein
-      Unterverzeichnis mit unterschiedlichen Berechtigungen für Sally
-      angeben können:</para>
-
-<!--
-    <informalexample>
-      <programlisting>
 [calc:/branches/calc/bug-142]
 harry = rw
 sally = r
@@ -8038,33 +8521,48 @@ harry =
           path in the access file will always override any permissions
           inherited from parent directories.</para>
 -->
-        <para>Man muss sich nur merken, dass der am genauesten
-          angegebene Pfad stets am besten passt. Der Server versucht
+        <para>Man muss sich nur merken, dass stets zuerst der am
+          genauesten angegebene Pfad passt. Der Server versucht
           zunächst, den Pfad selbst abzugleichen, dann das
           Elternverzeichnis hiervon, dann dessen Elternverzeichnis usw.
           Unter dem Strich läuft es darauf hinaus, dass die Erwähnung
           eines bestimmten Pfades in der Zugriffsdatei stets die von
           Elternverzeichnissen ererbten Berechtigungen überdeckt.</para>
+
+<!--
+        <para>Similarly, sections that specify a repository name have
+          precedence over those that don't: if both
+          <literal>[calc:/some/path]</literal> and
+          <literal>[/some/path]</literal> are present, the former will be used
+          and the latter ignored for <literal>calc</literal>.</para>
+-->
+        <para>Ähnlich haben Abschnitte, die den Namen eines
+          Projektarchivs angeben, Vorrang vor denen ohne: falls sowohl
+          <literal>[calc:/irgendein/pfad]</literal> als auch
+          <literal>[/irgendein/pfad]</literal> vorkommen, wird für
+          <literal>calc</literal> ersterer verwendet und letzterer
+          ignoriert.</para>
       </tip>
 
 <!--
-      <para>By default, nobody has any access to the repository at all.
+      <para>By default, nobody has any access to any repository at all.
         That means that if you're starting with an empty file, you'll
         probably want to give at least read permission to all users at
-        the root of the repository.  You can do this by using the
+        the roots of the repositories.  You can do this by using the
         asterisk variable (<literal>*</literal>), which means <quote>all
         users</quote>:</para>
 
 -->
-      <para>Standardmäßig hat niemand irgendeine Zugriffsberechtigung auf das
-        Projektarchiv. Das bedeutet, wenn mit einer leeren Datei begonnen wird,
-        sollte mindestens für alle Anwender die Leseberechtigung für die Wurzel
-        des Projektarchivs gewährt werden. Das kann mit der Stern-Variablen
-        (<literal>*</literal>) erreicht werden, die für <quote>alle
-          Anwender</quote> steht:</para>
+      <para>Standardmäßig hat niemand irgendeine Zugriffsberechtigung
+        auf irgendein Projektarchiv. Das bedeutet, wenn mit einer
+        leeren Datei begonnen wird, sollte mindestens für alle
+        Anwender die Leseberechtigung für die Wurzeln der
+        Projektarchive gewährt werden. Das kann mit der
+        Stern-Variablen (<literal>*</literal>) erreicht werden, die
+        für <quote>alle Anwender</quote> steht:</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [/]
 * = r
 </programlisting>
@@ -8103,17 +8601,28 @@ sally = r
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.pathbasedauthz.groups">
 
+<!--
       <title>Access Control Groups</title>
+-->
+      <title>Zugriffskontroll=Gruppen</title>
 
 <!--
       <para>The access file also allows you to define whole groups of
         users, much like the Unix <filename>/etc/group</filename>
-        file:</para>
-
+        file.  To do this, create a <literal>groups</literal> section
+        in your access file, and then describe your groups within that
+        section: each variable's name defines the name of the group,
+        and its value is a comma-delimited list of usernames which
+        are part of that group.</para>
 -->
-      <para>Die Zugriffsdatei erlaubt es Ihnen auch, ganze Anwendergruppen zu
-        definieren, ähnlich der Unix-Datei
-        <filename>/etc/group</filename>:</para>
+      <para>Die Zugriffsdatei erlaubt es Ihnen auch, ganze
+        Anwendergruppen zu definieren, ähnlich der Unix-Datei
+        <filename>/etc/group</filename>. Dafür erstellen Sie einen
+        Abschnitt <literal>groups</literal> in Ihrer Zugriffsdatei und
+        beschreiben in diesem Abschnitt anschließend Ihre Gruppen:
+        jeder Name einer Variablen definiert den Namen der Gruppe, und
+        deren Wert ist eine durch Kommata getrennte Liste aus den
+        Anwendernamen der Gruppenmitglieder.</para>
 
       <informalexample>
         <programlisting>
@@ -8122,21 +8631,21 @@ calc-developers = harry, sally, joe
 paint-developers = frank, sally, jane
 everyone = harry, sally, joe, frank, jane
 </programlisting>
-    </informalexample>
+      </informalexample>
 
 <!--
-    <para>Groups can be granted access control just like users.
-      Distinguish them with an <quote>at</quote>
-      (<literal>@</literal>) prefix:</para>
+      <para>Groups can be granted access control just like users.
+        Distinguish them with an <quote>at sign</quote>
+        (<literal>@</literal>) prefix:</para>
 
 -->
-    <para>Gruppen können ebenso wie Anwendern Zugriffsberechtigungen
-      erteilt werden. Sie werden von Anwendern durch einen
-      <quote>At</quote>-Präfix (<literal>@</literal>)
-      unterschieden:</para>
+      <para>Gruppen können ebenso wie Anwendern Zugriffsberechtigungen
+        erteilt werden. Sie werden von Anwendern durch einen
+        <quote>At-Zeichen</quote>-Präfix (<literal>@</literal>)
+        unterschieden:</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [calc:/projects/calc]
 @calc-developers = rw
 
@@ -8144,44 +8653,44 @@ everyone = harry, sally, joe, frank, jane
 jane = r
 @paint-developers = rw
 </programlisting>
-    </informalexample>
+      </informalexample>
 
 <!--
-    <para>Another important fact is that group permissions are not
-      overridden by individual user permissions. Rather, the
-      <emphasis>combination</emphasis> of all matching permissions is
-      granted.  In the prior example, Jane is a member of the
-      <literal>paint-developers</literal> group, which has read/write
-      access.  Combined with the <literal>jane = r</literal> rule,
-      this still gives Jane read/write access.  Permissions for group
-      members can only be extended beyond the permissions the group
-      already has. Restricting users who are part of a group to less
-      than their group's permissions is impossible.</para>
+      <para>Another important fact is that group permissions are not
+        overridden by individual user permissions. Rather, the
+        <emphasis>combination</emphasis> of all matching permissions is
+        granted.  In the prior example, Jane is a member of the
+        <literal>paint-developers</literal> group, which has read/write
+        access.  Combined with the <literal>jane = r</literal> rule,
+        this still gives Jane read/write access.  Permissions for group
+        members can only be extended beyond the permissions the group
+        already has. Restricting users who are part of a group to less
+        than their group's permissions is impossible.</para>
 
 -->
-    <para>Ein weiterer wichtiger Punkt ist, dass Gruppenberechtigungen
-      nicht durch die Berechtigungen individueller Anwender
-      überschrieben werden. Vielmehr wird die
-      <emphasis>Kombination</emphasis> aller passender Berechtigungen
-      zugesichert. Im vorangehenden Beispiel ist Jane Mitglied der
-      Gruppe <literal>paint-developers</literal>, die über Lese- und
-      Schreibzugriff verfügt. Kombiniert mit der Regel
-      <literal>jane = r</literal> ergibt das immer noch Lese- und
-      Schreibzugriff für Jane. Zugriffsrechte für Gruppenmitglieder
-      können allenfalls über die Gruppenberechtigungen hinaus
-      erweitert werden. Die Einschränkung von Anwendern, die
-      Gruppenmitglieder sind auf geringere Berechtigungen als deren
-      Gruppenberechtigung ist nicht möglich.</para>
+      <para>Ein weiterer wichtiger Punkt ist, dass Gruppenberechtigungen
+        nicht durch die Berechtigungen individueller Anwender
+        überschrieben werden. Vielmehr wird die
+        <emphasis>Kombination</emphasis> aller passender Berechtigungen
+        zugesichert. Im vorangehenden Beispiel ist Jane Mitglied der
+        Gruppe <literal>paint-developers</literal>, die über Lese- und
+        Schreibzugriff verfügt. Kombiniert mit der Regel
+        <literal>jane = r</literal> ergibt das immer noch Lese- und
+        Schreibzugriff für Jane. Zugriffsrechte für Gruppenmitglieder
+        können allenfalls über die Gruppenberechtigungen hinaus
+        erweitert werden. Die Einschränkung von Anwendern, die
+        Gruppenmitglieder sind auf geringere Berechtigungen als deren
+        Gruppenberechtigung ist nicht möglich.</para>
 
 <!--
-    <para>Groups can also be defined to contain other groups:</para>
+      <para>Groups can also be defined to contain other groups:</para>
 
 -->
-    <para>Gruppen können auch definiert werden, indem sie andere
-      Gruppen beinhalten:</para>
+      <para>Gruppen können auch definiert werden, indem sie andere
+        Gruppen beinhalten:</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [groups]
 calc-developers = harry, sally, joe
 paint-developers = frank, sally, jane
@@ -8194,103 +8703,110 @@ everyone = @calc-developers, @paint-developers
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.pathbasedauthz.aliases">
 
+<!--
       <title>Username Aliases</title>
+-->
+      <title>Anwendernamen-Aliase</title>
 
 <!--
-    <para>Subversion 1.5 brought several useful features to the access
-      file syntax&mdash;username aliases, authentication class tokens,
-      and a new rule exclusion mechanism&mdash;all of which further
-      simplify the maintenance of the access file.  We'll describe
-      first the username aliases feature.</para>
+      <para>Some authentication systems expect and carry relatively
+        short usernames of the sorts we've been describing
+        here&mdash;<literal>harry</literal>,
+        <literal>sally</literal>, <literal>joe</literal>, and so on.  But
+        other authentication systems&mdash;such as those which use LDAP
+        stores or SSL client certificates&mdash;may carry much more
+        complex usernames.  For example, Harry's username in an
+        LDAP-protected system might be <literal>CN=Harold
+        Hacker,OU=Engineers,DC=red-bean,DC=com</literal>.  With
+        usernames like that, the access file can become quite bloated
+        with long or obscure usernames that are easy to
+        mistype.</para>
 -->
-    <para>Subversion 1.5 brachte einige nützliche Erweiterungen für
-      die Syntax der Zugriffsdatei: Anwendernamen-Aliase,
-      Authentifizierungsklassen-Symbol und einen neuen
-      Regel-Ausschlussmechanismus. Dieses alles vereinfacht die
-      Wartung der Zugriffsdatei. Zunächst beschreiben wir die
-      Funktionalität des Anwendernamen-Alias.</para>
+      <para>Einige Authentifikationssysteme erwarten und verwenden
+        relativ kurze Anwendernamen, wie wir sie hier bereits
+        beschrieben haben: <literal>harry</literal>,
+        <literal>sally</literal>, <literal>joe</literal> usw. Andere
+        Authentifikationssysteme jedoch, wie solche, die LDAP oder
+        SSL-Client-Zertifikate verwenden, könnten wesentlich komplexere
+        Anwendernamen verwenden. So könnte beispielsweise Harrys
+        Anwendername in einem durch LDAP geschützten System
+        <literal>CN=Harold
+        Hacker,OU=Engineers,DC=red-bean,DC=com</literal> lauten. Mit
+        derartigen Anwendernamen könnte die Zugriffsdatei mit langen
+        oder undurchsichtigen Anwendernamen zugemüllt werden, was auch
+        leicht zu Tippfehlern führen kann.</para>
+
 <!--
-    <para>Some authentication systems expect and carry relatively
-      short usernames of the sorts we've been describing
-      here&mdash;<literal>harry</literal>,
-      <literal>sally</literal>, <literal>joe</literal>, and so on.  But
-      other authentication systems&mdash;such as those which use LDAP
-      stores or SSL client certificates&mdash;may carry much more
-      complex usernames.  For example, Harry's username in an
-      LDAP-protected system might be <literal>CN=Harold
-      Hacker,OU=Engineers,DC=red-bean,DC=com</literal>.  With
-      usernames like that, the access file can become quite bloated
-      with long or obscure usernames that are easy to mistype.
-      Fortunately, username aliases allow you to have to type the
-      correct complex username only once, in a statement which assigns to
-      it a more easily digestable alias.</para>
+      <para>Fortunately, Subversion 1.5 introduced username aliases to
+        the access file syntax.  Username aliases allow you to have to
+        type the correct complex username only once, in a statement
+        which assigns to it a more easily digestable alias.</para>
+  -->
+      <para>Glücklicherweise führte Subversion 1.5
+        Anwendernamen-Aliase in die Syntax der Zugriffsdatei ein.
+        Anwendernamen-Aliase ermöglichen das einmalige Eintippen
+        korrekter, komplizierter Anwendernamen in einer Anweisung, die
+        diesem ein einfacheres Alias zuteilt.</para>
 
+<!--
+      <para>Username aliases are defined in the
+        special <literal>aliases</literal> section of the access file,
+        with each variable name in that section defining an alias, and
+        the value of those variables carrying the real Subversion
+        username which is being aliased.</para>
 -->
-    <para>Einige Authentifikationssysteme erwarten und verwenden
-      relativ kurze Anwendernamen, wie wir sie hier bereits
-      beschrieben haben: <literal>harry</literal>,
-      <literal>sally</literal>, <literal>joe</literal> usw. Andere
-      Authentifikationssysteme jedoch, wie solche, die LDAP oder
-      SSL-Client-Zertifikate verwenden, könnten wesentlich komplexere
-      Anwendernamen verwenden. So könnte beispielsweise Harrys
-      Anwendername in einem durch LDAP geschützten System
-      <literal>CN=Harold
-      Hacker,OU=Engineers,DC=red-bean,DC=com</literal> lauten. Mit
-      derartigen Anwendernamen könnte die Zugriffsdatei mit langen
-      oder undurchsichtigen Anwendernamen zugemüllt werden, was auch
-      leicht zu Tippfehlern führen kann. Glücklicherweise ermöglichen
-      es Anwendernamen-Aliase, den komplizierten Anwendernamen nur
-      einmal in einer Anweisung einzutippen, die ihm ein einfacheres
-      Alias zuteilt.</para>
+      <para>Anwendernamen-Aliase werden im speziellen Abschnitt
+        <literal>aliases</literal> der Zugriffsdatei definiert, wobei
+        jeder Variablenname in diesem Abschnitt ein Alias festlegt und
+        dessen Wert der tatsächliche Subversion-Anwendername ist, dem
+        dieser Alias zugeteilt wird.</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [aliases]
 harry = CN=Harold Hacker,OU=Engineers,DC=red-bean,DC=com
 sally = CN=Sally Swatterbug,OU=Engineers,DC=red-bean,DC=com
 joe = CN=Gerald I. Joseph,OU=Engineers,DC=red-bean,DC=com
 &hellip;
 </programlisting>
-    </informalexample>
+      </informalexample>
 
 <!--
-    <para>Once you've defined a set of aliases, you can refer to the
-      users elsewhere in the access file via their aliases in all the
-      same places you could have instead used their actual usernames.
-      Simply prepend an ampersand to the alias to distinguish it from
-      a regular username:</para>
-
+      <para>Once you've defined a set of aliases, you can refer to the
+        users elsewhere in the access file via their aliases in all the
+        same places you could have instead used their actual usernames.
+        Simply prepend an ampersand to the alias to distinguish it from
+        a regular username:</para>
 -->
-    <para>Sobald Sie eine Menge an Aliasen definiert haben, können Sie
-      sich an allen Stellen der Zugriffsdatei über die Aliase auf die
-      Anwender beziehen, an denen Sie sonst die eigentlichen
-      Anwendernamen benutzt hätten. Setzen Sie einfach ein
-      kaufmännisches Und vor den Alias, um ihn von einem normalen
-      Anwendernamen zu unterscheiden:</para>
+      <para>Sobald Sie eine Menge an Aliasen definiert haben, können Sie
+        sich an allen Stellen der Zugriffsdatei über die Aliase auf die
+        Anwender beziehen, an denen Sie sonst die eigentlichen
+        Anwendernamen benutzt hätten. Setzen Sie einfach ein
+        kaufmännisches Und vor den Alias, um ihn von einem normalen
+        Anwendernamen zu unterscheiden:</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [groups]
 calc-developers = &amp;harry, &amp;sally, &amp;joe
 paint-developers = &amp;frank, &amp;sally, &amp;jane
 everyone = @calc-developers, @paint-developers
 </programlisting>
-    </informalexample>
+      </informalexample>
 
 <!--
-    <para>You might also choose to use aliases if your users'
-      usernames change frequently.  Doing so allows you to need to
-      update only the aliases table when these username changes occur,
-      instead of doing global-search-and-replace operations on the
-      whole access file.</para>
-
+      <para>You might also choose to use aliases if your users'
+        usernames change frequently.  Doing so allows you to need to
+        update only the aliases table when these username changes occur,
+        instead of doing global search-and-replace operations on the
+        whole access file.</para>
 -->
-    <para>Sie könnten sich auch dazu entscheiden, Aliase zu verwenden,
-      falls sich die Anwendernamen Ihrer Anwender häufig ändern. In
-      diesem Fall müssen Sie bei Änderungen der Anwendernamen
-      lediglich die Aliastabelle aktualisieren anstatt eine globale
-      Such- und Ersetzungsoperation über die gesamte Zugriffsdatei
-      vornehmen zu müssen.</para>
+      <para>Sie könnten sich auch dazu entscheiden, Aliase zu verwenden,
+        falls sich die Anwendernamen Ihrer Anwender häufig ändern. In
+        diesem Fall müssen Sie bei Änderungen der Anwendernamen
+        lediglich die Aliastabelle aktualisieren anstatt eine globale
+        Such- und Ersetzungsoperation über die gesamte Zugriffsdatei
+        vornehmen zu müssen.</para>
 
     </sect2>
 
@@ -8300,75 +8816,78 @@ everyone = @calc-developers, @paint-developers
       <title>Advanced Access Control Features</title>
 
 <!--
-    <para>Subversion also supports some <quote>magic</quote> tokens
-      for helping you to make rule assignments based on the user's
-      authentication class.  One such token is
-      the <literal>$authenticated</literal> token.  Use this token
-      where you would otherwise specify a username, alias, or group
-      name in your authorization rules to declare the permissions
-      granted to any user who has authenticated with any username at
-      all.  Similarly employed is the <literal>$anonymous</literal>
-      token, except that it matches everyone who has
-      <emphasis>not</emphasis> authenticated with a username.</para>
--->
-    <para>Ferner unterstützt Subversion einige <quote>magische</quote>
-      Symbole, die Ihnen dabei helfen sollen, Regeln abhängig von der
-      Authentifizierungsklasse des Anwenders zu vergeben. Ein solches
-      Symbol ist <literal>$authenticated</literal>. Verwenden Sie
-      dieses Symbol dort, wo Sie ansonsten einen Anwendernamen, einen
-      Alias oder einen Gruppennamen in Ihren Autorisierungsregeln
-      angeben würden, um die Zugriffsrechte zu deklarieren, die ein
-      Anwender erteilt bekommt, der sich schon einmal mit einem
-      Anwendernamen anmeldet. Ähnlich wird das Symbol
-      <literal>$anonymous</literal> verwendet, mit der Ausnahme, dass
-      es auf jeden anwendbar ist, der sich <emphasis>nicht</emphasis>
-      mit einem Anwendernamen authentifiziert hat.</para>
+      <para>Beginning with Subversion 1.5, the access file syntax also
+        supports some <quote>magic</quote> tokens for helping you to
+        make rule assignments based on the user's authentication
+        class.  One such token is
+        the <literal>$authenticated</literal> token.  Use this token
+        where you would otherwise specify a username, alias, or group
+        name in your authorization rules to declare the permissions
+        granted to any user who has authenticated with any username at
+        all.  Similarly employed is the <literal>$anonymous</literal>
+        token, except that it matches everyone who has
+        <emphasis>not</emphasis> authenticated with a username.</para>
+  -->
+      <para>Beginnend mit Subversion 1.5 unterstützt die Syntax der
+        Zugriffsdatei einige <quote>magische</quote> Symbole, die
+        Ihnen dabei helfen sollen, Regeln abhängig von der
+        Authentifizierungsklasse des Anwenders zu vergeben. Ein
+        solches Symbol ist <literal>$authenticated</literal>.
+        Verwenden Sie dieses Symbol dort, wo Sie ansonsten einen
+        Anwendernamen, einen Alias oder einen Gruppennamen in Ihren
+        Autorisierungsregeln angeben würden, um die Zugriffsrechte zu
+        deklarieren, die ein Anwender erteilt bekommt, der sich schon
+        einmal mit einem Anwendernamen anmeldet. Ähnlich wird das
+        Symbol <literal>$anonymous</literal> verwendet, mit der
+        Ausnahme, dass es auf jeden anwendbar ist, der sich
+        <emphasis>nicht</emphasis> mit einem Anwendernamen
+        authentifiziert hat.</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [calendar:/projects/calendar]
 $anonymous = r
 $authenticated = rw
 </programlisting>
-    </informalexample>
+      </informalexample>
 
-<!--
-    <para>Finally, another handy bit of access file syntax magic is
-      the use of the tilde (<literal>~</literal>) character as an
-      exclusion marker.  In your authorization rules, prefixing a
-      username, alias, group name, or authentication class token with
-      a tilde character will cause Subversion to apply the rule to
-      users who do <emphasis>not</emphasis> match the rule.  Though
-      somewhat unnecessarily obfuscated, the following block is
-      equivalent to the one in the previous example:</para>
--->
-    <para>Ein weiteres praktisches Stück magischer
-      Zugriffsdatei-Syntax ist die Verwendung der Tilde
-      (<literal>~</literal>) als eine Ausschlussmarkierung. Wenn Sie
-      in Ihren Autorisierungsregeln einem Anwendernamen, einem Alias,
-      einen Gruppennamen oder einem Authentifizierungsklassen-Symbol
-      eine Tilde voranstellen, gilt diese Regel für Anwender, die
-      <emphasis>nicht</emphasis> durch diese Regel erfasst werden.
-      Obwohl es unnötigerweise etwas verwirrend erscheint, ist der
-      folgende Block äquivalent zu dem aus dem vorangegangenen
-      Beispiel:</para>
+  <!--
+      <para>Another handy bit of access file syntax magic is the use
+        of the tilde (<literal>~</literal>) character as an exclusion
+        marker.  In your authorization rules, prefixing a username,
+        alias, group name, or authentication class token with a tilde
+        character will cause Subversion to apply the rule to users who
+        do <emphasis>not</emphasis> match the rule.  Though somewhat
+        unnecessarily obfuscated, the following block is equivalent to
+        the one in the previous example:</para>
+  -->
+      <para>Ein weiteres praktisches Stück magischer
+        Zugriffsdatei-Syntax ist die Verwendung der Tilde
+        (<literal>~</literal>) als eine Ausschlussmarkierung. Wenn Sie
+        in Ihren Autorisierungsregeln einem Anwendernamen, einem Alias,
+        einen Gruppennamen oder einem Authentifizierungsklassen-Symbol
+        eine Tilde voranstellen, gilt diese Regel für Anwender, die
+        <emphasis>nicht</emphasis> durch diese Regel erfasst werden.
+        Obwohl es unnötigerweise etwas verwirrend erscheint, ist der
+        folgende Block äquivalent zu dem aus dem vorangegangenen
+        Beispiel:</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [calendar:/projects/calendar]
 ~$authenticated = r
 ~$anonymous = rw
 </programlisting>
-    </informalexample>
+      </informalexample>
 
 <!--
-    <para>A less obvious example might be as follows:</para>
+      <para>A less obvious example might be as follows:</para>
 -->
-    <para>Ein weniger offensichtliches Beispiel könnte wie folgt
-      aussehen:</para>
+      <para>Ein weniger offensichtliches Beispiel könnte wie folgt
+        aussehen:</para>
 
-    <informalexample>
-      <programlisting>
+      <informalexample>
+        <programlisting>
 [groups]
 calc-developers = &amp;harry, &amp;sally, &amp;joe
 calc-owners = &amp;hewlett, &amp;packard
@@ -8386,7 +8905,7 @@ calc = @calc-developers, @calc-owners
 [calc:/projects/calc/tags]
 ~@calc-owners = r
 </programlisting>
-    </informalexample>
+      </informalexample>
 
     </sect2>
 
@@ -8409,49 +8928,64 @@ calc = @calc-developers, @calc-owners
         checkout</command> Bescheid wissen.</para>
 
 <!--
-      <para>When the client requests a checkout or update over HTTP,
-        it makes a single server request and receives a single (often
-        large) server response.  When the server receives the request,
-        that is the <emphasis>only</emphasis> opportunity Apache has
-        to demand user authentication.  This has some odd side
-        effects.  For example, if a certain subdirectory of the
-        repository is readable only by user Sally, and user Harry
-        checks out a parent directory, his client will respond to the
-        initial authentication challenge as Harry.  As the server
-        generates the large response, there's no way it can resend an
+      <para>Depending on which HTTP communication library the
+        Subversion client is using, it may request that the entire
+        payload of a checkout or update be delivered in a single
+        (often large) response to the primary checkout/update request.
+        When this happens, this single request is the
+        <emphasis>only</emphasis> opportunity Apache has to demand
+        user authentication.  This has some odd side effects.  For
+        example, if a certain subdirectory of the repository is
+        readable only by user Sally, and user Harry checks out a
+        parent directory, his client will respond to the initial
+        authentication challenge as Harry.  As the server generates
+        the large response, there's no way it can resend an
         authentication challenge when it reaches the special
         subdirectory; thus the subdirectory is skipped altogether,
         rather than asking the user to reauthenticate as Sally at the
-        right moment.  In a similar way, if the root of the repository
-        is anonymously world-readable, the entire checkout will be
-        done without authentication&mdash;again, skipping the
-        unreadable directory, rather than asking for authentication
-        partway through.</para>
-
+        right moment.</para>
 -->
-      <para>Wenn der Client einen Checkout oder eine Aktualisierung über
-        HTTP verlangt, macht er eine einzige Anfrage beim Server und
-        erhält eine einzelne (oftmals umfangreiche) Antwort vom Server.
-        Wenn der Server die Anfrage erhält, ist das die
-        <emphasis>einzige</emphasis> Gelegenheit für Apache, die
+      <para>Abhängig von der vom Client verwendeten Bibliothek zur
+        HTTP-Kommunikation, kann es sein, dass er verlangt, die
+        kompletten Nutzdaten eines Checkouts oder einer Aktualisierung
+        in einer einzigen (oft sehr umfangreichen) Antwort auf die
+        Hauptanfrage des Checkouts/der Aktualisierung abzuliefern.
+        Wenn das geschieht, ist diese Anfrage die
+        <emphasis>einzige</emphasis> Gelegenheit, die
         Authentifizierung des Anwenders einzufordern. Das hat einige
         merkwürdige Seiteneffekte. Wenn beispielsweise ein
-        Unterverzeichnis des Projektarchivs nur für die Anwenderin Sally
-        lesbar ist und der Anwender Harry ein Elternverzeichnis
+        Unterverzeichnis des Projektarchivs nur für die Anwenderin
+        Sally lesbar ist und der Anwender Harry ein Elternverzeichnis
         auscheckt, wird sein Client auf die initiale Aufforderung zur
         Authentifizierung als Harry antworten. Während der Server die
         umfangreiche Antwort erzeugt, besteht keine Möglichkeit beim
         Erreichen des besonderen Verzeichnisses eine erneute
         Aufforderung zu senden; das Verzeichnis wird somit einfach
         übergangen, anstatt den Anwender im passenden Moment
-        aufzufordern, sich als Sally zu authentifizieren. Auf ähnliche
-        Weise wird der komplette Checkout ohne Authentifizierung
-        vollzogen, falls das Wurzelverzeichnis des Projektarchivs anonym
-        für jeden lesbar ist; auch hier werden nicht lesbare
-        Verzeichnisse übergangen, anstatt zwischendurch zur
-        Authentifizierung aufzufordern.</para>
-    </sect2>
+        aufzufordern, sich als Sally zu authentifizieren.</para>
 
+<!--
+      <para>In a similar way, if the root of the repository is
+        anonymously world-readable, the entire checkout will be done
+        without authentication&mdash;again, skipping the unreadable
+        directory, rather than asking for authentication partway
+        through.<footnote><para>For more on this, see the blog
+        post <emphasis>Authz and Anon Authn Agony</emphasis> at
+        <ulink url="http://blogs.collab.net/subversion/2007/03/authz_and_anon_/"
+        />.</para></footnote></para>
+-->
+      <para>Auf ähnliche Weise wird der komplette Checkout ohne
+        Authentifizierung vollzogen, falls das Wurzelverzeichnis des
+        Projektarchivs anonym für jeden lesbar ist; auch hier werden
+        nicht lesbare Verzeichnisse übergangen, anstatt zwischendurch
+        zur Authentifizierung aufzufordern.<footnote><para>Mehr hierzu
+        im Blog-Post <emphasis>Authz and Anon Authn Agony</emphasis>
+        auf
+        <ulink url="http://blogs.collab.net/subversion/2007/03/authz_and_anon_/"
+        />.</para></footnote></para>
+      <!-- TODO: Merge content from the blog post into the book. --> 
+
+    </sect2>
   </sect1>
 
   <!-- ================================================================= -->
@@ -8508,7 +9042,7 @@ $ svnserve -d -r /path/to/repositories --log-file /var/log/svn.log
 -->
     <para>Um das Gleiche in Apache einzustellen, ist etwas mehr Arbeit
       notwendig, jedoch handelt es sich um eine Erweiterung von
-      Apaches Standardkonfigurationsmechanismus für die
+      Apaches Standard-Konfigurations-Mechanismus für die
       Protokollausgabe (Näheres unter
       <xref linkend="svn.serverconfig.httpd.extra.logging"/>).</para>
 
@@ -8743,7 +9277,7 @@ update /path r17 send-copyfrom-args
       Planung des Leistungsvermögens und der Leistungsverbesserung.
       Subversion neigt nicht dazu, besonders ressourcenhungrig
       hinsichtlich CPU- und Speicherverbrauch zu sein, doch kann jeder
-      Dienst Nutzen aus Optimierungen ziehen, insbesonders, wenn die
+      Dienst Nutzen aus Optimierungen ziehen, insbesondere, wenn die
       Nutzung des Dienstes in die Höhe schnellt<footnote><para>Im Fall
       von Subversion beruht dieser steile Aufstieg natürlich auf dem
       coolen Namen. Okay, das und seine Beliebtheit, Zuverlässigkeit,
@@ -8793,9 +9327,9 @@ update /path r17 send-copyfrom-args
         respectively.</para>
 -->
       <para>Für <command>svnserve</command> können Sie die Puffergröße
-        mit der Kommendozeilenoption
+        mit der Kommandozeilenoption
         <option>--memory-cache-size</option> (<option>-M</option>)
-        angeben. Sie können über die boolschen Optionen
+        angeben. Sie können über die booleschen Optionen
         <option>--cache-fulltexts</option> und
         <option>--cache-txdeltas</option> auch vorgeben, ob
         <command>svnserve</command> den Volltext bzw. die Deltas von
@@ -8914,7 +9448,7 @@ $
         altogether.</para>
 -->
       <para>Die Komprimierung von Daten, die über Draht übertragen
-        werden, kann den Umfang dieser Netzübertragungen erheblich
+        werden, kann den Umfang dieser Netzwerkübertragungen erheblich
         verringern, geht allerdings auf Kosten der CPU-Leistung des
         Servers (und Clients). Abhängig von der CPU-Kapazität Ihres
         Servers, den typischen Zugriffsmustern der Clients, die Ihren
@@ -8951,7 +9485,7 @@ $
         auf die in erster Linie von Clients mit Verbindungen geringer
         Bandbreite zugegriffen wird, ihren Clients einen großen
         Gefallen erweisen, wenn sie den Gesamtumfang der
-        Netzkommunikation minimieren würden.</para>
+        Netzwerkkommunikation minimieren würden.</para>
 
     </sect2>
 
