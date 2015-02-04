@@ -3538,7 +3538,10 @@ Revision 399 übertragen.
         do is find the revision in which you deleted the file or
         directory.  You can do this visually, or by using another tool
         to examine the log output (via <command>grep</command>, or
-        perhaps via an incremental search in an editor).</para>
+        perhaps via an incremental search in an editor).  If you know that
+        the item in question was recently deleted you might also use
+        the <option>- -limit</option> option to keep the log output brief
+        enough to examine manually.</para>
 -->
       <para>Zunächst sollten Sie <command>svn log</command> benutzen,
         um das exakte Koordinatenpaar zu ermitteln, das Sie
@@ -3551,28 +3554,50 @@ Revision 399 übertragen.
         das Verzeichnis gelöscht haben. Sie können das visuell tun
         oder ein Werkzeug zur Untersuchung der Protokollausgaben
         einsetzen (mit <command>grep</command> oder vielleicht durch
-        eine inkrementelle Suche in einem Editor).</para>
+        eine inkrementelle Suche in einem Editor). Falls Sie wissen,
+        dass das fragliche Objekt kürzlich gelöscht wurde, können Sie
+        auch die Option <option>--limit</option> verwenden, um die
+        Protokollausgabe für eine manuelle Untersuchung knapp genug zu
+        halten.</para>
 
       <informalexample>
         <screen>
-$ cd parent-dir
-$ svn log -v
-&hellip;
+$ cd calc/trunk
+
+$ svn log -v --limit 3
 ------------------------------------------------------------------------ <!--
-r808 | joe | 2003-12-26 14:29:40 -0600 (Fri, 26 Dec 2003) | 3 lines
+r401 | sally | 2013-02-19 23:15:44 -0500 (Tue, 19 Feb 2013) | 1 line
 Changed paths:
 -->
-r808 | joe | 2003-12-26 14:29:40 -0600 (Fr, 26. Dez 2003) | 3 Zeilen
+r401 | sally | 2013-02-18 23:15:44 -0500 (Di, 19. Feb 2013) | 1 Zeile
 Geänderte Pfade:
-   D /calc/trunk/real.c
-   M /calc/trunk/integer.c
+   M /calc/trunk/src/main.c
+   D /calc/trunk/src/real.c
+
 <!--
-Added fast fourier transform functions to integer.c.
-Removed real.c because code now in double.c.
+* calc/trunk/src/main.c: Update help text.
+
+* calc/trunk/src/real.c: Remove this file, none of the APIs
+  implemented here are used anymore.
 -->
-Schnelle Funktionen zur Fourier-Transformation zu integer.c hinzugefügt.
-real.c gelöscht, da Code jetzt in double.c.
-&hellip;
+* calc/trunk/src/main.c: Hilfetext aktualisiert.
+
+* calc/trunk/src/real.c: Datei entfernt, keine der hier implementierten
+  APIs werden noch irgendwo verwendet.
+------------------------------------------------------------------------<!--
+r399 | sally | 2013-02-19 20:05:14 -0500 (Tue, 19 Feb 2013) | 1 line
+Changed paths:
+-->
+r399 | sally | 2013-02-19 20:05:14 -0500 (Di, 19. Feb 2013) | 1 Zeile
+Geänderte Pfade:
+   M /calc/trunk/src/button.c
+   M /calc/trunk/src/integer.c
+   M /calc/trunk/src/main.c
+   M /calc/trunk/src/real.c
+<!--
+Undoing erroneous change committed in r392.-->
+Fehlerhafte Änderung aus r392 rückgängig gemeacht.
+------------------------------------------------------------------------
 </screen>
       </informalexample>
 
@@ -3580,20 +3605,20 @@ real.c gelöscht, da Code jetzt in double.c.
       <para>In the example, we're assuming that you're looking for a
         deleted file <filename>real.c</filename>.  By looking through
         the logs of a parent directory, you've spotted that this file
-        was deleted in revision 808.  Therefore, the last version of
+        was deleted in revision 400.  Therefore, the last version of
         the file to exist was in the revision right before that.
         Conclusion: you want to resurrect the path
         <filename>/calc/trunk/real.c</filename> from revision
-        807.</para>
+        399.</para>
 -->
       <para>In diesem Beispiel nehmen wir an, dass Sie nach der
         gelöschten Datei <filename>real.c</filename> suchen. Beim
         Durchsehen der Protokolle des Elternverzeichnisses haben Sie
-        entdeckt, dass diese Datei in Revision 808 gelöscht
+        entdeckt, dass diese Datei in Revision 400 gelöscht
         wurde. Daher war die letzte Revision in der die Datei noch
         vorhanden war die unmittelbare Vorgänger-Revision. Die
         Schlussfolgerung: Sie möchten den Pfad
-        <filename>/calc/trunk/real.c</filename> aus Revision 807
+        <filename>/calc/trunk/real.c</filename> aus Revision 399
         zurückholen.</para>
 
 <!--
@@ -3608,7 +3633,7 @@ real.c gelöscht, da Code jetzt in double.c.
 
 <!--
       <para>One option is to use <command>svn merge</command> to apply
-        revision 808 <quote>in reverse.</quote> (We already
+        revision 400 <quote>in reverse.</quote> (We already
         discussed how to undo changes in
         <xref linkend="svn.branchmerge.basicmerging.undo"/>.)  This
         would have the effect of re-adding <filename>real.c</filename>
@@ -3617,7 +3642,7 @@ real.c gelöscht, da Code jetzt in double.c.
         in <literal>HEAD</literal>.</para>
 -->
       <para>Die eine Option ist, <command>svn merge</command> zu
-        verwenden, um Revision 808 <quote>rückwärts</quote>
+        verwenden, um Revision 400 <quote>rückwärts</quote>
         anzuwenden. (Wir haben bereits in
         <xref linkend="svn.branchmerge.basicmerging.undo"/>
         besprochen, wie Änderungen rückgängig gemacht werden.) Das
@@ -3628,27 +3653,27 @@ real.c gelöscht, da Code jetzt in double.c.
 
 <!--
       <para>In this particular example, however, this is probably not
-        the best strategy.  Reverse-applying revision 808 would not
+        the best strategy.  Reverse-applying revision 400 would not
         only schedule <filename>real.c</filename> for addition, but
         the log message indicates that it would also undo certain
-        changes to <filename>integer.c</filename>, which you don't
-        want.  Certainly, you could reverse-merge revision 808 and
+        changes to <filename>main.c</filename>, which you don't
+        want.  Certainly, you could reverse-merge revision 400 and
         then <command>svn revert</command> the local modifications to
-        <filename>integer.c</filename>, but this technique doesn't
+        <filename>main.c</filename>, but this technique doesn't
         scale well.  What if 90 files were changed in revision
-        808?</para>
+        400?</para>
 -->
       <para>In diesem besonderen Beispiel ist das aber wahrscheinlich
         nicht die beste Strategie. Die Rückwärts-Anwendung von
-        Revision 808 würde nicht nur <filename>real.c</filename> zum
+        Revision 400 würde nicht nur <filename>real.c</filename> zum
         Hinzufügen markieren, sondern, wie aus den Protokollmeldungen
         hervorgeht, dass ebenso bestimmte Änderungen an
-        <filename>integer.c</filename> zurücknehmen, was Sie aber
-        nicht wollen. Sie können sicherlich Revision 808 rückwärts
+        <filename>main.c</filename> zurücknehmen, was Sie aber
+        nicht wollen. Sie können sicherlich Revision 400 rückwärts
         anwenden und dann mit <command>svn revert</command> die
-        lokalen Änderungen an <filename>integer.c</filename>
+        lokalen Änderungen an <filename>main.c</filename>
         zurücknehmen; allerdings ist diese Technik nicht sehr
-        effektiv. Was wäre, wenn 90 Dateien in Revision 808 geändert
+        effektiv. Was wäre, wenn 90 Dateien in Revision 400 geändert
         worden wären?</para>
 
 <!--
@@ -3667,20 +3692,16 @@ real.c gelöscht, da Code jetzt in double.c.
 
       <informalexample>
         <screen>
-$ svn copy ^/calc/trunk/real.c@807 ./real.c
+$ svn copy ^/calc/trunk/src/real.c@399 ./real.c
+A         real.c
 
-$ svn status
+$ svn st
 A  +    real.c
 <!--
-$ svn commit -m "Resurrected real.c from revision 807, /calc/trunk/real.c."
-Adding         real.c
-Transmitting file data .
-Committed revision 1390.
+# Commit the resurrection.
 -->
-$ svn commit -m "real.c aus Revision 807 wiederhergestellt, /calc/trunk/real.c."
-Hinzufügen     real.c
-Übertrage Daten .
-Revision 1390 übertragen.
+# Übertragung der Wiederbelebung
+&hellip;
 </screen>
       </informalexample>
 
@@ -3691,7 +3712,7 @@ Revision 1390 übertragen.
         where it was copied from.  In the future, running <command>svn
         log</command> on this file will traverse back through the
         file's resurrection and through all the history it had prior
-        to revision 807.  In other words, this new
+        to revision 399.  In other words, this new
         <filename>real.c</filename> isn't really new; it's a direct
         descendant of the original, deleted file.  This is usually
         considered a good and useful thing.  If, however, you wanted
@@ -3705,7 +3726,7 @@ Revision 1390 übertragen.
         sich, woher es kopiert wurde. Künftig wird beim Anwenden von
         <command>svn log</command> auf diese Datei die gesamte
         Geschichte, über das Zurückholen hinweg, inklusive der
-        Geschichte vor Revision 807 durchlaufen. In anderen Worten,
+        Geschichte vor Revision 399 durchlaufen. In anderen Worten,
         dieses neue <filename>real.c</filename> ist nicht wirklich
         neu; es ist ein direkter Nachfahre der ursprünglichen,
         gelöschten Datei. Dies ist normalerweise eine gute und
@@ -3721,15 +3742,10 @@ $ svn cat ^/calc/trunk/real.c@807 &gt; ./real.c
 $ svn add real.c
 A         real.c
 <!--
-$ svn commit -m "Re-created real.c from revision 807."
-Adding         real.c
-Transmitting file data .
-Committed revision 1390.
+# Commit the resurrection.
 -->
-$ svn commit -m "real.c aus Revision 807 wiederhergestellt."
-Hinzufügen     real.c
-Übertrage Daten .
-Revision 1390 übertragen.
+# Übertragung der Wiederbelebung
+&hellip;
 </screen>
       </informalexample>
 
@@ -3750,19 +3766,19 @@ Revision 1390 übertragen.
 
       <informalexample>
         <screen>
-$ svn copy ^/calc/trunk/real.c@807 ^/calc/trunk/ \ <!--
-           -m "Resurrect real.c from revision 807."
-Committed revision 1390.
+$ svn copy ^/calc/trunk/src/real.c@399 ^/calc/trunk/src/real.c \ <!--
+           -m "Resurrect real.c from revision 399."
+Committed revision 402.
 -->
-      -m "real.c aus Revision 807 wiederhergestellt."
-Revision 1390 übertragen.
+           -m "real.c aus Revision 399 wiederhergestellt."
+Revision 402 übertragen.
 
-$ svn update
+$ svn up
 Updating '.':
 A    real.c <!--
-Updated to revision 1390.
+Updated to revision 402.
 -->
-Aktualisiert zu Revision 1390.
+Aktualisiert zu Revision 402.
 </screen>
       </informalexample>
 
