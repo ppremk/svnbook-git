@@ -1,3 +1,5 @@
+<!-- -*- sgml -*- -->
+
 <chapter id="svn.branchmerge">
 <!--
   <title>Branching and Merging</title>
@@ -23,7 +25,7 @@
     these operations as well as Subversion's somewhat unique approach
     to them.  If you've not familiarized yourself with Subversion's
     basic concepts (found in <xref linkend="svn.basic"/>), we
-    recommmend that you do so before reading this chapter.</para>
+    recommend that you do so before reading this chapter.</para>
 -->
   <para>Verzweigen (<foreignphrase>Branching</foreignphrase>) und
     Zusammenführen
@@ -107,8 +109,7 @@
     <para>
       <indexterm>
         <primary>branches</primary>
-      </indexterm>
-      This is the basic concept of a branch&mdash;namely,
+      </indexterm>This is the basic concept of a branch&mdash;namely,
       a line of development that exists independently of another line,
       yet still shares a common history if you look far enough back in
       time.  A branch always begins life as a copy of something, and
@@ -118,6 +119,7 @@
     <para>
       <indexterm>
         <primary>Zweige</primary>
+        <see>Branches</see>
       </indexterm>
       <indexterm>
         <primary>Branches</primary>
@@ -355,7 +357,6 @@
         Auch diesmal ist der Name, den Sie wählen, für Subversion
         unwichtig &ndash; Sie können einen Namen verwenden, der am
         besten für Sie und Ihr Team geeignet ist.</para>
-
 <!--
       <para>Let's assume that your team (like most) has a policy of
         creating branches in the <filename>branches</filename>
@@ -380,17 +381,44 @@
         Kopie von <filename>/calc/trunk</filename> beginnt.</para>
 
 <!--
-      <para>You may already have seen <command>svn copy</command> used
-        to copy one file to another within a working copy.  But it can
-        also be used to do a <firstterm>remote
-        copy</firstterm>&mdash;a copy that immediately results in a
-        newly committed repository revision and for which no working
-        copy is required at all.  Just copy one URL to another:</para>
+      <para>
+        <indexterm>
+          <primary>copying</primary>
+          <secondary>remote copies</secondary>
+        </indexterm>
+        <indexterm>
+          <primary>svn</primary>
+          <secondary>subcommands</secondary>
+          <tertiary>copy</tertiary>
+        </indexterm>
+        <indexterm>
+          <primary>branches</primary>
+          <secondary>creating</secondary>
+        </indexterm>You may already have seen <command>svn
+        copy</command> used to copy one file to another within a
+        working copy.  But it can also be used to do
+        a <firstterm>remote copy</firstterm>&mdash;a copy that
+        immediately results in a newly committed repository revision
+        and for which no working copy is required at all.  Just copy
+        one URL to another:</para>
 -->
-      <para>Sie haben vielleicht schon gesehen, wie mit <command>svn
+      <para>
+        <indexterm>
+          <primary>Kopieren</primary>
+          <secondary>Kopien aus der Ferne</secondary>
+        </indexterm>
+        <indexterm>
+          <primary>svn</primary>
+          <secondary>Unterbefehle</secondary>
+          <tertiary>copy</tertiary>
+        </indexterm>
+        <indexterm>
+          <primary>Branches</primary>
+          <secondary>erzeugen</secondary>
+        </indexterm>Sie haben vielleicht schon gesehen, wie mit <command>svn
         copy</command> innerhalb einer Arbeitskopie eine Datei auf
         eine andere kopiert wird. Es kann allerdings auch verwendet
-        werden, um eine <firstterm>entfernte Kopie</firstterm>
+        werden, um eine <firstterm>Kopie aus der Ferne</firstterm>
         durchzuführen: eine Kopie die unmittelbar eine neue Revision
         des Projektarchivs zur Folge hat, und für die überhaupt keine
         Arbeitskopie notwendig ist. Kopieren Sie einfach einen URL auf
@@ -398,13 +426,12 @@
 
       <informalexample>
         <screen>
-$ svn copy http://svn.example.com/repos/calc/trunk \
-           http://svn.example.com/repos/calc/branches/my-calc-branch \ <!--
-      -m "Creating a private branch of /calc/trunk."
+$ svn copy ^/calc/trunk ^/calc/branches/my-calc-branch \ <!--
+           -m "Creating a private branch of /calc/trunk."
 
 Committed revision 341.
 -->
-      -m "Privaten Zweig von /calc/trunk angelegt."
+           -m "Privaten Zweig von /calc/trunk angelegt."
 
 Revision 341 übertragen.
 $
@@ -428,7 +455,12 @@ $
         every file and subdirectory within that working copy directory
         on the local disk.  Copying a directory on the server,
         however, is a constant-time operation, and it's the way most
-        people create branches.</para>
+        people create branches.  In addition, this practice raises the
+        possibility of copying mixed-revision working copies.  This isn't
+        inherently dangerous, but can cause unnecessary complications later
+        during merging.  If you do choose to create a branch by copying a
+        working copy path, you should be sure the source directory has no
+        local modifications and is not at mixed-revisions.</para>
 -->
       <para>Dieser Befehl bewirkt eine fast sofortige Übergabe im
         Projektarchiv, wobei in Revision 341 ein neues Verzeichnis
@@ -450,7 +482,15 @@ $
         Platte dupliziert werden muss. Das Kopieren eines
         Verzeichnisses auf dem Server jedoch besitzt einen konstanten
         Zeitaufwand und ist die Art und Weise, auf die die meisten
-        Leute Zweige erstellen.</para>
+        Leute Zweige erstellen. Zusätzlich eröffnet diese
+        Vorgehensweise die Möglichkeit, Arbeitskopien mit gemischten
+        Revisionen zu kopieren. Das ist nicht von Natur aus
+        gefährlich, kann jedoch später beim Zusammenführen zu
+        unnötigen Komplikationen führen. Falls Sie sich entscheiden,
+        einen Zweig über eine Kopie eines Pfades der Arbeitskopie zu
+        erstellen, sollten Sie sicherstellen, dass das
+        Quellverzeichnis weder lokale Änderungen noch gemischte
+        Revisionen hat.</para>
 
       <figure id="svn.branchmerge.using.create.dia-1">
 <!--
@@ -562,9 +602,15 @@ $
       <informalexample>
         <screen>
 $ svn checkout http://svn.example.com/repos/calc/branches/my-calc-branch
-A  my-calc-branch/Makefile
-A  my-calc-branch/integer.c
-A  my-calc-branch/button.c <!--
+A    my-calc-branch/doc
+A    my-calc-branch/src
+A    my-calc-branch/doc/INSTALL
+A    my-calc-branch/src/real.c
+A    my-calc-branch/src/main.c
+A    my-calc-branch/src/button.c
+A    my-calc-branch/src/integer.c
+A    my-calc-branch/Makefile
+A    my-calc-branch/README<!--
 Checked out revision 341.
 -->
 Ausgecheckt, Revision 341.
@@ -603,33 +649,33 @@ $
         <listitem>
 <!--
           <para>You make a change to
-            <filename>/calc/branches/my-calc-branch/button.c</filename>,
+            <filename>/calc/branches/my-calc-branch/src/button.c</filename>,
             which creates revision 342.</para>
 -->
           <para>Sie machen eine Änderung an
-            <filename>/calc/branches/my-calc-branch/button.c</filename>,
+            <filename>/calc/branches/my-calc-branch/src/button.c</filename>,
           die die Revision 342 erzeugt.</para>
         </listitem>
 
         <listitem>
 <!--
           <para>You make a change to
-            <filename>/calc/branches/my-calc-branch/integer.c</filename>,
+            <filename>/calc/branches/my-calc-branch/src/integer.c</filename>,
             which creates revision 343.</para>
 -->
           <para>Sie machen eine Änderung an
-            <filename>/calc/branches/my-calc-branch/integer.c</filename>,
+            <filename>/calc/branches/my-calc-branch/src/integer.c</filename>,
             die die Revision 343 erzeugt.</para>
         </listitem>
 
         <listitem>
 <!--
           <para>Sally makes a change to
-            <filename>/calc/trunk/integer.c</filename>, which creates
+            <filename>/calc/trunk/src/integer.c</filename>, which creates
             revision 344.</para>
 -->
           <para>Sally macht eine Änderung an
-            <filename>/calc/trunk/integer.c</filename>, die die Revision
+            <filename>/calc/trunk/src/integer.c</filename>, die die Revision
             344 erzeugt.</para>
         </listitem>
       </itemizedlist>
@@ -665,35 +711,45 @@ $
 $ pwd
 /home/user/my-calc-branch
 
-$ svn log -v integer.c
+$ svn log -v src/integer.c
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-r343 | user | 2002-11-07 15:27:56 -0600 (Thu, 07 Nov 2002) | 2 lines
+r343 | user | 2013-02-15 14:11:09 -0500 (Fri, 15 Feb 2013) | 1 line
 Changed paths:
-   M /calc/branches/my-calc-branch/integer.c
+   M /calc/branches/my-calc-branch/src/integer.c
 
 * integer.c:  frozzled the wazjub.
-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-r341 | user | 2002-11-03 15:27:56 -0600 (Thu, 07 Nov 2002) | 2 lines
+r341 | user | 2013-02-15 07:41:25 -0500 (Fri, 15 Feb 2013) | 1 line
 Changed paths:
    A /calc/branches/my-calc-branch (from /calc/trunk:340)
 
 Creating a private branch of /calc/trunk.
-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-r303 | sally | 2002-10-29 21:14:35 -0600 (Tue, 29 Oct 2002) | 2 lines
+r154 | sally | 2013-01-30 04:20:03 -0500 (Wed, 30 Jan 2013) | 2 lines
 Changed paths:
-   M /calc/trunk/integer.c
+   M /calc/trunk/src/integer.c
 
 * integer.c:  changed a docstring.
-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-r98 | sally | 2002-02-22 15:35:29 -0600 (Fri, 22 Feb 2002) | 2 lines
+&hellip;
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+r113 | sally | 2013-01-26 15:50:21 -0500 (Sat, 26 Jan 2013) | 2 lines
 Changed paths:
-   A /calc/trunk/integer.c
+   M /calc/trunk/src/integer.c
 
-* integer.c:  adding this file to the project.
+* integer.c: Revise the fooplus API.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+r8 | sally | 2013-01-17 16:55:36 -0500 (Thu, 17 Jan 2013) | 1 line
+Changed paths:
+   A /calc/trunk/Makefile
+   A /calc/trunk/README
+   A /calc/trunk/doc/INSTALL
+   A /calc/trunk/src/button.c
+   A /calc/trunk/src/integer.c
+   A /calc/trunk/src/main.c
+   A /calc/trunk/src/real.c
 
+Initial trunk code import for calc project.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 </screen>
       </informalexample>
@@ -703,35 +759,43 @@ Changed paths:
 $ pwd
 /home/user/my-calc-branch
 
-$ svn log -v integer.c
+$ svn log -v src/integer.c
 ------------------------------------------------------------------------
-r343 | user | 2002-11-07 15:27:56 -0600 (Do, 07. Nov 2002) | 2 Zeilen
+r343 | user | 2013-02-15 14:11:09 -0500 (Fr, 15. Feb 2013) | 1 Zeile
 Geänderte Pfade:
-   M /calc/branches/my-calc-branch/integer.c
+   M /calc/branches/my-calc-branch/src/integer.c
 
 * integer.c:  Wazjub gefrozzelt.
-
 ------------------------------------------------------------------------
-r341 | user | 2002-11-03 15:27:56 -0600 (Do, 07. Nov 2002) | 2 Zeilen
+r341 | user | 2013-02-15 07:41:25 -0500 (Fr, 15. Feb 2013) | 1 Zeile
 Geänderte Pfade:
    A /calc/branches/my-calc-branch (from /calc/trunk:340)
 
 Privaten Zweig von /calc/trunk angelegt.
-
 ------------------------------------------------------------------------
-r303 | sally | 2002-10-29 21:14:35 -0600 (Di, 29. Okt 2002) | 2 Zeilen
+r154 | sally | 2013-01-30 04:20:03 -0500 (Mi, 30. Jan 2013) | 2 Zeilen
 Geänderte Pfade:
-   M /calc/trunk/integer.c
+   M /calc/trunk/src/integer.c
 
 * integer.c:  Einen Docstring geändert.
-
 ------------------------------------------------------------------------
-r98 | sally | 2002-02-22 15:35:29 -0600 (Fr, 22. Feb 2002) | 2 Zeilen
+r113 | sally | 2013-01-26 15:50:21 -0500 (Sa, 26. Jan 2013) | 2 Zeilen
 Geänderte Pfade:
-   A /calc/trunk/integer.c
+   A /calc/trunk/src/integer.c
 
-* integer.c:  Diese Datei dem Projekt hinzugefügt.
+* integer.c:  Die fooplus API überarbeitet.
+------------------------------------------------------------------------
+r8 | sally | 2013-01-17 16:55:36 -0500 (Do, 17. Jan 2013) | 1 Zeile
+Geänderte Pfade:
+   A /calc/trunk/Makefile
+   A /calc/trunk/README
+   A /calc/trunk/doc/INSTALL
+   A /calc/trunk/src/button.c
+   A /calc/trunk/src/integer.c
+   A /calc/trunk/src/main.c
+   A /calc/trunk/src/real.c
 
+Ursprünglicher Calc Projekt Quelltext-Import von trunk.
 ------------------------------------------------------------------------
 </screen>
       </informalexample>
@@ -763,28 +827,39 @@ Geänderte Pfade:
 $ pwd
 /home/sally/calc
 
-$ svn log -v integer.c
+$ svn log -v src/integer.c
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-r344 | sally | 2002-11-07 15:27:56 -0600 (Thu, 07 Nov 2002) | 2 lines
+r344 | sally | 2013-02-15 16:44:44 -0500 (Fri, 15 Feb 2013) | 1 line
 Changed paths:
-   M /calc/trunk/integer.c
+   M /calc/trunk/src/integer.c
 
-* integer.c:  fix a bunch of spelling errors.
-
+Refactor the bazzle functions.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-r303 | sally | 2002-10-29 21:14:35 -0600 (Tue, 29 Oct 2002) | 2 lines
+r154 | sally | 2013-01-30 04:20:03 -0500 (Wed, 30 Jan 2013) | 2 lines
 Changed paths:
-   M /calc/trunk/integer.c
+   M /calc/trunk/src/integer.c
 
 * integer.c:  changed a docstring.
-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-r98 | sally | 2002-02-22 15:35:29 -0600 (Fri, 22 Feb 2002) | 2 lines
+&hellip;
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+r113 | sally | 2013-01-26 15:50:21 -0500 (Sat, 26 Jan 2013) | 2 lines
 Changed paths:
-   A /calc/trunk/integer.c
+   M /calc/trunk/src/integer.c
 
-* integer.c:  adding this file to the project.
+* integer.c: Revise the fooplus API.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+r8 | sally | 2013-01-17 16:55:36 -0500 (Thu, 17 Jan 2013) | 1 line
+Changed paths:
+   A /calc/trunk/Makefile
+   A /calc/trunk/README
+   A /calc/trunk/doc/INSTALL
+   A /calc/trunk/src/button.c
+   A /calc/trunk/src/integer.c
+   A /calc/trunk/src/main.c
+   A /calc/trunk/src/real.c
 
+Initial trunk code import for calc project.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 </screen>
       </informalexample>
@@ -794,28 +869,38 @@ Changed paths:
 $ pwd
 /home/sally/calc
 
-$ svn log -v integer.c
+$ svn log -v src/integer.c
 ------------------------------------------------------------------------
-r344 | sally | 2002-11-07 15:27:56 -0600 (Do, 07. Nov 2002) | 2 Zeilen
+r344 | sally | 2013-02-15 16:44:44 -0500 (Fr, 15. Feb 2013) | 1 Zeile
 Changed paths:
-   M /calc/trunk/integer.c
+   M /calc/trunk/src/integer.c
 
-* integer.c:  Ein paar Rechtschreibfehler behoben.
-
+Die bazzle Funktionen refaktoriert.
 ------------------------------------------------------------------------
-r303 | sally | 2002-10-29 21:14:35 -0600 (Di, 29. Okt 2002) | 2 Zeilen
+r154 | sally | 2013-01-30 04:20:03 -0500 (Mi, 30. Jan 2013) | 2 Zeilen
 Changed paths:
-   M /calc/trunk/integer.c
+   M /calc/trunk/src/integer.c
 
 * integer.c:  Einen Docstring geändert.
+------------------------------------------------------------------------
+r113 | sally | 2013-01-26 15:50:21 -0500 (Sa, 26. Jan 2013) | 2 Zeilen
+Changed paths:
+   A /calc/trunk/src/integer.c
+
+* integer.c:  Die fooplus API überarbeitet.
 
 ------------------------------------------------------------------------
-r98 | sally | 2002-02-22 15:35:29 -0600 (Fr, 22. Feb 2002) | 2 Zeilen
+r8 | sally | 2013-01-17 16:55:36 -0500 (Do, 17. Jan 2013) | 1 line
 Changed paths:
-   A /calc/trunk/integer.c
+   A /calc/trunk/Makefile
+   A /calc/trunk/README
+   A /calc/trunk/doc/INSTALL
+   A /calc/trunk/src/button.c
+   A /calc/trunk/src/integer.c
+   A /calc/trunk/src/main.c
+   A /calc/trunk/src/real.c
 
-* integer.c:  Diese Datei dem Projekt hinzugefügt.
-
+Ursprünglicher Calc Projekt Quelltext-Import von trunk.
 ------------------------------------------------------------------------
 </screen>
       </informalexample>
@@ -828,8 +913,8 @@ Changed paths:
         <emphasis>does</emphasis> show that the two files share a
         common history.  Before the branch copy was made in revision
         341, the files used to be the same file.  That's why you and
-        Sally both see the changes made in revisions 303 and
-        98.</para>
+        Sally both see the changes made between revisions 8 and
+        154.</para>
 -->
       <para>Sally sieht ihre eigene Änderung in Revision 344, aber
         nicht die Änderung, die Sie in Revision 343 gemacht haben. Was
@@ -839,8 +924,8 @@ Changed paths:
         Subversion, dass die beiden Dateien einen Teil der Geschichte
         gemeinsam haben. Bevor die Kopie des Zweiges in Revision 341
         gemacht wurde, waren die Dateien dieselbe Datei.  Deshalb
-        sehen sowohl Sie als auch Sally die Änderungen, die in den
-        Revisionen 303 und 98 gemacht wurden.</para>
+        sehen sowohl Sie als auch Sally die Änderungen, die zwischen
+        den Revisionen 8 und 154 gemacht wurden.</para>
 
     </sect2>
 
@@ -957,7 +1042,10 @@ Changed paths:
       Konflikten auf den Stamm zurückzuführen.</para>
 
 <!--
-    <para>Instead, you and Sally might continue to share changes as
+    <para>
+      <indexterm>
+        <primary>merging</primary>
+      </indexterm>Instead, you and Sally might continue to share changes as
       you work.  It's up to you to decide which changes are worth
       sharing; Subversion gives you the ability to selectively
       <quote>copy</quote> changes between branches.  And when you're
@@ -968,7 +1056,14 @@ Changed paths:
       it is performed using various invocations of the <command>svn
       merge</command> subcommand.</para>
 -->
-    <para>Stattdessen könnten Sie und Sally fortfahren, während der
+    <para>
+      <indexterm>
+        <primary>Merging</primary>
+      </indexterm>
+      <indexterm>
+        <primary>Zusammenführen</primary>
+        <see>Merging</see>
+      </indexterm>Stattdessen könnten Sie und Sally fortfahren, während der
       Arbeit Änderungen gemeinsam zu verwenden. Es liegt an Ihnen, zu
       entscheiden, welche Änderungen teilenswert sind; Subversion
       bietet Ihnen die Fähigkeit, Änderungen selektiv zwischen Zweigen
@@ -984,7 +1079,7 @@ Changed paths:
 
 <!--
     <para>In the examples that follow, we're assuming that both your
-      Subversion client and server are running Subversion 1.7 (or
+      Subversion client and server are running Subversion 1.8 (or
       later).  If either client or server is older than version 1.5,
       things are more complicated: the system won't track changes
       automatically, forcing you to use painful manual methods to
@@ -999,17 +1094,17 @@ Changed paths:
 -->
     <para>In den folgenden Beispielen gehen wir davon aus, dass sowohl
       auf Ihrem Subversion-Client als auch auf dem Server Subversion
-      1.7 (oder neuer) läuft. Falls einer von beiden älter als Version
+      1.8 (oder neuer) läuft. Falls einer von beiden älter als Version
       1.5 ist, wird es komplizierter: Das System wird Änderungen nicht
       automatisch mitverfolgen, so dass Sie schmerzhafte manuelle
       Methoden anwenden müssen, um ähnliche Resultate zu
       erzielen. Dass heißt, dass Sie stets die detaillierte Syntax
       beim Zusammenführen verwenden müssen, um bestimmte
-      Revisionsintervalle zu übertragen (siehe <xref
-      linkend="svn.branchmerge.advanced.advancedsyntax"/> weiter unten
-      in diesem Kapitel), und besonders sorgfältig verfolgen müssen,
-      was bereits zusammengeführt ist und was nicht. Aus diesem Grund
-      empfehlen wir Ihnen <emphasis>dringend</emphasis>,
+      Revisionsintervalle zu übertragen (siehe
+      <xref linkend="svn.branchmerge.advanced.advancedsyntax"/> weiter
+      unten in diesem Kapitel), und besonders sorgfältig verfolgen
+      müssen, was bereits zusammengeführt ist und was nicht. Aus
+      diesem Grund empfehlen wir Ihnen <emphasis>dringend</emphasis>,
       sicherzustellen, dass Ihr Client und Server mindestens die
       Version 1.5 haben.</para>
 
@@ -1019,18 +1114,17 @@ Changed paths:
       <para>
         <indexterm>
           <primary>merge tracking</primary>
-        </indexterm>
-        Subversion 1.5 introduced the
+        </indexterm>Subversion 1.5 introduced the
         <firstterm>merge tracking</firstterm> feature to Subversion.
         Prior to this feature keeping track of merges required cumbersome
         manual procedures or the use of external tools. Subsequent
         releases of Subversion introduced many enhancements and bug
         fixes to merge tracking, which is why we recommend using the
-        most recent versions on both your server and client.  Keep in
-        mind that even if your server is running 1.5 or 1.6, you can still
-        use a 1.7 client.  This is particularly important as regards merge
-        tracking, because the overwhelming majority of fixes to it are on
-        the client side.</para>
+        most recent versions for both your server and client.  Keep in
+        mind that even if your server is running 1.5-1.7, you can still
+        use a 1.8 client.  This is particularly important with regard to merge
+        tracking, because the overwhelming majority of fixes and enhancements
+        to it are on the client side.</para>
     </sidebar>
 -->
     <sidebar id="svn.branchmerge.basicmerging.mergetracking">
@@ -1042,8 +1136,7 @@ Changed paths:
         <indexterm>
           <primary>Verfolgung von Zusammenführungen</primary>
           <see>Merge-Tracking</see>
-        </indexterm>
-        Subversion 1.5 führte die Funktionalität der
+        </indexterm>Subversion 1.5 führte die Funktionalität der
         <firstterm>Verfolgung von Zusammenführungen</firstterm>
         (<foreignphrase>merge tracking</foreignphrase>) in 
         Subversion ein. Vor dieser Funktionalität erforderte das Verfolgen
@@ -1053,11 +1146,11 @@ Changed paths:
         Merge-Tracking ein, weshalb wir empfehlen, die neuesten
         Versionen sowohl auf Ihrem Server als auch auf dem Client
         einzusetzen. Vergessen Sie nicht, dass Sie immer noch einen
-        1.7 Client verwenden können, auch wenn auf Ihrem Server 1.5
-        oder 1.6 laufen. Das ist besonders hinsichtlich des
-        Merge-Trackings wichtig, da eine überwältigende Mehrheit von
-        Fehlerbehebungen daran auf der Client-Seite statt gefunden
-        haben.</para>
+        1.8 Client verwenden können, auch wenn auf Ihrem Server
+        1.5-1.7 laufen. Das ist besonders wichtig hinsichtlich des
+        Merge-Trackings, da die überwältigende Mehrheit der
+        Fehlerbehebungen und Verbesserungen auf der Client-Seite statt
+        gefunden hat.</para>
     </sidebar>
 
     <!-- =============================================================== -->
@@ -1068,7 +1161,10 @@ Changed paths:
       <title>Änderungsmengen</title>
 
 <!--
-      <para>Before we proceed further, we should warn you that there's
+      <para>
+        <indexterm>
+          <primary>changesets</primary>
+        </indexterm>Before we proceed further, we should warn you that there's
         a lot of discussion of <quote>changes</quote> in
         the pages ahead.  A lot of people experienced with version
         control systems use the terms <quote>change</quote>
@@ -1076,7 +1172,14 @@ Changed paths:
         clarify what Subversion understands as
         a <firstterm>changeset</firstterm>.</para>
 -->
-      <para>Bevor wir weitermachen, sollten wir Sie warnen, dass Sie
+      <para>
+        <indexterm>
+          <primary>changesets</primary>
+        </indexterm>i
+        <indexterm>
+          <primary>Änderungsmengen</primary>
+          <see>changesets</see>
+        </indexterm>Bevor wir weitermachen, sollten wir Sie warnen, dass Sie
         auf den kommenden Seiten viele Erörterungen zum Thema
         <quote>Änderungen</quote> erwarten. Viele mit
         Versions-Kontroll-Systemen erfahrene Leute benutzen die Begriffe
@@ -1169,20 +1272,48 @@ Changed paths:
       <title>Einen Zweig synchron halten</title>
 
 <!--
-      <para>Continuing with our running example, let's suppose that a
-        week has passed since you started working on your private
-        branch.  Your new feature isn't finished yet, but at the same
-        time you know that other people on your team continue to make
-        important changes in the
+      <para>
+        <indexterm>
+          <primary>merging</primary>
+          <secondary>sync merges</secondary>
+        </indexterm>
+        <indexterm>
+          <primary>svn</primary>
+          <secondary>subcommands</secondary>
+          <tertiary>merge</tertiary>
+        </indexterm>Continuing with our running example, let's suppose
+        that a week has passed since you started working on your
+        private branch.  Your new feature isn't finished yet, but at
+        the same time you know that other people on your team continue
+        to make important changes in the
         project's <filename>/trunk</filename>.  It's in your best
         interest to replicate those changes to your own branch, just
         to make sure they mesh well with your changes.  This is done
-        by performing a <firstterm>sync merge</firstterm>&mdash;a
+        by performing an <firstterm>automatic sync merge</firstterm>&mdash;a
         merge operation designed to bring your branch up to date with
         any changes made to its ancestral parent branch since your
-        branch was created.</para>
+        branch was created.
+        <indexterm>
+          <primary>merging</primary>
+          <secondary>automatic</secondary>
+        </indexterm> An <quote>automatic</quote> merge is simply
+        one in which you provide the bare minimum of information required
+        for a merge (i.e. a single merge source and a working copy target)
+        and let Subversion determine which changes need merging&mdash;no
+        changesets are passed to <command>svn merge</command> via the
+        <option>-r</option> or <option>-c</option> options in an automatic
+        merge.</para>
 -->
-      <para>Machen wir mit unserem Beispiel weiter und nehmen an, dass
+      <para>
+        <indexterm>
+          <primary>Merging</primary>
+          <secondary>Synchronisierungs-Merge</secondary>
+        </indexterm>
+        <indexterm>
+          <primary>svn</primary>
+          <secondary>Unterbefehle</secondary>
+          <tertiary>merge</tertiary>
+        </indexterm>Machen wir mit unserem Beispiel weiter und nehmen an, dass
         eine Woche vergangen ist seitdem Sie begonnen haben, auf
         Ihrem privaten Zweig zu arbeiten. Ihre Arbeit ist noch nicht
         beendet, jedoch wissen Sie, dass gleichzeitig andere Leute in
@@ -1195,8 +1326,19 @@ Changed paths:
         erreicht &ndash; ein <foreignphrase>Merge</foreignphrase> zu
         dem Zweck, Ihren Zweig mit Änderungen zu aktualisieren, die
         seit der Erstellung Ihres Zweigs auf dem Ursprungszweig
-        vorgenommen wurden.</para>
-
+        vorgenommen wurden.
+        <indexterm>
+          <primary>Merging</primary>
+          <secondary>automatisch</secondary>
+        </indexterm> Ein <quote>automatischer</quote> Merge ist ganz
+        einfach einer, bei dem Sie das absolute Minimum an benötigten
+        Informationen für einen Merge angeben (d.h., eine einzelne
+        Merge-Quelle und ein Arbeitskopie-Ziel) und Subversion
+        entscheiden lassen, welche Änderungen zusammengeführt werden
+        müssen &ndash; bei einem automatischen Merge werden keine
+        Änderungsmengen  mit <option>-r</option> oder
+        <option>-c</option> an <command>svn merge</command>
+        übergeben.</para>
 <!--
       <tip>
         <para>Frequently keeping your branch in sync with the main
@@ -1235,21 +1377,26 @@ $ pwd
 /home/user/my-calc-branch
 
 $ svn merge ^/calc/trunk <!--
-- - - Merging r345 through r356 into '.':
+- - Merging r341 through r351 into '.':
 -->
--- Zusammenführen von r345 bis r356 in ».«:
-U    button.c
-U    integer.c <!--
-- - - Recording mergeinfo for merge of r345 through r356 into '.':
+-- Zusammenführen von r341 bis r351 in ».«:
+U    doc/INSTALL
+U    src/real.c
+U    src/button.c<!--
+- - Recording mergeinfo for merge of r345 through r356 into '.':
 -->
--- Aufzeichnung der Informationen für Zusammenführung von r345 in ».«:
+-- Aufzeichnung der Informationen für Zusammenführung von r341 bis r356 in ».«:
  U   .
 $
 </screen>
       </informalexample>
 
 <!--
-      <para>This basic syntax&mdash;<userinput>svn merge
+      <para>
+        <indexterm>
+          <primary>properties</primary>
+          <secondary>svn:mergeinfo</secondary>
+        </indexterm>This basic syntax&mdash;<userinput>svn merge
         <replaceable>URL</replaceable></userinput>&mdash;tells
         Subversion to merge all changes which have not been previously
         merged from the URL to the current working directory (which is
@@ -1265,7 +1412,11 @@ $
         chapter, in
         <xref linkend="svn.branchmerge.basicmerging.mergeinfo"/>.</para>
 -->
-      <para>Diese einfache Syntax &ndash; <userinput>svn merge
+      <para>
+        <indexterm>
+          <primary>Eigenschaften</primary>
+          <secondary>svn:mergeinfo</secondary>
+        </indexterm>Diese einfache Syntax &ndash; <userinput>svn merge
         <replaceable>URL</replaceable></userinput> &ndash; fordert
         Subversion auf, alle Änderungen von dem URL, die vorher noch
         nicht zusammengeführt wurden,  mit dem aktuellen
@@ -1289,22 +1440,21 @@ $
         <para>
           <indexterm>
             <primary>mergeinfo</primary>
-          </indexterm>
-          In this book and elsewhere (Subversion mailing lists, articles
-          on merge tracking, etc.) you will frequently come across the
-          term <firstterm>mergeinfo</firstterm>. This is simply shorthand
-          for the <literal>svn:mergeinfo</literal> property.</para>
+          </indexterm>In this book and elsewhere (Subversion mailing
+          lists, articles on merge tracking, etc.) you will frequently
+          come across the term <firstterm>mergeinfo</firstterm>. This
+          is simply shorthand for the <literal>svn:mergeinfo</literal>
+          property.</para>
       </tip>
 -->
       <tip>
         <para>
           <indexterm>
             <primary>Mergeinfo</primary>
-          </indexterm>
-          In diesem Buch und anderswo (Subversion Mailing-Listen,
-          Artikeln über Merge-Tracking usw.) wird Ihnen oft der
-          Begriff <firstterm>Mergeinfo</firstterm> begegnen.  Das ist
-          einfach die Abkürzung für die Eigenschaft
+          </indexterm>In diesem Buch und anderswo (Subversion
+          Mailing-Listen, Artikeln über Merge-Tracking usw.) wird
+          Ihnen oft der Begriff <firstterm>Mergeinfo</firstterm>
+          begegnen.  Das ist einfach die Abkürzung für die Eigenschaft
           <literal>svn:mergeinfo</literal>.</para>
       </tip>
 
@@ -1317,20 +1467,21 @@ $
 <!--
         <para>You may not always be able to use Subversion's merge
           tracking feature, perhaps because your server is running
-          Subversion 1.4 or earlier.  In such a scenario, you can of
-          course still perform merges, but Subversion will need you to
-          manually do many of the historical calculations that it
-          automatically does on your behalf when the merge tracking
-          feature is available.</para>
+          Subversion 1.4 or earlier or you must use an older client.
+          In such a scenario, you can of course still perform merges,
+          but Subversion will need you to manually do many of the historical
+          calculations that it automatically does on your behalf when the
+          merge tracking feature is available.</para>
 -->
-        <para>Es kann sein, dass Sie nicht immer die
-          Zusammenführungs-Verfolgung von Subversion verwenden können,
-          vielleicht, weil auf Ihrem Server Subversion 1.4 oder älter
-          läuft. In einem solchen Szenario, können Sie
-          selbstverständlich immer noch zusammenführen, doch erwartet
-          Subversion von Ihnen, viele der historischen Berechnungen
-          selbst manuell vorzunehmen, die Ihnen das Merge-Tracking
-          abnehmen würde, wenn sie verfügbar wäre.</para>
+        <para>Es kann sein, dass Sie nicht immer das Merge-Tracking
+          von Subversion verwenden können, vielleicht, weil auf Ihrem
+          Server Subversion 1.4 oder älter läuft oder Sie einen
+          älteren Client verwenden. In einem solchen Szenario, können
+          Sie selbstverständlich immer noch zusammenführen, doch
+          erwartet Subversion von Ihnen, viele der historischen
+          Berechnungen selbst manuell vorzunehmen, die Ihnen das
+          Merge-Tracking abnehmen würde, wenn sie verfügbar
+          wäre.</para>
 
 <!--
         <para>To replicate the most recent trunk changes you need to
@@ -1345,61 +1496,71 @@ $
           möchten.</para>
 
 <!--
-        <para>Let's say you branched <filename>/trunk</filename> to 
-          <filename>/branches/foo-feature</filename> in revision
-          400:</para>
+        <para>Using the ongoing example, you know that you branched
+          <filename>/calc/trunk</filename> to 
+          <filename>/calc/branches/my-calc-branch</filename> in revision
+          341:</para>
 -->
-        <para>Sagen wir einmal, Sie hätten in Revision 400
-          <filename>/branches/foo-feature</filename> von
-          <filename>/trunk</filename> abgezweigt:</para>
+        <para>Im laufenden Beispiel wissen Sie, dass Sie in Revision
+          341 <filename>/calc/trunk</filename> nach
+          <filename>/calc/branches/my-calc-branch</filename>
+          abgezweigt haben:</para>
 
         <informalexample>
           <screen>
-$ svn log -v -r 400 ^/branches/foo-feature
+$ svn log -v -r341
 ------------------------------------------------------------------------ <!--
-r400 | carol | 2011-11-09 10:51:27 -0500 (Wed, 09 Nov 2011) | 1 line
+r341 | user | 2013-02-15 07:41:25 -0500 (Fri, 15 Feb 2013) | 1 line
 Changed paths:
-A /branch/b2 (from /trunk:399)
+   A /calc/branches/my-calc-branch (from /calc/trunk:340)
 -->
-r400 | carol | 2011-11-09 10:51:27 -0500 (Mi, 09. Nov 2011) | 1 Zeile
+r341 | user | 2013-02-15 07:41:25 -0500 (Fr, 15. Feb 2013) | 1 Zeile
 Geänderte Pfade:
-A /branch/b2 (von /trunk:399)
+   A /calc/branches/my-calc-branch (von /calc/trunk:340)
 
-Create branch for the foo feature
+Creating a private branch of /calc/trunk.
 ------------------------------------------------------------------------
 </screen>
         </informalexample>
 
 <!--
-        <para>When you are ready to syncronize your branch with the
+        <para>When you are ready to synchronize your branch with the
           ongoing changes from trunk, you specify the starting
-          revision as the revision of <filename>/trunk</filename>
+          revision as the revision of <filename>/calc/trunk</filename>
           which the branch was copied from and the ending revision as
-          <literal>HEAD</literal>:</para>
+          the youngest change on <filename>/calc/trunk</filename>.  You
+          can find the latter with the <command>svn log</command> command
+          with the <option>-r</option> set to <literal>HEAD</literal>:</para>
 -->
         <para>Wenn Sie soweit sind, Ihren Zweig mit den fortlaufenden
           Änderungen vom Stamm zu synchronisieren, geben Sie die
           Start-Revision al die Revision von
-          <filename>/trunk</filename> an, von wo aus Sie den Zweig
-          kopiert haben, und als End-Revision
-          <literal>HEAD</literal>:</para>
+          <filename>/calc/trunk</filename> an, von wo aus Sie den
+          Zweig kopiert haben, und als End-Revision die letzte
+          Änderung auf <filename>/calc/trunk</filename>. Letztere
+          können Sie finden, indem Sie den Befehl <command>svn
+          log</command> mit der Option <option>-r</option> und dem
+          Optionsargument <literal>HEAD</literal> aufrufen:</para>
 
         <informalexample>
           <screen>
-$ svn merge ^/trunk -r399:HEAD <!--
-- - - Merging r400 through r556 into '.':
--->
--- Zusammenführen von r400 bis r556 in ».«:
-A    include/foo.h
-U    src/main.c
-A    src/foo.c
-&hellip;
+$ svn log -q -rHEAD http://svn.example.com/repos/calc/trunk
+------------------------------------------------------------------------<!--
+r351 | sally | 2013-02-16 08:04:22 -0500 (Sat, 16 Feb 2013)-->
+r351 | sally | 2013-02-16 08:04:22 -0500 (Sa, 16. Feb 2013)
+------------------------------------------------------------------------
+
+$ svn merge http://svn.example.com/repos/calc/trunk -r340:351
+U    doc/INSTALL
+U    src/real.c
+U    src/button.c
+U    Makefile
 </screen>
         </informalexample>
 
 <!--
         <para>After any conflicts have been resolved, you can commit
-          the merged changed to your branch.  Now, to avoid
+          the merged changes to your branch.  Now, to avoid
           accidentally trying to merge these same changes into your
           branch again in the future, you'll need to record the fact
           that you've already merged them.  But where should that
@@ -1418,26 +1579,16 @@ A    src/foo.c
 
         <informalexample>
           <screen>
-<!--
-$ svn ci -m "Sync the foo-feature branch with ^/trunk through r556."
-Sending        include/foo.h
+$ svn ci -m "Sync the my-calc-branch with ^/calc/trunk through r351."
 &hellip;
-Transmitting file data .
-Committed revision 557.
--->
-$ svn ci -m "Den foo-Feature-Zweig mit ^/trunk bis r556 synchronisiert."
-Sende          include/foo.h
-&hellip;
-Übertrage Daten .
-Revision 557 übertragen.
 </screen>
         </informalexample>
 
 <!--
         <para>The next time you sync
-          <filename>/branches/foo-branch</filename> with
-          <filename>/trunk</filename> you repeat this process, except that
-          the starting revision is the <emphasis>youngest</emphasis>
+          <filename>/calc/branches/my-calc-branch</filename>  with
+          <filename>/calc/trunk</filename> you repeat this process, except
+          that the starting revision is the <emphasis>youngest</emphasis>
           revision that's already been merged in from the trunk.
           If you've been keeping good records of your merges in the
           commit log messages, you should be able to determine what
@@ -1446,11 +1597,11 @@ Revision 557 übertragen.
           revision, you can perform another sync merge:</para>
 -->
         <para>Beim nächsten Mal, wenn Sie
-          <filename>/branches/foo-branch</filename> mit
-          <filename>/trunk</filename> synchronisieren, wiederholen Sie
-          diesen Prozess, mit der Ausnahme, dass die Start-Revision
-          die <emphasis>jüngste</emphasis> bereits vom Stamm
-          zusammengeführte Revision ist. Wenn Sie in Ihren
+          <filename>/calc/branches/my-calc-branch</filename> mit
+          <filename>/calc/trunk</filename> synchronisieren,
+          wiederholen Sie diesen Prozess, mit der Ausnahme, dass die
+          Start-Revision die <emphasis>jüngste</emphasis> bereits vom
+          Stamm zusammengeführte Revision ist. Wenn Sie in Ihren
           Protokollnachrichten darüber gut Buch geführt haben, sollten
           Sie in der Lage sein, festzustellen, welches diese jüngste
           Revision war, indem Sie die Protokollnachrichten Ihres
@@ -1460,7 +1611,13 @@ Revision 557 übertragen.
 
         <informalexample>
           <screen>
-$ svn merge ^/trunk -r556:HEAD
+$ svn log -q -rHEAD http://svn.example.com/repos/calc/trunk
+------------------------------------------------------------------------<!--
+r959 | sally | 2013-03-5 7:30:21 -0500 (Tue, 05 Mar 2013)-->
+r959 | sally | 2013-03-5 7:30:21 -0500 (Di, 05. Mär 2013)
+------------------------------------------------------------------------
+
+$ svn merge http://svn.example.com/repos/calc/trunk -r351:959
 &hellip;
 </screen>
         </informalexample>
@@ -1482,9 +1639,10 @@ $ svn merge ^/trunk -r556:HEAD
         <screen>
 $ svn status
  M      .
-M       button.c
-M       integer.c
-$
+M       Makefile
+M       doc/INSTALL
+M       src/button.c
+M       src/real.c
 </screen>
       </informalexample>
 
@@ -1493,13 +1651,9 @@ $
         carefully with <command>svn diff</command>, and then build and
         test your branch.  Notice that the current working directory
         (<quote><filename>.</filename></quote>) has also been
-        modified; <command>svn diff</command> will show that
-        its <literal>svn:mergeinfo</literal> property has been either
-        created or modified.  This is important merge-related metadata
-        that you should <emphasis>not</emphasis> touch, since it is
-        needed by future <command>svn merge</command> commands.
-        (We'll learn more about this metadata later in the
-        chapter.)</para>
+        modified; <command>svn diff</command> shows that
+        its <literal>svn:mergeinfo</literal> property has been created.
+  </para>
 -->
       <para>Zu diesem Zeitpunkt ist es weise, sich die Änderungen
         mithilfe von <command>svn diff</command> sorgfältig anzusehen,
@@ -1507,9 +1661,48 @@ $
         testen. Beachten Sie, dass auch das aktuelle
         Arbeitsverzeichnis (<quote><filename>.</filename></quote>)
         verändert wurde; <command>svn diff</command> zeigt an, dass
-        seine Eigenschaft <literal>svn:mergeinfo</literal> entweder
-        angelegt oder modifiziert wurde. Das ist ein wichtiges
-        Metadatum in Zusammenhang mit Zusammenführungen, das Sie
+        seine Eigenschaft <literal>svn:mergeinfo</literal> angelegt
+        wurde.</para>
+
+      <informalexample>
+<!--
+        <screen>
+$ svn diff - -depth empty .
+Index: .
+===================================================================
+- - .   (revision 351)
++++ .   (working copy)
+
+Property changes on: .
+___________________________________________________________________
+Added: svn:mergeinfo
+   Merged /calc/trunk:r341-351
+</screen>
+-->
+        <screen>
+$ svn diff --depth empty .
+Index: .
+===================================================================
+--- .   (Revision 351)
++++ .   (Arbeitskopie)
+
+Eigenschaftsänderungen: .
+___________________________________________________________________
+Hinzugefügt: svn:mergeinfo
+   Zusammengeführt /calc/trunk:r341-351
+</screen>
+      </informalexample>
+
+<!--
+      <para>
+        This new property is important merge-related metadata
+        that you should <emphasis>not</emphasis> touch, since it is
+        needed by future <command>svn merge</command> commands.
+        (We'll learn more about this metadata later in the
+        chapter.)</para>
+-->
+      <para>Diese neue Eigenschaft ist ein wichtiges Metadatum in
+        Zusammenhang mit Zusammenführungen, das Sie
         <emphasis>nicht</emphasis> anfassen sollten, da es von
         künftigen <command>svn merge</command>-Befehlen benötigt wird.
         (Wir werden später in diesem Kapitel mehr über diese Metadaten
@@ -1546,20 +1739,23 @@ $
       <informalexample>
         <screen>
 <!--
-$ svn commit -m "Merged latest trunk changes to my-calc-branch."
+$ svn commit -m "Sync latest trunk changes to my-calc-branch."
 Sending        .
-Sending        button.c
-Sending        integer.c
-Transmitting file data ..
-Committed revision 357.
+Sending        Makefile
+Sending        doc/INSTALL
+Sending        src/button.c
+Sending        src/real.c
+Transmitting file data ....
+Committed revision 352.
 -->
-$ svn commit -m "Die letzten Änderungen von trunk mit my-calc-branch zusammengeführt."
+$ svn commit -m "Die letzten Änderungen von trunk mit my-calc-branch synchronisiert."
 Sende          .
-Sende          button.c
-Sende          integer.c
+Sende          Makefile
+Sende          doc/INSTALL
+Sende          src/button.c
+Sende          src/real.c
 Übertrage Daten ..
-Revision 357 übertragen.
-$
+Revision 352 übertragen.
 </screen>
       </informalexample>
 
@@ -1597,10 +1793,14 @@ $
         <informalexample>
           <screen>
 $ cd my-calc-branch
-$ svn diff -r 341:HEAD ^/calc/trunk &gt; my-patch-file
+
+$ svn diff -r 341:351 ^/calc/trunk > my-patch-file
+
 $ svn patch my-patch-file
-U         integer.c
-$
+U         doc/INSTALL
+U         src/real.c
+U         src/button.c
+U         Makefile
 </screen>
         </informalexample>
 
@@ -1619,7 +1819,7 @@ $
           all.  <command>svn diff</command> outputs only the limited
           patch format, so there are some ideas it simply can't
           express.  Even Subversion's own <command>svn patch</command>
-          subcommand, while more flexible than patch program, still has
+          subcommand, while more flexible than the patch program, still has
           similar limitations.</para>
 -->
         <para>Bei diesem speziellen Beispiel gibt es wahrhaftig keinen
@@ -1689,11 +1889,11 @@ $
       <informalexample>
         <screen>
 $ svn merge ^/calc/trunk <!--
-svn: E195020: Cannot merge into mixed-revision working copy [357:378]; try up\
+svn: E195020: Cannot merge into mixed-revision working copy [352:357]; try up\
 dating first
 -->
 Kann nicht in eine Arbeitskopie mit verschiedenen Revisionen zusammenführen [\
-357:378], versuchen Sie erst zu aktualisieren
+352:357], versuchen Sie erst zu aktualisieren
 $
 </screen>
       </informalexample>
@@ -1702,8 +1902,8 @@ $
       <para>Well that was unexpected!  After making changes to your
         branch over the past week you now find yourself with a working
         copy that contains a mixture of revisions (see
-        <xref linkend="svn.basic.in-action.mixedrevs"/>).  With the
-        release of Subversion 1.7 the <command>svn merge</command>
+        <xref linkend="svn.basic.in-action.mixedrevs"/>).  With Subversion
+        1.7 and later, the <command>svn merge</command>
         subcommand disables merges into mixed-revision working copies
         by default.  Without going into too much detail, this is
         because of limitations in the way merges are tracked by the
@@ -1725,18 +1925,18 @@ $
         Sie sich nun einer Arbeitskopie gegenüber, die eine Mischung
         von Revisionen enthält (siehe
         <xref linkend="svn.basic.in-action.mixedrevs"/>). Mit
-        Subversion 1.7 verhindert der Unterbefehl <command>svn
-        merge</command> standardmäßig die Zusammenführung in
-        Arbeitskopien mit gemischten Revisionen. Ohne auf Einzelheiten
-        einzugehen, liegt das an Einschränkungen der Art und Weise,
-        wie Merges durch die Eigenschaft
+        Subversion 1.7 und neuer verhindert der Unterbefehl
+        <command>svn merge</command> standardmäßig die Zusammenführung
+        in Arbeitskopien mit gemischten Revisionen. Ohne auf
+        Einzelheiten einzugehen, liegt das an Einschränkungen der Art
+        und Weise, wie Merges durch die Eigenschaft
         <literal>svn:mergeinfo</literal> verfolgt werden (siehe
         <xref linkend="svn.branchmerge.basicmerging.mergeinfo"/> zu
-        Details). Diese Einschränkungen bedeuten, dass
-        Merges in Arbeitskopien aus gemischten Revisionen unerwartete
-        Text- und Baumkonflikte hervorrufen können.<footnote><para>Die
-        Option <option>--allow-mixed-revisions</option> des
-        Unterbefehls <command>svn merge</command> erlaubt Ihnen, diese
+        Details). Diese Einschränkungen bedeuten, dass Merges in
+        Arbeitskopien aus gemischten Revisionen unerwartete Text- und
+        Baumkonflikte hervorrufen können.<footnote><para>Die Option
+        <option>--allow-mixed-revisions</option> des Unterbefehls
+        <command>svn merge</command> erlaubt Ihnen, diese
         Einschränkung zu umgehen, jedoch sollten Sie das nur dann
         machen, wenn Sie die Auswirkungen verstehen und einen guten
         Grund dafür haben.</para></footnote> Wir möchten keine
@@ -1745,22 +1945,22 @@ $
 
       <informalexample>
         <screen>
-$ svn up
+$ svn up<!--
 Updating '.':
-At revision 380.
+At revision 361.-->
+Aktualisiere ».«:
+Revision 361.
 
-$ svn merge ^/calc/trunk <!--
-- - - Merging r357 through r380 into '.':
+$ svn merge ^/calc/trunk<!--
+- - Merging r352 through r361 into '.':
 -->
---- Zusammenführen von r357 bis r380 in ».«:
-U    integer.c
-U    Makefile
-A    README <!--
-- - - Recording mergeinfo for merge of r357 through r380 into '.':
+--- Zusammenführen von r352 bis r361 in ».«:
+U    src/real.c
+U    src/main.c<!--
+- - Recording mergeinfo for merge of r352 through r361 into '.':
 -->
--- Aufzeichnung der Informationen für Zusammenführung von r357 bis r380 in ».«:
+-- Aufzeichnung der Informationen für Zusammenführung von r352 bis r361 in ».«:
  U   .
-$
 </screen>
       </informalexample>
 
@@ -1786,42 +1986,44 @@ $
 <!--
         <para>
           <indexterm>
-            <primary>subtree merge</primary>
+            <primary>merging</primary>
+            <secondary>subtree merge</secondary>
           </indexterm>
           <indexterm>
-            <primary>subtree mergeinfo</primary>
-          </indexterm>
-          In most of the examples in this chapter the merge target is
-          the root directory of a branch (see
+            <primary>mergeinfo</primary>
+            <secondary>subtree mergeinfo</secondary>
+          </indexterm>In most of the examples in this chapter the
+          merge target is the root directory of a branch (see
           <xref linkend="svn.branchmerge.whatis"/>). While this is a
-          best practice, you may occasionally need to merge directly to
-          some child of the branch root. This type of merge is called a
-          <firstterm>subtree merge</firstterm> and the mergeinfo recorded
-          to describe it is called
+          best practice, you may occasionally need to merge directly
+          to some child of the branch root. This type of merge is
+          called a <firstterm>subtree merge</firstterm> and the
+          mergeinfo recorded to describe it is called
           <firstterm>subtree mergeinfo</firstterm>. There is nothing
           special about subtree merges or subtree mergeinfo.  In fact
           there is really only one important point to keep in mind
           about these concepts: the complete record of merges to a
           branch may not be contained solely in the mergeinfo on the
-          branch root.  You may have to look to any subtree mergeinfo
+          branch root.  You may have to consider subtree mergeinfo
           to get a full accounting.  Fortunately Subversion does this
           for you and rarely will you need to concern yourself with
           it.  A brief example will help explain:</para>
 -->
         <para>
           <indexterm>
-            <primary>Teilbaum-Merge</primary>
+            <primary>Merging</primary>
+            <secondary>Teilbaum-Merge</secondary>
           </indexterm>
           <indexterm>
-            <primary>Teilbaum-Mergeinfo</primary>
-          </indexterm>
-          In den meisten Beispielen dieses Kapitels ist das Ziel einer
-          Zusammenführung das Wurzelverzeichnis eines Zweigs (siehe
-          <xref linkend="svn.branchmerge.whatis"/>). Obwohl es sich
-          dabei um eine empfohlene Vorgehensweise handelt, kann es
-          vorkommen, dass Sie gelegentlich einen Merge direkt in
-          irgendein Kindverzeichnis der Wurzel des Zweigs vornehmen
-          müssen. Diese Art der Zusammenführung wird
+            <primary>Merging</primary>
+            <secondary>Teilbaum-Mergeinfo</secondary>
+          </indexterm>In den meisten Beispielen dieses Kapitels ist
+          das Ziel einer Zusammenführung das Wurzelverzeichnis eines
+          Zweigs (siehe <xref linkend="svn.branchmerge.whatis"/>).
+          Obwohl es sich dabei um eine empfohlene Vorgehensweise
+          handelt, kann es vorkommen, dass Sie gelegentlich einen
+          Merge direkt in irgendein Kindverzeichnis der Wurzel des
+          Zweigs vornehmen müssen. Diese Art der Zusammenführung wird
           <firstterm>Teilbaum-Merge</firstterm> genannt, und die
           aufgezeichneten Informationen dazu
           <firstterm>Teilbaum-Mergeinfo</firstterm>. Es gibt weder
@@ -1832,9 +2034,9 @@ $
           einen Zweig müssen nicht notwendigerweise in den
           Informationen der Wurzel des Zweigs vorliegen. Für eine
           vollständige Übersicht müssen Sie alle Teilbaum-Mergeinfos
-          untersuchen.  Glücklicherweise erledigt das Subversion für
-          Sie, so dass Sie sich in den seltensten Fällen selbst darum
-          kümmern müssen. Ein kurzes Beispiel hilft bei der
+          berücksichtigen.  Glücklicherweise erledigt das Subversion
+          für Sie, so dass Sie sich in den seltensten Fällen selbst
+          darum kümmern müssen. Ein kurzes Beispiel hilft bei der
           Erklärung:</para>
 
 <!--
@@ -1945,23 +2147,21 @@ $ svn merge ^/subversion/trunk . -c 958
 U    src/main.c
 -- Aufzeichnung der Informationen für Zusammenführung von r958 in ».«:
  U   .
---- Eliding mergeinfo from 'doc/INSTALL':
+-- Entfernung der Zusammenführungsinformationen von »doc/INSTALL«:
  U   doc/INSTALL
 </screen>
         </informalexample>
 
-        <indexterm>
 <!--
-          <primary>mergeinfo elision</primary>
--->
-          <primary>Auslassung von Mergeinfo</primary>
-        </indexterm>
-
-<!--
-        <para>You might be wondering why <filename>INSTALL</filename>
-          in the above example has mergeinfo for r651-652, when we
-          only merged r958. This is due to mergeinfo inheritance,
-          which we'll cover in the sidebar
+        <para>
+          <indexterm>
+            <primary>mergeinfo</primary>
+            <secondary>elision</secondary>
+          </indexterm>You might be wondering
+          why <filename>INSTALL</filename> in the above example has
+          mergeinfo for r651-652, when we only merged r958. This is
+          due to mergeinfo inheritance, which we'll cover in the
+          sidebar
           <xref linkend="svn.branchmerge.basicmerging.mergeinfo.inheritance"
           />.  Also note that the subtree mergeinfo on
           <filename>doc/INSTALL</filename> was removed, or
@@ -1969,15 +2169,19 @@ U    src/main.c
           <firstterm>mergeinfo elision</firstterm> and it occurs
           whenever Subversion detects redundant subtree mergeinfo.</para>
 -->
-        <para>Sie haben sich vielleicht gefragt, warum im obigen
+        <para>
+          <indexterm>
+            <primary>Mergeinfo</primary>
+            <secondary>Entfernung</secondary>
+          </indexterm>Sie haben sich vielleicht gefragt, warum im obigen
           Beispiel <filename>INSTALL</filename> Mergeinfo für r651-652
           besitzt, wenn wir nur r958 zusammengeführt haben. Das liegt
-          an der Vererbung der Mergeinfo, die wir in <xref
-          linkend="svn.branchmerge.basicmerging.mergeinfo.inheritance"
+          an der Vererbung der Mergeinfo, die wir in
+          <xref linkend="svn.branchmerge.basicmerging.mergeinfo.inheritance"
           /> behandeln. Beachten Sie weiterhin, dass die
           Teilbaum-Mergeinfo von <filename>doc/INSTALL</filename>
-          entfernt, oder <quote>ausgelassen</quote> wurde. Das nennt
-          sich <firstterm>Auslassung von Mergeinfo</firstterm> und
+          <quote>entfernt</quote> wurde. Das nennt
+          sich <firstterm>Entfernung von Mergeinfo</firstterm> und
           passiert immer dann, wenn Subversion redundante
           Teilbaum-Mergeinfo entdeckt.</para>
 
@@ -1991,10 +2195,10 @@ U    src/main.c
           mergeinfo this meant that relatively <quote>simple</quote>
           merges (e.g. one which applied a diff to only a single file)
           resulted in changes to every subtree with mergeinfo, even
-          those that were not parents of the effected path(s). This
+          those that were not parents of the affected path(s). This
           caused some level of confusion and frustration. Subversion 1.7
-          addresses this problem by only updating the mergeinfo on
-          subtrees which are parents of the paths modified by the merge
+          and later addresses this problem by only updating the mergeinfo
+          on subtrees which are parents of the paths modified by the merge
           (i.e. paths changed, added, or deleted by application of the
           difference, see
           <xref linkend="svn.branchmerge.advanced.advancedsyntax"/>).
@@ -2003,7 +2207,7 @@ U    src/main.c
           describe the merge, even if the applied difference made no
           changes.</para>
 -->
-        <para>vor Subversion 1.7 haben Zusammenführungen bedingungslos
+        <para>Vor Subversion 1.7 haben Zusammenführungen bedingungslos
           <emphasis>die gesamte</emphasis> Teilbaum-Mergeinfo unter
           dem Ziel aktualisiert, um den Merge zu beschreiben. Für
           Anwender mit umfangreicher Teilbaum-Mergeinfo bedeutete das,
@@ -2012,17 +2216,18 @@ U    src/main.c
           wurde) Änderungen der Mergeinfo in jedem Teilbaum nach sich
           zog, selbst bei denen, die keine Eltern des betroffenen
           Pfades waren. Dies führte zu einiger Verwirrung und
-          Frustration. Subversion 1.7 geht dieses Problem an, indem es
-          nur die Mergeinfo an den Teilbäumen aktualisiert, die Eltern
-          der vom Merge betroffenen Pfade sind (d.h., durch die
-          Anwendung der Differenz geänderte, hinzugefügte oder
-          gelöschte Pfade, siehe
+          Frustration. Subversion 1.7 und neuer geht dieses Problem
+          an, indem es nur die Mergeinfo an den Teilbäumen
+          aktualisiert, die Eltern der vom Merge betroffenen Pfade
+          sind (d.h., durch die Anwendung der Differenz geänderte,
+          hinzugefügte oder gelöschte Pfade, siehe
           <xref linkend="svn.branchmerge.advanced.advancedsyntax"/>).
           Die einzige Ausnahme von diesem Verhalten betrifft das
           eigentliche Ziel der Zusammenführung; dessen Mergeinfo wird
           stets aktualisiert, um den Merge zu beschreiben, auch wenn
           die angewandte Differenz keine Änderung nach sich
-          zog.</para> </tip>
+          zog.</para>
+      </tip>
 
     </sect2>
 
@@ -2039,7 +2244,7 @@ U    src/main.c
         branch changes back to the trunk (so your team can enjoy the
         bounty of your labor).  The process is simple.  First, bring
         your branch into sync with the trunk again, just as you've been
-        doing all along<footnote><para>With Subversion 1.7 you don't
+        doing all along<footnote><para>Since Subversion 1.7 you don't
         absolutely have to do all your sync merges to the root of your
         branch as we do in this example.  <emphasis>If</emphasis> your
         branch is effectively synced via a series of subtree
@@ -2054,8 +2259,8 @@ U    src/main.c
         Stamm zu überführen (so dass Ihr Team die Früchte Ihrer Arbeit
         genießen kann). Die Vorgehensweise ist einfach. Zunächst
         synchronisieren Sie Ihren Zweig noch einmal mit dem Stamm, wie
-        Sie es bisher gemacht haben:<footnote><para>Mit Subversion 1.7
-        brauchen Sie nicht unbedingt alle Ihre
+        Sie es bisher gemacht haben:<footnote><para>Seit Subversion
+        1.7 brauchen Sie nicht unbedingt alle Ihre
         Synchronisierungs-Merges in die Wurzel Ihres Zweigs zu bringen
         wie in diesem Beispiel.  <emphasis>Falls</emphasis> Ihr Zweig
         effektiv durch eine Reihe von Teilbaum-Merges synchronisiert
@@ -2066,59 +2271,106 @@ U    src/main.c
 
       <informalexample>
         <screen>
-$ svn merge ^/calc/trunk <!--
-- - - Merging r381 through r385 into '.':
--->
---- Zusammenführen von r381 bis r385 in ».«:
-U    button.c
-U    README <!--
-- - - Recording mergeinfo for merge of r381 through r385 into '.':
--->
--- Aufzeichnung der Informationen für Zusammenführung von r381 bis r385 in ».«:
+<!--
+$ svn up # (make sure the working copy is up to date)
+Updating '.':
+At revision 378.
+
+$ svn merge ^/calc/trunk
+- - Merging r362 through r378 into '.':
+U    src/main.c
+- - Recording mergeinfo for merge of r362 through r378 into '.':
  U   .
 
 $ # build, test, ...
 
 $ svn commit -m "Final merge of trunk changes to my-calc-branch."
 Sending        .
-Sending        button.c
-Sending        README
-Transmitting file data ..
-Committed revision 390.
+Sending        src/main.c
+Transmitting file data .
+Committed revision 379.
+-->
+$ svn up # (make sure the working copy is up to date)
+Updating '.':
+At revision 378.
+
+$ svn merge ^/calc/trunk
+--- Zusammenführen von r362 bis r378 in ».«:
+U    src/main.c
+-- Aufzeichnung der Informationen für Zusammenführung von r381 bis r385 in ».«:
+ U   .
+
+$ # bauen, testen, ...
+
+$ svn commit -m "Endgültiger Merge der trunk-Änderungen nach my-calc-branch."
+Sende              .
+Sende              src/main.c
+Übertrage Daten .
+Revision 379 übertragen.
 </screen>
       </informalexample>
 
 <!--
-      <para>Now, use <command>svn merge</command> with the
-        <option>- -reintegrate</option> option to replicate your branch
-        changes back into the trunk.  You'll need a working copy
-        of <filename>/trunk</filename>.  You can get one by doing
-        an <command>svn checkout</command>, dredging up an old trunk
+      <para>Now, use <command>svn merge</command> subcommand to automatically
+        replicate your branch changes back into the trunk.  This type of
+        merge is called an
+        <indexterm>
+          <primary>merging</primary>
+          <secondary>reintegrate merges</secondary>
+        </indexterm> <quote>automatic reintegrate</quote> merge.  You'll need
+        a working copy of <filename>/calc/trunk</filename>.  You can get one
+        by doing an <command>svn checkout</command>, dredging up an old trunk
         working copy from somewhere on your disk, or
         using <command>svn switch</command> (see
-        <xref linkend="svn.branchmerge.switchwc" />).  Your trunk
-        working copy cannot have any local edits or contain a mixture
-        of revisions (see
+        <xref linkend="svn.branchmerge.switchwc" />).</para>
+-->
+      <para>Verwenden Sie den Unterbefehl <command>svn
+        merge</command>, um Ihre Änderungen automatisch zurück auf
+        den Stamm zu replizieren. Diese Art von Merge wird
+        <indexterm>
+          <primary>Merge</primary>
+          <secondary>Reintegrations-Merges</secondary>
+        </indexterm><quote>automatischer Reintegrations</quote>-Merge
+        genannt.  Sie benötigen eine Arbeitskopie von
+        <filename>/calc/trunk</filename>.  Sie bekommen sie entweder
+        durch <command>svn checkout</command>, indem Sie von irgendwo
+        auf Ihrer Platte eine alte Arbeitskopie vom Stamm
+        hervorkramen, oder den Befehl <command>svn switch</command>
+        (siehe <xref linkend="svn.branchmerge.switchwc"/>)
+        verwenden.</para>
+
+      <tip>
+<!--
+        <para>The term <quote>reintegrating</quote> comes from the
+          <command>merge</command> option <option>- -reintegrate</option>.
+          This option is deprecated in Subversion 1.8 (which automatically
+          detects when a reintegrate merge is needed), but is required
+          for Subversion 1.5 through 1.7 clients when performing reintegrate
+          merges.</para>
+-->
+        <para>Der Begriff <quote>Reintegration</quote> kommt von der
+          <command>merge</command>-Option
+          <option>--reintegrate</option>.  Diese Option gilt in
+          Subversion 1.8 (das automatisch erkennt, wann ein
+          Reintegrations-Merge notwendig ist) als veraltet, wird
+          jedoch für Clients von Subversion 1.5 bis 1.7 benötigt, wenn
+          Reintegrations-Merges ausgeführt werden.</para> </tip>
+
+<!--
+      <para>Your trunk working copy cannot have any local edits, switched
+        paths, or contain a mixture of revisions (see
         <xref linkend="svn.basic.in-action.mixedrevs" />).  While
         these are typically best practices for merging anyway, they
-        are <emphasis>required</emphasis> when using the
-        <option>- -reintegrate</option> option.</para>
+        are <emphasis>required</emphasis> for automatic reintegrate
+        merges.</para>
 -->
-      <para>Verwenden Sie jetzt <command>svn merge</command> mit der
-        Option <option>--reintegrate</option> , um Ihre
-        Änderungen vom Zweig zurück auf den Stamm zu überführen. Sie
-        benötigen eine Arbeitskopie von <filename>/trunk</filename>.
-        Sie bekommen sie entweder durch <command>svn
-        checkout</command>, indem Sie von irgendwo auf Ihrer Platte
-        eine alte Arbeitskopie vom Stamm hervorholen, oder den Befehl
-        <command>svn switch</command>
-        (siehe <xref linkend="svn.branchmerge.switchwc"/>) verwenden.
-        Ihre Arbeitskopie darf keine lokalen Änderungen beinhalten
+
+      <para>Ihre Arbeitskopie darf keine lokalen Änderungen beinhalten
         oder aus gemischten Revisionen bestehen
         (siehe <xref linkend="svn.basic.in-action.mixedrevs"/>).
         Obwohl es sich dabei normalerweise um die bewährten
-        Vorgehensweisen beim Zusammenführen handelt, sind sie bei der
-        Verwendung der Option <option>--reintegrate</option>
+        Vorgehensweisen beim Zusammenführen handelt, sind sie bei
+        automatischen Reintegrations-Merges
         <emphasis>zwingend</emphasis> notwendig.</para>
 
 <!--
@@ -2133,20 +2385,21 @@ Committed revision 390.
 $ pwd
 /home/user/calc-trunk
 
-$ svn update  # (make sure the working copy is up to date)
-Updating '.': <!--
-At revision 390.
+$ svn update<!--
+Updating '.':
+At revision 379.
 -->
+Aktualisiere ».«:
 Revision 390.
 
-$ svn merge --reintegrate ^/calc/branches/my-calc-branch <!--
-- - - Merging differences between repository URLs into '.':
+$ svn merge ^/calc/branches/my-calc-branch <!--
+- - Merging differences between repository URLs into '.':
 -->
 -- Zusammenführen der Unterschiede zwischen Projektarchiv-URLs in ».«:
-U    button.c
-U    integer.c
+U    src/real.c
+U    src/main.c
 U    Makefile <!--
-- - - Recording mergeinfo for merge between repository URLs into '.':
+- - Recording mergeinfo for merge between repository URLs into '.':
 -->
 -- Aufzeichnung der Informationen für Zusammenführung zwischen Projektarchiv-URLs in ».«:
  U   .
@@ -2157,128 +2410,120 @@ $ # bauen, testen, überprüfen, ...
 <!--
 $ svn commit -m "Merge my-calc-branch back into trunk!"
 Sending        .
-Sending        button.c
-Sending        integer.c
 Sending        Makefile
-Transmitting file data ..
-Committed revision 391.
+Sending        src/main.c
+Sending        src/real.c
+Transmitting file data ...
+Committed revision 380.
 -->
 $ svn commit -m "my-calc-branch mit Stamm zusammenführen!"
 Sende          .
-Sende          button.c
-Sende          integer.c
 Sende          Makefile
+Sende          src/main.c
+Sende          src/real.c
 Übertrage Daten ..
-Revision 391 übertragen.
+Revision 380 übertragen.
 </screen>
       </informalexample>
 
 <!--
       <para>Congratulations, your branch-specific changes have now
-        been merged back into the main line of development.  Notice
-        our use of the <option>- -reintegrate</option> option this time
-        around.  The option is critical for reintegrating changes from
-        a branch back into its original line of
-        development&mdash;don't forget it!  It's needed because this
-        sort of <quote>merge back</quote> is a different sort of work
-        than what you've done up until now.  Previously, we were
+        been merged back into the main line of development.  Notice that
+        the automatic reintegrate merge did a different sort of work than
+        what you've done up until now.  Previously, we were
         asking <command>svn merge</command> to grab the <quote>next
         set</quote> of changes from one line of development (the
         trunk) and duplicate them to another (your branch).  This is
         fairly straightforward, and each time Subversion knows how to
         pick up where it left off.  In our prior examples, you can see
-        that first it merges the ranges 345:356 from trunk to branch;
+        that first it merges the ranges 341:351 from
+        <filename>/calc/trunk</filename> to
+        <filename>/calc/branches/my-calc-branch</filename>;
         later on, it continues by merging the next contiguously
-        available range, 356:380.  When doing the final sync, it
-        merges the range 380:385.</para>
+        available range, 351:361.  When doing the final sync, it
+        merges the range 361:378.</para>
 -->
       <para>Gratulation! Ihre Änderungen vom Zweig sind nun zurück in
         die Hauptentwicklungslinie überführt worden. Beachten Sie,
-        dass dieses Mal die Option <option>--reintegrate</option>
-        verwendet wurde. Diese Option ist kritisch, wenn Änderungen
-        von einem Zweig in die ursprüngliche Entwicklungslinie
-        reintegriert werden &ndash; vergessen Sie sie nicht! Sie wird
-        benötigt, da diese Art der <quote>Rücküberführung</quote>
-        etwas anderes ist, als was Sie bisher gemacht haben. Vorher
-        haben wir <command>svn merge</command> aufgefordert, die
-        <quote>nächste Änderungsmenge</quote> von einer
-        Entwicklungslinie (dem Stamm) zu holen und sie mit einer
-        anderen (Ihrem Zweig) abzugleichen. Das ist recht
-        überschaubar, und Subversion weiß jedes Mal, wo es wieder
-        ansetzen soll. Bei unseren vorangehenden Beispielen können Sie
-        sehen, dass es erst die Intervalle 345:356 vom Stamm auf den
-        Zweig überführte; später fuhr es mit dem nächsten verfügbaren
-        aufeinanderfolgenden Intervall 356:380 fort.  Wenn Sie die
-        letzte Synchronisierung machen, wird es das Intervall 380:385
+        dass der automatische Reintegrations-Merge etwas anderes ist,
+        als was Sie bisher gemacht haben. Vorher haben wir
+        <command>svn merge</command> aufgefordert, die <quote>nächste
+        Änderungsmenge</quote> von einer Entwicklungslinie (dem Stamm)
+        zu holen und sie mit einer anderen (Ihrem Zweig) abzugleichen.
+        Das ist recht überschaubar, und Subversion weiß jedes Mal, wo
+        es wieder ansetzen soll. Bei unseren vorangehenden Beispielen
+        können Sie sehen, dass es erst die Intervalle 341:351 von
+        <filename>/calc/trunk</filename> nach
+        <filename>/calc/branches/my-calc-branch</filename> überführte;
+        später fuhr es mit dem nächsten verfügbaren
+        aufeinanderfolgenden Intervall 351:361 fort.  Wenn Sie die
+        letzte Synchronisierung machen, wird es das Intervall 361:378
         zusammenführen.</para>
 
 <!--
-      <para>When merging your branch back to the trunk, however, the
+      <para>When merging <filename>/calc/branches/my-calc-branch</filename>
+        back to the <filename>/calc/trunk</filename>, however, the
         underlying mathematics are quite different.  Your feature
         branch is now a mishmash of both duplicated trunk changes and
         private branch changes, so there's no simple contiguous range
-        of revisions to copy over.  By specifying
-        the <option>- -reintegrate</option> option, you're asking
-        Subversion to carefully replicate <emphasis>only</emphasis>
+        of revisions to copy over.  By using an automatic merge, you're
+        asking Subversion to carefully replicate <emphasis>only</emphasis>
         those changes unique to your branch.  (And in fact, it does
         this by comparing the latest trunk tree with the latest branch
         tree:  the resulting difference is exactly your branch
         changes!)</para>
 -->
-      <para>Wenn Sie jedoch den Zweig auf den Stamm zurückführen,
-        sehen die dem zugrundeliegenden Berechnungen ganz anders
-        aus. Ihr Zweig ist nun ein Mischmasch aus abgeglichenen
-        Änderungen vom Stamm und privaten Änderungen auf dem Zweig, so
-        dass es kein einfaches, aufeinanderfolgendes Intervall mit
-        Revisionen zum Herüberkopieren gibt. Indem Sie die Option
-        <option>--reintegrate</option> angeben, fordern Sie Subversion
-        auf, sorgfältig <emphasis>nur</emphasis> die Änderungen von
-        Ihrem Zweig zu replizieren. (Und tatsächlich macht es das so,
-        dass es die letzte Version auf dem Stamm mit der letzten
-        Version auf dem Zweig vergleicht: Der Unterschied macht genau
-        die Änderung auf dem Zweig aus!)</para>
+      <para>Wenn Sie jedoch <filename>/calc/branches/my-calc-branch</filename>
+        auf <filename>/calc/trunk</filename> zurückführen, sehen die
+        dem zugrundeliegenden Berechnungen ganz anders aus. Ihr Zweig
+        ist nun ein Mischmasch aus abgeglichenen Änderungen vom Stamm
+        und privaten Änderungen auf dem Zweig, so dass es kein
+        einfaches, aufeinanderfolgendes Intervall mit Revisionen zum
+        Herüberkopieren gibt. Indem Sie einen automatischen Merge
+        verwenden, fordern Sie Subversion auf, sorgfältig
+        <emphasis>nur</emphasis> die Änderungen von Ihrem Zweig zu
+        replizieren. (Und tatsächlich macht es das so, dass es die
+        letzte Version auf dem Stamm mit der letzten Version auf dem
+        Zweig vergleicht: Der Unterschied macht genau die Änderung auf
+        dem Zweig aus!)</para>
 
 <!--
-      <para>Keep in mind that the <option>- -reintegrate</option>
-        option is quite specialized in contrast to the more general
-        nature of most Subversion subcommand options.  It supports the
-        use case described above, but has little applicability outside
-        of that.  Because of this narrow focus, in addition to
-        requiring an up-to-date working copy<footnote><para>Reintegrate
-        merges are allowed if the target is a shallow checkout (see
-        <xref linkend="svn.advanced.sparsedirs"/>) but any paths affected
-        by the diff which are <quote>missing</quote> due to the sparse
-        working copy will be skipped, probably <emphasis>not</emphasis>
-        what you intended!</para></footnote> with no mixed-revisions,
-        it will not function in combination with most of the other
+      <para>Keep in mind that the automatic reintegrate merges only support
+        the use case described above.  Because of this narrow focus, in
+        addition to the requirements previously mentioned (up-to-date working
+        copy <footnote><para>Automatic reintegrate merges are allowed if the
+        target is a shallow checkout
+        (see <xref linkend="svn.advanced.sparsedirs"/>) but any paths
+        affected by the diff which are <quote>missing</quote> due to the
+        sparse working copy will be skipped&mdash;this is probably
+        <emphasis>not</emphasis> what you intended!</para></footnote>
+        with no mixed-revisions, switched paths or local changes) it will not
+        function in combination with most of the other
         <command>svn merge</command> options. You'll get an error if you
         use any non-global options but these: <option>- -accept</option>,
         <option>- -dry-run</option>, <option>- -diff3-cmd</option>,
         <option>- -extensions</option>, or <option>- -quiet</option>.
         </para>
 -->
-      <para>Beachten Sie, dass die Option
-        <option>--reintegrate</option> im Gegensatz zur allgemeineren
-        Natur der meisten Optionen von Subversion-Unterbefehlen doch
-        recht spezialisiert ist. Sie unterstützt den oben
-        beschriebenen Anwendungsfall, hat daneben jedoch wenig
-        Verwendungsmöglichkeiten. Wegen dieses engen Einsatzgebietes
-        sowie der Tatsache, das eine aktualisierte
-        Arbeitskopie<footnote><para>Reintegrations-Merges
+      <para>Beachten Sie, dass automatische Reintegrations-Merges nur
+        die oben beschriebenen Anwendungsfälle unterstützen.  Wegen
+        dieses engen Einsatzgebietes sowie der vorher erwähnten
+        Voraussetzungen (aktualisierte
+        Arbeitskopie<footnote><para>Automatische Reintegrations-Merges
         sind erlaubt, falls das Ziel ein flacher Checkout ist (siehe
         <xref linkend="svn.advanced.sparsedirs"/>), doch sämtliche vom
-        Diff betroffene, durch die auf einen Teilbaum beschränkte
-        Arbeitskopie <quote>fehlende</quote> Pfade werden
+        Diff betroffene, durch die Beschränkung der Arbeitskopie auf
+        einen Teilbaum <quote>fehlende</quote> Pfade werden
         übersprungen, was wahrscheinlich <emphasis>nicht</emphasis>
         von Ihnen beabsichtigt ist!</para></footnote> ohne
-        gemischte Revisionen erforderlich ist, wird diese Option nicht
-        mit den meisten anderen Optionen von <command>svn
-        merge</command> funktionieren. Sie werden einen Fehler
-        bekommen, falls Sie andere nicht-globale Optionen verwenden,
-        als die folgenden: <option>--accept</option>,
-        <option>--dry-run</option>, <option>--diff3-cmd</option>,
-        <option>--extensions</option> oder <option>--quiet</option>.
-      </para>
+        gemischte Revisionen, umgeschaltete Pfade oder lokale
+        Änderungen), wird diese Option nicht mit den meisten anderen
+        Optionen von <command>svn merge</command> funktionieren. Sie
+        werden einen Fehler bekommen, falls Sie andere nicht-globale
+        Optionen verwenden, außer den folgenden:
+        <option>--accept</option>, <option>--dry-run</option>,
+        <option>--diff3-cmd</option>, <option>--extensions</option>
+        oder <option>--quiet</option>.</para>
 
 <!--
       <para>Now that your private branch is merged to trunk, you may
@@ -2292,10 +2537,9 @@ Revision 391 übertragen.
         <screen>
 $ svn delete ^/calc/branches/my-calc-branch \ <!--
       -m "Remove my-calc-branch, reintegrated with trunk in r391."
-Committed revision 392.
 -->
       -m "my-calc-branch entfernt, auf Stamm zurückgeführt in r391."
-Revision 392 übertragen.
+&hellip;
 </screen>
       </informalexample>
 
@@ -2304,10 +2548,10 @@ Revision 392 übertragen.
         What if somebody wants to audit the evolution of your feature
         someday and look at all of your branch changes?  No need to
         worry.  Remember that even though your branch is no longer
-        visible in the <filename>/branches</filename> directory, its
+        visible in the <filename>/calc/branches</filename> directory, its
         existence is still an immutable part of the repository's
         history.  A simple <command>svn log</command> command on
-        the <filename>/branches</filename> URL will show the entire
+        the <filename>/calc/branches</filename> URL will show the entire
         history of your branch.  Your branch can even be resurrected
         at some point, should you desire (see
         <xref linkend="svn.branchmerge.basicmerging.resurrect"/>).</para>
@@ -2317,62 +2561,41 @@ Revision 392 übertragen.
         ansehen möchte und hierfür auf die Änderungen des Zweiges
         schauen möchte? Keine Sorge! Denken Sie daran, dass, obwohl
         Ihr Zweig nicht mehr im Verzeichnis
-        <filename>/branches</filename> sichtbar ist, seine Existenz
-        gleichwohl ein unveränderbarer Teil der Geschichte des
-        Projektarchivs ist. Ein einfacher Befehl <command>svn
-        log</command> auf dem <filename>/branches</filename> URL wird
-        die gesamte Geschichte des Zweiges anzeigen. Ihr Zweig kann
-        eines Tages sogar wiederbelebt werden, sollten Sie dieses
-        wünschen (siehe <xref
-        linkend="svn.branchmerge.basicmerging.resurrect"/>).</para>
+        <filename>/calc/branches</filename> sichtbar ist, seine
+        Existenz gleichwohl ein unveränderbarer Teil der Geschichte
+        des Projektarchivs ist. Ein einfacher Befehl <command>svn
+        log</command> auf dem <filename>/calc/branches</filename> URL
+        wird die gesamte Geschichte des Zweiges anzeigen. Ihr Zweig
+        kann eines Tages sogar wiederbelebt werden, sollten Sie dieses
+        wünschen (siehe
+        <xref linkend="svn.branchmerge.basicmerging.resurrect"/>).</para>
+
 
 <!--
-      <para>Once a <option>- -reintegrate</option> merge is done from
-        branch to trunk, the branch is no longer usable for further
-        work.  It's not able to correctly absorb new trunk changes,
-        nor can it be properly reintegrated to trunk again.  For this
-        reason, if you want to keep working on your feature branch, we
-        recommend destroying it and then re-creating it from the
-        trunk:</para>
+      <para>If you choose not to delete your branch after reintegrating
+        it to the trunk you may continue to perform sync merges from the
+        trunk and then reintegrate the branch again<footnote><para>Only
+        Subversion 1.8 supports this reuse of a feature branch.  Earlier
+        versions require some special handling before a feature branch
+        can be reintegrated more than once.  See the earlier version of
+        this chapter for more information: <ulink
+        url="http://svnbook.red-bean.com/en/1.7/svn.branchmerge.basicmerging.html#svn.branchemerge.basicmerging.reintegrate"
+        /></para></footnote>. If you do this, only the changes made on your
+        branch after the first reintegrate are merged to the trunk.</para>
 -->
-      <para>Sobald eine Zusammenführung mit
-        <option>--reintegrate</option> vom Zweig auf den Stamm
-        durchgeführt wurde, kann der Zweig nicht mehr für weitere
-        Arbeiten verwendet werden. Er kann weder Änderungen vom Stamm
-        korrekt absorbieren, noch kann er ordentlich auf den Stamm
-        zurückintegriert werden. Aus diesem Grund sollten Sie ihn
-        zerstören und erneut aus dem Stamm erzeugen, wenn Sie weiter
-        auf dem Zweig arbeiten wollen:</para>
-
-      <informalexample>
-        <screen>
-$ svn delete http://svn.example.com/repos/calc/branches/my-calc-branch \ <!--
-      -m "Remove my-calc-branch, reintegrated with trunk in r391."
-Committed revision 392.
--->
-      -m "my-calc-branch löschen, zurückgeführt auf Stamm."
-Revision 392 übertragen.
-
-$ svn copy http://svn.example.com/repos/calc/trunk \
-           http://svn.example.com/repos/calc/branches/my-calc-branch <!--
-      -m "Recreate my-calc-branch from trunk@HEAD."
-Committed revision 393.
--->
-      -m "my-calc-branch erneut von trunk@HEAD abgezweigt."
-Revision 393 übertragen.
-</screen>
-      </informalexample>
-
-<!--
-      <para>There is another way of making the branch usable again
-        after reintegration, without deleting the branch. See
-        <xref linkend="svn.branchmerge.advanced.reintegratetwice"/>.</para>
--->
-      <para>Es gibt eine weitere Möglichkeit, wie der Zweig nach der
-        Zurückführung wiederverwendbar gemacht werden kann, ohne ihn
-        zu löschen. Siehe
-        <xref linkend="svn.branchmerge.advanced.reintegratetwice"/>.</para>
-
+      <para>Falls Sie sich entscheiden, den Zweig nach der
+        Reintegration auf den Stamm nicht zu löschen, können Sie mit
+        Synchronisierungs-Merges vom Stamm fortfahren und dann den
+        Zweig erneut Reintegrieren.<footnote><para>Diese
+        Wiederverwendung eines Arbeitszweigs wird nur von
+        Subversion 1.8 unterstützt. Frühere Versionen erfordern einige
+        besondere Schritte, bevor ein Arbeitszweig mehr als einmal
+        reintegriert werden kann. Siehe eine frühere Version dieses
+        Kapitels für weitere Informationen: <ulink
+        url="http://svnbook.red-bean.com/de/1.7/svn.branchmerge.basicmerging.html#svn.branchemerge.basicmerging.reintegrate"
+        /></para></footnote> Falls Sie das machen, werden nur die
+        Änderungen, die Sie nach dem ersten Reintegrieren auf dem
+        Zweig vorgenommen haben, mit dem Stamm zusammengeführt.</para>
     </sect2>
 
     <!-- =============================================================== -->
@@ -2403,17 +2626,20 @@ Revision 393 übertragen.
         linkend="svn.advanced.props"/>.) </para>
 
 <!--
-      <para>You can examine the property, just like any other:</para>
+      <para>You can examine the mergeinfo property, just like any other
+        versioned property:</para>
 -->
-      <para>Sie können sich die Eigenschaft ansehen, wie jede andere
-        auch:</para>
+      <para>Sie können sich die mergeinfo-Eigenschaft ansehen, wie jede andere
+        versionierte Eigenschaft:</para>
 
       <informalexample>
         <screen>
 $ cd my-calc-branch
-$ svn propget svn:mergeinfo .
-/trunk:341-390
-$
+
+$ svn pg svn:mergeinfo -v
+Properties on '.':
+  svn:mergeinfo
+    /calc/trunk:341-378
 </screen>
       </informalexample>
 
@@ -2464,19 +2690,19 @@ $
         changes made to a given path have been replicated into the
         directory in question.  In our previous example, the path
         which is the source of the merged changes is
-        <filename>/trunk</filename> and the directory which has
+        <filename>/calc/trunk</filename> and the directory which has
         received the changes is
-        <filename>/branches/my-calc-branch</filename>.
+        <filename>/calc/branches/my-calc-branch</filename>.
         Earlier versions of Subversion maintained the
         <literal>svn:mergeinfo</literal> property silently. You could
         still detect the changes, after a merge completed, with the
         <command>svn diff</command> or <command>svn status</command>
         subcommands, but the merge itself gave no indication when it
-        changed the <literal>svn:mergeinfo</literal> property. This is no
-        longer true in Subversion 1.7, which has several new notifications
-        to alert you when a merge updates the
+        changed the <literal>svn:mergeinfo</literal> property. In
+        Subversion 1.7 and later this is no longer true as there are
+        several notifications to alert you when a merge updates the
         <literal>svn:mergeinfo</literal> property. These notifications
-        all begin with <quote>- - - Recording mergeinfo for</quote>
+        all begin with <quote>- - Recording mergeinfo for</quote>
         and appear at the end of the merge.  Unlike other merge
         notifications, these don't describe the application of a
         difference to a working copy
@@ -2490,9 +2716,9 @@ $
         <command>svn merge</command> ausführen. Ihr Wert gibt
         Aufschluss darüber, welche Änderungen an einem gegebenen Pfad
         mit dem in Frage kommenden Verzeichnis abgeglichen wurden. Im
-        vorangegangenen Beispiel ist <filename>/trunk</filename> der
+        vorangegangenen Beispiel ist <filename>/calc/trunk</filename> der
         Ursprungspfad der zusammengeführten Änderungen und
-        <filename>/branches/my-calc-branch</filename> das
+        <filename>/calc/branches/my-calc-branch</filename> das
         Zielverzeichnis. Frühere Versionen von Subversion pflegten die
         Eigenschaft <literal>svn:mergeinfo</literal> im Hintergrund.
         Sie konnten die Änderungen nach einem abgeschlossenen
@@ -2500,8 +2726,8 @@ $
         status</command> zwar entdecken, doch gab die eigentliche
         Zusammenführung keinerlei Hinweis, dass sie die Eigenschaft
         <literal>svn:mergeinfo</literal> geändert hat. In Subversion
-        1.7 stimmt das nicht mehr, da es verschiedene neue
-        Mitteilungen vorhält, um Sie zu benachrichtigen, wenn ein
+        1.7 und später trifft das nicht mehr zu, da es verschiedene
+        Mitteilungen gibt, um Sie zu benachrichtigen, wenn ein
         Merge die Eigenschaft <literal>svn:mergeinfo</literal>
         ändert. Diese Mitteilungen beginnen alle mit
         <quote>-- Aufzeichnung der Informationen für
@@ -2515,50 +2741,162 @@ $
 
 <!--
       <para>Subversion also provides a subcommand, <command>svn
-        mergeinfo</command>, which is helpful in seeing not only
-        which changesets a directory has absorbed, but also which
-        changesets it's still eligible to receive.  This gives a sort
-        of preview of which changes a subsequent <command>svn
-        merge</command> operation would replicate to your
-        branch.</para>
+        mergeinfo</command>, which is helpful in seeing the merge
+        relationships between two branches; specifically which changesets
+        a directory has absorbed or which changesets it's still eligible
+        to receive.  The latter gives a sort of preview of which changes a
+        subsequent <command>svn merge</command> operation would replicate
+        to your branch.  By default, <command>svn mergeinfo</command> gives
+        an graphical overview of the relationship between to branches.
+        Returning to our earlier example, we use the subcommand to analyze
+        the relationship between <filename>/calc/trunk</filename> and
+        <filename>/calc/branches/my-calc-branch</filename>:</para>
 -->
-      <para>Subversion stellt auch den Unterbefehl, <command>svn
-        mergeinfo</command> zur Verfügung, der dabei hilfreich ist,
-        nicht nur die in ein Verzeichnis eingeflossenen
-        Änderungsmengen anzuzeigen, sondern auch, welche
-        Änderungsmengen noch für einen Abgleich bereit stehen. Das
-        ergibt eine Art Vorschau der nächsten Änderungsmengen, die
-        <command>svn merge</command> auf Ihren Zweig abgleichen
-        wird.</para>
+      <para>Subversion stellt auch den Unterbefehl <command>svn
+          mergeinfo</command> zur Verfügung, der dabei hilfreich ist,
+        die Zusammenführungen zwischen zwei Zweigen zu zeigen;
+        insbesondere welche Änderungsmengen in ein Verzeichnis
+        eingeflossen sind oder welche noch für einen Abgleich bereit
+        stehen. Letzteres ergibt eine Art Vorschau, welche
+        Änderungsmengen ein folgender <command>svn
+        merge</command>-Befehl auf Ihren Zweig replizieren wird.
+        Standardmäßig zeigt <command>svn mergeinfo</command> eine
+        graphische Übersicht der Beziehungen zwischen zwei Zweigen an.
+        Wenn wir auf unser früheres Beispiel zurückkommen, verwenden
+        wir den Unterbefehl, um die Beziehung zwischen
+        <filename>/calc/trunk</filename> und
+        <filename>/calc/branches/my-calc-branch</filename> zu
+        untersuchen:</para>
 
       <informalexample>
         <screen>
 $ cd my-calc-branch
-<!--
-# Which changes have already been merged from trunk to branch?
+
+$ svn mergeinfo ^/calc/trunk<!--
+    youngest common ancestor
+    |         last full merge
+    |         |        tip of branch
+    |         |        |         repository path
 -->
-# Welche Änderungen wurden bereits vom Stamm auf den Zweig abgeglichen?
-$ svn mergeinfo ^/calc/trunk
-r341
-r342
-r343
-&hellip;
-r388
-r389
-r390
-<!--
-# Which changes are still eligible to merge from trunk to branch?
--->
-# Welche Änderungen kommen für einen Abgleich vom Stamm auf den Zweig noch in Frage?
-$ svn mergeinfo ^/calc/trunk --show-revs eligible
-r391
-r392
-r393
-r394
-r395
-$
+    letzter gemeinsamer Vorfahr
+    |         letzte vollständige Zusammenführung
+    |         |        Spitze des Zweigs
+    |         |        |         Projektarchiv-Pfad
+    340                382
+    |                  |
+  -------| |------------         calc/trunk
+     \          /
+      \        /
+       --| |------------         calc/branches/my-calc-branch
+              |        |
+              379      382
 </screen>
       </informalexample>
+
+<!--
+      <para>The diagram shows that <filename>/calc/branches/my-calc-branch
+      </filename> was copied from <filename>/calc/trunk@340</filename> and
+      that most recent automatic merge was the reintegrate merge we made
+      from the branch to the trunk in r380.  Notice that the diagram does
+      <emphasis>not</emphasis> show the four automatic sync merges we made
+      in revisions 352, 362, 372, and 379.  Only the most recent automatic
+      merge, in either direction<footnote><para>By <quote>direction</quote>
+      we mean either trunk-to-branch (automatic sync) or branch-to-trunk
+      (automatic reintegrate) merges.</para></footnote>, is shown.  This
+      default output is useful for obtaining an overview of the merges
+      between two branches, but to see the specific revisions which were
+      merged we use the <option>- -show-revs=merged</option> option:</para>
+-->
+      <para>Das Diagramm zeigt, dass
+        <filename>/calc/branches/my-calc-branch </filename> von
+        <filename>/calc/trunk@340</filename> herüberkopiert wurde und
+        der letzte automatische Merge der Reintegrations-Merge war,
+        den wir vom Zweig zum Stamm in r380 gemacht haben. Beachten
+        Sie, dass das Diagramm die vier automatischen
+        Synchronisierungs-Merges <emphasis>nicht</emphasis> zeigt, die
+        wir in den Revisionen 352, 362, 372 und 379 gemacht haben.
+        Gezeigt wird lediglich der letzte automatische Merge, egal in
+        welche Richtung.<footnote><para>Unter <quote>Richtung</quote>
+        verstehen wir entweder Stamm-Zweig- (automatische
+        Synchronisierung) oder Zweig-Stamm-Merges (automatische
+        Reintegration).</para></footnote> Diese Standard-Ausgabe
+        ist als Übersicht über die Merges zwischen zwei Zweigen
+        brauchbar, jedoch sollten Sie die Option
+        <option>--show-revs=merged</option> verwenden, um die
+        zusammengeführten Versionen genau zu sehen:</para>
+
+      <informalexample>
+        <screen>
+$ svn mergeinfo ^/calc/trunk --show-revs merged
+r344
+r345
+r346
+&hellip;
+r366
+r367
+r368
+</screen>
+      </informalexample>
+
+<!--
+      <para>Likewise, to see which changes are eligible to merge from the
+        trunk to the branch we can use the <option>- -show-revs=eligible
+        </option> option:</para>
+-->
+      <para>Um auf ähnliche Art die Änderungen zu sehen, die für einen
+        Merge vom Stamm auf den Zweig in Frage kommen, können wir die
+        Option <option>--show-revs=eligible </option> verwenden:</para>
+      <informalexample>
+        <screen>
+$ svn mergeinfo ^/calc/trunk --show-revs eligible
+r380
+r381
+r382
+</screen>
+      </informalexample>
+
+      <sidebar id="svn.branchmerge.basicmerging.mergeinfo.operativerevs">
+<!--
+        <title>Operative and Inoperative Merge Revisions</title>
+-->
+        <title>Operative und inoperative Merge-Revisionen</title>
+
+<!--
+        <para>The revision lists produced by the <option>- -show-revs
+          </option> option include only revisions which made (or would make)
+          changes when merged.  So while we have merged a contiguous range of
+          revisions (i.e. r341-378) from <filename>/calc/trunk</filename> to
+          <filename>/calc/branches/my-calc-branch</filename>, only the
+          revisions listed with the <option>- -show-revs=merged</option> option
+          actually represent changes made on <filename>/calc/trunk</filename>.
+          These revisions are described as <quote>operative</quote>
+          revisions as regards merging, not to be confused with the
+          operative revision used with the <option>-r</option> option, see
+          <xref linkend="svn.advanced.pegrevs"/>.  Not suprisingly, the
+          revisions in the range r341-378 that are <emphasis>not</emphasis>
+          listed as merged are termed <quote>inoperative</quote> revisions.
+        </para>
+-->
+        <para>Die von der Option <option>--show-revs </option>
+          erzeugten Revisionlisten beinhalten nur Revisionen, die beim
+          Zusammenführen Änderungen hervorrufen (würden). Während wir
+          also einen Bereich aufeinanderfolgender Revisionen (z.B.
+          r341-378) von <filename>/calc/trunk</filename> nach
+          <filename>/calc/branches/my-calc-branch</filename>
+          zusammengeführt haben, repräsentieren nur die mit der Option
+          <option>--show-revs=merged</option> aufgelisteten Revisionen
+          tatsächliche Änderungen auf
+          <filename>/calc/trunk</filename>.  Diese Revisions werden
+          als <quote>operative</quote> Revisionen hinsichtlich der
+          Zusammenführung bezeichnet und sind nicht zu verwechseln mit
+          den operativen Revision, die mit der Option
+          <option>-r</option> verwendet werden, siehe <xref
+          linkend="svn.advanced.pegrevs"/>. Wie zu erwarten, werden
+          die Revisionen aus dem Bereich r341-378, die
+          <emphasis>nicht</emphasis> als zusammengeführt aufgelistet
+          werden, <quote>inoperative</quote> Revisionen genannt.
+      </para>
+    </sidebar>
 
 <!--
       <para>The <command>svn mergeinfo</command> command requires
@@ -2568,8 +2906,8 @@ $
         it assumes that the current working directory is the
         target.  In the prior example, because we're querying our
         branch working copy, the command assumes we're interested in
-        receiving changes to <filename>/branches/mybranch</filename>
-        from the specified trunk URL.</para>
+        receiving changes to <filename>/calc/branches/my-calc-branch
+        </filename> from the specified trunk URL.</para>
 -->
       <para>Der Befehl <command>svn mergeinfo</command> erwartet einen
         <quote>Quell</quote>-URL (woher die Änderungen kommen)
@@ -2580,7 +2918,23 @@ $
         entsprechenden Arbeitsverzeichnis abfragen, geht der Befehl
         davon aus, dass wir daran interessiert sind, Änderungen vom
         angegebenen Stamm-URL für
-        <filename>/branches/mybranch</filename> zu erhalten.</para>
+        <filename>/calc/branches/my-calc-branch</filename> zu
+        erhalten.</para>
+
+<!--
+      <para>Since Subversion 1.7, the
+        <command>svn mergeinfo</command> subcommand can also account for
+        subtree mergeinfo and non-inheritable mergeinfo.  It accounts for
+        subtree mergeinfo by use of the <option>- -recursive</option> or
+        <option>- -depth</option> options, while non-inheritable mergeinfo
+        is considered by default.</para>
+-->
+      <para>Seit Subversion 1.7 kann der Unterbefehl <command>svn
+        mergeinfo</command> auch Unterbaum-Mergeinfo und
+        nichterbliche Mergeinfo berücksichtigen. Mit den Option
+        <option>--recursive</option> oder <option>--depth</option>
+        wird Unterbaum-Mergeinfo berücksichtigt, während nicht
+        ererbbare Mergeinfo standardmäßig beachtet wird.</para>
 
       <sidebar id="svn.branchmerge.basicmerging.mergeinfo.inheritance">
 <!--
@@ -2588,24 +2942,33 @@ $
 -->
         <title>Vererbung von Mergeinfo</title>
 
-        <indexterm>
 <!--
-          <primary>mergeinfo inheritance</primary>
+        <para>
+          <indexterm>
+            <primary>mergeinfo</primary>
+            <secondary>inheritance</secondary>
+          </indexterm>
+          <indexterm>
+            <primary>mergeinfo</primary>
+            <secondary>explicit</secondary>
+          </indexterm>When a path has
+          the <literal>svn:mergeinfo</literal> property set on it we
+          say it has <firstterm>explicit mergeinfo</firstterm>.  This
+          explicit mergeinfo describes not only what changes were
+          merged into that particular directory, but also all the
+          children of that directory (because those children inherit
+          the mergeinfo of their parent path).  For example:</para>
 -->
-          <primary>Vererbung von Mergeinfo</primary>
-        </indexterm>
-
-<!--
-        <para>When a path has the <literal>svn:mergeinfo</literal>
-          property set on it we say it has <firstterm>explicit
-          mergeinfo</firstterm>.  This explicit mergeinfo describes
-          not only what changes were merged into that particular
-          directory, but also all the children of that directory
-          (because those children inherit the mergeinfo of their
-          parent path).  For example:</para>
--->
-        <para>Besitzt ein Pfad die gesetzte Eigenschaft
-          <literal>svn:mergeinfo</literal>, sagen wir, er hat 
+        <para>
+          <indexterm>
+            <primary>Mergeinfo</primary>
+            <secondary>Vererbung</secondary>
+          </indexterm>
+          <indexterm>
+            <primary>Mergeinfo</primary>
+            <secondary>explizite</secondary>
+          </indexterm>Besitzt ein Pfad die gesetzte Eigenschaft
+          <literal>svn:mergeinfo</literal>, sagen wir, er hat
           <firstterm>explizite Mergeinfo</firstterm>. Diese expliziten
           Informationen beschreiben nicht nur, welche Änderungen in
           dieses bestimmte Verzeichnis gebracht worden sind, sondern
@@ -2634,7 +2997,8 @@ src/main.c
 -->
 # Frage nach den Revisionen, die ohne explizite Mergeinfo
 # in eine Datei eingepflegt wurden
-$ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
+$ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c \
+                --show-revs merged
 651
 652
 </screen>
@@ -2709,7 +3073,7 @@ $ svn propget svn:mergeinfo ^/branches/proj-X
 # Revision 758 ist nicht erblich, doch trotzdem auf den Pfad, auf dem
 # es gesetzt ist, anwendbar. Hier zeigt "*" an, dass r758 nur
 # teilweise mit dem Stamm zusammengeführt wurde.
-$ svn mergeinfo ^/trunk ^/branches/proj-X
+$ svn mergeinfo ^/trunk ^/branches/proj-X --show-revs merged
 651
 652
 758*
@@ -2719,7 +3083,8 @@ $ svn mergeinfo ^/trunk ^/branches/proj-X
 -->
 # Revision 758 wird nicht als zusammengeführt angezeigt, da sie
 # nicht erblich und nur auf ^/trunk anwendbar ist.
-$ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
+$ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c \
+                --show-revs merged
 651
 652
 </screen>
@@ -2740,22 +3105,8 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
           von Mergeinfo würden den Rahmen dieses Buches sprengen.
           Sollten Sie weitere Fragen haben, schauen Sie einige der in
           <xref linkend="svn.branchmerge.advanced.finalword"/>
-          aufgeführten Referenzen an.</para> </sidebar>
-
-<!--
-      <para>With the release of Subversion 1.7, the
-        <command>svn mergeinfo</command> subcommand can also account for
-        subtree mergeinfo and non-inheritable mergeinfo.  It accounts for
-        subtree mergeinfo by use of the <option>- -recursive</option> or
-        <option>- -depth</option> options, while non-inheritable mergeinfo
-        is considered by default.</para>
--->
-      <para>Mit dem Erscheinen von Subversion 1.7 kann der Unterbefehl
-        <command>svn mergeinfo</command> auch Teilbaum-Mergeinfo und
-        nichterbliche Mergeinfo berücksichtigen. Teilbaum-Mergeinfo
-        werden durch die Optionen <option>--recursive</option> oder
-        <option>--depth</option> berücksichtigt, während nichterbliche
-        standardmäßig beachtet wird.</para>
+          aufgeführten Referenzen an.</para>
+      </sidebar>
 
 <!--
       <para>Let's say we have a branch with both subtree and
@@ -2766,52 +3117,53 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c
 
         <informalexample>
           <screen>
-$ svn propget svn:mergeinfo --recursive -v <!--
+$ svn pg svn:mergeinfo -vR <!--
 # Non-inheritable mergeinfo
 Properties on '.':
 -->
 # Nichterbliche Mergeinfo
 Eigenschaften zu ».«
   svn:mergeinfo
-    /trunk:651-652,758* <!--
+    /calc/trunk:354,385-388* <!--
 # Subtree mergeinfo
-Properties on 'doc/INSTALL':
+Properties on 'Makefile':
 -->
 # Teilbaum-Mergeinfo
 Eigenschaften zu »doc/INSTALL«
   svn:mergeinfo
-    /trunk/doc/INSTALL:651-652,958,1060
+    /calc/trunk/Makefile:354,380
 </screen>
         </informalexample>
 
 <!--
-      <para>From the above mergeinfo we see that r758 has only been
+      <para>From the above mergeinfo we see that r385-388 has only been
         merged into the root of the branch, but not any of the root's
-        children.  We also see that both r958 and r1060 have been
-        merged only to the <filename>doc/INSTALL</filename> file.
+        children.  We also see that r380 has only been merged to
+        <filename>Makefile</filename>.
         When we use <command>svn mergeinfo</command> with the
         <option>- -recursive</option> option to see what has been merged
-        from <filename>^/trunk</filename> to this branch, we see two
+        from <filename>/calc/trunk</filename> to this branch, we see three
         revisions are flagged with the <literal>*</literal> marker:</para>
 -->
-      <para>Aus den obigen Informationen geht hervor, dass r758 nur
-        in die Wurzel des Zweigs eingepflegt wurde, aber in keins der
-        Kindverzeichnisse. Ferner ist erkennbar, dass sowohl r958 als
-        auch r1060 nur in die Datei <filename>doc/INSTALL</filename>
-        eingearbeitet wurde. Wenn wir <command>svn mergeinfo</command>
-        mit der Option <option>--recursive</option> verwenden, um
-        nachzusehen, was von <filename>^/trunk</filename> in diesen Zweig
-        eingepflegt wurde, erkennen wir zwei Revisionen, die mit der
+      <para>Aus den obigen Informationen geht hervor, dass r385-388
+        nur in die Wurzel des Zweigs eingepflegt wurde, aber in keins
+        der Kindverzeichnisse. Ferner ist erkennbar, dass r380 nur in
+        die Datei <filename>Makefile</filename> eingearbeitet wurde.
+        Wenn wir <command>svn mergeinfo</command> mit der Option
+        <option>--recursive</option> verwenden, um nachzusehen, was
+        von <filename>/calc/trunk</filename> in diesen Zweig
+        eingepflegt wurde, erkennen wir drei Revisionen, die mit der
         Markierung <literal>*</literal> versehen sind:</para>
 
         <informalexample>
           <screen>
-$ svn mergeinfo --show-revs=merged ^/trunk . --recursive
-651
-652
-758*
-958*
-1060
+$ svn mergeinfo -R --show-revs=merged ^/calc/trunk .
+r354
+r380*
+r385
+r386
+r387*
+r388*
 </screen>
         </informalexample>
 
@@ -2820,33 +3172,25 @@ $ svn mergeinfo --show-revs=merged ^/trunk . --recursive
         <emphasis>partially</emphasis> merged to the target in question
         (the meaning is the same if we are checking for eligible
         revisions).  What this means in this example is that if we tried
-        to merge r758 or r958 from <filename>^/trunk</filename> then more
-        changes would result. Likewise, because r1060 is
+        to merge r380, r387, or r388 from <filename>^/trunk</filename> then
+        more changes would result. Likewise, because r354, r385 and r386 are
         <emphasis>not</emphasis> flagged with a <literal>*</literal>,
-        we know that it only affects <filename>doc/INSTALL</filename>
-        and that trying to merge it would have no result.<footnote><para>
-        This is often termed an <quote>inoperative</quote> merge.  Though
-        in this example the merge of r1060 would do something: It would
-        update the mergeinfo on the root of the branch, but it would be
-        inoperative in the sense that no diff would be
-        applied.</para></footnote></para>
+        we know that re-merging those revisions would have no result.
+        <footnote><para>This is a good example of inoperative merge
+        revisions.</para></footnote></para>
 -->
       <para><literal>*</literal> markiert Revisionen, die nur
         <emphasis>teilweise</emphasis> in das in Frage kommende Ziel
         eingepflegt worden sind (die Bedeutung ist die gleiche wie bei
         der Überprüfung nach in Frage kommenden Revisionen). In diesem
-        Beispiel bedeutet das, dass beim Versuch r758 oder r958 von
-        <filename>^/trunk</filename> einzupflegen, mehr Änderungen
-        angefallen wären. Ebenso wissen wir, da r1060
+        Beispiel bedeutet das, dass beim Versuch r380, r387 oder r388
+        von <filename>^/trunk</filename> einzupflegen, mehr Änderungen
+        angefallen wären. Ebenso wissen wir, da r354, r385 und r386
         <emphasis>nicht</emphasis> mit <literal>*</literal> markiert
-        ist, dass nur <filename>doc/INSTALL</filename> betroffen ist,
-        und der Versuch, sie einzupflegen, keine Auswirkung
-        hätte.<footnote><para>Das wird häufig
-        <quote>unwirksamer</quote> Merge genannt. Obwohl in diesem
-        Beispiel das Zusammenführen von r1060 etwas bewirkte: es würde
-        die Mergeinfo an der Wurzel des Zweigs aktualisieren, jedoch
-        hinsichtlich der Anwendung eines Diffs unwirksam
-        sein.</para></footnote></para>
+        ist, dass der Versuch, sie erneut einzupflegen, keine
+        Auswirkung hätte.<footnote><para>Das ist ein gutes Beispiel
+        für <quote>inoperative</quote>
+        Merge-Revisionen.</para></footnote></para>
 
 <!--
       <para>Another way to get a more precise preview of a merge
@@ -2859,11 +3203,13 @@ $ svn mergeinfo --show-revs=merged ^/trunk . --recursive
 
       <informalexample>
         <screen>
-$ svn merge ^/calc/trunk --dry-run <!--
-- - Merging r391 through r395 into 'branch':
+$ svn merge ^/paint/trunk paint-feature-branch --dry-run <!--
+- - Merging r290 through r383 into 'paint-feature-branch':
 -->
--- Zusammenführen von r391 bis r395ld in »branch«:
-U    integer.c
+-- Zusammenführen von r290 bis r383 in »paint-feature-branch«:
+U    paint-feature-branch/src/palettes.c
+U    paint-feature-branch/src/brushes.c
+U    paint-feature-branch/Makefile
 
 $ svn status <!--
 #  nothing printed, working copy is still unchanged.
@@ -2892,13 +3238,12 @@ $ svn status <!--
       <tip>
 <!--
         <para>After performing a merge operation, but before
-          committing the results of the merge, you can
-          use <userinput>svn diff
-          - -depth=empty <replaceable>/path/to/merge/target</replaceable></userinput>
-          to see only the changes to the immediate target of your
-          merge.  If your merge target was a directory, only property
-          differences are displayed.  This is a handy way to see
-          the changes to the
+          committing the results of the merge, you can use
+          <userinput>svn diff - -depth=empty <replaceable>
+          /path/to/merge/target</replaceable></userinput> to see only the
+          changes to the immediate target of your merge.  If your merge
+          target was a directory, only property differences are displayed.
+          This is a handy way to see the changes to the
           <literal>svn:mergeinfo</literal> property recorded by the
           merge operation, which will remind you about what you've
           just merged.</para>
