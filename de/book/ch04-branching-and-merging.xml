@@ -5664,9 +5664,8 @@ G    348    sally   return retval;
       <para>
         <indexterm>
           <primary>ancestry</primary>
-        </indexterm>
-        When conversing with a Subversion developer, you might
-        very likely hear reference to the term
+        </indexterm>When conversing with a Subversion developer, you
+        might very likely hear reference to the term
         <firstterm>ancestry</firstterm>.  This word is used to
         describe the relationship between two objects in a
         repository: if they're related to each other, one
@@ -5675,9 +5674,8 @@ G    348    sally   return retval;
       <para>
         <indexterm>
           <primary>Abstammung</primary>
-        </indexterm>
-        Wenn Sie sich mit einem Subversion-Entwickler unterhalten,
-        wird wahrscheinlich auch der Begriff
+        </indexterm>Wenn Sie sich mit einem Subversion-Entwickler
+        unterhalten, wird wahrscheinlich auch der Begriff
         <firstterm>Abstammung</firstterm> erwähnt. Dieses Wort wird
         verwendet, um die Beziehung zwischen zwei Objekten im
         Projektarchiv zu beschreiben: Wenn sie in Beziehung zueinander
@@ -5792,7 +5790,12 @@ A    foo.c
 
 <!--
       <tip>
-        <para>The <option>- -ignore-ancestry</option> option also disables
+        <para>
+        <indexterm>
+          <primary>merge tracking</primary>
+          <secondary>disabling</secondary>
+        </indexterm>
+        The <option>- -ignore-ancestry</option> option also disables
         <xref linkend="svn.branchmerge.basicmerging.mergetracking"/>.
         This means that <literal>svn:mergeinfo</literal> is not considered
         when <command>svn merge</command> is determining what revisions
@@ -5801,7 +5804,12 @@ A    foo.c
       </tip>
 -->
       <tip>
-        <para>Die Option <option>--ignore-ancestry</option>
+        <para>
+        <indexterm>
+          <primary>Merge-Tracking</primary>
+          <secondary>unterbinden</secondary>
+        </indexterm>
+          Die Option <option>--ignore-ancestry</option>
           unterbindet auch 
           <xref linkend="svn.branchmerge.basicmerging.mergetracking"/>.
           Das bedeutet, dass weder <literal>svn:mergeinfo</literal>
@@ -5841,14 +5849,14 @@ A    foo.c
 <!--
       <para>Alas, this scenario doesn't work so well right now and
         is considered one of Subversion's current weak spots.  The
-        problem is that Subversion's <command>svn update</command>
+        problem is that Subversion's <command>svn merge</command>
         command isn't as robust as it should be, particularly when
         dealing with copy and move operations.</para>
 -->
       <para>Leider funktioniert dieses Szenario im Augenblick noch
         nicht so richtig und gilt als einer der Schwachpunkte von
         Subversion. Das Problem ist, das der Subversion-Befehl
-        <command>svn update</command> nicht so stabil ist, wie er sein
+        <command>svn merge</command> nicht so stabil ist, wie er sein
         sollte, besonders wenn es um Kopier- und Verschiebeoperationen
         geht.</para>
 
@@ -5860,8 +5868,9 @@ A    foo.c
         merge</command>.  Instead of telling the client, <quote>Copy
         that file you already have to this new location,</quote> it
         sends down an entirely new file.  This can lead to
-        problems, especially because the same thing happens with
-        renamed files.  A lesser-known fact about Subversion is that
+        problems, particularly tree conflicts in the case of renames,
+        which involve not only the new copy, but a deletion of the old
+        path&mdash;a lesser-known fact about Subversion is that
         it lacks <quote>true renames</quote>&mdash;the <command>svn
         move</command> command is nothing more than an aggregation
         of <command>svn copy</command> and <command>svn
@@ -5874,92 +5883,202 @@ A    foo.c
         merge</command> ausführt. Statt dem Client mitzuteilen:
         <quote>Kopiere die Datei, die du bereits hast an diesen neuen
         Ort</quote>, sendet es eine völlig neue Datei. Das kann zu
-        Problemen führen, besonders, weil dasselbe mit umbenannten
-        Dateien passiert. Eine weniger bekannte Tatsache über
-        Subversion ist, dass es keine <quote>echten
-        Umbenennungen</quote> hat &ndash; der Befehl <command>svn
-        move</command> ist weiter nichts als eine Verbindung von
-        <command>svn copy</command> und <command>svn
+        Problemen führen, im Falle von Umbenennungen besonders zu
+        Baumkonflikten, die nicht nur die neue Kopie betreffen,
+        sondern die Löschung des alten Pfades ^ndash; eine weniger
+        bekannte Tatsache über Subversion ist, dass es keine
+        <quote>echten Umbenennungen</quote> hat &ndash; der Befehl
+        <command>svn move</command> ist weiter nichts als eine
+        Verbindung von <command>svn copy</command> und <command>svn
         delete</command>.</para>
 
 <!--
-      <para>For example, suppose that while working on your private
-        branch, you rename <filename>integer.c</filename>
-        to <filename>whole.c</filename>.  Effectively you've created
-        a new file in your branch that is a copy of the original
-        file, and deleted the original file.  Meanwhile, back
-        on <filename>trunk</filename>, Sally has committed some
-        improvements to <filename>integer.c</filename>.  Now you
-        decide to merge your branch to the trunk:</para>
+      <para>For example, suppose that you want to make some changes on
+        your private branch <filename>/calc/branch/my-calc-branch
+        </filename>.  First you perform an automatic sync merge with
+        <filename>/calc/trunk</filename> and commit that in r470:</para>
 -->
-      <para>Nehmen wir beispielsweise an, dass Sie während Ihrer
-        Arbeit auf Ihrem privaten Zweig <filename>integer.c</filename>
-        in <filename>whole.c</filename> umbenennen. Tatsächlich haben
-        Sie eine neue Datei auf Ihrem Zweig erzeugt, die eine Kopie
-        der ursprünglichen Datei ist, und letztere gelöscht.
-        Zwischenzeitlich hat Sally einige Verbesserungen an
-        <filename>integer.c</filename> in <filename>trunk</filename>
-        übergeben. Nun entscheiden Sie sich, Ihren Zweig mit dem Stamm
-        zusammenzuführen:</para>
-
+      <para>Nehmen wir beispielsweise an, dass Sie einige Änderungen
+        an Ihrem privaten Zweig <filename>/calc/branch/my-calc-branch
+        </filename> machen möchten. Zunächst führen Sie einen
+        automatischen Synchronisierungs-Merge mit
+        <filename>/calc/trunk</filename> durch und übertragen das
+        Ergebnis in r470:</para>
       <informalexample>
         <screen>
 $ cd calc/trunk
 
-$ svn merge --reintegrate ^/calc/branches/my-calc-branch <!--
+$ svn merge ^/calc/trunk <!--
 - - - Merging differences between repository URLs into '.':
 -->
 -- Zusammenführen der Unterschiede zwischen Projektarchiv-URLs in ».«:
-D    integer.c
-A    whole.c
-U    .  <!--
+U    doc/INSTALL
+A    FAQ
+U    src/main.c
+U    src/button.c
+U    src/integer.c
+U    Makefile
+U    README
+ U   .  <!--
 - - - Recording mergeinfo for merge between repository URLs into '.':
 -->
 -- Aufzeichnung der Informationen für Zusammenführung zwischen Projektarchiv-URLs in ».«:
  U   .
+<!--
+$ svn ci -m "Sync all changes from ^/calc/trunk through r469."
+Sending        .
+Sending        Makefile
+Sending        README
+Sending        FAQ
+Sending        doc/INSTALL
+Sending        src/main.c
+Sending        src/button.c
+Sending        src/integer.c
+Transmitting file data ....
+Committed revision 470.
+-->
+$ svn ci -m "Synchronisierung aller Änderungen von ^/calc/trunk bis r469."
+Sende          .
+Sende          Makefile
+Sende          README
+Sende          FAQ
+Sende          doc/INSTALL
+Sende          src/main.c
+Sende          src/button.c
+Sende          src/integer.c
+Übertrage Daten ....
+Revision 470 übertragen.
+</screen>
+      </informalexample>
+<!--
+      <para>Then you rename <filename>integer.c</filename> to <filename>
+        whole.c</filename> in r471 and then make some edits to the same
+        file in r473.  Effectively you've created a new file in your branch
+        (that is a copy of the original file plus some edits) and deleted
+        the original file.  Meanwhile, back on <filename>/calc/trunk
+        </filename>, Sally has committed some improvements of her own to
+        <filename>integer.c</filename> in r472:</para>
+-->
+      <para>Dann benennen Sie in r471 <filename>integer.c</filename>
+        in <filename>whole.c</filename> um und editieren dieselbe
+        Datei in r473. Tatsächlich haben Sie eine neue Datei auf Ihrem
+        Zweig erzeugt (die eine Kopie der ursprünglichen Datei plus
+        einiger Bearbeitungen ist) und die ursprüngliche Datei
+        gelöscht.  Zwischenzeitlich hat Sally in r472 auf
+        <filename>/calc/trunk</filename> selber einige Verbesserungen
+        an <filename>integer.c</filename> übergeben:</para>
+
+      <informalexample>
+        <screen>
+$ svn log -v -r472 ^/calc/trunk
+------------------------------------------------------------------------<!--
+r472 | sally | 2013-02-26 07:05:18 -0500 (Tue, 26 Feb 2013) | 1 line
+Changed paths:
+   M /calc/trunk/src/integer.c
+
+Trunk work on integer.c.-->
+r472 | sally | 2013-02-26 07:05:18 -0500 (Di, 26. Feb 2013) | 1 Zeile
+Geänderte Pfade:
+   M /calc/trunk/src/integer.c
+
+Arbeit auf dem Stamm von integer.c.
+------------------------------------------------------------------------
 </screen>
       </informalexample>
 
 <!--
-      <para>This doesn't look so bad at first glance, but it's also
-        probably not what you or Sally expected.  The merge operation
-        has deleted the latest version of
-        the <filename>integer.c</filename> file (the one containing
-        Sally's latest changes), and blindly added your
-        new <filename>whole.c</filename> file&mdash;which is a
-        duplicate of the <emphasis>older</emphasis> version
-        of <filename>integer.c</filename>.  The net effect is that
-        merging your <quote>rename</quote> to the trunk has removed
-        Sally's recent changes from the latest revision!</para>
+      <para>Now you decide to merge your branch back to the trunk.
+        How will Subversion combine the rename and edits you made
+        with Sally's edits?</para>
 -->
-      <para>Auf den ersten Blick sieht es gar nicht schlecht aus,
-        jedoch ist es nicht das, was Sie und Sally erwartet hätten.
-        Die Zusammenführung hat die letzte Version der Datei
-        <filename>integer.c</filename> gelöscht (diejenige, die Sallys
-        Änderungen beinhaltet) und blindlings Ihre neue Datei
-        <filename>whole.c</filename> hinzugefügt &ndash; die ein
-        Duplikat der <emphasis>älteren</emphasis> Version von
-        <filename>integer.c</filename> ist. Das Endergebnis ist, dass
-        durch die Zusammenführung Ihrer <quote>Umbenennung</quote> auf
-        dem Zweig mit dem Stamm Sallys jüngste Änderungen aus der
-        letzten Revision entfernt wurden.</para>
+      <para>Nun entscheiden Sie sich, Ihren Zweig auf den Stamm
+        zurückzuführen. Wie wird Subversion Ihre Umbenennung und
+        Bearbeitung mit den Bearbeiungen durch Sally
+        kombinieren?</para>
+
+      <informalexample>
+        <screen>
+$ svn merge ^/calc/branches/my-calc-branch<!--
+- - Merging differences between repository URLs into '.':-->
+-- Zusammenführen der Unterschiede zwischen Projektarchiv-URLs in ».«:
+   C src/integer.c
+ U   src/real.c
+A    src/whole.c<!--
+- - Recording mergeinfo for merge between repository URLs into '.':-->
+-- Aufzeichnung der Informationen für Zusammenführung zwischen Projektarchiv-URLs in ».«:
+ U   .<!--
+Summary of conflicts:
+  Tree conflicts: 1-->
+Konfliktübersicht:
+  Baumkonflikte: 1
+
+$ svn st
+ M      .
+      C src/integer.c<!--
+      >   local file edit, incoming file delete upon merge-->
+      >   lokale Datei geändert, eingehendes Löschen einer Datei bei Zusammenführung
+ M      src/real.c
+A  +    src/whole.c<!--
+Summary of conflicts:
+  Tree conflicts: 1-->
+Konfliktübersicht:
+  Baumkonflikte: 1
+</screen>
+      </informalexample>
 
 <!--
-      <para>This isn't true data loss.  Sally's changes are still in
-        the repository's history, but it may not be immediately
-        obvious that this has happened.  The moral of this story is
-        that until Subversion improves, be very careful about
-        merging copies and renames from one branch to
-        another.</para>
+      <para>The answer is that Subversion <emphasis>won't</emphasis>
+        combine those changes, but rather raises a tree conflict<footnote>
+        <para>If Sally hadn't made her change in r472, then Subversion would
+        notice that <filename>integer.c</filename> in the
+        target working copy is identical to <filename>integer.c</filename>
+        in the left-side of the merge and would allow your rename to
+        succeed without a tree conflict:</para>-->
+      <para>Die Antwort ist, dass Subversion diese Änderungen
+        <emphasis>keineswegs</emphasis> kombiniert, sondern
+        stattdessen einen Baumkonflikt erzeugt<footnote><para>Falls
+        Sally ihre Änderung in  r472 nicht gemacht hätte, dann wäre
+        Subversion aufgefallen, dass <filename>integer.c</filename> in
+        der Ziel-Arbeitskopie identisch zu <filename>integer.c</filename>
+        auf der linken Seite des Merge ist, und hätte Ihnen die
+        Umbenennung ohne Baumkonflikt durchgehen lassen:</para>
+        <informalexample>
+          <screen>
+$ svn merge ^/calc/branches/my-calc-branch<!--
+- - Merging differences between repository URLs into '.':-->
+-- Zusammenführen der Unterschiede zwischen Projektarchiv-URLs in ».«:
+ U   src/real.c
+A    src/whole.c
+D    src/integer.c<!--
+- - Recording mergeinfo for merge between repository URLs into '.':-->
+-- Aufzeichnung der Informationen für Zusammenführung zwischen Projektarchiv-URLs in ».«:
+ U   .
+</screen><!--
+      </informalexample></footnote>because it needs your help
+        to figure out what part of your changes and what part of Sally's
+        changes should ultimately end up in <filename>whole.c</filename>
+        or even if the rename should take place at all!</para>-->
+        </informalexample></footnote>, da es Ihre Hilfe benötigt, um
+        herauszufinden, welche Teile Ihrer Änderungen und welche Teile
+        von Sallys Änderungen schließlich in
+        <filename>whole.c</filename> landen sollen, oder ob die
+        Umbenennung überhaupt stattfinden soll!</para>
+
+<!--
+      <para>You will need to resolve this tree conflict before committing
+        the merge and this may require some manual intervention on your
+        part, see <xref linkend="svn.tour.treeconflicts"/>.  The moral of
+        this story is that until Subversion improves, be careful about
+        merging copies and renames from one branch to another and when you
+        do, be prepared for some manual resolution.</para>
 -->
-      <para>Es ist kein echter Datenverlust. Sallys Änderungen
-        befinden sich noch immer in der Geschichte des Projektarchivs,
-        allerdings mag es nicht sofort ersichtlich sein, dass es
-        passiert ist. Die Lehre, die es aus dieser Geschichte zu
-        ziehen gilt, lautet, dass Sie sehr vorsichtig mit dem
-        Zusammenführen von Kopien und Umbenennungen zwischen Zweigen
-        sein sollten, solange sich Subversion an dieser Stelle nicht
-        verbessert hat.</para>
+      <para>Vor der Übergabe werden Sie den Baumkonflikt auflösen
+        müssen, was einiger manueller Eingriffe Ihrerseits bedarf,
+        siehe <xref linkend="svn.tour.treeconflicts"/>. Die Moral der
+        Geschichte ist, dass Sie dabei vorsichtig sein sollten, wenn Sie
+        Kopien und Umbenennungen zwischen Zweigen zusammenführen, und
+        auf manuelle Eingriffe vorbereitet sind,
+        bis sich Subversion verbessert.</para>
 
     </sect2>
 
