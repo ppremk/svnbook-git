@@ -8614,45 +8614,56 @@ $
         the auto-props feature do its thing, but the key to making
         that work well is ensuring that each vendor drop gets
         identical auto-prop treatment.</para></footnote>.</para>
-       
+-->
+      <para>Beachten Sie, dass wir in unserem Beispiel während des
+        Imports die Option <option>--no-ignore</option> verwendeten,
+        damit Subversion zuverlässig jede Datei der Zulieferung
+        aufnimmt und keine ausläßt. Wir geben auch die Option
+        <option>--no-auto-props</option> an, damit unser Client keine
+        nicht in der Zulieferung enthaltene Eigenschafts-Informationen
+        erzeugt.<footnote><para>Technisch gesehen, könnten wir die
+        Funktionalität der auto-props gewähren lassen, jedoch ist der
+        Schlüssel des guten Gelingens, dass jede Zulieferung bezüglich
+        auto-prop gleich behandelt wird.</para></footnote>.</para>
+
+<!--
       <para>Now that the first vendor release drop is present in our
         repository, we can create our vendor branch from it just as we
         would create any other branch&mdash;using <command>svn
         copy</command>.</para>
 -->
-      <para>Note that in our example, we used
-        the <option>--no-ignore</option> option during import so that
-        Subversion is sure to pick up every file in the vendor drop
-        and not to omit any of them.  We also supply
-        the <option>--no-auto-props</option> option so that our client
-        doesn't manufacture property information which isn't present
-        in the vendor drop.<footnote><para>Technically, we could let
-        the auto-props feature do its thing, but the key to making
-        that work well is ensuring that each vendor drop gets
-        identical auto-prop treatment.</para></footnote>.</para>
-       
-      <para>Now that the first vendor release drop is present in our
-        repository, we can create our vendor branch from it just as we
-        would create any other branch&mdash;using <command>svn
-        copy</command>.</para>
+      <para>Nun, da sich die erste Zulieferung des Drittanbieters in
+        unserem Projektarchiv befindet, können wir daraus unseren
+        Lieferanten-Zweig anlegen, genauso, wie jeden anderen Zweig
+        &ndash; mit <command>svn copy</command>.</para>
 
       <informalexample>
         <screen>
 $ svn copy http://svn.example.com/projects/vendor/libcomplex-1.0.0 \
            http://svn.example.com/projects/vendor/libcomplex-custom \
-           -m "Initialize libcomplex vendor branch from libcomplex 1.0.0."
-Committed revision 1161.
+           -m "Initialize libcomplex vendor branch from libcomplex 1.0.0."<!--
+Committed revision 1161.-->
+Revision 1161 übertragen.
 $
 </screen>
       </informalexample>
 
+<!--
       <para>Okay.  At this point we have a vendor branch based on
         libcomplex 1.0.0.  We are now poised to begin making the
         customizations to libcomplex required for our
         purposes&mdash;committing them directly to the vendor branch
         we've created&mdash;and then to start using our customized
         libcomplex in our own application.</para>
+-->
+      <para>Okay. An dieser Stelle haben wir einen Lieferanten-Zweig
+        basierend auf libcomplex 1.0.0. Wir sind bereit, die für
+        unsere Zwecke notwendigen Anpassungen an libcomplex
+        vorzunehmen &ndash; indem wir sie direkt in den
+        Lieferanten-Zweig übergeben &ndash; und unsere angepasste
+        libcomplex in eigenen Applikationen zu verwenden.</para>
 
+<!--
       <para>Some time later, libcomplex 1.0.1 is released.  After
         reviewing its changes, we decide we'd like to upgrade our
         vendor branch to the new version.  In order to perform that
@@ -8665,7 +8676,24 @@ $
         repository</emphasis>.  Afterwards, we'll use the 2-URL form
         of the <command>svn merge</command> command to replicate those
         same changes into our vendor branch.</para>
+-->
+      <para>Nach einer Weile wird libcomplex 1.0.1 freigegeben.
+        Nachdem wir uns die Änderungen angesehen haben, entscheiden
+        wir uns, unseren Lieferanten-Zweig auf den Stand der neuen
+        Version zu bringen. Um diese Aktualisierung auf unserem Zweig
+        vornehmen zu können, müssen wir im Prinzip dieselben
+        Änderungsmengen auf unseren Lieferanten-Zweig anwenden, die
+        der Lieferant zwischen 1.0.0 und 1.0.1 erstellt hat, ohne
+        dabei unsere Anpassungen zu überschreiben. Die sicherte Weise,
+        auf der das geschehen kann, ist es, zunächst libcomplex 1.0.1
+        in unser Projektarchiv zu holen <emphasis>als Delta zum
+        Quelltext von 1.0.0 in unserem Projektarchiv</emphasis>.
+        Anschließend verwenden wir die 2-URL-Form des Befehls
+        <command>svn merge</command> zum Replizieren derselben
+        Änderungen auf den Lieferanten-Zweig.</para>
 
+
+<!--
       <para>As it turns out, there are several different approaches we
         can take to to get libcomplex 1.0.1 into our repository in the
         right way.<footnote><para>Using another <command>svn
@@ -8675,7 +8703,19 @@ $
         ancestry.</para></footnote>  The approach we'll describe here
         is relatively rudimentary, but it will serve our illustrative
         needs.</para>
+-->
+      <para>Es stellt sich heraus, dass es mehrere unterschiedliche
+        Ansätze gibt, die wir verfolgen können, um libcomplex 1.0.1
+        auf die richtige Weise in unser Projektarchiv zu bekommen.
+        <footnote><para>Die nochmalige Verwendung der Operation
+        <command>svn import</command> Operation wäre ein
+        <emphasis>falscher</emphasis> Ansatz, da die Zweige für
+        libcomplex 1.0.0 und 1.0.1 keinen gemeinsamen Stammbaum
+        hätten.</para></footnote> Der Ansatz, den wir hier
+        beschreiben, ist relativ rudimentär, jedoch ist er unserer
+        Beschreibung dienlich.</para>
 
+<!--
       <para>Remember, we want our mirror of the libcomplex 1.0.1
         vendor drop to share ancestry with our 1.0.0 vendor drop,
         which will produce the best results later when we need to
@@ -8684,17 +8724,41 @@ $
         of our previously created libcomplex-1.0.0 <quote>vendor
         tag</quote>&mdash;a copy which will eventually become a
         replica of libcomplex 1.0.1.</para>
-        
+-->
+      <para>Erinnern Sie sich, dass wir möchten, dass die Spiegelung
+        der Zulieferung von libcomplex 1.0.1 einen gemeinsamen
+        Stammbaum mit unserer Zulieferung von 1.0.0 hat, was später zu
+        dern besten Ergebnissen führen wird, wenn wir die Änderungen
+        zwichen diesen Zulieferungen in unseren Lieferanten-Zweig
+        einbringen möchten. Wir beginnen also damit, einen Zweig für
+        libcomplex-1.0.1 als Kopie unseres vorher erstellten
+        ly created libcomplex-1.0.0 <quote>Lieferanten-Tags</quote>
+        &ndash; eine Kopie, die schließlich eine Replik von libcomplex
+        1.0.1 wird.</para>
+
       <informalexample>
         <screen>
 $ svn copy http://svn.example.com/projects/vendor/libcomplex-1.0.0 \
-           http://svn.example.com/projects/vendor/libcomplex-1.0.1 \
+           http://svn.example.com/projects/vendor/libcomplex-1.0.1 \<!--
            -m "Setup a construction zone for libcomplex 1.0.1."
-Committed revision 1282.
+Committed revision 1282.-->
+           -m "Einrichten eines Baugeländes für libcomplex 1.0.1."
+Revision 1282 übertragen.
 $
 </screen>
       </informalexample>
 
+<!--
+      <para>What we need now is to make a working copy of our
+        libcomplex-1.0.1 branch, and then to make it actually look
+        like libcomplex 1.0.1.  To do this, we'll take advantage of
+        the fact that <command>svn checkout</command> can overlay an
+        existing directory and, if the <option>- -force</option> option
+        is provided, do so in manner that allows the differences
+        between the checked-out tree and the target tree that the
+        checkout overlayed to remain as local modifications in the new
+        working copy.</para>
+-->
       <para>What we need now is to make a working copy of our
         libcomplex-1.0.1 branch, and then to make it actually look
         like libcomplex 1.0.1.  To do this, we'll take advantage of
@@ -8734,12 +8798,35 @@ $
 </screen>
       </informalexample>
 
+<!--
+      <para>As you can see, after checking out what was really
+        libcomplex 1.0.0 atop the libcomplex 1.0.1 exploded tarball,
+        we are left with a working copy that contains local
+        modifications&mdash;those modifications required to morph our
+        previous vendor release drop into our new one.</para>
+-->
       <para>As you can see, after checking out what was really
         libcomplex 1.0.0 atop the libcomplex 1.0.1 exploded tarball,
         we are left with a working copy that contains local
         modifications&mdash;those modifications required to morph our
         previous vendor release drop into our new one.</para>
 
+<!--
+      <para>Admittedly, this is a pretty simple example.  The changes
+        required to perform this particular upgrade involved merely
+        content changes to existing files.  In reality, new versions
+        of third-party libraries might also add or remove files or
+        directories, might rename files or directories, and so on.  In
+        those situations, it can be much more challenging to morph the
+        new vendor tag into a state where it accurately reflects the
+        vendor drop it claims to reflect.  We'll leave the details of
+        such transformations as an exercise to the
+        reader.<footnote><para>Here's a hint, though: <userinput>svn
+        add - -force /path/to/working-copy - -no-ignore
+        - -no-auto-props</userinput> is super handy for adding any new
+        vendor drop items to version control in this
+        situation.</para></footnote></para>
+-->
       <para>Admittedly, this is a pretty simple example.  The changes
         required to perform this particular upgrade involved merely
         content changes to existing files.  In reality, new versions
@@ -8755,6 +8842,11 @@ $
         vendor drop items to version control in this
         situation.</para></footnote></para>
 
+<!--
+      <para>However we make it happen, once our new vendor tag working
+        copy is reconciled with the original source distribution, we
+        can commit those changes to our repository.</para>
+-->
       <para>However we make it happen, once our new vendor tag working
         copy is reconciled with the original source distribution, we
         can commit those changes to our repository.</para>
@@ -8772,6 +8864,14 @@ $
 </screen>
       </informalexample>
 
+<!--
+      <para>We're finally ready to upgrade our vendor branch.
+        Remember, our goal is to get the changes made by the vendor
+        between the 1.0.0 and 1.0.1 releases of their library into our
+        vendor branch.  There is where a 2-URL <command>svn
+        merge</command> operation, applied to a working copy of our
+        vendor branch, comes into play.</para>
+-->
       <para>We're finally ready to upgrade our vendor branch.
         Remember, our goal is to get the changes made by the vendor
         between the 1.0.0 and 1.0.1 releases of their library into our
@@ -8806,6 +8906,19 @@ Select: (p) postpone, (df) diff-full, (e) edit, (m) merge,
 </screen>
       </informalexample>
 
+<!--
+      <para>As you can see, <command>svn merge</command> has merged
+        the requisite changes into our working copy, flagging a
+        conflict where the vendor modified the same region of one of
+        the files as we did during our customizations.  Subversion
+        detects this conflict, and gives us the opportunity to resolve
+        it (using the methods described in
+        <xref linkend="svn.tour.cycle.resolve" />) so that our
+        customizations to what is now libcomplex 1.0.1 continue to
+        make sense.  Once we've resolved the conflicts and performed
+        any testing or review we need, we can commit the changes to
+        our vendor branch.</para>
+-->
       <para>As you can see, <command>svn merge</command> has merged
         the requisite changes into our working copy, flagging a
         conflict where the vendor modified the same region of one of
@@ -8834,6 +8947,11 @@ $
 </screen>
       </informalexample>
 
+<!--
+      <para>Our vendor branch upgrade is complete.  And the next time
+        we need to upgrade that branch, we'll follow the same
+        procedure we used to upgrade it this time.</para>
+-->
       <para>Our vendor branch upgrade is complete.  And the next time
         we need to upgrade that branch, we'll follow the same
         procedure we used to upgrade it this time.</para>
