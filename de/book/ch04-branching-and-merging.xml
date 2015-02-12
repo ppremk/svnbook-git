@@ -8508,8 +8508,12 @@ $
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.vendorbr.mirrored-sources">
+<!--
       <title>Vendor Branches from Mirrored Sources</title>
+-->
+      <title>Lieferanten-Zweige aus gespiegelten Quellen</title>
 
+<!--
       <para>In the previous section
         (<xref linkend="svn.advanced.vendorbr.foreign-repos" />) we
         looked at how to implement and maintain a vendor branch when
@@ -8526,13 +8530,41 @@ $
         cleanly as possible.  So let's examine an approach to vendor
         branches in which the third-party library's various releases
         are mirrored within our own repository.</para>
+-->
+      <para>Im vorhergehenden Abschnitt
+        (<xref linkend="svn.advanced.vendorbr.foreign-repos" />) haben
+        wir uns angesehen, wie ein Lieferanten-Zweig angelegt und
+        verwaltet wird, wenn die Zulieferungen über Subversion zu
+        erreichen sind, was der Idealfall bei Lieferanten-Zweigen ist.
+        Subversion kann sehr gut mit Merges von Dingen umgehen, die
+        von Subversion verwaltet wurden. Unglücklicherweise trifft es
+        nicht immer zu, dass Bibliotheken von Drittanbietern
+        öffentlich über Subversion zugreifbar sind. Oftmals hängt ein
+        Projekt von einer Bibliothek ab, die über Wege außerhalb von
+        Subversion ausgeliefert wird, wie etwa Quelltext-Tarballs.
+        Unter derartigen Umständen empfehlen wir dringend, alles zu
+        tun, um diese Informationen außerhalb von Subversion möglichst
+        sauber in Subversion einzupflegen. Lassen Sie uns nun einen
+        Ansatz für Lieferanten-Zweige untersuchen, bei dem die
+        verschiedenen freigegebenen Versionen der
+        Drittanbieter-Bibliothek innerhalb unseres eigenen
+        Projektarchivs gespiegelt werden.</para>
 
+<!--
       <para>Setting up the vendor branch the first time is pretty
         simple, really.  For our example, we'll assume that libcomplex
         1.0.0 is delivered via the common tarball mechanism.  To
         create our vendor branch, we'll first get the contents of the
         libcomplex 1.0.0 tarball into our repository as a read-only
         (by convention only) vendor tag of sorts.</para>
+-->
+      <para>Das erstmalige Aufsetzen des Lieferanten-Zweiges ist
+        wirklich recht einfach. Für unser Beispiel nehmen wir an, dass
+        libcomplex 1.0.0 über den verbreiteten Tarball-Mechanismus
+        verteilt wird. Um unseren Lieferanten-Zweig zu erstellen,
+        holen wir zunächst den Inhalt des libcomplex 1.0.0 Tarballs
+        als nur-lesbaren (durch Konvention) Lieferanten-Tag in
+        unser Projektarchiv.</para>
 
       <informalexample>
         <screen>
@@ -8546,7 +8578,7 @@ libcomplex-1.0.0/tests
 libcomplex-1.0.0/tests/TODO
 $ svn import libcomplex-1.0.0 \
              http://svn.example.com/projects/vendor/libcomplex-1.0.0 \
-             --no-ignore --no-auto-props \
+             --no-ignore --no-auto-props \<!--
              -m "Import libcomplex 1.0.0 sources."
 Adding         libcomplex-custom
 Adding         libcomplex-custom/README
@@ -8556,11 +8588,38 @@ Adding         libcomplex-custom/src
 Adding         libcomplex-custom/src/code.h
 Adding         libcomplex-custom/src/code.c
 Transmitting file data .......................................
-Committed revision 1160.
+Committed revision 1160.-->
+             -m "libcomplex 1.0.0 Quellen importieren."
+Füge hinzu         libcomplex-custom
+Füge hinzu         libcomplex-custom/README
+Füge hinzu         libcomplex-custom/LICENSE
+&hellip;
+Füge hinzu         libcomplex-custom/src
+Füge hinzu         libcomplex-custom/src/code.h
+Füge hinzu         libcomplex-custom/src/code.c
+Übertrage Daten .......................................
+Revision 1160 übertragen.
 $
 </screen>
       </informalexample>
 
+<!--
+      <para>Note that in our example, we used
+        the <option>- -no-ignore</option> option during import so that
+        Subversion is sure to pick up every file in the vendor drop
+        and not to omit any of them.  We also supply
+        the <option>- -no-auto-props</option> option so that our client
+        doesn't manufacture property information which isn't present
+        in the vendor drop.<footnote><para>Technically, we could let
+        the auto-props feature do its thing, but the key to making
+        that work well is ensuring that each vendor drop gets
+        identical auto-prop treatment.</para></footnote>.</para>
+       
+      <para>Now that the first vendor release drop is present in our
+        repository, we can create our vendor branch from it just as we
+        would create any other branch&mdash;using <command>svn
+        copy</command>.</para>
+-->
       <para>Note that in our example, we used
         the <option>--no-ignore</option> option during import so that
         Subversion is sure to pick up every file in the vendor drop
