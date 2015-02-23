@@ -847,11 +847,76 @@ $ svn log -r 1729:{2002-02-17}
         </listitem>
       </varlistentry>
       
-      <varlistentry id="svn.ref.svn.sw.set_depth">
-        <term><option>--set-depth</option> <replaceable>ARG</replaceable></term>
+      <varlistentry id="svn.ref.svn.sw.search">
+        <term><option>--search</option> <replaceable>ARG</replaceable></term>
         <listitem>
-          <para>Sets the sticky depth on a directory in a working
-            copy to one of <literal>exclude</literal>, <literal>empty</literal>,
+          <para>Filters log messages to show only those that match
+            the search pattern <replaceable>ARG</replaceable>.  Log
+            messages are displayed only if the provided search
+            pattern matches any of the author, date, log message
+            text (unless <option>--quiet</option> is used), or, if
+            the <option>--verbose</option> option is also provided,
+            a changed path.  If multiple <option>--search</option>
+            options are provided, a log message is shown if it
+            matches any of the provided search patterns.  If
+            <option>--limit</option> is used, it restricts the
+            number of log messages searched, rather than
+            restricting the output to a particular number of
+            matching log messages.</para>
+
+          <para>The search pattern may include "glob syntax"
+            wildcards:</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>
+                <literal>?</literal>
+              </term>
+              <listitem>
+                <para>Matches any single character.</para>
+              </listitem>
+            </varlistentry>
+            <varlistentry>
+              <term>
+                <literal>*</literal>
+              </term>
+              <listitem>
+                <para>Matches a sequence of arbitrary characters.</para>
+              </listitem>
+            </varlistentry>
+            <varlistentry>
+              <term>
+                <literal>[ABC]</literal>
+              </term>
+              <listitem>
+                <para>Matches any of the characters listed inside the
+                  brackets.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="svn.ref.svn.sw.search_and">
+        <term><option>--search-and</option>
+          <replaceable>ARG</replaceable></term>
+        <listitem>
+          <para>
+            The option's argument is combined with the pattern from
+            the previous <option>--search</option>
+            or <option>--search-and</option> option on the command
+            line.  Log message is shown only if it matches the
+            combined search pattern.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="svn.ref.svn.sw.set_depth">
+        <term><option>--set-depth</option> 
+          <replaceable>ARG</replaceable></term>
+        <listitem>
+          <para>Sets the sticky depth on a directory in a working copy
+            to one of <literal>exclude</literal>, <literal>empty</literal>,
             <literal>files</literal>, <literal>immediates</literal>,
             or <literal>infinity</literal>.  For detailed coverage
             of what these mean and how to use this option, see
@@ -3429,6 +3494,8 @@ $ svn lock http://svn.red-bean.com/repos/test/tree.jpg
 <xref linkend="svn.ref.svn.sw.limit" />
 <xref linkend="svn.ref.svn.sw.quiet" />
 <xref linkend="svn.ref.svn.sw.revision" />
+<xref linkend="svn.ref.svn.sw.search" />
+<xref linkend="svn.ref.svn.sw.search_and" />
 <xref linkend="svn.ref.svn.sw.stop_on_copy" />
 <xref linkend="svn.ref.svn.sw.targets" />
 <xref linkend="svn.ref.svn.sw.use_merge_history" />
@@ -3728,6 +3795,106 @@ $
         and <option>--extensions</option>
         (<option>-x</option>).</para>
 
+      <para>
+        Beginning with Subversion 1.8, users can filter <command>svn log</command>
+        output using <option>--search</option> and <option>--search-and</option>
+        options.  When using these options, a log message is shown only if a
+        revision's author, date, log message text, or list of changed paths,
+        matches a search pattern. Searching by changed patch requies
+        <option>--verbose</option> option, otherwise <command>svn log</command>
+        does not show changed paths therefore they can't be filtered.
+      </para>
+      <para>
+        The search pattern may include "glob syntax"
+        wildcards:
+      </para>
+      <variablelist>
+        <varlistentry>
+          <term>
+            <literal>?</literal>
+          </term>
+          <listitem>
+            <para>
+              Matches any single character.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>
+            <literal>*</literal>
+          </term>
+          <listitem>
+            <para>
+              Matches a sequence of arbitrary
+              characters.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>
+            <literal>[ABC]</literal>
+          </term>
+          <listitem>
+            <para>
+              Matches any of the characters listed inside the brackets.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <para>
+        Using multiple <option>--search</option> parameters will show log messages
+        that match the pattern specified at least in one of the options.  For example:
+      </para>
+      <informalexample>
+<screen>
+$ svn log --search sally --search harry https://svn.red-bean.com/repos/test
+------------------------------------------------------------------------
+r1701 | sally | 2011-10-12 22:35:30 -0600 (Wed, 12 Oct 2011) | 1 line
+
+Add a reminder.
+------------------------------------------------------------------------
+r1564 | harry | 2011-10-09 22:35:30 -0600 (Sun, 09 Oct 2011) | 1 line
+
+Merge r1560 to the 1.0.x branch.
+------------------------------------------------------------------------
+$
+        </screen>
+      </informalexample>
+      <para>
+        Using <option>--search</option> with <option>--search-and</option> options will show log messages
+        that match the combined pattern from both options. For example:
+      </para>
+      <informalexample>
+<screen>
+$ svn log --verbose --search sally --search-and /foo/bar https://svn.red-bean.com/repos/test
+------------------------------------------------------------------------
+r1555 | sally | 2011-07-15 22:33:14 -0600 (Fri, 15 Jul 2011) | 1 line
+Changed paths:
+M /foo/bar/src.c
+
+Typofix.
+------------------------------------------------------------------------
+r1530 | sally | 2011-07-13 07:24:11 -0600 (Wed, 13 Jul 2011) | 1 line
+Changed paths:
+M /foo/bar
+M /foo/build
+
+Fix up some svn:ignore properties.
+------------------------------------------------------------------------
+$
+</screen>
+      </informalexample>
+      <tip>
+        <para>
+          <option>--search</option> and <option>--search-and</option>
+          options does not actually perform a search.  They just filter
+          the <command>svn log</command> output to display only log
+          messages that match the specified pattern.  Therefore, if
+          <option>--limit</option> is used, it restricts the number
+          of log messages searched, rather than restricting the
+          output to a particular number of matching log messages.
+        </para>
+      </tip>
     </refsect1>
   </refentry>
 
