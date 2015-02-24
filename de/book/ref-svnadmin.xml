@@ -836,8 +836,7 @@ $
         some cases, drastically) the size of the dump file that
         <command>svnadmin dump</command> creates.  There are, however,
         disadvantages to using this option&mdash;deltified
-        dump files are more CPU-intensive to create, cannot be
-        operated on by <command>svndumpfilter</command>, and tend
+        dump files are more CPU-intensive to create and tend
         not to compress as well as their nondeltified counterparts
         when using third-party tools such as <command>gzip</command>
         and <command>bzip2</command>.</para>
@@ -852,12 +851,28 @@ $
         <command>svnadmin dump</command> erzeugt. Allerdings gibt
         es bei der Option auch Nachteile &ndash; deltifizierte
         Auszugsdateien erfordern bei der Erstellung mehr
-        Rechenkapazität, können nicht durch
-        <command>svndumpfilter</command> behandelt werden und
-        tendieren dazu, sich mit Werkzeugen von Drittanbietern, so
-        wie <command>gzip</command> oder <command>bzip2</command>,
-        nicht so gut komprimieren zu lassen wie die entsprechenden
-        undeltifizierten Auszugsdateien.</para>
+        Rechenkapazität und tendieren dazu, sich mit Werkzeugen von
+        Drittanbietern, so wie <command>gzip</command> oder
+        <command>bzip2</command>, nicht so gut komprimieren zu lassen
+        wie die entsprechenden undeltifizierten Auszugsdateien.</para>
+
+      <tip>
+<!--
+        <para>Beginning with Subversion 1.8,
+          <command>svndumpfilter</command> can operate on deltified
+          dump streams.  Prior to this release,
+          <command>svndumpfilter</command> would not work with dump
+          streams created using <option>- -deltas</option>
+          option.</para>
+-->
+        <para>Beginnend mit Subversion 1.8 kann
+          <command>svndumpfilter</command> auf deltifizierten
+          Ausgabeströmen arbeiten. Davor verweigerte
+          <command>svndumpfilter</command> die Arbeit mit
+          Auszugsströmen, die mit der Option
+          <option>--deltas</option> erzeugt wurden.</para>
+      </tip>
+
     </refsect1>
 
     <!-- =============================================================== -->
@@ -1374,6 +1389,70 @@ $ svnadmin load --parent-dir new/subdir/for/project \
         <option>--bypass-prop-validation</option> mit
         <command>svnadmin load</command>.</para>
 
+    </refsect1>
+  </refentry>
+
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.svnadmin.c.lock">
+
+    <indexterm>
+      <primary>svnadmin</primary>
+<!--
+      <secondary>subcommands</secondary>
+-->
+      <secondary>Unterbefehle</secondary>
+      <tertiary>lock</tertiary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>svnadmin lock</refname>
+<!--
+      <refpurpose>Lock path in the repository directly.</refpurpose>
+-->
+      <refpurpose>Einen Pfad direkt im Projektarchiv sperren.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>svnadmin lock REPOS_PATH PATH-IN-REPOS USERNAME FILE
+        [TOKEN]</literal>
+      </para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Description</title>
+-->
+      <title>Beschreibung</title>
+
+<!--
+      <para>Lock <replaceable>PATH-IN-REPOS</replaceable> in the
+        repository, assigning ownership of the lock
+        to <replaceable>USERNAME</replaceable> and using the contents
+        of <replaceable>FILE</replaceable> as comments associated with
+        the created lock.  If provided,
+        use <replaceable>TOKEN</replaceable> as lock token.</para>
+-->
+      <para>Sperre <replaceable>PATH-IN-REPOS</replaceable> im
+        Projektarchiv, wobei der Sperre
+        <replaceable>USERNAME</replaceable> als Eigentümer zugewiesen
+        wird und der Inhalt von <replaceable>FILE</replaceable> als
+        Kommentar mit der erzeugten Sperre verknüpft wird. Falls
+        angegeben, soll <replaceable>TOKEN</replaceable> als
+        Sperrmarke verwendet werden.</para>
+
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Options</title>
+      <informalexample>
+        <screen>
+<xref linkend="svn.ref.svnadmin.sw.bypass_hooks" />
+</screen>
+      </informalexample>
     </refsect1>
   </refentry>
 
@@ -2280,6 +2359,64 @@ $ svnadmin setuuid /var/svn/repos-new 2109a8dd-854f-0410-ad31-d604008985ab
         <command>svnadmin setuuid</command> im Erfolgsfall nichts
         aus.</para>
 
+    </refsect1>
+  </refentry>
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.svnadmin.c.unlock">
+
+    <indexterm>
+      <primary>svnadmin</primary>
+<!--
+      <secondary>subcommands</secondary>
+-->
+      <secondary>subcommands</secondary>
+      <tertiary>unlock</tertiary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>svnadmin unlock</refname>
+<!--
+      <refpurpose>Unlock path in the repository directly.</refpurpose>
+-->
+      <refpurpose>Pfad direkt im Projektarchiv entsperren.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>svnadmin unlock REPOS_PATH LOCKED_PATH USERNAME
+        TOKEN</literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Description</title>
+-->
+      <title>Description</title>
+
+<!--
+      <para>Unlock <replaceable>LOCKED_PATH</replaceable> in the
+        repository (as <replaceable>USERNAME</replaceable>) after
+        verifying that the token associated with the lock
+        matches <replaceable>TOKEN</replaceable>.</para>
+-->
+      <para>Entsperre <replaceable>LOCKED_PATH</replaceable> im
+        Projektarchiv (als <replaceable>USERNAME</replaceable>)
+        nachdem sichergestellt wurde, dass die zur Sperre gehörige
+        Sperrmarke mit <replaceable>TOKEN</replaceable>
+        übereinstimmt.</para>
+
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Options</title>
+      <informalexample>
+        <screen>
+<xref linkend="svn.ref.svnadmin.sw.bypass_hooks" />
+</screen>
+      </informalexample>
     </refsect1>
   </refentry>
 
