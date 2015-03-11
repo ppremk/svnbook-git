@@ -2969,9 +2969,37 @@ http://host.example.com/repos/project/trunk/renamed-thing.txt?p=123&amp;r=21
             and <quote>operative revision</quote> concepts.  They can
             be a bit tricky to wrap your head around.</para>
 
-          <para>As a reminder, this feature
-            of <command>mod_dav_svn</command> offers only a limited
-            repository browsing experience.  You can see directory
+          <para>Beginning with Subversion 1.8, <command>mod_dav_svn</command>
+            has the ability to substitute keywords.  When mod_dav_svn
+            finds the query argument <literal>kw=1</literal> added to
+            the URL of a file, it will expand keywords when delivering
+            the file's content.  Omitting the <literal>kw</literal>
+            parameter or using any value besides <literal>1</literal>
+            for that parameter will cause Subversion to use its
+            default behavior, which is to deliver the file's content
+            without any keywords expanded.</para>
+
+          <para>For example, if you wish to see the latest version of a
+            <filename>README.txt</filename> file located in your
+            project's <filename>/trunk</filename> with keywords
+            expanded, add the query argument <literal>kw=1</literal> to the
+            URL:</para>
+
+          <informalexample>
+            <programlisting>
+http://host.example.com/repos/project/trunk/README.txt?kw=1
+</programlisting>
+          </informalexample>
+
+          <para>As with client-side keyword expansion, only those keywords
+            which are explicitly designated for expansion via the
+            <literal>svn:keywords</literal> property set on the file itself
+            will be expanded.  See
+            <xref linkend="svn.advanced.props.special.keywords" /> for a
+            detailed description of the keyword substitution feature.</para>
+
+          <para>As a reminder, <command>mod_dav_svn</command> offers only a
+            limited repository browsing experience.  You can see directory
             listings and file contents, but no revision properties
             (such as commit log messages) or file/directory
             properties.  For folks who require more extensive browsing
