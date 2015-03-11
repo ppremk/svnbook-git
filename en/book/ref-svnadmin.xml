@@ -85,6 +85,14 @@
         </listitem>
       </varlistentry>
 
+      <varlistentry id="svn.ref.svnadmin.sw.file">
+        <term><option>--file</option> (<option>-F</option>) <replaceable>FILENAME</replaceable></term>
+        <listitem>
+          <para>Uses the contents of the named file for the
+            specified subcommand.</para>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="svn.ref.svnadmin.sw.fs_type">
         <term><option>--fs-type</option> <replaceable>ARG</replaceable></term>
         <listitem>
@@ -574,6 +582,74 @@ $ svnadmin dump /var/svn/repos -r 21 --incremental &gt; incr.dump
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
+  <refentry id="svn.ref.svnadmin.c.freeze">
+
+    <indexterm>
+      <primary>svnadmin</primary>
+      <secondary>subcommands</secondary>
+      <tertiary>freeze</tertiary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>svnadmin freeze</refname>
+      <refpurpose>Prevent commits to the repository while running an arbitary program.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>svnadmin freeze REPOS_PATH PROGRAM [ARG...]</literal></para>
+      <para><literal>svnadmin freeze --file FILENAME PROGRAM [ARG...]</literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Description</title>
+
+      <para>This subcommand prevents concurrent commits to the repository
+        <replaceable>REPOS_PATH</replaceable> (i.e. it freezes the
+        repository) while running <replaceable>PROGRAM</replaceable> with
+        <replaceable>ARG</replaceable> arguments.  Clients trying to
+        commit concurrently will wait until the repository becomes
+        available again.  The subcommand is intended for backup purposes so
+        that third-party backup tools such as <command>rsync</command> can
+        be safely used on a live repository.</para>
+
+      <para>If <option>--file</option> option is used, then all repositories
+        listed in <replaceable>FILENAME</replaceable> will froze.  The
+        file format is a list of <replaceable>REPOS_PATH</replaceable>
+        separated by newlines.  Repositories freeze in the
+        same order as they are listed in the file.</para>
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Options</title>
+
+      <informalexample>
+        <screen>
+<xref linkend="svn.ref.svnadmin.sw.file" />
+</screen>
+      </informalexample>
+    </refsect1>
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Examples</title>
+
+      <para>Freeze the repository and run <command>rsync</command> to
+        make its backup:</para>
+
+      <informalexample>
+        <screen>
+$ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
+</screen>
+      </informalexample>
+
+    </refsect1>
+  </refentry>
+
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  
   <refentry id="svn.ref.svnadmin.c.help">
 
     <indexterm>
