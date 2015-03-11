@@ -1255,7 +1255,7 @@ $ svnadmin list-unused-dblogs /var/svn/repos | xargs rm <!--
     </refnamediv>
 
     <refsynopsisdiv>
-      <para><literal>svnadmin load REPOS_PATH</literal></para>
+      <para><literal>svnadmin load REPOS_PATH [-r LOWER[:UPPER]]</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
@@ -1267,14 +1267,47 @@ $ svnadmin list-unused-dblogs /var/svn/repos | xargs rm <!--
 
 <!--
       <para>Read a repository dump stream from
-        <filename>stdin</filename>, committing new revisions into the repository's
-        filesystem.  Send progress feedback to <filename>stdout</filename>.</para>
+        <filename>stdin</filename>, committing new revisions
+        into the repository's filesystem.  Progress
+        feedback is sent to <filename>stdout</filename>.  If
+        no revisions are given, read and commit all revisions.  But
+        if <option>- -revision</option> is provided, read and commit
+        revisions <replaceable>LOWER</replaceable> rev through
+        <replaceable>UPPER</replaceable> rev only.  If only
+        <replaceable>LOWER</replaceable> is given, load that one
+        revision.</para>
 -->
       <para>Liest einen Projektarchiv-Auszugsstrom von
         <filename>stdin</filename> und übergibt neue Revisionen an
         das Dateisystem des Projektarchivs. Hinweise zum Fortschritt
-        werden nach <filename>stdout</filename> geschrieben.
-      </para>
+        werden nach <filename>stdout</filename> geschrieben. Werden
+        keine Revisionen angegeben, werden alle Revisionen gelesen und
+        übertragen. Falls jedoch <option>--revision</option> angegeben
+        ist, werden nur die Revisionen <replaceable>LOWER</replaceable>
+        bis <replaceable>UPPER</replaceable> gelesen und übertragen.
+        Falls nur <replaceable>LOWEE</replaceable> angegeben ist, eird
+        nur diese eine Revision geladen.</para>
+
+<!--
+      <para>Prior to Subversion 1.8, <command>svnadmin load</command>
+        was limited to reading all revisions that the dump stream
+        contains, but now <command>svnadmin load</command> accepts
+        <option>- -revision</option> option that acts as a filter for
+        dump stream revisions.  This allows you to incrementally load
+        only a range of revisions from a single dump stream making
+        some repository maintenance and reorganization tasks much
+        easier.</para>
+-->
+      <para>Vor Subversion 1.8 konnte <command>svnadmin load</command>
+        nur alle Revisionwn aus dem Auszugsstrom lesen, doch nun
+        akzeptiert <command>svnadmin load</command> die Option
+        <option>--revision</option>, die als Filter für die Revisionen
+        aus dem Auszugsstorm arbeitet. Das erlaubt Ihnen das
+        inkrementelle Laden beschränkt auf einen Bereich von
+        Revisionen eines einzelnen Ausgabestroms, was einige
+        Organisations- und Wartungsarbeiten am Projektarchiv
+        wesentlich vereinfacht.</para>
+    </refsect1>
     </refsect1>
 
     <!-- =============================================================== -->
