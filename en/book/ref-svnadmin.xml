@@ -850,7 +850,7 @@ $ svnadmin list-unused-dblogs /var/svn/repos | xargs rm
     </refnamediv>
 
     <refsynopsisdiv>
-      <para><literal>svnadmin load REPOS_PATH</literal></para>
+      <para><literal>svnadmin load REPOS_PATH [-r LOWER[:UPPER]]</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
@@ -858,8 +858,24 @@ $ svnadmin list-unused-dblogs /var/svn/repos | xargs rm
       <title>Description</title>
 
       <para>Read a repository dump stream from
-        <filename>stdin</filename>, committing new revisions into the repository's
-        filesystem.  Send progress feedback to <filename>stdout</filename>.</para>
+        <filename>stdin</filename>, committing new revisions
+        into the repository's filesystem.  Progress
+        feedback is sent to <filename>stdout</filename>.  If
+        no revisions are given, read and commit all revisions.  But
+        if <option>--revision</option> is provided, read and commit
+        revisions <replaceable>LOWER</replaceable> rev through
+        <replaceable>UPPER</replaceable> rev only.  If only
+        <replaceable>LOWER</replaceable> is given, load that one
+        revision.</para>
+
+      <para>Prior to Subversion 1.8, <command>svnadmin load</command>
+        was limited to reading all revisions that the dump stream
+        contains, but now <command>svnadmin load</command> accepts
+        <option>--revision</option> option that acts as a filter for
+        dump stream revisions.  This allows you to incrementally load
+        only a range of revisions from a single dump stream making
+        some repository maintenance and reorganization tasks much
+        easier.</para>
     </refsect1>
 
     <!-- =============================================================== -->
@@ -874,6 +890,7 @@ $ svnadmin list-unused-dblogs /var/svn/repos | xargs rm
 <xref linkend="svn.ref.svnadmin.sw.memory_cache_size" />
 <xref linkend="svn.ref.svnadmin.sw.parent_dir" />
 <xref linkend="svn.ref.svnadmin.sw.quiet" />
+<xref linkend="svn.ref.svnadmin.sw.revision" />
 <xref linkend="svn.ref.svnadmin.sw.use_post_commit_hook" />
 <xref linkend="svn.ref.svnadmin.sw.use_pre_commit_hook" />
 </screen>
