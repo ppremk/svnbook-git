@@ -149,6 +149,18 @@
         </listitem>
       </varlistentry>
 
+      <varlistentry id="svn.ref.svnadmin.sw.file">
+        <term><option>--file</option> (<option>-F</option>) <replaceable>FILENAME</replaceable></term>
+        <listitem>
+<!--
+          <para>Uses the contents of the named file for the
+            specified subcommand.</para>
+-->
+          <para>Verwedet den Inhalt der benannten Datei für den
+            angegebenen Unterbefehl.</para>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="svn.ref.svnadmin.sw.fs_type">
         <term><option>--fs-type</option> <replaceable>ARG</replaceable></term>
         <listitem>
@@ -942,6 +954,106 @@ $ svnadmin dump /var/svn/repos -r 21 --incremental &gt; incr.dump
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
+  <refentry id="svn.ref.svnadmin.c.freeze">
+
+    <indexterm>
+      <primary>svnadmin</primary>
+<!--
+      <secondary>subcommands</secondary>
+-->
+      <secondary>Unterbefehle</secondary>
+      <tertiary>freeze</tertiary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>svnadmin freeze</refname>
+<!--
+      <refpurpose>Prevent commits to the repository while running an arbitary program.</refpurpose>
+-->
+      <refpurpose>Während der Ausführung eines beliebigen Programms
+        Übertragungen an das Projektarchiv unterbinden.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>svnadmin freeze REPOS_PATH PROGRAM [ARG...]</literal></para>
+      <para><literal>svnadmin freeze --file FILENAME PROGRAM [ARG...]</literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+<!--
+      <title>Description</title>
+-->
+      <title>Beschreibung</title>
+
+<!--
+      <para>This subcommand prevents concurrent commits to the repository
+        <replaceable>REPOS_PATH</replaceable> (i.e. it freezes the
+        repository) while running <replaceable>PROGRAM</replaceable> with
+        <replaceable>ARG</replaceable> arguments.  Clients trying to
+        commit concurrently will wait until the repository becomes
+        available again.  The subcommand is intended for backup purposes so
+        that third-party backup tools such as <command>rsync</command> can
+        be safely used on a live repository.</para>
+-->
+      <para>Dieser Unterbefehl unterbindet nebenläufige Übertragungen
+        in das Projektarchiv <replaceable>REPOS_PATH</replaceable>
+        (d.h., er friert das Projektarchiv ein) während
+        <replaceable>PROGRAM</replaceable> mit den Argumenten
+        <replaceable>ARG</replaceable> ausgeführt wird. Clients, die
+        gleichzeitig übertragen wollen, warten, bis das Projektarchiv
+        wieder verfügbar wird. Der Unterbefehl ist für Sicherungen
+        gedacht, sp dass Werkzeuge von Drittanbietern, wie etwa 
+        <command>rsync</command> sicher auf ein aktives Projektarchiv
+        angesetzt werden können.</para>
+
+<!--
+      <para>If <option>- -file</option> option is used, then all repositories
+        listed in <replaceable>FILENAME</replaceable> will froze.  The
+        file format is a list of <replaceable>REPOS_PATH</replaceable>
+        separated by newlines.  Repositories freeze in the
+        same order as they are listed in the file.</para>
+    </refsect1>
+-->
+      <para>Wird die Option <option>--file</option> verwendet, werden
+        alle in <replaceable>FILENAME</replaceable> aufgeführten
+        Projektarchive eingefroren. Das Dateiformat ist eine liste aus
+        <replaceable>REPOS_PATH</replaceable>, die durch
+        Zeilenvorschübe getrennt sind. Projektarchive werden in
+        derselben Reihenfolge eingefroren wie sie in der Datei
+        aufgeführt sind.</para>
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Options</title>
+
+      <informalexample>
+        <screen>
+<xref linkend="svn.ref.svnadmin.sw.file" />
+</screen>
+      </informalexample>
+    </refsect1>
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Examples</title>
+
+      <para>Freeze the repository and run <command>rsync</command> to
+        make its backup:</para>
+
+      <informalexample>
+        <screen>
+$ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
+</screen>
+      </informalexample>
+
+    </refsect1>
+  </refentry>
+
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  
   <refentry id="svn.ref.svnadmin.c.help">
 
     <indexterm>
@@ -1307,7 +1419,6 @@ $ svnadmin list-unused-dblogs /var/svn/repos | xargs rm <!--
         Revisionen eines einzelnen Ausgabestroms, was einige
         Organisations- und Wartungsarbeiten am Projektarchiv
         wesentlich vereinfacht.</para>
-    </refsect1>
     </refsect1>
 
     <!-- =============================================================== -->
