@@ -702,15 +702,28 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
     <refsect1>
       <title>Description</title>
 
-      <para>This subcommand makes a full <quote>hot</quote> backup
+      <para>This subcommand makes a <quote>hot</quote> backup
         of your repository, including all hooks, configuration
-        files, and, of course, database files.  If you pass the
-        <option>--clean-logs</option> option,
-        <command>svnadmin</command> will perform a hot copy of your
-        repository, and then remove unused Berkeley DB logs from
-        the original repository.  You can run this command at any
+        files, and, of course, database files.  You can run this command at any
         time and make a safe copy of the repository, regardless of
         whether other processes are using the repository.</para>
+
+      <para>Prior to Subversion 1.8, <command>svnadmin hotcopy</command> always
+        made a full hot copy of the source repository.  Beginning with
+        Subversion 1.8 it supports incremental copy to the existing
+        destination copy of the same source repository.  By passing the
+        <option>--incremental</option> option to
+        <command>svnadmin hotcopy</command>, you can instruct Subversion to
+        copy only new revisions and revisions which have changed in size or had
+        timestamp modifications.  The UUID of the hotcopy destination
+        repository must match the UUID of the hotcopy source repository.
+        Incremental hotcopy mode is supported for FSFS repositories
+        only.</para>
+
+      <para>If you pass the <option>--clean-logs</option> option,
+        <command>svnadmin</command> will perform a hot copy of your
+        repository, and then remove unused Berkeley DB logs from
+        the original repository.</para>
 
     </refsect1>
 
@@ -721,6 +734,7 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
       <informalexample>
         <screen>
 <xref linkend="svn.ref.svnadmin.sw.clean_logs" />
+<xref linkend="svn.ref.svnadmin.sw.incremental" />
 </screen>
       </informalexample>
 

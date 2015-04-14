@@ -3773,6 +3773,21 @@ $ svnadmin hotcopy --clean-logs /var/svn/bdb-repos /var/svn/bdb-repos-backup
         reasons, we recommend against relying solely on dump-based
         backup approaches.</para>
 
+      <para>Beginning with Subversion 1.8, <command>svnadmin hotcopy</command>
+        accepts <option>--incremental</option> option and supports incremental
+        hotcopy mode for FSFS repositories.  In incremental hotcopy mode,
+        revision data which has already been copied from the source to the
+        destination repository will not be copied again. When
+        <option>--incremental</option> option is used with
+        <command>svnadmin hotcopy</command>, Subversion will only copy new
+        revisions, and revisions which have changed in size or had their
+        modification time stamp changed since the previous hotcopy
+        operation.  Moreover, unlike with <command>svnsync</command> or
+        <command>svnadmin dump --incremental</command>, performance of
+        <command>svnadmin hotcopy --incremental</command> is only limited to
+        disk I/O.  Therefore, incremental hotcopy can be a huge
+        time saver when making a backup of a large repository.</para>
+
       <para>As you can see, each of the various backup types and
         methods has its advantages and disadvantages.  The easiest is
         by far the full hot backup, which will always result in a
