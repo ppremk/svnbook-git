@@ -115,6 +115,19 @@
         </listitem>
       </varlistentry>
 
+      <varlistentry id="svn.ref.svnadmin.sw.compatible_version">
+        <term><option>--compatible-version</option> <replaceable>ARG</replaceable></term>
+        <listitem>
+<!--
+          <para>Use repository format compatible with Subversion version
+            <replaceable>ARG</replaceable>.</para>
+-->
+          <para>Ein zur Version <replaceable>ARG</replaceable> von
+            Subversion kompatibles Projektarchiv-Format
+            verwenden.</para>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="svn.ref.svnadmin.sw.config_dir">
         <!-- Only 'svnadmin create' accepts it, and the underlying
              logic doesn't even use it.  Weird. -->
@@ -264,13 +277,15 @@
         <term><option>--pre-1.4-compatible</option></term>
         <listitem>
 <!--
-          <para>When creating a new repository, use a format that is
-          compatible with versions of Subversion earlier than
-          Subversion 1.4.</para>
+          <para><emphasis>Deprecated</emphasis>.  See option
+            <option>- -compatible-version</option>.  When creating a new
+            repository, use a format that is compatible with versions of
+            Subversion earlier than Subversion 1.4.</para>
 -->
-          <para>Verwendet beim Erstellen eines Projektarchiv ein
-            Format, das zu älteren Versionen als Subversion 1.4
-            kompatibel ist.</para>
+          <para><emphasis>Veraltet</emphasis>. Siehe Option
+            <option>--compatible-version</option>. Verwendet beim
+            Erstellen eines Projektarchiv ein Format, das zu älteren
+            Versionen als Subversion 1.4 kompatibel ist.</para>
         </listitem>
       </varlistentry>
 
@@ -278,13 +293,15 @@
         <term><option>--pre-1.5-compatible</option></term>
         <listitem>
 <!--
-          <para>When creating a new repository, use a format that is
-          compatible with versions of Subversion earlier than
-          Subversion 1.5.</para>
+          <para><emphasis>Deprecated</emphasis>.  See option
+            <option>- -compatible-version</option>.  When creating a new
+            repository, use a format that is compatible with versions of
+            Subversion earlier than Subversion 1.5.</para>
 -->
-          <para>Verwendet beim Erstellen eines Projektarchiv ein
-            Format, das zu älteren Versionen als Subversion 1.5
-            kompatibel ist.</para>
+          <para><emphasis>Veraltet</emphasis>. Siehe Option
+            <option>--compatible-version</option>. Verwendet beim
+            Erstellen eines Projektarchiv ein Format, das zu älteren
+            Versionen als Subversion 1.5 kompatibel ist.</para>
         </listitem>
       </varlistentry>
 
@@ -292,13 +309,15 @@
         <term><option>--pre-1.6-compatible</option></term>
         <listitem>
 <!--
-          <para>When creating a new repository, use a format that is
-            compatible with versions of Subversion earlier than
-            Subversion 1.6.</para>
+          <para><emphasis>Deprecated</emphasis>.  See option
+            <option>- -compatible-version</option>.  When creating a new
+            repository, use a format that is compatible with versions of
+            Subversion earlier than Subversion 1.6.</para>
 -->
-          <para>Verwendet beim Erstellen eines Projektarchiv ein
-            Format, das zu älteren Versionen als Subversion 1.5
-            kompatibel ist.</para>
+          <para><emphasis>Veraltet</emphasis>. Siehe Option
+            <option>--compatible-version</option>. Verwendet beim
+            Erstellen eines Projektarchiv ein Format, das zu älteren
+            Versionen als Subversion 1.5 kompatibel ist.</para>
         </listitem>
       </varlistentry>
 
@@ -600,6 +619,7 @@ Aborted
         <screen>
 <xref linkend="svn.ref.svnadmin.sw.bdb_log_keep" />
 <xref linkend="svn.ref.svnadmin.sw.bdb_txn_nosync" />
+<xref linkend="svn.ref.svnadmin.sw.compatible_version" />
 <xref linkend="svn.ref.svnadmin.sw.config_dir" />
 <xref linkend="svn.ref.svnadmin.sw.fs_type" />
 <xref linkend="svn.ref.svnadmin.sw.pre_1.4_compatible" />
@@ -1141,28 +1161,58 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
       <title>Beschreibung</title>
 
 <!--
-      <para>This subcommand makes a full <quote>hot</quote> backup
+      <para>This subcommand makes a <quote>hot</quote> backup
         of your repository, including all hooks, configuration
-        files, and, of course, database files.  If you pass the
-        <option>- -clean-logs</option> option,
-        <command>svnadmin</command> will perform a hot copy of your
-        repository, and then remove unused Berkeley DB logs from
-        the original repository.  You can run this command at any
+        files, and, of course, database files.  You can run this command at any
         time and make a safe copy of the repository, regardless of
         whether other processes are using the repository.</para>
 -->
-      <para>Dieser Unterbefehl erstellt eine vollständige
+      <para>Dieser Unterbefehl erstellt eine 
         Sicherheitskopie Ihres Projektarchivs während des laufenden
         Betriebs; dabei werden alle Hooks, Konfigurationsdateien
-        und Datenbankdateien berücksichtigt. Falls Sie die Option
-        <option>--clean-logs</option> angeben, führt
-        <command>svnadmin</command> die Sicherungskopie Ihres
-        Projektarchivs durch und löscht anschließend nicht benötigte
-        Berkeley-DB-Protokolldateien aus Ihrem
-        Original-Projektarchiv. Sie können diesen Befehl jederzeit
+        und Datenbankdateien berücksichtigt. Sie können diesen Befehl jederzeit
         aufrufen und eine Sicherungskopie des Projektarchivs anlegen,
         egal, ob andere Prozesse gerade auf das Projektarchiv
         zugreifen.</para>
+
+<!--
+      <para>Prior to Subversion 1.8, <command>svnadmin hotcopy</command> always
+        made a full hot copy of the source repository.  Beginning with
+        Subversion 1.8 it supports incremental copy to the existing
+        destination copy of the same source repository.  By passing the
+        <option>- -incremental</option> option to
+        <command>svnadmin hotcopy</command>, you can instruct Subversion to
+        copy only new revisions and revisions which have changed in size or had
+        timestamp modifications.  The UUID of the hotcopy destination
+        repository must match the UUID of the hotcopy source repository.
+        Incremental hotcopy mode is supported for FSFS repositories
+        only.</para>
+-->
+      <para>Vor Subversion 1.8 hat <command>svnadmin hotcopy</command> stets
+        eine vollständige Kopie des Projektarchivs im laufenden
+        Betrieb erstellt. Beginnend mit Subversion 1.8 unterstützt es
+        eine inkrementelle Kopie auf die existierende Zielkopie
+        desselben Ursprungs-Projektarchivs. Indem Sie
+        <command>svnadmin hotcopy</command> die Option
+        <option>--incremental</option> mitgeben, können Sie Subversion
+        anweisen, nur neue Revisionen sowie Revisionen zu kopieren,
+        die Änderungen an der Größe oder am Änderungsdatum vorweisen.
+        Der UUID des Ziel-Projektarchivs der Hotcopy-Operation muss
+        derselbe sein wie der UUID des Ursprungs-Projektarchivs.
+        Der inkrementelle Hotcopy-Modus wird nur von
+        FSFS-Projektarchiven unterstützt.</para>
+
+<!--
+      <para>If you pass the <option>- -clean-logs</option> option,
+        <command>svnadmin</command> will perform a hot copy of your
+        repository, and then remove unused Berkeley DB logs from
+        the original repository.</para>
+-->
+      <para>Falls Sie die Option <option>--clean-logs</option>
+        angeben, führt <command>svnadmin</command> die Sicherungskopie
+        Ihres Projektarchivs durch und löscht anschließend nicht
+        benötigte Berkeley-DB-Protokolldateien aus Ihrem
+        Original-Projektarchiv. </para>
 
     </refsect1>
 
@@ -1176,6 +1226,7 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
       <informalexample>
         <screen>
 <xref linkend="svn.ref.svnadmin.sw.clean_logs" />
+<xref linkend="svn.ref.svnadmin.sw.incremental" />
 </screen>
       </informalexample>
 
