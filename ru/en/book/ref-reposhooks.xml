@@ -1,0 +1,776 @@
+<!-- -*- sgml -*- -->
+
+<reference id="svn.ref.reposhooks">
+  <title>Subversion Repository Hook Reference</title>
+
+  <partintro>
+
+    <para>Subversion repositories provide a number of event hooks
+      which are essentially opportunities for administrators to extend
+      Subversion's functionality at key moments of key operations.
+      Repository hooks are implemented as programs executed by
+      Subversion itself at those key moments&mdash;before and after a
+      commit, before and after a user locks a file, and so on.</para>
+    
+    <para>For each hook it provides, Subversion will attempt to
+      execute the program of that hook's name which is found in
+      the <filename>hooks/</filename> subdirectory of the repository's
+      on-disk directory structure.  For example, on a Unix system, the
+      start-commit hook script would be installed at
+      <filename><replaceable>REPOS_PATH</replaceable>/hooks/start-commit</filename>,
+      where it could be a binary executable program, a shell script, a
+      Python program, etc.  On a Windows system, the program would be
+      installed in the same location, but would be
+      named <filename>START-COMMIT.EXE</filename>
+      or <filename>START-COMMIT.BAT</filename> instead of
+      simply <filename>start-commit</filename>.</para>
+
+    <para>This reference guide describes the various hooks which
+      Subversion offers to administrators, detailing when the hook is
+      invoked, its input parameters, and how its behavior affects the
+      Subversion workflow.</para>
+
+  </partintro>
+
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.reposhooks.start-commit">
+  
+    <indexterm>
+      <primary>hook scripts</primary>
+      <secondary>start-commit</secondary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>start-commit</refname>
+      <refpurpose>Notification of the beginning of a commit.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>start-commit
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>USER</replaceable>
+        <replaceable>CAPABILITIES</replaceable>
+        <replaceable>TXN-NAME</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Description</title>
+      
+      <para>The start-commit hook is run immediately after the
+        commit transaction is created and its initial properties
+        set.  It is typically used as an early termination
+        mechanism, avoiding what could be a lengthy commit process
+        which would eventually fail at a later phase anyway due to a
+        user's lack of commit privileges or some other commit
+        metadata validation failure.</para>
+
+      <para>If the start-commit hook program returns a nonzero exit
+        value, the commit process is stopped, the commit transaction
+        is destroyed, and anything printed to
+        <filename>stderr</filename> is marshalled back to the
+        client.</para>
+
+      <para>The start-commit hook is not a suitable place to
+        evaluate the substance of a particular commit, as it is
+        invoked before any file or directory change information has
+        been transmitted.  Use the pre-commit hook script (which is
+        described in <xref linkend="svn.ref.reposhooks.pre-commit"
+        /> elsewhere in this reference) for that purpose.</para>
+
+      <note>
+        <para>Prior to Subversion 1.8, the Subversion invoked the
+          start-commit hook <emphasis>before</emphasis> creating the
+          commit transaction.  Failure of the script resulted in that
+          transaction not being created at all.  This was changed in
+          Subversion 1.8, though, to allow implementations of the
+          start-commit hook access to the transaction's properties,
+          which can include (among other things) the revision log
+          associated with the commit.</para>
+      </note>
+
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Input Parameter(s)</title>
+
+      <para>The command-line arguments passed to the hook program,
+        in order, are:</para>
+      
+      <orderedlist>
+        <listitem>
+          <para>Repository path</para>
+        </listitem>
+        <listitem>
+          <para>Authenticated username attempting the commit</para>
+        </listitem>
+        <listitem>
+          <para>Colon-separated list of
+            capabilities that a client passes to the server,
+            including <literal>depth</literal>,
+            <literal>mergeinfo</literal>, and
+            <literal>log-revprops</literal> (new in Subversion 1.5)</para>
+        </listitem>
+        <listitem>
+          <para>Commit transaction name (new in Subversion 1.8)</para>
+        </listitem>
+      </orderedlist>
+    </refsect1>
+    
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Common uses</title>
+
+      <para>Access control (e.g., temporarily lock out commits for
+        some reason).</para>
+
+      <para>A means to allow access only from clients that have
+        certain capabilities.</para>
+    </refsect1>
+
+  </refentry>
+      
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.reposhooks.pre-commit">
+  
+    <indexterm>
+      <primary>hook scripts</primary>
+      <secondary>pre-commit</secondary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>pre-commit</refname>
+      <refpurpose>Notification just prior to commit completion.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>pre-commit
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>TXN-NAME</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Description</title>
+
+      <para>The <literal>pre-commit</literal> hook is run just
+        before a commit transaction is promoted to a new revision.
+        Typically, this hook is used to protect against commits that
+        are disallowed due to content or location (e.g., your
+        site might require that all commits to a certain branch
+        include a ticket number from the bug tracker, or that the
+        incoming log message is nonempty).</para>
+
+      <para>If the <literal>pre-commit</literal> hook program
+        returns a nonzero exit value, the commit is aborted, the
+        commit transaction is removed, and anything printed to
+        <filename>stderr</filename> is marshalled back to the client.</para>
+
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Input parameter(s)</title>
+
+      <para>The command-line arguments passed to the hook program,
+        in order, are:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Repository path</para>
+        </listitem>
+        <listitem>
+          <para>Commit transaction name</para>
+        </listitem>
+      </orderedlist>
+
+      <para>Additionally, Subversion passes any lock tokens provided
+        by the committing client to the hook script via standard
+        input.  When present, these are formatted as a single line
+        containing the string <literal>LOCK-TOKENS:</literal>,
+        followed by additional lines&mdash;one per lock
+        token&mdash;which contain the lock token information.  Each
+        lock token information line consists of the URI-escaped
+        repository filesystem path associated with the lock,
+        followed by the pipe (<literal>|</literal>) separator
+        character, and finally the lock token string.</para>
+
+    </refsect1>
+    
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Common uses</title>
+      <para>Change validation and control</para>
+    </refsect1>
+  
+  </refentry>
+      
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.reposhooks.post-commit">
+  
+    <indexterm>
+      <primary>hook scripts</primary>
+      <secondary>post-commit</secondary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>post-commit</refname>
+      <refpurpose>Notification of a successful commit.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>post-commit
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>REVISION</replaceable>
+        <replaceable>TXN-NAME</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Description</title>
+
+      <para>The <literal>post-commit</literal> hook is run after the
+        transaction is committed and a new revision is created.  Most
+        people use this hook to send out descriptive emails about
+        the commit or to notify some other tool (such as an issue
+        tracker) that a commit has happened.  Some configurations
+        also use this hook to trigger backup processes.</para>
+
+      <para>If the <literal>post-commit</literal> hook returns a
+        nonzero exit status, the commit <emphasis>will
+        not</emphasis> be aborted since it has already
+        completed.  However, anything that the hook printed
+        to <filename>stderr</filename> will be marshalled back to the
+        client, making it easier to diagnose hook failures.</para>
+            
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Input parameter(s)</title>
+
+      <para>The command-line arguments passed to the hook program,
+        in order, are:</para>
+      
+      <orderedlist>
+        <listitem>
+          <para>Repository path</para>
+        </listitem>
+        <listitem>
+          <para>Revision number created by the commit</para>
+        </listitem>
+        <listitem>
+          <para>Name of the transaction that has become the revision triggering
+            the post-commit hook.</para>
+        </listitem>
+      </orderedlist>
+    </refsect1>
+    
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Common uses</title>
+      <para>Commit notification; tool integration</para>
+    </refsect1>
+  
+  </refentry>
+      
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.reposhooks.pre-revprop-change">
+  
+    <indexterm>
+      <primary>hook scripts</primary>
+      <secondary>pre-revprop-change</secondary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>pre-revprop-change</refname>
+      <refpurpose>Notification of a revision property change
+        attempt.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>pre-revprop-change
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>REVISION</replaceable>
+        <replaceable>USER</replaceable>
+        <replaceable>PROPNAME</replaceable>
+        <replaceable>ACTION</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Description</title>
+
+      <para>The <literal>pre-revprop-change</literal> hook is run
+        immediately prior to the modification of a revision property
+        when performed outside the scope of a normal commit.  Unlike
+        the other hooks, the default state of this one is to deny
+        the proposed action.  The hook must actually exist and
+        return a zero exit value before a revision property
+        modification can happen.</para>
+
+      <para>If the <literal>pre-revprop-change</literal> hook doesn't
+        exist, isn't executable, or returns a nonzero exit value, no
+        change to the property will be made, and anything printed
+        to <filename>stderr</filename> is marshalled back to the
+        client.</para>
+
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Input parameter(s)</title>
+
+      <para>The command-line arguments passed to the hook program,
+        in order, are:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Repository path</para>
+        </listitem>
+        <listitem>
+          <para>Revision whose property is about to be modified</para>
+        </listitem>
+        <listitem>
+          <para>Authenticated username attempting the property change</para>
+        </listitem>
+        <listitem>
+          <para>Name of the property changed</para>
+        </listitem>
+        <listitem>
+          <para>Change description: <literal>A</literal> (added),
+            <literal>D</literal> (deleted), or <literal>M</literal>
+            (modified)</para>
+        </listitem>
+      </orderedlist>
+
+      <para>Additionally, Subversion passes the intended new value
+         of the property to the hook program via standard
+         input.</para>
+
+    </refsect1>
+    
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Common uses</title>
+      <para>Access control; change validation and control</para>
+    </refsect1>
+  
+  </refentry>
+      
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.reposhooks.post-revprop-change">
+  
+    <indexterm>
+      <primary>hook scripts</primary>
+      <secondary>post-revprop-change</secondary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>post-revprop-change</refname>
+      <refpurpose>Notification of a successful revision property 
+        change.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>post-revprop-change
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>REVISION</replaceable>
+        <replaceable>USER</replaceable>
+        <replaceable>PROPNAME</replaceable>
+        <replaceable>ACTION</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Description</title>
+
+      <para>The <literal>post-revprop-change</literal> hook is run
+        immediately after the modification of a revision property
+        when performed outside the scope of a normal commit.  As you can
+        derive from the description of its counterpart, the
+        <literal>pre-revprop-change</literal> hook, this hook will
+        not run at all unless
+        the <literal>pre-revprop-change</literal> hook is
+        implemented.  It is typically used to send email
+        notification of the property change.</para>
+
+      <para>If the <literal>post-revprop-change</literal> hook returns a
+        nonzero exit status, the change <emphasis>will
+        not</emphasis> be aborted since it has already
+        completed.  However, anything that the hook printed
+        to <filename>stderr</filename> will be marshalled back to the
+        client, making it easier to diagnose hook failures.</para>
+
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Input parameter(s)</title>
+
+      <para>The command-line arguments passed to the hook program,
+        in order, are:</para>
+      
+      <orderedlist>
+        <listitem>
+          <para>Repository path</para>
+        </listitem>
+        <listitem>
+          <para>Revision whose property was modified</para>
+        </listitem>
+        <listitem>
+          <para>Authenticated username of the person making the change</para>
+        </listitem>
+        <listitem>
+          <para>Name of the property changed</para>
+        </listitem>
+        <listitem>
+          <para>Change description: <literal>A</literal> (added),
+            <literal>D</literal> (deleted), or <literal>M</literal>
+            (modified)</para>
+        </listitem>
+      </orderedlist>
+
+      <para>Additionally, Subversion passes to the hook program, via
+        standard input, the previous value of the property.</para>
+
+    </refsect1>
+    
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Common uses</title>
+      <para>Property change notification</para>
+    </refsect1>
+  
+  </refentry>
+      
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.reposhooks.pre-lock">
+  
+    <indexterm>
+      <primary>hook scripts</primary>
+      <secondary>pre-lock</secondary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>pre-lock</refname>
+      <refpurpose>Notification of a path lock attempt.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>pre-lock
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>PATH</replaceable>
+        <replaceable>USER</replaceable>
+        <replaceable>COMMENT</replaceable>
+        <replaceable>STEAL</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Description</title>
+
+      <para>The <literal>pre-lock</literal> hook runs whenever
+        someone attempts to lock a path.  It can be used to prevent
+        locks altogether or to create a more complex policy
+        specifying exactly which users are allowed to lock
+        particular paths.  If the hook notices a preexisting lock,
+        it can also decide whether a user is allowed
+        to <quote>steal</quote> the existing lock.</para>
+
+      <para>If the <literal>pre-lock</literal> hook program returns
+        a nonzero exit value, the lock action is aborted and
+        anything printed to <filename>stderr</filename> is
+        marshalled back to the client.</para>
+
+      <para>The hook program may optionally dictate the lock token
+        which will be assigned to the lock by printing the desired
+        lock token to standard output.  Because of this,
+        implementations of this hook should carefully avoid
+        unexpected output sent to standard output.</para>
+
+      <warning>
+        <para>If the <literal>pre-lock</literal> script takes
+          advantage of lock token dictation feature, the
+          responsibility of generating a <emphasis>unique</emphasis>
+          lock token falls to the script itself.  Failure to
+          generate unique lock tokens may result in
+          undefined&mdash;and very likely,
+          undesired&mdash;behavior.</para>
+      </warning>
+
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Input parameter(s)</title>
+
+      <para>The command-line arguments passed to the hook program,
+        in order, are:</para>
+      
+      <orderedlist>
+        <listitem>
+          <para>Repository path</para>
+        </listitem>
+        <listitem>
+          <para>Versioned path that is to be locked</para>
+        </listitem>
+        <listitem>
+          <para>Authenticated username of the person attempting the 
+            lock</para>
+        </listitem>
+        <listitem>
+          <para>Comment provided when the lock was created</para>
+        </listitem>
+        <listitem>
+          <para><literal>1</literal> if the user is attempting to
+            steal an existing lock; <literal>0</literal>
+            otherwise</para>
+        </listitem>
+      </orderedlist>
+    </refsect1>
+    
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Common uses</title>
+      <para>Access control</para>
+    </refsect1>
+  
+  </refentry>
+      
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.reposhooks.post-lock">
+  
+    <indexterm>
+      <primary>hook scripts</primary>
+      <secondary>post-lock</secondary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>post-lock</refname>
+      <refpurpose>Notification of a successful path lock.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>post-lock
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>USER</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Description</title>
+
+      <para>The <literal>post-lock</literal> hook runs after one or
+        more paths have been locked.  It is typically used to send
+        email notification of the lock event.</para>
+
+      <para>If the <literal>post-lock</literal> hook returns a
+        nonzero exit status, the lock <emphasis>will
+        not</emphasis> be aborted since it has already
+        completed.  However, anything that the hook printed
+        to <filename>stderr</filename> will be marshalled back to the
+        client, making it easier to diagnose hook failures.</para>
+
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Input parameter(s)</title>
+
+      <para>The command-line arguments passed to the hook program,
+        in order, are:</para>
+      
+      <orderedlist>
+        <listitem>
+          <para>Repository path</para>
+        </listitem>
+        <listitem>
+          <para>Authenticated username of the person who locked the 
+            paths</para>
+        </listitem>
+      </orderedlist>
+
+      <para>Additionally, the list of paths locked is passed to the
+        hook program via standard input, one path per line.</para>
+
+    </refsect1>
+    
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Common uses</title>
+      <para>Lock notification</para>
+    </refsect1>
+  
+  </refentry>
+      
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.reposhooks.pre-unlock">
+  
+    <indexterm>
+      <primary>hook scripts</primary>
+      <secondary>pre-unlock</secondary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>pre-unlock</refname>
+      <refpurpose>Notification of a path unlock attempt.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>pre-unlock
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>PATH</replaceable>
+        <replaceable>USER</replaceable>
+        <replaceable>TOKEN</replaceable>
+        <replaceable>BREAK-UNLOCK</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Description</title>
+
+      <para>The <literal>pre-unlock</literal> hook runs whenever
+        someone attempts to remove a lock on a file.  It can be used
+        to create policies that specify which users are allowed to
+        unlock particular paths.  It's particularly important for
+        determining policies about lock breakage.  If user A locks a
+        file, is user B allowed to break the lock?  What if the lock
+        is more than a week old?  These sorts of things can be
+        decided and enforced by the hook.</para>
+
+      <para>If the <literal>pre-unlock</literal> hook program
+        returns a nonzero exit value, the unlock action is aborted
+        and anything printed to <filename>stderr</filename> is marshalled back to the
+        client.</para>
+
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Input parameter(s)</title>
+
+      <para>The command-line arguments passed to the hook program,
+        in order, are:</para>
+      
+      <orderedlist>
+        <listitem>
+          <para>Repository path</para>
+        </listitem>
+        <listitem>
+          <para>Versioned path which is to be unlocked</para>
+        </listitem>
+        <listitem>
+          <para>Authenticated username of the person attempting the 
+            unlock</para>
+        </listitem>
+        <listitem>
+          <para>Lock token associated with the lock which is to be
+            removed</para>
+        </listitem>
+        <listitem>
+          <para><literal>1</literal> if the user is attempting to
+            break the lock; <literal>0</literal> otherwise</para>
+        </listitem>
+      </orderedlist>
+    </refsect1>
+    
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Common uses</title>
+      <para>Access control</para>
+    </refsect1>
+  
+  </refentry>
+      
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <refentry id="svn.ref.reposhooks.post-unlock">
+  
+    <indexterm>
+      <primary>hook scripts</primary>
+      <secondary>post-unlock</secondary>
+    </indexterm>
+
+    <refnamediv>
+      <refname>post-unlock</refname>
+      <refpurpose>Notification of a successful path unlock.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <para><literal>post-unlock
+        <replaceable>REPOS-PATH</replaceable>
+        <replaceable>USER</replaceable></literal></para>
+    </refsynopsisdiv>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Description</title>
+
+      <para>The <literal>post-unlock</literal> hook runs after one
+        or more paths have been unlocked.  It is typically used to
+        send email notification of the unlock event.</para>
+
+      <para>If the <literal>post-unlock</literal> hook returns a
+        nonzero exit status, the unlock <emphasis>will
+        not</emphasis> be aborted since it has already
+        completed.  However, anything that the hook printed
+        to <filename>stderr</filename> will be marshalled back to the
+        client, making it easier to diagnose hook failures.</para>
+
+    </refsect1>
+
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Input parameter(s)</title>
+
+      <para>The command-line arguments passed to the hook program,
+        in order, are:</para>
+      
+      <orderedlist>
+        <listitem>
+          <para>Repository path</para>
+        </listitem>
+        <listitem>
+          <para>Authenticated username of the person who unlocked the 
+            paths</para>
+        </listitem>
+      </orderedlist>
+
+      <para>Additionally, the list of paths unlocked is passed to the
+        hook program via standard input, one path per line.</para>
+
+    </refsect1>
+    
+    <!-- =============================================================== -->
+    <refsect1>
+      <title>Common uses</title>
+      <para>Unlock notification</para>
+    </refsect1>
+  
+  </refentry>
+</reference>
+
+<!--
+local variables: 
+sgml-parent-document: ("book.xml" "reference")
+end:
+-->
