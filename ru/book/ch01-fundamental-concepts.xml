@@ -1,26 +1,50 @@
 <!-- -*- sgml -*- -->
 
 <chapter id="svn.basic">
+  <!--
   <title>Fundamental Concepts</title>
+-->
+  <title>Основные понятия</title>
 
+  <!--
   <para>This chapter is a short, casual introduction to Subversion and
     its approach to version control.  We begin with a discussion of
     general version control concepts, work our way into the specific
     ideas behind Subversion, and show some simple examples of
     Subversion in use.</para>
+-->
+  <para>
+    Эта глава представляет собой краткое и поверхностное введение в
+    Subversion и его подходу к управлению версиями.  Мы начнём с обсуждения
+    общих понятий управления версиями, разберёмся с особыми идеями
+    лежащими в основе Subversion и покажем несколько простых примеров
+    использования Subversion.
+  </para>
 
+  <!--
   <para>Even though the examples in this chapter show people sharing
     collections of program source code, keep in mind that Subversion
     can manage any sort of file collection&mdash;it's not limited to
     helping computer programmers.</para>
+-->
+  <para>
+    Не смотря на то, что примеры в этой главе показывают как люди
+    совместно работают над исходным кодом программы, имейте в виду, что
+    Subversion справляется с любым набором файлов &ndash; его применение
+    не ограничено разработкой программного обеспечения.
+  </para>
 
 
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.basic.version-control-basics">
+    <!--
     <title>Version Control Basics</title>
+-->
+    <title>Азы Управления Версиями</title>
 
+    <!--
     <para>
       <indexterm>
         <primary>version control systems</primary>
@@ -33,18 +57,44 @@
       that it allows you to explore the changes which resulted in each
       of those versions and facilitates the arbitrary recall of the
       same.</para>
+-->
+    <para>
+      <indexterm>
+        <primary>Системы Управления Версиями</primary>
+      </indexterm>Система управления версиями это система которая
+      отслеживает постепенное изменение версий (иначе ревизий) файлов и
+      в некоторых случаях папок.  Конечно же, банальное отслеживание
+      различных версий файлов и папок пользователя (или группы
+      пользователей) само по себе не очень интересно.  Что делает систему
+      контроля версий полезной так это то, что она позволяет исследовать
+      и восстанавливать изменения привнесённые каждой из версий.
+    </para>
 
+    <!--
     <para>In this section, we'll introduce some fairly high-level
       version control system components and concepts.  We'll limit our
       discussion to modern version control systems&mdash;in today's
       interconnected world, there is very little point in
       acknowledging version control systems which cannot
       operate across wide-area networks.</para>
+-->
+    <para>
+      В этом разделе мы рассмотрим относительно высокоуровневые
+      компоненты и понятия системы управления версиями.  Мы ограничим
+      обсуждение современными системами управления версиями &mdash;
+      в современном мире нет смысла знакомиться с системами управления
+      версиями которые не могут работать по глобалной сети (т.е. через
+      Интернет).
+    </para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.basic.repository">
+      <!--
       <title>The Repository</title>
+-->
+      <title>Репозиторий</title>
 
+      <!--
       <para>
         <indexterm>
           <primary>repositories</primary>
@@ -67,19 +117,59 @@
         the client receives information from others.
         <xref linkend="svn.basic.repository.dia-1"/> illustrates
         this.</para>
+-->
+      <para>
+        <indexterm>
+          <primary>репозиторий</primary>
+        </indexterm>
+        <indexterm>
+          <primary>репозиторий</primary>
+          <secondary>дерево файловой системы</secondary>
+        </indexterm>
+        <indexterm>
+          <primary>система управления версиями</primary>
+          <secondary>клиенты</secondary>
+        </indexterm>Ядром системы управления версиями является репозиторий,
+        который представляет собой главное хранилище данных системы.
+        Репозиторий обычно хранит информацию в виде <firstterm>
+          дерева
+          файловой системы
+        </firstterm> &mdash; иерархии файлов и папок.
+        Прочитать и записать файлы, подключившись к репозиторию, может любое
+        количество <firstterm>клиентов</firstterm>.  Записывая данные,
+        клиент делает информацию доступной для остальных. Читая данные,
+        клиент получает информацию от остальных.
+        <xref linkend="svn.basic.repository.dia-1"/> иллюстрирует
+        это.
+      </para>
 
       <figure id="svn.basic.repository.dia-1">
+        <!--
         <title>A typical client/server system</title>
+-->
+        <title>Обычная клиент-серверная система</title>
         <graphic fileref="images/ch02dia1.png"/>
       </figure>
 
+      <!--
       <para>Why is this interesting?  So far, this sounds like the
         definition of a typical file server.  And indeed, the
         repository <emphasis>is</emphasis> a kind of file server, but
         it's not your usual breed.  What makes the repository special
         is that as the files in the repository are changed, the
         repository remembers each version of those files.</para>
+-->
 
+      <para>
+        Ну и что же в этом интересного?  Как-то не особо отличается от
+        определения обычного файлового сервера, да?  В действительности,
+        репозиторий это в некотором роде файловый сервер.  Только он иного
+        сорта чем тот к которому вы привыкли.  Отличительной чертой
+        репозитория является то, что он запоминает каждую версию изменений
+        файлов.
+      </para>
+
+      <!--
       <para>When a client reads data from the repository, it normally
         sees only the latest version of the filesystem tree.  But what
         makes a version control client interesting is that it also has
@@ -90,6 +180,21 @@
         change this file, and what changes did he make?</quote>
         These are the sorts of questions that are at the heart of any
         version control system.</para>
+-->
+
+      <para>
+        Когда клиент читает данные из репозитория, он обычно видит
+        только последнюю версию дерева файловой системы.  А вот что делает
+        клиент управления версиями интересным, так это его способность
+        запросить у репозитория предыдущее состояние файловой системы.
+        Клиент управления версиями может задавать вопросы вроде
+        <quote>Что было в этой папке в прошлую среду?</quote> и
+        <quote>
+          Кто последним изменял этот файл и какие изменения он
+          внёс?
+        </quote>.  Способность отвечать на такие вопросы заложена в
+        основу любой системы управления версиями.
+      </para>
 
     </sect2>
 
