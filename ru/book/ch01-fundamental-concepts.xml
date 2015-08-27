@@ -247,11 +247,11 @@
         хранящихся в системе управления версиями.  С этими данными
         пользователь волен обращаться как ему заблогарассудится.
         Рабочая копия<footnote><para>Термин <quote>рабочая копия</quote>
-        может применяться к локальному файлу в определённой версии.  Но
+        может применяться к локальному файлу в определённой версии. Но
         обычно этот термин применяется для обозначения целого дерева папок,
         содержащего версионированные файлы и подпапки.</para></footnote>
         выглядит для любого другого программного обеспечения как обычная
-        папка с файлами.  Поэтому те программы не должны знать о
+        папка с файлами. Поэтому те программы не должны знать о
         существовании системы управления версий для того чтобы иметь
         возможность читать или записывать в неё данные.  Это уже клиент
         системы управления версий отвечает за управление рабочей копией и
@@ -261,8 +261,12 @@
 
     <!-- =============================================================== -->
     <sect2 id="svn.basic.vsn-models">
+<!--
       <title>Versioning Models</title>
+-->
+      <title>Модели версионирования</title>
 
+<!--
       <para>If the primary mission of a version control system is to
         track the various versions of digital information over time, a
         very close secondary mission in any modern version control
@@ -275,18 +279,43 @@
         that, it will also help you make more effective use of
         Subversion, since Subversion itself supports a couple of
         different ways of working.</para>
+-->
+      <para>Главной задачей системы управления версиями является
+        отслеживание различный версий информации представленной в цифровом
+        формате.  Но есть ещё и вторая, очень близкая задача любой
+        современной системы управления версиями&mdash;обеспечение
+        возможности совместного редактирования и использования данных.
+        Разные системы используют разные подходы к выполнению этой задачи.
+        Важно знать и понимать эти подходы по друм причинам.  Во первых, это
+        поможет вам сравнивать и различать существующие системы управления
+        версиями если вы столкнётесь с другими системами похожими на
+        Subversion.  Во вторых, это поможет вам эффективнее использовать
+        Subversion, так как он поддерживает несколько различных моделей
+        работы.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.basic.vsn-models.problem-sharing">
+<!--
         <title>The problem of file sharing</title>
+-->
+        <title>Вопрос совместного использования файлов</title>
 
+<!--
         <para>All version control systems have to solve the same
           fundamental problem: how will the system allow users to
           share information, but prevent them from accidentally
           stepping on each other's feet?  It's all too easy for users
           to accidentally overwrite each other's changes in the
           repository.</para>
+-->
+        <para>Все системы управления версиями должны решить один и тот же
+          основной вопрос: как позволить пользователям совместно
+          использовать данные, но предотвратить ситуацию когда
+          пользователи начнут нечаянно наступать друг другу на пятки
+          в процессе изменения данных?  Ведь так просто случайно переписать
+          изменения друг-друга в репозитории.</para>
 
+<!--
         <para>Consider the scenario shown in
           <xref linkend="svn.basic.vsn-models.problem-sharing.dia-1"/>.
           Suppose we have two coworkers, Harry and Sally.  They each
@@ -302,9 +331,28 @@
           least missing from the latest version of the file&mdash;and
           probably by accident.  This is definitely a situation we want
           to avoid!</para>
+-->
+        <para>Рассмотрим ситуацию которую иллюстрирует
+          <xref linkend="svn.basic.vsn-models.problem-sharing.dia-1"/>.
+          Предположим, что есть двое коллег&mdash;Гарри и Салли.
+          Каждый из них решает отредактировать один и тот же файл в
+          репозитории в один и тот же момент.  Если Гарри сохранит свои
+          изменения первым, то есть возможность, что Салли нечаянно
+          перепишет их изменениями которые вносит она уже в своей версии
+          файла.  Хотя версия Гарри не будет утеряна (потому что системы
+          управления  версиями помнят каждое изменение), любые изменения
+          которые внёс Гарри <emphasis>не будут</emphasis> отображены в
+          новой версии файла от Салли.  Это произойдёт просто потому что она
+          ещё не видела изменений которые внёс Гарри.  По существу, работа
+          Гарри потеряна или попросту отсутствует в последней версии файла.
+          И скорее всего эта ситуация произошла непредумышленно.  Вот эту 
+          ситуацию мы как раз и хотим предотвратить!</para>
 
         <figure id="svn.basic.vsn-models.problem-sharing.dia-1">
+<!--
           <title>The problem to avoid</title>
+-->
+          <title>Ситуация которую мы должны предотвратить</title>
           <graphic fileref="images/ch02dia2.png"/>
         </figure>
 
@@ -312,8 +360,12 @@
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.basic.vsn-models.lock-unlock">
+<!--
         <title>The lock-modify-unlock solution</title>
+-->
+        <title>Решение lock-modify-unlock</title>
 
+<!--
         <para>
           <indexterm>
             <primary>version control</primary>
@@ -334,18 +386,49 @@
           the latest version of the file and edit it.
           <xref linkend="svn.basic.vsn-models.lock-unlock.dia-1"/>
           demonstrates this simple solution.</para>
+-->
+        <para>
+          <indexterm>
+            <primary>управление версиями</primary>
+            <secondary>модель</secondary>
+            <tertiary>lock-modify-unlock</tertiary>
+          </indexterm>Многие системы управления версиями используют модель
+          <firstterm>lock-modify-unlock</firstterm> для решения проблемы
+          затирания изменений при работе множества авторов над одними и теми
+          же даннами.  При использовании этой модели в один момент времени
+          репозиторий позволяет вносить изменения в файл только одному
+          человеку.  Этот принцип исключительности работает с помощью локов.
+          Гарри должен <quote>залочить</quote> файл перед тем как начать
+          вносить в него изменения.  Если Гарри уже залочил файл, то Салли
+          не может тоже его залочить и соответственно не может вносить
+          изменения в этот файл.  Она только может дождаться пока Гарри
+          закончит вносить изменения, сохранит файл и разлочит его.  После
+          того как Гарри разлочит файл, наступает очередь Салли делать свой
+          ход и залочить файл.  Затем она может прочитать последнюю версию
+          файла и отредактировать её.
+          <xref linkend="svn.basic.vsn-models.lock-unlock.dia-1"/>
+          иллюстрирует это простое решение.</para>
 
         <figure id="svn.basic.vsn-models.lock-unlock.dia-1">
+<!--
           <title>The lock-modify-unlock solution</title>
+-->
+          <title>Решение lock-modify-unlock</title>
           <graphic fileref="images/ch02dia3.png"/>
         </figure>
 
+<!--
         <para>The problem with the lock-modify-unlock model is that it's
           a bit restrictive and often becomes a roadblock for
           users:</para>
+-->
+        <para>У решения lock-modify-unlock есть проблемы.  Оно несколько
+          ограничивающее и часто создаёт препятствия для
+          пользователей:</para>
 
         <itemizedlist>
           <listitem>
+<!--
             <para><emphasis>Locking may cause administrative
               problems.</emphasis>
 
@@ -355,9 +438,21 @@
               Sally has to get an administrator to release Harry's lock.
               The situation ends up causing a lot of unnecessary delay
               and wasted time.</para>
+-->
+            <para><emphasis>Locking может вызывать проблемы с
+              адмнистрированием.</emphasis>
+
+              Гарри может залочить файл и забыть об этом.  Напомним, Салли
+              всё ещё ждёт своей очереди и руки у неё связяны.  А теперь
+              Гарри ещё и в отпуск ушёл.  В такой ситуации Салли необходимо
+              обратиться к администратору что бы тот разлочил файл над
+              которым работал Гарри.  Всё это приводит к задержке и напрасно
+              потраченному времени.
+              </para>
           </listitem>
 
           <listitem>
+<!--
             <para><emphasis>Locking may cause unnecessary
               serialization.</emphasis>
 
@@ -368,9 +463,19 @@
               come, assuming the changes were properly merged together.
               There's no need for them to take turns in this
               situation.</para>
+-->
+            <para><emphasis>Locking может привести к излишней сериализации
+              действий пользователей.</emphasis>
+
+              Что если Гарри редактирует начало текстового файла, а Салли
+              просто хочет отредактировать конец этого же файла?  Эти
+              изменения не будут перескаться.  Они могли бы редактировать
+              этот файл одновременно без какого-либо вреда.  В этой ситуации
+              им нет необходимости ждать своей очереди.</para>
           </listitem>
 
           <listitem>
+<!--
             <para><emphasis>Locking may create a false sense of
               security.</emphasis>
 
@@ -385,6 +490,21 @@
               insulated task, and thus they need not bother discussing
               their incompatible changes early on.  Locking often
               becomes a substitute for real communication.</para>
+-->
+            <para><emphasis>Locking может создать ложное ощущение
+              безопасности.</emphasis>
+
+              Предположим, что Гарри залочил и редактирует файл A.  Салли в
+              в это же самое время залочила и редактирует файл B.  Но что
+              если A и B зависят друг от друга?  Что если внесённые
+              изменения несовместимы по смыслу?  Тогда A и B перестанут
+              работать вместе.  Locking решение не смогло предотвратить
+              такую ситуацию.  Хотя оно в некоторой степени создало ложное
+              ощущение безопасности.  Для Гарри и Салли легко вообразить,
+              что залочив файлы, каждый из них начинает работу над полностью
+              изолированной задачей и следовательно им не нужно заранее
+              обсуждать и согласовать изменения которые они оба собираются
+              внести.  Locking часто заменяет живое общение.</para>
           </listitem>
         </itemizedlist>
 
@@ -392,8 +512,12 @@
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.basic.vsn-models.copy-merge">
+<!--
         <title>The copy-modify-merge solution</title>
+-->
+        <title>Решение copy-modify-merge</title>
 
+        <!--
         <para>
           <indexterm>
             <primary>version control</primary>
@@ -409,7 +533,24 @@
           version.  The version control system often assists with the
           merging, but ultimately, a human being is responsible for
           making it happen correctly.</para>
+-->
+        <para>
+          <indexterm>
+            <primary>управление версиями</primary>
+            <secondary>модель</secondary>
+            <tertiary>copy-modify-merge</tertiary>
+          </indexterm>Subversion, CVS и другие системы управления версиями
+          используют модель <firstterm>copy-modify-merge</firstterm> как
+          альтернативу lock-modify-unlock.  В этой модели клиент каждого
+          пользователя доступается до репоизтория проекта и создаёт
+          персональную рабочую копию.  Затем пользователи работают
+          одновременно и независимо друг от друга, внося изменения в свои
+          локальные рабочие копии.  В результате их рабочие копии слияются
+          вместе в новую конечную версию.  Система управления версиями часто
+          оказывает помощь при слиянии, но, прежде всего, именно человек
+          отвечает за то, что бы слияние прошло правильно.</para>
 
+        <!--
         <para>
           <indexterm>
             <primary>out of date</primary>
@@ -429,17 +570,45 @@
           <xref linkend="svn.basic.vsn-models.copy-merge.dia-1"/> and
           <xref linkend="svn.basic.vsn-models.copy-merge.dia-2"/> show
           this process.</para>
+-->
+        <para>
+          <indexterm>
+            <primary>устаревший</primary>
+          </indexterm>Давайте рассмотрим пример.  Представим, что Гарри и
+          Салли получили из репозитория рабочие копии одного и того же
+          проекта.  Они работают параллельно и вносят изменения в файл A
+          в своих рабочих копиях.  Салли записывает свои изменения в
+          репозиторий первой.  Затем, когда Гарри пытается записать свои
+          изменения, репозиторий сообщает ему, что его файл A уже
+          <firstterm>устарел</firstterm>  Иначе говоря;, файл A в
+          репозитории был изменён с того момента как Гарри получил свою
+          локальную копию.  Поэтому Гарри указывает своему клиенту слиять
+          любые новые входящие изменения из репозитория с его рабочей копией
+          файла A.  Скорее всего, изменений которые внесла Салли не
+          пересекаются с изменениями Гарри и, как только оба набора
+          изменений объединены, Гарри записывает свои изменения в
+          репозиторий.
+          <xref linkend="svn.basic.vsn-models.copy-merge.dia-1"/> и
+          <xref linkend="svn.basic.vsn-models.copy-merge.dia-2"/>
+          иллюстрируют этот процесс.</para>
 
         <figure id="svn.basic.vsn-models.copy-merge.dia-1">
+          <!--
           <title>The copy-modify-merge solution</title>
+          -->
+          <title>Решение copy-modify-merge</title>
           <graphic fileref="images/ch02dia4.png"/>
         </figure>
 
         <figure id="svn.basic.vsn-models.copy-merge.dia-2">
+          <!--
           <title>The copy-modify-merge solution (continued)</title>
+          -->
+          <title>Решение copy-modify-merge (продолжение)</title>
           <graphic fileref="images/ch02dia5.png"/>
         </figure>
 
+<!--
         <para>
           <indexterm>
             <primary>conflicts</primary>
@@ -458,7 +627,27 @@
           changes&mdash;perhaps after a discussion with Sally&mdash;he
           can safely save the merged file back to the
           repository.</para>
+-->
+        <para>
+          <indexterm>
+            <primary>конфликты</primary>
+          </indexterm>А что произойдёт если изменения Салли на самом деле
+          <emphasis>пересекаются</emphasis> с изменениями которые внёс
+          Гарри?  Что тогда?  Такая ситуация называется
+          <firstterm>конфликт</firstterm> и решить её обычно достаточно
+          просто.  Когда Гарри указывает своему клиенту слиять последние
+          изменения из репозитория с его рабочей копией, то его копия файла
+          A помечается как находящаяся в состоянии конфликта.  В этот момент
+          Гарри может просмотреть оба набора конфликтующих изменений и
+          вручную выбрать те измнения которые нужно сохранить в итоговой 
+          версии.  Необходимо отметить, что программное обеспечение
+          не может решить конфликт автоматически.  Только человек способен
+          осознать и понимать и совершать осознанный выбор.  Как только
+          Гарри вручную решил конфликт пересекающихся изменений, например
+          после обсуждения с Салли, то он может безопасно сохранить итоговую
+          версию файла А в репозиторий.</para>
 
+<!--
         <para>The copy-modify-merge model may sound a bit chaotic, but
           in practice, it runs extremely smoothly.  Users can work in
           parallel, never waiting for one another.  When they work on
@@ -466,7 +655,18 @@
           changes don't overlap at all; conflicts are infrequent.  And
           the amount of time it takes to resolve conflicts is usually
           far less than the time lost by a locking system.</para>
+-->
+        <para>Описание модели copy-modify-merge может звучать несколько
+          беспорядочно, но на практике она работает невероятно гладко.
+          Пользователи могут работать параллельно и ждать друг-друга
+          никогда не потребуется.  Когда они работают над одними и теми же
+          файлами, то в большинстве случаев оказывается, что
+          изменения, которые они вносят одновременно, вообще не
+          пересекаются и конфликты возникают редко.  А решение конфликтов
+          обычно занимает намного меньше времени чем потерянное при
+          использованиии lock-modify-unlock модели.</para>
 
+<!--
         <para>In the end, it all comes down to one critical factor:
           user communication.  When users communicate poorly, both
           syntactic and semantic conflicts increase.  No system can
@@ -475,14 +675,32 @@
           lulled into a false sense of security that a locking system
           will somehow prevent conflicts; in practice, locking seems
           to inhibit productivity more than anything else.</para>
+-->
+        <para>В конечном счёте, это всё сводится к одному важнейшему
+          условию: общение пользователей.  Когда процесс обмена информацией
+          между пользователями нарушен, то количество синтаксических и 
+          смысловых конфликтов неизбежно увеличивается.  Никакая система не
+          может заставить пользователей эффективно обмениваться информацией
+          о задачах которые они выполняют.  Поэтому не стоит поддаваться
+          ложному ощущению, что lock-modify-unlock модель предотвратит
+          конфликты. На практике, lock-modify-unlock модель пагубно влияет
+          на продуктивность больше чем чтобы то ни было.</para>
 
         <sidebar id="svn.basic.vsn-models.copy-merge.sb-1">
+<!--
           <title>When Locking Is Necessary</title>
+-->
+          <title>Когда необходимо использовать модель lock-modify-unlock</title>
 
+<!--
           <para>While the lock-modify-unlock model is considered
             generally harmful to collaboration, sometimes
             locking is appropriate.</para>
+-->
+          <para>Хотя модель lock-modify-unlock считается пагубной для
+            совместной работы, иногда использовать её вполне уместно.</para>
 
+<!--
           <para>The copy-modify-merge model is based on the assumption
             that files are contextually mergeable&mdash;that is, that the
             majority of the files in the repository are line-based text
@@ -493,11 +711,27 @@
             turns when changing the file.  Without serialized access,
             somebody ends up wasting time on changes that are ultimately
             discarded.</para>
+-->
+          <para>Модель copy-modify-merge основывается на предположении, что
+            редактируемые файлы поддаются слиянию в зависимости от
+            контекста.  Имеется ввиду, что большинство файлов в репозитории
+            являются обычными текстовыми файлами (например как исходный
+            код).  Но для файлов в двоичном формате, таких как графические
+            изображения или аудио, часто невозможно провести слияние
+            конфликтующих изменений.  Без полседовательного доступа,
+            кто-то может потратить время на внесение изменений которые в
+            итоге так и не будут сохранены в репозиторий.</para>
 
+<!--
           <para>While Subversion is primarily a copy-modify-merge
             system, it still recognizes the need to lock an occasional
             file, and thus provides mechanisms for this.  We discuss
             this feature in <xref linkend="svn.advanced.locking"/>.</para>
+-->
+          <para>Хотя главная модель в Subversion это copy-modify-merge,
+            он предоставляет механизмы для локирования файлов и полностью
+            поддерживает модель lock-modify-unlock.  Мы обсуждаем
+            локирование в <xref linkend="svn.advanced.locking"/>.</para>
 
         </sidebar>
 
