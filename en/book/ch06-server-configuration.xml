@@ -2386,12 +2386,10 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 
         <para>To activate this module, you need to configure your
           <literal>&lt;Location&gt;</literal> block to use the
-          <literal>AuthzSVNAccessFile</literal> directive which specifies
-          a single file containing the permissions policy for paths within
-          your repositories.  Beginning with Subversion 1.7, you can
-          also use <literal>AuthzSVNReposRelativeAccessFile</literal>
-          directive to specify a per repository access file.
-          (In a moment, we'll discuss the format of that file.)</para>
+          <literal>AuthzSVNAccessFile</literal> directive, which
+          specifies a file containing the permissions policy for paths
+          within your repositories.  (In a moment, we'll discuss the
+          format of that file.)</para>
 
         <para>Apache is flexible, so you have the option to configure
           your block in one of three general patterns.  To begin,
@@ -4114,10 +4112,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
 
               <para>Consult <replaceable>file-path</replaceable> for
                 access rules describing the permissions for paths in
-                Subversion repository.  In a configuration
-                block for a Subversion repository either this directive or
-                <literal>AuthzSVNReposRelativeAccessFile</literal> can be
-                present, but not both.</para>
+                Subversion repository.</para>
 
             </listitem>
           </varlistentry>
@@ -4158,28 +4153,6 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                 anonymous users are allowed to perform.  The default
                 value of this directive is
                 <literal>On</literal>.</para>
-
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term><literal>AuthzSVNReposRelativeAccessFile
-              <replaceable>file-path</replaceable></literal></term>
-            <listitem>
-
-              <para>Consult <replaceable>file-path</replaceable> for
-                access rules describing the permissions for paths in
-                Subversion repository.  Unlike
-                <literal>AuthzSVNAccessFile</literal>, the path specified
-                for <literal>AuthzSVNReposRelativeAccessFile</literal> is
-                relative from the /conf directory in the repository on
-                filesystem.  In other words, the <replaceable>file-path</replaceable>
-                specifies a per repository file that must by accessible by
-                the relative path for any repository.  In a configuration
-                block for a Subversion repository either this directive or
-                <literal>AuthzSVNAccessFile</literal> can be present, but
-                not both.  This option is available as of Subversion 1.7.
-              </para>
 
             </listitem>
           </varlistentry>
@@ -4285,8 +4258,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         in <filename>httpd.conf</filename> in the same fashion
         that <command>mod_dav_svn</command> itself is loaded.  To
         enable the use of this module for your repositories, you'll
-        add the <literal>AuthzSVNAccessFile</literal> or
-        <literal>AuthzSVNReposRelativeAccessFile</literal> directives (again
+        add the <literal>AuthzSVNAccessFile</literal> directive (again
         within the <filename>httpd.conf</filename> file) pointing to
         your own access rules file.  (For a full explanation, see
         <xref linkend="svn.serverconfig.httpd.authz.perdir"/>.)</para>
@@ -4308,11 +4280,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         repository in which that path is found.  In other words,
         except for a few reserved sections, section names are of one
         of two forms: either <literal>[repos-name:path]</literal>
-        or <literal>[path]</literal> when
-        <literal>AuthzSVNAccessFile</literal> is used.  If you configured
-        per repository access files via <literal>AuthzSVNReposRelativeAccessFile</literal>
-        directive, you should always use <literal>[path]</literal> form
-        only.  Authenticated usernames are the
+        or <literal>[path]</literal>.  Authenticated usernames are the
         option names within each section, and an option's value
         describes that user's level of access to the repository path:
         either <literal>r</literal> (read-only) or <literal>rw</literal>
