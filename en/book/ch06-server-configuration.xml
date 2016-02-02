@@ -1693,6 +1693,285 @@ arding,no-X11-forwarding,no-pty TYPE1 KEY1 harry@example.com
 
       </sect3>
     </sect2>
+
+    <!-- =============================================================== -->
+    <sect2 id="svn.serverconfig.svnserve.ref">
+      <title>svnserve Configuration Reference</title>
+
+      <para>In the previous sections, we've mentioned numerous
+        configuration options that administrators can use in their
+        <filename>svnserve.conf</filename> files to configure the
+        behavior of Subversion as accessed via Subversion's
+        <command>svnserve</command> server option.  In this section,
+        we'll quickly summarize <emphasis>all</emphasis> the
+        configuration options supported by this server.</para>
+
+      <para>The <filename>svnserve.conf</filename> configuration file
+        uses a typical INI-style format, with name/value pairs of
+        options grouped into named sections.  (This is conveniently
+        the same format used by Subversion's runtime configuration
+        area on the client side of the network.)  We'll describe
+        herein each of those named sections and the options available
+        for use within them.</para>
+
+      <para>By default, <command>svnserve</command> will consult
+        per-repository configuration files located
+        at <filename>conf/svnserve.conf</filename> within the physical
+        directory structure of the repository.  To instead use a
+        single configuration file whose values apply to all
+        repositories served via an instance
+        of <command>svnserve</command>, use
+        the <option>--config-file</option> option when starting your
+        server.</para>
+
+      <note>
+        <para>In the following sections, we will refer to
+          the <command>svnserve</command> configuration file by its
+          canonical name, <filename>svnserve.conf</filename>.  The
+          filename of actual configuration file used by
+          your <command>svnserve</command> instance might be something
+          else, though.  We trust this won't be too confusing.</para>
+      </note>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.serverconfig.svnserve.ref.general">
+        <title>General configuration</title>
+
+        <para>The <literal>[general]</literal> section contains the
+          most commonly used and broadly
+          focused <command>svnserve</command> configuration
+          options.</para>
+
+        <variablelist>
+    
+          <varlistentry>
+            <term><literal>anon-access</literal></term>
+            <listitem>
+
+              <para>Controls the access level granted to
+                unauthenticated (anonymous) users.  Valid values
+                are <literal>write</literal>, <literal>read</literal>,
+                and <literal>none</literal>, with <literal>read</literal>
+                being the default value.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>auth-access</literal></term>
+            <listitem>
+
+              <para>Controls the access level granted to authenticaed
+                users.  Valid values are <literal>write</literal>,
+                <literal>read</literal>, and <literal>none</literal>,
+                with <literal>write</literal> being the default
+                value.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>authz-db</literal></term>
+            <listitem>
+
+              <para>Specifies the location of the repository access
+                file as described in
+                <xref linkend="svn.serverconfig.pathbasedauthz.getting-started"
+                />.  If a regular local path is used, then unless that
+                path begins with a forward-slash character
+                (<literal>/</literal>), it is interpreted as a path
+                relative to the directory containing
+                the <filename>svnserve.conf</filename> configuration
+                file.  If no path is specified, path-based access
+                control will be disabled.</para>
+
+              <para>As a special consideration, you may also specify
+                the location of an access file which is versioned
+                inside a Subversion repository.  Use a local URL (one
+                which begins with <literal>file://</literal>) to refer
+                to an absolute Subversion-versioned access file.
+                Alternatively, use a repository relative URL (one
+                which begins with <literal>^/</literal>) to cause
+                <command>svnserve</command> to consult for each
+                repository the access file stored at the specified
+                relative URL within that repository.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>force-username-case</literal></term>
+            <listitem>
+
+              <para>Specifies the case normalization applied to
+                usernames before comparing them against the rules
+                found in the access file (specified by
+                the <literal>authz-db</literal> option).  Valid values
+                are <literal>upper</literal> (to uppercase the
+                usernames), <literal>lower</literal> (to lowercase the
+                usernames), and <literal>none</literal> (to perform no
+                normalization at all).  By
+                default, <command>svnserve</command> will not perform
+                any case normalization on usernames.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>groups-db</literal></term>
+            <listitem>
+
+              <para>Specifies the path of the groups file.  If a
+                regular local path is used, then unless that path
+                begins with a forward-slash character
+                (<literal>/</literal>), it is interpreted as a path
+                relative to the directory containing
+                the <filename>svnserve.conf</filename> configuration
+                file.</para>
+
+              <para>You may also specify the location of a groups file
+                which is versioned inside a Subversion repository.
+                Use a local URL (one which begins
+                with <literal>file://</literal>) to refer to an
+                absolute Subversion-versioned file.  Alternatively,
+                use a repository relative URL (one which begins
+                with <literal>^/</literal>) to cause
+                <command>svnserve</command> to consult for each
+                repository the group file stored at the specified
+                relative URL within that repository.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>hooks-env</literal></term>
+            <listitem>
+
+              <para>Specifies the path to the hook script environment
+                configuration file.  This option overrides the
+                per-repository default location for this file, and can
+                be used to configure the hook script environment for
+                multiple repositories in a single file if an absolute
+                path is specified.  Unless you specify an absolute
+                path, the file's location is interpreted as relative
+                to the directory containing
+                the <filename>svnserve.conf</filename> configuration
+                file.</para>
+
+              <para>You may also specify the location of a groups file
+                which is versioned inside a Subversion repository.
+                Use a local URL (one which begins
+                with <literal>file://</literal>) to refer to an
+                absolute Subversion-versioned file.  Alternatively,
+                you may use a repository relative URL (one which
+                begins with <literal>^/</literal>) to cause
+                <command>svnserve</command> to consult for each
+                repository the group file stored at the specified
+                relative URL within that repository.</para>
+
+              <para>See
+                <xref linkend="svn.reposadmin.hooks.configuration" />
+                for detailed information regarding the hook script
+                environment configuration file.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>password-db</literal></term>
+            <listitem>
+
+              <para>Specifies the path of the password database file.
+                Unless the path specified begins with a forward-slash
+                character (<literal>/</literal>), it is interpreted as
+                a path relative to the directory containing the
+                <filename>svnserve.conf</filename> configuration file.
+                Note that if the SASL feature is used, this option
+                will be ignored.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>realm</literal></term>
+            <listitem>
+
+              <para>Specifies the authentication realm of the
+                repository.  This is primarily used by the client to
+                associate cached authentication credentials with a
+                specific repository or set of repositories.  As such,
+                it is best that the specified realm be unique across
+                your repositories unless those repositories share the
+                same password database.  By default, the repository's
+                UUID is used as its authentication realm.</para>
+
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.serverconfig.svnserve.ref.sasl">
+        <title>Cyrus SASL configuration</title>
+
+        <para>The <literal>[sasl]</literal> section contains
+          configuration which is specific to the optional Cyrus Simple
+          Authentication and Security Layer (SASL) integration feature
+          of <command>svnserve</command>.  See
+          <xref linkend="svn.serverconfig.svnserve.sasl"/> for a more
+          thorough description of this feature and the benefits it
+          provides.</para>
+
+        <variablelist>
+    
+          <varlistentry>
+            <term><literal>max-encryption</literal></term>
+            <listitem>
+
+              <para>Specifies&mdash;as an integer bit-width&mdash;the
+                maximum desired strength of the security layer's
+                encryption algorithm.  The special
+                value <literal>0</literal> means "no encryption", and
+                the special value <literal>1</literal> means
+                "integrity checking only".  The default value for this
+                option is <literal>256</literal> (256-bit
+                encryption).</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>min-encryption</literal></term>
+            <listitem>
+
+              <para>Specifies&mdash;as an integer bit-width&mdash;the
+                minimum desired strength of the security layer's
+                encryption algorithm.  The special
+                value <literal>0</literal> means "no encryption", and
+                the special value <literal>1</literal> means
+                "integrity checking only".  The default value for this
+                option is <literal>0</literal> (no encryption).</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>use-sasl</literal></term>
+            <listitem>
+
+              <para>Specifies (as a <literal>true</literal>
+                or <literal>false</literal> value) whether to enable
+                the Cyrus SASL feature.  Note that this feature is
+                only available if <command>svnserve</command> was
+                built with support for the feature.  This feature is
+                disabled by default.</para>
+
+            </listitem>
+          </varlistentry>
+
+        </variablelist>
+      </sect3>
+    </sect2>
   </sect1>
 
 
