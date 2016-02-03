@@ -3899,16 +3899,28 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             the slave, it is the slave's protocol version and feature
             set which is used.  But write operations are passed
             through to the master server quite literally.  Therefore,
-            there is always a risk that the slave server will answer a
+            there is a risk that the slave server will answer a
             feature negotiation request from the client in way that is
             true for the slave, but untrue for the master if the
             master is running an older version of Subversion.  This
             could result in the client trying to use a new feature
-            that the master doesn't understand, and failing.  There
-            are a couple of known problems of this sort in Subversion
-            1.7, which introduced a major revision of its HTTP
-            protocol.  If you are deploying a Subversion 1.7 slave
-            server in front of a pre-1.7 master, you'll want to
+            that the master doesn't understand, and failing.</para>
+
+          <para>Subversion 1.8 helps to mitigate this problem via the
+            introduction of a new Apache configuration
+            directive, <literal>SVNMasterVersion</literal>.  By
+            configuring each of your slave servers
+            with <literal>SVNMasterVersion</literal> set to the
+            release version of the Subversion instance which is
+            running on your master server, the slave servers can more
+            accurately negotiate feature support with the
+            client.</para>
+
+          <para>Unfortunately, Subversion 1.7 doesn't offer
+            the <literal>SVNMasterVersion</literal> configuration
+            directive and is known to have some specific problems
+            along these lines.  If you are deploying a Subversion 1.7
+            slave server in front of a pre-1.7 master, you'll want to
             configure your slave server's
             Subversion <literal>&lt;Location&gt;</literal> block with
             the <literal>SVNAdvertiseV2Protocol Off</literal>
@@ -4241,6 +4253,18 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             <listitem>
 
               <para>Specifies a URI to the master Subversion
+                repository (used for a write-through proxy).</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNMasterVersion
+              <replaceable>X.Y</replaceable></literal></term>
+            <listitem>
+
+              <para>Specifies the release version number of the
+                Subversion instance which is serving the master
                 repository (used for a write-through proxy).</para>
 
             </listitem>
