@@ -473,9 +473,9 @@ $
             of course, the option itself,
             and <replaceable>VALUE</replaceable> the value (if any)
             you wish to assign to the option.  For example, to
-            temporarily disable the use of the automatic property
-            setting feature,
-            use <option>- -config-option=config:miscellany:enable-auto-props=no</option>.
+            temporarily disable the use of the compression in the
+            HTTP protocol,
+            use <option>- -config-option=servers:global:http-compression=no</option>.
             You can use this option multiple times to change
             multiple option values simultaneously.</para>
 -->
@@ -495,10 +495,10 @@ $
             <replaceable>OPTION</replaceable> ist natürlich die
             Option selbst, und <replaceable>VALUE</replaceable> der
             Wert (sofern vorhanden), den Sie der Option zuweisen
-            möchten.  Wenn Sie beispielsweise vorübergehend das
-            automatische Setzen von Eigenschaften verhindern
-            möchten, verwenden Sie
-            <option>--config-option=config:miscellany:enable-auto-props=no</option>.
+            möchten.  Wenn Sie beispielsweise vorübergehend die
+            Komprimierung im HTTP-Protokoll verhindern möchten,
+            verwenden Sie
+            <option>--config-option=servers:global:http-compression=no</option>.
             Sie können diese Option mehrfach verwenden, um
             gleichzeitig unterschiedliche Optionswerte zu
             ändern.</para>
@@ -4995,6 +4995,7 @@ Path: foo.c
 Name: foo.c
 Working Copy Root Path: /home/sally/projects/test
 URL: http://svn.red-bean.com/repos/test/foo.c
+Relative URL: ^/foo.c
 Repository Root: http://svn.red-bean.com/repos/test
 Repository UUID: 5e7d134a-54fb-0310-bd04-b611643e5c25
 Revision: 4417
@@ -5011,6 +5012,7 @@ Pfad: foo.c
 Name: foo.c
 Working Copy Root Path: /home/sally/projects/test
 URL: http://svn.red-bean.com/repos/test/foo.c
+Relative URL: ^/foo.c
 Basis des Projektarchivs: http://svn.red-bean.com/repos/test
 UUID des Projektarchivs: 5e7d134a-54fb-0310-bd04-b611643e5c25
 Revision: 4417
@@ -5037,6 +5039,7 @@ $ svn info vendors <!--
 Path: vendors
 Working Copy Root Path: /home/sally/projects/test
 URL: http://svn.red-bean.com/repos/test/vendors
+Relative URL: ^/vendors
 Repository Root: http://svn.red-bean.com/repos/test
 Repository UUID: 5e7d134a-54fb-0310-bd04-b611643e5c25
 Revision: 19
@@ -5050,6 +5053,7 @@ Properties Last Updated: 2003-01-16 23:39:02 -0600 (Thu, 16 Jan 2003)
 Pfad: vendors
 Working Copy Root Path: /home/sally/projects/test
 URL: http://svn.red-bean.com/repos/test/vendors
+Relative URL: ^/vendors
 Basis des Projektarchivs: http://svn.red-bean.com/repos/test
 UUID des Projektarchivs: 5e7d134a-54fb-0310-bd04-b611643e5c25
 Revision: 19
@@ -5080,6 +5084,7 @@ $ svn info http://svn.red-bean.com/repos/test/readme.doc <!--
 Path: readme.doc
 Name: readme.doc
 URL: http://svn.red-bean.com/repos/test/readme.doc
+Relative URL: ^/readme.doc
 Repository Root: http://svn.red-bean.com/repos/test
 Repository UUID: 5e7d134a-54fb-0310-bd04-b611643e5c25
 Revision: 1
@@ -5097,6 +5102,7 @@ My test lock comment
 Pfad: readme.doc
 Name: readme.doc
 URL: http://svn.red-bean.com/repos/test/readme.doc
+Relative URL: ^/readme.doc
 Basis des Projektarchivs: http://svn.red-bean.com/repos/test
 UUID des Projektarchivs: 5e7d134a-54fb-0310-bd04-b611643e5c25
 Revision: 1
@@ -5132,6 +5138,7 @@ $ svn info --xml http://svn.red-bean.com/repos/test
    path="."
    revision="1"&gt;
 &lt;url&gt;http://svn.red-bean.com/repos/test&lt;/url&gt;
+&lt;relative-url&gt;^/&lt;/relative-url&gt;
 &lt;repository&gt;
 &lt;root&gt;http://svn.red-bean.com/repos/test&lt;/root&gt;
 &lt;uuid&gt;5e7d134a-54fb-0310-bd04-b611643e5c25&lt;/uuid&gt;
@@ -6100,6 +6107,153 @@ $
         und <option>--extensions</option>
         (<option>-x</option>).</para>
 
+      <para>
+<!--
+        Beginning with Subversion 1.8, users can filter <command>svn log</command>
+        output using <option>- -search</option> and <option>- -search-and</option>
+        options.  When using these options, a log message is shown only if a
+        revision's author, date, log message text, or list of changed paths,
+        matches a search pattern. Searching by changed patch requies
+        <option>- -verbose</option> option, otherwise <command>svn log</command>
+        does not show changed paths therefore they can't be filtered.
+-->
+        Beginnend mit Subversion 1.8, konnen Anwernder die Ausgabe von
+        <command>svn log</command> mit den Optionen
+        <option>--search</option> und <option>--search-and</option>
+        filtern. Wenn diese Optionen verwendet werden, wird eine
+        Protokollnachricht nur dann angezeigt, falls der Autor, das
+        Datum, der Protokolltext oder die Liste der geänderten Pfade
+        einer Revision zum Suchmuster passt. Das Suchen nach
+        geänderten Pfaden erfordert die Option
+        <option>--verbose</option>, da sonst <command>svn
+        log</command> die geänderten Pfade nicht anzeigt, so dass sie
+        nicht gefiltert werden können.
+      </para>
+      <para>
+<!--
+        The search pattern may include "glob syntax"
+        wildcards:
+-->
+        Die Suchmuster können Platzhalter in  "Glob Syntax" enthalten:
+      </para>
+      <variablelist>
+        <varlistentry>
+          <term>
+            <literal>?</literal>
+          </term>
+          <listitem>
+            <para>
+<!--
+              Matches any single character.
+-->
+              Passt auf ein einzelnes Zeichen.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>
+            <literal>*</literal>
+          </term>
+          <listitem>
+            <para>
+<!--
+              Matches a sequence of arbitrary
+              characters.
+-->
+              Passt auf eine Folge beliebiger Zeichen.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>
+            <literal>[ABC]</literal>
+          </term>
+          <listitem>
+            <para>
+<!--
+              Matches any of the characters listed inside the brackets.
+-->
+              Passt auf irgendeines der Zeichen in den eckigen Klammern.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <para>
+<!--
+        Using multiple <option>- -search</option> parameters will show log messages
+        that match the pattern specified at least in one of the options.  For example:
+-->
+        Mehrere <option>--search</option>-Parameter zeigen
+        Protokollnachrichten an, die einem Muster mindestens einer
+        Option entsprechen. Zum Beispiel:
+      </para>
+      <informalexample>
+<screen>
+$ svn log --search sally --search harry https://svn.red-bean.com/repos/test
+------------------------------------------------------------------------
+r1701 | sally | 2011-10-12 22:35:30 -0600 (Wed, 12 Oct 2011) | 1 line
+
+Add a reminder.
+------------------------------------------------------------------------
+r1564 | harry | 2011-10-09 22:35:30 -0600 (Sun, 09 Oct 2011) | 1 line
+
+Merge r1560 to the 1.0.x branch.
+------------------------------------------------------------------------
+$
+        </screen>
+      </informalexample>
+      <para>
+<!--
+        Using <option>- -search</option> with <option>- -search-and</option> options will show log messages
+        that match the combined pattern from both options. For example:
+-->
+        Die gemeinsame Verwendung der Optionen
+        <option>--search</option> und <option>--search-and</option>
+        zeigen Protokollnachrichten an, die der Kombination der Muster
+        beider Optionen entsprechen. Zum Beispiel:
+      </para>
+      <informalexample>
+<screen>
+$ svn log --verbose --search sally --search-and /foo/bar https://svn.red-bean.com/repos/test
+------------------------------------------------------------------------
+r1555 | sally | 2011-07-15 22:33:14 -0600 (Fri, 15 Jul 2011) | 1 line
+Changed paths:
+M /foo/bar/src.c
+
+Typofix.
+------------------------------------------------------------------------
+r1530 | sally | 2011-07-13 07:24:11 -0600 (Wed, 13 Jul 2011) | 1 line
+Changed paths:
+M /foo/bar
+M /foo/build
+
+Fix up some svn:ignore properties.
+------------------------------------------------------------------------
+$
+</screen>
+      </informalexample>
+      <tip>
+        <para>
+<!--
+          <option>- -search</option> and <option>- -search-and</option>
+          options does not actually perform a search.  They just filter
+          the <command>svn log</command> output to display only log
+          messages that match the specified pattern.  Therefore, if
+          <option>- -limit</option> is used, it restricts the number
+          of log messages searched, rather than restricting the
+          output to a particular number of matching log messages.
+-->
+          Die Optionen <option>--search</option> und
+          <option>--search-and</option> bewirken nicht tatsächlich
+          eine Suche. Sie filtern nur die Ausgabe von <command>svn
+          log</command>, um nur diejenigen Protokollnachrichten
+          anzuzeigen, die zum angegebenen Muster passen. Deshalb wird
+          bei Verwendung von <option>--limit</option> die Anzahl
+          durchsuchter Protokollnachrichten beschränkt anstatt die
+          Ausgabe auf eine bestimmte Anzahl passender
+          Protokollnachrichten zu begrenzen.
+        </para>
+      </tip>
     </refsect1>
   </refentry>
 
@@ -7732,7 +7886,7 @@ Eigenschaften zu »foo.c«:
 
       <informalexample>
         <screen>
-          $ svn pg svn:global-ignores --verbose --show-inherited-props ^/branches/1.x <!--
+$ svn pg svn:global-ignores --verbose --show-inherited-props ^/branches/1.x <!--
 Inherited properties on 'http://svn.example.com/repos/branches/1.x',
 from 'http://svn.example.com/repos':
 -->
@@ -8400,7 +8554,7 @@ Eigenschaft »owner-pic« für »moo.c« gesetzt
 
       <informalexample>
         <screen>
-$ svn info | grep URL:
+$ svn info | grep ^URL:
 URL: file:///var/svn/repos/trunk
 $
 </screen>
