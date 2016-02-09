@@ -302,6 +302,113 @@ conf/  db/  format  hooks/  locks/  README.txt
       haben, sicher abgespeichert und für immer abrufbereit. Hier lebt
       die Gesamtheit Ihrer versionierten Daten.</para>
 
+    <sidebar id="svn.reposadmin.basics.backends">
+      <title>Speaking of Filesystems&hellip;</title>
+
+<!--
+      <para>When the initial design phase of Subversion was in
+        progress, the developers decided to use Berkeley DB (BDB) as
+        the storage mechanism behind the virtual versioned filesystem
+        implementation.  Berkeley DB was a logical choice for a
+        variety of reasons, including its open source license,
+        transaction support, reliability, performance, API simplicity,
+        thread safety, support for cursors, and so on.</para>
+-->
+      <para>Während der anfänglichen Entwurfsphase von Subversion
+        entschieden sich die Entwickler, Berkeley DB (BDB) als
+        Speichermechanismus hinter der Implementierung des virtuellen
+        versionierten Dateisystems zu verwenden. Berkeley DB war eine
+        vernünftige Wahl aus verschiedenen Gründen; hierzu zählen die
+        quelloffene Lizenz, Transaktionsunterstützung,
+        Zuverlässigkeit, Arbeitsleistung, Einfachheit der
+        Programmierschnittstelle, Thread-Sicherheit,
+        Cursor-Unterstützung usw.</para>
+
+<!--
+      <para>In the years since, the
+        newer <firstterm>FSFS</firstterm><footnote><para>While it is
+        often pronounced <quote>fuzz-fuzz,</quote> per Jack
+        Repenning's rendition, this book assumes that the reader is
+        thinking <quote>eff-ess-eff-ess.</quote></para></footnote>
+        backend was introduced.  This so-called <quote>filesystem
+        filesystem</quote> was a versioned filesystem implemented not
+        within an opaque database container, but instead as a larger
+        collection of more transparent files stored in the OS's
+        filesystem.  FSFS enjoyed continual development and
+        improvement, and eventually earned the right to be the default
+        Subversion backend.  But improvements to that backend kept
+        coming, and ultimately the FSFS storage layer surpassed the
+        Berkeley DB one in nearly every meaningful metric, from
+        performance to scalability to reliability and beyond.</para>
+-->
+      <para>Während der darauf folgenden Jahre wurde das neuere
+        <firstterm>FSFS</firstterm><footnote><para>While it is
+        often pronounced <quote>fuzz-fuzz,</quote> per Jack
+        Repenning's rendition, this book assumes that the reader is
+        thinking <quote>eff-ess-eff-ess.</quote></para></footnote>
+        Backend vorgestellt. Dieses sogenannte
+        <quote>Dateisystem-Dateisystem</quote> war ein versioniertes
+        Dateisystem, das nicht innerhalb eines undurchsichtigen
+        Datenbank-Containers implementiert war, sondern stattdessen
+        als eine Sammlung transparenterer Dateien, die im Dateisystem
+        des Betriebssystems abgelegt wurden. FSFS erfreute sich
+        beständiger Entwicklung und Verbesserung und verdiente sich
+        schließlich das Recht, das standardmäßige Backend von
+        Subversion zu sein. Verbesserungen an diesem Backend
+        erschienen weiter, so dass am Ende die FSFS-Speicherschicht
+        die der Berkeley DB in beinahe jeder bedeutsamen Metrik
+        übertraf; von Leistungsfähigkeit über Skalierbarkeit sowie
+        Zuverlässigkeit und darüber hinaus.</para>
+
+<!--
+      <para>These days, it is generally assumed that if you are using
+        the open source Subversion product, you are using the FSFS
+        backend for your repositories.  In fact, beginning with
+        Subversion 1.8, the Berkeley DB Subversion repository
+        filesystem backend has been officially deprecated.  Subversion
+        repositories which still use this storage layer option will
+        continue to function with newer Subversion 1.x releases, but
+        no further development&mdash;including feature introduction or
+        expansion&mdash;is planned for the Berkeley DB backend.
+        Subversion effectively offers a single viable repository
+        storage layer option.  FSFS won.</para>
+-->
+      <para>Heutzutage wird im Allgemeinen angenommen, dass Sie beim
+        Arbeiten mit dem Open-Source-Produkte Subversion das
+        FSFS-Backend für Ihre Projektarchive verwenden. Tatsächlich
+        wurde beginnend mit Subversion 1.8 das Berkeley DB
+        Subversion-Projektarchiv Dateisystem-Backend offiziell als
+        veraltet erklärt. Subversion-Projektarchive, die diese
+        Speicherschicht immer noch verwenden, werden auch mit neueren
+        Subversion 1.x Releases funktionieren, jedoch ist für das
+        Berkeley DB Backend keine weitere Entwicklung geplant, auch
+        keine neuen Funktionalitäten oder Erweiterungen.  Subversion
+        bietet gewissermaßen eine einzige brauchbare Option für die
+        Speicherschicht eines Projektarchivs. FSFS hat
+        gewonneb.</para>
+
+<!--
+      <para>This book will continue to provide information relevant to
+        administrators of BDB-backed repositories where it makes sense
+        to do so, but most of this chapter will assume what the rest
+        of the world does: that FSFS is <emphasis>the</emphasis>
+        Subversion storage backend implementation.  Please refer to
+        <xref linkend="svn.berkeleydb"/> or to older versions of this
+        documentation for more complete information about
+        administering such repositories.</para>
+-->
+      <para>Dieses Buch wird weiterhin Informationen liefern, die
+        relevant für Administratoren von Projektarchiven mit
+        BDB-Backed liefern, sofern es sinnvoll erscheint, doch geht
+        ein großer Teil dieses Kapitels davon aus, wovon auch der Rest
+        der Welt ausgeht: dass FSFS <emphasis>die</emphasis>
+        Implementierung eines Subversion Speicher-Backends ist.
+        Schauen Sie unter <xref linkend="svn.berkeleydb"/> oder
+        älteren Versions dieser Dokumentation, um vollständigere
+        Informationen über die Verwaltung solcher Projektarchive zu
+        erhalten.</para>
+    </sidebar>
+
   </sect1>
  
   <!-- ================================================================= -->
@@ -358,19 +465,9 @@ conf/  db/  format  hooks/  locks/  README.txt
       </listitem>
       <listitem>
 <!--
-        <para>What types of access control and repository event
-          reporting do you need?</para>
+        <para>What types of access control do you need?</para>
 -->
-        <para>Welche Art von Zugriffskontrolle und
-          Ereignisbenachrichtigung benötigen Sie?</para>
-      </listitem>
-      <listitem>
-<!--
-        <para>Which of the available types of data store do you want
-          to use?</para>
--->
-        <para>Welche der verfügbaren Arten von Datenspeicherung möchten
-          Sie verwenden?</para>
+        <para>Welche Art von Zugriffskontrolle benötigen Sie?</para>
       </listitem>
     </itemizedlist>
 
@@ -755,17 +852,20 @@ conf/  db/  format  hooks/  locks/  README.txt
         Sicherungsstrategie und vieles mehr.</para>
 
 <!--
-      <para>We cover server choice and configuration in <xref
-        linkend="svn.serverconfig" />, but the point we'd like to
-        briefly make here is simply that the answers to some of these
-        other questions might have implications that force your hand
-        when deciding where your repository will live.  For example,
-        certain deployment scenarios might require accessing the
-        repository via a remote filesystem from multiple computers, in
-        which case (as you'll read in the next section) your choice of
-        a repository backend data store turns out not to be a choice
-        at all because only one of the available backends will work
-        in this scenario.</para>
+      <para>We cover server choice and configuration in
+        <xref linkend="svn.serverconfig" />, but the point we'd like
+        to briefly make here is simply that the answers to some of
+        these other questions might have implications that force your
+        hand when deciding where your repository will live.  For
+        example, certain deployment scenarios might require accessing
+        the repository via a remote filesystem from multiple
+        computers, or using multiple repositories with syncronized
+        contents distributed geographically to permit more performant
+        access to that data by users around the globe.  Addressing
+        each possible way to deploy Subversion is both impossible and
+        outside the scope of this book.  We simply encourage you to
+        evaluate your options using these pages and other sources as
+        your reference material and to plan ahead.</para>
 -->
       <para>Die Auswahl und Konfigurierung des Servers werden wir in
         <xref linkend="svn.serverconfig" /> behandeln; jedoch möchten
@@ -774,30 +874,57 @@ conf/  db/  format  hooks/  locks/  README.txt
         der Entscheidung über den Speicherort für das Projektarchiv
         keine freie Wahl mehr haben.  Beispielsweise könnten bestimmte
         Einsatzumgebungen erfordern, dass von mehreren Rechnern über
-        ein freigegebenes Dateisystem auf das Projektarchiv zugegriffen
-        werden muss, so dass (wie Sie im nächsten Abschnitt lesen
-        werden) die Wahl der dem Projektarchiv zugrunde liegenden
-        Datenspeicherung gar keine Wahl mehr ist, da nur eine der
-        verfügbaren Datenspeicherungs-Verfahren in dieser Umgebung
-        funktionieren wird.</para>
-
-<!--
-      <para>Addressing each possible way to deploy
-        Subversion is both impossible and outside the scope of this
-        book.  We simply encourage you to evaluate your options using
-        these pages and other sources as your reference material and to
-        plan ahead.</para>
--->
-      <para>Es ist unmöglich, und würde auch den Rahmen dieses Buches
-        sprengen, wenn jede erdenkliche Einsatzart von Subversion
-        angesprochen würde. Wir ermutigen Sie einfach, Ihre Optionen
-        zu prüfen, indem Sie diese Seiten und weitere Quellen als
-        Referenz verwenden und weitsichtig planen.</para>
+        ein freigegebenes Dateisystem auf das Projektarchiv
+        zugegriffen werden muss, oder mehrere, geographisch verteilte
+        Projektarchive mit synchronisiertem Inhalt verwendet werden,
+        um einen effektiveren Zugriff auf diese Daten durch Anwender
+        zu erlauben, die auf der Welt verteilt sind. Es ist unmöglich,
+        und würde auch den Rahmen dieses Buches sprengen, wenn jede
+        erdenkliche Einsatzart von Subversion angesprochen würde. Wir
+        ermutigen Sie einfach, Ihre Optionen zu prüfen, indem Sie
+        diese Seiten und weitere Quellen als Referenz verwenden und
+        weitsichtig planen.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
-    <sect2 id="svn.reposadmin.basics.backends">
+    <sect2 id="svn.reposadmin.basics.accesscontrol">
+      <title>Controlling Access to Your Repository</title>
+
+<!--
+      <para>Access control in Subversion is almost entirely managed by
+        the Subversion server processes.  We discuss the available
+        Subversion servers in <xref linkend="svn.serverconfig" />, and
+        explain path-based access control specifically in
+        <xref linkend="svn.serverconfig.pathbasedauthz" />.  In
+        addition to those user-level access control questions, you'll also
+        want to ensure that your repository is accessible by the
+        programs on your hosting machine which need to access it.
+        Consider the OS-level user and group ownership that makes
+        sense for your repository.  Once again, the information found
+        in <xref linkend="svn.serverconfig" /> should be able to help
+        you make these decisions.</para>
+-->
+      <para>Die Zugriffskontrolle in Subversion wird beinahe
+        vollständig durch die Subversion-Server Prozesse verwaltet.
+        Wir erörtern die verfügbaren Subversion-Server in
+        <xref linkend="svn.serverconfig" /> und erklären pfadbasierte
+        Zugriffskontrolle speziell in
+        <xref linkend="svn.serverconfig.pathbasedauthz" />. Zusätzlich
+        zu diesen Fragen über die Zugriffskontrolle auf Anwenderebene
+        sollten Sie ebenfalls sicherstellen, dass Ihr Projektarchiv
+        für die Programme Ihres Wirtsrechners zugänglich ist, die
+        Zugang benötigen. Ziehen Sie die Anwender- und
+        Gruppenzugehörigkeit auf Betriebssystemebene in Betracht, die
+        für Ihr Projektarchiv einen Sinn ergibt. Wie gesagt, die in
+        <xref linkend="svn.serverconfig" /> zu findenden Informationen
+        solten Ihnen helfen können, eine Entscheidung zu
+        treffen.</para>
+
+    </sect2>
+
+    <!-- =============================================================== -->
+    <sect2 id="svn.reposadmin.basics.backendsx">
 <!--
       <title>Choosing a Data Store</title>
 -->
@@ -1798,11 +1925,11 @@ $
           repository <quote>by hand.</quote>  The
           <command>svnadmin</command> tool should be sufficient for
           any changes necessary to your repository, or you can look to
-          third-party tools (such as Berkeley DB's tool suite) for
-          tweaking relevant subsections of the repository.  Do
-          <emphasis>not</emphasis> attempt manual manipulation of your
-          version control history by poking and prodding around in
-          your repository's data store files!</para>
+          third-party tools for tweaking relevant subsections of the
+          repository.  Do <emphasis>not</emphasis> attempt manual
+          manipulation of your version control history by poking and
+          prodding around in your repository's data store
+          files!</para>
 -->
         <para>Während einige Teile des Projektarchivs &ndash; wie die
           Konfigurationsdateien und Hook-Skripte &ndash; für eine
@@ -1812,10 +1939,9 @@ $
           herumdoktern. Das Dienstprogramm <command>svnadmin</command>
           sollte für alle notwendigen Änderungen an Ihrem Projektarchiv
           ausreichen; sie können auch Dienstprogramme von
-          Drittanbietern (wie das Werkzeugpaket von Berkeley DB)
-          verwenden, um in entsprechenden Unterabschnitten des
-          Projektarchivs Änderungen vorzunehmen. Versuchen Sie
-          <emphasis>nicht</emphasis>, die Historie Ihrer
+          Drittanbietern verwenden, um in entsprechenden
+          Unterabschnitten des Projektarchivs Änderungen vorzunehmen.
+          Versuchen Sie <emphasis>nicht</emphasis>, die Historie Ihrer
           Versionskontrolle manuell zu verändern, indem Sie in den
           Speicherdateien des Projektarchivs herumstochern!</para>
       </warning>
@@ -2742,22 +2868,14 @@ your client to at least Subversion 1.5.0.
 
 <!--
       <para>Subversion provides a handful of utilities useful for
-        creating, inspecting, modifying, and repairing your repository.
-        Let's look more closely at each of those tools.  Afterward,
-        we'll briefly examine some of the utilities included in the
-        Berkeley DB distribution that provide functionality specific
-        to your repository's database backend not otherwise provided
-        by Subversion's own tools.</para>
+        creating, inspecting, modifying, and repairing your
+        repository.  Let's look more closely at each of those
+        tools.</para>
 -->
       <para>Subversion stellt eine Handvoll Dienstprogramme zur
         Verfügung, die nützlich zum Erstellen, Untersuchen, Verändern
         und Reparieren Ihres Projektarchivs sind. Wir wollen uns diese
-        Werkzeuge einmal genauer ansehen. Anschließend werden wir kurz
-        einige der zum Berkeley-DB-Paket gehörenden Dienstprogramme
-        untersuchen, die auf die Besonderheiten der von Subversion
-        verwendeten Datenbank zugeschnittene Funktionen anbieten, die
-        mit Subversions eigenen Werkzeugen nicht verfügbar
-        sind.</para>
+        Werkzeuge einmal genauer ansehen.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.maint.tk.svnadmin">
@@ -3354,15 +3472,10 @@ $
           (found in the <filename>tools/server-side</filename>
           directory of the Subversion source distribution) is a useful
           performance tuning tool for administrators of FSFS-backed
-          Subversion repositories.  As described in the sidebar
-          <xref linkend="svn.reposadmin.basics.backends.fsfs.revfiles"/>,
-          FSFS repositories use individual files to house information
-          about each revision.  Sometimes these files all live in a
-          single directory; sometimes they are sharded across many
-          directories.  But the neat thing is that the number of
-          directories used to house these files is configurable.
-          That's where <command>fsfs-reshard.py</command> comes
-          in.</para>
+          Subversion repositories.  FSFS repositories use individual
+          files to house information about each revision.  Sometimes
+          these files all live in a single directory; sometimes they
+          are sharded across many directories.</para>
 -->
         <para>Obwohl es kein offizielles Glied in der Werkzeugkette
           von Subversion ist, handelt es sich bei dem Skript
@@ -3370,15 +3483,61 @@ $
           <filename>tools/server-side</filename> des
           Subversion-Quelltext-Paketes) um ein nützliches Werkzeug zur
           Leistungssteigerung für Administratoren von FSFS-basierten
-          Subversion-Projektarchiven. Wie in der Randnotiz
-          <xref linkend="svn.reposadmin.basics.backends.fsfs.revfiles"/>
-          beschrieben, verwenden FSFS-Projektarchive einzelne Dateien,
-          die die zu einer Revision gehörenden Eigenschaften
-          beherbergen. Manchmal liegen alle dieser Dateien in einem
-          einzelnen Verzeichnis; manchmal werden sie über viele
-          Verzeichnisse verteilt. Eine saubere Sache ist, dass die
-          Anzahl der Verzeichnisse zur Aufnahme dieser Dateien
-          konfiguriert werden kann.</para>
+          Subversion-Projektarchiven. FSFS-Projektarchive verwenden
+          einzelne Dateien, die die zu einer Revision gehörenden
+          Eigenschaften beherbergen. Manchmal liegen alle dieser
+          Dateien in einem einzelnen Verzeichnis; manchmal werden sie
+          über viele Verzeichnisse verteilt.</para>
+
+<!--
+        <para>Beginning in version 1.5, Subversion creates FSFS-backed
+          repositories using a slightly modified layout in which the
+          contents of the revision files directory (and other
+          always-growing directories)
+          are <firstterm>sharded</firstterm>, or scattered across
+          several subdirectories.  This can greatly reduce the time it
+          takes the system to locate any one of these files, and
+          therefore increases the overall performance of Subversion
+          when reading from the repository.</para>
+-->
+        <para>Beginnend mit Version 1.5 erstellt Subversion
+          FSFS-basierte Projektarchive mit mit einem etwas veränderten
+          Layout, bei dem der Inhalt des Verzeichnisses mit den
+          Revisionsdateien (und anderer stets wachsender
+          Verzeichnisse) in <firstterm>Scherben</firstterm>
+          zerlegt wird, oder über mehrere Unterverzeichnisse
+          verteilt wird. Das kann erheblich zur Verkürzung der Zeit
+          beitragen, die das System benötigt, um irgendeine dieser
+          Dateien zu finden, und somit die Gesamtleistung von
+          Subversion beim Lesen des Projektarchivs erhöhen.</para>
+
+<!--
+          <para>
+            <indexterm>
+              <primary>FSFS</primary>
+              <secondary>packing</secondary>
+            </indexterm>Subversion 1.6 and later takes the sharded
+            layout one step further, allowing administrators to
+            optionally <firstterm>pack</firstterm> each of their
+            repository shards up into a single multi-revision file.
+            This can have both performance and disk usage benefits.
+            See
+            <xref linkend="svn.reposadmin.maint.diskspace.fsfspacking"/>
+            for more information.</para>
+-->
+          <para>
+            <indexterm>
+              <primary>FSFS</primary>
+              <secondary>packen</secondary>
+            </indexterm>Subversion 1.6 und später geht bei diesem
+            Scherben-Design noch einen Schritt weiter und erlaubt
+            Administratoren, optional jede dieser
+            Projektarchiv-Scherben in eine einzelne
+            Multi-Revisions-Datei zu <firstterm>packen</firstterm>.
+            Das kann sowohl Leistungsvorteile bringen als auch die
+            Plattennutzung verbessern. Siehe
+            <xref linkend="svn.reposadmin.maint.diskspace.fsfspacking"/>
+            für weitere Informationen.</para>
 
 <!--
         <para><command>fsfs-reshard.py</command> reshuffles the
