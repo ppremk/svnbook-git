@@ -3490,6 +3490,25 @@ $
           über viele Verzeichnisse verteilt.</para>
 
 <!--
+        <para>The earliest FSFS release versions would house all the
+          revision files within a single directory that grew&mdash;one
+          file per revision&mdash;throughout the lifetime of your
+          repository.  This created problems on systems which have
+          hard limits on the number of files permitted in a given
+          directory, and was a performance burden even on systems
+          where such limits didn't exist or were set sufficiently
+          high.</para>
+-->
+        <para>Die frühesten herausgegebenen FSFS Versionen brachten
+          alle Revisionsdateien in einem einzelnen Verzeichnis unter,
+          das während der gesamten Lebenszeit Ihres Projektarchivs
+          wuchs: eine Datei pro Revision. Auf Systemen, die die Anzahl
+          von Dateien pro Verzeichnis streng limitiert haben, erzeugte
+          das Probleme und war sogar ein Leistungsproblem auf
+          Systemen, die diese Begrenzung nicht hatten oder diese
+          Grenzen hoch genug waren.</para>
+
+<!--
         <para>Beginning in version 1.5, Subversion creates FSFS-backed
           repositories using a slightly modified layout in which the
           contents of the revision files directory (and other
@@ -3540,6 +3559,24 @@ $
             für weitere Informationen.</para>
 
 <!--
+        <para>The number of files permitted to live in a given
+          subdirectory is a configurable thing (though the defaults
+          are reasonable ones for most known platforms), but changing
+          that configuration after the repository has been in use for
+          some time could cause Subversion to be unable to locate the
+          files it is looking for.  That's
+          where <command>fsfs-reshard.py</command> comes in.</para>
+-->
+        <para>Die Anzahl der erlaubten Dateien in einem gegebenen
+          Unterverzeichnis lässt sich konfigurieren (obwohl die
+          Standardwerte für die meisten bekannten Plattformen
+          angemessen sind); die Änderung diser Konfiguration nachdem
+          das Projektarchiv bereits einige Zeit in Betrieb war, könnte
+          aber dazu führen, dass Subversion gesuchte Dateien nicht
+          mehr findet. Hier kommt der Befehl
+          <command>fsfs-reshard.py</command> ins Spiel.</para>
+
+<!--
         <para><command>fsfs-reshard.py</command> reshuffles the
           repository's file structure into a new arrangement that
           reflects the requested number of sharding subdirectories and
@@ -3565,119 +3602,6 @@ $
           für Sie macht). Dieses Skript kann ebenfalls dazu verwendet
           werden, um ein bereits aufgeteiltes Projektarchiv noch
           feiner einzustellen.</para>
-
-      </sect3>
-
-      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <sect3 id="svn.reposadmin.maint.tk.bdbutil">
-<!--
-        <title>Berkeley DB utilities</title>
--->
-        <title>Dienstprogramme von Berkeley DB</title>
-
-<!--
-        <para>If you're using a Berkeley DB repository, all of
-          your versioned filesystem's structure and data live in a set
-          of database tables within the <filename>db/</filename>
-          subdirectory of your repository.  This subdirectory is a
-          regular Berkeley DB environment directory and can therefore
-          be used in conjunction with any of the Berkeley database
-          tools, typically provided as part of the Berkeley DB
-          distribution.</para>
--->
-        <para>Falls Sie ein Projektarchiv verwenden, das auf Berkeley DB
-          basiert, befindet sich die gesamte Struktur und die Daten
-          Ihres versionierten Dateisystems in einer Menge von
-          Datenbank-Tabellen innerhalb des Unterverzeichnisses
-          <filename>db/</filename> Ihres Projektarchivs. Dieses
-          Unterverzeichnis ist ein gewöhnliches Verzeichnis einer
-          Berkeley-DB-Umgebung und kann deshalb mit irgendeinem der
-          Berkeley Datenbank-Werkzeuge verwendet werden, die
-          normalerweise mit Berkeley DB ausgeliefert werden.</para>
-
-<!--
-        <para>For day-to-day Subversion use, these tools are
-          unnecessary.  Most of the functionality typically needed for
-          Subversion repositories has been duplicated in the
-          <command>svnadmin</command> tool.  For example,
-          <command>svnadmin list-unused-dblogs</command> and
-          <command>svnadmin list-dblogs</command> perform a
-          subset of what is provided by the Berkeley
-          <command>db_archive</command> utility, and <command>svnadmin
-          recover</command> reflects the common use cases of the
-          <command>db_recover</command> utility.</para>
--->
-        <para>Für die tägliche Arbeit mit Subversion werden diese
-          Werkzeuge nicht benötigt. Die meisten Funktionen, die
-          üblicherweise für Subversion-Projektarchive gebraucht werden,
-          sind in <command>svnadmin</command> integriert worden.
-          Beispielsweise liefern <command>svnadmin
-          list-unused-dblogs</command> und <command>svnadmin
-          list-dblogs</command> eine Teilmenge dessen, was vom
-          Berkeley-Dienstprogramm <command>db_archive</command>
-          angeboten wird, und <command>svnadmin recover</command>
-          spiegelt die verbreiteten Anwendungsfälle von
-          <command>db_recover</command> wieder.</para>
-
-<!--
-        <para>However, there are still a few Berkeley DB utilities
-          that you might find useful.  The <command>db_dump</command>
-          and <command>db_load</command> programs write and read,
-          respectively, a custom file format that describes the keys
-          and values in a Berkeley DB database.  Since Berkeley
-          databases are not portable across machine architectures,
-          this format is a useful way to transfer those databases from
-          machine to machine, irrespective of architecture or
-          operating system.  As we describe later in this chapter, you
-          can also use <command>svnadmin dump</command> and
-          <command>svnadmin load</command> for similar purposes, but
-          <command>db_dump</command> and <command>db_load</command>
-          can do certain jobs just as well and much faster.  They can
-          also be useful if the experienced Berkeley DB hacker needs
-          to do in-place tweaking of the data in a BDB-backed
-          repository for some reason, which is something Subversion's
-          utilities won't allow.  Also, the <command>db_stat</command>
-          utility can provide useful information about the status of
-          your Berkeley DB environment, including detailed statistics
-          about the locking and storage subsystems.</para>
--->
-        <para>Trotzdem gibt es noch ein paar Berkeley-DB-Werkzeuge,
-          die Ihnen nützlich sein könnten. Die Programme
-          <command>db_dump</command> und <command>db_load</command>
-          schreiben bzw. lesen ein spezielles Dateiformat, das die
-          Schlüssel und Werte in einer Berkeley-DB-Datenbank
-          beschreibt. Da Berkeley-Datenbanken nicht zwischen
-          Rechnerarchitekturen portierbar sind, stellt dieses Format
-          ein nützliches Verfahren zur Übertragung der Datenbanken
-          zwischen Maschinen zur Verfügung, wobei die Architektur oder
-          das Betriebssystem keine Rolle spielen. Später in diesem
-          Kapitel werden wir noch beschreiben, wie Sie auch
-          <command>svnadmin dump</command> und <command>svnadmin
-          load</command> für ähnliche Zwecke verwenden können, doch
-          <command>db_dump</command> und <command>db_load</command>
-          können bestimmte Aufgaben genauso gut und viel schneller
-          erledigen. Sie können auch dabei dienlich sein, wenn der
-          erfahrene Berkeley-DB-Hacker aus irgendwelchen Gründen die
-          Daten in einem BDB-basierten Projektarchiv direkt vor Ort
-          anpassen muss, was die Dienstprogramme von Subversion
-          nicht erlauben. Ferner liefert das Dienstprogramm
-          <command>db_stat</command> nützliche Informationen über den
-          Zustand Ihrer Berkeley-DB-Umgebung, wozu ausführliche
-          Statistiken über das Sperr- und Speicher-Teilsystem
-          gehören.</para>
-
-<!--
-        <para>For more information on the Berkeley DB tool chain,
-          visit the documentation section of the Berkeley DB section
-          of Oracle's web site, located at <ulink
-          url="http://www.oracle.com/technology/documentation/berkeley-db/db/"
-          />.</para>
--->
-        <para>Besuchen Sie für weitergehende Informationen zur
-          Berkeley-Werkzeugsammlung den Dokumentationsabschnitt der
-          Berkeley-DB-Abteilung auf der Seite von Oracle bei <ulink
-          url="http://www.oracle.com/technology/documentation/berkeley-db/db/"
-          />.</para>
 
       </sect3>
     </sect2>
@@ -4176,145 +4100,6 @@ $
 
       </sect3>
 
-      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <sect3 id="svn.reposadmin.maint.diskspace.bdblogs">
-<!--
-        <title>Purging unused Berkeley DB logfiles</title>
--->
-        <title>Entfernen unbenutzter Protokolldateien von Berkeley DB</title>
-
-<!--
-        <para>Until recently, the largest offender of disk space usage
-          with respect to BDB-backed Subversion repositories were the
-          logfiles in which Berkeley DB performs its prewrites before
-          modifying the actual database files.  These files capture
-          all the actions taken along the route of changing the
-          database from one state to another&mdash;while the database
-          files, at any given time, reflect a particular state, the
-          logfiles contain all of the many changes along the way
-          <emphasis>between</emphasis> states.  Thus, they can grow
-          and accumulate quite rapidly.</para>
--->
-        <para>Bis vor kurzer Zeit waren die größten
-          Plattenplatzfresser bei BDB-basierten Subversion-Projektarchive
-          die Protokolldateien, in die Berkeley DB zunächst alle
-          Schritte hineinschreibt, bevor es die eigentlichen
-          Datenbankdateien verändert. Diese Dateien halten alle
-          Aktionen der Datenbank auf dem Weg von einem Zustand zum
-          nächsten fest &ndash; während die Datenbankdateien zu jeder
-          Zeit einen bestimmten Zustand widerspiegeln, beinhalten die
-          Protokolldateien all die vielen Änderungen auf dem Weg
-          <emphasis>zwischen</emphasis> den Zuständen. Somit können
-          sie sehr schnell wachsen und sich anhäufen.</para>
-
-<!--
-        <para>Fortunately, beginning with the 4.2 release of Berkeley
-          DB, the database environment has the ability to remove its
-          own unused logfiles automatically.  Any
-          repositories created using <command>svnadmin</command>
-          when compiled against Berkeley DB version 4.2 or later
-          will be configured for this automatic logfile removal.  If
-          you don't want this feature enabled, simply pass the
-          <option>- -bdb-log-keep</option> option to the
-          <command>svnadmin create</command> command.  If you forget
-          to do this or change your mind at a later time, simply edit
-          the <filename>DB_CONFIG</filename> file found in your
-          repository's <filename>db</filename> directory, comment out
-          the line that contains the <literal>set_flags
-          DB_LOG_AUTOREMOVE</literal> directive, and then run
-          <command>svnadmin recover</command> on your repository to
-          force the configuration changes to take effect.  See <xref
-          linkend="svn.reposadmin.create.bdb"/> for more information about
-          database configuration.</para>
--->
-        <para>Glücklicherweise hat die Datenbankumgebung beginnend mit
-          der Version 4.2 der Berkeley DB die Fähigkeit, ihre eigenen
-          unbenutzten Protokolldateien automatisch zu entfernen. Alle
-          Projektarchive, die mit einem <command>svnadmin</command>
-          angelegt wurden, das mit Berkeley DB Version 4.2 oder später
-          übersetzt wurde, werden mit automatischer Entfernung der
-          Protokolldateien konfiguriert. Wenn Sie diese Funktion nicht
-          möchten, geben Sie dem Befehl <command>svnadmin
-          create</command> einfach die Option
-          <option>--bdb-log-keep</option> mit. Sollten Sie das
-          vergessen oder es sich später anders überlegen, editieren
-          Sie einfach die Datei <filename>DB_CONFIG</filename> im
-          Verzeichnis <filename>db</filename> Ihres Projektarchivs indem
-          Sie die Zeile mit der Direktive <literal>set_flags
-          DB_LOG_AUTOREMOVE</literal> auskommentieren und starten dann
-          <command>svnadmin recover</command> auf Ihrem Projektarchiv, um
-          die Konfigurationsänderung zu aktivieren.  Siehe <xref
-          linkend="svn.reposadmin.create.bdb"/> für weitere
-          Informationen zur Datenbank-Konfiguration.</para>
-
-<!--
-        <para>Without some sort of automatic logfile removal in
-          place, logfiles will accumulate as you use your repository.
-          This is actually somewhat of a feature of the database
-          system&mdash;you should be able to recreate your entire
-          database using nothing but the logfiles, so these files can
-          be useful for catastrophic database recovery.  But
-          typically, you'll want to archive the logfiles that are no
-          longer in use by Berkeley DB, and then remove them from disk
-          to conserve space.  Use the <command>svnadmin
-          list-unused-dblogs</command> command to list the unused
-          logfiles:</para>
--->
-        <para>Ohne eine Art automatischer Entfernung der
-          Protokolldateien aktiviert zu haben, häufen sich die
-          Protokolldateien während der Nutzung des Projektarchivs an.
-          Es ist eigentlich ein Merkmal des Datenbanksystems &ndash;
-          Sie sollten ausschließlich  mit Hilfe der Protokolldateien
-          in der Lage sein, Ihre gesamte Datenbank zu rekonstruieren,
-          so dass diese Protokolldateien sehr nützlich für eine
-          Wiederherstellung im Katastrophenfall sein können. Jedoch
-          möchten Sie normalerweise die nicht mehr von Berkeley DB
-          verwendeten Protokolldateien archivieren und sie zur
-          Platzersparnis von der Platte entfernen. Verwenden Sie den
-          Befehl <command>svnadmin list-unused-dblogs</command>, um
-          die unbenutzten Protokolldateien anzuzeigen:</para>
-
-        <informalexample>
-          <screen>
-$ svnadmin list-unused-dblogs /var/svn/repos
-/var/svn/repos/log.0000000031
-/var/svn/repos/log.0000000032
-/var/svn/repos/log.0000000033
-&hellip;
-$ rm `svnadmin list-unused-dblogs /var/svn/repos`
-<!--
-## disk space reclaimed!
--->
-## Plattenplatz zurückgewonnen!
-</screen>
-        </informalexample>
-
-        <warning>
-<!--
-          <para>BDB-backed repositories whose logfiles are used as
-            part of a backup or disaster recovery plan should
-            <emphasis>not</emphasis> make use of the logfile
-            autoremoval feature.  Reconstruction of a repository's
-            data from logfiles can only be accomplished only when
-            <emphasis>all</emphasis> the logfiles are available.  If
-            some of the logfiles are removed from disk before the
-            backup system has a chance to copy them elsewhere, the
-            incomplete set of backed-up logfiles is essentially
-            useless.</para> </warning>
--->
-          <para>BDB-basierte Projektarchive, deren Protokolldateien ein
-            Bestandteil eines Sicherungs- oder Notfallplans sind,
-            sollten <emphasis>nicht</emphasis> die automatische
-            Entfernung verwenden. Die Wiederherstellung der Daten
-            eines Projektarchivs kann nur gewährleistet werden, wenn
-            <emphasis>alle</emphasis> Protokolldateien verfügbar sind.
-            Falls einige der Protokolldateien von der Platte entfernt
-            werden, bevor das Sicherungssystem die Gelegenheit
-            bekommt, sie woandershin zu kopieren, ist die
-            unvollständige Menge gesicherter Protokolldateien
-            tatsächlich nutzlos.</para> </warning>
-
-      </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.maint.diskspace.fsfspacking">
@@ -4477,254 +4262,6 @@ $
           auf Subversion-Projektarchive auf BDB-Basis.</para>
 
       </sect3>
-    </sect2>
-
-    <!-- =============================================================== -->
-    <sect2 id="svn.reposadmin.maint.recovery">
-<!--
-      <title>Berkeley DB Recovery</title>
--->
-      <title>Wiederherstellung von Berkeley DB</title>
-
-<!--
-      <para>As mentioned in <xref
-        linkend="svn.reposadmin.basics.backends.bdb"/>, a Berkeley DB
-        repository can sometimes be left in a frozen state if not closed
-        properly.  When this happens, an administrator needs to rewind
-        the database back into a consistent state.  This is unique to
-        BDB-backed repositories, though&mdash;if you are using
-        FSFS-backed ones instead, this won't apply to you.  And for
-        those of you using Subversion 1.4 with Berkeley DB 4.4 or
-        later, you should find that Subversion has become much more
-        resilient in these types of situations.  Still, wedged
-        Berkeley DB repositories do occur, and an administrator needs
-        to know how to safely deal with this circumstance.</para>
--->
-      <para>Wie in <xref
-        linkend="svn.reposadmin.basics.backends.bdb"/> erwähnt wurde,
-        kann ein Berkeley-DB-Projektarchiv manchmal einfrieren, falls es
-        nicht ordnungsgemäß geschlossen wird. Wenn das passiert, muss
-        ein Administrator die Datenbank in einen konsistenten Zustand
-        zurückfahren. Das gilt aber nur für BDB-basierte Projektarchive
-        &ndash; falls Sie FSFS-basierte verwenden, sind Sie davon
-        nicht betroffen. Und falls Sie Subversion 1.4 mit Berkeley DB
-        4.4 oder später verwenden, werden Sie feststellen, dass
-        Subversion für diese Situationen wesentlich unempfindlicher
-        geworden ist. Trotzdem kommt es vor, dass sich
-        Berkeley-DB-Projektarchive verklemmen, und Administratoren müssen
-        wissen, wie sie sicher damit umgehen.</para>
-
-<!--
-      <para>To protect the data in your repository, Berkeley
-        DB uses a locking mechanism.  This mechanism ensures that
-        portions of the database are not simultaneously modified by
-        multiple database accessors, and that each process sees the
-        data in the correct state when that data is being read from
-        the database.  When a process needs to change something in the
-        database, it first checks for the existence of a lock on the
-        target data.  If the data is not locked, the process locks the
-        data, makes the change it wants to make, and then unlocks the
-        data.  Other processes are forced to wait until that lock is
-        removed before they are permitted to continue accessing that
-        section of the database.  (This has nothing to do with the
-        locks that you, as a user, can apply to versioned files within
-        the repository; we try to clear up the confusion caused by
-        this terminology collision in the sidebar <xref
-        linkend="svn.advanced.locking.meanings" />.)</para>
--->
-      <para>Um die Daten in Ihrem Projektarchiv zu schützen, verwendet
-        Berkeley DB einen Sperrmechanismus. Dieser Mechanismus stellt
-        sicher, dass Teile der Datenbank nicht gleichzeitig durch
-        mehrere Zugriffe verändert werden und jeder Prozess die Daten
-        beim Lesen aus der Datenbank im korrekten Zustand sieht.  Wenn
-        ein Prozess irgendetwas in der Datenbank ändern muss, prüft er
-        zunächst, ob eine Sperre auf den Zieldaten liegt.  Sind die
-        Daten nicht gesperrt, sperrt der Prozess die Daten, nimmt die
-        Änderungen vor und entsperrt die Daten wieder.  Andere
-        Prozesse müssen auf die Freigabe der Sperre warten, bevor sie
-        wieder auf diesen Datenbankabschnitt zugreifen dürfen. (Das
-        hat nichts mit den Sperren zu tun, die Sie als Benutzer auf
-        versionierte Dateien im Projektarchiv vergeben können; wir
-        versuchen die Verwirrung, die durch diese Terminologie
-        verursacht wird, in <xref
-        linkend="svn.advanced.locking.meanings" /> zu klären.)</para>
-
-<!--
-      <para>In the course of using your Subversion repository, fatal
-        errors or interruptions can prevent a process from having the
-        chance to remove the locks it has placed in the database.  The
-        result is that the backend database system gets
-        <quote>wedged.</quote>  When this happens, any attempts to
-        access the repository hang indefinitely (since each new
-        accessor is waiting for a lock to go away&mdash;which isn't
-        going to happen).</para>
--->
-      <para>Während der Nutzung Ihres Projektarchivs können fatale Fehler
-        oder Unterbrechungen einen Prozess daran hindern, die von ihm
-        in der Datenbank gesetzten Sperren wieder zu entfernen. Als
-        Ergebnis ist das Datenbanksystem <quote>verklemmt</quote>.
-        Wenn das passiert, laufen alle Versuche ins Leere, auf die
-        Datenbank zuzugreifen (da jeder neue Prozess darauf wartet,
-        dass die Sperre entfernt wird &ndash; was aber nicht passieren
-        wird).</para>
-
-<!--
-      <para>If this happens to your repository, don't panic.  The
-        Berkeley DB filesystem takes advantage of database
-        transactions, checkpoints, and prewrite journaling to ensure
-        that only the most catastrophic of events<footnote><para>For
-        example, hard drive + huge electromagnet =
-        disaster.</para></footnote> can permanently destroy a database
-        environment.  A sufficiently paranoid repository administrator
-        will have made off-site backups of the repository data in some
-        fashion, but don't head off to the tape backup storage closet
-        just yet.</para>
--->
-      <para>Keine Panik, falls das Ihrem Projektarchiv widerfahren
-        sollte! Das Berkeley-DB-Dateisystem nutzt die Vorteile von
-        Datenbanktransaktionen, Sicherungspunkten sowie
-        vorausschreibender Journalierung, um zu gewährleisten, dass
-        nur die katastrophalsten
-        Ereignisse<footnote><para>Beispielsweise Festplatte + starker
-        Elektromagnet = Desaster.</para></footnote> dauerhaft die
-        Datenbankumgebung zerstören können. Ein ausreichend paranoider
-        Projektarchiv-Administrator wird irgendwie Sicherungen der
-        Daten des Projektarchivs an einem anderen Ort verwahren, doch
-        rennen Sie noch nicht zum Schrank mit den
-        Sicherungsbändern.</para>
-
-<!--
-      <para>Instead, use the following recipe to attempt to
-        <quote>unwedge</quote> your repository:</para>
--->
-      <para>Verwenden Sie stattdessen das folgende Rezept, um Ihr
-        Projektarchiv zu <quote>entklemmen</quote>:</para>
-
-      <orderedlist>
-        <listitem>
-<!--
-          <para>Make sure no processes are accessing (or
-            attempting to access) the repository.  For networked
-            repositories, this also means shutting down the Apache HTTP
-            Server or svnserve daemon.</para>
--->
-          <para>Stellen Sie sicher, dass keine Prozesse auf das
-            Projektarchiv zugreifen (oder einen Zugriffsversuch machen).
-            Für netzbasierte Projektarchive bedeutet das, auch den
-            Apache-HTTP-Server oder den svnserve-Dämon zu
-            stoppen.</para>
-        </listitem>
-        <listitem> 
-<!--
-          <para>Become the user who owns and manages the repository.
-            This is important, as recovering a repository while
-            running as the wrong user can tweak the permissions of the
-            repository's files in such a way that your repository will
-            still be inaccessible even after it is 
-            <quote>unwedged.</quote></para>
--->
-          <para>Melden Sie sich als der Benutzer an, dem das
-            Projektarchiv gehört und der es verwaltet. Das ist wichtig,
-            da eine Wiederherstellung unter einer falschen
-            Benutzerkennung dazu führen kann, dass die Berechtigungen
-            auf den Dateien eines Projektarchivs derart verändert werden
-            können, dass der Zugriff auf das Projektarchiv auch dann
-            nicht mehr möglich wird, wenn es <quote>entklemmt</quote>
-            ist.</para>
-        </listitem>
-        <listitem>
-<!--
-          <para>Run the command <userinput>svnadmin recover
-            /var/svn/repos</userinput>.  You should see output such as
-            this:</para>
--->
-          <para>Starten Sie den Befehl <userinput>svnadmin recover
-            /var/svn/repos</userinput>. Sie sollten eine Ausgabe
-              ähnlich dieser sehen:</para>
-
-<!--
-          <informalexample>
-            <screen>
-Repository lock acquired.
-Please wait; recovering the repository may take some time...
-
-Recovery completed.
-The latest repos revision is 19.
-</screen>
-          </informalexample>
--->
-          <informalexample>
-            <screen>
-Exklusiven Zugriff auf das Projektarchiv erlangt
-Bitte warten, die Wiederherstellung des Projektarchivs kann einige Zeit dauern ...
-
-Wiederherstellung vollständig abgeschlossen. 
-Die neueste Revision des Projektarchivs ist 19.
-</screen>
-          </informalexample>
-<!--
-          <para>This command may take many minutes to complete.</para>
--->
-          <para>Die Ausführung dieses Befehls kann viele Minuten
-            dauern.</para>
-        </listitem>
-        <listitem>
-<!--
-          <para>Restart the server process.</para>
--->
-          <para>Machen Sie einen Neustart des Server-Prozesses.</para>
-        </listitem>
-      </orderedlist>
-
-<!--
-      <para>This procedure fixes almost every case of repository
-        wedging.  Make sure that you run this command as the user that
-        owns and manages the database, not just as
-        <literal>root</literal>.  Part of the recovery process might
-        involve re-creating from scratch various database files (shared
-        memory regions, e.g.).  Recovering as
-        <literal>root</literal> will create those files such that they
-        are owned by <literal>root</literal>, which means that even
-        after you restore connectivity to your repository, regular
-        users will be unable to access it.</para>
--->
-      <para>Dieses Vorgehen behebt fast jeden Fall von
-        Projektarchiv-Verklemmung. Stellen Sie sicher, dass Sie diesen
-        Befehl als der Benutzer ausführen, der Eigentümer und
-        Verwalter der Datenbank ist, nicht einfach als
-        <literal>root</literal>. Ein Teil des
-        Wiederherstellungsprozesses könnte diverse Datenbankdateien
-        völlig neu erzeugen (z.B., gemeinsame Speicherbereiche). Wenn
-        Sie die Wiederherstellung als <literal>root</literal>
-        ausführen, werden diese Dateien dem Benutzer
-        <literal>root</literal> zugeordnet, was bedeutet, dass selbst
-        nach der Wiederherstellung der Verbindung zur Außenwelt
-        gewöhnliche Benutzer keinen Zugriff mehr bekommen
-        werden.</para>
-
-<!--
-      <para>If the previous procedure, for some reason, does not
-        successfully unwedge your repository, you should do two
-        things.  First, move your broken repository directory aside
-        (perhaps by renaming it to something like
-        <filename>repos.BROKEN</filename>) and then restore your
-        latest backup of it.  Then, send an email to the Subversion
-        users mailing list (at <email>users@subversion.apache.org</email>)
-        describing your problem in detail.  Data integrity is an
-        extremely high priority to the Subversion developers.</para>
--->
-      <para>Falls das oben beschriebene Vorgehen aus irgendwelchen
-        Gründen die Verklemmung Ihres Projektarchivs nicht beseitigt,
-        sollten Sie zwei Dinge tun. Schieben Sie zunächst ihr
-        beschädigtes Projektarchiv an die Seite (indem Sie es etwa in
-        <filename>repos.BROKEN</filename> umbenennen) und spielen
-        seine jüngste Sicherung ein. Schicken Sie dann eine E-Mail an
-        die Subversion-Mailing-Liste
-        (<email>users@subversion.apache.org</email>), in der Sie Ihr
-        Problem detailliert beschreiben. Die Integrität der Daten
-        genießt bei den Entwicklern von Subversion allerhöchste
-        Priorität.</para>
-
     </sect2>
 
     <!-- =============================================================== -->
@@ -7511,29 +7048,6 @@ $ svnadmin hotcopy /var/svn/repos /var/svn/repos-backup
         Schlimmes passieren sollte.</para>
 
 <!--
-      <para>When making copies of a Berkeley DB repository, you can
-        even instruct <command>svnadmin hotcopy</command> to purge any
-        unused Berkeley DB logfiles (see <xref
-        linkend="svn.reposadmin.maint.diskspace.bdblogs" />) from the
-        original repository upon completion of the copy.  Simply
-        provide the <option>- -clean-logs</option> option on the
-        command line.</para>
--->
-      <para>Bei der Erstellung von Kopien eines
-        Berkeley-DB-Projektarchivs können Sie <command>svnadmin
-        hotcopy</command> sogar mitteilen, nach Abschluss der Kopie
-        unbenötigte Berkeley-DB-Protokolldateien (siehe <xref
-        linkend="svn.reposadmin.maint.diskspace.bdblogs" />) aus dem
-        Original-Projektarchiv  zu löschen. Geben Sie einfach die Option
-        <option>--clean-logs</option> auf der Kommandozeile an.</para>
-
-      <informalexample>
-        <screen>
-$ svnadmin hotcopy --clean-logs /var/svn/bdb-repos /var/svn/bdb-repos-backup
-</screen>
-      </informalexample>
-
-<!--
       <para>Additional tooling around this command is available, too.
         The <filename>tools/backup/</filename> directory of the
         Subversion source distribution holds the
@@ -7582,15 +7096,15 @@ $ svnadmin hotcopy --clean-logs /var/svn/bdb-repos /var/svn/bdb-repos-backup
         command.  There is some value in these methods, in that the
         format of your backed-up information is flexible&mdash;it's
         not tied to a particular platform, versioned filesystem type,
-        or release of Subversion or Berkeley DB.  But that flexibility
-        comes at a cost, namely that restoring that data can take a
-        long time&mdash;longer with each new revision committed to
-        your repository.  Also, as is the case with so many of the
-        various backup methods, revision property changes that are
-        made to already backed-up revisions won't get picked up by a
-        nonoverlapping, incremental dump generation.  For these
-        reasons, we recommend against relying solely on dump-based
-        backup approaches.</para>
+        or release of Subversion or the libraries it uses.  But that
+        flexibility comes at a cost, namely that restoring that data
+        can take a long time&mdash;longer with each new revision
+        committed to your repository.  Also, as is the case with so
+        many of the various backup methods, revision property changes
+        that are made to already backed-up revisions won't get picked
+        up by a nonoverlapping, incremental dump generation.  For
+        these reasons, we recommend against relying solely on
+        dump-based backup approaches.</para>
 -->
       <para>Einige Administratoren verwenden einen unterschiedlichen
         Sicherungsmechanismus, der auf der Erzeugung und Speicherung
@@ -7606,16 +7120,17 @@ $ svnadmin hotcopy --clean-logs /var/svn/bdb-repos /var/svn/bdb-repos-backup
         Information flexibel ist &ndash; es erfordert keine bestimmte
         Plattform, keinen bestimmten Typ eines versionierten
         Dateisystems, keine bestimmte Version von Subversion oder
-        Berkeley DB. Diese Flexibilität kommt allerdings zu dem Preis,
-        dass die Wiederherstellung der Daten sehr lange dauern kann
-        &ndash; länger mit jeder neuen Revision, die ins Projektarchiv
-        übertragen wird. Wie bei vielen verschiedenen
-        Sicherungsmethoden werden auch hier Änderungen an
-        Revisions-Eigenschaften bereits gesicherter Revisionen nicht
-        berücksichtigt, sofern es sich um eine nicht-überlappende
-        inkrementelle Sicherung handelt. Wir raten aus diesen Gründen
-        davon ab, sich ausschließlich auf Sicherungsstrategien zu
-        verlassen, die alleine auf Auszügen basieren.</para>
+        der von ihm verwendeten Bibliotheken. Diese Flexibilität kommt
+        allerdings zu dem Preis, dass die Wiederherstellung der Daten
+        sehr lange dauern kann &ndash; länger mit jeder neuen
+        Revision, die ins Projektarchiv übertragen wird. Wie bei
+        vielen verschiedenen Sicherungsmethoden werden auch hier
+        Änderungen an Revisions-Eigenschaften bereits gesicherter
+        Revisionen nicht berücksichtigt, sofern es sich um eine
+        nicht-überlappende inkrementelle Sicherung handelt. Wir raten
+        aus diesen Gründen davon ab, sich ausschließlich auf
+        Sicherungsstrategien zu verlassen, die alleine auf Auszügen
+        basieren.</para>
 
 <!--
       <para>Beginning with Subversion 1.8, <command>svnadmin hotcopy</command>

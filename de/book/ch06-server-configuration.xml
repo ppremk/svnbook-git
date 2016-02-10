@@ -3486,7 +3486,7 @@ arding,no-X11-forwarding,no-pty TYPE1 KEY1 harry@example.com
 
             </listitem>
           </varlistentry>
-          <!-- TODO: CONTINUE HERE -->
+
           <varlistentry>
             <term><literal>authz-db</literal></term>
             <listitem>
@@ -3903,13 +3903,13 @@ arding,no-X11-forwarding,no-pty TYPE1 KEY1 harry@example.com
       />.</para>
 -->
     <para>Viele der folgenden Erläuterungen beziehen sich auf
-      Konfigurationsdirektiven von Apache. Obwohl ein paar Beispiele
+      Konfigurations-Direktiven von Apache. Obwohl ein paar Beispiele
       zur Verwendung dieser Direktiven gegeben werden, würde deren
       erschöpfende Behandlung dieses Kapitel sprengen. Das Apache-Team
       verfügt über hervorragende Dokumentation, die auf deren
       Web-Seite <ulink url="http://httpd.apache.org"/> frei verfügbar
       ist. So befindet sich beispielsweise eine allgemeine Referenz
-      der Konfigurationsdirektiven unter
+      der Konfigurations-Direktiven unter
       <ulink url="http://httpd.apache.org/docs/current/mod/directives.html"
       />.</para>
 
@@ -4145,7 +4145,7 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         <literal>Location</literal> besitzt eine XML-ähnliche
         Notation, beginnend mit einem öffnenden Tag, endend mit einem
         schließenden Tag und verschiedener anderer
-        Konfigurationsdirektiven dazwischen. Der Zweck der Direktive
+        Konfigurations-Direktiven dazwischen. Der Zweck der Direktive
         <literal>Location</literal> besteht darin, Apache anzuweisen,
         etwas Besonderes zu tun, falls Anfragen bearbeitet werden, die
         an einen bestimmten URL oder dessen Kinder gerichtet sind. Im
@@ -7591,20 +7591,12 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             the slave, it is the slave's protocol version and feature
             set which is used.  But write operations are passed
             through to the master server quite literally.  Therefore,
-            there is always a risk that the slave server will answer a
+            there is a risk that the slave server will answer a
             feature negotiation request from the client in way that is
             true for the slave, but untrue for the master if the
             master is running an older version of Subversion.  This
             could result in the client trying to use a new feature
-            that the master doesn't understand, and failing.  There
-            are a couple of known problems of this sort in Subversion
-            1.7, which introduced a major revision of its HTTP
-            protocol.  If you are deploying a Subversion 1.7 slave
-            server in front of a pre-1.7 master, you'll want to
-            configure your slave server's
-            Subversion <literal>&lt;Location&gt;</literal> block with
-            the <literal>SVNAdvertiseV2Protocol Off</literal>
-            directive.</para>
+            that the master doesn't understand, and failing.</para>
 -->
           <para>Eine weitere Einschränkung des Modells eines
             durchreichenden Proxy-Einsatzes betrifft nicht
@@ -7618,20 +7610,54 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             erfolgt, wird hier das Protokoll und der
             Funktionalitätsumfang des Slaves benutzt. Allerdings
             werden Schreiboperationen ziemlich wörtlich an den
-            Master-Server weitergereicht. Daher besteht immer die
+            Master-Server weitergereicht. Daher besteht die
             Gefahr, dass der Slave-Server eine Funktionalitäts-Anfrage
             auf eine Art beantwortet, die für den Slave zutrifft, für
             den Master aber nicht, sofern er eine ältere Version von
             Subversion betreibt. Das kann dazu führen, dass der Client
             eine neue Funktionalität verwenden möchte, die der Master
-            nicht versteht, und somit zu einem Fehler. Es existieren
-            einige bekannte Probleme dieser Art in Subversion 1.7, das
-            eine größere Überarbeitung seines HTTP-Protokolls
-            einführte. Falls Sie einen Slave mit Subversion 1.7 vor
-            einem Master mit einer Version vor 1.7 betreiben, sollten
-            Sie den Subversion
-            <literal>&lt;Location&gt;</literal>-Block Ihres
-            Slave-Servers mit der Direktive
+            nicht versteht, und somit zu einem Fehler.</para>
+
+<!--
+          <para>Subversion 1.8 helps to mitigate this problem via the
+            introduction of a new Apache configuration
+            directive, <literal>SVNMasterVersion</literal>.  By
+            configuring each of your slave servers
+            with <literal>SVNMasterVersion</literal> set to the
+            release version of the Subversion instance which is
+            running on your master server, the slave servers can more
+            accurately negotiate feature support with the
+            client.</para>
+-->
+          <para>Subversion 1.8 hilft, dieses Problem durch die
+            Einführung einer neuen Apache Konfigurations-Direktive zu
+            entschärfen: <literal>SVNMasterVersion</literal>. Indem
+            Sie jeden Ihrer Slave-Server so konfigurieren, dass
+            <literal>SVNMasterVersion</literal> auf die Version der
+            Subversion-Instanz gesetzt wird, die auf dem Master-Server
+            läuft, können die Slave-Server viel genauer die
+            unterstützten Funktionalitäten mit dem Client
+            aushandeln.</para>
+
+<!--
+          <para>Unfortunately, Subversion 1.7 doesn't offer
+            the <literal>SVNMasterVersion</literal> configuration
+            directive and is known to have some specific problems
+            along these lines.  If you are deploying a Subversion 1.7
+            slave server in front of a pre-1.7 master, you'll want to
+            configure your slave server's
+            Subversion <literal>&lt;Location&gt;</literal> block with
+            the <literal>SVNAdvertiseV2Protocol Off</literal>
+            directive.</para>
+-->
+          <para>Leider unterstützt Subversion 1.7 die
+            Konfigurations-Direktive
+            <literal>SVNMasterVersion</literal> nicht und hat
+            bekanntermaßen einige Probleme in diesem Zudammenhang.
+            Falls Sie einen Slave mit Subversion 1.7 vor einem Master
+            mit einer älteren Version als 1.7 betreiben, sollten Sie
+            den Subversion <literal>&lt;Location&gt;</literal>-Block
+            Ihres Slave-Servers mit der Direktive
             <literal>SVNAdvertiseV2Protocol Off</literal>
             konfigurieren.</para>
 
@@ -7818,7 +7844,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
 <!--
         <title>mod_dav_svn configuration directives</title>
 -->
-        <title>mod_dav_svn configuration directives</title>
+        <title>mod_dav_svn Konfigurations-Directiven</title>
 
 <!--
         <para>The following configuration directives are recognized
@@ -8132,6 +8158,31 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
           </varlistentry>
 
           <varlistentry>
+            <term><literal>SVNHooksEnv
+              <replaceable>file-path</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Specifies the location of the Subversion
+                repository hook script environment configuration file.
+                This file is used to describe the initial environment
+                in which repository hook scripts are executed.  For
+                more on this feature, see
+                <xref linkend="svn.reposadmin.hooks.configuration"
+                />.</para>
+-->
+              <para>Gibt den Ort der Konfigurationsdatei für die
+                Subversion Hook-Script-Umgebung an. Diese Datei wird
+                verwendet, um die anfängliche Umgebung zu beschreiben,
+                in der Hook-Skripte ausgeführt werden. Für weitere
+                Informationen hierzu, siehe 
+                <xref linkend="svn.reposadmin.hooks.configuration"
+                />.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term><literal>SVNIndexXSLT
               <replaceable>directory-path</replaceable></literal></term>
             <listitem>
@@ -8201,6 +8252,23 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
               <para>Der URI des Master-Subversion-Projektarchivs
                 (verwendet für einen Proxy, über den geschrieben
                 wird).</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>SVNMasterVersion
+              <replaceable>X.Y</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Specifies the release version number of the
+                Subversion instance which is serving the master
+                repository (used for a write-through proxy).</para>
+-->
+              <para>Gibt die Versionsnummer der Subversion-Instanz an,
+                die das Master-Projektarchiv betreut (verwendet für
+                einen Proxy mit Schreib-Weiterleitung).</para>
 
             </listitem>
           </varlistentry>
