@@ -2838,6 +2838,56 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 
       </sect3>
 
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.serverconfig.httpd.authz.inrepo-authz">
+        <title>Versioned In Repository Authorization Files</title>
+
+        <para>Beginning with Subversion 1.8, authz files can be stored
+          inside a Subversion repository.  It is possible to store the
+          authorization file in the same repository to which the
+          access rules are being applied or another repository.  This
+          approach enables versioning features of Subversion for
+          the path-based authorization.</para>
+
+        <para>Both <literal>AuthzSVNAccessFile</literal> and
+          <literal>AuthzSVNReposRelativeAccessFile</literal> configuration
+          directives allow to specify in repo authorization file absolute
+          or relative URL via local <literal>file://</literal> access method,
+          but not <literal>svn://</literal> and <literal>http://</literal>
+          or <literal>https://</literal> methods.</para>
+
+        <para>For example, it is possible to specify absolute URL to in
+          repository authz file as shown in
+          <xref linkend="svn.serverconfig.httpd.authz.inrepo-authz.ex-1"/>.</para>
+
+        <example id="svn.serverconfig.httpd.authz.inrepo-authz.ex-1">
+          <title>Using single versioned in repo authz file</title>
+          <programlisting>
+&lt;Location /repos&gt;
+  DAV svn
+  SVNParentPath /var/svn
+  AuthzSVNAccessFile file:///var/svn/authzrepo/authz
+&lt;/Location&gt;
+</programlisting>
+        </example>
+
+        <para>You can also specify relative URL to in repository authz
+          file as shown in
+          <xref linkend="svn.serverconfig.httpd.authz.inrepo-authz.ex-2"/>.</para>
+
+        <example id="svn.serverconfig.httpd.authz.inrepo-authz.ex-2">
+          <title>Using per repository in repo authz files</title>
+          <programlisting>
+&lt;Location /repos&gt;
+  DAV svn
+  SVNParentPath /var/svn
+  AuthzSVNReposRelativeAccessFile ^/authz
+&lt;/Location&gt;
+</programlisting>
+        </example>
+
+      </sect3>
+
     </sect2>
 
     <!-- =============================================================== -->
