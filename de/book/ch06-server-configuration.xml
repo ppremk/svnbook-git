@@ -5183,17 +5183,22 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 <!--
         <para>To activate this module, you need to configure your
           <literal>&lt;Location&gt;</literal> block to use the
-          <literal>AuthzSVNAccessFile</literal> directive, which
-          specifies a file containing the permissions policy for paths
-          within your repositories.  (In a moment, we'll discuss the
-          format of that file.)</para>
+          <literal>AuthzSVNAccessFile</literal> directive which specifies
+          a single file containing the permissions policy for paths within
+          your repositories.  Beginning with Subversion 1.7, you can
+          also use <literal>AuthzSVNReposRelativeAccessFile</literal>
+          directive to specify a per repository access file.
+          (In a moment, we'll discuss the format of that file.)</para>
 -->
         <para>Zur Aktivierung dieses Moduls müssen Sie Ihren
           <literal>&lt;Location&gt;</literal>-Block mit der Direktive
-          <literal>AuthzSVNAccessFile</literal> konfigurieren, die
-          eine Datei mit Zugriffs-Richtlinien für Pfade in Ihren
-          Projektarchiven bezeichnet. (Gleich werden wir auf das
-          Format dieser Datei eingehen.)</para>
+          <literal>AuthzSVNAccessFile</literal> konfigurieren, die eine
+          einzelne Datei mit Zugriffs-Richtlinien für Pfade in Ihren
+          Projektarchiven bezeichnet. Beginnend mit Subversion 1.7 können
+          Sie auch die Direktive
+          <literal>AuthzSVNReposRelativeAccessFile</literal> verwenden, um
+          eine Zugriffsdatei per Projektarchiv zu spezifizieren. (Gleich
+          werden wir auf das Format dieser Datei eingehen.)</para>
 
 <!--
         <para>Apache is flexible, so you have the option to configure
@@ -5536,6 +5541,95 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           <command>mod_dav_svn</command> beendet den Aufruf von
           Autorisierungsüberprüfungen für jeden entdeckten
           Pfad.</para>
+
+      </sect3>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <sect3 id="svn.serverconfig.httpd.authz.inrepo-authz">
+<!--
+        <title>Versioned In Repository Authorization Files</title>
+-->
+        <title>Im Projektarchiv versionierte Autorisierungs-Dateien</title>
+
+<!--
+        <para>Beginning with Subversion 1.8, authz files can be stored
+          inside a Subversion repository.  It is possible to store the
+          authorization file in the same repository to which the
+          access rules are being applied or another repository.  This
+          approach enables versioning features of Subversion for
+          the path-based authorization configuration.</para>
+-->
+        <para>Beginnend mit Subversion 1.8 können authz-Dateien innerhalb
+          eines Subversion-Projektarchivs gespeichert werden. Es ist
+          möglich, die Autorisierungs-Datei im selben Projektarchiv auf das
+          die Zugriffsregeln angewendet werden zu speichen, oder in einem
+          anderen Projektarchiv. Dieser Ansatz ermöglicht die
+          Versionierungs-Funktionalität von Subversion für die pfadbasierte
+          Autorisierungs-Konfiguration.</para>
+
+<!--
+        <para>Both <literal>AuthzSVNAccessFile</literal> and
+          <literal>AuthzSVNReposRelativeAccessFile</literal> configuration
+          directives allow to specify in-repository authorization file's location.
+          The directives accept absolute <literal>file://</literal> URLs
+          and repository relative URLs (one which begins with ^/).</para>
+-->
+        <para>Die Konfigurations-Directiven
+          <literal>AuthzSVNAccessFile</literal> und
+          <literal>AuthzSVNReposRelativeAccessFile</literal> erlauben
+          beide, einen Pfad innerhalb des Projektarchivs für die
+          Autorisierungs-Datei anzugeben. Die Direktiven akzeptieren
+          absolute <literal>file://</literal>-URLs und URLs relativ zum
+          Projektarchiv (solche, die mit <literal>^/</literal>
+          beginnen).</para>
+
+<!--
+        <para>For example, it is possible to specify an absolute URL to
+          in-repository authz file as shown in
+          <xref linkend="svn.serverconfig.httpd.authz.inrepo-authz.ex-1"/>.</para>
+-->
+        <para>Es ist beispielsweise möglich, einen absoluten URL zu einer
+          authz-Datei in einem Projektarchiv anzugeben, wie in
+          <xref linkend="svn.serverconfig.httpd.authz.inrepo-authz.ex-1"/>
+          gezeigt.</para>
+
+        <example id="svn.serverconfig.httpd.authz.inrepo-authz.ex-1">
+<!--
+          <title>Using single versioned in repo authz file</title>
+-->
+          <title>Einzelne im Projektarchiv versionierte authz-Datei</title>
+          <programlisting>
+&lt;Location /repos&gt;
+  DAV svn
+  SVNParentPath /var/svn
+  AuthzSVNAccessFile file:///var/svn/authzrepo/authz
+&lt;/Location&gt;
+</programlisting>
+        </example>
+
+<!--
+        <para>You can also specify relative URL to in repository authz
+          file as demonstrated in
+          <xref linkend="svn.serverconfig.httpd.authz.inrepo-authz.ex-2"/>.</para>
+-->
+        <para>Sie können auch einen relativen URL zur authz-Datei im
+          Projektarchiv angeben, wie in
+          <xref linkend="svn.serverconfig.httpd.authz.inrepo-authz.ex-2"/>
+          gezeigt.</para>
+
+        <example id="svn.serverconfig.httpd.authz.inrepo-authz.ex-2">
+<!--
+          <title>Using per repository in repo authz files</title>
+-->
+          <title>Verwendung von im Projektarchiv versionierten authz-Dateien pro Projektarchiv</title>
+          <programlisting>
+&lt;Location /repos&gt;
+  DAV svn
+  SVNParentPath /var/svn
+  AuthzSVNReposRelativeAccessFile ^/authz
+&lt;/Location&gt;
+</programlisting>
+        </example>
 
       </sect3>
 
@@ -8547,12 +8641,34 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
 <!--
               <para>Consult <replaceable>file-path</replaceable> for
                 access rules describing the permissions for paths in
-                Subversion repository.</para>
+                Subversion repository.  In a configuration
+                block for a Subversion repository or a colletion of repositories,
+                either this directive or
+                <literal>AuthzSVNReposRelativeAccessFile</literal> can be
+                present, but not both.</para>
 -->
               <para>Für Zugriffsregeln, die Rechte auf Pfaden im
                 Subversion-Projektarchiv beschreiben, soll in
-                <replaceable>file-path</replaceable> nachgesehen
-                werden.</para>
+                <replaceable>file-path</replaceable> nachgesehen werden. In
+                einem Konfigurations-Block für ein Subversion-Projektarchiv
+                oder eine Ansammlung von Projektarchiven kann entweder
+                diese Direktive oder
+                <literal>AuthzSVNReposRelativeAccessFile</literal>
+                verwendet werden, jedoch nicht beide.</para>
+
+<!--
+              <para>Beginning with Subversion 1.8,
+                <literal>AuthzSVNAccessFile</literal> accepts a URL to a file
+                stored inside a Subversion repository.  It is possible to store
+                the file in the same repository to which the access rules are
+                being applied or another repository.</para>
+-->
+              <para>Beginnend mit Subversion 1.8 akzeptiert
+                <literal>AuthzSVNAccessFile</literal> einen URL zu einer
+                innerhalb eines Subversion-Projektarchivs gespeicherten
+                Datei. Es ist möglich, die Datei im selben Projektarchiv
+                auf das die Zugriffsregeln angewendet werden zu speichern,
+                oder einem anderen Projektarchiv.</para>
 
             </listitem>
           </varlistentry>
@@ -8616,6 +8732,62 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                 unterbinden, die anonyme Benutzer durchführen dürfen.
                 Der Standardwert dieser Direktive ist
                 <literal>On</literal>.</para>
+
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><literal>AuthzSVNReposRelativeAccessFile
+              <replaceable>file-path</replaceable></literal></term>
+            <listitem>
+
+<!--
+              <para>Consult <replaceable>file-path</replaceable> for
+                access rules describing the permissions for paths in
+                Subversion repository.  Unlike
+                <literal>AuthzSVNAccessFile</literal>, the path specified
+                for <literal>AuthzSVNReposRelativeAccessFile</literal> is
+                relative from the /conf directory in the repository on
+                filesystem.  In other words, the <replaceable>file-path</replaceable>
+                specifies a per repository file that must by accessible by
+                the relative path for all repositories in a configuration block.
+                In a configuration block for a Subversion repository or a collection
+                of repositories either this directive or
+                <literal>AuthzSVNAccessFile</literal> can be present, but not both.
+                This option is available as of Subversion 1.7.</para>
+-->
+              <para>Für Zugriffsregeln, die die Rechte auf Pfaden im
+                Subversion-Projektarchiv beschreiben, soll unter
+                <replaceable>file-path</replaceable> nachgesehen werden.
+                Anders als bei <literal>AuthzSVNAccessFile</literal>, ist
+                der für <literal>AuthzSVNReposRelativeAccessFile</literal>
+                angegebene Pfad relativ zum
+                <filename>/conf</filename>-Verzeichnis im Projektarchiv auf
+                dem Dateisystem. Mit anderen Worten gibt
+                <replaceable>file-path</replaceable> eine Datei pro
+                Projektarchiv an, die über den relativen Pfad für alle
+                Projektarchive eines Konfigurations-Blocks zugänglich sein
+                muss. Im Konfigurations-Block eines
+                Subversion-Projektarchivs oder einer Gruppe von
+                Projektarchiven kann entweder diese Direktive oder
+                <literal>AuthzSVNAccessFile</literal> verwendet werden,
+                jedoch nicht beide.  Diese Option ist seit Subversion 1.7
+                verfügbar.</para>
+
+<!--
+              <para>Beginning with Subversion 1.8,
+                <literal>AuthzSVNAccessFile</literal> accepts a URL to a file
+                stored inside a Subversion repository.  It is possible to store
+                the file in the same repository to which the access rules are
+                being applied or another repository.</para>
+-->
+              <para>Beginnend mit Subversion 1.8 akzeptiert
+                <literal>AuthzSVNAccessFile</literal> einen URL auf eine
+                Datei, die innerhalb der Subversion-Projektarchivs
+                gespeichert ist. Es ist möglich, die Datei im selben
+                Projektarchiv zu speichern, auf das die Zugriffsregeln
+                angewendet werden oder in einem anderen
+                Projektarchiv.</para>
 
             </listitem>
           </varlistentry>
