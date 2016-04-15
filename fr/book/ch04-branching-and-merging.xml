@@ -1311,8 +1311,8 @@ Import initial du code dans trunk pour le projet calc.
         modifications faites dans l'arborescence
         <quote>ancestrale</quote> de création de ladite branche).
         <indexterm>
-			<primary>fusions</primary>
-			<secondary>automatiques</secondary>
+            <primary>fusions</primary>
+            <secondary>automatiques</secondary>
         </indexterm>Une fusion automatique est simplement une fusion
         pour laquelle vous ne fournissez que le minimum d'informations
         requis (c'est-à-dire une seule source et une copie de travail
@@ -1433,9 +1433,9 @@ $
         <para>
           <indexterm>
             <primary>mergeinfo</primary>
-		  </indexterm>
-		  <indexterm>
-			<primary>informations de fusion</primary>
+          </indexterm>
+          <indexterm>
+            <primary>informations de fusion</primary>
             <see>mergeinfo</see>
           </indexterm>Dans ce chapitre et en général (listes de
           diffusion de Subversion, articles sur le suivi de fusions,
@@ -2365,13 +2365,12 @@ Révision 379 propagée.
 -->
 
       <para>Votre copie de travail du tronc ne doit avoir aucune
-        modification locale, chemin déportés
-        (<foreignphrase>switched</foreignphrase> en anglais) et ne pas
-        comporter de mélange de révisions (voir <xref
-        linkend="svn.basic.in-action.mixedrevs" />). Bien que ce soient de
-        bonnes pratiques pour les fusions de toute façon, c'est
-        particulièrement <emphasis>obligatoire</emphasis> pour une fusion de
-        réintégration automatique.</para>
+        modification locale, aucun chemin qui ne pointe vers une autre
+        branche et ne pas comporter de mélange de révisions (voir
+        <xref linkend="svn.basic.in-action.mixedrevs" />). Bien que ce
+        soient de bonnes pratiques pour les fusions de toute façon,
+        c'est particulièrement <emphasis>obligatoire</emphasis> pour une
+        fusion de réintégration automatique.</para>
 
 <!--
       <para>Once you have a clean working copy of the trunk, you're
@@ -2521,12 +2520,13 @@ Révision 380 propagée.
         est <quote>absent</quote> en raison de l'extraction partielle
         sera ignoré, ce qui n'est <emphasis>probablement pas</emphasis>
         ce que vous recherchez&nbsp;!</para></footnote> sans révisions
-        mélangées, chemins déportés (<foreignphrase>switched</foreignphrase> en
-        anglais) ou modifications locales), elles ne fonctionneront pas en
-        combinaison avec la plupart des autres options de la sous-commande
-        <command>svn merge</command>. Vous obtiendrez une erreur si vous
-        utilisez n'importe laquelle des options non-globales autres que
-        celles-ci&nbsp;: <option>--accept</option>, <option>--dry-run</option>,
+        mélangées, sans chemins qui pointent vers d'autres branches ou
+        modifications locales), elles ne fonctionneront pas en
+        combinaison avec la plupart des autres options de la
+        sous-commande <command>svn merge</command>. Vous obtiendrez une
+        erreur si vous utilisez n'importe laquelle des options
+        non-globales autres que celles-ci&nbsp;:
+        <option>--accept</option>, <option>--dry-run</option>,
         <option>--diff3-cmd</option>, <option>--extensions</option>
         ou <option>--quiet</option>.</para>
 
@@ -3335,8 +3335,8 @@ $ svn status <!--
         working copy, and then commit the local modification to the
         repository.  All you need to do is to specify a
         <emphasis>reverse</emphasis> difference.  (You can do this by
-        specifying <option>- -revision 303:302</option>, or by an
-        equivalent <option>- -change -303</option>.)</para>
+        specifying <option>--revision 392:391</option>, or by an
+        equivalent <option>--change -392</option>.)</para>
 -->
       <para>Un usage très répandu de <command>svn merge</command>
         est le retour en arrière sur une modification qui a déjà
@@ -4471,8 +4471,8 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk my-working-copy
 
 $ svn merge -r 100:200 http://svn.example.com/repos/trunk-->
 $ svn merge http://svn.exemple.com/depot/branche1@150 \
-			 http://svn.exemple.com/depot/branche2@212 \
-			 ma-copie-de-travail
+             http://svn.exemple.com/depot/branche2@212 \
+             ma-copie-de-travail
 
 $ svn merge -r 100:200 http://svn.exemple.com/depot/trunk ma-copie-de-travail
 
@@ -5880,26 +5880,48 @@ A    truc.c
         <command>svn diff</command> comme la commande
         <command>svn merge</command>).</para>
 
+<!--
       <tip>
         <para>
         <indexterm>
           <primary>merge tracking</primary>
           <secondary>disabling</secondary>
         </indexterm>
-        The <option>--ignore-ancestry</option> option also disables
+        The <option>- -ignore-ancestry</option> option also disables
         <xref linkend="svn.branchmerge.basicmerging.mergetracking"/>.
         This means that <literal>svn:mergeinfo</literal> is not considered
         when <command>svn merge</command> is determining what revisions
         to merge, nor is <literal>svn:mergeinfo</literal> recorded to
         describe the merge.</para>
       </tip>
+-->
+      <tip>
+        <para>
+        <indexterm>
+          <primary>fusions</primary>
+          <secondary>suivi</secondary>
+          <tertiary>désactivation</tertiary>
+        </indexterm>
+          L'option <option>--ignore-ancestry</option> désactive le suivi
+          des fusions (voir <xref
+          linkend="svn.branchmerge.basicmerging.mergetracking"/>).
+          Das bedeutet, dass weder <literal>svn:mergeinfo</literal>
+          berücksichtigt wird, wenn <command>svn merge</command>
+          ermittelt, welche Revisionen zusammengeführt werden sollen,
+          noch <literal>svn:mergeinfo</literal> aufgezeichnet wird, um
+          die Zusammenführung zu beschreiben.</para>
+      </tip>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.advanced.moves">
+<!--
       <title>Merges and Moves</title>
+-->
+      <title>Fusions, copies et renommages</title>
 
+<!--
       <para>A common desire is to refactor source code, especially
         in Java-based software projects.  Files and directories are
         shuffled around and renamed, often causing great disruption
@@ -5907,13 +5929,30 @@ A    truc.c
         case to use a branch, doesn't it?  Just create a branch,
         shuffle things around, and then merge the branch back to the
         trunk, right?</para>
+-->
+      <para>Il arrive souvent qu'on veuille réorganiser le code source,
+        en particulier dans les projets logiciels en Java. Les fichiers
+        et les répertoires sont déplacés et renommés, causant souvent
+        de grandes perturbations pour tous ceux qui travaillent sur le
+        projet. Ceci semble être le cas idéal où utiliser une branche,
+        n'est-ce pas&nbsp;? Créer une branche, réorganiser les choses,
+        et ensuite fusionner la branche vers le tronc, non&nbsp;?</para>
 
+<!--
       <para>Alas, this scenario doesn't work so well right now and
         is considered one of Subversion's current weak spots.  The
         problem is that Subversion's <command>svn merge</command>
         command isn't as robust as it should be, particularly when
         dealing with copy and move operations.</para>
+-->
+      <para>Hélas, ce scénario ne fonctionne pas si bien pour le
+        moment et est même considéré comme l'une des faiblesses de
+        Subversion. Le problème est que la commande
+        <command>svn update</command> de Subversion n'est pas aussi
+        robuste qu'elle le devrait, en particulier en ce qui
+        concerne les opérations de copies et de déplacements.</para>
 
+<!--
       <para>When you use <command>svn copy</command> to duplicate a
         file, the repository remembers where the new file came from,
         but it fails to transmit that information to the client which
@@ -5928,29 +5967,61 @@ A    truc.c
         move</command> command is nothing more than an aggregation
         of <command>svn copy</command> and <command>svn
         delete</command>.</para>
+-->
+      <para>Quand vous utilisez <command>svn copy</command> pour
+        dupliquer un fichier, le dépôt se souvient d'où venait le
+        nouveau fichier, mais il ne transmet pas cette information
+        au client qui lance <command>svn update</command> ou
+        <command>svn merge</command>. Au lieu de dire au client
+        <quote>Copie ce fichier que tu as déjà vers ce nouvel
+        emplacement</quote>, il envoie un fichier entièrement nouveau.
+        Ceci peut engendrer des problèmes, notamment des conflits
+        d'arborescences dans le cas de renommage de fichiers, pour ce
+        qui concerne la nouvelle copie et la suppression de l'ancien
+        emplacement. Un fait peu connu à propos de Subversion est qu'il
+        lui manque de <quote>vrais renommages</quote> &mdash; la
+        commande <command>svn move</command> n'est rien de plus que
+        l'agrégation de <command>svn copy</command> et
+        <command>svn delete</command>.</para>
 
+<!--
       <para>For example, suppose that you want to make some changes on
         your private branch <filename>/calc/branch/my-calc-branch
         </filename>.  First you perform an automatic sync merge with
         <filename>/calc/trunk</filename> and commit that in r470:</para>
+-->
+      <para>Par exemple, supposons que vous travaillez sur votre branche
+        privée <filename>/calc/branches/ma-branche-calc</filename>.
+        D'abord, vous effectuez une fusion automatique de
+        synchronisation avec <filename>/calc/trunk</filename> et vous la
+        propagez dans r470&nbsp;:</para>
 
       <informalexample>
         <screen>
 $ cd calc/trunk
 
-$ svn merge ^/calc/trunk
---- Merging differences between repository URLs into '.':
+$ svn merge ^/calc/trunk <!--
+- - - Merging differences between repository URLs into '.':
+-->
+--- Fusion des différences des URLs du dépôt vers '.' :
 U    doc/INSTALL
 A    FAQ
-U    src/main.c
+U    src/main.c<!--
 U    src/button.c
 U    src/integer.c
 U    Makefile
 U    README
  U   .
---- Recording mergeinfo for merge between repository URLs into '.':
+- - - Recording mergeinfo for merge between repository URLs into '.':
+-->
+U    src/bouton.c
+U    src/entier.c
+U    Makefile
+U    LISEZMOI
  U   .
-
+-- Stockage des informations de fusion (mergeinfo) des URLs du dépôt dans '.' :
+ U   .
+<!--
 $ svn ci -m "Sync all changes from ^/calc/trunk through r469."
 Sending        .
 Sending        Makefile
@@ -5962,9 +6033,21 @@ Sending        src/button.c
 Sending        src/integer.c
 Transmitting file data ....
 Committed revision 470.
+-->
+$ svn ci -m "Synchronisation des changements de ^/calc/trunk jusqu'à r469."
+Envoi         .
+Envoi         Makefile
+Envoi         LISEZMOI
+Envoi         FAQ
+Envoi         doc/INSTALL
+Envoi         src/main.c
+Envoi         src/bouton.c
+Envoi         src/entier.c
+Transmission des données ....
+Révision 470 propagée.
 </screen>
       </informalexample>
-
+<!--
       <para>Then you rename <filename>integer.c</filename> to <filename>
         whole.c</filename> in r471 and then make some edits to the same
         file in r473.  Effectively you've created a new file in your branch
@@ -5972,82 +6055,152 @@ Committed revision 470.
         the original file.  Meanwhile, back on <filename>/calc/trunk
         </filename>, Sally has committed some improvements of her own to
         <filename>integer.c</filename> in r472:</para>
+-->
+      <para>Puis vous renommez <filename>entier.c</filename>
+        en <filename>tout.c</filename> dans r471 et vous effectuez des
+        modifications dans ce même fichier dans r473. Concrètement, vous
+        avez créé un nouveau fichier dans votre branche (c'est une copie
+        du fichier original avec quelques modifications) et vous avez
+        effacé le fichier original. Pendant ce temps, sur
+        <filename>/calc/trunk</filename>, Sally a propagé des
+        améliorations de son cru au fichier
+        <filename>entier.c</filename> lors de la r472&nbsp;:</para>
 
       <informalexample>
         <screen>
 $ svn log -v -r472 ^/calc/trunk
-------------------------------------------------------------------------
-r472 | sally | 2013-02-26 07:05:18 -0500 (Tue, 26 Feb 2013) | 1 line
+------------------------------------------------------------------------<!--
+r472 | sally | 2013-02-26 07:05:18 -0500 (Tue, 26 fév. 2013) | 1 line
 Changed paths:
    M /calc/trunk/src/integer.c
 
-Trunk work on integer.c.
+Trunk work on integer.c.-->
+r472 | sally | 2013-02-26 07:05:18 -0500 (dim. 26 fév. 2013) | 1 ligne
+Chemins modifiés :
+   M /calc/trunk/src/entier.c
+
+Travail d'amélioration de entier.c sur le tronc.
 ------------------------------------------------------------------------
 </screen>
       </informalexample>
 
+<!--
       <para>Now you decide to merge your branch back to the trunk.
         How will Subversion combine the rename and edits you made
         with Sally's edits?</para>
+-->
+      <para>C'est alors que vous décidez de fusionner votre branche vers
+        le tronc. Comment Subversion combine-t-il le renommage et les
+        modifications que vous avez faits avec les modifications de
+        Sally&nbsp;?</para>
 
       <informalexample>
-        <screen>
+        <screen><!--
 $ svn merge ^/calc/branches/my-calc-branch
---- Merging differences between repository URLs into '.':
+- - Merging differences between repository URLs into '.':
    C src/integer.c
  U   src/real.c
 A    src/whole.c
---- Recording mergeinfo for merge between repository URLs into '.':
- U   .
+- - Recording mergeinfo for merge between repository URLs into '.':-->
+$ svn merge ^/calc/branches/ma-branche-calc
+--- Fusion des différences des URLs du dépôt dans '.' :
+   C src/entier.c
+ U   src/reel.c
+A    src/tout.c
+--- Stockage des informations de fusion (mergeinfo) des URLs du dépôt dans '.' :
+ U   .<!--
 Summary of conflicts:
-  Tree conflicts: 1
+  Tree conflicts: 1-->
+Résumé des conflits:
+  conflits d'arborescences : 1
 
 $ svn st
- M      .
+ M      .<!--
       C src/integer.c
       >   local file edit, incoming file delete upon merge
- M      src/real.c
-A  +    src/whole.c
+M      src/real.c
+A  +    src/whole.c-->
+      C src/entier.c
+      >   local file edit, incoming file delete upon merge
+ M      src/reel.c
+A  +    src/tout.c<!--
 Summary of conflicts:
-  Tree conflicts: 1
+  Tree conflicts: 1-->
+Résumé des conflits:
+  conflits d'arborescences : 1
 </screen>
       </informalexample>
 
+<!--
       <para>The answer is that Subversion <emphasis>won't</emphasis>
         combine those changes, but rather raises a tree conflict<footnote>
         <para>If Sally hadn't made her change in r472, then Subversion would
         notice that <filename>integer.c</filename> in the
         target working copy is identical to <filename>integer.c</filename>
         in the left-side of the merge and would allow your rename to
-        succeed without a tree conflict:</para>
+        succeed without a tree conflict:</para>-->
+      <para>La réponse est que Subversion <emphasis>ne combinera
+        pas</emphasis> les modifications, mais générera un conflit
+        d'arborescences<footnote><para>Si Sally n'avait pas propagé ses
+        modifications dans r472, alors Subversion aurait remarqué que
+        <filename>entier.c</filename> dans la copie de travail cible
+        était identique à <filename>entier.c</filename> du côté gauche
+        de la fusion et aurait permis le succès de votre renommage sans
+        conflit d'arborescence&nbsp;:</para>
         <informalexample>
-          <screen>
+          <screen><!--
 $ svn merge ^/calc/branches/my-calc-branch
---- Merging differences between repository URLs into '.':
+- - Merging differences between repository URLs into '.':
  U   src/real.c
 A    src/whole.c
 D    src/integer.c
---- Recording mergeinfo for merge between repository URLs into '.':
+- - Recording mergeinfo for merge between repository URLs into '.':-->
+$ svn merge ^/calc/branches/ma-branche-calc
+--- Fusion des différences entre les URLs du dépôt dans '.' :
+ U   src/reel.c
+A    src/tout.c
+D    src/entier.c
+--- Stockage des informations de fusion (mergeinfo) des URLs du dépôt dans '.' :
  U   .
-</screen>
+</screen><!--
       </informalexample></footnote>because it needs your help
         to figure out what part of your changes and what part of Sally's
         changes should ultimately end up in <filename>whole.c</filename>
-        or even if the rename should take place at all!</para>
+        or even if the rename should take place at all!</para>-->
+        </informalexample></footnote>parce qu'il a besoin de votre aide
+        pour déterminer quelle part de vos modifications et quelle part
+        des modifications de Sally doivent finalement se retrouver dans
+        <filename>tout.c</filename>,ou même si le renommage a tout
+        simplement lieu d'être&nbsp;!</para>
 
+<!--
       <para>You will need to resolve this tree conflict before committing
         the merge and this may require some manual intervention on your
         part, see <xref linkend="svn.tour.treeconflicts"/>.  The moral of
         this story is that until Subversion improves, be careful about
         merging copies and renames from one branch to another and when you
         do, be prepared for some manual resolution.</para>
+-->
+      <para>Vous devrez résoudre le conflit d'arborescences avant de
+        pouvoir propager la fusion, ce qui requiert un minimum
+        d'intervention manuelle de votre part, voir <xref
+        linkend="svn.tour.treeconflicts"/>. La morale de cette histoire,
+        c'est que tant que Subversion ne se sera pas amélioré, soyez
+        vigilant lors des fusions avec copies et renommages d'une
+        branche vers une autre et, lorsque vous le faites, préparez-vous
+        à effectuer des résolutions manuelles.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.advanced.pre1.5clients">
+<!--
       <title>Blocking Merge Tracking Unaware Clients</title>
+-->
+      <title>Blocage des clients qui ne prennent pas en compte les
+        fusions</title>
 
+<!--
       <para>If you've just upgraded your server to Subversion 1.5 or
         later, there's a risk that pre-1.5 Subversion
         clients can cause problems with
@@ -6062,7 +6215,23 @@ D    src/integer.c
         when <quote>merge-aware</quote> clients attempt automatic
         merging, they're likely to run into all sorts of conflicts
         resulting from repeated merges.</para>
+-->
+      <para>Si vous venez juste de mettre à niveau votre serveur Subversion
+        à la version 1.5 ou plus, il existe un risque significatif que
+        les clients Subversion pré-1.5 sèment la pagaille dans votre
+        suivi automatique des fusions. Pourquoi&nbsp;? Quand un client
+        Subversion pré-1.5 exécute <command>svn merge</command>, il ne
+        modifie pas du tout la valeur de la propriété
+        <literal>svn:mergeinfo</literal>. La propagation qui s'ensuit,
+        bien qu'elle soit le résultat d'une fusion, n'envoie donc
+        aucune indication au dépôt au sujet des modifications
+        dupliquées &mdash; ces informations sont perdues. Par la
+        suite, lorsque des clients <quote>qui prennent en compte les
+        fusions</quote> tentent d'effectuer une fusion automatique,
+        ils rencontreront probablement toutes sortes de conflits
+        résultant des fusions répétées.</para>
 
+<!--
       <para>If you and your team are relying on the merge-tracking
         features of Subversion, you may want to configure your
         repository to prevent older clients from committing changes.
@@ -6075,7 +6244,21 @@ D    src/integer.c
         deny the commit.
         <xref linkend="svn.branchmerge.advanced.hook-ex1" /> gives an
         example of such a hook script:</para>
+-->
+      <para>Si votre équipe et vous dépendez des fonctionnalités de
+        suivi des fusions de Subversion, vous voudrez peut-être
+        configurer votre dépôt pour qu'il empêche les anciens clients
+        de propager des modifications. La méthode la plus simple est
+        d'examiner le paramètre <quote>capabilities</quote> dans la
+        procédure automatique de début de propagation. Si le client
+        indique être capable de gérer les <literal>mergeinfo</literal>,
+        la procédure automatique peut l'autoriser à commencer la
+        propagation. Si le client n'indique pas en être capable, la
+        procédure automatique doit lui refuser la propagation.
+        <xref linkend="svn.branchmerge.advanced.hook-ex1" /> donne un
+        exemple d'une telle procédure automatique.</para>
 
+<!--
       <example id="svn.branchmerge.advanced.hook-ex1">
         <title>Merge-tracking gatekeeper start-commit hook script</title>
 
@@ -6085,7 +6268,7 @@ import sys
 
 # The start-commit hook is invoked immediately after a Subversion txn is
 # created and populated with initial revprops in the process of doing a
-# commit. Subversion runs this hook by invoking a program (script, 
+# commit. Subversion runs this hook by invoking a program (script,
 # executable, binary, etc.) named 'start-commit' (for which this file
 # is a template) with the following ordered arguments:
 #
@@ -6104,21 +6287,68 @@ if "mergeinfo" not in capabilities:
 sys.exit(0)
 </programlisting>
       </example>
+-->
 
+      <example id="svn.branchmerge.advanced.hook-ex1">
+        <title>Procédure automatique de vérification des capacités de
+          suivi des fusions avant une propagation</title>
+
+        <programlisting>
+# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+import sys
+
+# La procédure automatique start-commit est appelée après la création
+# de la transaction Subversion et peuplée avec propriétés de révision
+#
+#
+# [1] CHEMIN-DEPOT  (le chemin du dépôt)
+# [2] UTILISATEUR   (l'utilisateur authentifié qui tente la propagation)
+# [3] CAPACITES     (liste des capacités qu'annonce le client,
+#                    les éléments sont séparés par des ':'
+#                    voir ci-dessous)
+# [4] NOM-TRANSACTION  (nom de la transaction qui vient d'être créée)
+
+capacites = sys.argv[3].split(':')
+if "mergeinfo" not in capacites:
+  sys.stderr.write("Les propagations depuis un client non capable de"
+                   "suivre les fusions sont interdites. "
+                   "Veuillez mettre à niveau votre client  à "
+                   "Subversion 1.5 ou plus récent.\n")
+  sys.exit(1)
+sys.exit(0)
+</programlisting>
+      </example>
+
+<!--
       <para>For more information about hook scripts, see
-        <xref linkend="svn.reposadmin.hooks" />.</para>
+        <xref linkend="svn.reposadmin.hooks"/>.</para>
+-->
+      <para>Pour plus d'informations sur les procédures automatiques,
+        reportez-vous au <xref linkend="svn.reposadmin.hooks"/>.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.advanced.finalword">
+<!--
       <title>The Final Word on Merge Tracking</title>
+-->
+      <title>Recommandations finales sur le suivi des fusions</title>
 
+<!--
       <para>The bottom line is that Subversion's merge-tracking
-        feature has an complex internal implementation, and
+        feature has a complex internal implementation, and
         the <literal>svn:mergeinfo</literal> property is the only
         window the user has into the machinery.</para>
+-->
+      <para>En fin de compte, la fonctionnalité de suivi des fusions
+        de Subversion possède une mécanique interne extrêmement
+        complexe et la propriété <literal>svn:mergeinfo</literal>
+        est la seule lorgnette dont l'utilisateur dispose pour
+        observer cette mécanique.</para>
 
+<!--
       <para>How and when mergeinfo is recorded by a merge can sometimes
         be difficult to understand.  Furthermore, the management of
         mergeinfo metadata has a whole set of taxonomies and behaviors
@@ -6128,7 +6358,18 @@ sys.exit(0)
         mechanisms of mergeinfo <quote>elision,</quote> and
         even <quote>inheritance</quote> from parent to child
         directories.</para>
+-->
+      <para>Quand et pourquoi les informations de fusions sont
+        enregistrées par une fusion peut parfois être difficile à
+        comprendre. De plus, la gestion des informations de fusions
+        comporte tout un ensemble de taxonomies et de règles, telles
+        que les informations <quote>explicites</quote> et celles
+        <quote>implicites</quote>, les révisions
+        <quote>effectives</quote> et les <quote>non-effectives</quote>,
+        le <quote>nettoyage</quote> et <quote>l'héritage</quote> d'un
+        dossier parent vers les dossiers enfants.</para>
 
+<!--
       <para>We've chosen to only briefly cover, if at all, these detailed
         topics for a couple of reasons.  First, the level of detail is
         overwhelming for a typical user.  Second, and more
@@ -6139,65 +6380,141 @@ sys.exit(0)
         paper posted at CollabNet's website: <ulink
         url="http://www.open.collab.net/community/subversion/articles/merge-info.html"
         />.</para>
+-->
+      <para>Nous avons choisi de ne pas couvrir en détail ces sujets
+        dans ce livre pour plusieurs raisons. Premièrement,
+        l'utilisateur moyen serait totalement submergé par le niveau
+        de détail disponible. Deuxièmement, et c'est le plus important,
+        nous estimons que l'utilisateur moyen <emphasis>ne doit
+        pas</emphasis> avoir à comprendre ces concepts&nbsp;; en tant
+        que détails d'implémentation, ils restent à l'arrière-plan.
+        Malgré tout, si vous appréciez ce genre de choses, vous en
+        trouverez une formidable vue d'ensemble dans un article posté
+        sur le site internet de Collabnet&nbsp;: <ulink
+        url="http://www.collab.net/community/subversion/articles/merge-info.html"
+        />.</para>
 
+<!--
       <para>For now, if you want to steer clear of the complexities of
         merge tracking, we recommend that you follow these simple best
         practices:</para>
+-->
+      <para>Pour le moment, si vous voulez rester à l'écart de la
+        complexité du suivi de fusions, nous vous recommandons de vous
+        en tenir simplement aux bonnes pratiques suivantes&nbsp;:</para>
 
       <itemizedlist>
         <listitem>
+<!--
           <para>For short-term feature branches, follow the simple
             procedure described throughout
             <xref linkend="svn.branchmerge.basicmerging"/>.</para>
+-->
+          <para>Pour les branches fonctionnelles à courte durée de vie,
+            suivez la procédure simple décrite dans <xref
+            linkend="svn.branchmerge.basicmerging"/>.</para>
         </listitem>
         <listitem>
+<!--
           <para>Avoid subtree merges and subtree mergeinfo. Perform
             merges only on the root of your branches, not on
             subdirectories or files (see <xref
             linkend="svn.branchmerge.basicmerging.stayinsync.subtree"/>)
             .</para>
+-->
+          <para>Evitez les fusions sous les sous-arborescences et de
+            générer des informations de fusions sur les sous-dossiers.
+            Ne pratiquez de fusions que sur la racine de la branche, pas
+            sur des sous-répertoires. <xref
+            linkend="svn.branchmerge.basicmerging.stayinsync.subtree"/>).
+          </para>
         </listitem>
         <listitem>
+<!--
           <para>Don't ever edit the <literal>svn:mergeinfo</literal>
             property directly; use <command>svn
-            merge</command> with the <option>--record-only</option> option
+            merge</command> with the <option>- -record-only</option> option
             to effect a desired change to the metadata (as demonstrated in
             <xref linkend="svn.branchmerge.advanced.blockchanges"/>).</para>
+-->
+          <para>Ne modifiez jamais la propriété
+            <literal>svn:mergeinfo</literal> directement&nbsp;;
+            utilisez <command>svn merge</command> avec l'option
+            <option>--record-only</option> pour appliquer une
+            modification désirée à cette métadonnée (comme expliqué
+            dans <xref
+            linkend="svn.branchmerge.advanced.blockchanges"/>).</para>
         </listitem>
         <listitem>
+<!--
           <para>Your merge target should be a working copy which
             represents the root of a <emphasis>complete</emphasis> tree
             representing a <emphasis>single</emphasis> location in the
             repository at a single point in time:
+-->
+          <para>Votre cible de fusion devrait toujours être une copie
+            de travail qui est la racine d'une arborescence
+            <emphasis>complète</emphasis> représentant une
+            <emphasis>seule</emphasis> position dans le dépôt à un
+            moment bien précis dans le temps&nbsp;:
             <itemizedlist>
               <listitem>
+<!--
                 <para>Update before you merge!  Don't use the <option>
-                --allow-mixed-revisions</option> option to merge into
+                - -allow-mixed-revisions</option> option to merge into
                 mixed-revision working copies.</para>
+-->
+                <para>mettez à jour avant de fusionner&nbsp;! N'utilisez
+                  pas l'option <option>--allow-mixed-revisions</option>
+                  pour fusionner vers des copies de travail à révisions
+                  mélangées.</para>
               </listitem>
               <listitem>
+<!--
                 <para>Don't merge to targets with <quote>switched</quote>
                 subdirectories (as described next in
                 <xref linkend="svn.branchmerge.switchwc"/>).</para>
+-->
+                <para>ne fusionnez pas vers des cibles dont des dossiers
+                  ont pointent vers d'autres branches (tels que décrits
+                  dans <xref linkend="svn.branchmerge.switchwc"/>).</para>
               </listitem>
               <listitem>
+<!--
                 <para>Avoid merges to targets with sparse directories.
                   Likewise, don't merge to depths other than
+                  <option>- -depth=infinity</option></para>
+-->
+                <para>évitez les fusions vers des cibles avec des
+                  répertoires clairsemés. De la même manières, ne
+                  fusionnez pas pour des profondeurs autres que
                   <option>--depth=infinity</option></para>
               </listitem>
               <listitem>
+<!--
                 <para>Be sure you have read access to all of the merge
                   source and read/write access to all of the merge
                   target.</para>
+-->
+                <para>Assurez-vous de toujours avoir l'accès complet en
+                  lecture à toutes vos sources de fusion et l'accès en
+                  lecture/écriture à l'ensemble de la cible de la
+                  fusion.</para>
               </listitem>
             </itemizedlist>
           </para>
         </listitem>
       </itemizedlist>
 
+<!--
       <para>Of course sometimes you may need to violate some of these
         best practices.  Don't worry if you need to, just be sure you
         understand the ramifications of doing so.</para>
+-->
+      <para>Bien sûr, vous pouvez être amené parfois à devoir violer
+        certaines bonnes pratiques. Dans ce cas, ne vous inquietez pas,
+        soyez seulement conscient des conséquences que cela
+        engendre.</para>
 
     </sect2>
 
@@ -6207,8 +6524,12 @@ sys.exit(0)
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.branchmerge.switchwc">
+<!--
     <title>Traversing Branches</title>
+-->
+    <title>Parcours des branches</title>
 
+<!--
     <para>The <command>svn switch</command> command transforms an
       existing working copy to reflect a different branch.  While this
       command isn't strictly necessary for working with branches, it
@@ -6218,12 +6539,24 @@ sys.exit(0)
       simply ask Subversion to change your working copy of
       <filename>/calc/trunk</filename> to mirror the new branch
       location:</para>
+-->
+    <para>La commande <command>svn switch</command> transforme une
+      copie de travail existante de telle sorte qu'elle pointe vers
+      une branche différente. Bien que la connaissance de cette
+      commande ne soit pas absolument nécessaire pour travailler avec
+      des branches, elle fournit un raccourci utile. Dans l'un de nos
+      exemples précédents, après avoir créé votre branche privée, vous
+      avez extrait une toute nouvelle copie de travail du nouveau
+      répertoire du dépôt. À la place, vous pouvez simplement
+      demander à Subversion de modifier votre copie de travail de
+      <filename>/calc/trunk</filename> pour qu'elle pointe vers
+      l'emplacement de la nouvelle branche&nbsp;:</para>
 
     <informalexample>
       <screen>
 $ cd calc
 
-$ svn info | grep URL
+$ svn info | grep URL<!--
 URL: http://svn.example.com/repos/calc/trunk
 
 $ svn switch ^/calc/branches/my-calc-branch
@@ -6231,12 +6564,22 @@ U    integer.c
 U    button.c
 U    Makefile
 Updated to revision 341.
+-->
+URL: http://svn.exemple.com/depot/calc/trunk
 
-$ svn info | grep URL
-URL: http://svn.example.com/repos/calc/branches/my-calc-branch
+$ svn switch ^/calc/branches/ma-branche-calc
+U   entier.c
+U   bouton.c
+U   Makefile
+Actualisé à la révision 341.
+
+$ svn info | grep URL<!--
+URL: http://svn.example.com/repos/calc/branches/my-calc-branch-->
+URL: http://svn.exemple.com/depot/calc/branches/ma-branche-calc
 </screen>
     </informalexample>
 
+<!--
     <para><quote>Switching</quote> a working copy that has no local
       modifications to a different branch results in the working copy
       looking just as it would if you'd done a fresh checkout of the
@@ -6245,28 +6588,61 @@ URL: http://svn.example.com/repos/calc/branches/my-calc-branch
       degree.  The server sends only the minimal set of changes
       necessary to make your working copy reflect the branch
       directory.</para>
+-->
+    <para><quote>Faire pointer</quote> (ou <quote>déporter</quote>)
+      une copie de travail qui n'a pas de modifications locales vers
+      une branche différente a pour résultat que la copie de travail
+      a exactement le même aspect que si vous aviez effectué une
+      extraction brute du répertoire. C'est en général plus efficace
+      d'utiliser cette commande, car les différences entre les
+      branches sont souvent minimes. Le serveur n'envoie que le
+      minimum de modifications nécessaire pour faire pointer votre
+      copie de travail vers le répertoire de la branche.</para>
 
+<!--
     <para>The <command>svn switch</command> command also takes a
-      <option>--revision</option> (<option>-r</option>) option, so you
+      <option>- -revision</option> (<option>-r</option>) option, so you
       need not always move your working copy to the
       <literal>HEAD</literal> of the branch.</para>
+-->
+    <para>La commande <command>svn switch</command> accepte également
+      l'option <option>--revision</option> (<option>-r</option>), pour
+      que que vous ne soyez pas obligé de faire pointer votre copie de
+      travail vers la révision <literal>HEAD</literal> de la
+      branche.</para>
 
+<!--
     <para>Of course, most projects are more complicated than our
       <filename>calc</filename> example, and contain multiple
       subdirectories.  Subversion users often follow a specific
       algorithm when using branches:</para>
+-->
+    <para>Bien sûr, la plupart des projets sont plus compliqués que
+      notre exemple <filename>calc</filename> et contiennent de
+      multiples sous-dossiers. Les utilisateurs de Subversion suivent
+      souvent un algorithme précis quand ils utilisent des
+      branches&nbsp;:</para>
 
     <orderedlist>
       <listitem>
+<!--
         <para>Copy the project's entire <quote>trunk</quote> to a new
           branch directory.</para>
-      </listitem>
-      <listitem>
+-->
+        <para>Copier le <quote>tronc</quote> entier du projet vers
+            une nouvelle branche&nbsp;;</para>
+        </listitem>
+        <listitem>
+<!--
         <para>Switch only <emphasis>part</emphasis> of the trunk
           working copy to mirror the branch.</para>
-      </listitem>
-    </orderedlist>
+-->
+        <para>Ne déporter qu'<emphasis>une partie</emphasis> de la copie
+          de travail du tronc pour qu'elle pointe sur la branche.</para>
+        </listitem>
+      </orderedlist>
 
+<!--
     <para>In other words, if a user knows that the branch work needs
       to happen on only a specific subdirectory, she uses
       <command>svn switch</command> to move only that subdirectory to
@@ -6279,23 +6655,57 @@ URL: http://svn.example.com/repos/calc/branches/my-calc-branch
       working copy</quote>&mdash;not only can working copies contain a
       mixture of working revisions, but they can also contain a
       mixture of repository locations as well.</para>
+-->
+    <para>En d'autres termes, si un utilisateur sait que le travail sur
+      la branche ne doit avoir lieu que sur un sous-dossier donné, il
+      utilise <command>svn switch</command> pour ne faire pointer que ce
+      sous-dossier vers la branche (ou parfois des utilisateurs ne vont
+      faire pointer qu'un unique fichier de travail vers la
+      branche&nbsp;!). De cette façon, l'utilisateur peut continuer à
+      recevoir les mises à jour normales du <quote>tronc</quote> vers la
+      plus grande partie de sa copie de travail, mais les portions
+      déportées ne seront pas touchées (à moins que quelqu'un ne propage
+      une modification à sa branche). Cette fonctionnalité ajoute une
+      dimension complètement nouvelle au concept de <quote>copie de
+      travail mixte</quote>&nbsp;: les copies de travail peuvent non
+      seulement contenir un mélange de révisions de travail, mais elles
+      peuvent également contenir un mélange d'emplacements du
+      dépôt.</para>
 
     <tip>
+<!--
       <para>Typically switched subdirectories share common ancestry with
         the location which is switched <quote>away</quote> from.  However
         <command>svn switch</command> can switch a subdirectory to mirror
         a repository location which it shares no common ancestry with.
         To do this you need to use the
-        <option>--ignore-ancestry</option> option.
+        <option>- -ignore-ancestry</option> option.
     </para>
+-->
+      <para>Typiquement, les sous-dossiers déportés partagent un ancêtre
+        commun avec l'emplacement d'où ils ont été déportés. Cependant,
+        <command>svn switch</command> peut déporter un sous-dossier pour
+        refléter un emplacement du dépôt qui ne partage aucun ancêtre
+        avec ce sous-dossier. Pour ce faire, vous devez utiliser
+        l'option <option>--ignore-ancestry</option>.</para>
     </tip>
 
+<!--
     <para>If your working copy contains a number of switched subtrees
       from different repository locations, it continues to function as
       normal.  When you update, you'll receive patches to each subtree
       as appropriate.  When you commit, your local changes are still
       applied as a single, atomic change to the repository.</para>
+-->
+    <para>Si votre copie de travail contient un certain nombre de
+      sous-arborescences pointant vers des emplacements variés du dépôt,
+      elle continue à fonctionner normalement. Quand vous la mettez à
+      jour, vous recevez comme il se doit les correctifs pour chaque
+      sous-arborescence. Quand vous effectuez une propagation, vos
+      modifications locales s'appliquent toujours au dépôt en tant
+      qu'une unique modification atomique.</para>
 
+<!--
     <para>Note that while it's okay for your working copy to reflect a
       mixture of repository locations, these locations must all be
       within the <emphasis>same</emphasis> repository.  Subversion
@@ -6307,8 +6717,26 @@ URL: http://svn.example.com/repos/calc/branches/my-calc-branch
       See <xref linkend="svn.ref.svn.c.relocate"/> in
       <xref linkend="svn.ref.svn"/> for more information and an
       example.</para></footnote></para>
+-->
+    <para>Remarquez que, bien qu'il soit possible pour votre copie de
+      travail de pointer vers une variété d'emplacements du dépôt,
+      ces emplacements doivent tous faire partie du
+      <emphasis>même</emphasis> dépôt. Les dépôts Subversion ne sont
+      pas encore capables de communiquer entre eux&nbsp;; cette
+      fonctionnalité est prévue à l'avenir
+      <footnote>
+        <para>Vous <emphasis>pouvez</emphasis> cependant utiliser
+          <command>svn relocate</command> si l'URL de votre serveur
+          change et si vous ne voulez pas abandonner votre copie de
+          travail existante. Reportez-vous à
+          <xref linkend="svn.ref.svn.c.relocate"/> dans
+          <xref linkend="svn.ref.svn"/> pour des détails et des
+          exemples.</para>
+      </footnote>.
+    </para>
 
     <tip>
+<!--
       <para>Administrators who need to change the URL of a repository
         which is accessed via HTTP are encouraged to add to
         their <filename>httpd.conf</filename> configuration file a
@@ -6320,16 +6748,40 @@ URL: http://svn.example.com/repos/calc/branches/my-calc-branch
         Subversion 1.7 clients will go a step further,
         automatically relocating the working copy to the new
         URL.</para>
+-->
+      <para>Les administrateurs qui doivent modifier l'URL d'un dépôt
+        accessible <foreignphrase>via</foreignphrase> HTTP sont
+        encouragés à ajouter à leur fichier de configuration
+        <filename>httpd.conf</filename> une redirection permanente de
+        l'ancienne URL vers la nouvelle (à l'aide de la directive
+        <literal>RedirectPermanent</literal>). Les clients Subversion
+        afficheront généralement la nouvelle URL du dépôt dans les
+        messages d'erreur produits lorsque l'utilisateur essayera de
+        travailler avec une copie de travail qui pointe vers l'ancienne
+        URL. Depuis Subversion 1.7, les clients font un pas
+        supplémentaire en faisant pointer automatiquement la copie de
+        travail vers la nouvelle URL.</para>
     </tip>
 
     <sidebar>
+<!--
       <title>Switches and Updates</title>
+-->
+      <title>Déports et mises à jour</title>
 
+<!--
       <para>Have you noticed that the output of <command>svn
         switch</command> and <command>svn update</command> looks the
         same?  The switch command is actually a superset of the update
         command.</para>
+-->
+      <para>Avez-vous remarqué que les sorties des commandes
+        <command>svn switch</command> et <command>svn update</command>
+        se ressemblent&nbsp;? La commande <command>svn switch</command>
+        est en fait une généralisation de la commande
+        <command>svn update</command>.</para>
 
+<!--
       <para>When you run <command>svn update</command>, you're asking
         the repository to compare two trees.  The repository does so,
         and then sends a description of the differences back to the
@@ -6337,7 +6789,16 @@ URL: http://svn.example.com/repos/calc/branches/my-calc-branch
         switch</command> and <command>svn update</command> is that the
         latter command always compares two identical repository
         paths.</para>
+-->
+      <para>Quand vous lancez <command>svn update</command>, vous
+        demandez au dépôt de comparer deux arborescences. C'est ce qu'il
+        fait, puis il renvoie au client le détail des différences entre
+        les deux. La seule différence entre <command>svn
+        switch</command> et <command>svn update</command> est que cette
+        dernière commande compare toujours deux chemins identiques du
+        dépôt.</para>
 
+<!--
       <para>That is, if your working copy is a mirror of
         <filename>/calc/trunk</filename>, <command>svn
         update</command> will automatically compare your working copy
@@ -6349,40 +6810,90 @@ URL: http://svn.example.com/repos/calc/branches/my-calc-branch
         <filename>/calc/trunk</filename> to some
         <emphasis>other</emphasis> branch directory in the
         <literal>HEAD</literal> revision.</para>
+-->
+      <para>C'est-à-dire que si votre copie de travail pointe vers
+        <filename>/calc/trunk</filename>, <command>svn update</command>
+        compare automatiquement votre copie de travail de
+        <filename>/calc/trunk</filename> au
+        <filename>/calc/trunk</filename> de la révision
+        <literal>HEAD</literal>. Si vous faites pointer votre copie de
+        travail vers une branche, <command>svn switch</command>
+        comparera votre copie de travail de
+        <filename>/calc/trunk</filename> au répertoire d'une
+        <emphasis>autre</emphasis> branche de la révision
+        <literal>HEAD</literal>.</para>
 
+<!--
       <para>In other words, an update moves your working copy through
         time.  A switch moves your working copy through time
         <emphasis>and</emphasis> space.</para>
+-->
+      <para>En d'autres termes, <command>svn update</command> déplace
+        votre copie de travail à travers le temps.
+        <command>svn switch</command> déplace votre copie de travail
+        à travers le temps <emphasis>et</emphasis> l'espace.</para>
     </sidebar>
 
+<!--
     <para>Because <command>svn switch</command> is essentially a
       variant of <command>svn update</command>, it shares the same
       behaviors; any local modifications in your working copy are
       preserved when new data arrives from the repository.</para>
+-->
+    <para>Parce que <command>svn switch</command> est essentiellement
+      une variante de <command>svn update</command>, elle se comporte
+      de la même manière&nbsp;; toute modification locale présente
+      dans votre copie de travail est préservée lorsque de nouvelles
+      données arrivent en provenance du dépôt.</para>
 
     <tip>
+<!--
       <para>Have you ever found yourself making some complex edits (in
         your <filename>/trunk</filename> working copy) and suddenly
         realized, <quote>Hey, these changes ought to be in their own
         branch?</quote> There is a great two step technique to do
         this:</para>
+-->
+        <para>Vous-êtes vous déjà trouvés dans une situation où vous
+          effectuez des modifications complexes (dans votre copie de
+          travail de <filename>/trunk</filename>) et réalisez
+          soudainement&nbsp;:<quote>Mais, ces modifications ne
+          devraient-elles pas être dans leur propre
+          branche&nbsp;?</quote> Une excellente technique pour accomplir
+          ceci peut être résumée en deux étapes&nbsp;:</para>
 
       <informalexample>
-        <screen>
+        <screen><!--
 $ svn copy http://svn.example.com/repos/calc/trunk \
            http://svn.example.com/repos/calc/branches/newbranch \
            -m "Create branch 'newbranch'."
 Committed revision 353.
 $ svn switch ^/calc/branches/newbranch
 At revision 353.
+-->
+$ svn copy http://svn.exemple.com/depot/calc/trunk \
+           http://svn.exemple.com/depot/calc/branches/nouvelle-branche \
+      -m "Création de la branche 'nouvelle-branche'."
+Révision 353 propagée.
+$ svn switch http://svn.exemple.com/depot/calc/branches/nouvelle-branche
+À la révision 353.
 </screen>
       </informalexample>
 
+<!--
       <para>The <command>svn switch</command> command, like
         <command>svn update</command>, preserves your local edits.  At
         this point, your working copy is now a reflection of the newly
         created branch, and your next <command>svn commit</command>
         invocation will send your changes there.</para>
+    </tip>
+-->
+    <para>La commande <command>svn switch</command>, à l'instar de
+      <command>svn update</command>, préserve vos modifications locales.
+      Désormais, votre copie de travail pointe vers la branche
+      nouvellement créée et la prochaine fois que vous lancerez
+      <command>svn commit</command> vos modifications y seront
+      envoyées.</para>
     </tip>
 
   </sect1>
@@ -6392,44 +6903,86 @@ At revision 353.
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.branchmerge.tags">
+<!--
     <title>Tags</title>
+-->
+    <title>Étiquettes</title>
 
     <para>
       <indexterm>
+<!--
         <primary>tags</primary>
+-->
+        <primary>étiquettes</primary>
       </indexterm>
+<!--
       Another common version control concept is a tag.  A tag is
       just a <quote>snapshot</quote> of a project in time.  In
       Subversion, this idea already seems to be everywhere.  Each
       repository revision is exactly that&mdash;a snapshot of the
       filesystem after each commit.</para>
+-->
+      Un autre concept courant en gestion de versions est
+      l'<firstterm>étiquette</firstterm> (parfois appelée
+      <foreignphrase>tag</foreignphrase>).
+      Une étiquette n'est qu'un <quote>instantané</quote> d'un
+      projet à un moment donné. Dans Subversion, cette idée semble
+      être présente partout. Chaque révision du dépôt est exactement
+      cela&nbsp;: un instantané du système de fichiers pris après
+      chaque propagation.</para>
 
+<!--
     <para>However, people often want to give more human-friendly names
       to tags, such as <literal>release-1.0</literal>.  And they want
       to make snapshots of smaller subdirectories of the filesystem.
       After all, it's not so easy to remember that release 1.0 of a
       piece of software is a particular subdirectory of revision
       4822.</para>
+-->
+    <para>Cependant les gens veulent souvent donner des noms plus
+      conviviaux aux étiquettes, tel que
+      <literal>version-1.0</literal>. Et ils veulent prendre des
+      instantanés de sous-sections plus restreintes du système de
+      fichiers. Après tout, ce n'est pas si facile de se rappeler
+      que la version 1.0 d'un logiciel donné correspond à un
+      sous-dossier particulier de la révision 4822.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.tags.mksimple">
+<!--
       <title>Creating a Simple Tag</title>
+-->
+      <title>Création d'une étiquette simple</title>
 
+<!--
       <para>Once again, <command>svn copy</command> comes to the
         rescue.  If you want to create a snapshot of
         <filename>/calc/trunk</filename> exactly as it looks in the
         <literal>HEAD</literal> revision, make a copy of it:</para>
+-->
+      <para>Une fois encore, <command>svn copy</command> vient à la
+        rescousse. Si vous voulez créer un instantané de
+        <filename>/calc/trunk</filename> identique à ce qu'il est
+        dans la révision <literal>HEAD</literal>, faites-en
+        une copie&nbsp;:</para>
 
       <informalexample>
-        <screen>
+        <screen><!--
 $ svn copy http://svn.example.com/repos/calc/trunk \
            http://svn.example.com/repos/calc/tags/release-1.0 \
            -m "Tagging the 1.0 release of the 'calc' project."
 
 Committed revision 902.
+-->
+$ svn copy http://svn.exemple.com/depot/calc/trunk \
+           http://svn.exemple.com/depot/calc/tags/version-1.0 \
+      -m "Étiquetage de la version 1.0 du projet 'calc'."
+
+Révision 902 propagée.
 </screen>
       </informalexample>
 
+<!--
       <para>This example assumes that a
         <filename>/calc/tags</filename> directory already exists.  (If
         it doesn't, you can create it using <command>svn
@@ -6444,7 +6997,24 @@ Committed revision 902.
         <filename>/calc/trunk</filename> is exactly the snapshot you
         want, you can specify it by passing <option>-r 901</option> to
         the <command>svn copy</command> command.</para>
+-->
+      <para>Cet exemple présuppose qu'un répertoire
+        <filename>/calc/tags</filename> existe déjà (s'il n'existe
+        pas, vous pouvez le créer en utilisant
+        <command>svn mkdir</command>). Une fois la copie terminée,
+        le nouveau dossier <filename>version-1.0</filename> sera pour
+        toujours un instantané du dossier <filename>/trunk</filename>
+        tel qu'il était en révision <literal>HEAD</literal> au moment
+        où vous avez effectué la copie. Bien sûr, vous voudriez
+        peut-être être plus précis quant à quelle révision vous copiez,
+        au cas où quelqu'un d'autre aurait propagé des modifications
+        au projet pendant que vous regardiez ailleurs. Donc si vous
+        savez que la révision 901 de <filename>/calc/trunk</filename>
+        est exactement l'instantané que vous voulez, vous pouvez le
+        spécifier en passant <option>-r 901</option> à la commande
+        <command>svn copy</command>.</para>
 
+<!--
       <para>But wait a moment: isn't this tag creation procedure the
         same procedure we used to create a branch?  Yes, in fact, it
         is.  In Subversion, there's no difference between a tag and a
@@ -6455,7 +7025,22 @@ Committed revision 902.
         as long as nobody ever commits to the directory, it forever
         remains a snapshot.  If people start committing to it, it
         becomes a branch.</para>
+-->
+      <para>Mais attendez un moment&nbsp;: cette procédure de création
+        d'étiquette, n'est-ce pas la même procédure que nous avons
+        utilisé pour créer une branche&nbsp;? En fait, oui. Dans
+        Subversion, il n'y pas de différence entre une étiquette et
+        une branche. Toutes deux ne sont que des répertoires
+        ordinaires qui sont créés par copie. Comme pour les branches,
+        la seule raison qui fasse qu'un répertoire copié soit une
+        <quote>étiquette</quote> est que les
+        <emphasis>humains</emphasis> ont décidé de le traiter
+        de cette façon&nbsp;: aussi longtemps que personne
+        ne propage de modification à ce répertoire, il reste un
+        instantané. Si les gens commencent à y propager des choses,
+        il devient une branche.</para>
 
+<!--
       <para>If you are administering a repository, there are two
         approaches you can take to managing tags.  The first approach
         is <quote>hands off</quote>: as a matter of project policy,
@@ -6470,17 +7055,45 @@ Committed revision 902.
         commits a change to a tag directory, you can simply undo the
         change as discussed in the previous section.  This is version
         control, after all!</para>
+-->
+      <para>Si vous administrez un dépôt, il y a deux approches
+        possibles pour gérer les étiquettes. La première approche
+        est une politique de <quote>non-intervention</quote>&nbsp;:
+        en tant que convention définie pour le projet, vous décidez
+        où vos étiquettes sont placées et vous vous assurez que tous
+        les utilisateurs savent comment traiter les répertoires qu'ils
+        copient (c'est-à-dire que vous vous assurez qu'ils savent
+        qu'ils ne doivent rien y propager). La seconde approche est
+        plus paranoïaque&nbsp;: vous pouvez utiliser un des contrôles
+        d'accès fournis avec Subversion pour empêcher que quiconque ne
+        puisse faire autre chose dans la zone des étiquettes que d'y
+        créer de nouvelles copies (voir le <xref
+        linkend="svn.serverconfig"/>). L'approche paranoïaque n'est
+        cependant pas nécessaire, en général. Si un utilisateur propage
+        accidentellement une modification à un répertoire d'étiquettes,
+        vous pouvez simplement revenir en arrière sur cette modification
+        comme expliqué dans le paragraphe précédent. C'est ça la gestion
+        de versions, après tout&nbsp;!</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.tags.mkcomplex">
+<!--
       <title>Creating a Complex Tag</title>
+-->
+      <title>Création d'une étiquette complexe</title>
 
+<!--
       <para>Sometimes you may want a <quote>snapshot</quote> that is
         more complicated than a single directory at a single
         revision.</para>
+-->
+      <para>Il vous arrivera sûrement de vouloir que votre
+        <quote>instantané</quote> soit plus compliqué qu'un simple
+        répertoire à une unique révision donnée.</para>
 
+<!--
       <para>For example, pretend your project is much larger than our
         <filename>calc</filename> example: suppose it contains a
         number of subdirectories and many more files.  In the course
@@ -6496,7 +7109,26 @@ Committed revision 902.
         locations from different revisions.  But after testing, you
         know it's the precise combination of data you need to
         tag.</para>
+-->
+      <para>Par exemple, imaginons que votre projet est bien plus
+        vaste que notre exemple <filename>calc</filename>&nbsp;:
+        supposons qu'il contient un bon nombre de sous-dossiers et bien
+        plus de fichiers encore. Au cours de votre travail, vous pouvez
+        très bien décider que vous avez besoin de créer une copie de
+        travail destinée à des fonctionnalités particulières et à des
+        corrections de bogues. Pour cela vous pouvez antidater de
+        manière sélective des fichiers ou dossiers à des révisions
+        données (en utilisant généreusement <command>svn
+        update</command> avec l'option <option>-r</option>), déporter
+        des fichiers et des dossiers vers des branches particulières (au
+        moyen de <command>svn switch</command>) ou même effectuer
+        manuellement un tas de modifications locales. Quand vous en avez
+        terminé, votre copie de travail est un vrai bazar, fait
+        d'emplacements du dépôt à des révisions différentes. Mais après
+        l'avoir testée, vous êtes alors certain que c'est l'exacte
+        combinaison de données que vous vouliez étiqueter.</para>
 
+<!--
       <para>Time to make a snapshot.  Copying one URL to another won't
         work here.  In this case, you want to make a snapshot of your
         exact working copy arrangement and store it in the repository.
@@ -6504,10 +7136,20 @@ Committed revision 902.
         different uses (see <xref linkend="svn.ref.svn.c.copy"/> in <xref
         linkend="svn.ref.svn"/>), including the ability to copy a
         working copy tree to the repository:</para>
+-->
+      <para>C'est alors le moment de prendre un cliché. Copier une URL
+        vers une autre ne fonctionnera pas cette fois. Dans le cas
+        présent, vous voulez prendre un cliché de l'arrangement exact
+        de votre copie de travail et le placer dans le dépôt. Par
+        chance, <command>svn copy</command> possède en fait quatre
+        utilisations différentes (au sujet desquelles vous pouvez
+        obtenir des informations au <xref linkend="svn.ref"/>), dont la
+        possibilité de copier une arborescence de travail vers le
+        dépôt&nbsp;:</para>
 
       <informalexample>
         <screen>
-$ ls
+$ ls<!--
 my-working-copy/
 
 $ svn copy my-working-copy \
@@ -6515,14 +7157,30 @@ $ svn copy my-working-copy \
            -m "Tag my existing working copy state."
 
 Committed revision 940.
+-->
+ma-copie-de-travail/
+
+$ svn copy ma-copie-de-travail \
+           http://svn.exemple.com/depot/calc/tags/mon-etiquette \
+           -m "Étiquette l'état de ma copie de travail existante."
+
+Révision 940 propagée.
 </screen>
       </informalexample>
 
+<!--
       <para>Now there is a new directory in the repository,
         <filename>/calc/tags/mytag</filename>, which is an exact
         snapshot of your working copy&mdash;mixed revisions, URLs,
         local changes, and all.</para>
+-->
+      <para>Désormais il y a un nouveau répertoire dans le dépôt,
+        <filename>/calc/tags/mon-etiquette</filename>, qui est un
+        instantané exact de votre copie de travail&nbsp;: révisions
+        mixtes, URL, modifications locales et tout et
+        tout&hellip;</para>
 
+<!--
       <para>Other users have found interesting uses for this feature.
         Sometimes there are situations where you have a bunch of local
         changes made to your working copy, and you'd like a
@@ -6534,7 +7192,22 @@ Committed revision 940.
         collaborator can then either check out a verbatim copy of your
         working copy or use <command>svn merge</command> to receive
         your exact changes.</para>
+-->
+      <para>D'autres utilisateurs ont trouvé des usages intéressants
+        pour cette fonctionnalité. Il y a parfois des situations où
+        votre copie de travail contient un paquet de modifications
+        locales que vous aimeriez montrer à un collaborateur. Au lieu
+        de lancer <command>svn diff</command> et d'envoyer un fichier
+        patch (qui ne listera pas les modifications de répertoires,
+        de liens symboliques ou de propriétés), vous pouvez utiliser
+        <command>svn copy</command> pour <quote>envoyer</quote> votre
+        copie de travail vers une zone privée du dépôt. Votre
+        collaborateur peut ensuite soit extraire une copie carbone
+        de votre copie de travail, soit utiliser <command>svn
+        merge</command> pour recevoir exactement vos
+        modifications.</para>
 
+<!--
       <para>While this is a nice method for uploading a quick snapshot
         of your working copy, note that this is <emphasis>not</emphasis>
         a good way to initially create a branch.  Branch creation should
@@ -6542,6 +7215,17 @@ Committed revision 940.
         of a branch with extra changes to files, all within a single revision.
         This makes it very difficult (later on) to identify a single
         revision number as a branch point.</para>
+-->
+      <para>Bien que ce soit une méthode élégante pour mettre à
+        disposition un instantané rapide de votre copie de travail,
+        remarquez que <emphasis>ce n'est pas</emphasis> une bonne
+        manière de créer une branche initialement. La création de
+        branche devrait être un évènement en soi, tandis que cette
+        méthode combine la création d'une branche avec des
+        modifications supplémentaires apportées aux fichiers, le tout
+        au sein d'une seule révision. Ceci rend très difficile
+        (à terme) d'identifier un unique numéro de révision en tant
+        que point de création de la branche.</para>
 
     </sect2>
 
@@ -6551,8 +7235,12 @@ Committed revision 940.
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.branchmerge.maint">
+<!--
     <title>Branch Maintenance</title>
+-->
+    <title>Maintenance des branches</title>
 
+<!--
     <para>You may have noticed by now that Subversion is extremely
       flexible.  Because it implements branches and tags with the same
       underlying mechanism (directory copies), and because branches
@@ -6560,11 +7248,25 @@ Committed revision 940.
       Subversion intimidating.  It's almost <emphasis>too</emphasis>
       flexible.  In this section, we'll offer some suggestions for
       arranging and managing your data over time.</para>
+-->
+    <para>À ce stade, vous vous êtes certainement rendu compte que
+      Subversion est extrêmement flexible. Parce qu'il implémente les
+      branches et les étiquettes avec le même mécanisme sous-jacent
+      (des copies de répertoires) et parce que les branches et les
+      étiquettes apparaissent au sein de l'espace standard du système
+      de fichiers, beaucoup de gens sont intimidés par Subversion. Il
+      est presque <emphasis>trop</emphasis> flexible. Dans ce paragraphe,
+      nous proposons des suggestions pour organiser et gérer vos données
+      au fil du temps.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.maint.layout">
+<!--
       <title>Repository Layout</title>
+-->
+      <title>Agencement du dépôt</title>
 
+<!--
       <para>There are some standard, recommended ways to organize the
         contents of a repository.  Most people create a
         <filename>trunk</filename> directory to hold the <quote>main
@@ -6573,6 +7275,16 @@ Committed revision 940.
         a <filename>tags</filename> directory to contain tag copies.
         If a repository holds only one project, often people create
         these top-level directories:</para>
+-->
+      <para>Il existe des méthodes standard recommandées pour
+        structurer un dépôt. La plupart des gens créent un répertoire
+        <filename>trunk</filename> pour la <quote>ligne de développement
+        principale</quote> (le tronc), un répertoire
+        <filename>branches</filename> qui contiendra les copies de
+        branches et un répertoire <filename>tags</filename> qui
+        contiendra les copies étiquetées. Si un dépôt ne comprend qu'un
+        seul projet, les gens créent souvent les dossiers suivants
+        à la racine&nbsp;:</para>
 
       <informalexample>
         <literallayout>
@@ -6583,11 +7295,19 @@ Committed revision 940.
 </literallayout>
       </informalexample>
 
+<!--
       <para>If a repository contains multiple projects, admins
         typically index their layout by project.  See <xref
         linkend="svn.reposadmin.projects.chooselayout"/> to read more about
         <quote>project roots</quote>, but here's an example of such a
         layout:</para>
+-->
+      <para>Si un dépôt contient plusieurs projets, les administrateurs
+        indexent généralement la structure du dépôt par projet (voir
+        <xref linkend="svn.reposadmin.projects.chooselayout"/> pour en
+        savoir plus sur les <quote>dossiers racine d'un
+        projet</quote>), mais en voici directement un
+        exemple&nbsp;:</para>
 
       <informalexample>
         <literallayout>
@@ -6603,6 +7323,7 @@ Committed revision 940.
 </literallayout>
       </informalexample>
 
+<!--
       <para>Of course, you're free to ignore these common layouts.
         You can create any sort of variation, whatever works best for
         you or your team.  Remember that whatever you choose, it's not
@@ -6613,7 +7334,21 @@ Committed revision 940.
         is just a matter of issuing a series of server-side moves; if
         you don't like the way things are organized in the repository,
         just juggle the directories around.</para>
+-->
+      <para>Bien sûr, vous restez libre d'ignorer ces agencements
+        courants. Vous pouvez créer toutes sortes de variantes, selon
+        ce qui fonctionne le mieux pour vous ou pour votre équipe.
+        Souvenez-vous que quel que soit votre choix, ce n'est pas un
+        engagement définitif. Vous pouvez réorganiser votre dépôt à
+        tout moment. Parce que les branches et les étiquettes sont des
+        répertoires ordinaires, la commande <command>svn move</command>
+        peut les déplacer ou les renommer selon vos désirs. Passer
+        d'un agencement à un autre consiste juste à lancer une série
+        d'opérations de déplacement côté serveur&nbsp;; si vous n'aimez
+        pas la façon dont les choses sont organisées dans le dépôt,
+        modifiez juste leur agencement.</para>
 
+<!--
       <para>Remember, though, that while moving directories is
         easy to do, you need to be considerate of other users as well.
         Your juggling can disorient users with existing
@@ -6624,13 +7359,29 @@ Committed revision 940.
         told that her working copy represents a path that no
         longer exists.  She is then forced to <command>svn
         switch</command> to the new location.</para>
+-->
+      <para>Souvenez-vous néanmoins que bien qu'il soit facile de
+        déplacer des dossiers, vous devez aussi rester attentif à vos
+        utilisateurs. Vos modifications sont susceptibles de déboussoler
+        ceux qui ont des copies de travail existantes. Si un utilisateur
+        a une copie de travail d'un répertoire donné du dépôt, votre
+        opération <command>svn move</command> risque de supprimer ce
+        chemin de la révision la plus récente. Lorsque par la suite
+        l'utilisateur lancera <command>svn update</command>, il se verra
+        annoncer que sa copie de travail pointe vers un chemin qui
+        n'existe plus et sera contraint d'effectuer un <command>svn
+        switch</command> vers le nouvel emplacement.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.maint.lifetime">
+<!--
       <title>Data Lifetimes</title>
+-->
+      <title>Durée de vie des données</title>
 
+<!--
       <para>Another nice feature of Subversion's model is that
         branches and tags can have finite lifetimes, just like any
         other versioned item.  For example, suppose you eventually
@@ -6639,43 +7390,77 @@ Committed revision 940.
         changes back into <filename>/calc/trunk</filename>, there's
         no need for your private branch directory to stick around
         anymore:</para>
+-->
+      <para>Une autre fonctionnalité intéressante liée aux principes
+        de fonctionnement de Subversion est que les branches et les
+        étiquettes peuvent avoir des durées de vie limitées, tout
+        comme n'importe quel autre élément suivi en versions. Par
+        exemple, supposons que vous avez enfin terminé votre travail
+        sur votre branche personnelle du projet
+        <filename>calc</filename>. Après avoir fusionné toutes vos
+        modifications vers <filename>/calc/trunk</filename>, le
+        répertoire contenant votre branche privée n'a plus de raison
+        d'exister&nbsp;:</para>
 
       <informalexample>
-        <screen>
+        <screen><!--
 $ svn delete http://svn.example.com/repos/calc/branches/my-calc-branch \
              -m "Removing obsolete branch of calc project."
 
 Committed revision 474.
+-->
+$ svn delete http://svn.exemple.com/depot/calc/branches/ma-branche-calc \
+             -m "Suppression d'une branche obsolète du projet calc."
+
+Révision 474 propagée.
 </screen>
       </informalexample>
 
       <tip>
+<!--
         <para>Recall from the previous section that if the repository
           location your working copy refers to is deleted, then when
           you try to update you will receive an error:</para>
+-->
+        <para>Rappelez-vous que, comme indiqué dans la section
+          précédente, si votre copie de travail pointe vers un chemin
+          du dépôt qui a été supprimé, une erreur apparaitra à la
+          prochaine mise à jour&nbsp;:</para>
         <informalexample>
           <screen>
-$ svn up
+$ svn up<!--
 Updating '.':
-svn: E160005: Target path '/calc/branches/my-calc-branch' does not exist
+svn: E160005: Target path '/calc/branches/my-calc-branch' does not exist-->
+Actualise '.' :
+svn: E160005: chemin '/calc/branches/my-calc-branch' n'existe pas
 </screen>
         </informalexample>
 
+<!--
         <para>All you need to do in this situation is switch your working
           copy to a location that still exits:</para>
+-->
+        <para>Vous n'avez qu'à basculer votre copie de travail vers un
+          chemin qui existe encore&nbsp;:</para>
 
         <informalexample>
           <screen>
-$ svn sw ^/calc/trunk
+$ svn sw ^/calc/trunk <!--
 D    src/whole.c
  U   src/real.c
 A    src/integer.c
  U   .
-Updated to revision 474.
+Updated to revision 474.-->
+D    src/tout.c
+ U   src/reel.c
+A    src/entier.c
+ U   .
+Actualisé à la révision 474.
 </screen>
         </informalexample>
       </tip>
 
+<!--
       <para>And now your branch is gone.  Of course, it's not really
         gone: the directory is simply missing from the
         <literal>HEAD</literal> revision, no longer distracting
@@ -6683,24 +7468,48 @@ Updated to revision 474.
         <command>svn switch</command>, or <command>svn list</command>
         to examine an earlier revision, you can still see
         your old branch.</para>
+-->
+      <para>Et maintenant votre branche a disparu. Bien sûr, elle n'a
+        pas vraiment disparu&nbsp;: le répertoire est juste absent de
+        la révision <literal>HEAD</literal>, ne gênant plus personne.
+        Si vous utilisez <command>svn checkout</command>,
+        <command>svn switch</command> ou <command>svn list</command>
+        pour examiner une révision plus ancienne, vous pourrez toujours
+        voir votre vieille branche.</para>
 
+<!--
       <para>If browsing your deleted directory isn't enough, you can
         always bring it back.  Resurrecting data is very easy in
         Subversion.  If there's a deleted directory (or file) that
         you'd like to bring back into <literal>HEAD</literal>, simply
         use <command>svn copy</command> to copy it from the old
         revision:</para>
+-->
+      <para>Si la navigation dans votre dossier supprimé ne vous suffit
+        pas, vous pouvez toujours le récupérer. Ressusciter des données
+        est très facile dans Subversion. S'il y a un  dossier (ou un
+        fichier) supprimé que vous aimeriez faire réapparaître dans
+        <literal>HEAD</literal>, utilisez simplement <command>svn
+        copy</command> pour le copier depuis l'ancienne
+        révision&nbsp;:</para>
 
       <informalexample>
-        <screen>
+        <screen><!--
 $ svn copy ^/calc/branches/my-calc-branch@473 \
            ^/calc/branches/my-calc-branch \
            -m "Restore my-calc-branch."
 
 Committed revision 475.
+-->
+$ svn copy ^/calc/branches/ma-branche-calc@473 \
+           ^/calc/branches/ma-branche-calc \
+           -m "Restaure ma-branche-calc."
+
+Révision 475 propagée.
 </screen>
       </informalexample>
 
+<!--
       <para>In our example, your personal branch had a relatively
         short lifetime: you may have created it to fix a bug or
         implement a new feature.  When your task is done, so is the
@@ -6714,16 +7523,37 @@ Committed revision 475.
         developers to stop programming either.  So instead, you create
         a <quote>stable</quote> branch of the software that won't
         change much:</para>
+-->
+      <para>Dans notre exemple, votre branche personnelle a eu une durée
+        de vie relativement limitée&nbsp;: vous l'aviez peut-être créée
+        pour corriger un bogue ou implémenter une nouvelle
+        fonctionnalité. Quand votre tâche est finie, il en va de même
+        pour la branche. Cependant, en développement logiciel, il est
+        aussi courant d'avoir deux branches <quote>principales</quote>
+        côte à côte pour de très longues périodes. Par exemple,
+        supposons que le moment est venu de publier une version stable
+        du projet <filename>calc</filename> pour le public. Vous savez
+        qu'il faudra quelques mois pour éliminer les bogues du logiciel.
+        Vous ne voulez pas que les gens ajoutent de nouvelles
+        fonctionnalités au projet, mais vous ne voulez pas non plus dire
+        à tous les développeurs d'arrêter de programmer. Donc à la
+        place, vous créez une branche <quote>stable</quote> du logiciel
+        qui ne changera pas beaucoup&nbsp;:</para>
 
       <informalexample>
         <screen>
-$ svn copy ^/calc/trunk ^/calc/branches/stable-1.0 \
+$ svn copy ^/calc/trunk ^/calc/branches/stable-1.0 \ <!--
            -m "Creating stable branch of calc project."
 
 Committed revision 476.
+-->
+           -m "Création de la branche stable du projet calc."
+
+Révision 476 propagée.
 </screen>
       </informalexample>
 
+<!--
       <para>And now developers are free to continue adding
         cutting-edge (or experimental) features to
         <filename>/calc/trunk</filename>, and you can declare a
@@ -6735,6 +7565,21 @@ Committed revision 476.
         maintain the branch for a long time&mdash;that is, as long
         as you continue to support that release for customers.  We'll
         discuss this more in the next section.</para>
+-->
+      <para>Dès lors les développeurs sont libres de continuer à ajouter
+        des fonctionnalités de pointe (ou expérimentales) à
+        <filename>/calc/trunk</filename> et vous pouvez poser comme
+        convention pour le projet que seules les corrections de bogues
+        seront propagées dans
+        <filename>/calc/branches/stable-1.0</filename>. C'est-à-dire
+        qu'au fur et à mesure que les gens continueront de travailler
+        sur le tronc, quelqu'un reportera de façon sélective les
+        corrections de bogues vers la branche stable. Même après que la
+        branche stable aura été publiée, vous continuerez probablement à
+        maintenir la branche pendant longtemps, c'est-à-dire pour aussi
+        longtemps que vous continuerez à fournir aux clients un support
+        sur cette version. Nous évoquons ceci plus en détails dans le
+        prochain paragraphe.</para>
 
     </sect2>
 
@@ -6744,12 +7589,20 @@ Committed revision 476.
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.branchmerge.commonpatterns">
+<!--
     <title>Common Branching Patterns</title>
+-->
+    <title>Modèles courants de gestion des branches</title>
 
+<!--
     <para>There are many different uses for branching and <command>svn
         merge</command>, and this section describes the most
         common.</para>
+-->
+    <para>Il existe de nombreux usages pour la création et la fusion
+      des branches&nbsp;; ce paragraphe décrit les plus courants.</para>
 
+<!--
     <para>Version control is most often used for software
       development, so here's a quick peek at two of the most common
       branching/merging patterns used by teams of programmers.  If
@@ -6761,11 +7614,28 @@ Committed revision 476.
       Subversion; they're applicable to any version control system.
       Still, it may help to see them described in Subversion
       terms.</para>
+-->
+    <para>Le plus souvent, la gestion de versions est utilisée pour le
+      développement de logiciels, voici donc un coup d'œil rapide à deux
+      des modèles les plus courants de création et de fusion de branches
+      utilisés par les équipes de programmeurs. Si vous ne vous servez
+      pas de Subversion pour développer des logiciels, n'hésitez pas à
+      sauter ce paragraphe. Si vous êtes un développeur de logiciels qui
+      utilise la gestion de versions pour la première fois, soyez très
+      attentifs, car ces modèles sont souvent considérés comme des
+      bonnes pratiques par les développeurs plus expérimentés. Ces
+      procédures ne sont pas spécifiques à Subversion&nbsp;; elles sont
+      applicables à tout système de gestion de versions. Néanmoins, les
+      voir explicitées en termes Subversion peut aider.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.commonpatterns.release">
+<!--
       <title>Release Branches</title>
+-->
+      <title>Branches de publication</title>
 
+<!--
       <para>Most software has a typical life cycle: code, test,
         release, repeat.  There are two problems with this process.
         First, developers need to keep writing new features while
@@ -6777,26 +7647,62 @@ Committed revision 476.
         released versions as well, and customers will want to get
         that bug fix without having to wait for a major new
         release.</para>
+-->
+      <para>En général un logiciel suit un cycle de vie classique,
+        répétant les trois étapes suivantes en boucle&nbsp;: code, test,
+        publication. Il y a deux problèmes avec ce processus.
+        Premièrement, les développeurs doivent continuer à écrire de
+        nouvelles fonctionnalités pendant que les équipes d'assurance
+        qualité prennent le temps de tester des versions supposées
+        stables du logiciel. Les nouveaux développements ne peuvent pas
+        s'arrêter pendant que le logiciel est en cours de test.
+        Deuxièmement, l'équipe doit presque toujours effectuer le
+        support des versions anciennes et publiées du logiciel&nbsp;;
+        si un bogue est découvert dans le code le plus récent, il existe
+        probablement aussi dans les versions qui ont été publiées et les
+        clients voudront obtenir le correctif pour ce bogue sans avoir à
+        attendre la publication d'une nouvelle version majeure.</para>
 
+<!--
       <para>Here's where version control can help.  The typical
         procedure looks like this:</para>
+-->
+      <para>C'est là où la gestion de versions peut s'avérer utile.
+        La procédure standard ressemble à ceci&nbsp;:</para>
 
       <orderedlist>
 
         <listitem>
+<!--
           <para><emphasis>Developers commit all new work to the
             trunk.</emphasis>  Day-to-day changes are committed to
             <filename>/trunk</filename>: new features, bug fixes, and
             so on.</para>
+-->
+          <para><emphasis>Les développeurs propagent tout nouveau
+            travail vers le tronc.</emphasis> Les modifications
+            quotidiennes sont propagées vers
+            <filename>/trunk</filename>&nbsp;: nouvelles
+            fonctionnalités, corrections de bogues,&nbsp;etc.</para>
         </listitem>
+
         <listitem>
+<!--
           <para><emphasis>The trunk is copied to a
             <quote>release</quote> branch.</emphasis>  When the team
             thinks the software is ready for release (say, a 1.0
             release), <filename>/trunk</filename> might be copied to
             <filename>/branches/1.0</filename>.</para>
+-->
+          <para><emphasis>Le tronc est copié vers une branche <quote>de
+            publication</quote>.</emphasis> Lorsque l'équipe estime que
+            le logiciel est prêt à être publié (disons en version 1.0),
+            <filename>/trunk</filename> peut être copié vers
+            <filename>/branches/1.0</filename>.</para>
         </listitem>
+
         <listitem>
+<!--
           <para><emphasis>Teams continue to work in
             parallel.</emphasis>  One team begins rigorous testing of
             the release branch, while another team continues new work
@@ -6805,16 +7711,38 @@ Committed revision 476.
             back and forth as necessary.  At some point, however, even
             that process stops.  The branch is <quote>frozen</quote>
             for final testing right before a release.</para>
+-->
+          <para><emphasis>Les équipes continuent à travailler en
+            parallèle.</emphasis> Une équipe commence à tester
+            rigoureusement la branche de publication, pendant qu'une
+            autre équipe continue avec les nouvelles tâches (disons pour
+            la version 2.0) sur <filename>/trunk</filename>. Si des
+            bogues sont découverts dans l'un ou l'autre des
+            emplacements, les correctifs sont reportés de l'un à l'autre
+            selon les besoins. Il arrive cependant un moment où même ce
+            processus s'arrête. La branche est <quote>gelée</quote> pour
+            les tous derniers tests juste avant publication.</para>
         </listitem>
+
         <listitem>
+<!--
           <para><emphasis>The branch is tagged and
             released.</emphasis>  When testing is complete,
             <filename>/branches/1.0</filename> is copied to
             <filename>/tags/1.0.0</filename> as a reference
             snapshot.  The tag is packaged and released to
             customers.</para>
+-->
+          <para><emphasis>La branche est étiquetée et
+            publiée.</emphasis> Quand les tests sont terminés,
+            <filename>/branches/1.0</filename> est copiée vers
+            <filename>/tags/1.0.0</filename> en tant que cliché de
+            référence. L'étiquette est exportée et livrée aux
+            clients.</para>
         </listitem>
+
         <listitem>
+<!--
           <para><emphasis>The branch is maintained over
             time.</emphasis>  While work continues
             on <filename>/trunk</filename> for version 2.0, bug fixes
@@ -6824,23 +7752,49 @@ Committed revision 476.
             1.0.1 release: <filename>/branches/1.0</filename> is
             copied to <filename>/tags/1.0.1</filename>, and the tag
             is packaged and released.</para>
+-->
+          <para><emphasis>La branche est gérée au fil du
+            temps.</emphasis> Pendant que le travail continue sur
+            <filename>/trunk</filename> en vue de la version 2.0, les
+            correctifs de bogues continuent à être reportés de
+            <filename>/trunk</filename> à
+            <filename>/branches/1.0</filename>. Lorsque suffisamment de
+            correctifs se sont accumulés, les responsables peuvent
+            décider de publier une version 1.0.1&nbsp;:
+            <filename>/branches/1.0</filename> est copiée vers
+            <filename>/tags/1.0.1</filename> et cette étiquette est
+            exportée et publiée.</para>
         </listitem>
 
       </orderedlist>
 
+<!--
       <para>This entire process repeats as the software matures:
         when the 2.0 work is complete, a new 2.0 release branch is
         created, tested, tagged, and eventually released.  After
         some years, the repository ends up with a number of release
         branches in <quote>maintenance</quote> mode, and a number
         of tags representing final shipped versions.</para>
+-->
+      <para>Ce processus entier se répète au fur et à mesure que le
+        logiciel gagne en maturité&nbsp;: quand le travail pour la
+        version 2.0 est terminé, une nouvelle branche de publication
+        2.0 est créée, testée, étiquetée et finalement publiée. Au
+        bout de quelques années, le dépôt finit par avoir un certain
+        nombre de branches de publication en mode
+        <quote>maintenance</quote> et un certain nombre d'étiquettes
+        représentant les versions finales publiées.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.commonpatterns.feature">
+<!--
       <title>Feature Branches</title>
+-->
+      <title>Branches fonctionnelles</title>
 
+<!--
       <para>
         <indexterm>
           <primary>branches</primary>
@@ -6855,7 +7809,25 @@ Committed revision 476.
         branches are born, used for a while, merged back to the trunk,
         and then ultimately deleted.  They have a finite span of
         usefulness.</para>
+-->
+      <para>
+        <indexterm>
+          <primary>branches</primary>
+          <secondary>branches fonctionnelles</secondary>
+        </indexterm>Une <firstterm>branche fonctionnelle</firstterm> est
+        la sorte de branche qui est l'exemple dominant dans ce chapitre
+        (celle sur laquelle vous travailliez pendant que Sally
+        continuait à travailler sur <filename>/trunk</filename>). C'est
+        une branche temporaire créée pour travailler sur un changement
+        complexe sans interférer avec la stabilité de
+        <filename>/trunk</filename>. À la différence des branches de
+        publication (dont le support doit parfois être prolongé très
+        longtemps), les branches fonctionnelles naissent, sont utilisées
+        pendant un temps, sont fusionnées vers le tronc et sont
+        finalement supprimées. Elles ont une utilité limitée dans le
+        temps.</para>
 
+<!--
       <para>Again, project policies vary widely concerning exactly
         when it's appropriate to create a feature branch.  Some
         projects never use feature branches at all: commits to
@@ -6870,7 +7842,26 @@ Committed revision 476.
         the branch is deleted.  This system guarantees an
         exceptionally stable and usable trunk at all times, but at
         the cost of tremendous process overhead.</para>
+-->
+      <para>Encore une fois, les stratégies varient énormément au
+        sujet du moment approprié pour créer une branche fonctionnelle.
+        Certains projets n'utilisent jamais de branche
+        fonctionnelle&nbsp;: n'importe qui peut propager des
+        modifications à <filename>/trunk</filename>. L'avantage de ce
+        système est qu'il est simple&nbsp;: personne n'a besoin d'être
+        formé aux branches ou aux fusions. L'inconvénient est que le
+        code du tronc est souvent instable ou inutilisable. D'autres
+        projets utilisent les branches à l'extrême&nbsp;: une
+        modification n'est <emphasis>jamais</emphasis> propagée
+        directement dans le tronc. Même les modifications les plus
+        triviales sont faites au sein d'une branche à courte durée de
+        vie, vérifiées attentivement, puis fusionnées vers le tronc.
+        La branche est ensuite supprimée. Ce système garantit que le
+        tronc restera exceptionnellement stable et utilisable à tout
+        moment, mais aux dépens des coûts de gestion liés à cette
+        procédure très lourde.</para>
 
+<!--
       <para>Most projects take a middle-of-the-road approach.  They
         commonly insist that <filename>/trunk</filename> compile and
         pass regression tests at all times.  A feature branch is
@@ -6884,7 +7875,27 @@ Committed revision 476.
         developed on a feature branch.  As the developer commits
         incremental changes to the branch, they can be easily reviewed
         by peers.</para>
+-->
+      <para>La plupart des projets choisissent une approche à mi-chemin
+        entre les deux. Ils insistent généralement pour qu'à tout
+        moment <filename>/trunk</filename> puisse être compilé et
+        passe avec succès les tests de régression. Une branche
+        fonctionnelle n'est nécessaire que quand une modification
+        nécessite un grand nombre de propagations susceptibles de
+        déstabiliser le tronc. Une bonne méthode empirique est de se
+        poser la question suivante&nbsp;: si le développeur
+        travaillait pendant plusieurs jours en isolation et ensuite
+        propageait cette grosse modification en une seule fois
+        (afin que <filename>/trunk</filename> ne soit jamais
+        déstabilisé), est-ce que ce serait une modification trop
+        grosse à vérifier&nbsp;? Si la réponse à cette question est
+        <quote>oui</quote>, alors la modification devrait être
+        développée sur une branche fonctionnelle. Au fur et à mesure
+        que le développeur propage ses modifications incrémentales dans
+        la branche, elles peuvent facilement être vérifiées par ses
+        pairs.</para>
 
+<!--
       <para>Finally, there's the issue of how to best keep a feature
         branch in <quote>sync</quote> with the trunk as work
         progresses.  As we mentioned earlier, there's a great risk to
@@ -6892,12 +7903,31 @@ Committed revision 476.
         continue to pour in, to the point where the two lines of
         development differ so greatly that it may become a nightmare
         trying to merge the branch back to the trunk.</para>
+-->
+      <para>Finalement, il reste la question de savoir quelle est la
+        meilleure méthode pour garder une branche synchronisée avec le
+        tronc au fur et à mesure que le travail avance. Comme nous
+        l'avons mentionné précédemment, il est très risqué de
+        travailler sur une branche pendant des semaines ou
+        des mois&nbsp;; le tronc continuera sûrement à recevoir des
+        modifications, au point que les deux lignes de développement
+        risquent de s'éloigner tellement l'une de l'autre qu'essayer
+        de fusionner la branche vers le tronc devienne un
+        cauchemar.</para>
 
+<!--
       <para>This situation is best avoided by regularly running an
         automatic merge from trunk to the branch.  Make up a policy:
         once a week, merge the last week's worth of trunk changes to
         the branch.</para>
+-->
+      <para>Le mieux pour éviter une telle situation est de fusionner
+        régulièrement les modifications du tronc vers la branche.
+        Faites-en une habitude&nbsp;: une fois par semaine, fusionnez
+        les modifications du tronc de la semaine précédente vers la
+        branche.</para>
 
+<!--
       <para>When you are eventually ready to merge the
         <quote>synchronized</quote> feature branch back to the trunk,
         begin by doing a final automatic merge of the latest trunk
@@ -6905,9 +7935,19 @@ Committed revision 476.
         of branch and trunk are absolutely identical except for
         your branch changes.  You can then run an automatic reintegrate
         merge from the branch back to the trunk:</para>
+-->
+      <para>Le moment arrivera où vous serez prêt à fusionner la branche
+        fonctionnelle <quote>synchronisée</quote> vers le tronc.
+        Commencez donc par effectuer une dernière fusion des
+        modifications les plus récentes du tronc vers la branche. Une
+        fois que c'est fait, les dernières versions de la branche et du
+        tronc sont absolument identiques, mises à part vos propres
+        modifications sur la branche. Vous êtes alors en mesure de
+        lancer une fusion automatique de réintégration de la branche
+        vers le tronc&nbsp;:</para>
 
       <informalexample>
-        <screen>
+        <screen><!--
 $ cd trunk-working-copy
 
 $ svn update
@@ -6915,16 +7955,25 @@ Updating '.':
 At revision 1910.
 
 $ svn merge ^/calc/branches/mybranch
---- Merging differences between repository URLs into '.':
-U    real.c
-U    integer.c
-A    newdirectory
-A    newdirectory/newfile
+- - Merging differences between repository URLs into '.':
+-->
+$ cd copie-de-travail-du-tronc
+
+$ svn update
+À la révision 1910.
+
+$ svn merge ^/calc/branches/ma-branche
+--- Fusion des différences des URLs du dépôt vers '.':
+U    reel.c
+U    entier.c
+A    nouveau-dossier
+A    nouveau-dossier/nouveau-fichier
  U   .
 &hellip;
 </screen>
       </informalexample>
 
+<!--
       <para>Another way of thinking about this pattern is that your
         weekly sync of trunk to branch is analogous to running
         <command>svn update</command> in a working copy, while the
@@ -6933,6 +7982,16 @@ A    newdirectory/newfile
         <emphasis>is</emphasis> a working copy but a very shallow
         private branch?  It's a branch that's capable of
         storing only one change at a time.</para>
+-->
+      <para>Une autre façon de concevoir ce modèle est d'imaginer que
+        votre synchronisation hebdomadaire du tronc vers la branche
+        est analogue au lancement de <command>svn update</command>
+        dans une copie de travail, tandis que l'étape finale de fusion
+        est analogue au lancement de <command>svn commit</command>
+        depuis une copie de travail. Après tout, une copie de travail
+        n'est rien d'autre qu'une branche privée très
+        superficielle&nbsp;: c'est une branche qui n'est capable de ne
+        contenir qu'une seule modification à la fois.</para>
 
     </sect2>
 
@@ -6942,8 +8001,12 @@ A    newdirectory/newfile
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.advanced.vendorbr">
+<!--
     <title>Vendor Branches</title>
+-->
+    <title>Branches fournisseurs</title>
 
+<!--
     <para>
       <indexterm>
         <primary>branches</primary>
@@ -6961,7 +8024,24 @@ A    newdirectory/newfile
       This scenario plays itself out all the time&mdash;anywhere that
       the information generated by one group of people has a direct
       effect on that which is generated by another group.</para>
+-->
+    <para>
+      <indexterm>
+        <primary>branches</primary>
+        <secondary>branches fournisseurs</secondary>
+      </indexterm>Comme c'est particulièrement le cas en développement
+      logiciel, les données que vous gérez dans votre système de
+      gestion de versions ont souvent un lien étroit avec les données
+      de quelqu'un d'autre, ou en sont peut-être dépendantes.
+      Généralement, les besoins de votre projet vous obligeront à rester
+      aussi à jour que possible avec les données fournies par cette
+      entité externe, sans sacrifier la stabilité de votre propre
+      projet. Ce scénario arrive très souvent, partout où les
+      informations générées par un groupe de personnes ont un effet
+      direct sur celles qui sont générées par un autre groupe de
+      personnes.</para>
 
+<!--
     <para>For example, software developers might be working on an
       application that makes use of a third-party library.  Subversion
       has just such a relationship with the Apache Portable Runtime (APR)
@@ -6973,7 +8053,23 @@ A    newdirectory/newfile
       library's code churn.  Now that both APR and Subversion have
       matured, Subversion attempts to synchronize with APR's library
       API only at well-tested, stable release points.</para>
+-->
+    <para>Par exemple, il arrive que des développeurs de logiciel
+      travaillent sur une application qui utilise une bibliothèque
+      tierce. Subversion a justement une relation de ce type avec la
+      bibliothèque Apache Portable Runtime (APR) (voir
+      <xref linkend="svn.developer.usingapi.apr" />). Le code source
+      de Subversion dépend de la bibliothèque APR pour tous ses
+      besoins de portabilité. Durant les étapes initiales de
+      développement de Subversion, le projet suivait les changements
+      de l'interface de programmation d'APR de près, restant toujours
+      <quote>à la pointe</quote> des évolutions du code de la
+      bibliothèque. Maintenant que APR et Subversion ont tous deux
+      gagné en maturité, Subversion n'essaie de se synchroniser avec
+      l'interface de programmation de l'APR qu'à des étapes de
+      publication stables et bien testées.</para>
 
+<!--
     <para>Now, if your project depends on someone else's information,
       you could attempt to synchronize that information with your own
       in several ways.  Most painfully, you could issue oral or
@@ -6986,7 +8082,22 @@ A    newdirectory/newfile
       versions of that information to some location in your own
       working copy (see <xref linkend="svn.advanced.externals"
       />).</para>
+-->
+    <para>Donc, si votre projet dépend des informations de quelqu'un
+      d'autre, vous pourriez tenter de synchroniser ces informations
+      avec les vôtres de plusieurs manières. La plus pénible serait de
+      donner des instructions orales ou écrites à tous les
+      contributeurs de votre projet, leur demandant de s'assurer
+      qu'ils disposent des bonnes versions de ces informations tierces
+      dont votre projet a besoin. Si les informations tierces sont
+      gérées dans un dépôt Subversion, vous pourriez aussi utiliser
+      les définitions externes de Subversion pour en fait
+      <quote>agrafer</quote> des versions spécifiques de ces
+      informations à un endroit quelconque dans le dossier de votre
+      copie de travail (voir <xref
+      linkend="svn.advanced.externals"/>).</para>
 
+<!--
     <para>But sometimes you want to maintain custom modifications to
       third-party code in your own version control system.  Returning
       to the software development example, programmers might need to
@@ -6997,7 +8108,22 @@ A    newdirectory/newfile
       changes might never be relayed back to the library maintainers,
       existing solely as custom tweaks to make the library further
       suit the needs of the software developers.</para>
+-->
+    <para>Mais parfois vous voudrez gérer des modifications
+      personnalisées de ce code tierce à l'intérieur de votre propre
+      système de gestion de versions. En reprenant l'exemple du
+      développement logiciel, les programmeurs pourraient vouloir
+      apporter des modifications à cette bibliothèque tierce pour
+      leurs propres besoins. Ces modifications incluraient peut-être
+      de nouvelles fonctionnalités ou des corrections de bogues,
+      gérées en interne seulement jusqu'à ce qu'elles soient incluses
+      dans une version officielle de la bibliothèque tierce. Ou alors
+      ces changements ne seront peut-être jamais remontés vers ceux qui
+      gèrent cette bibliothèque, existant seulement en tant
+      qu'optimisations <quote>maison</quote> permettant de mieux adapter
+      la bibliothèque aux besoin des développeurs du logiciel.</para>
 
+<!--
     <para>Now you face an interesting situation.  Your project could
       house its custom modifications to the third-party data in some
       disjointed fashion, such as using patch files or full-fledged
@@ -7006,7 +8132,18 @@ A    newdirectory/newfile
       to apply your custom changes to the third-party code and
       necessitating regeneration of those changes with each successive
       version of the third-party code that you track.</para>
+-->
+    <para>À présent vous êtes face à une situation intéressante. Votre
+      projet pourrait héberger ses modifications maison des données
+      tierces de manière désordonnée, comme par exemple en utilisant
+      des fichiers de patch ou des versions alternatives complètes des
+      fichiers et dossiers. Mais ces méthodes deviennent rapidement de
+      vrais casse-tête à gérer, nécessitant des mécanismes pour reporter
+      vos modifications maison au code tierce et nécessitant le report
+      de ces modifications à chaque version successive du code tierce
+      dont vous dépendez.</para>
 
+<!--
     <para>
       <indexterm>
         <primary>vendor drop</primary>
@@ -7017,7 +8154,19 @@ A    newdirectory/newfile
       vendor.  Each version of the vendor's data that you decide to
       absorb into your project is called a <firstterm>vendor
       drop</firstterm>.</para>
+-->
+    <para>
+      <indexterm>
+        <primary>livraisons fournisseurs</primary>
+      </indexterm>La solution de ce problème est d'utiliser des
+      <firstterm>branches fournisseurs</firstterm>. Une branche
+      fournisseur est une arborescence au sein de votre propre système
+      de gestion de versions qui contient des informations fournies par
+      une entité tierce, ou fournisseur. Chaque version des données du
+      fournisseur que vous décidez d'incorporer dans votre projet est
+      appelée une <firstterm>livraison fournisseur</firstterm>.</para>
 
+<!--
     <para>Vendor branches provide two benefits.  First, by storing the
       currently supported vendor drop in your own version control
       system, you ensure that the members of your project never need
@@ -7028,7 +8177,20 @@ A    newdirectory/newfile
       changes to it in-place&mdash;you have no more need of an
       automated (or worse, manual) method for swapping in your
       customizations.</para>
+-->
+    <para>Les branches fournisseur présentent deux avantages.
+      Premièrement, en incluant la livraison fournisseur actuellement
+      supportée dans votre propre système de gestion de versions, vous
+      avez la garantie que les membres de votre projet n'auront jamais
+      besoin de se demander s'ils ont la bonne version des données du
+      fournisseur. Ils reçoivent simplement la bonne version pendant
+      les mises à jour usuelles de leur copie de travail. Deuxièmement,
+      parce que ces données font partie de votre propre dépôt
+      Subversion, vous pouvez y conserver vos modifications
+      maison&nbsp;: vous n'avez plus besoin d'une méthode automatisée
+      (ou pire, manuelle) pour reporter vos propres changements.</para>
 
+<!--
     <para>Unfortunately, there is no single best way to manage vendor
       branches in Subversion.  The flexibility of the system offers
       several different approaches, each of which has its advantages
@@ -7037,11 +8199,26 @@ A    newdirectory/newfile
       few of these approaches at a high level in the following
       sections, using the common example of a software project which
       depends on a third-party library.</para>
+-->
+    <para>Malheureusement, il n'existe pas de <quote>meilleure</quote>
+      façon pour gérer les branches fournisseurs dans Subversion. La
+      flexibilité offerte par le système permet plusieurs approches
+      différentes, chacune ayant ses avantages et ses inconvénients, et
+      aucune ne peut être considérée comme <quote>la méthode qui
+      tue</quote> pour ce problème. Nous allons décrire quelques unes
+      des approches sans rentrer dans les détails dans les paragraphes
+      qui suivent, en prenant comme exemple un projet logiciel qui
+      dépend d'une bibliothèque tierce. </para>
 
-    <!-- =============================================================== -->
+<!-- =============================================================== -->
     <sect2 id="svn.advanced.vendorbr.general">
+<!--
       <title>General Vendor Branch Management Procedure</title>
+-->
+      <title>Procédure générale de gestion des branches
+        fournisseurs</title>
 
+<!--
       <para>Maintaining customizations to a third-party library
         involves three data sources: the version of the third-party
         library upon which your modifications were last based, the
@@ -7055,7 +8232,24 @@ A    newdirectory/newfile
         to the other data sources&mdash;the pristine versions of the
         third-party library code.  Thus, there are likewise different
         specific ways to perform the requisite merges.</para>
+-->
+      <para>Gérer des modifications personnalisées d'une bibliothèque
+        tierce met en jeu trois sources de données&nbsp;: la version de
+        la bibliothèque tierce sur laquelle vos modifications ont porté
+        la dernière fois, la version personnalisée (c'est-à-dire la
+        branche fournisseur actuelle) de cette bibliothèque qui est
+        utilisée par votre projet et toute nouvelle version de la
+        bibliothèque externe dont vous espérez sûrement effectuer la
+        mise à niveau. Gérer la branche fournisseur (qui doit résider
+        dans le dépôt de votre code source, par définition) consiste
+        alors essentiellement à effectuer des fusions (au sens général
+        du terme). Mais chaque équipe peut choisir sa méthode pour ce
+        qui concerne les autres sources de données&nbsp;: les versions
+        originales du code source de la bibliothèque tierce. Donc, nous
+        avons plusieurs façons pour effectuer les fusions
+        requises.</para>
 
+<!--
       <para>Strictly speaking, there are a couple of different ways
         that those merges can be performed in the general sense.  For
         the sake of simplicity and with the goal of at least providing
@@ -7065,7 +8259,16 @@ A    newdirectory/newfile
         third-party library by receiving updates that describe the
         differences between the current and new pristine versions of
         that library.</para>
+-->
+      <para><foreignphrase>Stricto sensu</foreignphrase>, il existe
+        deux façons de faire ces fusions. Afin de simplifier et de
+        rester concret dans ce paragraphe, nous supposerons qu'il n'y a
+        qu'une seule branche fournisseur qui est mise à niveau lors de
+        chaque mise à jour des bibliothèques tierces (qui décrivent les
+        différences entre les versions courantes et les nouvelles
+        versions des sources de la bibliothèque).</para>
 
+<!--
       <note>
         <para>Another approach is to create new vendor branches for
           each successive pristine library version, applying the
@@ -7075,7 +8278,18 @@ A    newdirectory/newfile
           approach&mdash;we just don't feel compelled to document
           every legitimate possibility in this space.</para>
       </note>
+-->
+      <note>
+        <para>Une autre approche est de créer une nouvelle branche
+         fournisseur pour chaque version de la bibliothèque, en
+         appliquant les différences entre la bibliothèque originale
+         courante et la version personnalisée vers la nouvelle branche.
+         Cette approche n'est pas mauvaise, nous ne nous sentons juste
+         pas obligés de documenter ici toutes les façons de
+         faire.</para>
+      </note>
 
+<!--
       <para>The following sections examine how to create and manage a
         vendor branch in a few different scenarios.  In the examples
         which follow, we'll assume that the third-party library is
@@ -7084,13 +8298,28 @@ A    newdirectory/newfile
         at <filename>^/vendor/libcomplex-custom</filename>.  We'll
         then look at how we can upgrade to libcomplex 1.0.1 while
         still preserving our customizations to the library.</para>
+-->
+      <para>Les paragraphes suivants décrivent comment créer et gérer
+        une branche fournisseur suivant quelques scénarios différents.
+        Dans les exemples qui suivent, nous supposerons que la
+        bibliothèque tierce s'appelle libcomplex et que nous allons
+        implémenter une branche fournisseur basée sur libcomplex 1.0.0
+        qui est stockée dans notre dépôt à l'emplacement
+        <filename>^/vendor/libcomplex-perso</filename>. Nous allons voir
+        comment nous pouvons mettre à niveau vers libcomplex 1.0.1 tout
+        en préservant nos personnalisations de cette
+        bibliothèque.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.vendorbr.foreign-repos">
+<!--
       <title>Vendor Branches from Foreign Repositories</title>
+-->
+      <title>Branches fournisseurs depuis des dépôts externes</title>
 
+<!--
       <para>Let's look first at a vendor branch management approach
         that is possible when the original third-party library is
         itself Subversion-accessible.  For the sake of the example,
@@ -7099,7 +8328,17 @@ A    newdirectory/newfile
         repository, and that its developers use sane release
         procedures which include the creation of tags for each stable
         release version.</para>
+-->
+      <para>Dans un premier temps, regardons comment gérer une branche
+        fournisseur lorsque la bibliothèque originale est accessible par
+        Subversion. Pour les besoins de cet exemple, nous allons
+        considérer que la bibliothèque libcomplex dont nous avons parlé
+        est développée dans un dépôt Subversion librement accessible et
+        que les développeurs utilisent une procédure de publication de
+        bon aloi qui comporte la création d'une étiquette pour chaque
+        version stable publiée.</para>
 
+<!--
       <para>
         <indexterm>
           <primary>merging</primary>
@@ -7128,43 +8367,96 @@ A    newdirectory/newfile
         addition.  It's this <firstterm>foreign repository
         copy</firstterm> functionality that we'll use to bootstrap our
         vendor branch.</para>
+-->
+      <para>
+        <indexterm>
+          <primary>fusions</primary>
+          <secondary>fusions avec un dépôt externe</secondary>
+        </indexterm>
+        <indexterm>
+          <primary>fusions avec un dépôt externe</primary>
+          <see>fusions, fusions avec un dépôt externe</see>
+        </indexterm>
+        <indexterm>
+          <primary>copie</primary>
+          <secondary>copie à partir d'un dépôt externe</secondary>
+        </indexterm>
+        <indexterm>
+          <primary>copie à partir d'un dépôt externe</primary>
+          <see>copie, copie à partir d'un dépôt externe</see>
+        </indexterm>Depuis Subversion 1.5, la sous-commande <command>svn
+        merge</command> est capable d'effectuer ce que l'on appelle des
+        <firstterm>fusions avec un dépôt externe</firstterm>, où les
+        sources de la fusion sont stockées dans un dépôt différent du
+        dépôt dont la copie de travail, cible de la fusion, a été
+        extraite. Et dans Subversion 1.8, le comportement de
+        <command>svn copy</command> a été modifié de manière à ce que
+        l'arborescence résultante d'une copie depuis un dépôt externe
+        vers une copie de travail existante soit incorporée dans cette
+        copie de travail et placée pour ajout lors de la prochaine
+        propagation. C'est cette fonctionnalité de  <firstterm>copie à
+        partir d'un dépôt externe</firstterm> que nous allons utiliser
+        pour initier notre branche fournisseur.</para>
 
+<!--
       <para>So let's create our vendor branch.  We'll begin by
         creating a placeholder directory for all such vendor branches
         in our repository, and then checking out a working copy of
         that location.</para>
+-->
+      <para>Créons donc notre branche fournisseur. Nous commencerons par
+        créer un dossier d'accueil pour toutes les branches fournisseurs
+        dans notre dépôt puis nous extrairons une copie de travail à cet
+        emplacement.</para>
 
       <informalexample>
-        <screen>
+        <screen><!--
 $ svn mkdir http://svn.example.com/projects/vendor \
             -m "Create a container for vendor branches."
-Committed revision 1160.
+Committed revision 1160.-->
+$ svn mkdir http://svn.exemple.com/projets/vendor \
+            -m "Création d'un conteneur pour les branches fournisseurs."
+Révision 1160 propagée.<!--
 $ svn checkout http://svn.example.com/projects/vendor \
                /path/to/vendor
-Checked out revision 1160.
+Checked out revision 1160.-->
+$ svn checkout http://svn.exemple.com/projets/vendor \
+               /chemin/vers/fournisseur
+Révision 1160 extraite.
 $
 </screen>
       </informalexample>
 
+<!--
       <para>Now, we'll take advantage of Subversion's foreign
         repository copy support to get an exact copy of libcomplex
         1.0.0&mdash;including any Subversion properties stored on its
         files and directories&mdash;from the vendor repository.</para>
+-->
+      <para>Maintenant nous allons profiter de la capacité de Subversion
+        à copier un dépôt externe pour obtenir une copie exacte de
+        libcomplex 1.0.0 (y compris les propriétés Subversion stockées
+        dans ces fichiers et dossiers) à partir du dépôt du
+        fournisseur.</para>
 
       <informalexample>
-        <screen>
+        <screen><!--
 $ cd /path/to/vendor
 $ svn copy http://svn.othervendor.com/repos/libcomplex/tags/1.0.0 \
            libcomplex-custom
---- Copying from foreign repository URL 'http://svn.othervendor.com/repos/lib\
-complex/tags/1.0.0':
-A    libcomplex-custom
-A    libcomplex-custom/README
-A    libcomplex-custom/LICENSE
+- - Copying from foreign repository URL 'http://svn.othervendor.com/repos/lib\
+complex/tags/1.0.0':-->
+$ cd /chemin/vers/fournisseur
+$ svn copy http://svn.monfournisseur.fr/depot/libcomplex/tags/1.0.0 \
+           libcomplex-perso
+--- Copying from foreign repository URL 'http://svn.monfournisseur.fr/depot/libcomplex/tags/1.0.0' :
+A    libcomplex-perso
+A    libcomplex-perso/README
+A    libcomplex-perso/LICENSE
 &hellip;
-A    libcomplex-custom/src/code.c
-A    libcomplex-custom/tests
-A    libcomplex-custom/tests/TODO
+A    libcomplex-perso/src/code.c
+A    libcomplex-perso/tests
+A    libcomplex-perso/tests/TODO<!--
 $ svn commit -m "Initialize libcomplex vendor branch from libcomplex 1.0.0."
 Adding         libcomplex-custom
 Adding         libcomplex-custom/README
@@ -7174,29 +8466,59 @@ Adding         libcomplex-custom/src
 Adding         libcomplex-custom/src/code.h
 Adding         libcomplex-custom/src/code.c
 Transmitting file data .......................................
-Committed revision 1161.
+Committed revision 1161.-->
+$ svn commit -m "Initialisation de la branche fournisseur libcomplex avec libcomplex 1.0.0."
+Ajout         libcomplex-custom
+Ajout         libcomplex-custom/README
+Ajout         libcomplex-custom/LICENSE
+&hellip;
+Ajout         libcomplex-custom/src
+Ajout         libcomplex-custom/src/code.h
+Ajout         libcomplex-custom/src/code.c
+Transmission des données .......................................
+Révision 1161 propagée.
 $
 </screen>
       </informalexample>
 
       <note>
+<!--
         <para>If you happen to be using an older version of
           Subversion, the closest available approximation of the new
           foreign repository copy support in <command>svn
           copy</command> is to instead import (via <command>svn
           import</command>) a working copy of the vendor's tag,
-          including the <option>--no-auto-props</option>
-          and <option>--no-ignore</option> options so that the
+          including the <option>- -no-auto-props</option>
+          and <option>- -no-ignore</option> options so that the
           complete tree and any of its versioned properties are
           accurately replicated in your own repository.</para>
+-->
+        <para>Si vous êtes amené à utiliser une vieille version de
+          Subversion, la meilleure façon d'approcher cette nouvelle
+          fonctionnalité de <command>svn copy</command> est d'importer
+          une copie de travail (avec <command>svn import</command>) de
+          la version étiquetée du fournisseur, en spécifiant bien les
+          options <option>--no-auto-props</option> et
+          <option>--no-ignore</option> pour que l'arborescence complète
+          et les propriétés suivies en versions soient correctement
+          répliquées dans votre propre dépôt.</para>
       </note>
 
+<!--
       <para>Now that we have a vendor branch based on libcomplex 1.0.0,
         we can begin making the customizations to libcomplex required
         for our purposes, committing them directly to the vendor
         branch we've created.  And of course, we can begin using
         libcomplex in our own application.</para>
+-->
+      <para>Maintenant que nous avons la branche fournisseur basée sur
+        libcomplex 1.0.0, nous pouvons commencer à personnaliser
+        libcomplex pour satisfaire nos besoins, en propageant les
+        modifications directement vers la branche fournisseur que nous
+        avons créée. Et bien sûr, nous pouvons commencer à utiliser
+        libcomplex dans notre propre application.</para>
 
+<!--
       <para>Some time later, libcomplex 1.0.1 is released.  After
         reviewing its changes, we decide we'd like to upgrade our
         vendor branch to the new version.  Here is where Subversion's
@@ -7207,14 +8529,27 @@ $
         vendor branch, ideally without clobbering our own
         customizations.  This is precisely what the 2-URL form of
         the <command>svn merge</command> command is for.</para>
+-->
+      <para>Quelques temps plus tard, les développeurs de
+        libcomplex publient une nouvelle version de leur bibliothèque,
+        la version 1.0.1. Après avoir passé en revue les modifications,
+        nous décidons de mettre à niveau notre branche fournisseur vers
+        cette nouvelle version. Et c'est ici que l'opération de fusion
+        à partir d'un dépôt externe de Subversion est utile. Nous avons
+        dans notre branche fournisseur la libcomplex 1.0.0 originale
+        plus nos personnalisations. Nous avons besoin maintenant
+        d'y insérer l'ensemble des modifications que le fournisseur a
+        effectué entre 1.0.0 et 1.0.1, idéalement sans fracasser nos
+        personnalisations. C'est précisément ce que la forme de
+        <command>svn merge</command> à 2-URL sait faire.</para>
 
       <informalexample>
-        <screen>
+        <screen><!--
 $ cd /path/to/vendor
 $ svn merge http://svn.othervendor.com/repos/libcomplex/tags/1.0.0 \
             http://svn.othervendor.com/repos/libcomplex/tags/1.0.1 \
             libcomplex-custom
---- Merging differences between foreign repository URLs into '.':
+- - Merging differences between foreign repository URLs into '.':
 U    libcomplex-custom/src/code.h
 C    libcomplex-custom/src/code.c
 U    libcomplex-custom/README
@@ -7222,10 +8557,24 @@ Summary of conflicts:
   Text conflicts: 1
 Conflict discovered in file 'libcomplex-custom/src/code.c'.
 Select: (p) postpone, (df) diff-full, (e) edit, (m) merge,
-        (mc) mine-conflict, (tc) theirs-conflict, (s) show all options: 
+        (mc) mine-conflict, (tc) theirs-conflict, (s) show all options: -->
+$ cd /chemin/vers/fournisseur
+$ svn merge http://svn.autrefournisseur.com/depot/libcomplex/tags/1.0.0 \
+            http://svn.autrefournisseur.com/depot/libcomplex/tags/1.0.1 \
+            libcomplex-perso
+-- Fusion des différences des URLs du dépôt externe dans '.':
+U    libcomplex-perso/src/code.h
+C    libcomplex-perso/src/code.c
+U    libcomplex-perso/README
+Résumé des conflits :
+  Text conflicts: 1
+Conflit découvert dans le fichier 'libcomplex-custom/src/code.c'.
+Select: (p) postpone, (df) diff-full, (e) edit, (m) merge,
+        (mc) mine-conflict, (tc) theirs-conflict, (s) show all options:
 </screen>
       </informalexample>
 
+<!--
       <para>As you can see, <command>svn merge</command> has merged
         the changes required to make libcomplex 1.0.0 look like
         libcomplex 1.0.1 into our working copy.  In our example, it has
@@ -7236,13 +8585,32 @@ Select: (p) postpone, (df) diff-full, (e) edit, (m) merge,
         customizations to what is now libcomplex 1.0.1 continue to
         make sense.  (See <xref linkend="svn.tour.cycle.resolve" />
         for more on resolving conflicts of this sort.)</para>
+-->
+      <para>Comme vous pouvez le constater, <command>svn merge</command>
+        a fusionné les modifications pour obtenir libcomplex 1.0.1 à
+        partir de libcomplex 1.0.0 dans votre copie de travail. Dans cet
+        exemple, il a même découvert et marqué un fichier comme étant en
+        conflit. Il semble que le fournisseur a modifié une zone d'un
+        des fichiers que nous avons personnalisé. Subversion détecte ce
+        conflit et nous donne la possibilité de le résoudre de manière
+        sécurisée, c'est-à-dire que nos modifications à ce qui est
+        maintenant libcomplex 1.0.1 puissent continuer à faire sens.
+        Pour plus d'informations sur la résolution des conflits de ce
+        type, reportez-vous à <xref
+        linkend="svn.tour.cycle.resolve" />.</para>
 
+<!--
       <para>Once we've resolved the conflicts and performed any
         testing or review we need, we can commit the changes to our
         vendor branch.</para>
+-->
+      <para>Une fois que nous avons résolu les conflits et effectué nos
+        tests ou passé en revue ce que est nécessaire, nous pouvons
+        propager les modifications vers notre branche
+        fournisseur.</para>
 
       <informalexample>
-        <screen>
+        <screen> <!--
 $ svn status libcomplex-custom
 M       libcomplex-custom/src/code.h
 M       libcomplex-custom/src/code.c
@@ -7253,11 +8621,23 @@ Sending        libcomplex-custom/README
 Sending        libcomplex-custom/src/code.h
 Sending        libcomplex-custom/src/code.c
 Transmitting file data ...
-Committed revision 1282.
+Committed revision 1282.-->
+$ svn status libcomplex-perso
+M       libcomplex-perso/src/code.h
+M       libcomplex-perso/src/code.c
+M       libcomplex-perso/README
+$ svn commit -m "Mise à niveau de la branche fournisseur vers libcomplex 1.0.1." \
+             libcomplex-perso
+Sending        libcomplex-perso/README
+Sending        libcomplex-perso/src/code.h
+Sending        libcomplex-perso/src/code.c
+Transmission des données ...
+Révision 1282 propagée.
 $
 </screen>
       </informalexample>
 
+<!--
       <para>That, in a nutshell, is how to manage vendor branches when
         the original source is Subversion-accessible.  There are some
         notable shortcomings, though.  First, foreign repository
@@ -7270,13 +8650,32 @@ $
         cause no small amount of complication and frustration.
         Unfortunately, at this time, we don't have a particularly
         solid recommendation to offer to alleviate that pain.</para>
+-->
+      <para>Voilà, à grosses mailles, comment gérer des branches
+        fournisseurs quand les sources originales sont accessible par
+        Subversion. Il faut noter quand même quelques manques. D'abord,
+        les fusions de dépôts externes ne sont pas automatiquement
+        tracées par Subversion lui-même comme le sont les fusions
+        internes au dépôt. Cela veut dire que c'est à l'utilisateur de
+        savoir quels changements ont été appliqués sur la branche
+        fournisseur et de construire lui-même la prochaine fusion pour
+        mettre à niveau la branche. De plus, comme c'est le cas pour
+        toutes les fusions faites par Subversion, les renommages à
+        l'intérieur des sources de la fusion peuvent entrainer certaines
+        complications et frustrations. Malheureusement, à l'heure
+        actuelle, nous n'avons pas de recommandation particulière
+        réellement valable pour vous soulager dans ce cas.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.vendorbr.mirrored-sources">
+<!--
       <title>Vendor Branches from Mirrored Sources</title>
+-->
+      <title>Branches fournisseurs à partir de sources mirroirs</title>
 
+<!--
       <para>In the previous section
         (<xref linkend="svn.advanced.vendorbr.foreign-repos" />) we
         looked at how to implement and maintain a vendor branch when
@@ -7293,13 +8692,40 @@ $
         cleanly as possible.  So let's examine an approach to vendor
         branches in which the third-party library's various releases
         are mirrored within our own repository.</para>
+-->
+      <para>Dans le paragraphe précédent (<xref
+        linkend="svn.advanced.vendorbr.foreign-repos" />) nous avons vu
+        comment implémenter et maintenir une branche fournisseur quand
+        celui-ci fournit un accès <foreignphrase>via</foreignphrase>
+        Subversion, ce qui est le scénario idéal pour les branches
+        fournisseurs. Subversion se distingue particulièrement lorsqu'il
+        s'agit de fusionner des contenus gérés par Subversion.
+        Malheureusement, ce n'est pas toujours le cas. Souvent, un
+        projet dépend d'une bibliothèque qui n'est accessible que
+        <foreignphrase>via</foreignphrase> des mécanismes
+        non-Subversion, tels que des archives compressées de code
+        source. Dans ces circonstances, nous recommandons fortement
+        de faire tout ce que vous pouvez pour insérer ces données
+        non-Subversion dans Subversion de la manière la plus propre
+        possible. Examinons donc une approche de branche fournisseur
+        dans laquelle les différentes versions de la bibliothèque tierce
+        sont répliquées dans votre propre dépôt.</para>
 
+<!--
       <para>Setting up the vendor branch the first time is pretty
         simple, really.  For our example, we'll assume that libcomplex
         1.0.0 is delivered via the common tarball mechanism.  To
         create our vendor branch, we'll first get the contents of the
         libcomplex 1.0.0 tarball into our repository as a read-only
         (by convention only) vendor tag of sorts.</para>
+-->
+      <para>Configurer la branche fournisseur pour la première fois est
+        très simple, vraiment. Dans notre exemple, nous considérerons
+        que libcomplex 1.0.0 est fournie dans une archive compressée
+        classique. Pour créer notre branche fournisseur, nous allons
+        dans un premier temps copier le contenu de l'archive dans notre
+        dépôt comme une sorte d'arborescence étiquetée fournisseur en
+        lecture seule (par convention uniquement).</para>
 
       <informalexample>
         <screen>
@@ -7311,7 +8737,7 @@ libcomplex-1.0.0/LICENSE
 libcomplex-1.0.0/src/code.c
 libcomplex-1.0.0/tests
 libcomplex-1.0.0/tests/TODO
-$ svn import libcomplex-1.0.0 \
+$ svn import libcomplex-1.0.0 \<!--
              http://svn.example.com/projects/vendor/libcomplex-1.0.0 \
              --no-ignore --no-auto-props \
              -m "Import libcomplex 1.0.0 sources."
@@ -7323,44 +8749,89 @@ Adding         libcomplex-custom/src
 Adding         libcomplex-custom/src/code.h
 Adding         libcomplex-custom/src/code.c
 Transmitting file data .......................................
-Committed revision 1160.
+Committed revision 1160.-->
+             http://svn.exemple.com/projets/vendor/libcomplex-1.0.0 \
+             --no-ignore --no-auto-props \
+             -m "import des sources de libcomplex 1.0.0."
+Ajout         libcomplex-custom
+Ajout         libcomplex-custom/README
+Ajout         libcomplex-custom/LICENSE
+&hellip;
+Ajout         libcomplex-custom/src
+Ajout         libcomplex-custom/src/code.h
+Ajout         libcomplex-custom/src/code.c
+Transmission des données .......................................
+Révision 1160 propagée.
 $
 </screen>
       </informalexample>
 
+<!--
       <para>Note that in our example, we used
-        the <option>--no-ignore</option> option during import so that
+        the <option>- -no-ignore</option> option during import so that
         Subversion is sure to pick up every file in the vendor drop
         and not to omit any of them.  We also supply
-        the <option>--no-auto-props</option> option so that our client
+        the <option>- -no-auto-props</option> option so that our client
         doesn't manufacture property information which isn't present
         in the vendor drop.<footnote><para>Technically, we could let
         the auto-props feature do its thing, but the key to making
         that work well is ensuring that each vendor drop gets
         identical auto-prop treatment.</para></footnote>.</para>
-       
+-->
+      <para>Notez que dans l'exemple, nous avons utilisé l'option
+        <option>--no-ignore</option> pour l'import de manière à ce que
+        Subversion récupère bien tous les fichiers de la livraison. Nous
+        avons également utilisé l'option
+        <option>--no-auto-props</option> afin que notre client n'affecte
+        pas de lui-même des propriétés qui ne seraient pas présentes
+        dans l'archive officielle<footnote><para>Techniquement, nous
+        pourrions laisser la fonctionnalité auto-props faire son travail
+        mais l'essentiel,c'est que chaque archive du fournisseur subisse
+        exactement le même traitement pour les propriétés
+        automatiques.</para></footnote>.</para>
+
+<!--
       <para>Now that the first vendor release drop is present in our
         repository, we can create our vendor branch from it just as we
         would create any other branch&mdash;using <command>svn
         copy</command>.</para>
+-->
+      <para>Maintenant que la première archive du fournisseur est
+        présente dans notre dépôt, nous pouvons nous en servir comme
+        point de départ pour créer notre branche fournisseur en
+        utilisant <command>svn copy</command> comme pour toute autre
+        branche.</para>
 
       <informalexample>
-        <screen>
+        <screen> <!--
 $ svn copy http://svn.example.com/projects/vendor/libcomplex-1.0.0 \
            http://svn.example.com/projects/vendor/libcomplex-custom \
            -m "Initialize libcomplex vendor branch from libcomplex 1.0.0."
-Committed revision 1161.
+Committed revision 1161.-->
+$ svn copy http://svn.exemple.com/projets/vendor/libcomplex-1.0.0 \
+           http://svn.exemple.com/projets/vendor/libcomplex-perso \
+           -m "Initialisation de la branche fournisseur libcomplex à partir de libcomplex 1.0.0."
+Révision 1161 propagée.
 $
 </screen>
       </informalexample>
 
+<!--
       <para>Okay.  At this point we have a vendor branch based on
         libcomplex 1.0.0.  We are now poised to begin making the
         customizations to libcomplex required for our
         purposes&mdash;committing them directly to the vendor branch
         we've created&mdash;and then to start using our customized
         libcomplex in our own application.</para>
+-->
+      <para>Parfait. Ici, nous avons une branche fournisseur basée sur
+        libcomplex 1.0.0. Nous sommes maintenant aptes à personnaliser
+        libcomplex pour nos besoins propres, en propageant directement
+        les modifications vers la branche fournisseur que  nous venons
+        de créer. Puis, nous pouvons utilisé notre libcomplex
+        personnalisée dans nos applications.</para>
 
+<!--
       <para>Some time later, libcomplex 1.0.1 is released.  After
         reviewing its changes, we decide we'd like to upgrade our
         vendor branch to the new version.  In order to perform that
@@ -7373,7 +8844,23 @@ $
         repository</emphasis>.  Afterwards, we'll use the 2-URL form
         of the <command>svn merge</command> command to replicate those
         same changes into our vendor branch.</para>
+-->
+      <para>Quelques temps plus tard, libcomplex 1.0.1 est publiée.
+        Après avoir passé en revue les modifications,  nous décidons de
+        mettre à niveau notre branche fournisseur vers cette nouvelle
+        version. Afin d'effectuer cette mise à niveau, nous devons
+        essentiellement appliquer le même ensemble de modifications à
+        notre branche fournisseur que le fournisseur a fait entre la
+        version 1.0.0 et la version 1.0.1 de sa bibliothèque, ceci sans
+        écraser nos propres personnalisations. La façon la plus sûre de
+        le faire est d'insérer libcomplex 1.0.1 dans notre dépôt,
+        <emphasis>comme un delta vis-à-vis du code de libcomplex 1.0.0
+        de notre dépôt</emphasis>. Ensuite, nous utiliserons la forme
+        2-URL de la sous-commande <command>svn merge</command> pour
+        répliquer ces mêmes modifications vers notre branche
+        fournisseur.</para>
 
+<!--
       <para>As it turns out, there are several different approaches we
         can take to to get libcomplex 1.0.1 into our repository in the
         right way.<footnote><para>Using another <command>svn
@@ -7383,7 +8870,16 @@ $
         ancestry.</para></footnote>  The approach we'll describe here
         is relatively rudimentary, but it will serve our illustrative
         needs.</para>
+-->
+      <para>Il existe plusieurs manières d'insérer correctement
+        libcomplex 1.0.1 dans notre dépôt<footnote><para>Utiliser une
+        autre <command>svn import</command> <emphasis>ne serait pas
+        correct</emphasis>, puisque libcomplex 1.0.1 et 1.0.0 se
+        retrouveraient sans aucun ancêtre commun.</para></footnote>.
+        L'approche que nous décrivons ici est relativement rudimentaire,
+        mais elle convient pour illustrer notre exemple.</para>
 
+<!--
       <para>Remember, we want our mirror of the libcomplex 1.0.1
         vendor drop to share ancestry with our 1.0.0 vendor drop,
         which will produce the best results later when we need to
@@ -7392,26 +8888,51 @@ $
         of our previously created libcomplex-1.0.0 <quote>vendor
         tag</quote>&mdash;a copy which will eventually become a
         replica of libcomplex 1.0.1.</para>
-        
+-->
+      <para>Rappelez-vous que nous voulons que notre replique de
+        la livraison libcomplex-1.0.1 partage des ancêtres avec notre
+        livraison 1.0.0, afin de produire plus tard les meilleurs
+        résultats quand nous devrons fusionner les modifications entre
+        les archives vers la branche fournisseur. Nous allons commencer
+        par créer une branche libcomplex-1.0.1 comme copie de notre
+        branche <quote>étiquetée fournisseur</quote> libcomplex-1.0.0.
+        Cette copie sera destinée à devenir une réplique de
+        libcomplex 1.0.1.</para>
+
       <informalexample>
-        <screen>
+        <screen><!--
 $ svn copy http://svn.example.com/projects/vendor/libcomplex-1.0.0 \
            http://svn.example.com/projects/vendor/libcomplex-1.0.1 \
            -m "Setup a construction zone for libcomplex 1.0.1."
-Committed revision 1282.
+Committed revision 1282.-->
+$ svn copy http://svn.exemple.com/projets/vendor/libcomplex-1.0.0 \
+           http://svn.exemple.com/projets/vendor/libcomplex-1.0.1 \
+           -m "Construction de la zone pour accueillir libcomplex 1.0.1."
+Révision 1282 propagée.
 $
 </screen>
       </informalexample>
 
+<!--
       <para>What we need now is to make a working copy of our
         libcomplex-1.0.1 branch, and then to make it actually look
         like libcomplex 1.0.1.  To do this, we'll take advantage of
         the fact that <command>svn checkout</command> can overlay an
-        existing directory and, if the <option>--force</option> option
+        existing directory and, if the <option>- -force</option> option
         is provided, do so in manner that allows the differences
         between the checked-out tree and the target tree that the
         checkout overlayed to remain as local modifications in the new
         working copy.</para>
+-->
+      <para>Nous avons besoin maintenant d'avoir une copie de travail de
+        notre branche libcomplex-1.0.1 et de la faire ressembler à
+        libcomplex 1.0.1. Pour ce faire, nous allons profiter du fait
+        que  <command>svn checkout</command> peut agir en superposition
+        dans un répertoire existant et, si l'option
+        <option>--force</option> est fournie, alors les différences
+        entre l'arborescence extraite et l'arborescence cible sur
+        laquelle est appliquée l'extraction seront marquées comme
+        modifications locales de la nouvelle copie de travail.</para>
 
       <informalexample>
         <screen>
@@ -7422,8 +8943,9 @@ libcomplex-1.0.1/LICENSE
 &hellip;
 libcomplex-1.0.1/src/code.c
 libcomplex-1.0.1/tests
-libcomplex-1.0.1/tests/TODO
-$ svn checkout http://svn.example.com/projects/vendor/libcomplex-1.0.1 \
+libcomplex-1.0.1/tests/TODO<!--
+$ svn checkout http://svn.example.com/projects/vendor/libcomplex-1.0.1 \-->
+$ svn checkout http://svn.exemple.com/projets/vendor/libcomplex-1.0.1 \
                libcomplex-1.0.1 \
                --force
 E    libcomplex-1.0.1/README
@@ -7432,8 +8954,9 @@ E    libcomplex-1.0.1/INSTALL
 &hellip;
 E    libcomplex-1.0.1/src/code.c
 E    libcomplex-1.0.1/tests
-E    libcomplex-1.0.1/tests/TODO
-Checked out revision 1282.
+E    libcomplex-1.0.1/tests/TODO<!--
+Checked out revision 1282.-->
+Révision 1282 extraite.
 $ svn status libcomplex-1.0.1
 M       libcomplex-1.0.1/src/code.h
 M       libcomplex-1.0.1/src/code.c
@@ -7442,12 +8965,22 @@ $
 </screen>
       </informalexample>
 
+<!--
       <para>As you can see, after checking out what was really
         libcomplex 1.0.0 atop the libcomplex 1.0.1 exploded tarball,
         we are left with a working copy that contains local
         modifications&mdash;those modifications required to morph our
         previous vendor release drop into our new one.</para>
+-->
+      <para>Comme vous pouvez le constater, après avoir extrait ce
+        qu'était réellement libcomplex 1.0.0 <quote>par dessus</quote>
+        l'archive décompressée de libcomplex 1.0.1, nous obtenons une
+        copie de travail avec des modifications locales (les
+        modifications qui correspondent aux différences entre la
+        précédente version du fournisseur que nous avions intégrée et la
+        nouvelle).</para>
 
+<!--
       <para>Admittedly, this is a pretty simple example.  The changes
         required to perform this particular upgrade involved merely
         content changes to existing files.  In reality, new versions
@@ -7458,37 +8991,76 @@ $
         vendor drop it claims to reflect.  We'll leave the details of
         such transformations as an exercise to the
         reader.<footnote><para>Here's a hint, though: <userinput>svn
-        add --force /path/to/working-copy --no-ignore
-        --no-auto-props</userinput> is super handy for adding any new
+        add - -force /path/to/working-copy - -no-ignore
+        - -no-auto-props</userinput> is super handy for adding any new
         vendor drop items to version control in this
         situation.</para></footnote></para>
+-->
+      <para>Certes, c'est un exemple particulièrement simple. Les
+        modifications pour effectuer la mise à niveau ne font intervenir
+        que quelques modifications dans des fichiers existants. Dans la
+        réalité, les nouvelles versions des bibliothèques tierces
+        ajouteront ou déplaceront sûrement des fichiers ou des dossiers,
+        renommeront des fichiers ou des dossiers, etc. Dans ces cas, il
+        sera plus compliqué de calquer la nouvelle version étiquetée
+        avec la livraison qu'elle est censée représenter. Nous
+        laisserons résoudre les détails de cette transformation en
+        exercice au lecteur <footnote><para>Un début de solution peut
+        être&nbsp;:<userinput>svn add --force
+        /chemin/vers/copie-de-travail --no-ignore
+        --no-auto-props</userinput> est super pratique pour ajouter tout
+        nouvel élément de la version fournisseur en suivi de versions
+        dans cette situation.</para></footnote>.</para>
 
+<!--
       <para>However we make it happen, once our new vendor tag working
         copy is reconciled with the original source distribution, we
         can commit those changes to our repository.</para>
+-->
+      <para>Quelle que soit la manière dont nous y sommes arrivés, nous
+       disposons maintenant d'une copie de travail de la nouvelle
+       version étiquetée qui reflète exactement la livraison originale
+       du fournisseur. Nous pouvons maintenant propager ces
+       modifications à notre dépôt.</para>
 
       <informalexample>
-        <screen>
+        <screen><!--
 $ svn commit -m "Upgrade vendor branch to libcomplex 1.0.1." \
              libcomplex-1.0.1
 Sending        libcomplex-1.0.1/README
 Sending        libcomplex-1.0.1/src/code.h
 Sending        libcomplex-1.0.1/src/code.c
 Transmitting file data ...
-Committed revision 1283.
+Committed revision 1283.-->
+$ svn commit -m "Mise à niveau de la branche fournisseur vers libcomplex 1.0.1." \
+             libcomplex-1.0.1
+Envoi      libcomplex-1.0.1/README
+Envoi      libcomplex-1.0.1/src/code.h
+Envoi      libcomplex-1.0.1/src/code.c
+Transmission des données ...
+Révision 1283 propagée.
 $
 </screen>
       </informalexample>
 
+<!--
       <para>We're finally ready to upgrade our vendor branch.
         Remember, our goal is to get the changes made by the vendor
         between the 1.0.0 and 1.0.1 releases of their library into our
         vendor branch.  There is where a 2-URL <command>svn
         merge</command> operation, applied to a working copy of our
         vendor branch, comes into play.</para>
+-->
+      <para>Nous sommes finalement prêt à mettre à niveau notre branche
+        fournisseur, notre but étant d'obtenir les changements faits par
+        le fournisseur entre les versions 1.0.0 et 1.0.1 de sa
+        bibliothèque dans notre branche fournisseur. C'est là que la
+        forme à 2-URL de <command>svn merge</command>, appliquée à une
+        copie de travail de notre branche fournisseur, entre en
+        scène.</para>
 
       <informalexample>
-        <screen>
+        <screen><!--
 $ svn checkout http://svn.example.com/projects/vendor/libcomplex-custom \
                libcomplex-custom
 E    libcomplex-custom/README
@@ -7498,22 +9070,40 @@ E    libcomplex-custom/INSTALL
 E    libcomplex-custom/src/code.c
 E    libcomplex-custom/tests
 E    libcomplex-custom/tests/TODO
-Checked out revision 1283.
-$ cd libcomplex-custom
+Checked out revision 1283.-->
+$ svn checkout http://svn.exemple.com/projets/vendor/libcomplex-perso \
+               libcomplex-perso
+E    libcomplex-perso/README
+E    libcomplex-perso/LICENSE
+E    libcomplex-perso/INSTALL
+&hellip;
+E    libcomplex-perso/src/code.c
+E    libcomplex-perso/tests
+E    libcomplex-perso/tests/TODO
+Révision 1283 extraite.<!--
+$ cd libcomplex-custom-->
+$ cd libcomplex-perso
 $ svn merge ^/vendor/libcomplex-1.0.0 \
-            ^/vendor/libcomplex-1.0.1
---- Merging differences between repository URLs into '.':
+            ^/vendor/libcomplex-1.0.1<!--
+- - Merging differences between repository URLs into '.':-->
+--- Fusion des différences entre les URL du dépôt dans '.' :
 U    src/code.h
 C    src/code.c
-U    README
+U    README<!--
 Summary of conflicts:
   Text conflicts: 1
 Conflict discovered in file 'src/code.c'.
 Select: (p) postpone, (df) diff-full, (e) edit, (m) merge,
-        (mc) mine-conflict, (tc) theirs-conflict, (s) show all options: 
+        (mc) mine-conflict, (tc) theirs-conflict, (s) show all options: -->
+Résumé des conflits :
+  Text conflicts: 1
+Conflit découvert dans le fichier 'src/code.c'.
+Select: (p) postpone, (df) diff-full, (e) edit, (m) merge,
+        (mc) mine-conflict, (tc) theirs-conflict, (s) show all options:
 </screen>
       </informalexample>
 
+<!--
       <para>As you can see, <command>svn merge</command> has merged
         the requisite changes into our working copy, flagging a
         conflict where the vendor modified the same region of one of
@@ -7525,26 +9115,50 @@ Select: (p) postpone, (df) diff-full, (e) edit, (m) merge,
         make sense.  Once we've resolved the conflicts and performed
         any testing or review we need, we can commit the changes to
         our vendor branch.</para>
+-->
+      <para>Comme vous pouvez le constater, <command>svn merge</command>
+        a fusionné les modifications demandées dans notre copie de
+        travail, marquant un conflit où le fournisseur a modifié la
+        même zone d'un fichier que nous lors de notre personnalisation.
+        Subversion détecte le conflit et nous donne l'opportunité de le
+        résoudre (en utilisant les méthodes décrites dans <xref
+        linkend="svn.tour.cycle.resolve" />) de façon à ce que nos
+        personnalisations relatives à ce qui est maintenant libcomplex
+        1.0.1 fassent toujours sens. Une fois que nous avons résolu les
+        conflits et effectué les tests et revues nécessaires, nous
+        pouvons propager les modifications à notre branche
+        fournisseur.</para>
 
       <informalexample>
         <screen>
 $ svn status
 M       src/code.h
 M       src/code.c
-M       README
+M       README<!--
 $ svn commit -m "Upgrade vendor branch to libcomplex 1.0.1."
 Sending        README
 Sending        src/code.h
 Sending        src/code.c
 Transmitting file data ...
-Committed revision 1284.
+Committed revision 1284.-->
+$ svn commit -m "Mise à niveau de la branche fournisseur vers libcomplex 1.0.1."
+Envoi     README
+Envoi     src/code.h
+Envoi     src/code.c
+Transmission des données ...
+Révision 1294 propagée.
 $
 </screen>
       </informalexample>
 
+<!--
       <para>Our vendor branch upgrade is complete.  And the next time
         we need to upgrade that branch, we'll follow the same
         procedure we used to upgrade it this time.</para>
+-->
+      <para>La mise à niveau de notre branche fournisseur est terminée.
+        Et la prochaine fois que nous aurons besoin de mettre à niveau
+        cette branche, nous suivrons la même procédure.</para>
 
     </sect2>
   </sect1>
@@ -7553,8 +9167,12 @@ $
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.branchmerge.when">
+<!--
     <title>To Branch or Not to Branch?</title>
+-->
+    <title>Créer une branche ou ne pas créer une branche&nbsp;?</title>
 
+<!--
     <para>To branch or not to branch&mdash;that is an interesting
       question.  This chapter has provided thus far a pretty deep dive
       into the waters of branching and merging, topics which have
@@ -7568,7 +9186,24 @@ $
       Rather, the social impact of the decision often carries more
       weight.  Let's examine some of the benefits and costs of using
       branches in a software project.</para>
+-->
+    <para>Créer une branche ou ne pas créer une branche&nbsp;? Voilà une
+      question intéressante. Ce chapitre vous a montré jusqu'à
+      maintenant force détails quant aux créations de branches et aux
+      fusions, des sujets qui ont historiquement été la plus grande
+      source de confusion pour les utilisateurs. Comme si l'enchainement
+      mécanique des actions qui sont mises en œuvre dans la création et
+      la fusion de branches n'était pas assez compliqué, quelques
+      utilisateurs restent à se demander si cela vaut le coup de créer
+      une branche ou pas. Comme vous l'avez appris, Subversion gère les
+      scénarios classiques de création et gestion de branches. Ainsi, la
+      décision de créer ou pas une branche d'un projet ne relève pas de
+      critères techniques. C'est davantage les impacts sociaux qui
+      pèsent le plus dans la décision. Examinons quelques avantages et
+      inconvénients d'utiliser des branches dans un projet
+      logiciel.</para>
 
+<!--
     <para>The most obvious benefit of working on a branch is
       isolation.  Changes made to the branch don't affect the other
       lines of development in the project; changes made to those other
@@ -7577,7 +9212,19 @@ $
       fixes, major code rewrites, and so on.  No matter how much stuff
       Sally breaks on her branch, Harry and the rest of the team can
       continue with their work unhindered outside the branch.</para>
+-->
+    <para>Le bénéfice le plus évident de travailler sur une branche est
+      l'isolation. Les modifications faites à la branche n'affectent pas
+      les autres lignes de développement du projet&nbsp;; les
+      modifications des autres lignes n'affectent pas la branche. Dans
+      un certain sens, une branche peut servir de terrain
+      d'expérimentation de nouvelles fonctionnalités, de correction pour
+      des bogues complexes, des réécritures majeures du code, etc. Peu
+      importe la quantité de choses cassées dans la branche de Sally,
+      Harry et le reste de l'équipe peuvent continuer leur travail
+      sans entrave, en dehors de la branche.</para>
 
+<!--
     <para>Branches also provide a great way to organize related
       changes into readily identifiable collections.  For example, the
       changes which comprise the complete solution to a particular bug
@@ -7591,7 +9238,24 @@ $
       yourself referring only to that branch by its name in
       conversation, in issue tracker comments, and when porting
       changes.</para>
+-->
+    <para>Les branches fournissent aussi un mécanisme très élégant pour
+      organiser les modifications qui sont reliées entre elles dans des
+      ensembles immédiatement reconnaissables. Par exemple, les
+      modifications qui résolvent complètement un bogue particulier
+      peuvent se trouver dans une liste de révisions dont les numéros ne
+      se suivent pas. Vous pouvez les énoncer comme <quote>les révisions
+      1534, 1543, 1587 und 1588</quote>. Vous les indiquerez sûrement
+      à la main (ou autrement) dans le système de suivi de bogues qui
+      prend en compte ce bogue. Lorsque vous porterez cette correction
+      de bogue vers d'autres versions du produit, vous devrez vous
+      assurer que vous n'oubliez aucune révision. Mais si ces
+      modifications ont toutes été faites dans la même branche, vous
+      pourrez vous référer uniquement à cette branche, par son nom, dans
+      les conversations, dans les commentaires du système de suivi de
+      bogues et lorsque vous portez les modifications ailleurs.</para>
 
+<!--
     <para>The unfortunate downside of branches, though, is that the
       very isolation that makes them so
       useful <emphasis>can</emphasis> be at odds with the
@@ -7614,7 +9278,34 @@ $
       generally benefit from an orderly approach to version control
       where code and code changes enjoy the review and comprehension
       of more than one team member.</para>
+-->
+    <para>L'inconvénient des branches, cependant, c'est que cette
+      isolation forte qui les rend si utiles <emphasis>peut</emphasis>
+      parfois aller à l'encontre du besoin de collaboration de l'équipe
+      de projet. En fonction des habitudes de travail de vos collègues,
+      les modifications faites à votre branches ne recevront peut-être
+      pas toutes les revues, critiques et tests que subissent les
+      changements de la ligne principale de développement. L'isolation
+      de la branche peut encourager les utilisateurs à oublier certaines
+      bonnes pratiques de la gestion de versions, entrainant un
+      historique des versions difficile à exploiter <foreignphrase>a
+      posteriori</foreignphrase>. Les développeurs de branches à longue
+      durée de vie doivent parfois travailler beaucoup plus dur pour
+      s'assurer que la direction vers laquelle évolue leur branche
+      isolée est bien en harmonie avec la direction prise par leurs
+      collègues dans la ligne de développement principale. Maintenant,
+      ces inconvénients peuvent s'avérer sans objet si le développement
+      de la branche consiste justement à explorer une nouvelle souche
+      du logiciel dont le résultat n'a pas vocation à réintégrer la
+      ligne de développement principale (l'application stricte des
+      politiques de développement ne doit pas freiner
+      l'innovation&nbsp;!). En tout état de cause, les projets retirent
+      en général un bon bénéfice d'une approche méthodique dans la
+      gestion de versions où le code et les modifications font l'objet
+      d'un passage en revue et de compréhension par plus d'un membre de
+      l'équipe.</para>
 
+<!--
     <para>That's not to say that there are no technical penalties to
       branching.  Pardon us while we <quote>go meta</quote> for a bit
       here.  If you think about it, every time you checkout a
@@ -7648,10 +9339,53 @@ $
       the <literal>svn:mergeinfo</literal> property we've discussed in
       this chapter) and history-crunching arithmetic, and generally
       offer more opportunities for something to go awry.</para>
+-->
+    <para>En fin de compte, nous ne proclamons pas qu'il n'y a aucun
+      inconvénient technique à créer des branches. Pardonnez-nous de
+      <quote>diverger</quote> quelque peu dans ce paragraphe. Si vous
+      réfléchissez bien, à chaque fois que vous extrayez une copie de
+      travail Subversion, vous créez en quelque sorte une branche de
+      votre projet. C'est une branche d'une sorte un peu spéciale, qui
+      ne réside que sur la machine cliente, pas dans le dépôt. Vous
+      synchronisez cette branche avec les modifications faites dans le
+      dépôt par la commande <command>svn update</command> (qui agit
+      d'une certaine manière comme une version simplifiée de la commande
+      <command>svn merge</command>
+      <footnote><para>En fait, vous <emphasis>pourriez</emphasis>
+      utiliser <userinput>svn merge
+      -r<replaceable>DERNIERE_REV_EXTRAITE</replaceable>:HEAD
+      .</userinput> dans votre copie de travail pour fusionner toutes
+      les modifications en provenance du dépôt depuis votre dernière
+      extraction si vous le vouliez&nbsp;!</para></footnote>.
+      Vous réintégrer effectivement la branche à chaque fois que vous
+      lancez <command>svn commit</command>. Ainsi, dans un certain sens,
+      les utilisateurs de Subversion créent des branches et les
+      fusionnent sans arrêt. Compte tenu des similitudes entre la mise
+      à jour et la fusion, il n'est pas étonnant que les points durs de
+      Subversion (la gestion des renommages des fichiers et de dossiers
+      ainsi que les conflits d'arborescences) soient aussi
+      problématiques pour les opérations <command>svn update</command>
+      et <command>svn merge</command>. Malheureusement, <command>svn
+      merge</command> souffre encore plus, précisément parce que, alors
+      que <command>svn update</command> n'est qu'un cas particulier,
+      simplifié, d'une opération de fusion, une véritable opération de
+      fusion Subversion n'est pas un cas particulier ou simplifié. C'est
+      pourquoi les opérations de fusion sont beaucoup plus lentes de les
+      mises à jour, demandent d'avoir un traçage de l'historique
+      (<foreignphrase>via</foreignphrase> la propriété
+      <literal>svn:mergeinfo</literal> que nous avons abordée dans ce
+      chapitre) et des calculs sur cet historique, introduisant
+      généralement beaucoup d'occasions pour que quelque chose se passe
+      de travers.</para>
 
+<!--
     <para>To branch or not to branch?  Ultimately, that depends on
       what your team needs in order to find that sweet balance of
       collaboration and isolation.</para>
+-->
+    <para>Créer une branche ou ne pas créer une branche&nbsp;?
+    Finalement, cela dépend des besoins de votre équipe pour trouver le
+    juste équilibre entre le travail collaboratif et l'isolation.</para>
 
   </sect1>
 
@@ -7659,8 +9393,12 @@ $
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.branchmerge.summary">
+<!--
     <title>Summary</title>
+-->
+    <title>Résumé</title>
 
+<!--
     <para>We covered a lot of ground in this chapter.  We
       discussed the concepts of tags and branches and demonstrated
       how Subversion implements these concepts by copying directories
@@ -7671,101 +9409,189 @@ $
       mixed-location working copies.  And we talked about how one
       might manage the organization and lifetimes of branches in a
       repository.</para>
+-->
+    <para>Nous avons traité de nombreux sujets dans ce chapitre. Nous
+      avons présenté les concepts d'étiquettes et de branches et
+      montré comment Subversion implémente ces concepts en copiant des
+      répertoires avec la commande <command>svn copy</command>. Nous
+      avons expliqué comment utiliser <command>svn merge</command>
+      pour copier des modifications d'une branche à l'autre ou pour
+      revenir en arrière sur des modifications non-satisfaisantes.
+      Nous avons étudié l'utilisation de <command>svn switch</command>
+      pour créer des copies de travail mixtes, pointant vers des
+      emplacements variés d'un dépôt. Et nous avons évoqué la façon
+      dont on peut gérer l'organisation et le cycle de vie des branches
+      dans un dépôt.</para>
 
+<!--
     <para>Remember the Subversion mantra: branches and tags are cheap.
       So don't be afraid to use them when needed!</para>
+-->
+    <para>Tâchez de garder en mémoire la devise de Subversion&nbsp;:
+      les branches et les étiquettes ne coûtent quasiment rien. Donc
+      n'ayez pas peur de les utiliser quand vous en avez
+      besoin&nbsp;!</para>
 
+<!--
     <para>As a helpful reminder of all the operations we discussed,
       here is handy reference table you can consult as
       you begin to make use of branches.</para>
+-->
+    <para>En guise de pense-bête face à toutes les opérations dont nous
+      avons parlé, voici un tableau de référence très pratique, à
+      consulter lorsque vous commencerez à utiliser des branches.</para>
 
     <table id="svn.branchmerge.summary.tbl-1">
+<!--
       <title>Branching and merging commands</title>
+-->
+      <title>Commandes de gestion des branches et des fusions</title>
       <tgroup cols="2">
         <thead>
           <row>
+<!--
             <entry>Action</entry>
             <entry>Command</entry>
+-->
+            <entry>Action</entry>
+            <entry>Commande</entry>
           </row>
         </thead>
         <tbody>
           <row>
+<!--
             <entry>Create a branch or tag</entry>
+-->
+            <entry>Créer une branche ou une étiquette</entry>
             <entry><userinput>svn copy <replaceable>URL1</replaceable> <replaceable>URL2</replaceable></userinput></entry>
           </row>
 
           <row>
+<!--
             <entry>Switch a working copy to a branch or tag</entry>
+-->
+            <entry>Faire pointer une copie de travail vers une branche
+              ou une étiquette</entry>
             <entry><userinput>svn switch <replaceable>URL</replaceable></userinput></entry>
           </row>
 
           <row>
+<!--
             <entry>Synchronize a branch with trunk</entry>
+-->
+            <entry>Synchroniser une branche avec le tronc</entry>
             <entry><userinput>svn merge <replaceable>trunkURL</replaceable>; svn commit</userinput></entry>
           </row>
 
           <row>
+<!--
             <entry>See merge history or eligible changesets</entry>
             <entry><userinput>svn mergeinfo <replaceable>SOURCE</replaceable> <replaceable>TARGET</replaceable></userinput></entry>
+-->
+            <entry>Voir l'historique des fusions ou les ensembles de modifications susceptibles d'être fusionnés</entry>
+<!--
+            <entry><userinput>svn mergeinfo <replaceable>SOURCE</replaceable> <replaceable>TARGET</replaceable></userinput></entry>
+-->
+            <entry><userinput>svn mergeinfo <replaceable>SOURCE</replaceable> <replaceable>CIBLE</replaceable></userinput></entry>
           </row>
 
           <row>
+<!--
             <entry>Merge a branch back into trunk</entry>
+-->
+            <entry>Réintégrer une branche dans le tronc</entry>
             <entry><userinput>svn merge <replaceable>branchURL</replaceable>; svn commit</userinput></entry>
           </row>
 
           <row>
+<!--
             <entry>Merge one specific change</entry>
+-->
+            <entry>Fusionner une modification précise</entry>
             <entry><userinput>svn merge -c <replaceable>REV</replaceable> <replaceable>URL</replaceable>; svn commit</userinput></entry>
           </row>
 
           <row>
+<!--
             <entry>Merge a range of changes</entry>
+-->
+            <entry>Fusionner un intervalle de modifications</entry>
             <entry><userinput>svn merge -r <replaceable>REV1</replaceable>:<replaceable>REV2</replaceable> <replaceable>URL</replaceable>; svn commit</userinput></entry>
           </row>
 
           <row>
+<!--
             <entry>Block a change from automatic merging</entry>
+-->
+            <entry>Empêcher qu'une modification ne soit fusionnée
+              automatiquement</entry>
             <entry><userinput>svn merge -c <replaceable>REV</replaceable> --record-only <replaceable>URL</replaceable>; svn commit</userinput></entry>
           </row>
 
           <row>
+<!--
             <entry>Preview a merge</entry>
+-->
+            <entry>Prévisualiser une fusion</entry>
             <entry><userinput>svn merge <replaceable>URL</replaceable> --dry-run</userinput></entry>
           </row>
 
           <row>
+<!--
             <entry>Abandon merge results</entry>
+-->
+            <entry>Abandonner une fusion</entry>
             <entry><userinput>svn revert -R .</userinput></entry>
           </row>
 
           <row>
+<!--
             <entry>Resurrect something from history</entry>
+-->
+            <entry>Ressusciter un élément de l'historique</entry>
             <entry><userinput>svn copy <replaceable>URL</replaceable>@<replaceable>REV</replaceable> <replaceable>localPATH</replaceable></userinput></entry>
           </row>
 
           <row>
+<!--
             <entry>Undo a committed change</entry>
+-->
+            <entry>Revenir en arrière sur une modification déjà propagée</entry>
             <entry><userinput>svn merge -c -<replaceable>REV</replaceable> <replaceable>URL</replaceable>; svn commit</userinput></entry>
           </row>
 
           <row>
+<!--
             <entry>Examine merge-sensitive history</entry>
+-->
+            <entry>Examiner l'historique en tenant compte des
+              informations de fusion</entry>
             <entry><userinput>svn log -g; svn blame -g</userinput></entry>
           </row>
 
           <row>
+<!--
             <entry>Create a tag from a working copy</entry>
+-->
+            <entry>Créer une version étiquetée à partir d'une copie de
+              travail</entry>
             <entry><userinput>svn copy . <replaceable>tagURL</replaceable></userinput></entry>
           </row>
 
           <row>
+<!--
             <entry>Rearrange a branch or tag</entry>
+-->
+            <entry>Réorganiser une branche ou une version
+              étiquetée</entry>
             <entry><userinput>svn move <replaceable>URL1</replaceable> <replaceable>URL2</replaceable></userinput></entry>
           </row>
 
           <row>
+<!--
             <entry>Remove a branch or tag</entry>
+-->
+            <entry>Supprimer une branche ou une version étiquetée</entry>
             <entry><userinput>svn delete <replaceable>URL</replaceable></userinput></entry>
           </row>
         </tbody>
