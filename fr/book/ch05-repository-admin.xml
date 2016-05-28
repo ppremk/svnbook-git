@@ -3494,8 +3494,12 @@ $
 
     <!-- =============================================================== -->
     <sect2 id="svn.reposadmin.maint.setlog">
+<!--
       <title>Commit Log Message Correction</title>
-            
+-->
+      <title>Correction des messages de propagation</title>
+
+<!--
       <para>Sometimes a user will have an error in her log message (a
         misspelling or some misinformation, perhaps).  If the
         repository is configured (using the
@@ -3510,20 +3514,46 @@ $
         are not, by default, configured to allow changes to
         unversioned properties&mdash;except by an
         administrator.</para>
+-->
+      <para>Il arrive qu'un utilisateur se trompe dans son message de
+        propagation (une faute d'orthographe ou une coquille, par
+        exemple). Si le dépôt est configuré (en utilisant la procédure
+        automatique <literal>pre-revprop-change</literal>, voir <xref
+        linkend="svn.reposadmin.hooks"/>) pour accepter les
+        modifications de ce message après la fin de la propagation,
+        l'utilisateur peut corriger son message à distance en utilisant
+        <command>svn propset</command> (voir <xref
+        linkend="svn.ref.svn.c.propset"/>). Cependant, en raison de la
+        possibilité de perte d'information irrémédiable, les dépôts
+        Subversion ne sont pas configurés, par défaut, pour autoriser
+        les modifications de propriétés non suivies en versions &mdash;
+        sauf de la part d'un administrateur.</para>
 
+<!--
       <para>If a log message needs to be changed by an administrator,
         this can be done using <command>svnadmin setlog</command>.
         This command changes the log message (the
         <literal>svn:log</literal> property) on a given revision of a
         repository, reading the new value from a provided file.</para>
+-->
+      <para>Si un administrateur est amené à changer un message de
+        propagation, il peut le faire avec <command>svnadmin 
+        setlog</command>. Cette commande change le message de 
+        propagation (la propriété <literal>svn:log</literal>) d'une 
+        révision donnée du dépôt, la nouvelle valeur étant lue dans un 
+        fichier.</para>
 
       <informalexample>
-        <screen>
+        <screen><!--
 $ echo "Here is the new, correct log message" &gt; newlog.txt
 $ svnadmin setlog myrepos newlog.txt -r 388
+-->
+$ echo "Voici le nouveau message de propagation, en version corrigée" &gt; nouveau-message.txt
+$ svnadmin setlog mon-depot nouveau-message.txt -r 388
 </screen>
       </informalexample>
-      
+
+<!--
       <para>The <command>svnadmin setlog</command> command, by
         default, is still bound by the same protections against
         modifying unversioned properties as a remote client
@@ -3531,16 +3561,36 @@ $ svnadmin setlog myrepos newlog.txt -r 388
         <literal>post-revprop-change</literal> hooks are still
         triggered, and therefore must be set up to accept changes of
         this nature.  But an administrator can get around these
-        protections by passing the <option>--bypass-hooks</option>
+        protections by passing the <option>- -bypass-hooks</option>
         option to the <command>svnadmin setlog</command> command.</para>
- 
+-->
+      <para>La commande <command>svnadmin setlog</command>, par défaut,
+        possède les mêmes garde-fous pour empêcher de modifier des
+        propriétés non suivies en versions qu'un client distant (les 
+        procédures automatiques <literal>pre-</literal> et 
+        <literal>post-revprop-change</literal> sont toujours activées et
+        doivent donc être configurées afin d'accepter ce type de
+        changement. Mais un administrateur peut contourner ces
+        protections en passant l'option <option>--bypass-hooks</option>
+        à la commande <command>svnadmin setlog</command>.</para>
+
       <warning>
+<!--
         <para>Remember, though, that by bypassing the hooks, you are
           likely avoiding such things as email notifications of
           property changes, backup systems that track unversioned
           property changes, and so on.  In other words, be very
           careful about what you are changing, and how you change
           it.</para>
+-->
+        <para>Souvenez-vous cependant que, en contournant les procédures
+          automatiques, vous êtes susceptible de ne pas activer
+          certaines actions telles que la notification par email du
+          changement des propriétés, la sauvegarde par les systèmes qui
+          surveillent les propriétés non suivies en versions,&nbsp;etc. 
+          En d'autres termes, faites particulièrement attention aux
+          changements que vous apportez et à la manière dont vous le
+          faites.</para>
       </warning>
 
 
@@ -3548,8 +3598,12 @@ $ svnadmin setlog myrepos newlog.txt -r 388
 
     <!-- =============================================================== -->
     <sect2 id="svn.reposadmin.maint.diskspace">
+<!--
       <title>Managing Disk Space</title>
+-->
+      <title>Gestion de l'espace disque</title>
 
+<!--
       <para>While the cost of storage has dropped incredibly in the
         past few years, disk usage is still a valid concern for
         administrators seeking to version large amounts of data.
@@ -3559,11 +3613,26 @@ $ svnadmin setlog myrepos newlog.txt -r 388
         schedules.  It is useful to know what pieces of Subversion's
         repository data need to remain on the live site, which need to
         be backed up, and which can be safely removed.</para>
+-->
+      <para>Bien que le coût de stockage ait diminué de manière
+        drastique ces dernières années, l'utilisation de l'espace disque
+        reste une des préoccupations de l'administrateur qui doit suivre
+        en versions de grandes quantités de données. Chaque élément de
+        l'historique de chaque donnée stockée dans un dépôt actif doit
+        être sauvegardé ailleurs, peut-être même de nombreuses fois dans
+        le cas de sauvegardes tournantes. Il est utile de savoir quelles
+        données d'un dépôt Subversion doivent rester sur le site de
+        production, lesquelles doivent être sauvegardées et lesquelles
+        peuvent être supprimées sans risque.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.maint.diskspace.deltas">
+<!--
         <title>How Subversion saves disk space</title>
+-->
+        <title>Économie d'espace disque</title>
 
+<!--
         <para>
           <indexterm>
             <primary>deltification</primary>
@@ -3582,7 +3651,28 @@ $ svnadmin setlog myrepos newlog.txt -r 388
           be bulky&mdash;namely, the contents of versioned
           files&mdash;is stored at a much smaller size than the
           original full-text representation of that data.</para>
+-->
+        <para>
+          <indexterm>
+            <primary>différenciation</primary>
+          </indexterm>Pour garder un dépôt petit, Subversion utilise la
+          <firstterm>différenciation</firstterm> (ou <quote>stockage
+          différentiel</quote>) à l'intérieur du dépôt lui-même. La
+          différenciation implique l'encodage de la représentation d'un
+          groupe de données sous la forme d'un ensemble de différences
+          par rapport à un autre groupe de données. Si les deux groupes 
+          de données sont très similaires, la différenciation économise
+          de l'espace pour le groupe différencié &mdash; au lieu de
+          prendre le même espace que les données originales, le groupe
+          occupe juste l'espace nécessaire pour dire&nbsp;: <quote>je
+          ressemble à l'autre groupe de données là-bas, sauf pour les
+          deux ou trois changements qui suivent</quote>. Au final,
+          l'espace occupé par l'ensemble des données du dépôt 
+          (c'est-à-dire le contenu des fichiers suivis en versions) est 
+          beaucoup plus petit que la représentation textuelle originale 
+          de ces données.</para>
 
+<!--
         <para>
           <indexterm>
             <primary>representation sharing</primary>
@@ -3597,8 +3687,26 @@ $ svnadmin setlog myrepos newlog.txt -r 388
           which allows multiple files or file revisions with identical
           file content to refer to a single shared instance of that data
           rather than each having their own distinct copy thereof.</para>
+-->
+        <para>
+          <indexterm>
+            <primary>partage de représentation</primary>
+          </indexterm>Le stockage sous forme différenciée a fait partie
+            de l'architecture conceptuelle de Subverson dès le début de 
+            sa conception&nbsp;; et il a subi des améliorations au cours
+            des ans. Les dépôts créés avec la version 1.4 ou ultérieure
+            de Subversion bénéficient de la compression du contenu des
+            fichiers <quote>pleins-textes</quote>. Les dépôts créés 
+            avec la version 1.6 ou ultérieure de Subversion économisent
+            davantage d'espace disque grace au <firstterm>partage de
+            représentation</firstterm>, une fonctionnalité qui permet
+            à plusieurs fichiers ou révisions de fichiers dont le 
+            contenu est identique de faire référence à une seule 
+            instance partagée de ce contenu plutôt que chacun n'en 
+            conserve sa propre copie.</para>
 
         <note>
+<!--
           <para>Because all of the data that is subject to
             deltification in a BDB-backed repository is stored in a
             single Berkeley DB database file, reducing the size of the
@@ -3609,14 +3717,31 @@ $ svnadmin setlog myrepos newlog.txt -r 388
             database file.  So while deltification doesn't produce
             immediate space savings, it can drastically slow future
             growth of the database.</para>
+-->
+          <para>Comme toutes les données susceptibles de faire l'objet
+            d'une différenciation dans un dépôt BDB sont stockées dans
+            un seul fichier de la base Berkeley DB, la réduction de la
+            taille des données stockées ne se répercute pas 
+            immédiatement sur la taille du fichier de base de données
+            lui-même. Cependant, le gestionnaire Berkeley DB garde trace
+            en interne des enregistrements inutilisés du fichier de la 
+            base de données et les consommera en premier lorsque la
+            taille de la base de données augmente. Ainsi, alors que la
+            différenciation ne produit pas instantanément de gain 
+            d'espace, cela peut réduire drastiquement le rythme de 
+            croissance de la base de données.</para>
         </note>
 
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.maint.diskspace.deadtxns">
+<!--
         <title>Removing dead transactions</title>
+-->
+        <title>Suppression des transactions mortes</title>
 
+<!--
         <para>Though they are uncommon, there are circumstances in
           which a Subversion commit process might fail, leaving behind
           in the repository the remnants of the revision-to-be that
@@ -3629,14 +3754,34 @@ $ svnadmin setlog myrepos newlog.txt -r 388
           They don't do any real harm, other than consuming disk
           space.  A fastidious administrator may nonetheless wish to
           remove them.</para>
+-->
+        <para>Bien que rares, il y a des circonstances dans lesquelles
+          le déroulement d'une propagation Subversion peut mal se
+          terminer, laissant derrière elle dans le dépôt des restes de
+          cette tentative de propagation&nbsp;: une transaction
+          inachevée et toutes les modifications de fichiers et de
+          répertoires associées. Il peut y avoir plusieurs raisons à cet
+          échec&nbsp;: l'utilisateur a peut-être brutalement interrompu
+          l'opération côté client ou bien une coupure réseau s'est
+          peut-être produite au milieu de l'opération. Quoi qu'il en
+          soit, des transactions mortes peuvent apparaître. Elles ne
+          sont pas dangereuses mais elles consomment inutilement de
+          l'espace disque. Un administrateur consciencieux se doit
+          néanmoins de les supprimer.</para>
 
+<!--
         <para>You can use the <command>svnadmin lstxns</command>
           command to list the names of the currently outstanding
           transactions:</para>
+-->
+        <para>Vous pouvez utiliser la commande <command>svnadmin
+          lstxns</command> pour obtenir la liste des noms des 
+          transactions non encore réglées&nbsp;:</para>
 
         <informalexample>
-          <screen>
-$ svnadmin lstxns myrepos
+          <screen><!--
+$ svnadmin lstxns myrepos -->
+$ svnadmin lstxns mon-depot
 19
 3a1
 a45
@@ -3644,9 +3789,10 @@ $
 </screen>
         </informalexample>
 
+<!--
         <para>Each item in the resultant output can then be used with
           <command>svnlook</command> (and its
-          <option>--transaction</option> (<option>-t</option>) option)
+          <option>- -transaction</option> (<option>-t</option>) option)
           to determine who created the transaction, when it was
           created, what types of changes were made in the
           transaction&mdash;information that is helpful in determining
@@ -3657,14 +3803,29 @@ $
           <command>svnadmin rmtxns</command> can take its input
           directly from the output of
           <command>svnadmin lstxns</command>!</para>
+-->
+        <para>Chaque élément de la sortie de cette commande peut être
+          passé en argument de <command>svnlook</command> (avec l'option
+          <option>--transaction</option> (<option>-t</option>))
+          pour déterminer qui est à l'origine de la transaction, quand
+          elle a eu lieu et quels types de changements ont été effectués
+          &mdash; ces informations sont très utiles pour savoir si on
+          peut supprimer la transaction sans arrière pensée&nbsp;! Si
+          vous décidez effectivement de supprimer la transaction, son
+          nom peut être passé à <command>svnadmin rmtxns</command> qui
+          fera le nettoyage adéquat. En fait, <command>svnadmin
+          rmtxns</command> peut directement prendre en entrée la sortie
+          de <command>svnadmin lstxns</command>&nbsp;!</para>
 
         <informalexample>
-          <screen>
-$ svnadmin rmtxns myrepos `svnadmin lstxns myrepos`
+          <screen> <!--
+$ svnadmin rmtxns myrepos `svnadmin lstxns myrepos` -->
+$ svnadmin rmtxns mon-depot `svnadmin lstxns mon-depot`
 $
 </screen>
         </informalexample>
 
+<!--
         <para>If you use these two subcommands like this, you should
           consider making your repository temporarily inaccessible to
           clients.  That way, no one can begin a legitimate
@@ -3673,10 +3834,23 @@ $
           contains a bit of shell-scripting that can quickly generate
           information about each outstanding transaction in your
           repository.</para>
+-->
+        <para>Si vous utilisez ces deux sous-commandes ainsi, vous
+          devriez envisager de rendre votre dépôt temporairement
+          indisponible pour les clients. De cette manière, personne ne
+          peut initier une transaction légitime avant que le nettoyage
+          n'ait commencé. L'exemple <xref
+          linkend="svn.reposadmin.maint.diskspace.deadtxns.ex-1" />
+          contient quelques lignes de script shell qui peuvent produire
+          les informations relatives à chaque transaction inachevée de
+          votre dépôt.</para>
 
-        <example id="svn.reposadmin.maint.diskspace.deadtxns.ex-1">
+        <example id="svn.reposadmin.maint.diskspace.deadtxns.ex-1"><!--
           <title>txn-info.sh (reporting outstanding transactions)</title>
+-->
+          <title>txn-info.sh (lister les transactions inachevées)</title>
 
+<!--
           <programlisting>
 #!/bin/sh
 
@@ -3690,43 +3864,98 @@ if [ "x$REPOS" = x ] ; then
 fi
 
 for TXN in `svnadmin lstxns ${REPOS}`; do 
-  echo "---[ Transaction ${TXN} ]-------------------------------------------"
+  echo "- -[ Transaction ${TXN} ]- - - - - - - - - - - - - - - - - - - - - -"
   svnlook info "${REPOS}" -t "${TXN}"
+done
+</programlisting>
+-->
+          <programlisting>
+#!/bin/sh
+
+### Produit les informations relatives à toutes les transactions
+### inachevées d'un dépôt Subversion
+
+DEPOT="${1}"
+if [ "x$DEPOT" = x ] ; then
+  echo "utilisation: $0 CHEMIN_VERS_LE_DEPOT"
+  exit
+fi
+
+for TXN in `svnadmin lstxns ${DEPOT}`; do
+  echo "---[ Transaction ${TXN} ]-------------------------------------------"
+  svnlook info "${DEPOT}" -t "${TXN}"
 done
 </programlisting>
         </example>
 
+<!--
         <para>The output of the script is basically a concatenation of
           several chunks of <command>svnlook info</command> output
           (see <xref linkend="svn.reposadmin.maint.tk.svnlook"/>) and
           will look something like this:</para>
+-->
+        <para>La sortie produite par ce script est, en bref, la
+          concaténation des différents groupes d'informations fournis
+          par <command>svnlook info</command> (voir <xref
+          linkend="svn.reposadmin.maint.tk.svnlook"/>) et ressemble à
+          ceci&nbsp;:</para>
 
+<!--
         <informalexample>
           <screen>
 $ txn-info.sh myrepos
----[ Transaction 19 ]-------------------------------------------
+- -[ Transaction 19 ]- - - - - - - - - - - - - - - - - - - - - -
 sally
 2001-09-04 11:57:19 -0500 (Tue, 04 Sep 2001)
 0
----[ Transaction 3a1 ]-------------------------------------------
+- -[ Transaction 3a1 ]- - - - - - - - - - - - - - - - - - - - - -
 harry
 2001-09-10 16:50:30 -0500 (Mon, 10 Sep 2001)
 39
 Trying to commit over a faulty network.
----[ Transaction a45 ]-------------------------------------------
+- -[ Transaction a45 ]- - - - - - - - - - - - - - - - - - - - - -
 sally
 2001-09-12 11:09:28 -0500 (Wed, 12 Sep 2001)
 0
 $
 </screen>
         </informalexample>
+-->
+        <informalexample>
+          <screen>
+$ txn-info.sh mon-depot
+---[ Transaction 19 ]-------------------------------------------
+sally
+2001-09-04 11:57:19 -0500 (mar. 04 sep. 2001)
+0
+---[ Transaction 3a1 ]-------------------------------------------
+harry
+2001-09-10 16:50:30 -0500 (lun. 10 sep. 2001)
+39
+Tentative de propagation dans un réseau capricieux
+---[ Transaction a45 ]-------------------------------------------
+sally
+2001-09-12 11:09:28 -0500 (mer. 12 sep. 2001)
+0
+$
+</screen>
+        </informalexample>
 
+<!--
         <para>A long-abandoned transaction usually represents some
           sort of failed or interrupted commit.  A transaction's
           datestamp can provide interesting information&mdash;for
           example, how likely is it that an operation begun nine
           months ago is still active?</para>
+-->
+        <para>Une transaction initiée depuis longtemps correspond en
+          général à une propagation qui a été interrompue ou qui a
+          échoué. L'horodatage de la transaction peut fournir des
+          informations intéressantes &mdash; par exemple, quelle est la
+          probabilité qu'une transaction commencée il y a neuf mois soit
+          toujours active&nbsp;?</para>
 
+<!--
         <para>In short, transaction cleanup decisions need not be made
           unwisely.  Various sources of information&mdash;including
           Apache's error and access logs, Subversion's operational
@@ -3735,13 +3964,28 @@ $
           administrator can often simply communicate with a seemingly
           dead transaction's owner (via email, e.g.) to verify
           that the transaction is, in fact, in a zombie state.</para>
+-->
+        <para>En résumé, la décision de supprimer une transaction ne
+          doit pas être prise à la légère. D'autres sources
+          d'informations (comme les journaux d'Apache sur les erreurs et 
+          les accès, les journaux opérationnels de Subversion, 
+          l'historique des révisions Subversion,&nbsp;etc.) peuvent 
+          aider à la prise de décision. Et bien sûr, l'administrateur 
+          peut toujours entrer en contact (par email, par exemple) avec 
+          l'auteur d'une transaction qui semble abandonnée pour vérifier 
+          que c'est bien le cas.</para>
 
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.maint.diskspace.bdblogs">
+<!--
         <title>Purging unused Berkeley DB logfiles</title>
+-->
+        <title>Purge des fichiers de journalisation inutilisés de
+          Berkeley DB</title>
 
+<!--
         <para>Until recently, the largest offender of disk space usage
           with respect to BDB-backed Subversion repositories were the
           logfiles in which Berkeley DB performs its prewrites before
@@ -3752,7 +3996,20 @@ $
           logfiles contain all of the many changes along the way
           <emphasis>between</emphasis> states.  Thus, they can grow
           and accumulate quite rapidly.</para>
+-->
+        <para>Jusqu'à il y a peu, les plus gros consommateurs d'espace
+          disque pour les dépôts Subversion basés sur BDB étaient les
+          fichiers de journalisation dans lesquels le gestionnaire
+          Berkeley DB effectue les pré-écritures avant de modifier la
+          base de données elle-même. Ces fichiers recensent toutes les
+          actions menées pour modifier la base de données, étape par
+          étape&nbsp;; alors que les fichiers de la base de données, à
+          un instant donné, ne reflètent qu'un état particulier, les
+          fichiers de journalisation contiennent l'ensemble de tous les
+          changements opérés <emphasis>entre</emphasis> chaque état
+          successif. Ainsi, ils peuvent grossir assez rapidement.</para>
 
+<!--
         <para>Fortunately, beginning with the 4.2 release of Berkeley
           DB, the database environment has the ability to remove its
           own unused logfiles automatically.  Any
@@ -3760,7 +4017,7 @@ $
           when compiled against Berkeley DB version 4.2 or later
           will be configured for this automatic logfile removal.  If
           you don't want this feature enabled, simply pass the
-          <option>--bdb-log-keep</option> option to the
+          <option>- -bdb-log-keep</option> option to the
           <command>svnadmin create</command> command.  If you forget
           to do this or change your mind at a later time, simply edit
           the <filename>DB_CONFIG</filename> file found in your
@@ -3771,7 +4028,28 @@ $
           force the configuration changes to take effect.  See <xref
           linkend="svn.reposadmin.create.bdb"/> for more information about
           database configuration.</para>
+-->
+        <para>Heureusement, à partir de la version 4.2 de Berkeley DB,
+          l'environnement de la base de données est capable de supprimer
+          ses propres fichiers non utilisés automatiquement. Tout dépôt
+          créé en utilisant <command>svnadmin</command> compilé avec la
+          version 4.2 de Berkeley DB (ou suivantes) est configuré pour
+          supprimer automatiquement les fichiers de journalisation. Si
+          vous ne voulez pas activer cette fonctionnalité, passez
+          simplement l'option <option>--bdb-log-keep</option> à la
+          commande <command>svnadmin create</command>. Si vous oubliez
+          de le faire ou si vous changez d'avis plus tard, éditez
+          simplement le fichier <filename>DB_CONFIG</filename> qui se
+          trouve dans le répertoire <filename>db</filename> de votre
+          dépôt, commentez la ligne qui contient la directive
+          <literal>set_flags DB_LOG_AUTOREMOVE </literal> puis lancez
+          <command>svnadmin recover</command> sur votre dépôt pour que
+          le changement de configuration prenne effet. Reportez-vous à
+          <xref linkend="svn.reposadmin.create.bdb"/> pour plus
+          d'informations sur la configuration du gestionnaire de bases
+          de données.</para>
 
+<!--
         <para>Without some sort of automatic logfile removal in
           place, logfiles will accumulate as you use your repository.
           This is actually somewhat of a feature of the database
@@ -3783,9 +4061,25 @@ $
           to conserve space.  Use the <command>svnadmin
           list-unused-dblogs</command> command to list the unused
           logfiles:</para>
+-->
+        <para>Sans suppression automatique des fichiers de
+          journalisation, les journaux vont s'accumuler au fur et à
+          mesure de l'utilisation de votre dépôt. Cela peut être
+          considéré comme une fonctionnalité du gestionnaire de bases de
+          données &mdash; vous devez être capable de recréer entièrement
+          votre base de données en utilisant uniquement vos fichiers de
+          journalisation, c'est pourquoi ceux-ci sont utiles pour le
+          rétablissement de la base après une catastrophe. Mais en
+          général, vous voudrez archiver les fichiers de journalisation
+          qui ne sont plus utilisés par la base de données et ensuite
+          les enlever du disque pour conserver de l'espace libre.
+          Utilisez la commande <command>svnadmin
+          list-unused-dblogs</command> pour
+          avoir la liste des fichiers de journalisation
+          inutilisés&nbsp;:</para>
 
         <informalexample>
-          <screen>
+          <screen><!--
 $ svnadmin list-unused-dblogs /var/svn/repos
 /var/svn/repos/log.0000000031
 /var/svn/repos/log.0000000032
@@ -3793,10 +4087,19 @@ $ svnadmin list-unused-dblogs /var/svn/repos
 &hellip;
 $ rm `svnadmin list-unused-dblogs /var/svn/repos`
 ## disk space reclaimed!
+-->
+$ svnadmin list-unused-dblogs /var/svn/depot
+/var/svn/depot/log.0000000031
+/var/svn/depot/log.0000000032
+/var/svn/depot/log.0000000033
+&hellip;
+$ rm `svnadmin list-unused-dblogs /var/svn/depot`
+## espace disque récupéré !
 </screen>
         </informalexample>
 
         <warning>
+<!--
           <para>BDB-backed repositories whose logfiles are used as
             part of a backup or disaster recovery plan should
             <emphasis>not</emphasis> make use of the logfile
@@ -3807,13 +4110,30 @@ $ rm `svnadmin list-unused-dblogs /var/svn/repos`
             backup system has a chance to copy them elsewhere, the
             incomplete set of backed-up logfiles is essentially
             useless.</para> </warning>
+-->
+          <para>Les dépôts BDB qui utilisent les fichiers de
+            journalisation pour les sauvegardes ou les rétablissements
+            après incident <emphasis>ne doivent pas</emphasis> activer
+            la suppression automatique des fichiers de journalisation.
+            La reconstruction des données d'un dépôt à partir des
+            fichiers de journalisation ne peut être effectuée que si
+            <emphasis>tous</emphasis> les fichiers de journalisation
+            sont accessibles. Si quelques fichiers de journalisation
+            sont supprimés du disque avant que le système de sauvegarde
+            n'ait pu les copier ailleurs, l'ensemble incomplet des
+            fichiers de journalisation est totalement
+            inutile.</para> </warning>
 
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.maint.diskspace.fsfspacking">
+<!--
         <title>Packing FSFS filesystems</title>
+-->
+        <title>Tasser le système de fichiers FSFS</title>
 
+<!--
         <para>As described in the sidebar
           <xref linkend="svn.reposadmin.basics.backends.fsfs.revfiles"/>,
           FSFS-backed Subversion repositories create, by default, a
@@ -3821,14 +4141,31 @@ $ rm `svnadmin list-unused-dblogs /var/svn/repos`
           Having thousands of these files present on your Subversion
           server&mdash;even when housed in separate shard
           directories&mdash;can lead to inefficiencies.</para>
+-->
+        <para>Comme nous l'avons indiqué dans l'encadré
+          <xref linkend="svn.reposadmin.basics.backends.fsfs.revfiles"/>,
+          les dépôts FSFS Subversion créent, par défaut, un fichier sur
+          le disque pour chaque nouvelle révision ajoutée au dépôt. La
+          gestion de ces milliers de fichiers sur le serveur Subversion,
+          même lorsqu'ils sont répartis dans différents répertoires, 
+          peut être la source de pertes de performances.</para>
 
+<!--
         <para>The first problem is that the operating system has to
           reference many different files over a short period of time.
           This leads to inefficient use of disk caches and, as a
           result, more time spent seeking across large disks.  Because
           of this, Subversion pays a performance penalty when
           accessing your versioned data.</para>
+-->
+        <para>Le premier problème est que le système d'exploitation doit
+          référencer ces fichiers sur une courte période de temps. Cela
+          conduit à une mauvaise utilisation du cache disque et, en
+          conséquence, à plus de temps pour les recherches sur les gros
+          disques. C'est pour cette raison que Subversion est pénalisé
+          lorsqu'il accède à vos données suivies en versions.</para>
 
+<!--
         <para>The second problem is a bit more subtle.  Because of the
           ways that most filesystems allocate disk space, each file
           claims more space on the disk than it actually uses.  The
@@ -3841,7 +4178,22 @@ $ rm `svnadmin list-unused-dblogs /var/svn/repos`
           which have many small revisions, since the overhead involved
           in storing the revision file quickly outgrows the size of
           the actual data being stored.</para>
+-->
+        <para>Le deuxième problème est un peu plus subtil. En raison de 
+          la manière dont la plupart des systèmes de fichiers allouent
+          l'espace disque, chaque fichier utilise sur le disque plus de
+          place qu'il n'en prend réellement. Cette quantité d'espace
+          disque nécessaire pour stocker un seul fichier peut atteindre
+          de 2 à 16 kilooctets <emphasis>par fichier</emphasis>, en 
+          fonction du type de système de fichiers. Cela se traduit
+          directement par un gachis d'espace disque à chaque révision
+          pour les dépôts FSFS. L'effet est d'autant plus sensible pour
+          les dépôts qui ont de petites révisions, puisque le surplus
+          d'espace nécessaire pour stocker le fichier de révision 
+          dépasse rapidement la taille des données effectivement 
+          stockées.</para>
 
+<!--
         <para>To solve these problems, Subversion 1.6 introduced the
           <command>svnadmin pack</command> command.  By concatenating
           all the files of a completed shard into a single <quote>pack</quote> file
@@ -3851,17 +4203,37 @@ $ rm `svnadmin list-unused-dblogs /var/svn/repos`
           doing so, it aids filesystem caches and reduces (to one) the
           number of times a file storage overhead penalty is
           paid.</para>
+-->
+        <para>Afin de résoudre ce problème, Subversion 1.6 introduit la
+          commande <command>svnadmin pack</command>. En 
+          <quote>tassant</quote> (<foreignphrase>pack</foreignphrase> en
+          anglais) tous les fichiers d'un dépôt fragmenté dans un seul 
+          fichier et en supprimant les fichiers originaux de chaque 
+          révision, <command>svnadmin pack</command> réduit le nombre de 
+          fichiers d'une fragmentation à un seul fichier. Ainsi,le cache 
+          du système de fichiers est plus l'aise et le nombre de gachis 
+          d'espace pour le stockage des fichiers est réduit (à 
+          un).</para>
 
+<!--
         <para>Subversion can pack existing sharded repositories which
           have been upgraded to the 1.6 filesystem format or later (see
           <xref linkend="svn.ref.svnadmin.c.upgrade"/>) in
           <xref linkend="svn.ref.svnadmin"/>.  To do so, just
           run <command>svnadmin pack</command> on the
           repository:</para>
+-->
+        <para>Subversion peut tasser des dépôts fragmentés qui ont été 
+          mis à niveau vers le système de fichiers 1.6 ou ultérieur 
+          (voir <xref linkend="svn.ref.svnadmin.c.upgrade"/> dans
+          <xref linkend="svn.ref.svnadmin"/>). Pour le faire, lancez
+          simplement  <command>svnadmin pack</command> sur le 
+          dépôt:</para>
 
         <informalexample>
-          <screen>
-$ svnadmin pack /var/svn/repos
+          <screen> <!--
+$ svnadmin pack /var/svn/repos -->
+$ svnadmin pack /var/svn/depot
 Packing shard 0...done.
 Packing shard 1...done.
 Packing shard 2...done.
@@ -3873,22 +4245,38 @@ $
 </screen>
         </informalexample>
 
+<!--
         <para>Because the packing process obtains the required locks
           before doing its work, you can run it on live repositories,
           or even as part of a post-commit hook.  Repacking packed
           shards is legal, but will have no effect on the disk usage
           of the repository.</para>
+-->
+        <para>Comme le processus de tassage obtient les verrous 
+          nécessaires avant de faire son travail, vous pouvez lancer la
+          commande sur un dépôt en service, ou même comme action dans la
+          procédure automatique <literal>post-commit</literal>. Tasser
+          un dépôt déjà tassé est autorisé, mais n'aura aucun effet sur
+          l'utilisation de l'espace disque par le dépôt.</para>
 
+<!--
         <para><command>svnadmin pack</command> has no effect on
           BDB-backed Subversion repositories.</para>
+-->
+        <para>La commande <command>svnadmin pack</command> n'a aucun
+          effet sur un dépôt BDB.</para>
 
       </sect3>
     </sect2>
         
     <!-- =============================================================== -->
     <sect2 id="svn.reposadmin.maint.recovery">
+<!--
       <title>Berkeley DB Recovery</title>
+-->
+      <title>Rétablissement de bases de données Berkeley DB</title>
 
+<!--
       <para>As mentioned in <xref
         linkend="svn.reposadmin.basics.backends.bdb"/>, a Berkeley DB
         repository can sometimes be left in a frozen state if not closed
@@ -3901,7 +4289,21 @@ $
         resilient in these types of situations.  Still, wedged
         Berkeley DB repositories do occur, and an administrator needs
         to know how to safely deal with this circumstance.</para>
+-->
+      <para>Comme indiqué dans <xref
+        linkend="svn.reposadmin.basics.backends.bdb"/>, un dépôt
+        Berkeley DB peut se retrouver bloqué s'il n'est pas arrêté
+        proprement. Quand cela arrive, un administrateur doit faire
+        revenir la base de données en arrière jusque dans un état
+        cohérent. Ceci ne concerne cependant que les dépôts BDB (si vous 
+        utilisez FSFS, vous n'êtes pas concerné). Et pour ceux qui 
+        utilisent Subversion 1.4 avec Berkeley DB version 4.4 ou plus, 
+        vous constaterez que Subversion est devenu beaucoup plus 
+        résilient face à ce type de problème. Certes, mais des plantages
+        de dépôts Berkeley DB arrivent encore et un administrateur doit
+        savoir comment réagir dans de telles circonstances.</para>
 
+<!--
       <para>To protect the data in your repository, Berkeley
         DB uses a locking mechanism.  This mechanism ensures that
         portions of the database are not simultaneously modified by
@@ -3918,7 +4320,26 @@ $
         the repository; we try to clear up the confusion caused by
         this terminology collision in the sidebar <xref
         linkend="svn.advanced.locking.meanings" />.)</para>
+-->
+      <para>Pour protéger les données du dépôt, le gestionnaire Berkeley
+        DB utilise un mécanisme de verrouillage. Ce mécanisme s'assure
+        que les éléments de la base de données ne sont pas modifiés en
+        même temps par plusieurs utilisateurs et que chaque processus
+        voit les données dans un état cohérent lors de la lecture de la
+        base de données. Quand un processus a besoin de modifier quelque
+        chose dans la base de données, il vérifie d'abord l'existence
+        d'un verrou sur les données concernées. Si les données ne sont
+        pas verrouillées, le processus les verrouille, effectue les
+        changements qu'il veut puis déverrouille les données. Les autres
+        processus sont obligés d'attendre que le verrou soit libéré avant
+        d'être autorisés à accéder aux données de cette zone (ceci n'a
+        rien à voir avec les verrous que vous, utilisateur, pouvez
+        appliquer sur les fichiers suivis en versions dans le
+        dépôt&nbsp;; nous essayons de lever l'ambiguïté créée par
+        l'emploi de cette terminologie commune dans l'encadré <xref
+        linkend="svn.advanced.locking.meanings" />).</para>
 
+<!--
       <para>In the course of using your Subversion repository, fatal
         errors or interruptions can prevent a process from having the
         chance to remove the locks it has placed in the database.  The
@@ -3927,7 +4348,16 @@ $
         access the repository hang indefinitely (since each new
         accessor is waiting for a lock to go away&mdash;which isn't
         going to happen).</para>
+-->
+      <para>Au cours de l'utilisation de votre dépôt Subversion, des
+        erreurs fatales ou des interruptions peuvent empêcher un
+        processus de supprimer des verrous qu'il a placés dans la base
+        de données. Cela conduit à des plantages du magasin de données. 
+        Lorsque cela arrive, toutes les tentatives d'accès au dépôt se 
+        soldent par un échec (puisque chaque nouvel arrivant attend que 
+        le verrou se libère, ce qui n'est pas prêt d'arriver).</para>
 
+<!--
       <para>If this happens to your repository, don't panic.  The
         Berkeley DB filesystem takes advantage of database
         transactions, checkpoints, and prewrite journaling to ensure
@@ -3938,46 +4368,96 @@ $
         will have made off-site backups of the repository data in some
         fashion, but don't head off to the tape backup storage closet
         just yet.</para>
+-->
+      <para>Si cela arrive à votre dépôt, ne paniquez pas. Le système de
+        fichiers Berkeley DB tire parti des transactions de la base de
+        données, des points de contrôle et de la journalisation
+        préalable à toute écriture pour garantir que seuls les 
+        événements les plus catastrophiques<footnote>
+          <para>Par exemple, disque dur + gros aimant à côté =
+            désastre.</para>
+        </footnote>
+        soient à même de détruire définitivement un environnement de
+        base de données. Un administrateur suffisamment paranoïaque
+        conserve des sauvegardes des données du dépôt dans un endroit
+        distinct, mais attendez un peu avant de vous diriger vers
+        l'armoire de rangement des sauvegardes.</para>
 
+<!--
       <para>Instead, use the following recipe to attempt to
         <quote>unwedge</quote> your repository:</para>
-   
+-->
+      <para>Appliquez plutôt la recette suivante pour tenter de
+        <quote>faire repartir</quote> votre dépôt&nbsp;:</para>
+
       <orderedlist>
         <listitem>
+<!--
           <para>Make sure no processes are accessing (or
             attempting to access) the repository.  For networked
             repositories, this also means shutting down the Apache HTTP
             Server or svnserve daemon.</para>
+-->
+          <para>Assurez-vous qu'aucun processus n'accède au dépôt (ou ne
+            tente de le faire). Pour les dépôts en réseau, cela implique
+            d'arrêter le serveur HTTP Apache ou le démon svnserve.</para>
         </listitem>
         <listitem> 
+<!--
           <para>Become the user who owns and manages the repository.
             This is important, as recovering a repository while
             running as the wrong user can tweak the permissions of the
             repository's files in such a way that your repository will
             still be inaccessible even after it is 
             <quote>unwedged.</quote></para>
+-->
+          <para>Prenez l'identité de l'utilisateur qui possède et gère
+            le dépôt. C'est important, puisque rétablir un dépôt avec un
+            autre utilisateur peut modifier les droits d'accès des
+            fichiers du dépôt de telle manière que votre dépôt soit
+            toujours inaccessible même après la remise en 
+            service.</para>
         </listitem>
         <listitem>
+<!--
           <para>Run the command <userinput>svnadmin recover
             /var/svn/repos</userinput>.  You should see output such as
             this:</para>
+-->
+          <para>Lancez la commande <userinput>svnadmin recover
+            /var/svn/depot</userinput>. Vous devriez obtenir une sortie 
+            du genre&nbsp;:</para>
 
           <informalexample>
-            <screen>
+            <screen> <!--
 Repository lock acquired.
 Please wait; recovering the repository may take some time...
 
 Recovery completed.
-The latest repos revision is 19.
+The latest repos revision is 19.-->
+Verrou du dépôt acquis.
+Patientez ; le rétablissement du dépôt peut être long...
+
+Fin du rétablissement.
+La dernière révision du dépôt est 19
+
 </screen>
           </informalexample>
+
+<!--
           <para>This command may take many minutes to complete.</para>
+-->
+          <para>Cette commande peut durer plusieurs minutes.</para>
         </listitem>
         <listitem>
+<!--
           <para>Restart the server process.</para>
+-->
+          <para>Redémarrez le processus serveur.</para>
         </listitem>
       </orderedlist>
-            
+
+<!--
       <para>This procedure fixes almost every case of repository
         wedging.  Make sure that you run this command as the user that
         owns and manages the database, not just as
@@ -3988,7 +4468,20 @@ The latest repos revision is 19.
         are owned by <literal>root</literal>, which means that even
         after you restore connectivity to your repository, regular
         users will be unable to access it.</para>
+-->
+      <para>Cette procédure fonctionne dans presque tous les cas de
+        plantage. Faites attention à ce qu'elle soit lancée par
+        l'utilisateur qui possède et gère la base de données, pas 
+        nécessairement <literal>root</literal>. La procédure de 
+        rétablissement peut impliquer de récréer en partant de zéro 
+        certains fichiers de la base de données (de la mémoire partagée, 
+        par exemple). Un rétablissement par <literal>root</literal> 
+        créerait ces fichiers avec <literal>root</literal> comme 
+        propriétaire, ce qui veut dire que même après que vous ayez 
+        rétabli l'accès à votre dépôt, les utilisateurs de base n'y 
+        auront pas accès.</para>
 
+<!--
       <para>If the previous procedure, for some reason, does not
         successfully unwedge your repository, you should do two
         things.  First, move your broken repository directory aside
@@ -3998,6 +4491,17 @@ The latest repos revision is 19.
         users mailing list (at <email>users@subversion.apache.org</email>)
         describing your problem in detail.  Data integrity is an
         extremely high priority to the Subversion developers.</para>
+-->
+      <para>Si la procédure précédente, pour une raison ou pour une
+        autre, ne fait pas repartir votre dépôt, vous devez faire deux
+        choses. D'abord, mettez de côté votre répertoire de dépôt cassé
+        (par exemple en le renommant <filename>depot.CASSÉ</filename>)
+        puis restaurez la dernière sauvegarde de votre dépôt. Ensuite,
+        envoyez un email à la liste de diffusion des utilisateurs de
+        Subversion (<email>users@subversion.apache.org</email>) et
+        décrivez votre problème en détail. L'intégrité des données fait
+        partie des sujets à très haute priorité pour les développeurs
+        Subversion.</para>
 
     </sect2>
 
