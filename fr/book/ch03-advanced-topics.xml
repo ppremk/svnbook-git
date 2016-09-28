@@ -810,8 +810,8 @@ $ svn log -r {2006-11-20}:{2006-11-29}
       plus précisément à une révision donnée), la combinaison d'un
       chemin et d'une révision pivot est tout ce dont vous avez
       besoin pour désigner une ligne spécifique de l'historique. Les
-      révisions pivots sont indiquées au client Subversion en
-      utilisant la notation <firstterm>at</firstterm> (on l'appelle
+      révisions pivots sont indiquées au client texte interactif Subversion
+      en utilisant la notation <firstterm>at</firstterm> (on l'appelle
       ainsi parce que la syntaxe de la commande utilise le signe
       <quote>arobase</quote>&nbsp;:<literal>@</literal>) suivi de la
       révision pivot demandée, en fin de chemin.</para>
@@ -2160,7 +2160,7 @@ $
         versions&nbsp;? Vous pouvez les modifier elles-aussi en
         utilisant les mêmes sous-commandes <command>svn</command> que
         nous venons de décrire. Il suffit juste d'ajouter l'option
-        <option>--revprop</option> à la ligne de commande et de spécifier
+        <option>--revprop</option> au client texte interactif et de spécifier
         la révision à laquelle s'applique la modification. Puisque les
         numéros de révisions s'appliquent à l'ensemble de l'arborescence,
         vous n'avez pas besoin d'indiquer un chemin pour ces commandes,
@@ -5433,7 +5433,7 @@ I       calc/debug_log.3.gz
       matching ignore pattern:</para>
 -->
     <para>Tous les fichiers non suivis en versions auparavant occultés
-      apparaissent de nouveau, mais avec un status <literal>I</literal>
+      apparaissent de nouveau, mais avec un état <literal>I</literal>
       pour Ignoré. Mais attendez, qu'en est-il du fichier
       <filename>wip.1.diff</filename>&nbsp;? La propriété
       <literal>svn:ignore</literal> définie sur
@@ -10815,7 +10815,18 @@ $
           client will, by default, fall back to prompting the user for
           the necessary information.</para>
 -->
-        <para></para>
+        <para>Subversion propose une solution à ceux qui en ont assez de
+          taper leur nom d'utilisateur et mot de passe à tout bout de champs.
+          Par défaut, dès que le client texte interactif passe avec succès
+          un défi d'authentification, les éléments d'authentification sont
+          mis en cache sur le disque et associés à la combinaison du nom
+          du serveur, son port et le domaine d'authentification. Ce cache
+          sera automatiquement consulté lors des prochains défis,
+          l'utilisateur n'ayant plus à retaper ses éléments
+          d'authentification. Si aucun élément convenable n'est présent dans
+          le cache, ou si les éléments du cache échouent à
+          l'authentification, le client invitera l'utilisateur à fournir les
+          informations nécessaires.</para>
 
 <!--
         <para>The Subversion developers recognize that on-disk caches
@@ -10824,7 +10835,12 @@ $
           provided by the operating system and environment to try to
           minimize the risk of leaking this information.</para>
 -->
-        <para></para>
+        <para>Les développeurs de Subversion reconnaissent que le stockage
+          sur disque des éléments d'authentification peut consistuer une
+          vulnérabilité. C'est pourquoi Subversion est capable de fonctionner
+          avec les différents mécanismes offerts par le système
+          d'exploitation et l'environnement de travail pour minimiser les
+          risques de fuites d'information.</para>
 
         <itemizedlist>
 
@@ -10847,17 +10863,17 @@ $
           <listitem>
             <para>Sous Windows, le client Subversion stocke les mots de
             passe dans le répertoire
-            Sous Windows 2000 et ses successeurs, le client
-            Subversion utilise les services cryptographiques standards
-            de Windows pour chiffrer le mot de passe sur le disque.
-            Comme la clé de chiffrement est gérée par Windows et qu'elle
-            est associée à l'identifiant de connexion de l'utilisateur,
-            lui seul peut déchiffrer le mot de passe en cache. Notez que
-            si le mot de passe de l'utilisateur est réinitialisé par un
-            administrateur, tous les mots de passe en cache deviennent
-            indéchiffrables. Le client Subversion agit comme s'ils
-            n'existaient pas, en redemandant le mot de passe quand c'est
-            nécessaire.</para>
+            <filename>%APPDATA%/Subversion/auth/</filename>. Sous Windows
+            2000 et ses successeurs, le client Subversion utilise les
+            services cryptographiques standards de Windows pour chiffrer le
+            mot de passe sur le disque. Comme la clé de chiffrement est gérée
+            par Windows et qu'elle est associée à l'identifiant de connexion
+            de l'utilisateur, lui seul peut déchiffrer le mot de passe en
+            cache. Notez que si le mot de passe de l'utilisateur est
+            réinitialisé par un administrateur, tous les mots de passe en
+            cache deviennent indéchiffrables. Le client Subversion agit comme
+            s'ils n'existaient pas, en redemandant le mot de passe quand
+            c'est nécessaire.</para>
           </listitem>
 
 <!--
@@ -10907,7 +10923,7 @@ $
             standard de service de type <quote>Keychain</quote>. Cependant,
             le client Subversion sait stocker de manière sûre les mots de
             passe en utilisant les services <quote>Gnome Keyring</quote>,
-            <quote>KDE Wallet</quote> et <quote>GnuPG Agent</quote>. Aussi,
+            et <quote>KDE Wallet</quote>. Aussi,
             avant de stocker les mots de passe sans chiffrement dans la zone
             de cache <filename>~/.subversion/auth/</filename>, le client
             Subversion demandera à l'utilisateur l'autorisation de le faire.
@@ -10967,7 +10983,7 @@ $
         <informalexample>
           <screen>
 $ svn checkout https://host.example.com:443/svn/private-repo
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-----------------------------------------------------------------------
 ATTENTION!  Your password for authentication realm:
 
    &lt;https://host.example.com:443&gt; Subversion Repository
@@ -10979,7 +10995,7 @@ possible.  See the documentation for details.
 You can avoid future appearances of this warning by setting the value
 of the 'store-plaintext-passwords' option to either 'yes' or 'no' in
 '/tmp/servers'.
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-----------------------------------------------------------------------
 Store password unencrypted (yes/no)?
 </screen>
         </informalexample>
@@ -11658,7 +11674,7 @@ r22 committed by harry at 2013-01-15T21:45:26.442865Z -->
 $ svnmucc rm http://svn.exemple.fr/projets/pour-jouer \
           mkdir http://svn.exemple.fr/projets/pour-jouer \
           -m "Remplace mon vieux projet pour-jouer par un tout neuf."
-r22 committed by harry at 2013-01-15T21:45:26.442865Z
+r22 propagée par harry le 2013-01-15T21:45:26.442865Z
 $
 </screen>
       </informalexample>
@@ -11753,6 +11769,7 @@ $
           responsabilités.</quote></para>
       </blockquote>
 
+<!--
       <para>Inherent in working-copy-less modifications is the loss of
         the very conflict detection safeguards which make the use of a
         working copy so valuable.  When using <command>svn</command>
@@ -11772,25 +11789,60 @@ $
         base state against which you are working.  But hopefully it is
         obvious to you that this is not a power you should cavalierly
         wield.</para>
+-->
+      <para>Comme vous travaillez sans copie de travail, il est impossible
+        pour Subversion de détecter des conflits avant la propagation. Lors
+        d'une utilisation classique de <command>svn</command>, les
+        changements qui sont propagés vers le serveur sont comparés à une
+        version de base déterminée du fichier ou du répertoire, afin de ne
+        pas écraser par inadvertance des modifications concurrentes apportées
+        par un autre membre de l'équipe. Le serveur connait la version du
+        fichier que vous aviez avant vos modifications et il sait si d'autres
+        gens ont changé ce fichier depuis la révision que vous détenez. Ce
+        sont ces informations dont le serveur a besoin pour refuser votre
+        propagation et qu'elle n'écrase pas les changements faits par
+        quelqu'un d'autre&nbsp;; il vous force alors à intégrer ces
+        changements dans votre copie de travail et à reconsidérer vos propres
+        modifications. Avec <command>svnmucc</command>, il n'y a pas de copie
+        de travail, ce qui vous donne la possibilité de contourner ces
+        sécurités et d'agir comme si l'état courant du dépot était celui qui
+        vous sert de base de travail. Heureusement, il est évident pour vous
+        qu'un tel pouvoir ne s'utilise pas à la légère.</para>
 
+<!--
       <para>Fortunately, <command>svnmucc</command> allows you to be
         more conservative in the way you use the tool.  In order to
         provide a safety mechanism similar to what is offered by the
         use of a working copy, <command>svnmucc</command> offers
-        a <option>--revision (-r)</option> option.  With this option,
+        a <option>- -revision (-r)</option> option.  With this option,
         you can manually specify a base revision for the changes you
         are attempting to commit.  The base revision you choose
         is ideally the most recent revision in your repository of
         which you can reasonably claim knowledge.</para>
+-->
+      <para>Heureusement, <command>svnmucc</command> vous permet de poser un
+        garde-fou lors de son utilisation. Afin d'offrir un mécanisme de
+        sécurité comparable à l'utilisation d'une copie de travail,
+        <command>svnmucc</command> propose l'option
+        <option>--revision (-r)</option>. Avec cette option, vous pouvez
+        spécifier manuellement une révision de base pour les modifications
+        que vous essayez de propager. Cette révision de base est idéalement
+        la plus récente du dépôt dont vous ayez connaissance.</para>
 
       <warning>
+<!--
         <para>Users are strongly encouraged to use, and to use
-          correctly, the <option>--revision (-r)</option> option
+          correctly, the <option>- -revision (-r)</option> option
           to <command>svnmucc</command>.</para>
+-->
+        <para>Nous encourageons fermement les utilisateurs à utiliser, et de
+          manière appropriée, l'option <option>--revision (-r)</option> de
+          <command>svnmucc</command>.</para>
       </warning>
 
+<!--
       <para>Proper use of the <command>svnmucc put</command> action
-        best demonstrates how this <option>--revision (-r)</option>
+        best demonstrates how this <option>- -revision (-r)</option>
         option should be used.  Say Harry wishes to change the
         contents of a versioned <filename>README</filename> file
         without bothering with a full checkout of a working copy.
@@ -11803,8 +11855,24 @@ $
         queries the revision in which the file was last modified, and
         then uses that revision to fetch the contents of the file into
         a temporary local file:</para>
+-->
+      <para>L'utilisation appropriée de <command>svnmucc put</command>
+        démontre sans équivoque comment l'option
+        <option>--revision (-r)</option> doit être invoquée. Considérons que
+        Harry veuille modifier le fichier suivi en versions
+        <filename>LISEZMOI</filename> sans s'embêter à rappatrier une copie
+        de travail complète (nous supposerons qu'il n'y a pas d'autre raison
+        de disposer d'une copie de travail pour cette action, telles que le
+        lancement de scripts avant de propager une révision pour vérifier
+        qu'elle satisfait certains critères). Il doit en premier lieu décider
+        avec quelle révision du fichier il va travailler. Typiquement, les
+        utilisateurs souhaitent travailler avec la version la plus à jour
+        d'un fichier. Ainsi, Harry effectue la requête relative à la
+        révision de la dernière modification du fichier et modifie le contenu
+        du fichier dans un fichier temporaire local&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn info http://svn.example.com/projects/sandbox/README
 Path: README
@@ -11822,14 +11890,40 @@ $ svn cat -r 14 http://svn.example.com/projects/sandbox/README \
       > README.tmpfile
 $
 </screen>
+-->
+        <screen>
+$ svn info http://svn.exemple.com/projets/bac-à-sable/LISEZMOI
+Chemin : LISEZMOI
+URL : http://svn.exemple.com/projets/bac-à-sable/LISEZMOI
+Relative URL : ^/bac-à-sable/LISEZMOI
+Racine du dépôt : http://svn.example.com/projects
+UUID du dépôt : 13f79535-47bb-0310-9956-ffa450edef68
+Révision : 22
+Type de nœud : fichier
+Auteur de la dernière modification : sally
+Révision de la dernière modification : 14
+Date de la dernière modification : 2012-09-02 10:34:09 -0400 (dim. 02 sep. 2012)
+
+$ svn cat -r 14 http://svn.exemple.com/projets/bac-à-sable/LISEZMOI \
+      > LISEZMOI.tempo
+$
+</screen>
       </informalexample>
 
+<!--
       <para>Harry now has a copy of the <filename>README</filename>
         file as it looked when it it was last modified.  He makes the
         edits he wishes to make to this copy of the file.  Naturally,
         when he's finished, he wishes to then commit those changes to
         the repository.</para>
+-->
+      <para>Harry possède maintenant une copie du fichier
+        <filename>LISEZMOI</filename> tel qu'il était lors de sa dernière
+        modification. Il fait ses modifications dans cette copie du fichier.
+        Naturellement, lorsqu'il a terminé, il veut propager ces
+        modifications vers le dépôt.</para>
 
+<!--
       <para>Now, if Harry naively uses <userinput>svnmucc put
         &hellip;</userinput> at this point to replace the contents of
         <filename>README</filename> in the repository with his locally
@@ -11843,40 +11937,73 @@ $
         <command>svnmucc</command> will happily replace the current
         latest version of the file with the contents specified.  Harry
         will be oblivious.  Sally will be livid.</para>
+-->
+      <para>Maintenant, si Harry utilise naïvement
+        <userinput>svnmucc put &hellip;</userinput>, pour remplacer le
+        contenu de <filename>LISEZMOI</filename> dans le dépôt par le
+        contenu de son fichier local, il fait un abus de pouvoir avec
+        <command>svnmucc</command>. Que se passe-t-il si, quelques
+        microsecondes avant sa propagation, Sally a aussi modifié le
+        fichier <filename>LISEZMOI</filename>&nbsp;? Tout comme
+        <command>svn</command>, <command>svnmucc</command> n'essaiera pas de
+        fusionner sur le serveur les modifications de chacun pour les
+        préserver. Non, <command>svnmucc</command> remplacera simplement la
+        dernière version du fichier par la nouvelle qu'on lui donne. Harry
+        sera XXX, Sally sera XXX.</para>
 
       <informalexample>
-        <screen>
+        <screen><!--
 $ svnmucc put README.tmpfile \
           http://svn.example.com/projects/sandbox/README \
           -m "Tweak the README file."
 r24 committed by harry at 2013-01-21T16:21:23.100133Z
 $
 Message from sally@shell.example.com on pts/2 at 16:26 ...
-We need to talk.  Now.
+We need to talk.  Now.-->
+$ svnmucc put LISEZMOI.tempo \
+          http://svn.exemple.com/projets/bac-à-sable/LISEZMOI \
+          -m "Modifié le fichier LISEZMOI."
+r24 propagée par harry le 2013-01-21T16:21:23.100133Z
+$
+Message from sally@shell.example.com on pts/2 at 16:26 ...
+Nous devons parler. Maintenant.
 EOF
 </screen>
       </informalexample>
 
+<!--
       <para>Harry should instead recall the revision he originally
         used as the revision on which to base his changes, supplying
         that revision to <command>svnmucc</command> via
-        the <option>--revision (-r)</option> option, and thus giving
+        the <option>- -revision (-r)</option> option, and thus giving
         the server the opportunity to bounce his commit if, by his own
         (perhaps ignorant) admission, he's attempting to modify an
         out-of-date item:</para>
+-->
+      <para>À la place, Harry doit rappeler la révision qu'il a utilisée
+        comme base de travail à la commande <command>svnmucc</command>
+        <foreignphrase>via</foreignphrase> l'option
+        <option>--revision (-r)</option>. Ainsi, le serveur pourra rejeter
+        la propagation si, par malheur, Harry essaie de modifier un élément
+        obsolète&nbsp;:</para>
 
       <informalexample>
-        <screen>
+        <screen><!--
 $ svnmucc -r 14 put README.tmpfile \
           http://svn.example.com/projects/sandbox/README \
           -m "Tweak the README file."
-svnmucc: E170004: Item '/sandbox/README' is out of date
+svnmucc: E170004: Item '/sandbox/README' is out of date-->
+$ svnmucc -r 14 put LISEZMOI.tempo \
+          http://svn.exemple.com/projets/bac-à-sable/LISEZMOI \
+          -m "Modifié le fichier LISEZMOI."
+svnmucc: E170004: Item '/bac-à-sable/LISEZMOI' est obsolète.
 $
 </screen>
       </informalexample>
 
+<!--
       <para>Like other <command>svnmucc</command> options,
-        the <option>--revision (-r)</option> option operates at a
+        the <option>- -revision (-r)</option> option operates at a
         scope global to the whole command&mdash;every action specified
         in that command.  This enables you to have the same sort of
         safeguards you would have if you had checked out a working
@@ -11884,10 +12011,26 @@ $
         entirely at a single uniform revision), made changes to that
         working copy, and then committed all those changes at
         once.</para>
+-->
+      <para>Comme toutes les autres options de <command>svnmucc</command>,
+        l'option <option>--revision (-r)</option> est globale pour la
+        commande, c'est-à-dire qu'elle s'applique à toutes les actions
+        spécifiées dans la commande. Cela vous permet d'avoir les mêmes
+        sortes de garde-fous que si vous aviez extrait une copie de travail
+        du dépôt tout entier (et donc comme si vous travailliez sur une
+        copie de travail uniformisée à la même révision), vous aviez effectué
+        vos modifications sur cette copie de travail, puis vous aviez propagé
+        toutes les modifications en même temps.</para>
 
+<!--
       <para>As you can see, <command>svnmucc</command> is a handy
         addition to the Subversion user's tool chest.  For a complete
         reference of this tool's offerings, see
+        <xref linkend="svn.ref.svnmucc" />.</para>
+-->
+      <para>Comme vous pouvez le constater, <command>svnmucc</command> trouve
+        bien sa place dans la boite à outils Subversion. Pour une référence
+        complète des possibilités de cet outil, reportez-vous à
         <xref linkend="svn.ref.svnmucc" />.</para>
 
     </sect2>
@@ -11898,8 +12041,12 @@ $
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.advanced.summary">
+<!--
     <title>Summary</title>
+-->
+    <title>Résumé</title>
 
+<!--
     <para>After reading this chapter, you should have a firm grasp on
       some of Subversion's features that, while perhaps not used
       <emphasis>every</emphasis> time you interact with your version
@@ -11912,7 +12059,24 @@ $
       necessary.  Certains terms and conditions apply.  No guarantee
       of coolness&mdash;implicit or otherwise&mdash;exists.  Mileage
       may vary.</para></footnote></para>
-
+-->
+    <para>Après avoir lu ce chapitre, vous devez désormais avoir une
+      bonne compréhension de certaines fonctionnalités de Subversion
+      qui, bien qu'elles ne servent pas systématiquement à chaque
+      utilisation du système de gestion de versions, peuvent rendre de
+      grands services. Ne vous arrêtez pas là&nbsp;! Lisez le chapitre
+      suivant, où vous découvrirez les branches, les étiquettes et les
+      fusions. Vous aurez alors la maîtrise quasi-complète du client
+      Subversion. Bien que nos avocats ne nous autorisent pas à vous
+      promettre quoi que ce soit, ces connaissances supplémentaires
+      feront déjà de vous quelqu'un de bien plus branché.
+      <footnote>
+        <para>Aucun achat nécessaire. Offre soumise à conditions.
+          Aucune garantie de branchitude, ni explicite ni implicite, n'est
+          fournie. Étude réalisée en mai 2025 sur un panel de
+          lecteurs.</para>
+      </footnote>
+    </para>
   </sect1>
 
 </chapter>
