@@ -1,8 +1,12 @@
 <!-- -*- sgml -*- -->
 
 <chapter id="svn.customization">
+<!--
   <title>Customizing Your Subversion Experience</title>
+-->
+  <title>Personnalisation de Subversion</title>
 
+<!--
   <para>Version control can be a complex subject, as much art as
     science, that offers myriad ways of getting stuff done.
     Throughout this book, you've read of the various Subversion
@@ -12,6 +16,17 @@
     Subversion runtime configuration, using external helper
     applications, Subversion's interaction with the operating system's
     configured locale, and so on.</para>
+-->
+  <para>La gestion de versions est un sujet complexe, au moins autant
+    un art qu'une science, qui offre une myriade de façons d'accomplir
+    chaque tâche. En lisant ce livre, vous avez expérimenté les
+    sous-commandes Subversion en ligne de commande et les options pour
+    modifier leur comportement. Dans ce chapitre, nous passons
+    en revue les moyens de personnaliser le fonctionnement
+    de Subversion&nbsp;: la configuration des options d'exécution,
+    l'utilisation d'applications externes pour faciliter certains
+    traitements, les interactions de Subversion avec la configuration
+    des paramètres régionaux du système d'exploitation,&nbsp;etc.</para>
 
   <!-- TODO(cmpilato): Gut the runtime config stuff like I did the
        property stuff, making larger topical sections to which the
@@ -23,8 +38,13 @@
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.advanced.confarea">
+<!--
     <title>Runtime Configuration Area</title>
     
+-->
+    <title>Zone de configuration des exécutables</title>
+
+<!--
     <para>Subversion provides many optional behaviors that the user can
       control.  Many of these options are of the kind
       that a user would wish to apply to all Subversion operations.
@@ -32,7 +52,17 @@
       for specifying these options and to use them for every
       operation they perform, Subversion uses configuration files,
       segregated into a Subversion configuration area.</para>
+-->
+    <para>Subversion permet à l'utilisateur de contrôler finement son
+      comportement. Beaucoup d'options ont vocation à s'appliquer à
+      l'ensemble des opérations de Subversion. Ainsi, plutôt que de
+      forcer les utilisateurs à se souvenir d'arguments en ligne de
+      commande pour spécifier ces options et de les utiliser à chaque
+      invocation, Subversion utilise des fichiers de configuration,
+      conservés dans une zone de configuration spécifique à
+      Subversion.</para>
 
+<!--
     <para>
       <indexterm>
         <primary>runtime configuration</primary>
@@ -46,11 +76,30 @@
       Emacs or vi), and they contain directives read by the client to
       determine which of several optional behaviors the user
       prefers.</para>
+-->
+    <para>
+      <indexterm>
+        <primary>zone de configuration </primary>
+      </indexterm>La <firstterm>zone de configuration</firstterm> 
+      Subversion consiste en une hiérarchie à deux niveaux constituée de 
+      noms d'options et de leurs valeurs. Habituellement, cela se 
+      traduit par un répertoire dédié qui contient les fichiers de 
+      configuration (le premier niveau)&nbsp;: des fichiers texte au 
+      format standard INI (dont les <quote>sections</quote> constituent 
+      le deuxième niveau). Vous pouvez facilement éditer ces fichiers à 
+      l'aide de votre éditeur de texte favori (tel qu'Emacs ou vi). Ils
+      contiennent des directives lues par le client Subversion afin de
+      déterminer le comportement par défaut choisi par
+      l'utilisateur.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.confarea.layout">
+<!--
       <title>Configuration Area Layout</title>
+-->
+      <title>Agencement de la zone de configuration</title>
 
+<!--
       <para>
         <indexterm>
           <primary>runtime configuration</primary>
@@ -71,7 +120,34 @@
         as <filename>%APPDATA%\Subversion</filename>.</para></footnote>
         We will refer to the per-user configuration area using its
         Unix name, <filename>.subversion</filename>.</para>
+-->
+      <para>
+        <indexterm>
+          <primary>zone de configuration</primary>
+          <secondary>propre à l'utilisateur</secondary>
+        </indexterm>La première fois que le client texte interactif 
+        <command>svn</command> est exécuté, il crée une zone de
+        configuration propre à l'utilisateur. Sur les systèmes de type
+        Unix, cette zone est un répertoire nommé
+        <filename>.subversion</filename> dans le répertoire personnel
+        de l'utilisateur. Sur les systèmes Windows, Subversion crée un
+        dossier nommé <filename>Subversion</filename>, généralement
+        dans la zone <filename>Application Data</filename> du
+        répertoire qui contient le profil de l'utilisateur (qui est
+        habituellement, au passage, un répertoire caché). Cependant,
+        sur cette plateforme, l'emplacement exact du profil
+        utilisateur varie d'un système à l'autre et est dicté par la
+        base de registre Windows<footnote>
+          <para>La variable d'environnement <literal>APPDATA</literal>
+            pointe vers la zone <filename>Application Data</filename>,
+            vous pouvez donc toujours faire référence à ce dossier en
+            utilisant <filename>%APPDATA%\Subversion</filename>.</para>
+        </footnote>.
+        Nous nous référerons à cette zone de configuration propre à
+        l'utilisateur en utilisant son nom Unix&nbsp;:
+        <filename>.subversion</filename>.</para>
 
+<!--
       <para>
         <indexterm>
           <primary>runtime configuration</primary>
@@ -93,7 +169,32 @@
         specified by the Windows Registry).  Unlike the per-user
         case, the <command>svn</command> program does not attempt
         to create the system-wide configuration area.</para>
+-->
+      <para>
+        <indexterm>
+          <primary>zone de configuration</primary>
+          <secondary>globale pour le système</secondary>
+        </indexterm>En plus de la zone de configuration propre à 
+        l'utilisateur, Subversion reconnaît l'existence d'une zone de 
+        configuration globale pour le système. Cela permet aux 
+        administrateurs du système d'établir une configuration par 
+        défaut pour l'ensemble des utilisateurs d'une machine donnée. 
+        Notez que la zone de configuration globale seule ne fixe pas de 
+        politique obligatoire&nbsp;: les réglages de l'utilisateur sont
+        prioritaires par rapport aux réglages globaux et les options
+        de la ligne de commande ont toujours le dernier mot. Sur les
+        plateformes de type Unix, la zone de configuration globale
+        doit se trouver dans le répertoire
+        <filename>/etc/subversion</filename>&nbsp;; sur les machines
+        Windows, Subversion cherche un répertoire
+        <filename>Subversion</filename> dans le dossier commun
+        <filename>Application Data</filename> (là encore, l'endroit
+        exact dépend de la base de registre Windows). Au contraire de
+        la zone propre à l'utilisateur, le programme
+        <command>svn</command> ne tente pas de créer la zone de
+        configuration globale.</para>
 
+<!--
       <para>The per-user configuration area currently contains three
         files&mdash;two configuration files (<filename>config</filename> and
         <filename>servers</filename>), and a <filename>README.txt</filename> 
@@ -107,21 +208,55 @@
         any time you wish to have the default configuration settings
         restored, you can simply remove (or rename) your configuration
         directory and then run some innocuous <command>svn</command>
-        command, such as <userinput>svn --version</userinput>.  A new
+        command, such as <userinput>svn - -version</userinput>.  A new
         configuration directory with the default contents will be
         created.</para>
+-->
+      <para>La zone de configuration propre à l'utilisateur contient
+        actuellement trois fichiers&nbsp;: deux fichiers de
+        configuration (<filename>config</filename> et
+        <filename>servers</filename>) et un fichier
+        <filename>README.txt</filename> qui décrit le format INI. Lors
+        de leur création, ces fichiers contiennent les valeurs par
+        défaut de toutes les options supportées par Subversion,
+        généralement mises en commentaire et groupées avec une
+        description textuelle de l'effet de la clé sur le
+        fonctionnement de Subversion. Pour modifier un comportement
+        précis, il suffit de charger le fichier de configuration dans
+        un éditeur de texte et de changer la valeur de l'option
+        correspondante. Si, par la suite, vous voulez rétablir les
+        valeurs par défaut, vous n'avez qu'à supprimer ou renommer
+        votre répertoire de configuration puis lancer une commande
+        <command>svn</command> inoffensive, telle que
+        <userinput>svn --version</userinput>. Un nouveau répertoire
+        de configuration sera créé, qui contiendra les valeurs par
+        défaut.</para>
 
+<!--
       <para>
         <indexterm>
           <primary>runtime configuration</primary>
           <secondary>command-line override</secondary>
         </indexterm>Subversion also allows you to override individual
         configuration option values at the command line via
-        the <option>--config-option</option> option, which is
+        the <option>- -config-option</option> option, which is
         especially useful if you need to make a (very) temporary
         change in behavior.  For more about this option's proper
         usage, see <xref linkend="svn.ref.svn.sw"/>.</para>
+-->
+      <para>
+        <indexterm>
+          <primary>zone de configuration</primary>
+          <secondary>priorité à la ligne de commande</secondary>
+        </indexterm>Subversion vous permet de supplanter chaque valeur
+        des options de configuration avec l'option 
+        <option>--config-option</option>, ce qui peut s'avérer pratique
+        si vous devez modifier (très) temporairement le comportement de
+        l'application. Pour plus d'informations sur l'utilisation de 
+        cette option, reportez-vous à 
+        <xref linkend="svn.ref.svn.sw"/>.</para>
 
+<!--
       <para>The per-user configuration area also contains a cache of
         authentication data.  The <filename>auth</filename> directory
         holds a set of subdirectories that contain pieces of cached
@@ -129,13 +264,27 @@
         authentication methods.  This directory is created in such a
         way that only the user herself has permission to read its
         contents.</para>
+-->
+      <para>La zone de configuration propre à l'utilisateur contient
+        également un cache pour les données d'authentification. Le
+        répertoire <filename>auth</filename> héberge un ensemble de
+        sous-répertoires qui contiennent des informations mises en
+        cache, relatives aux différentes méthodes d'authentification
+        utilisées par Subversion. Ce répertoire est créé de telle
+        manière que seul l'utilisateur concerné ait accès à son 
+        contenu.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.confarea.windows-registry">
+<!--
       <title>Configuration and the Windows Registry</title>
+-->
+      <title>Configuration <foreignphrase>via</foreignphrase> la base de 
+        registre Windows</title>
 
+<!--
       <para>
         <indexterm>
           <primary>runtime configuration</primary>
@@ -148,7 +297,23 @@
         as well, though addressed in a slightly different
         fashion&mdash;in this schema, files and sections are just
         levels in the Registry key tree.</para>
+-->
+      <para>
+        <indexterm>
+          <primary>zone de configuration</primary>
+          <secondary>base de registre Windows</secondary>
+        </indexterm>En plus de la zone de configuration classique 
+        contenant les fichiers INI, les clients Subversion qui tournent 
+        sur une plateforme Windows peuvent aussi utiliser la base de 
+        registre Windows pour stocker leurs données de configuration. 
+        Les noms des options et leurs valeurs sont les mêmes que dans 
+        les fichiers INI. La hiérarchie <quote>fichier/section</quote> 
+        est également présente, bien que traitée de manière légèrement
+        différente&nbsp;: dans ce cas, les fichiers et les sections
+        sont juste des niveaux dans l'arborescence des clés de
+        registres.</para>
 
+<!--
       <para>Subversion looks for system-wide configuration values
         under the
         <literal>HKEY_LOCAL_MACHINE\Software\Tigris.org\Subversion</literal>
@@ -158,7 +323,18 @@
         <literal>HKEY_LOCAL_MACHINE\Software\Tigris.org\Subversion\Config\Miscellany\global-ignores</literal>.
         Per-user configuration values should be stored under
         <literal>HKEY_CURRENT_USER\Software\Tigris.org\Subversion</literal>.</para>
+-->
+      <para>Subversion cherche les valeurs de configuration
+        applicables à tout le système sous la clé
+        <literal>HKEY_LOCAL_MACHINE\Software\Tigris.org\Subversion</literal>.
+        Par exemple, l'option <literal>global-ignores</literal>, qui
+        se trouve dans la section <literal>miscellany</literal> du
+        fichier <filename>config</filename>, est située dans
+        <literal>HKEY_LOCAL_MACHINE\Software\Tigris.org\Subversion\Config\Miscellany\global-ignores</literal>.
+        Les valeurs propres à un utilisateur doivent être stockées sous
+        <literal>HKEY_CURRENT_USER\Software\Tigris.org\Subversion</literal>.</para>
 
+<!--
       <para>Registry-based configuration options are parsed
         <emphasis>before</emphasis> their file-based counterparts, so
         they are overridden by values found in the configuration files.  In
@@ -166,24 +342,52 @@
         the following locations on a Windows system; lower-numbered
         locations take precedence over higher-numbered locations:</para>
       
+-->
+      <para>Les options de configuration de la base de registre sont
+        analysées <emphasis>avant</emphasis> les options des fichiers
+        INI&nbsp;; elles sont donc supplantées par les valeurs trouvées
+        dans les fichiers de configuration. En d'autres termes,
+        Subversion cherche les options de configuration dans l'ordre
+        suivant sur un système Windows (les plus prioritaires sont
+        citées en premier)&nbsp;:</para>
+
       <orderedlist>
         <listitem>
+<!--
           <para>Command-line options</para>
+-->
+          <para>les options en ligne de commande&nbsp;;</para>
         </listitem>
         <listitem>
+<!--
           <para>The per-user INI files</para>
+-->
+          <para>les fichiers INI propres à l'utilisateur&nbsp;;</para>
         </listitem>
         <listitem>
+<!--
           <para>The per-user Registry values</para>
+-->
+          <para>les valeurs de la base de registre propres
+            à l'utilisateur&nbsp;;</para>
         </listitem>
         <listitem>
+<!--
           <para>The system-wide INI files</para>
+-->
+          <para>les fichiers INI applicables à l'ensemble
+            du système&nbsp;;</para>
         </listitem>
         <listitem>
+<!--
           <para>The system-wide Registry values</para>
+-->
+          <para>les valeurs de la base de registre applicables
+            à l'ensemble du système.</para>
         </listitem>
       </orderedlist>
 
+<!--
       <para>Also, the Windows Registry doesn't really support the
         notion of something being <quote>commented out.</quote>
         However, Subversion will ignore any option key whose name
@@ -191,7 +395,17 @@
         allows you to effectively comment out a Subversion option
         without deleting the entire key from the Registry, obviously
         simplifying the process of restoring that option.</para>
+-->
+      <para>Par ailleurs, la base de registre Windows ne comprend pas
+        vraiment la notion de <quote>mise en commentaire</quote>.
+        Cependant, Subversion ignorera toute clé dont le nom commence
+        par le caractère dièse (<literal>#</literal>). Cela vous
+        permet de mettre en commentaire efficacement une option
+        Subversion sans avoir à effacer entièrement la clé de la base
+        de registre, ce qui simplifie clairement la procédure de
+        restauration de l'option.</para>
 
+<!--
       <para>The <command>svn</command> command-line client never
         attempts to write to the Windows Registry and will not attempt
         to create a default configuration area there.  You can create
@@ -202,9 +416,25 @@
         then double-click on that file's icon in the Explorer shell,
         which will cause the data to be merged into your
         Registry.</para>
+-->
+      <para>Le client texte interactif <command>svn</command>
+        n'écrit jamais dans la base de registre et ne tentera pas d'y
+        créer une zone de configuration par défaut. Vous pouvez créer
+        les clés dont vous avez besoin en utilisant le programme
+        <command>REGEDIT</command>. Une autre façon de faire consiste à
+        créer un fichier <filename>.reg</filename> (tel que celui
+        donné dans l'<xref
+        linkend="svn.advanced.confarea.windows-registry.ex-1" />)
+        puis à double-cliquer sur l'icône de ce fichier dans
+        l'explorateur Windows afin d'appliquer les modifications
+        à votre base de registre.</para>
 
       <example id="svn.advanced.confarea.windows-registry.ex-1">
+<!--
         <title>Sample registration entries (.reg) file</title>
+-->
+        <title>Exemple de fichier de modification de la base
+          de registre (.reg)</title>
 
         <programlisting>
 REGEDIT4
@@ -261,6 +491,7 @@ REGEDIT4
 </programlisting>
       </example>
 
+<!--
       <para><xref linkend="svn.advanced.confarea.windows-registry.ex-1"/>
         shows the contents of a <filename>.reg</filename> file, which
         contains some of the most commonly used configuration options
@@ -271,13 +502,30 @@ REGEDIT4
         You need only to remove the hash (<literal>#</literal>)
         character from the beginning of the option names and set the
         values as you desire.</para>
+-->
+      <para>L'exemple précédent présente le contenu d'un fichier
+        <filename>.reg</filename> qui contient quelques unes des
+        options les plus communément utilisées et leurs valeurs
+        par défaut. Notez la présence de réglages propres à
+        l'utilisateur (notamment l'éditeur de texte et le stockage
+        des mots de passe) ainsi que des réglages applicables à
+        l'ensemble du système (comme les options relatives au
+        mandataire réseau). Notez également que toutes les options
+        sont mises en commentaire. Il ne vous reste qu'à supprimer
+        le caractère dièse (<literal>#</literal>) initial des noms
+        d'options et à leur affecter la valeur que vous
+        souhaitez.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.confarea.opts">
+<!--
       <title>Runtime Configuration Options</title>
+-->
+      <title>Options de configuration</title>
 
+<!--
       <para>
         <indexterm>
           <primary>runtime configuration</primary>
@@ -285,26 +533,50 @@ REGEDIT4
         </indexterm>In this section, we will discuss the specific
         runtime configuration options that Subversion currently 
         supports.</para>
+-->
+      <para>
+        <indexterm>
+          <primary>zone de configuration</primary>
+          <secondary>options</secondary>
+        </indexterm>Dans cette section, nous allons nous intéresser aux
+        options de configuration des programmes que la
+        version actuelle de Subversion comprend.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.advanced.confarea.opts.config">
+<!--
         <title>General configuration</title>
+-->
+        <title>Configuration générale</title>
 
+<!--
         <para>The <filename>config</filename> file contains the rest
           of the currently available Subversion runtime
           options&mdash;those not related to networking.  There are
           only a few options in use as of this writing, but they are
           again grouped into sections in expectation of future
           additions.</para>
+-->
+        <para>Le fichier <filename>config</filename> contient le reste
+          des options de configuration de Subversion, celles qui ne
+          concernent pas le réseau. Actuellement, il n'existe que 
+          quelques options mais elles sont tout de même regroupées dans
+          des sections en vue d'ajouts futurs.</para>
 
+<!--
         <para>The <literal>[auth]</literal> section contains settings
           related to Subversion's authentication and authorization
           against the repository.  It contains the following:</para>
+-->
+        <para>La section <literal>[auth]</literal> contient les 
+          paramètres liés à l'authentification et aux droits sur le
+          dépôt. Il contient les paramètres suivants&nbsp;:</para>
 
         <variablelist>
           <varlistentry>
 	    <term><literal>password-stores</literal></term>
             <listitem>
+<!--
               <para>This comma-delimited list specifies which (if any)
                 system-provided password stores Subversion should
                 attempt to use when saving and retrieving cached
@@ -316,40 +588,75 @@ REGEDIT4
                 Windows cryptography API, respectively.  Listed stores
                 which are not available on the system are
                 ignored.</para>
+-->
+              <para>Cette liste délimitée par des virgules spécifie
+                quel magasin de stockage de mot de passe (s'il en 
+                existe) Subversion doit utiliser pour sauver et 
+                récupérer les éléments d'authentification. Elle indique
+                également dans quel ordre Subversion doit les essayer.
+                La valeur par défaut est  <literal>gnome-keyring, 
+                kwallet, keychain, windows-crypto-api</literal> qui 
+                désigne respectiviement le trousseau GNOME, celui de 
+                KDE, celui de Mac OS X et enfin l'API cryptographique de
+                Microsoft Windows. Les magasins qui ne sont pas 
+                disponibles sur le système sont ignorés.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>store-passwords</literal></term>
             <listitem>
+<!--
               <para>This option has been deprecated from
                 the <filename>config</filename> file.  It now lives as
                 a per-server configuration item in
                 the <filename>servers</filename> configuration area.
                 See <xref linkend="svn.advanced.confarea.opts.servers"/>
                 for details.</para>
+-->
+              <para>Cette option est obsolète dans le fichier
+                <filename>config</filename>. Elle fait maintenant partie
+                de la configuration propre à chaque serveur dans le
+                fichier <filename>servers</filename>. Reportez-vous à 
+                <xref linkend="svn.advanced.confarea.opts.servers"/> 
+                pour plus de détails.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>store-auth-creds</literal></term>
             <listitem>
+<!--
               <para>This option has been deprecated from
                 the <filename>config</filename> file.  It now lives as
                 a per-server configuration item in
                 the <filename>servers</filename> configuration area.
                 See <xref linkend="svn.advanced.confarea.opts.servers"/>
                 for details.</para>
+-->
+              <para>Cette option est obsolète dans le fichier
+                <filename>config</filename>. Elle fait maintenant partie
+                de la configuration propre à chaque serveur dans le
+                fichier <filename>servers</filename>. Reportez-vous à 
+                <xref linkend="svn.advanced.confarea.opts.servers"/> 
+                pour plus de détails.</para>
             </listitem>
           </varlistentry>
         </variablelist>
 
+<!--
         <para>The <literal>[helpers]</literal> section controls which
           external applications Subversion uses to accomplish its
           tasks.  Valid options in this section are:</para>
+-->
+        <para>La section <literal>helpers</literal> contrôle quelles
+          applications tierces Subversion utilise pour accomplir 
+          certaines tâches. Les options licites pour cette section 
+          sont&nbsp;:</para>
 
         <variablelist>
           <varlistentry>
             <term><literal>diff-cmd</literal></term>
             <listitem>
+<!--
               <para>This specifies the absolute path of a differencing
                 program, used when Subversion generates
                 <quote>diff</quote> output (such as when using the
@@ -359,12 +666,23 @@ REGEDIT4
                 perform this task using an external program.  See
                 <xref linkend="svn.advanced.externaldifftools"/> for
                 more details on using such programs.</para>
+-->
+              <para>Spécifiez ici le chemin absolu vers un programme
+                que Subversion utilisera pour générer l'affichage
+                <quote>diff</quote> (celui produit par la commande 
+                <command>svn diff</command>). Par défaut, Subversion
+                utilise une bibliothèque interne pour les deltas. Si 
+                vous spécifiez une valeur, Subversion utilisera ce
+                programme tiers. Lisez <xref
+                linkend="svn.advanced.externaldifftools"/> pour plus de
+                détails sur l'utilisation de tels programmes.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>diff-extensions</literal></term>
             <listitem>
-              <para>Like the <option>--extensions</option>
+<!--
+              <para>Like the <option>- -extensions</option>
                 (<option>-x</option>) command-line option, this
                 specifies additional options passed to the file
                 content differencing engine.  The set of meaningful
@@ -374,11 +692,22 @@ REGEDIT4
                 of <userinput>svn help diff</userinput> for details.
                 The default value for this option
                 is <literal>-u</literal>.</para>
+-->
+              <para>Comme pour l'option en ligne de commande
+                <option>--extensions</option> (<option>-x</option>),
+                spécifiez ici les options complémentaires que vous 
+                souhaitez passer au programme tiers des deltas. 
+                L'ensemble des options ayant un sens varie en fonction 
+                du programme utilisé pour traiter les deltas. Lisez la
+                sortie produite par <userinput>svn help diff</userinput>
+                pour obtenir des détails. La valeur par défaut de cette
+                option est <literal>-u</literal>.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>diff3-cmd</literal></term>
             <listitem>
+<!--
               <para>This specifies the absolute path of a three-way
                 differencing program.  Subversion uses this program to
                 merge changes made by the user with those received
@@ -388,68 +717,127 @@ REGEDIT4
                 external program.  See <xref
                 linkend="svn.advanced.externaldifftools"/> for more
                 details on using such programs.</para>
+-->
+              <para>Spécifiez ici le chemin absolu vers un programme de
+                traitement des deltas à trois entrées. Subversion 
+                utilisera ce programme pour fusionner les changements 
+                effectués par l'utilisateur avec ceux reçus par le 
+                dépôt. Par défaut, Subversion utilise une bibliothèque 
+                interne de traitement des deltas. Si vous spécifiez une
+                valeur, Subversion utilisera ce programme tiers. 
+                Reportez-vous à <xref
+                linkend="svn.advanced.externaldifftools"/> pour plus de
+                détails sur l'utilisation de tels programmes.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>diff3-has-program-arg</literal></term>
             <listitem>
+<!--
               <para>This flag should be set to <literal>true</literal>
                 if the program specified by the
                 <literal>diff3-cmd</literal> option accepts a
-                <option>--diff-program</option> command-line
+                <option>- -diff-program</option> command-line
                 parameter.</para>
+-->
+              <para>Cette option binaire doit être positionnée à 
+                <literal>true</literal> si le programme spécifié par 
+                l'option <literal>diff3-cmd</literal> accepte comme
+                paramètre l'option 
+                <option>--diff-program</option>.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>editor-cmd</literal></term>
             <listitem>
+<!--
               <para>This specifies the program Subversion will use to
                 query the user for certain types of textual metadata
                 or when interactively resolving conflicts.  See
                 <xref linkend="svn.advanced.externaleditors"/> for
                 more details on using external text editors with
                 Subversion.</para>
+-->
+              <para>Spécifiez ici le programme que Subversion utilisera
+                pour demander à l'utilisateur de renseigner des 
+                métadonnées ou pour résoudre des conflits de manière
+                interactive. Lisez <xref
+                linkend="svn.advanced.externaleditors"/> pour plus de 
+                détails sur l'utilisation d'éditeurs de textes tiers
+                avec Subversion.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>merge-tool-cmd</literal></term>
             <listitem>
+<!--
               <para>This specifies the program that Subversion will
                 use to perform three-way merge operations on your
                 versioned files.  See <xref
                 linkend="svn.advanced.externaldifftools"/> for more
                 details on using such programs.</para>
+-->
+              <para>Spécifiez ici le programme tiers que Subversion
+                utilisera pour effectuer des fusions à trois entrées sur
+                vos fichiers suivis en versions. Lisez <xref
+                linkend="svn.advanced.externaldifftools"/> pour plus de
+                détails sur l'utilisation de tels programmes.</para>
             </listitem>
           </varlistentry>
         </variablelist>
 
+<!--
         <para>The <literal>[tunnels]</literal> section allows you to
           define new tunnel schemes for use with
           <command>svnserve</command> and <literal>svn://</literal>
           client connections.  For more details, see <xref
           linkend="svn.serverconfig.svnserve.sshauth"/>.</para>
+-->
+        <para>La section <literal>[tunnels]</literal> vous permet de 
+          définir des tunnels lors de l'utilisation de 
+          <command>svnserve</command> avec le protocole de connexion
+          <literal>svn://</literal>. Pour plus de détails, lisez
+          <xref linkend="svn.serverconfig.svnserve.sshauth"/>.</para>
 
+<!--
         <para>The <literal>[miscellany]</literal> section is where
           everything that doesn't belong elsewhere winds
           up.<footnote><para>Anyone for potluck
           dinner?</para></footnote>  In this section, you can
           find:</para>
+-->
+        <para>La section <literal>[miscellany]</literal> contient tout
+          ce qui n'a pas été mis ailleurs<footnote><para>C'est un peu
+          le repas de fin de semaine préparéavec les 
+          restes.</para></footnote>. Dans cette section, vous 
+          trouverez&nbsp;:</para>
 
         <variablelist>
           <varlistentry>
             <term><literal>enable-auto-props</literal></term>
             <listitem>
+<!--
               <para>This instructs Subversion to automatically set
                 properties on newly added or imported files.  The
                 default value is <literal>no</literal>, so set this to
                 <literal>yes</literal> to enable this feature.
                 The <literal>[auto-props]</literal> section of this file
                 specifies which properties are to be set on which files.</para>
-            </listitem>            
+-->
+              <para>Elle demande à Subversion d'ajouter automatiquement
+                des propriétés sur les fichiers ajoutés ou importés. La
+                valeur par défaut est <literal>no</literal> 
+                (c'est-à-dire non), vous devez donc la basculer sur
+                <literal>yes</literal> pour activer la fonctionnalité.
+                La section <literal>[auto-props]</literal> de ce fichier
+                spécifie quelles propriétés doivent être définies sur
+                ces fichiers.</para>
+            </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>global-ignores</literal></term>
             <listitem>
+<!--
               <para>When running the <command>svn status</command>
                 command, Subversion lists unversioned files and
                 directories along with the versioned ones, annotating
@@ -465,23 +853,58 @@ REGEDIT4
                 is <literal>*.o *.lo *.la *.al .libs *.so *.so.[0-9]*
                 *.a *.pyc *.pyo *.rej *~ #*# .#* .*.swp
                 .DS_Store</literal>.</para>
+-->
+              <para>Lorsque vous lancez la commande <command>svn 
+                status</command>, Subversion liste les fichiers et 
+                dossiers non suivis en versions avec ceux suivis en 
+                versions, en les notant avec le caractère 
+                <literal>?</literal> (voir <xref 
+                linkend="svn.tour.cycle.examine.status"/>). Parfois, il
+                n'est pas commode de voir ces éléments non suivis en
+                versions sans intérêt (par exemple les fichiers objets
+                produits par la compilation du programme) dans la sortie
+                de la commande. L'option 
+                <literal>global-ignores</literal> est une liste de 
+                motifs, séparés par des espaces, qui décrit les noms de
+                fichiers et dossiers que Subversion doit ignorés sauf
+                s'ils sont suivis en versions. La valeur par défaut est
+                <literal>*.o *.lo *.la *.al .libs *.so *.so.[0-9]* *.a 
+                *.pyc *.pyo *.rej *~ #*# .#* .*.swp 
+                .DS_Store</literal>.</para>
 
+<!--
               <para>As well as <command>svn status</command>, the
                 <command>svn add</command> and <command>svn import</command>
                 commands also ignore files that match the list
                 when they are scanning a directory.  You can override this
                 behavior for a single instance of any of these commands
                 by explicitly specifying the filename, or by using
-                the <option>--no-ignore</option> command-line flag.</para>
+                the <option>- -no-ignore</option> command-line flag.</para>
+-->
+              <para>De la même façon que <command>svn status</command>,
+                les commandes <command>svn add</command> et <command>svn 
+                import</command> ignorent les fichiers qui correspondent
+                aux éléments de la liste quand ils passent en revue un
+                dossier. Vous pouvez redéfinir ce comportement pour une
+                exécution de chacune de ces commandes en spécifiant 
+                explicitement le nom de fichier ou en utilisant l'option
+                binaire <option>--no-ignore</option> en ligne de 
+                commande.</para>
 
+<!--
               <para>For information on finer-grained control of
                 ignored items, see 
                 <xref linkend="svn.advanced.props.special.ignore" />.</para>
+-->
+              <para>Pour plus d'informations sur la gestion des éléments
+                à ignorer, reportez-vous à <xref
+                linkend="svn.advanced.props.special.ignore" />.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>interactive-conflicts</literal></term>
             <listitem>
+<!--
               <para>This is a Boolean option that specifies whether
                 Subversion should try to resolve conflicts
                 interactively.  If its value is <literal>yes</literal>
@@ -491,25 +914,48 @@ REGEDIT4
                 />.  Otherwise, it will simply flag the conflict and
                 continue its operation, postponing resolution to a later
                 time.</para>
-            </listitem>         
+-->
+              <para>C'est une option booléenne qui spécifie si 
+                Subversion doit essayer de résoudre les conflits en mode
+                interactif. Si cette valeur est <literal>yes</literal>
+                (ce qui est la valeur par défaut), Subversion demandera
+                à l'utilisateur d'indiquer comment traiter les conflits
+                comme cela a été montré dans <xref 
+                linkend="svn.tour.cycle.resolve" />. Sinon, il annotera
+                les fichiers comme étant en conflit et continue son
+                opération, reportant la résolution à plus tard.</para>
+            </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>log-encoding</literal></term>
-            <listitem>         
+            <listitem>
+<!--
               <para>This variable sets the default character set
                 encoding for commit log messages.  It's a permanent
-                form of the <option>--encoding</option> option (see
+                form of the <option>- -encoding</option> option (see
                 <xref linkend="svn.ref.svn.sw"/>).  The Subversion
                 repository stores log messages in UTF-8 and assumes
                 that your log message is written using your operating
                 system's native locale.  You should specify a
                 different encoding if your commit messages are written
                 in any other encoding.</para>
+-->
+              <para>Cette variable définit l'encodage des caractères 
+                pour les messages de propagations. C'est une forme 
+                permanente de l'option <option>--encoding</option> (voir 
+                <xref linkend="svn.ref.svn.sw"/>). Le dépôt Subversion
+                stocke les messages de propagation en UTF-8 et suppose
+                que vos messages de propagations sont écrit en utilisant
+                l'encodage par défaut de votre système. Vous pouvez donc
+                spécifier ici l'encodage utilisé pour vos messages de
+                propagation si ceux-ci sont écrits en utilisant un
+                encodage différent.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>mime-types-file</literal></term>
             <listitem>
+<!--
               <para>This option, new to Subversion 1.5, specifies the
                 path of a MIME types mapping file, such as the
                 <filename>mime.types</filename> file provided by the
@@ -519,20 +965,44 @@ REGEDIT4
                 <xref linkend="svn.advanced.props.special.mime-type"
                 /> for more about Subversion's detection and use of
                 file content types.</para>
-            </listitem>         
+-->
+              <para>Cette option, apparue avec Subversion 1.5, spécifie
+                le chemin d'un fichier de correspondance pour les types 
+                MIME, sur le même modèle que le fichier 
+                <filename>mime.types</filename> des serveurs HTTP 
+                Apache. Subversion utilise ce fichier pour associer un
+                type MIME aux fichiers qui viennent d'être ajoutés ou
+                importés. Lisez <xref linkend="svn.advanced.props.auto" 
+                /> et <xref 
+                linkend="svn.advanced.props.special.mime-type" /> pour
+                plus d'informations sur la détection et l'utilisation
+                du type des fichiers par Subversion.</para>
+            </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>no-unlock</literal></term>
             <listitem>
+<!--
               <para>This Boolean option corresponds to <command>svn
-                commit</command>'s <option>--no-unlock</option>
+                commit</command>'s <option>- -no-unlock</option>
                 option, which tells Subversion not to release locks on
                 files you've just committed.  If this runtime option
                 is set to <literal>yes</literal>, Subversion will
                 never release locks automatically, leaving you to run
                 <command>svn unlock</command> explicitly.  It defaults
                 to <literal>no</literal>.</para>
-            </listitem>         
+-->
+              <para>Cette option booléenne correspond à l'option
+                <option>--no-unlock</option> de la commande <command>svn
+                commit</command>. Elle indique à Subversion de ne pas
+                libérer les verrous posés sur les fichiers que vous
+                venez de propager. Si cette option est définie à 
+                <literal>yes</literal>, Subversion ne libérera jamais
+                automatiquement les verrous, il vous laissera le soin de
+                lancer explicitement la commande <command>svn 
+                unlock</command>. La valeur par défaut est 
+                <literal>no</literal>.</para>
+            </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>preserved-conflict-file-exts</literal></term>
