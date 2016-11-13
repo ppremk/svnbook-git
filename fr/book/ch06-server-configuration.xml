@@ -3442,8 +3442,12 @@ arding,no-X11-forwarding,no-pty TYPE1 CLÉ1 harry@exemple.com
 
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.httpd.prereqs">
+<!--
       <title>Prerequisites</title>
+-->
+      <title>Prérequis</title>
 
+<!--
       <para>To network your repository over HTTP, you basically need
         four components, available in two packages.  You'll need
         Apache <command>httpd</command> 2.0 or newer, the
@@ -3453,22 +3457,48 @@ arding,no-X11-forwarding,no-pty TYPE1 CLÉ1 harry@exemple.com
         Once you have all of those components, the process of
         networking your repository is as simple as:</para>
 
+-->
+	  <para>Pour mettre à disposition votre dépôt sur le réseau par
+        HTTP, il vous faut quatre composants, disponibles dans deux
+        paquets. Il vous faut 
+        Apache&nbsp;<command>httpd</command>&nbsp;2.0 ou plus récent, le
+        module DAV <command>mod_dav</command> fourni avec, Subversion et
+        le module <command>mod_dav_svn</command> implémentant le système
+        de fichiers, qui est fourni avec Subversion. Une fois que vous
+        avez tous ces composants, la procédure de mise en réseau de
+        votre dépôt est aussi simple que&nbsp;:</para>
+        
       <itemizedlist>
         <listitem>
+<!--
           <para>Getting httpd up and running with
             the <command>mod_dav</command> module</para>
+-->
+          <para>faire fonctionner httpd avec le module
+            <command>mod_dav</command>&nbsp;;</para>
         </listitem>
         <listitem>
+<!--
           <para>Installing the <command>mod_dav_svn</command> backend
             to <command>mod_dav</command>, which uses Subversion's
             libraries to access the repository</para>
+-->
+          <para>installer le module <command>mod_dav_svn</command>
+            derrière <command>mod_dav</command>
+            (<command>mod_dav_svn</command> utilise les bibliothèques
+            Subversion pour accéder au dépôt)&nbsp;;</para>
         </listitem>
         <listitem>
+<!--
           <para>Configuring your <filename>httpd.conf</filename>
             file to export (or expose) the repository</para>
+-->
+          <para>configurer le fichier <filename>httpd.conf</filename>
+            pour exporter (ou <quote>exposer</quote>) le dépôt.</para>
         </listitem>
       </itemizedlist>
 
+<!--
       <para>You can accomplish the first two items either by
         compiling <command>httpd</command> and Subversion from
         source code or by installing prebuilt binary packages of
@@ -3477,13 +3507,28 @@ arding,no-X11-forwarding,no-pty TYPE1 CLÉ1 harry@exemple.com
         as well as how to compile and configure Apache itself for
         this purpose, see the <filename>INSTALL</filename> file in
         the top level of the Subversion source code tree.</para>
+-->
+      <para>Vous pouvez accomplir les deux premières tâches ci-dessus
+        soit en compilant <command>httpd</command> et Subversion à
+        partir du code source, soit en installant les paquets binaires
+        précompilés correspondants sur votre système. Les informations
+        les plus récentes sur la façon de compiler Subversion dans le
+        cadre d'une utilisation en conjonction avec le serveur
+        HTTP&nbsp;Apache, sur la compilation et sur la configuration
+        d'Apache lui-même dans cet objectif, sont consultables dans le
+        fichier <filename>INSTALL</filename> situé à la racine de 
+        l'arborescence du code source de Subversion.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.httpd.basic">
+<!--
       <title>Basic Apache Configuration</title>
+-->
+      <title>Configuration Apache de base</title>
 
+<!--
       <para>Once you have all the necessary components installed on
         your system, all that remains is the configuration of Apache
         via its <filename>httpd.conf</filename> file.  Instruct Apache
@@ -3498,6 +3543,21 @@ arding,no-X11-forwarding,no-pty TYPE1 CLÉ1 harry@exemple.com
         <literal>LoadModule</literal> directive has a simple syntax,
         mapping a named module to the location of a shared library on
         disk:</para>
+-->
+      <para>Une fois que les composants requis sont installés sur votre
+        système, il ne reste plus qu'à configurer Apache au moyen de son
+        fichier <filename>httpd.conf</filename>. Indiquez à Apache de
+        charger le module <command>mod_dav_svn</command> grâce à la
+        directive <literal>LoadModule</literal>. Cette directive doit
+        précéder tout autre élément de configuration lié à Subversion.
+        Si votre serveur Apache a été installé avec la configuration par
+        défaut, votre module <command>mod_dav_svn</command> devrait
+        avoir été installé dans le sous-répertoire
+        <filename>modules</filename> du répertoire d'installation
+        d'Apache (souvent <filename>/usr/local/apache2</filename>). La
+        directive <literal>LoadModule</literal> a une syntaxe très
+        simple, faisant correspondre un nom de module à l'emplacement
+        sur le disque d'une bibliothèque partagée&nbsp;:</para>
 
       <informalexample>
         <programlisting>
@@ -3505,6 +3565,7 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
 </programlisting>
       </informalexample>
 
+<!--
       <para>Apache interprets the <literal>LoadModule</literal>
         configuration item's library path as relative to its own
         server root.  If configured as previously shown, Apache will
@@ -3513,6 +3574,16 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         how Subversion was installed on your system, you might need to
         specify a different path for this library altogether, perhaps
         even an absolute path such as in the following example:</para>
+-->
+      <para>Apache interprète le chemin donné dans la directive
+        <literal>LoadModule</literal> comme étant relatif à sa propre
+        racine. Si vous l'avez configuré comme indiqué ci-dessus, 
+        Apache cherchera le module Subversion DAV dans son propre
+        sous-dossier <filename>modules/</filename>. En fonction de la 
+        façon dont Subversion a été installé sur votre machine, vous
+        aurez peut-être besoin de spécifier un chemin différent pour
+        cette bibliothèque, voire un chemin absolu comme dans l'exemple
+        suivant&nbsp;:</para>
 
       <informalexample>
         <programlisting>
@@ -3520,11 +3591,20 @@ LoadModule dav_svn_module     C:/Subversion/lib/mod_dav_svn.so
 </programlisting>
       </informalexample>
 
+<!--
       <para>Note that if <command>mod_dav</command> was compiled as a
         shared object (instead of statically linked directly to the
         <command>httpd</command> binary), you'll need a similar
         <literal>LoadModule</literal> statement for it, too.  Be sure
         that it comes before the <command>mod_dav_svn</command> line:</para>
+-->
+      <para>Notez que si <command>mod_dav</command> a aussi été compilé
+        sous forme de bibliothèque partagée (et non par une édition de
+        liens statiques qui le place alors directement dans l'exécutable
+        <command>httpd</command>), il vous faudra une directive
+        <literal>LoadModule</literal> pour celui-ci. Assurez-vous
+        qu'elle est placée avant la ligne
+        <command>mod_dav_svn</command>&nbsp;:</para>
 
       <informalexample>
         <programlisting>
@@ -3532,6 +3612,8 @@ LoadModule dav_module         modules/mod_dav.so
 LoadModule dav_svn_module     modules/mod_dav_svn.so
 </programlisting>
       </informalexample>
+
+<!--
 
       <para>At a later location in your configuration file, you now
         need to tell Apache where you keep your Subversion repository
@@ -3551,16 +3633,38 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         repository is located at
         <filename>/var/svn/repository</filename> using the
         following <filename>httpd.conf</filename> syntax:</para>
+-->
+
+      <para>Plus loin dans votre fichier de configuration, vous
+        devez indiquer à Apache l'endroit où réside votre dépôt (ou vos
+        dépôts) Subversion. La directive <literal>Location</literal>
+        possède une syntaxe de type XML, qui commence par une balise de
+        début, se termine par une balise de fin et contient diverses autres
+        directives de configuration au milieu. Le sens de la directive
+        <literal>Location</literal> est de faire faire à Apache quelque
+        chose de spécial quand il traite les requêtes adressées à une
+        URL donnée ou à une de ses filles. Dans le cas de Subversion, il
+        faut qu'Apache fasse traiter par la couche DAV les URL pointant
+        vers les ressources suivies en versions. Vous pouvez indiquer à
+        Apache de déléguer le traitement de toutes les URL dont la
+        partie chemin d'accès (la partie de l'URL qui suit le nom du
+        serveur et le numéro de port optionnel) commence par
+        <filename>/depot/</filename> à un gestionnaire de DAV dont le
+        dépôt est situé à l'adresse
+        <filename>/var/svn/mon-depot</filename> en utilisant la syntaxe
+        <filename>httpd.conf</filename> suivante&nbsp;:</para>
 
       <informalexample>
         <programlisting>
 &lt;Location /repos&gt;
-  DAV svn
-  SVNPath /var/svn/repository
+  DAV svn<!--
+  SVNPath /var/svn/repository-->
+  SVNPath /var/svn/mon-depot
 &lt;/Location&gt;
 </programlisting>
       </informalexample>
 
+<!--
       <para>If you plan to support multiple Subversion repositories
         that will reside in the same parent directory on your local
         disk, you can use an alternative
@@ -3573,7 +3677,21 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         <uri>http://my.server.com/svn/repos2</uri>, and so on, you
         could use the <filename>httpd.conf</filename> configuration
         syntax in the following example:</para>
+-->
+      <para>Si vous avez l'intention de gérer plusieurs dépôts
+        Subversion résidant dans le même répertoire parent sur votre
+        disque local, vous pouvez utiliser une directive alternative,
+        <literal>SVNParentPath</literal>, pour faire état de ce
+        répertoire parent commun. Par exemple, si vous savez que vous
+        allez créer plusieurs dépôts Subversion dans le répertoire
+        <filename>/var/svn</filename>, auxquels on accédera par des URL
+        telles que <uri>http://mon.serveur.com/svn/depot1</uri>,
+        <uri>http://mon.serveur.com/svn/depot2</uri>,&nbsp;etc., vous
+        pouvez utiliser la syntaxe de configuration de
+        <filename>httpd.conf</filename> de l'exemple 
+        suivant&nbsp;:</para>
 
+<!--
       <informalexample>
         <programlisting>
 &lt;Location /svn&gt;
@@ -3584,7 +3702,19 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
 &lt;/Location&gt;
 </programlisting>
       </informalexample>
+-->
+      <informalexample>
+        <programlisting>
+&lt;Location /svn&gt;
+  DAV svn
 
+  # à toute URL "/svn/truc" correspond un dépôt /var/svn/truc
+  SVNParentPath /var/svn
+&lt;/Location&gt;
+</programlisting>
+      </informalexample>
+
+<!--
       <para>Using this syntax, Apache will delegate the
         handling of all URLs whose path portions begin with
         <filename>/svn/</filename> to the Subversion DAV provider,
@@ -3594,7 +3724,19 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         convenient syntax in that, unlike the use of the
         <literal>SVNPath</literal> directive, you don't have to
         restart Apache to add or remove hosted repositories.</para>
+-->
+      <para>Par cette syntaxe, Apache va déléguer le traitement de
+        toutes les URL dont le chemin d'accès commence par
+        <filename>/svn/</filename> au gestionnaire DAV de Subversion,
+        qui ensuite supposera que tous les éléments du répertoire
+        spécifié dans la directive <literal>SVNParentPath</literal> sont
+        en fait des dépôts Subversion. C'est une syntaxe
+        particulièrement pratique dans le sens où, à la différence de
+        celles utilisant la directive <literal>SVNPath</literal>, vous
+        n'avez pas besoin de redémarrer Apache pour mettre à
+        disposition ou enlever de nouveaux dépôts sur le réseau.</para>
 
+<!--
       <para>Be sure that when you define your new
         <literal>Location</literal>, it doesn't overlap with other
         exported locations.  For example, if your main
@@ -3609,10 +3751,30 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         <filename>foo.c</filename> from the Subversion repository.
         The result is often an error from the server of the form
         <literal>301 Moved Permanently</literal>.</para>
+-->
+      <para>Vérifiez bien que, quand vous définissez votre nouvelle
+        directive <literal>Location</literal>, elle n'interfère pas avec
+        d'autres emplacements exportés. Par exemple, si votre
+        <literal>DocumentRoot</literal> (c'est-à-dire le répertoire
+        racine des fichiers qu'Apache expose sur le web) principal est
+        exporté vers <filename>/www</filename>, n'exportez pas de dépôt
+        Subversion vers <literal>&lt;Location /www/depot&gt;</literal>.
+        Si une requête arrivait pour l'URI
+        <filename>/www/depot/machin.c</filename>, Apache ne saurait pas
+        s'il doit chercher un fichier <filename>depot/machin.c</filename>
+        dans son <literal>DocumentRoot</literal> ou s'il doit déléguer à
+        <command>mod_dav_svn</command> la tâche de renvoyer
+        <filename>machin.c</filename> qui se trouve dans le dépôt
+        Subversion. Ceci aboutit souvent à une erreur du serveur de la
+        forme <literal>301 Moved Permanently</literal>.</para>
 
       <sidebar>
+<!--
         <title>Server Names and the COPY Request</title>
+-->
+        <title>Noms de serveur et requêtes COPY</title>
 
+<!--
         <para>Subversion makes use of the <literal>COPY</literal>
           request type to perform server-side copies of files and
           directories.  As part of the sanity checking done by the
@@ -3623,21 +3785,42 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
           hostname of your server.  Generally, you can use
           the <literal>ServerName</literal> directive in
           <filename>httpd.conf</filename> to accomplish this.</para>
+-->
+        <para>Subversion se sert du type de requête 
+          <literal>COPY</literal> pour effectuer des copies de fichiers 
+          et de répertoires côté serveur. Les modules Apache vérifient 
+          que la source de la copie est bien située sur la même machine 
+          que la destination. Pour satisfaire cette exigence, vous aurez 
+          peut-être besoin de déclarer à <command>mod_dav</command> le 
+          nom d'hôte de votre serveur. En général, la directive
+          <literal>ServerName</literal> du fichier
+          <filename>httpd.conf</filename> peut être utilisée à cette
+          fin.</para>
 
         <informalexample>
           <programlisting>
-ServerName svn.example.com
+ServerName <!-- svn.example.com -->svn.exemple.com
 </programlisting>
         </informalexample>
 
+<!--
         <para>If you are using Apache's virtual hosting support via
           the <literal>NameVirtualHost</literal> directive, you may
           need to use the <literal>ServerAlias</literal> directive to
           specify additional names by which your server is known.
           Again, refer to the Apache documentation for full
           details.</para>
+-->
+        <para>Si vous faites usage du support des hôtes virtuels
+          d'Apache <foreignphrase>via</foreignphrase> la directive 
+          <literal>NameVirtualHost</literal>, la directive 
+          <literal>ServerAlias</literal> vous permettra de spécifier des 
+          noms additionnels désignant votre serveur. Encore une fois, 
+          reportez-vous à la documentation Apache pour plus de 
+          détails.</para>
       </sidebar>
 
+<!--
       <para>At this stage, you should strongly consider the question
         of permissions.  If you've been running Apache for some time
         now as your regular web server, you probably already have a
@@ -3648,7 +3831,19 @@ ServerName svn.example.com
         Apache, when used as a Subversion server, will also need the
         correct permissions to read and write to your Subversion
         repository.</para>
+-->
+      <para>À présent, il nous faut examiner sérieusement la question
+        des droits d'accès. Si vous utilisez Apache depuis un certain
+        temps en tant que serveur web principal, vous hébergez
+        certainement pas mal de contenu&nbsp;: des pages web, des
+        scripts,&nbsp;etc. Ces éléments ont déjà été configurés avec un
+        ensemble de droits qui leur permet de fonctionner avec Apache,
+        ou plus exactement qui permet à Apache de travailler avec ces
+        fichiers. Apache, quand on l'utilise en tant que serveur
+        Subversion, a aussi besoin de droits d'accès corrects pour lire
+        et écrire dans votre dépôt.</para>
 
+<!--
       <para>You will need to determine a permission system setup that
         satisfies Subversion's requirements without messing up any
         previously existing web page or script installations.  This
@@ -3664,6 +3859,22 @@ ServerName svn.example.com
         aware that permission-related problems are perhaps the most
         common oversight when configuring a Subversion repository for
         use with Apache.</para>
+-->
+      <para>Vous devez mettre en place les droits d'accès qui satisfont
+        les besoins de Subversion sans mettre à mal l'installation des
+        pages web et scripts pré-existants. Ceci implique peut-être de
+        modifier les droits d'accès de votre dépôt Subversion pour
+        qu'ils correspondent à ceux utilisés par les autres éléments
+        qu'Apache gère, ou bien utiliser les directives
+        <literal>User</literal> et <literal>Group</literal>
+        du fichier <filename>httpd.conf</filename> pour spécifier
+        qu'Apache doit fonctionner avec l'identifiant et le groupe qui
+        est propriétaire de votre dépôt Subversion. Il n'y a pas une
+        façon unique de mettre en place les droits d'accès et chaque
+        administrateur a ses propres raisons pour faire les choses d'une
+        manière ou d'une autre. Soyez juste conscient que les problèmes
+        liés aux droits d'accès sont peut-être le point le plus négligé
+        lors de la configuration d'un dépôt avec Apache.</para>
 
     </sect2>
 
