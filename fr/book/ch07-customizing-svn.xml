@@ -582,12 +582,12 @@ REGEDIT4
                 attempt to use when saving and retrieving cached
                 authentication credentials, and in what order
                 Subversion should prefer them.  The default value is
-                <literal>gnome-keyring, kwallet, keychain,
+                <literal>gnome-keyring, kwallet, keychain, gpg-agent,
                 windows-crypto-api</literal>, representing the GNOME
-                Keyring, KDE Wallet, Mac OS X Keychain, and Microsoft
-                Windows cryptography API, respectively.  Listed stores
-                which are not available on the system are
-                ignored.</para>
+                Keyring, KDE Wallet, Mac OS X Keychain, GnuPG Agent,
+                and Microsoft Windows cryptography API, respectively.
+                Listed stores which are not available on the system
+                are ignored.</para>
 -->
               <para>Cette liste délimitée par des virgules spécifie
                 quel magasin de stockage de mot de passe (s'il en 
@@ -595,11 +595,11 @@ REGEDIT4
                 récupérer les éléments d'authentification. Elle indique
                 également dans quel ordre Subversion doit les essayer.
                 La valeur par défaut est  <literal>gnome-keyring, 
-                kwallet, keychain, windows-crypto-api</literal> qui 
-                désigne respectiviement le trousseau GNOME, celui de 
-                KDE, celui de Mac OS X et enfin l'API cryptographique de
-                Microsoft Windows. Les magasins qui ne sont pas 
-                disponibles sur le système sont ignorés.</para>
+                kwallet, keychain, gpg-agent, windows-crypto-api</literal> 
+                qui désigne respectiviement le trousseau GNOME, celui de 
+                KDE, celui de Mac OS X, l'agent GnuPG et l'API 
+                cryptographique de Microsoft Windows. Les magasins qui ne 
+                sont pas disponibles sur le système sont ignorés.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
@@ -1329,10 +1329,10 @@ collabnet = svn.collab.net
                 wait for a server response.  If you experience
                 problems with a slow network connection causing
                 Subversion operations to time out, you should increase
-                the value of this option.  The default value is
-                <literal>0</literal>, which instructs the underlying
-                HTTP library, Neon, to use its default timeout
-                setting.</para>
+                the value of this option.  In Subversion 1.8 (or
+                older versions employing the Serf-based HTTP
+                provider), use the value <literal>0</literal> to
+                disable the timeout altogether.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
@@ -1393,7 +1393,8 @@ collabnet = svn.collab.net
                 PKCS#11 provider from which an SSL client certificate
                 will be drawn (if the server asks for one).  This
                 setting is only honored by Subversion's Neon-based
-                HTTP provider module.</para>
+                HTTP provider module, which was removed in Subversion
+                1.8.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
@@ -1804,19 +1805,22 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       things get unintuitive for most users.</para>
 
     <note>
-      <para>The decision on when to fire off a contextual two- or three-way
-        diff as part of a larger Subversion operation is made entirely
-        by Subversion and is affected by, among other things, whether
-        the files being operated on are human-readable as
-        determined by their <literal>svn:mime-type</literal> property.
-        This means, for example, that even if you had the niftiest
-        Microsoft Word-aware differencing or merging tool in the
-        universe, it would never be invoked by Subversion as long as
-        your versioned Word documents had a configured MIME type that
-        denoted that they were not human-readable (such as
-        <literal>application/msword</literal>).  For more about MIME
-        type settings, see <xref
-        linkend="svn.advanced.props.special.mime-type"/></para>
+      <para>The decision on when to fire off a contextual two- or
+        three-way diff as part of a larger Subversion operation is
+        made internally by Subversion and is affected by, among other
+        things, whether the files being operated on are human-readable
+        as determined by their <literal>svn:mime-type</literal>
+        property.  This means, for example, that even if you had the
+        niftiest Microsoft Word-aware differencing or merging tool in
+        the universe, it would typically not be invoked by Subversion
+        if your versioned Word documents had a configured MIME type
+        that denoted that they were not human-readable (such as
+        <literal>application/msword</literal>).  Fortunately, you can
+        pass the <option>--force</option> option to <command>svn
+        diff</command> to short-circuit this MIME-related sanity check
+        and force the difference to be calculated.  For more about
+        MIME type settings, see
+        <xref linkend="svn.advanced.props.special.mime-type"/></para>
     </note>
 
     <para>Much later, Subversion 1.5 introduced interactive resolution
