@@ -1007,12 +1007,21 @@ REGEDIT4
           <varlistentry>
             <term><literal>preserved-conflict-file-exts</literal></term>
             <listitem>
+<!--
               <para>The value of this option is a space-delimited list
                 of file extensions that Subversion should preserve
                 when generating conflict filenames.  By default, the
                 list is empty.  This option is new to Subversion
                 1.5.</para>
+-->
+              <para>La valeur de cette option est une liste
+                d'extensions de fichiers (séparées par des espaces)
+                que Subversion doit préserver quand il génère des noms
+                de fichiers lors des conflits. Par défaut, cette liste
+                est vide. C'est une nouvelle option apparue dans
+                Subversion 1.5.</para>
 
+<!--
               <para>When Subversion detects conflicting file content
                 changes, it defers resolution of those conflicts to the
                 user.  To assist in the resolution, Subversion keeps
@@ -1039,7 +1048,34 @@ REGEDIT4
                 application configured on your system to open all
                 files whose extensions are
                 <filename>.r4231</filename>.</para>
+-->
+              <para>Quand Subversion détecte des conflits dans les
+                modifications effectuées sur un fichier, il soumet la
+                résolution de ces conflits à l'utilisateur. Pour aider
+                l'utilisateur à les résoudre, Subversion garde une
+                copie originale des différentes versions en lice du
+                fichier dans la copie de travail. Par défaut, ces
+                fichiers ont des noms construits en ajoutant au nom de
+                fichier original une extension particulière telle que
+                <filename>.mine</filename> ou <filename>.REV</filename>
+                (où <replaceable>REV</replaceable> est un numéro de
+                révision). Ceci peut être gênant sur les systèmes
+                d'exploitation qui utilisent les extensions de noms
+                de fichiers pour déterminer l'application par défaut
+                à utiliser pour ouvrir et éditer le fichier, le fichier
+                avec la nouvelle extension n'étant plus automatiquement
+                ouvert dans l'application prévue. Par exemple, si le
+                fichier <filename>NotesDeVersion.pdf</filename> est en
+                conflit, les fichiers générés risquent de s'appeler
+                <filename>NotesDeVersion.pdf.mine</filename> ou
+                <filename>NotesDeVersion.pdf.r4231</filename>. Bien
+                que votre système soit peut-être configuré pour ouvrir
+                les fichiers <filename>.pdf</filename> avec Acrobat
+                Reader, il n'existe sûrement pas d'application
+                préconfigurée pour ouvrir les fichiers avec
+                l'extension <filename>.r4231</filename>.</para>
 
+<!--
               <para>You can fix this annoyance by using this
                 configuration option, though.  For files with one of
                 the specified extensions, Subversion will append to
@@ -1055,11 +1091,30 @@ REGEDIT4
                 Because each file ends in
                 <filename>.pdf</filename>, the correct default
                 application will be used to view them.</para>
+           
+-->
+              <para>Vous pouvez arranger cela en utilisant cette option de
+                configuration. Pour les fichiers dont l'extension est
+                spécifiée, Subversion ajoutera au nom des fichiers générés
+                l'extension particulière liée au conflit, mais il rajoutera
+                aussi à la suite l'extension originale. Dans l'exemple
+                précédent, en supposant que <literal>pdf</literal> est une
+                des extensions configurée dans la liste ci-dessus, les noms
+                des fichiers générés pour
+                <filename>NotesDeVersion.pdf</filename> vont être
+                <filename>NotesDeVersion.pdf.mine.pdf</filename> et
+                <filename>NotesDeVersion.pdf.r4231.pdf</filename>.
+                Comme chaque fichier se termine par
+                <filename>.pdf</filename>, l'application appropriée
+                sera utilisée pour les visualiser.</para>
+
             </listitem>         
           </varlistentry>
+
           <varlistentry>
             <term><literal>use-commit-times</literal></term>
             <listitem>         
+<!--
               <para>Normally your working copy files have timestamps
                 that reflect the last time they were touched by any
                 process, whether your own editor or some
@@ -1067,7 +1122,17 @@ REGEDIT4
                 convenient for people developing software, because
                 build systems often look at timestamps as a way of
                 deciding which files need to be recompiled.</para>
+-->
+              <para>Normalement, les fichiers de votre copie de travail
+                ont un horodatage qui indique la dernière fois qu'ils ont
+                été modifié par une action, que ce soit votre éditeur ou une
+                commande <command>svn</command>. C'est généralement le
+                comportement attendu par les développeurs de logiciels, car
+                les chaînes de compilation utilisent souvent ces horodatages
+                pour déterminer quels fichiers ont besoin d'être
+                recompilés.</para>
 
+<!--
               <para>In other situations, however, it's sometimes nice
                 for the working copy files to have timestamps that
                 reflect the last time they were changed in the
@@ -1080,10 +1145,23 @@ REGEDIT4
                 <command>svn switch</command>, and <command>svn
                 revert</command> commands will also set last-commit
                 timestamps on files that they touch.</para>
+-->
+              <para>Toutefois, il existe certaines situations où l'on désire
+                que l'horodatage des fichiers de la copie de travail indique
+                la dernière modification dans le dépôt. La commande
+                <command>svn export</command> fixe toujours l'horodatage sur
+                les arborescences qu'elle produit à l'<quote>horodatage de la
+                dernière propagation</quote>. En configurant cette variable
+                à <literal>yes</literal>,les commandes <command>svn
+                checkout</command>, <command>svn update</command>,
+                <command>svn switch</command> et <command>svn
+                revert</command> fixeront l'horodatage des fichiers qu'elles
+                modifient à l'horodatage de la dernière propagation.</para>
             </listitem>
           </varlistentry>
         </variablelist>
 
+<!--
         <para>The <literal>[auto-props]</literal> section controls the
           Subversion client's ability to automatically set properties
           on files when they are added or imported.  It contains any
@@ -1096,6 +1174,20 @@ REGEDIT4
           assignments.  (If you need to use a semicolon in your
           property's name or value, you can escape it by doubling
           it.)</para>
+-->
+        <para>La section <literal>auto-props</literal> contrôle la
+          possibilité par le client Subversion de positionner
+          automatiquement certaines propriétés sur les fichiers qui
+          sont ajoutés ou importés. Elle contient un nombre arbitraire
+          de paires clé-valeur au format <literal>MOTIF =
+          NOM_PROPRIETE=VALEUR[;NOM_PROPRIETE=VALEUR ...]</literal>,
+          où <literal>MOTIF</literal> est un motif de nom de fichier
+          qui correspond à un ou plusieurs noms de fichiers et le
+          reste de la ligne est une liste d'affectations (séparées
+          par des points-virgules) de valeurs à des propriétés. Si
+          vous avez besoin de points-virgules dans les noms de propriétés
+          ou pour leurs valeurs, vous pouvez <quote>échapper</quote> ce
+          caractère en le doublant.</para>
 
         <informalexample>
           <screen>
@@ -1105,16 +1197,19 @@ $ cat ~/.subversion/config
 *.c = svn:eol-style=native
 *.html = svn:eol-style=native;svn:mime-type=text/html;; charset=UTF8
 *.sh = svn:eol-style=native;svn:executable
-&hellip;
-$ cd projects/myproject
+&hellip;<!--
+$ cd projects/myproject -->
+$ cd projets/mon-projet
 $ svn status
 ?       www/index.html
 $ svn add www/index.html
 A         www/index.html
 $ svn diff www/index.html
 &hellip;
-
+<!--
 Property changes on: www/index.html
+-->
+Modification de propriétés sur www/index.html
 ___________________________________________________________________
 Added: svn:mime-type
 ## -0,0 +1 ##
@@ -1127,6 +1222,7 @@ $
 
         </informalexample>
 
+<!--
         <para>Multiple matches on a file will result in
           multiple propsets for that file; however, there is no
           guarantee that auto-props will be applied in the order in
@@ -1137,14 +1233,34 @@ $
           forget to set <literal>enable-auto-props</literal> to
           <literal>yes</literal> in the <literal>miscellany</literal>
           section if you want to enable auto-props.</para>
+-->
+        <para>Si un nom de fichier correspond à plusieurs motifs, autant de
+          propriétés seront positionnées&nbsp;; cependant, il n'y a
+          aucune garantie que les auto-props seront appliquées dans
+          l'ordre dans lequel elles apparaissent dans le fichier
+          <filename>config</filename>&nbsp;; il ne faut donc pas
+          définir de règles susceptibles d'en écraser d'autres. Vous
+          pouvez trouver de nombreux exemples d'utilisation
+          d'auto-props dans le fichier <filename>config</filename>.
+          Enfin, n'oubliez pas de positionner
+          <literal>enable-auto-props</literal> à <literal>yes</literal>
+          dans la section <literal>miscellany</literal> si vous voulez
+          activer auto-props.</para>
 
+<!--
         <para>New to Subversion 1.8, the <literal>[working-copy]</literal>
           section is used for configuring working copies.  Valid options in
           this section are:</para>
+-->
+        <para>Depuis Subversion 1.8 la section
+          <literal>[working-copy]</literal> permet de configurer les copies
+          de travail. Les options reconnues dans cette section
+          sont&nbsp;:</para>
         <variablelist>
           <varlistentry>
             <term><literal>exclusive-locking-clients</literal></term>
             <listitem>
+<!--
               <para>Enables exclusive SQLite locking of working copies for the
                 client, hence improving performance for working copies located
                 on network disks.  By setting this config variable to
@@ -1160,17 +1276,45 @@ $
                 exclusive locking may give a significant performance gain,
                 two or three times faster in some cases.  This option is new to
                 Subversion 1.8.</para>
+-->
+              <para>Cette option active le verrouillage exclusif de SQLite
+                pour le client, ce qui permet d'améliorer les performances
+                dans le cas de copies de travail stockées sur des disques
+                réseaux. En affectant <literal>svn</literal> à cette
+                variable, vous demandez au client texte interactif de
+                Subversion d'utiliser le verrouillage exclusif. Cela diminue
+                le temps pris par le verrouillage, mais cela signifie qu'un
+                seul client Subversion pourra accéder à la copie de travail
+                à la fois. Un deuxième client qui essaie d'accéder à la copie
+                de travail verrouillée sera bloqué pendant dix secondes puis
+                recevra une erreur. Dans la plupart des cas, le verrouillage
+                partagé est préférable mais si la copie de travail est
+                stockée sur un disque réseau plutôt que sur un disque local,
+                le temps de verrouillage est plus significatif. Lorsque
+                vous travaillez sur de grosses copies de travail sur des
+                disques réseau, le verrouillage exclusif peut apporter une
+                amélioration sensible des performances, en étant jusqu'à deux
+                ou trois fois plus rapide dans certains cas. Cette option est
+                apparue dans Subversion 1.8.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>exclusive-locking</literal></term>
             <listitem>
+<!--
               <para>Setting this config variable to <literal>true</literal>
                 enables exclusive SQLite locking of working copies for
                 all Subversion 1.8 clients.  Enabling this may cause some
                 clients to fail to work properly.  The default value for this
                 option is <literal>false</literal>. This option is new to
                 Subversion 1.8.</para>
+-->
+              <para>En affectant <literal>true</literal> à cette variable,
+                vous activez le verrouillage exclusif SQLite des copies de
+                travail pour tous les clients Subversion 1.8. L'activation
+                de cette option peut engendrer des erreurs sur certains
+                clients. La valeur par défaut est <literal>false</literal>.
+                Cette option est apparue avec Subversion 1.8.</para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -1178,8 +1322,12 @@ $
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.advanced.confarea.opts.servers">
+<!--
         <title>Per-server configuration</title>
+-->
+        <title>Configuration spécifique à un serveur</title>
 
+<!--
         <para>The <filename>servers</filename> file contains
           Subversion configuration options related to the network
           layers.  There are two special sections in this
@@ -1191,14 +1339,27 @@ $
           tokens that possibly contain wildcard
           characters&mdash;that are compared against the hostnames of
           the machine to which Subversion requests are sent.</para>
+-->
+        <para>Le fichier <filename>servers</filename> contient les
+          options de configuration relatives aux couches réseau. Il
+          y a deux sections spéciales dans ce fichier&nbsp;:
+          <literal>groups</literal> et <literal>global</literal>.
+          La section <literal>groups</literal> n'est rien d'autre
+          qu'un tableau de références croisées. Les clés de cette
+          section sont les noms des autres sections du fichier&nbsp;;
+          ses valeurs sont des <firstterm>globs</firstterm> (des
+          représentations textuelles qui peuvent contenir des
+          caractères joker) qui sont comparés aux noms des machines
+          auxquelles des requêtes Subversion sont envoyées.</para>
 
         <informalexample>
           <programlisting>
-[groups]
-beanie-babies = *.red-bean.com
+[groups] <!--
+beanie-babies = *.red-bean.com -->
+babasses-red-beans = *.red-bean.com
 collabnet = svn.collab.net
 
-[beanie-babies]
+<!--[beanie-babies]-->[babasses-red-beans]
 &hellip;
 
 [collabnet]
@@ -1206,6 +1367,7 @@ collabnet = svn.collab.net
 </programlisting>
         </informalexample>
 
+<!--
         <para>When Subversion is used over a network, it attempts to
           match the name of the server it is trying to reach with a
           group name under the <literal>[groups]</literal> section.  If
@@ -1213,7 +1375,16 @@ collabnet = svn.collab.net
           <filename>servers</filename> file whose name is the matched
           group's name.  From that section, it reads the actual network
           configuration settings.</para>
+-->
+        <para>Quand vous utilisez Subversion en réseau, il essaie de faire
+          correspondre le nom du serveur auquel il tente de se connecter avec
+          un nom de groupe de la section <literal>groups</literal>. Si une
+          correspondance existe, Subversion vérifie alors s'il existe dans le
+          fichier <filename>servers</filename> une section dont le nom est
+          le nom du groupe correspondant. Le cas échéant, il tire de cette
+          section la configuration réseau à appliquer.</para>
 
+<!--
         <para>The <literal>[global]</literal> section contains the
           settings that are meant for all of the servers not matched
           by one of the globs under the <literal>[groups]</literal>
@@ -1222,11 +1393,19 @@ collabnet = svn.collab.net
           sections in the file (except, of course, the special
           <literal>[groups]</literal> section), and are as
           follows:</para>
+-->
+        <para>La section <literal>global</literal> contient la configuration
+          à appliquer à tous les serveurs qui ne correspondent à aucun glob
+          de la section <literal>groups</literal>. Les options disponibles
+          dans cette section sont exactement les mêmes que pour les autres
+          sections du fichier (exceptée bien sûr la section spéciale
+          <literal>groups</literal>) et sont&nbsp;:</para>
 
         <variablelist>
           <varlistentry>
             <term><literal>http-auth-types</literal></term>
             <listitem>
+<!--
               <para>This is a semicolon-delimited list of HTTP
                 authentication types which the client will deem
                 acceptable.  Valid types
@@ -1241,13 +1420,28 @@ collabnet = svn.collab.net
                 <literal>basic</literal> from the list.  (Note that
                 this setting is only honored by Subversion's
                 Neon-based HTTP provider module.)</para>
+-->
               <!-- ### TODO: Subversion 1.7 exposed this to Serf, too,
                    and with an additional 'ntlm' auth type. -->
+              <para>C'est une liste (dont les éléments sont séparés par
+                des points-virgules) de méthodes d'authentification que le
+                client acceptera. Les méthodes valides sont
+                <literal>basic</literal>, <literal>digest</literal> et
+                <literal>negotiate</literal>, sachant que le comportement par
+                défaut est d'accepter n'importe quelle méthode. Un client qui
+                ne veut pas transmettre en clair ses éléments
+                d'authentification peut, par exemple, affecter la valeur
+                <literal>digest;negotiate</literal> à cette option (et ne
+                mentionnera donc pas <literal>basic</literal>). Notez que
+                cette option n'est prise en compte que par le module
+                Subversion pour les accès HTTP basé sur la bibliothèque
+                Neon.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>http-compression</literal></term>
             <listitem>
+<!--
               <para>This specifies whether Subversion should
                 attempt to compress network requests made to DAV-ready
                 servers.  The default value is <literal>yes</literal>
@@ -1255,11 +1449,21 @@ collabnet = svn.collab.net
                 is compiled into the network layer).  Set this to
                 <literal>no</literal> to disable compression, such as
                 when debugging network transmissions.</para>
+-->
+              <para>Cette option spécifie si Subversion doit envoyer des
+                requêtes réseau compressées vers les serveurs DAV. La valeur
+                par défaut est <literal>yes</literal> (cependant, la
+                compression ne sera effective que si la couche réseau a été
+                compilée avec le support de la compression). En affectant la
+                valeur <literal>no</literal>, vous désactivez la compression
+                et vous pourrez alors analyser plus facilement les
+                transmissions réseau.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>http-library</literal></term>
             <listitem>
+<!--
               <para>The <literal>http-library</literal> runtime
                 configuration option allows users to specify
                 (generally, or in a per-server-group fashion) which of
@@ -1277,54 +1481,101 @@ collabnet = svn.collab.net
                 Subversion installed may still wish to enable the use
                 of <literal>libsvn_ra_neon</literal> for sites which
                 they access with an older version of Subversion.</para>
+-->
+              <para>La variable <literal>http-library</literal> permet de
+                spécifier (de manière générale ou pour un groupe de serveurs
+                particuliers seulement) lequel des modules d'accès WebDAV
+                vous souhaitez utiliser. Avant la version 1.8, Subversion
+                proposait deux modules&nbsp;: l'implémentation originale
+                <literal>libsvn_ra_neon</literal> (choisie avec la valeur
+                <literal>neon</literal>) et la plus récente
+                <literal>libsvn_ra_serf</literal> (choisie avec la valeur
+                <literal>serf</literal>). Depuis Subversion 1.8, seule
+                <literal>libsvn_ra_serf</literal> reste disponible.
+                Cette option reste présente, cependant, car le fichier de
+                configuration se veut aussi indépendant que possible de la
+                version de Subversion. Les utilisateurs qui disposent de
+                plusieurs versions de Subversion installées sur leur système
+                peuvent vouloir utiliser <literal>libsvn_ra_neon</literal>
+                pour des sites sur lesquels ils se connectent avec de
+                vieilles versions de Subversion.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>http-proxy-exceptions</literal></term>
             <listitem>
+<!--
               <para>This specifies a comma-separated list of patterns
                 for repository hostnames that should be accessed
                 directly, without using the proxy machine.  The
                 pattern syntax is the same as is used in the Unix
                 shell for filenames.  A repository hostname matching
                 any of these patterns will not be proxied.</para>
+-->
+              <para>Cette option contient une liste de motifs (séparés par
+                des virgules) de noms de machines qui doivent être
+                contactées directement, sans passer par le mandataire. La
+                syntaxe des motifs est la même que celle utilisée par le
+                shell Unix pour les noms de fichiers. L'accès aux dépôts
+                d'une machine dont le nom correspond à l'un de ces motifs se
+                fera sans passer par un mandataire.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>http-proxy-host</literal></term>
             <listitem>
+<!--
               <para>This specifies the hostname of the proxy computer
                 through which your HTTP-based Subversion requests must
                 pass.  It defaults to an empty value, which means that
                 Subversion will not attempt to route HTTP requests
                 through a proxy computer, and will instead attempt to
                 contact the destination machine directly.</para>
+-->
+              <para>Cette option contient le nom de la machine mandataire
+                pour les requêtes HTTP de Subversion. La valeur par défaut
+                est vide, ce qui signifie que Subversion ne tentera pas de
+                faire passer ses requêtes par un mandataire mais essaiera de
+                contacter la machine de destination directement.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>http-proxy-password</literal></term>
             <listitem>
+<!--
               <para>This specifies the password to supply to the proxy
                 machine.  It defaults to an empty value.</para>
+-->
+              <para>Cette option spécifie le mot de passe à fournir à la
+                machine mandataire. Par défaut, la valeur est vide.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>http-proxy-port</literal></term>
             <listitem>
+<!--
               <para>This specifies the port number on the proxy host
                 to use.  It defaults to an empty value.</para>
+-->
+              <para>Cette option contient le numéro du port à utiliser sur la
+                machine mandataire. Par défaut, la valeur est vide.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>http-proxy-username</literal></term>
             <listitem>
+<!--
               <para>This specifies the username to supply to the proxy
                 machine.  It defaults to an empty value.</para>
+-->
+              <para>Cette option spécifie le nom d'utilisateur à fournir à la
+                machine mandataire. Par défaut, la valeur est vide.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>http-timeout</literal></term>
             <listitem>
+<!--
               <para>This specifies the amount of time, in seconds, to
                 wait for a server response.  If you experience
                 problems with a slow network connection causing
@@ -1333,11 +1584,21 @@ collabnet = svn.collab.net
                 older versions employing the Serf-based HTTP
                 provider), use the value <literal>0</literal> to
                 disable the timeout altogether.</para>
+-->
+              <para>Cette option contient la durée maximum, en secondes,
+                pendant laquelle Subversion attend la réponse du serveur. Si
+                vous rencontrez des problèmes d'opérations Subversion qui
+                expirent à cause d'une connexion réseau trop lente, vous
+                devez augmenter cette valeur. Avec Subversion 1.8 (ou des
+                versions plus anciennes utilisant le module HTTP basé sur
+                Serf), utilisez la valeur <literal>0</literal> pour
+                désactiver le délai d'attente maximal.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>neon-debug-mask</literal></term>
             <listitem>
+<!--
               <para>This is an integer mask that the Neon HTTP library
                 uses for choosing what type of debugging output to
                 yield.  The default value is <literal>0</literal>,
@@ -1349,21 +1610,43 @@ collabnet = svn.collab.net
                 for <literal>libsvn_ra_neon</literal> was dropped in
                 Subversion 1.8, though, making this option obsolete
                 for newer Subversion installations.</para>
+-->
+              <para>Spécifier ici un masque binaire sous la forme d'un entier
+                que la bibliothèque HTTP sous-jacente Neon utilise pour
+                définir le type d'affichage de débogage que vous voulez. La
+                valeur par défaut est <literal>0</literal>, ce qui n'affiche
+                aucune information de débogage. Avant la version 1.8, la
+                plupart des clients Subversion utilisaient Neon
+                (<foreignphrase>via</foreignphrase> le module d'accès au
+                dépôt <literal>libsvn_ra_neon</literal>) pour les
+                communications WebDAV/HTTP entre le client et le serveur. Le
+                support de <literal>libsvn_ra_neon</literal> a été enlevé
+                dans Subversion 1.8 ce qui rend cette option obsolète pour
+                les nouvelles installations de Subversion.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>ssl-authority-files</literal></term>
             <listitem>
+<!--
               <para>This is a semicolon-delimited list of paths to files
                 containing certificates of the certificate authorities
                 (or CAs) that
                 are accepted by the Subversion client when accessing the
                 repository over HTTPS.</para>
+-->
+              <para>Cette option contient une liste de chemins
+                (séparés par des points-virgules) vers les fichiers
+                contenant les certificats des autorités de
+                certifications (abrégé en AC en français et CA en anglais)
+                qui doivent être reconnues comme de confiance par le client
+                Subversion lors des accès aux dépôts en HTTPS.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>ssl-client-cert-file</literal></term>
             <listitem>
+<!--
               <para>If a host (or set of hosts) requires an SSL client
                 certificate, you'll normally be prompted for a path to
                 your certificate.  By setting this variable to that
@@ -1372,11 +1655,21 @@ collabnet = svn.collab.net
                 There's no standard place to store your certificate on
                 disk; Subversion will grab it from any path you
                 specify.</para>
+-->
+              <para>Si un hôte (ou un ensemble d'hôtes) demande un
+                certificat SSL au client, vous serez invité à fournir le
+                chemin de votre certificat. En affectant un chemin à cette
+                variable, Subversion sera capable de trouver automatiquement
+                votre certificat et ne vous sollicitera pas. Il n'existe pas
+                d'emplacement standard pour stocker un certificat utilisateur
+                sur le disque&nbsp;; Subversion va le chercher à l'endroit
+                que vous lui spécifiez.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>ssl-client-cert-password</literal></term>
             <listitem>
+<!--
               <para>If your SSL client certificate file is encrypted
                 by a passphrase, Subversion will prompt you for the
                 passphrase whenever the certificate is used.  If you
@@ -1384,41 +1677,72 @@ collabnet = svn.collab.net
                 password in the <filename>servers</filename> file),
                 you can set this variable to the certificate's
                 passphrase.  You won't be prompted anymore.</para>
+-->
+              <para>Si votre certificat client SSL est protégé par une
+                phrase de passe, Subversion vous la demandera à chaque fois
+                que le certificat est utilisé. Si vous trouvez cela pénible
+                (et que cela ne vous dérange pas que cette phrase de passe
+                soit stockée dans le fichier <filename>servers</filename>),
+                vous pouvez affecter la phrase de passe de votre certificat à
+                cette variable. Vous ne serez plus sollicité.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>ssl-pkcs11-provider</literal></term>
             <listitem>
+<!--
               <para>The value of this option is the name of the
                 PKCS#11 provider from which an SSL client certificate
                 will be drawn (if the server asks for one).  This
                 setting is only honored by Subversion's Neon-based
                 HTTP provider module, which was removed in Subversion
                 1.8.</para>
+-->
+              <para>La valeur affectée à cette option est le nom du
+                fournisseur PKCS#11 auquel Subversion demande un certificat
+                client SSL (si le serveur en demande un). Cette option n'est
+                pertinente que pour le module HTTP basé sur Neon, qui a
+                été enlevé de Subversion dans la version 1.8.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>ssl-trust-default-ca</literal></term>
             <listitem>
+<!--
               <para>Set this variable to <literal>yes</literal> if you
                 want Subversion to automatically trust the set of
                 default CAs that ship with OpenSSL.</para>
+-->
+              <para>Mettez cette variable à <literal>yes</literal>
+                si vous voulez que Subversion fasse automatiquement
+                confiance à l'ensemble des autorités de certification
+                livrées par défaut avec OpenSSL.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>store-auth-creds</literal></term>
             <listitem>
+<!--
               <para>This setting is the same as
                 <literal>store-passwords</literal>, except that it
                 enables or disables on-disk caching of
                 <emphasis>all</emphasis> authentication information:
                 usernames, passwords, server certificates, and any
                 other types of cacheable credentials.</para>
+-->
+              <para>cette option est équivalente à
+                <literal>store-passwords</literal> sauf qu'elle applique la
+                mise en cache sur le disque (ou non) à
+                <emphasis>l'ensemble</emphasis> des informations
+                d'authentification&nbsp;: identifiants, mots de passe,
+                certificats serveur et tout autre type d'élément pouvant être
+                mis en cache.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>store-passwords</literal></term>
             <listitem>
+<!--
               <para>This instructs Subversion to cache, or not to
                 cache, passwords that are supplied by the user in
                 response to server authentication challenges.  The
@@ -1426,7 +1750,7 @@ collabnet = svn.collab.net
                 <literal>no</literal> to disable this on-disk password
                 caching.  You can override this option for a single
                 instance of the <command>svn</command> command using
-                the <option>--no-auth-cache</option> command-line
+                the <option>- -no-auth-cache</option> command-line
                 parameter (for those subcommands that support it).
                 For more information regarding that, see
                 <xref linkend="svn.serverconfig.netmodel.credcache"/>.
@@ -1434,11 +1758,29 @@ collabnet = svn.collab.net
                 Subversion will not store passwords in plaintext
                 unless the <literal>store-plaintext-passwords</literal>
                 option is also set to <literal>yes</literal>.</para>
+-->
+              <para>Cette option demande à Subversion de garder en cache
+                (ou non) les mots de passe qui sont tapés par l'utilisateur
+                en réponse aux demandes d'authentification des serveurs. La
+                valeur par défaut est <literal>yes</literal>. Remplacez cette
+                valeur par <literal>no</literal> pour désactiver la mise en
+                cache sur le disque. Vous pouvez outrepasser cette option
+                pour un appel donné d'une commande <command>svn</command> en
+                utilisant l'option de ligne de commande
+                <option>--no-auth-cache</option> (pour les sous-commandes qui
+                acceptent cette option). Pour plus d'informations, consultez
+                <xref linkend="svn.serverconfig.netmodel.credcache"/>. Notez
+                que, indépendamment de la valeur pour cette option,
+                Subversion ne stockera jamais les mots de passe en clair à
+                moins que la l'option
+                <literal>store-plaintext-passwords</literal> ne soit
+                positionnée aussi à <literal>yes</literal>.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>store-plaintext-passwords</literal></term>
             <listitem>
+<!--
               <para>This variable is only important on UNIX-like systems.
                 It controls what the Subversion client does in case
                 the password for the current authentication realm can
@@ -1451,21 +1793,43 @@ collabnet = svn.collab.net
                 the Subversion client to ask you each time a
                 <emphasis>new</emphasis> password is about to be added to
                 the <filename>~/.subversion/auth/</filename> caching area.</para>
+-->
+              <para>Cette variable n'est important que pour les systèmes de
+                type Unix. Elle contrôle ce que le client Subversion fait
+                lorsque le mot de passe pour le domaine d'authentification en
+                cours ne peut être mis en cache sur le disque que en clair,
+                dans la zone <filename>~/.subversion/auth/</filename>. Vous
+                pouvez affecter <literal>yes</literal> (resp.
+                <literal>no</literal>) pour autoriser (resp. interdire) la
+                mise en cache des mots de passe en clair. La valeur par
+                défaut est <literal>ask</literal>, ce qui entraine que le
+                client Subversion vous demande ce qu'il faut faire à chaque
+                fois qu'un nouveau mot de passe doit être ajouté dans la
+                zone de cache <filename>~/.subversion/auth/</filename>.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>store-ssl-client-cert-pp</literal></term>
             <listitem>
+<!--
               <para>This option controls whether Subversion will cache
                 SSL client certificate passphrases provided by the
                 user.  Its value defaults to <literal>yes</literal>.
                 Set this to <literal>no</literal> to disable this
                 passphrase caching.</para>
+-->
+              <para>Cette option contrôle si Subversion met en cache les
+                phrases de passe pour les certificats SSL clients de
+                l'utilisateur. La valeur par défaut est
+                <literal>yes</literal>. Vous pouvez fixer la valeur à
+                <literal>no</literal> pour interdire la
+                mise en cache des phrases de passe.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>store-ssl-client-cert-pp-plaintext</literal></term>
             <listitem>
+<!--
               <para>This option controls whether Subversion, when
                 attempting to cache an SSL client certificate
                 passphrase, will be allowed to do so using its on-disk
@@ -1479,6 +1843,18 @@ collabnet = svn.collab.net
                 to <literal>yes</literal> or <literal>no</literal> to
                 indicate your preference and avoid related
                 prompts.</para>
+-->
+              <para>Cette variable contrôle si Subversion, au moment de la
+                mise en cache de la phrase de passe d'un certificat SSL
+                client, sera autorisé à le faire en stockant cette
+                information en clair sur le disque. La valeur par défaut est
+                <literal>ask</literal>, ce qui entraine que le
+                client Subversion vous demande ce qu'il faut faire à chaque
+                fois qu'une nouvelle phrase de passe doit être ajoutée dans
+                la zone de cache <filename>~/.subversion/auth/</filename>.
+                Vous pouvez définir la valeur à <literal>yes</literal> ou
+                <literal>no</literal> pour indiquer votre préférence et ainsi
+                éviter d'être sollicité à chaque fois.</para>
             </listitem>
           </varlistentry>
         </variablelist>
