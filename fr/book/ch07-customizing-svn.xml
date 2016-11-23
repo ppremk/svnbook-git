@@ -1868,8 +1868,12 @@ collabnet = svn.collab.net
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.advanced.l10n">
+<!--
     <title>Localization</title>
+-->
+    <title>Localisation</title>
 
+<!--
     <para>
       <indexterm>
         <primary>localization</primary>
@@ -1880,11 +1884,33 @@ collabnet = svn.collab.net
       language, the program is said to
       be <firstterm>localized</firstterm>.  This section describes
       steps Subversion has made toward localization.</para>
+-->
+    <para>
+      <indexterm>
+        <primary>localisation</primary>
+      </indexterm>
+      <indexterm>
+        <primary>régionalisation</primary>
+        <see>localisation</see>
+      </indexterm>La <firstterm>localisation</firstterm> (aussi appelée
+      <firstterm>régionalisation</firstterm>) consiste à modifier le
+      comportement d'un programme pour qu'il agisse d'une manière
+      propre à une région. Quand un programme formate les nombres et
+      les dates d'une façon particulière pour votre région du monde
+      ou quand il affiche des messages (ou accepte des entrées) dans
+      votre langue maternelle, le programme est dit
+      <firstterm>localisé</firstterm>. Cette section décrit les étapes
+      qu'a franchi Subversion pour être localisable.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.l10n.understanding">
+<!--
       <title>Understanding Locales</title>
       
+-->
+      <title>Généralités sur la localisation</title>
+
+<!--
       <para>Most modern operating systems have a notion of the
         <quote>current locale</quote>&mdash;that is, the region or
         country whose localization conventions are honored.  These
@@ -1892,10 +1918,25 @@ collabnet = svn.collab.net
         configuration mechanism on the computer&mdash;affect the way
         in which programs present data to the user, as well as the way
         in which they accept user input.</para>
+-->
+      <para>La plupart des systèmes d'exploitation modernes intègrent la
+        notion de <quote>paramètres régionaux courants</quote>
+        (<foreignphrase>current locale</foreignphrase> en anglais),
+        c'est-à-dire la région ou le pays dont les conventions sont
+        appliquées. Ces conventions, généralement choisies par un mécanisme
+        de configuration pour la durée du fonctionnement d'un programme sur
+        l'ordinateur, affectent la façon dont les données sont présentées à
+        l'utilisateur ainsi que la façon dont les entrées de l'utilisateur
+        sont traitées.</para>
 
+<!--
       <para>On most Unix-like systems, you can check the values of the
         locale-related runtime configuration options by running the
         <command>locale</command> command:</para>
+-->
+      <para>Sur la majorité des systèmes de type Unix, vous pouvez vérifier
+        la valeur des paramètres régionaux en cours en lançant la commande
+        <command>locale</command>&nbsp;:</para>
 
       <informalexample>
         <screen>
@@ -1912,6 +1953,7 @@ $
 </screen>
       </informalexample>
 
+<!--
       <para>The output is a list of locale-related environment
         variables and their current values.  In this example, the
         variables are all set to the default <literal>C</literal>
@@ -1930,25 +1972,64 @@ $
         locale variable that is unset.  To see the list of available
         locales on a Unix system, run the command <userinput>locale
         -a</userinput>.</para>
+-->
+      <para>L'affichage comprend une liste de variables d'environnement
+        relatives à des conventions locales et leur valeurs. Dans cet
+        exemple, toutes les variables possèdent la valeur par défaut
+        <literal>C</literal>, mais les utilisateurs peuvent modifier ces
+        valeurs et leur affecter des valeurs propres à leur pays ou à leur
+        langue. Par exemple, si quelqu'un fixe la valeur de la variable
+        <literal>LC_TIME</literal> à <literal>fr_CA</literal>, les programmes
+        sauront qu'il doivent afficher les dates et les heures conformément
+        aux attentes des canadiens francophones. Et si quelqu'un fixe la
+        valeur de la variable <literal>LC_MESSAGES</literal> à
+        <literal>zh_TW</literal>, les programmes sauront qu'il doivent
+        afficher les messages à destination de l'utilisateur en chinois
+        traditionnel. Modifier la variable <literal>LC_ALL</literal> équivaut
+        à donner à toutes les variables de paramètres régionaux la valeur
+        choisie pour <literal>LC_ALL</literal>. La valeur de la variable
+        <literal>LANG</literal> est utilisée par défaut pour toute variable
+        de paramètre régional qui n'a pas de valeur attribuée. Pour voir la
+        liste de toutes les variables de paramètres régionaux sur un système
+        Unix, lancez la commande <userinput>locale -a</userinput>.</para>
 
+<!--
       <para>On Windows, locale configuration is done via the
         <quote>Regional and Language Options</quote> control panel
         item.  There you can view and select the values of individual
         settings from the available locales, and even customize (at a
         sickening level of detail) several of the display formatting
         conventions.</para>
+-->
+      <para>Sous Windows, la configuration des paramètres régionaux
+        s'effectue par l'intermédiaire de l'élément <quote>Options
+        régionales, date, heure et langue</quote> du panneau de
+        configuration. Vous pouvez y voir et y sélectionner les valeurs de
+        chacune des variables disponibles, voire personnaliser les
+        conventions d'affichage de nombreux paramètres (à un niveau de détail
+        presque maladif).</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.l10n.svnuse">
+<!--
       <title>Subversion's Use of Locales</title>
+-->
+      <title>Utilisation des paramètres régionaux par Subversion</title>
 
+<!--
       <para>The Subversion client, <command>svn</command>, honors the
         current locale configuration in two ways.  First, it notices
         the value of the <literal>LC_MESSAGES</literal> variable and
         attempts to print all messages in the specified language.  For
         example:</para>
+-->
+      <para>Le client Subversion, <command>svn</command>, utilise la
+        configuration courante des paramètres régionaux de deux manières.
+        D'abord, il prend en compte la valeur de la variable
+        <literal>LC_MESSAGES</literal> et essaie d'afficher tous les messages
+        dans la langue indiquée. Par exemple&nbsp;:</para>
 
       <informalexample>
         <screen>
@@ -1960,6 +2041,7 @@ Aufruf: cat ZIEL[@REV]...
 </screen>
       </informalexample>
 
+<!--
       <para>This behavior works identically on both Unix and Windows
         systems.  Note, though, that while your operating system might
         have support for a certain locale, the Subversion client still
@@ -1982,7 +2064,33 @@ Aufruf: cat ZIEL[@REV]...
         By browsing the installed <filename>.mo</filename> files, you
         can see which languages the Subversion client is able to
         speak.</para>
+-->
+      <para>Ce comportement est identique sur les systèmes Unix et
+        Windows. Notez cependant que, bien que votre système
+        d'exploitation puisse supporter certaines valeurs de
+        paramètres régionaux, Subversion ne parle peut-être pas toutes
+        ces langues. Afin d'afficher ces messages localisés, des
+        volontaires (humains) doivent fournir des traductions dans
+        chaque langue. Les traductions sont écrites en utilisant le
+        paquetage GNU gettext, ce qui produit des modules de
+        traduction dont l'extension du nom de fichier est
+        <filename>.mo</filename>. Par exemple, le fichier des
+        traductions allemandes s'appelle <filename>de.mo</filename>.
+        Ces fichiers de traductions sont installés quelque part sur
+        votre système. Sous Unix, ils sont généralement placés dans
+        <filename>/usr/share/locale/</filename>, alors que sous Windows
+        on les trouve souvent dans le dossier
+        <filename>\share\locale\</filename> de la zone d'installation
+        de Subversion. Une fois installé, un module est renommé
+        d'après le programme pour lequel il fournit des traductions.
+        Par exemple, le fichier <filename>de.mo</filename> sera
+        peut-être finalement installé en tant que
+        <filename>/usr/share/locale/de/LC_MESSAGES/subversion.mo</filename>.
+        En parcourant les fichiers <filename>.mo</filename> installés,
+        vous pouvez voir quelles langues le client Subversion
+        parle.</para>
 
+<!--
       <para>
         <indexterm>
           <primary>internationalization</primary>
@@ -1999,7 +2107,27 @@ Aufruf: cat ZIEL[@REV]...
         for sending only UTF-8 filenames and log messages into the
         repository.  To do this, it must convert the data
         from the native locale into UTF-8.</para>
+-->
+      <para>
+        <indexterm>
+          <primary>internationalisation</primary>
+        </indexterm>
+        <indexterm>
+          <primary>UTF-8</primary>
+        </indexterm>La prise en compte des paramètres régionaux se fait aussi
+        au niveau de la façon dont <command>svn</command> interprète
+        vos entrées. Le dépôt stocke tous les chemins, noms de
+        fichiers et messages de propagation en Unicode, plus
+        exactement en UTF-8. En ce sens, le dépôt est
+        <firstterm>internationalé</firstterm>, c'est-à-dire que le
+        dépôt peut accepter des entrées en n'importe quelle langue.
+        Cela signifie cependant que le client Subversion ne doit
+        envoyer vers le dépôt que des noms de fichiers et des messages
+        de propagation en UTF-8. Pour ce faire, il doit convertir les
+        données depuis les paramètres régionaux courants vers
+        l'UTF-8.</para>
 
+<!--
       <para>For example, suppose you create a file named
         <filename>caffè.txt</filename>, and then when committing the
         file, you write the log message as <quote>Adesso il caffè è
@@ -2009,29 +2137,63 @@ Aufruf: cat ZIEL[@REV]...
         interpret them as Italian.  It uses an Italian character set
         to convert the data to UTF-8 before sending it off to the
         repository.</para>
+-->
+      <para>Par exemple, supposons que vous créez un fichier nommé
+        <filename>caffè.txt</filename> et qu'ensuite, lorsque vous propagez
+        ce fichier, vous fournissez le message de propagation suivant&nbsp;:
+        <quote>Adesso il caffè è più forte</quote>. Le nom du fichier et le
+        message de propagation contiennent tous deux des caractères
+        non-ASCII, mais puisque vos paramètres régionaux sont
+        <literal>it_IT</literal>, le client Subversion sait qu'il doit les
+        interpréter comme de l'italien. Il utilise alors un jeu de caractères
+        italiens pour convertir ces données en UTF-8 avant de les envoyer au
+        dépôt.</para>
 
+<!--
       <para>Note that while the repository demands UTF-8 filenames and
         log messages, it <emphasis>does not</emphasis> pay attention
         to file contents.  Subversion treats file contents as opaque
         strings of bytes, and neither client nor server makes an
         attempt to understand the character set or encoding of the
         contents.</para>
+-->
+      <para>Remarquez que, bien que le dépôt exige des noms de fichiers et
+        des messages de propagation au format UTF-8, il <emphasis>ne
+        s'intéresse pas</emphasis> au contenu du fichier. Subversion traite
+        le contenu des fichiers comme des chaînes d'octets
+        <quote>opaques</quote>&nbsp;; ni le client ni le serveur ne tentent
+        de comprendre le jeu de caractères ou le codage du contenu d'un
+        fichier.</para>
 
       <sidebar>
+<!--
         <title>Character Set Conversion Errors</title>
+-->
+        <title>Erreurs de conversion des jeux de caractères</title>
 
+<!--
         <para>While using Subversion, you might get hit with an error
           related to character set conversions:</para>
+-->
+        <para>Lors de l'utilisation de Subversion, vous êtes susceptible
+          d'être confronté à des erreurs de conversion des jeux de
+          caractères&nbsp;:</para>
 
         <informalexample>
-          <screen>
+          <screen><!--
 svn: E000022: Can't convert string from native encoding to 'UTF-8':
 &hellip;
 svn: E000022: Can't convert string from 'UTF-8' to native encoding:
 &hellip;
+-->
+svn: Impossible de convertir la chaîne de l'encodage natif vers 'UTF-8' :
+&hellip;
+svn: Impossible de convertir la chaîne de 'UTF-8' vers l'encodage natif :
+&hellip;
 </screen>
         </informalexample>
     
+<!--
         <para>Errors such as this typically occur when the Subversion
           client has received a UTF-8 string from the repository, but
           not all of the characters in that string can be represented
@@ -2040,7 +2202,17 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
           has committed a Japanese filename, you're likely to see this
           error when you receive the file during an <command>svn
           update</command>.</para>
+-->
+        <para>De telles erreurs surviennent généralement quand un client
+          Subversion reçoit une chaîne UTF-8 du dépôt et que certains
+          caractères de cette chaîne ne peuvent pas être représentés dans le
+          jeu de caractères local. Par exemple, si vos paramètres régionaux
+          sont <literal>en_US</literal> et qu'un collaborateur a propagé un
+          nom de fichier en japonais, alors il y a de grandes chances que
+          cette erreur apparaisse lors de la réception du fichier pendant
+          l'exécution de <command>svn update</command>.</para>
 
+<!--
         <para>The solution is either to set your locale to something
           that <emphasis>can</emphasis> represent the incoming UTF-8
           data, or to change the filename or log message in the
@@ -2048,6 +2220,16 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
           hand&mdash;projects should decide on common languages ahead of
           time so that all participants are using the same
           locale.)</para>
+      </sidebar>
+-->
+        <para>La solution consiste soit à configurer vos paramètres régionaux
+          de manière à <emphasis>pouvoir</emphasis> traiter n'importe quelles
+          données au format UTF-8, soit à modifier le nom de fichier ou le
+          message de propagation dans le dépôt (et n'oubliez pas de taper sur
+          les doigts de votre collaborateur&nbsp;: les projets doivent
+          décider en amont des langues à utiliser, de manière à ce que
+          l'ensemble des collaborateurs utilisent les mêmes paramètres
+          régionaux).</para>
       </sidebar>
 
     </sect2>
@@ -2058,8 +2240,12 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.advanced.externaleditors">
+<!--
     <title>Using External Editors</title>
+-->
+    <title>Utilisation d'éditeurs externes</title>
 
+<!--
     <para>The most obvious way to get data into Subversion is through
       the addition of files to version control, committing changes to
       those files, and so on.  But other pieces of
@@ -2069,21 +2255,50 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       property values&mdash;tend to be textual in nature and are
       provided explicitly by users.  Most of this information can be
       provided to the Subversion command-line client using the
-      <option>--message</option> (<option>-m</option>) and
-      <option>--file</option> (<option>-F</option>) options with the
+      <option>- -message</option> (<option>-m</option>) and
+      <option>- -file</option> (<option>-F</option>) options with the
       appropriate subcommands.</para>
+-->
+    <para>La manière la plus évidente d'entrer des données dans Subversion
+      consiste à ajouter des fichiers sous gestion de versions, propager des
+      changements sur ces fichiers,&nbsp;etc. Mais d'autres informations
+      existent dans le dépôt Subversion à côté des données constituées par
+      les simples fichiers suivis en versions. Certaines de ces informations
+      — les messages de propagation, les commentaires sur les verrous et les
+      valeurs de certaines propriétés — ont naturellement tendance à être
+      textuelles et sont explicitement fournies par les utilisateurs. La
+      plupart de ces informations peuvent être fournies à Subversion à l'aide
+      du client texte interactif en utilisant les options
+      <option>--message</option> (<option>-m</option>) et
+      <option>--file</option> (<option>-F</option>) dans le cadre des
+      sous-commandes appropriées.</para>
 
+<!--
     <para>Each of these options has its pros and cons.  For example,
-      when performing a commit, <option>--file</option>
+      when performing a commit, <option>- -file</option>
       (<option>-F</option>) works well if you've already prepared a
       text file that holds your commit log message.  If you didn't,
-      though, you can use <option>--message</option>
+      though, you can use <option>- -message</option>
       (<option>-m</option>) to provide a log message on the command
       line.  Unfortunately, it can be tricky to compose anything more
       than a simple one-line message on the command line.  Users want
       more flexibility&mdash;multiline, free-form log message editing
       on demand.</para>
       
+-->
+    <para>Chacune de ces options a des avantages et des inconvénients. Par
+      exemple, quand vous effectuez une propagation, l'option
+      <option>--file</option> (<option>-F</option>) fonctionne bien si vous
+      avez déjà préparé un fichier texte qui contient votre message de
+      propagation. Si vous ne l'avez pas fait, vous pouvez toujours utiliser
+      l'option <option>--message</option> (<option>-m</option>) pour stipuler
+      votre message en ligne de commande. Malheureusement, composer un
+      message de plus d'une ligne en ligne de commande peut être assez
+      délicat. Les utilisateurs veulent plus de flexibilité&nbsp;: ils
+      veulent pouvoir écrire un message de propagation multi-lignes, sans
+      contrainte de format et à la demande.</para>
+
+<!--
     <para>Subversion supports this by allowing you to specify an
       external text editor that it will launch as necessary
       to give you a more powerful input mechanism for this textual
@@ -2091,10 +2306,18 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       editor you'd like use.  Subversion checks the following things,
       in the order specified, when it wants to launch such an
       editor:</para>
+-->
+    <para>Subversion répond à cette attente en vous permettant de spécifier
+      un éditeur de texte externe qui sera lancé au besoin, vous offrant
+      ainsi un moyen plus puissant pour entrer des méta-données textuelles.
+      Il y a plusieurs manières d'indiquer à Subversion quel éditeur vous
+      voulez utiliser. Subversion vérifie les choses suivantes, dans l'ordre
+      spécifié, avant de lancer un tel éditeur&nbsp;:</para>
 
+<!--
     <orderedlist>
       <listitem>
-        <para><literal>--editor-cmd</literal> command-line option</para>
+        <para><literal>- -editor-cmd</literal> command-line option</para>
       </listitem>
       <listitem>
         <para><literal>SVN_EDITOR</literal> environment variable</para>
@@ -2113,7 +2336,36 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
           libraries (not present in the official builds)</para>
       </listitem>
     </orderedlist>
+-->
+    <orderedlist>
+      <listitem>
+        <para>l'option en ligne de commande
+          <literal>--editor-cmd</literal>&nbsp;;</para>
+      </listitem>
+      <listitem>
+        <para>la variable d'environnement
+          <literal>SVN_EDITOR</literal>&nbsp;;</para>
+      </listitem>
+      <listitem>
+        <para>l'option de configuration
+          <literal>editor-cmd</literal>&nbsp;;</para>
+      </listitem>
+      <listitem>
+        <para>la variable d'environnement
+          <literal>VISUAL</literal>&nbsp;;</para>
+      </listitem>
+      <listitem>
+        <para>la variable d'environnement
+          <literal>EDITOR</literal>&nbsp;;</para>
+      </listitem>
+      <listitem>
+        <para>éventuellement, une valeur par défaut spécifiée dans une des
+          bibliothèques de Subversion (non présente dans les distributions
+          officielles).</para>
+      </listitem>
+    </orderedlist>
 
+<!--
     <para>The value of any of these options or variables is the
       beginning of a command line to be executed by the shell.
       Subversion appends to that command line a space and the pathname
@@ -2122,15 +2374,26 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       an invocation in which its last command-line parameter is a file
       to be edited, and it should be able to save the file in place
       and return a zero exit code to indicate success.</para>
+-->
+    <para>La valeur de n'importe laquelle de ces options ou variables est le
+      début de la ligne de commande qui sera exécutée par le shell.
+      Subversion ajoute à cette ligne de commande une espace et le chemin
+      vers un fichier temporaire à éditer. Ainsi, pour être utilisé avec
+      Subversion, l'éditeur spécifié ou configuré doit pouvoir être appelé
+      avec pour dernier argument de sa ligne de commande le fichier à éditer,
+      il doit être capable de sauvegarder le fichier au même endroit et il
+      doit retourner zéro comme code de retour, pour indiquer la réussite de
+      l'opération.</para>
 
+<!--
     <para>As noted, external editors can be used to provide commit log
       messages to any of the committing subcommands (such as
       <command>svn commit</command> or <command>import</command>,
       <command>svn mkdir</command> or <command>delete</command> when
       provided a URL target, etc.), and Subversion will try to
       launch the editor automatically if you don't specify either of
-      the <option>--message</option> (<option>-m</option>) or
-      <option>--file</option> (<option>-F</option>) options.  The
+      the <option>- -message</option> (<option>-m</option>) or
+      <option>- -file</option> (<option>-F</option>) options.  The
       <command>svn propedit</command> command is built almost entirely
       around the use of an external editor.  And beginning in version
       1.5, Subversion will also use the configured external text
@@ -2138,6 +2401,22 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       interactive conflict resolution.  Oddly, there doesn't appear to
       be a way to use external editors to interactively provide lock
       comments.</para>
+-->
+    <para>Comme indiqué, les éditeurs externes peuvent être utilisés pour
+      fournir les messages de propagation à n'importe quelle sous-commande de
+      propagation (telle que <command>svn commit</command> ou <command>svn
+      import</command>, <command>svn mkdir</command> ou <command>svn
+      delete</command> quand vous fournissez une URL cible,&nbsp;etc.) et
+      Subversion essaie de lancer l'éditeur automatiquement si vous ne
+      spécifiez ni l'option <option>--message</option> (<option>-m</option>)
+      ni l'option <option>--file</option> (<option>-F</option>). La commande
+      <command>svn propedit</command> est presque entièrement construite
+      autour de l'utilisation d'un éditeur de texte externe. À partir de la
+      version 1.5, Subversion utilise également l'éditeur de texte externe
+      configuré quand l'utilisateur demande le lancement d'un éditeur lors de
+      la résolution interactive de conflits. Bizarrement, il ne semble pas y
+      avoir de moyen d'utiliser un éditeur externe pour fournir un
+      commentaire de verrouillage de manière interactive.</para>
 
   </sect1>
 
@@ -2145,8 +2424,13 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.advanced.externaldifftools">
+<!--
     <title>Using External Differencing and Merge Tools</title>
+-->
+    <title>Utilisation des outils externes de comparaison et de
+      fusion</title>
 
+<!--
     <para>The interface between Subversion and external two- and three-way
       differencing tools harkens back to a time when Subversion's only
       contextual differencing capabilities were built around
@@ -2156,8 +2440,8 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       utilities with more than a handful of options and parameters,
       most of which were quite specific to the utilities.  Some time
       later, Subversion grew its own internal differencing library,
-      and as a failover mechanism, the <option>--diff-cmd</option> and
-      <option>--diff3-cmd</option> options were added to the
+      and as a failover mechanism, the <option>- -diff-cmd</option> and
+      <option>- -diff3-cmd</option> options were added to the
       Subversion command-line client so that users could more easily
       indicate that they preferred to use the GNU diff and diff3
       utilities instead of the newfangled internal diff library.  If
@@ -2165,7 +2449,27 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       internal diff library, and fall back to running those external
       programs, lengthy argument lists and all.  And that's where
       things remain today.</para>
+-->
+    <para>L'interface entre Subversion et les outils de comparaison (de deux
+      ou trois fichiers) remonte à l'époque où Subversion, pour afficher les
+      différences de manière contextuelle, utilisait directement la suite
+      d'outils GNU de comparaison, plus précisément les utilitaires
+      <command>diff</command> et <command>diff3</command>. Pour obtenir le
+      comportement désiré par Subversion, l'appel à ces programmes se faisait
+      avec une ribambelle d'options et de paramètres dont la plupart étaient
+      spécifiques à ces utilitaires. Plus tard, Subversion s'est doté de sa
+      propre bibliothèque de comparaison et, afin de conserver la possibilité
+      de choisir, les options <option>--diff-cmd</option> et
+      <option>--diff3-cmd</option> ont été ajoutées au client texte
+      interactif pour que les utilisateurs allergiques à la nouvelle
+      bibliothèque puissent indiquer facilement leur souhait de se servir des
+      utilitaires GNU diff et diff3. Si ces options étaient utilisées,
+      Subversion ignorait purement et simplement sa bibliothèque interne de
+      comparaison et appelait alors ces programmes externes, avec leurs
+      listes d'arguments longue comme un jour sans pain et leurs autres
+      spécificités. Les choses sont restées en l'état.</para>
 
+<!--
     <para>It didn't take long for folks to realize that having such
       easy configuration mechanisms for specifying that Subversion
       should use the external GNU diff and diff3 utilities located at
@@ -2179,8 +2483,24 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       options at your external diff tool regardless of whether
       that program can understand those options.  And that's where
       things get unintuitive for most users.</para>
+-->
+    <para>Il n'a pas fallu longtemps pour que les adeptes de Subversion
+      comprennent que si l'on pouvait utiliser les utilitaires GNU
+      <command>diff</command> et <command>diff3</command> situés à un endroit
+      précis du disque, on pouvait alors aussi profiter de ce mécanisme pour
+      utiliser d'autres outils de comparaison. Après tout, Subversion ne
+      vérifiait pas que les programmes qu'il lançait faisaient bien partie de
+      la suite des outils GNU de comparaison. Mais la seule chose que l'on
+      peut configurer dans l'utilisation de programmes externes est leur
+      emplacement sur le disque&nbsp;; pas les options, ni l'ordre des
+      paramètres, ni le reste. Subversion continue à envoyer toutes les
+      options des utilitaires GNU à votre programme de comparaison,
+      indépendamment du fait que votre programme en tienne compte ou non. Et
+      c'est là que la plupart des utilisateurs ne comprennent pas la logique
+      de la chose.</para>
 
     <note>
+<!--
       <para>The decision on when to fire off a contextual two- or
         three-way diff as part of a larger Subversion operation is
         made internally by Subversion and is affected by, among other
@@ -2192,13 +2512,31 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
         if your versioned Word documents had a configured MIME type
         that denoted that they were not human-readable (such as
         <literal>application/msword</literal>).  Fortunately, you can
-        pass the <option>--force</option> option to <command>svn
+        pass the <option>- -force</option> option to <command>svn
         diff</command> to short-circuit this MIME-related sanity check
         and force the difference to be calculated.  For more about
         MIME type settings, see
         <xref linkend="svn.advanced.props.special.mime-type"/></para>
+-->
+      <para>La décision de lancer une comparaison entre deux ou trois
+        fichiers dans le cadre d'une opération Subversion est entièrement du
+        ressort de Subversion et est conditionnée, en autres, au fait que les
+        fichiers soient lisibles par un humain comme indiqué par leur
+        propriété <literal>svn:mime-type</literal>. Cela signifie, par
+        exemple, que même si vous avez le plus formidable outil de l'univers,
+        capable de comparer et fusionner des documents Microsoft Word,
+        il ne sera jamais appelé par Subversion tant que le type MIME
+        des documents Word suivis en versions indiquera qu'ils ne sont
+        pas lisibles par un humain (tel que
+        <literal>application/msword</literal>). Heureusement, vous pouvez
+        passer l'option <option>--force</option> à <command>svn
+        diff</command> pour court-circuiter la vérification du type MIME et
+        ainsi forcer à calculer les différences. Pour plus d'informations sur
+        la configuration des types MIME, voir <xref
+        linkend="svn.advanced.props.special.mime-type"/></para>
     </note>
 
+<!--
     <para>Much later, Subversion 1.5 introduced interactive resolution
       of conflicts (described in
       <xref linkend="svn.tour.cycle.resolve" />).  One of the options
@@ -2212,8 +2550,18 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       the <literal>merge-tool-cmd</literal> runtime configuration
       option.  Upon finding a configured external merge tool, it will
       invoke that tool.</para>
+-->
+    <para>Bien plus tard, Subversion 1.5 introduisit la résolution
+      interactive des conflits (décrite dans <xref
+      linkend="svn.tour.cycle.resolve"/>). L'une des options proposées à
+      l'utilisateur est de lancer un outil de fusion externe. Si cette action
+      est choisie, Subversion consultera l'option
+      <literal>merge-tool-cmd</literal> de la zone de configuration des
+      exécutables, susceptible de contenir le nom d'un outil externe de
+      fusion. S'il en trouve un, il lancera cet outil.</para>
 
     <note>
+<!--
       <para>While the general purposes of the three-way differencing
         and merge tools are roughly the same (finding a way to make
         separate-but-overlapping file changes live in harmony),
@@ -2226,8 +2574,22 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
         failure of some time-sensitive Subversion operations.  It's
         the external merge tool that is intended to be invoked
         interactively.</para>
+-->
+      <para>Bien que l'objectif soit globalement le même entre les outils
+        qui comparent trois fichiers et les outils de fusion (trouver une
+        un découpage des fichiers de manière à ce que les modifications
+        soient clairement séparées sans se perturber), Subversion met en
+        œuvre chacune de ces options à des moments différents et pour des
+        raisons différentes. Le moteur de comparaison pour trois fichiers ou
+        son pendant externe sont utilisés lorsqu'une interaction avec
+        l'utilisateur <emphasis>n'est pas</emphasis> requise. En fait, de
+        tels outils induisent des délais significatifs qui peuvent produire
+        des erreurs dans certaines opérations de Subversion. C'est l'outil de
+        fusion externe qui a vocation à être utilisé de manière
+        interactive.</para>
     </note>
 
+<!--
     <para>Now, while the interface between Subversion and an external
       merge tool is significantly less convoluted than that between
       Subversion and the diff and diff3 tools, the likelihood of
@@ -2239,11 +2601,27 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       and then convert the output of your tool back into a format that
       Subversion expects.  The following sections cover the specifics
       of those expectations.</para>
+-->
+    <para>Maintenant, bien que l'interface entre Subversion et un outil de
+      fusion externe soit nettement moins XXXconvolutedXXX que celle entre
+      Subversion et les outils diff et diff3, la probabilité de trouver un
+      tel outil dont les conventions d'appel sont exactement les mêmes que
+      Subversion sont très faibles. La clé pour utiliser des outils externes
+      de différenciation et de fusion avec Subversion, c'est d'encapsuler ces
+      outils dans des scripts d'interface qui convertiront les entrées en
+      provenance de Subversion en quelque chose d'intelligible pour votre
+      outil, puis de convertir en retour la sortie de votre outil vers le
+      format que Subversion attend. Les sections qui suivent couvrent les
+      détails des attendus de Subversion.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.externaldifftools.diff">
+<!--
       <title>External diff</title>
+-->
+      <title>Programmes externes de comparaison</title>
 
+<!--
       <para>Subversion calls external diff programs with parameters
         suitable for the GNU diff utility, and expects only that the
         external program will return with a successful error code per
@@ -2262,14 +2640,45 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
         page puts it this way: <quote>An exit status of 0 means no
         differences were found, 1 means some differences were found,
         and 2 means trouble.</quote></para></footnote></para>
+-->
+      <para>Subversion appelle les programmes externes de comparaison avec
+        des paramètres compatibles avec la suite d'outils de comparaison GNU
+        et s'attend à ce que le programme renvoie un code d'erreur signifiant
+        la réussite de la comparaison. Pour la plupart des programmes de
+        comparaison alternatifs, seuls les sixième et septième arguments,
+        indiquant les chemins vers les fichiers à comparer, respectivement
+        placés à gauche et à droite, sont intéressants. Notez que Subversion
+        lance le programme de comparaison pour chaque fichier concerné par
+        l'opération Subversion, ce qui peut vous amener à avoir plusieurs
+        instances simultanément si votre programme fonctionne de manière
+        asynchrone (ou s'il est placé en arrière-plan). Enfin, Subversion
+        s'attend à ce que votre programme retourne un code d'erreur de 1 s'il
+        a détecté des différences ou 0 sinon. Tout autre code d'erreur est
+        considéré comme une erreur fatale
+        <footnote>
+          <para>Le manuel du diff GNU indique&nbsp;: <quote>Un code de
+            retour valant 0 signifie qu'aucune différence n'a été
+            trouvée, 1 signifie que des différences sont apparues,
+            2 indique une erreur</quote>.</para>
+        </footnote>.
+      </para>
 
+<!--
       <para><xref linkend="svn.advanced.externaldifftools.diff.ex-1"/>
         and <xref linkend="svn.advanced.externaldifftools.diff.ex-2"/>
         are templates for external diff tool wrappers in the Python
         and Windows batch scripting languages, respectively.</para>
+-->
+
+      <para>L'<xref linkend="svn.advanced.externaldifftools.diff.ex-1"/> et
+        l'<xref linkend="svn.advanced.externaldifftools.diff.ex-2"/>
+        sont des modèles de scripts d'interface pour un outil externe de
+        comparaison, respectivement en langage Python et en langage de script
+        Windows.</para>
 
       <example id="svn.advanced.externaldifftools.diff.ex-1">
         <title>diffwrap.py</title>
+<!--
         <programlisting>
 #!/usr/bin/env python
 import sys
@@ -2284,16 +2693,40 @@ RIGHT = sys.argv[-1]
 
 # Call the diff command (change the following line to make sense for
 # your diff program).
-cmd = [DIFF, '--left', LEFT, '--right', RIGHT]
+cmd = [DIFF, '- -left', LEFT, '- -right', RIGHT]
 os.execv(cmd[0], cmd)
 
 # Return an errorcode of 0 if no differences were detected, 1 if some were.
 # Any other errorcode will be treated as fatal.
 </programlisting>
+-->
+        <programlisting>
+#!/usr/bin/env python
+import sys
+import os
+
+# Indiquez ici le chemin de votre outil de comparaison favori.
+DIFF = "/usr/local/bin/mon-diff-perso"
+
+# Subversion fournit les chemins voulus dans les deux derniers arguments.
+GAUCHE = sys.argv[-2]
+DROITE = sys.argv[-1]
+
+# Appelons la commande de comparaison (modifiez la ligne suivante
+# en accord avec votre programme de comparaison).
+cmd = [DIFF, '--left', GAUCHE, '--right', DROITE]
+os.execv(cmd[0], cmd)
+
+# Le code d'erreur renvoyé doit être :
+# 0 si aucune différence n'est détectée,
+# 1 s'il y a des différences.
+# Tout autre code est traité comme une erreur fatale.
+</programlisting>
       </example>
 
       <example id="svn.advanced.externaldifftools.diff.ex-2">
         <title>diffwrap.bat</title>
+<!--
         <programlisting>
 @ECHO OFF
 
@@ -2308,18 +2741,44 @@ SET RIGHT=%7
 
 REM Call the diff command (change the following line to make sense for
 REM your diff program).
-%DIFF% --left %LEFT% --right %RIGHT%
+%DIFF% - -left %LEFT% - -right %RIGHT%
 
 REM Return an errorcode of 0 if no differences were detected, 1 if some were.
 REM Any other errorcode will be treated as fatal.
+</programlisting>
+-->
+        <programlisting>
+@ECHO OFF
+
+REM Indiquez ici le chemin de votre outil de comparaison favori.
+SET DIFF="C:\Program Files\Super Progs\Mon Diff Perso.exe"
+
+REM Subversion fournit les chemins voulus dans les deux derniers arguments.
+REM Ce sont les paramètres 6 et 7 (sauf si vous utilisez svn diff -x,
+REM auquel cas tout est possible).
+SET GAUCHE=%6
+SET DROITE=%7
+
+REM Appelons la commande de comparaison (modifiez la ligne suivante
+REM en accord avec votre programme de comparaison).
+%DIFF% --left %GAUCHE% --right %DROITE%
+
+REM Le code d'erreur renvoyé doit être :
+REM 0 si aucune différence n'est détectée,
+REM 1 s'il y a des différences.
+REM Tout autre code est traité comme une erreur fatale.
 </programlisting>
       </example>
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.externaldifftools.diff3">
+<!--
       <title>External diff3</title>
+-->
+      <title>Programmes externes de comparaison de trois fichiers</title>
 
+<!--
       <para>Subversion invokes three-way differencing programs to
         perform non-interactive merges.  When configured to use an
         external three-way differencing program, it executes that
@@ -2340,16 +2799,43 @@ REM Any other errorcode will be treated as fatal.
         merge was successful, or 1 if unresolved conflicts remain in
         the output&mdash;any other error code is considered a fatal
         error.</para>
+-->
+      <para>Subversion appelle les programmes externes de comparaison de
+        trois fichiers pour effectuer des fusions sans interaction avec
+        l'utilisateur. Lorsqu'il est configuré pour utiliser un programme
+        externe, il appelle ce programme avec des paramètres compatibles avec
+        l'outil GNU diff3 et s'attend à ce que le programme externe retourne
+        un code d'erreur correct et que le fichier résultant de l'opération
+        de fusion soit envoyé vers la sortie standard (de façon à ce que
+        Subversion puisse le rediriger vers le fichier suivi en versions
+        approprié). Pour la plupart des programmes de fusion alternatifs,
+        seuls les neuvième, dixième et onzième arguments (les chemins des
+        fichiers qui contiennent les versions <quote>mien</quote>,
+        <quote>original</quote> et <quote>leur</quote> respectivement) sont
+        intéressants. Notez que puisque Subversion utilise la sortie de votre
+        programme de fusion, votre script d'interface ne doit pas se terminer
+        avant que la sortie n'ait été fournie à Subversion. Quand il se
+        termine, il doit retourner un code d'erreur de 0 si la fusion s'est
+        correctement déroulée ou de 1 si des conflits non résolus persistent
+        dans la sortie. Tout autre code d'erreur est considéré comme une
+        erreur fatale.</para>
 
-      <para><xref linkend="svn.advanced.externaldifftools.diff3.ex-1"/> 
+<!--
+      <para><xref linkend="svn.advanced.externaldifftools.diff3.ex-1"/>
         and <xref linkend="svn.advanced.externaldifftools.diff3.ex-2"/> are
         templates for external three-way differencing tool wrappers in
         the Python and Windows batch scripting languages,
         respectively.</para>
+-->
+      <para>L'<xref linkend="svn.advanced.externaldifftools.diff3.ex-1"/>
+        et l'<xref linkend="svn.advanced.externaldifftools.diff3.ex-2"/>
+        sont des modèles pour des scripts d'interface vers un programme
+        externe de comparaison de trois fichiers en langage Python et script
+        Windows respectivement.</para>
 
       <example id="svn.advanced.externaldifftools.diff3.ex-1">
         <title>diff3wrap.py</title>
-        <programlisting>
+        <programlisting><!--
 #!/usr/bin/env python
 import sys
 import os
@@ -2364,20 +2850,44 @@ YOURS = sys.argv[-1]
 
 # Call the three-way diff command (change the following line to make
 # sense for your three-way diff program).
-cmd = [DIFF3, '--older', OLDER, '--mine', MINE, '--yours', YOURS]
+cmd = [DIFF3, '- -older', OLDER, '- -mine', MINE, '- -yours', YOURS]
 os.execv(cmd[0], cmd)
 
 # After performing the merge, this script needs to print the contents
 # of the merged file to stdout.  Do that in whatever way you see fit.
 # Return an errorcode of 0 on successful merge, 1 if unresolved conflicts
 # remain in the result.  Any other errorcode will be treated as fatal.
+-->
+#!/usr/bin/env python
+import sys
+import os
+
+# Indiquez ici le chemin de votre outil de comparaison de 3 fichiers favori.
+DIFF3 = "/usr/local/bin/mon-diff3-favori"
+
+# Subversion fournit les chemins voulus dans les trois derniers arguments.
+MIEN  = sys.argv[-3]
+VIEUX = sys.argv[-2]
+LEUR  = sys.argv[-1]
+
+# Appelons la commande de comparaison (modifiez la ligne suivante
+# en accord avec votre outil).
+cmd = [DIFF3, '--older', VIEUX, '--mine', MIEN, '--yours', LEUR]
+os.execv(cmd[0], cmd)
+# Après avoir effectué la fusion, le script doit envoyer le
+# contenu du fichier résultant vers la sortie standard (stdout)
+# Faites le à votre convenance.
+# Le code d'erreur renvoyé doit être :
+# 0 si la fusion a bien fonctionné,
+# 1 s'il reste des conflits non résolus.
+# Tout autre code est traité comme une erreur fatale.
 </programlisting>
       </example>
 
       <example id="svn.advanced.externaldifftools.diff3.ex-2">
         <title>diff3wrap.bat</title>
         <programlisting>
-@ECHO OFF
+@ECHO OFF<!--
 
 REM Configure your favorite three-way diff program here.
 SET DIFF3="C:\Program Files\Funky Stuff\My Diff3 Tool.exe"
@@ -2394,12 +2904,38 @@ SET YOURS=%9
 
 REM Call the three-way diff command (change the following line to make
 REM sense for your three-way diff program).
-%DIFF3% --older %OLDER% --mine %MINE% --yours %YOURS%
+%DIFF3% - -older %OLDER% - -mine %MINE% - -yours %YOURS%
 
 REM After performing the merge, this script needs to print the contents
 REM of the merged file to stdout.  Do that in whatever way you see fit.
 REM Return an errorcode of 0 on successful merge, 1 if unresolved conflicts
 REM remain in the result.  Any other errorcode will be treated as fatal.
+-->
+
+REM Indiquez ici le chemin de votre outil de comparaison favori.
+SET DIFF3="C:\Program Files\Super Progs\Mon Diff3 Favori.exe"
+
+REM Subversion fournit les chemins voulus dans les trois derniers arguments.
+REM Ce sont les paramètres 9, 10 et 11. Mais nous n'avons accès qu'à
+REM neuf paramètres en même temps, nous effectuons donc deux décalages
+REM pour obtenir les paramètres manquants.
+SHIFT
+SHIFT
+SET MIEN=%7
+SET VIEUX=%8
+SET LEUR=%9
+
+REM Appelons la commande de comparaison (modifiez la ligne suivante
+REM en accord avec votre outil).
+%DIFF3% --older %VIEUX% --mine %MIEN% --yours %LEUR%
+
+REM Après avoir effectué la fusion, le script doit envoyer le
+REM contenu du fichier résultant vers la sortie standard (stdout)
+REM Faites le à votre convenance.
+REM Le code d'erreur renvoyé doit être :
+REM 0 si la fusion a bien fonctionné,
+REM 1 s'il reste des conflits non résolus.
+REM Tout autre code est traité comme une erreur fatale.
 </programlisting>
       </example>
 
@@ -2407,8 +2943,12 @@ REM remain in the result.  Any other errorcode will be treated as fatal.
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.externaldifftools.merge">
+<!--
       <title>External merge</title>
 
+-->
+      <title>Outils de fusion externes</title>
+<!--
       <para>Subversion optionally invokes an external merge tool as
         part of its support for interactive conflict resolution.  It
         provides as arguments to the merge tool the following: the
@@ -2421,11 +2961,30 @@ REM remain in the result.  Any other errorcode will be treated as fatal.
         (relative to the original target of the merge operation).  The
         merge tool is expected to return an error code of 0 to
         indicate success, or 1 to indicate failure.</para>
+-->
+      <para>Subversion peut faire appel à un outil de fusion externe dans le
+        cadre de la résolution interactive de conflits. Il fournit alors les
+        arguments suivants à ce programme&nbsp;: le chemin vers le fichier
+        original non modifié, le chemin vers le fichier <quote>theirs</quote>
+        qui contient les modifications en provenance du dépôt, le chemin vers
+        le fichier dans lequel doivent être insérées les modifications une
+        fois les conflits résolus et le chemin vers la copie de travail du
+        fichier en conflit. L'outil de fusion est censé retourner un code
+        d'erreur de 0 si la fusion s'est correctement déroulée ou de 1 si des
+        conflits non résolus persistent dans la sortie. Tout autre code
+        d'erreur est considéré comme une erreur fatale.</para>
 
+<!--
       <para><xref linkend="svn.advanced.externaldifftools.merge.ex-1"/> 
         and <xref linkend="svn.advanced.externaldifftools.merge.ex-2"/> are
         templates for external merge tool wrappers in the Python
         and Windows batch scripting languages, respectively.</para>
+-->
+      <para>L'<xref linkend="svn.advanced.externaldifftools.merge.ex-1"/>
+        et l'<xref linkend="svn.advanced.externaldifftools.merge.ex-2"/>
+        fournissent des modèles de scripts d'interface pour encapsuler un
+        outil de fusion, en langage Python et script Windows
+        respectivement.</para>
 
       <example id="svn.advanced.externaldifftools.merge.ex-1">
         <title>mergewrap.py</title>
@@ -2434,6 +2993,7 @@ REM remain in the result.  Any other errorcode will be treated as fatal.
 import sys
 import os
 
+<!--
 # Configure your favorite merge program here.
 MERGE = "/usr/local/bin/my-merge-tool"
 
@@ -2446,19 +3006,40 @@ WCPATH = sys.argv[5]
 
 # Call the merge command (change the following line to make sense for
 # your merge program).
-cmd = [MERGE, '--base', BASE, '--mine', MINE, '--theirs', THEIRS,
-              '--outfile', MERGED]
+cmd = [MERGE, '- -base', BASE, '- -mine', MINE, '- -theirs', THEIRS,
+              '- -outfile', MERGED]
 os.execv(cmd[0], cmd)
 
 # Return an errorcode of 0 if the conflict was resolved; 1 otherwise.
 # Any other errorcode will be treated as fatal.
+-->
+# Indiquez ici le chemin vers votre outil de fusion favori.
+MERGE = "/usr/local/bin/mon-outil-de-fusion"
+
+# Subversion fournit les chemins voulus
+BASE   = sys.argv[1]
+LEUR = sys.argv[2]
+MIEN   = sys.argv[3]
+FUSIONNE = sys.argv[4]
+COPIE_TRAVAIL = sys.argv[5]
+
+# Appelons la commande de fusion (modifiez la ligne suivante
+# en accord avec votre outil de fusion).
+cmd = [MERGE, '--base', BASE, '--mine', MIEN, '--theirs', LEUR,
+              '--outfile', FUSIONNE]
+os.execv(cmd[0], cmd)
+
+# Le code d'erreur renvoyé doit être :
+# 0 si la fusion a bien fonctionné,
+# 1 s'il reste des conflits non résolus.
+# Tout autre code est traité comme une erreur fatale.
 </programlisting>
       </example>
 
       <example id="svn.advanced.externaldifftools.merge.ex-2">
         <title>mergewrap.bat</title>
         <programlisting>
-@ECHO OFF
+@ECHO OFF <!--
 
 REM Configure your favorite merge program here.
 SET MERGE="C:\Program Files\Funky Stuff\My Merge Tool.exe"
@@ -2472,10 +3053,30 @@ SET WCPATH=%5
 
 REM Call the merge command (change the following line to make sense for
 REM your merge program).
-%MERGE% --base %BASE% --mine %MINE% --theirs %THEIRS% --outfile %MERGED%
+%MERGE% - -base %BASE% - -mine %MINE% - -theirs %THEIRS% - -outfile %MERGED%
 
 REM Return an errorcode of 0 if the conflict was resolved; 1 otherwise.
 REM Any other errorcode will be treated as fatal.
+-->
+
+REM Indiquez ici le chemin vers votre outil de fusion favori.
+SET MERGE="C:\Program Files\Mes Outils Perso\Mon Outil de Fusion.exe"
+
+REM Subversion fournit les chemins voulus
+SET BASE=%1
+SET LEUR=%2
+SET MIEN=%3
+SET FUSIONNE=%4
+SET COPIE_TRAVAIL=%5
+
+REM Appelons la commande de fusion (modifiez la ligne suivante
+REM en accord avec votre outil de fusion).
+%MERGE% --base %BASE% --mine %MIEN% --theirs %LEUR% --outfile %FUSIONNE%
+
+REM Le code d'erreur renvoyé doit être :
+REM  0 si la fusion a bien fonctionné,
+REM  1 s'il reste des conflits non résolus.
+REM  Tout autre code est traité comme une erreur fatale.
 </programlisting>
       </example>
 
@@ -2486,8 +3087,12 @@ REM Any other errorcode will be treated as fatal.
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.customization.summary">
+<!--
     <title>Summary</title>
+-->
+    <title>Résumé</title>
 
+<!--
     <para>Sometimes there's a single right way to do things; sometimes
       there are many.  Subversion's developers understand that while
       the majority of its exact behaviors are acceptable to most of
@@ -2495,7 +3100,16 @@ REM Any other errorcode will be treated as fatal.
       such a universally pleasing approach doesn't exist.  In those
       places, Subversion offers users the opportunity to tell it how
       <emphasis>they</emphasis> want it to behave.</para>
+-->
+    <para>Quelquefois il n'y a qu'une façon de bien faire les choses,
+      quelquefois il en existe plusieurs. Les développeurs de Subversion
+      comprennent que, bien que le plus souvent son comportement est
+      acceptable par la plupart des utilisateurs, il y a des fonctionnalités
+      pour lesquelles il n'existe pas de consensus. Dans ces situations,
+      Subversion permet à l'utilisateur de spécifier le comportement
+      qu'<emphasis>il</emphasis> désire voir appliquer.</para>
 
+<!--
     <para>In this chapter, we explored Subversion's runtime
       configuration system and other mechanisms by which users can
       control those configurable behaviors.  If you are a developer,
@@ -2503,6 +3117,14 @@ REM Any other errorcode will be treated as fatal.
       describes how you can further customize your Subversion
       experience by writing your own software against Subversion's
       libraries.</para>
+-->
+    <para>Dans ce chapitre, nous avons examiné le système de configuration
+      des exécutables de Subversion ainsi que d'autres mécanismes permettant
+      de contrôler le comportement de certaines actions. Si vous êtes
+      développeur, le prochain chapitre vous emmènera un cran plus loin. Il
+      décrit comment vous pouvez personnaliser davantage Subversion en
+      écrivant vos propres programmes en remplacement des bibliothèques
+      Subversion.</para>
 
   </sect1>
 
