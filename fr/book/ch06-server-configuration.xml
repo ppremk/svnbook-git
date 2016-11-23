@@ -2949,8 +2949,8 @@ bidule
             outils (tels que <command>cd</command> ou
             <command>vi</command>)&nbsp;; comment mettre en place de
             telles resctrictions est décrit dans
-			<xref linkend="svn.serverconfig.svnserve.sshtricks.fixedcmd"
-			/>.</para>
+            <xref linkend="svn.serverconfig.svnserve.sshtricks.fixedcmd"
+            />.</para>
         </footnote>.
       </para>
 
@@ -3458,7 +3458,7 @@ arding,no-X11-forwarding,no-pty TYPE1 CLÉ1 harry@exemple.com
         networking your repository is as simple as:</para>
 
 -->
-	  <para>Pour mettre à disposition votre dépôt sur le réseau par
+      <para>Pour mettre à disposition votre dépôt sur le réseau par
         HTTP, il vous faut quatre composants, disponibles dans deux
         paquets. Il vous faut
         Apache&nbsp;<command>httpd</command>&nbsp;2.0 ou plus récent, le
@@ -4919,8 +4919,12 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.authz.pathauthzoff">
+<!--
         <title>Disabling path-based checks</title>
+-->
+        <title>Désactivation du contrôle sur les chemins</title>
 
+<!--
         <para>The <command>mod_dav_svn</command> module goes through a
           lot of work to make sure that data you've marked
           <quote>unreadable</quote> doesn't get accidentally leaked.
@@ -4935,7 +4939,25 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           was renamed long ago&mdash;the rename tracking will simply
           halt if one of the object's former names is determined to be
           read-restricted.</para>
+-->
+        <para>Le module <command>mod_dav_svn</command> se donne beaucoup
+          de peine pour assurer que les données que vous avez désignées
+          comme <quote>interdites</quote> ne soient pas divulguées
+          accidentellement. Cela veut dire qu'il doit surveiller
+          étroitement tous les chemins d'accès et tous les contenus des
+          fichiers renvoyés par des commandes telles que <command>svn
+          checkout</command> et <command>svn update</command>.
+          Si ces commandes tombent sur un chemin qui n'est pas lisible à
+          cause d'une politique de contrôle d'accès, le chemin est
+          généralement totalement omis. Dans le cas d'une recherche
+          d'historique ou de renommage, par exemple une commande
+          telle que <userinput>svn cat -r ANCIENNE_REVISION
+          truc.c</userinput> sur un fichier qui a été renommé il y a
+          longtemps, le suivi des renommages va simplement s'arrêter si
+          un des anciens noms de l'objet se révèle être en accès
+          restreint en lecture.</para>
 
+<!--
         <para>All of this path checking can sometimes be quite
           expensive, especially in the case of <command>svn
           log</command>.  When retrieving a list of revisions, the
@@ -4943,7 +4965,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           checks it for readability.  If an unreadable path is
           discovered, it's omitted from the list of the revision's
           changed paths (normally seen with
-          the <option>--verbose</option> (<option>-v</option>) option),
+          the <option>- -verbose</option> (<option>-v</option>) option),
           and the whole log message is suppressed.  Needless to say,
           this can be time-consuming on revisions that affect a large
           number of files.  This is the cost of security: even if you
@@ -4955,7 +4977,29 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           no idea what authorization modules have been installed, so
           all it can do is ask Apache to invoke whatever might be
           present.</para>
+-->
+        <para>Ces contrôles sur les chemins peuvent parfois être assez
+          coûteux, tout particulièrement dans le cas de <command>svn
+          log</command>. Quand il demande une liste de révisions, le
+          serveur examine chaque chemin modifié dans chaque révision et
+          vérifie qu'il a le droit d'être lu. Si un chemin interdit est
+          découvert, il est omis de la liste des chemins modifiés par
+          la révision (obtenue habituellement par l'option
+          <option>--verbose</option>) et le message de propagation est
+          entièrement supprimé. Il va sans dire que ceci peut prendre un
+          certain temps pour les révisions qui ont touché à un grand
+          nombre de fichiers. C'est le coût de la sécurité&nbsp;: même
+          si vous n'avez pas du tout configuré de module tel que
+          <command>mod_authz_svn</command>, le module
+          <command>mod_dav_svn</command> va quand même demander à
+          <command>httpd</command>&nbsp;Apache de vérifier les droits
+          d'accès pour chaque chemin. Le module 
+          <command>mod_dav_svn</command> n'est pas au courant de la 
+          liste des modules de contrôle d'accès qui ont été installés, 
+          donc tout ce qu'il peut faire est de demander à Apache de 
+          lancer les modules correspondants, quels qu'ils soient.</para>
 
+<!--
         <para>On the other hand, there's also an escape hatch of
           sorts, which allows you to trade security features for
           speed.  If you're not enforcing any sort of per-directory
@@ -4965,11 +5009,26 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           <filename>httpd.conf</filename> file, use the
           <literal>SVNPathAuthz</literal> directive as shown in
           <xref linkend="svn.serverconfig.httpd.authz.pathauthzoff.ex-1"/>.</para>
+-->
+        <para>D'un autre côté, il existe une sorte d'échappatoire qui
+          vous permet d'échanger la sécurité contre de la vitesse. Si 
+          vous ne mettez pas en œuvre de contrôle d'accès sur les 
+          chemins (c'est-à-dire, si vous n'utilisez ni 
+          <command>mod_authz_svn</command> ni un module similaire), vous 
+          pouvez désactiver tous ces contrôles sur les chemins. Dans 
+          votre fichier <filename>httpd.conf</filename>, utilisez la 
+          directive <literal>SVNPathAuthz</literal> comme illustré dans 
+          l'<xref linkend="svn.serverconfig.httpd.authz.pathauthzoff.ex-1"/>.</para>
 
         <example id="svn.serverconfig.httpd.authz.pathauthzoff.ex-1">
+<!--
           <title>Disabling path checks altogether</title>
-          <programlisting>
-&lt;Location /repos&gt;
+-->
+          <title>Désactiver complètement les contrôles sur les
+            chemins</title>
+          <programlisting><!--
+&lt;Location /repos&gt;-->
+&lt;Location /depot&gt;
   DAV svn
   SVNParentPath /var/svn
 
@@ -4978,12 +5037,20 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 </programlisting>
         </example>
 
+<!--
         <para>The <literal>SVNPathAuthz</literal> directive
           is <quote>on</quote> by default.  When
           set to <quote>off,</quote> all path-based authorization
           checking is disabled;
           <command>mod_dav_svn</command> stops invoking authorization
           checks on every path it discovers.</para>
+-->
+        <para>La directive <literal>SVNPathAuthz</literal> est activée
+          (<quote>on</quote>) par défaut. Quand on la désactive
+          (<quote>off</quote>), tous les contrôles d'accès basés sur les
+          chemins sont désactivés&nbsp;; <command>mod_dav_svn</command>
+          arrête de demander un contrôle d'accès chaque chemin qu'il 
+          traite.</para>
 
       </sect3>
 
@@ -4991,8 +5058,12 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.httpd.ssl">
+<!--
       <title>Protecting network traffic with SSL</title>
+-->
+      <title>Encapsulation du trafic réseau avec SSL</title>
 
+<!--
       <para>Connecting to a repository via <literal>http://</literal>
         means that all Subversion activity is sent across the network
         in the clear.  This means that actions such as checkouts,
@@ -5000,7 +5071,17 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
         unauthorized party <quote>sniffing</quote> network traffic.
         Encrypting traffic using SSL is a good way to protect
         potentially sensitive information over the network.</para>
+-->
+      <para>Lorsque vous vous connectez à un dépôt 
+        <foreignphrase>via</foreignphrase> <literal>http://</literal>,
+        tout le trafic généré par Subversion est envoyé en clair sur le
+        réseau. Cela veut dire que les extractions, les propagations et
+        les mises à jour peuvent être interceptées par une entité non
+        autorisée qui <quote>écoute</quote> le trafic réseau. Chiffrer
+        le trafic en utilisant SSL vous permet de protéger l'envoi
+        d'informations sensibles sur le réseau.</para>
 
+<!--
       <para>If a Subversion client is compiled to use OpenSSL,
         it gains the ability to speak to an Apache server via
         <literal>https://</literal> URLs, so all traffic is encrypted
@@ -5008,19 +5089,41 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
         the Subversion client is not only able to verify server
         certificates, but can also supply client certificates when
         challenged by the server.</para>
+-->
+      <para>Si un client Subversion est compilé pour l'utilisation de 
+        SSL, il peut alors se connecter au serveur Apache en utilisant
+        des URL de type <literal>https://</literal>, ce qui chiffrera
+        tout le trafic avec une clé de session propre à chaque 
+        connexion. La bibliothèque WebDAV utilisée par le client 
+        Subversion n'est pas seulement capable de vérifier le certificat
+        présenté par le serveur mais peut aussi utiliser des 
+        certificats clients au cas où le serveur le demande.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.ssl.server">
+<!--
         <title>Subversion server SSL certificate configuration</title>
+-->
+        <title>Configuration du certificat serveur SSL de 
+          Subversion</title>
 
+<!--
         <para>It's beyond the scope of this book to describe how to
           generate client and server SSL certificates and how to
           configure Apache to use them.  Many other references,
           including Apache's own documentation (<ulink
           url="http://httpd.apache.org/docs/current/ssl/"/>),
           describe the process.</para>
+-->
+        <para>La création de certificats SSL clients et serveurs ainsi
+          que la configuration d'Apache pour les utiliser sort du cadre
+          de ce livre. Il existe beaucoup de références, y compris la
+          propre documentation d'Apache (<ulink 
+          url="http://httpd.apache.org/docs/current/ssl/"/>),
+          qui décrivent comment faire.</para>
 
         <tip>
+<!--
           <para>SSL certificates from well-known entities generally
             cost money, but at a bare minimum, you can configure
             Apache to use a self-signed certificate generated with a
@@ -5031,30 +5134,62 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
             time), such an attack is much more difficult for a casual
             observer to pull off, compared to sniffing unprotected
             passwords.</para></footnote></para>
+-->
+          <para>Les certificats SSL produits par des sociétés bien
+            connues sont généralement payants mais vous pouvez, au 
+            minimum, configurer Apache pour utiliser un certificat
+            auto-signé qui a été généré avec, par exemple, OpenSSL
+            (<ulink url="http://openssl.org"
+            />).<footnote><para>Bien que les certificats auto-signés
+            sont vulnérables à une attaque dite 
+            <quote>Man-in-the-Middle</quote> (homme du milieu en anglais)
+            au moment où le client voit le certificat pour la première
+            fois, une telle attaque reste beaucoup plus complexe à 
+            mettre en œuvre lors d'une écoute occasionnelle que le 
+            simple fait de récupérer des mots de passe qui passent en
+            clair.</para></footnote></para>
         </tip>
 
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.ssl.client">
+<!--
         <title>Subversion client SSL certificate management</title>
+-->
+        <title>Gestion des certificats clients SSL Subversion</title>
 
+<!--
         <para>When connecting to Apache via <literal>https://</literal>,
           a Subversion client can receive two different types of
           responses:</para>
+-->
+        <para>Quand il se connecte à une serveur Apache en 
+          <literal>https://</literal>, un client Subversion peut 
+          recevoir deux types de réponse&nbsp;:</para>
 
         <itemizedlist>
           <listitem>
+<!--
             <para>A server certificate</para>
+-->
+            <para>un certificat serveur&nbsp;;</para>
           </listitem>
           <listitem>
+<!--
             <para>A challenge for a client certificate</para>
+-->
+            <para>un défi pour un certificat client.</para>
           </listitem>
         </itemizedlist>
 
         <sect4 id="svn.serverconfig.httpd.ssl.client.servercert">
+<!--
           <title>Server certificate</title>
+-->
+          <title>Certificat serveur</title>
 
+<!--
           <para>When the client receives a server certificate, it needs
             to verify that the server is who it claims to be. OpenSSL
             does this by examining the signer of the server certificate,
@@ -5064,7 +5199,21 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
             hostname mismatch), the Subversion command-line client will
             ask you whether you want to trust the server certificate
             anyway:</para>
+-->
+          <para>Quand le client reçoit un certificat serveur, il doit
+            vérifier que le serveur est bien celui qu'il prétend être.
+            OpenSSL réalise cette tâche en examinant le signataire du
+            certificat serveur, appelé <firstterm>autorité de 
+            certification</firstterm> (AC en français, CA pour 
+            <foreignphrase>certificat authority</foreignphrase> en 
+            anglais). Si OpenSSL ne fait pas confiance à cette AC, ou
+            si un autre problème apparaît (tel qu'un certificat ayant
+            expiré ou alors le nom de la machine qui ne correspond pas
+            à ce qui est indiqué dans le certificat), le client texte
+            interactif Subversion vous demande si vous voulez quand
+            même faire confiance à ce certificat serveur&nbsp;:</para>
 
+<!--
           <informalexample>
             <screen>
 $ svn list https://host.example.com/repos/project
@@ -5081,7 +5230,25 @@ Certificate information:
 (R)eject, accept (t)emporarily or accept (p)ermanently?
 </screen>
           </informalexample>
+-->
+          <informalexample>
+            <screen>
+$ svn list https://hote.exemple.com/depot/projet
 
+Error validating server certificate for 'https://hote.exemple.com:443':
+ - The certificate is not issued by a trusted authority.  Use the
+   fingerprint to validate the certificate manually!
+Certificate information:
+ - Hostname: hote.exemple.com
+ - Valid: from Jan 30 19:23:56 2004 GMT until Jan 30 19:23:56 2006 GMT
+ - Issuer: CA, exemple.com, Sometown, California, US
+ - Fingerprint: 7d:e1:a9:34:33:39:ba:6a:e9:a5:c4:22:98:7b:76:5c:92:a0:9c:7b
+
+(R)eject, accept (t)emporarily or accept (p)ermanently?
+</screen>
+          </informalexample>
+
+<!--
           <para>This dialogue is essentially the same question you may
             have seen coming from your web browser (which is just
             another HTTP client like Subversion).  If you choose the
@@ -5091,33 +5258,65 @@ Certificate information:
             password are cached (see <xref
             linkend="svn.serverconfig.netmodel.credcache"/>), and will
             automatically trust the certificate in the future.</para>
+-->
+          <para>Vous pourriez voir cette même question dans votre 
+            navigateur (car c'est aussi un client HTTP tout comme
+            Subversion). Si vous choisissez l'option 
+            <literal>(p)</literal>permanent, Subversion placera le 
+            certificat serveur en cache dans votre zone privée de
+            configuration (dossier <filename>auth/</filename>) ainsi que
+            votre nom d'utilisateur et votre mot de passe (voir
+            <xref linkend="svn.serverconfig.netmodel.creds"/>). Il fera
+            alors automatiquement confiance au certificat dans le 
+            futur.</para>
 
+<!--
           <para>Your runtime <filename>servers</filename> file also gives
             you the ability to make your Subversion client automatically
             trust specific CAs, either globally or on a per-host basis.
             Simply set the <literal>ssl-authority-files</literal>
             variable to a semicolon-separated list of PEM-encoded CA
             certificates:</para>
+-->
+          <para>Votre fichier <filename>servers</filename> de la zone de
+            configuration vous permet aussi de spécifier des AC de 
+            confiance, que ce soit globalement ou hôte par hôte. 
+            Affectez simplement une liste (dont les éléments sont 
+            séparés par des points-virgules) de chemins vers des 
+            certificats d'AC encodés au format PEM à la variable 
+            <literal>ssl-authority-files</literal>&nbsp;:</para>
 
           <informalexample>
             <programlisting>
-[global]
-ssl-authority-files = /path/to/CAcert1.pem;/path/to/CAcert2.pem
+[global]<!--
+ssl-authority-files = /path/to/CAcert1.pem;/path/to/CAcert2.pem -->
+ssl-authority-files = /chemin/vers/certificat-AC1.pem;/chemin/vers/certificat-AC2.pem
 </programlisting>
           </informalexample>
 
+<!--
           <para>Many OpenSSL installations also have a predefined set
             of <quote>default</quote> CAs that are nearly universally
             trusted.  To make the Subversion client automatically trust
             these standard authorities, set the
             <literal>ssl-trust-default-ca</literal> variable to
             <literal>true</literal>.</para>
+-->
+          <para>Beaucoup d'installations d'OpenSSL sont fournies avec 
+            une liste d'autorités <quote>universellement de 
+            confiance</quote>. Pour que le client Subversion fasse
+            confiance à ces autorités, affectez la valeur 
+            <literal>true</literal> à la variable
+            <literal>ssl-trust-default-ca</literal> .</para>
 
         </sect4>
 
         <sect4 id="svn.serverconfig.httpd.ssl.client.clientcert">
+<!--
           <title>Client certificate challenge</title>
-
+-->
+          <title>Défi pour le certificat client</title>
+<!--
           <para>If the client receives a challenge for a certificate,
             the server is asking the client to prove its identity.
             The client must send back a certificate signed by a CA
@@ -5128,7 +5327,22 @@ ssl-authority-files = /path/to/CAcert1.pem;/path/to/CAcert2.pem
             format on disk, protected by a passphrase.  When Subversion
             receives this challenge, it will ask you for the path to the
             encrypted file and the passphrase that protects it:</para>
+-->
+          <para>Quand le client reçoit un défi d'authentification, cela 
+            veut dire que le serveur demande au client de prouver son
+            identité. Le client doit renvoyer un certificat signé par 
+            une AC qui a la confiance du serveur ainsi qu'une
+            <firstterm>réponse de défi</firstterm>
+            (<foreignphrase>Challenge Response</foreignphrase> en 
+            anglais) qui prouve que le client possède la clé privée
+            associée au certificat. La clé privée et le certificat sont
+            généralement stockés à l'intérieur d'un conteneur chiffré 
+            sur le disque et sont protégés par une phrase de passe. 
+            Quand Subversion reçoit le défi, il vous demande le chemin 
+            vers le conteneur et la phrase de passe qui protège son
+            accès&nbsp;:</para>
 
+<!--
           <informalexample>
             <screen>
 $ svn list https://host.example.com/repos/project
@@ -5138,7 +5352,18 @@ Client certificate filename: /path/to/my/cert.p12
 Passphrase for '/path/to/my/cert.p12':  ********
 </screen>
           </informalexample>
+-->
+          <informalexample>
+            <screen>
+$ svn list https://hote.exemple.com/depot/projet
 
+Authentication realm: https://hote.exemple.com:443
+Client certificate filename: /chemin/vers/mon/conteneur.p12
+Passphrase for '/chemin/vers/mon/conteneur.p12':  ********
+</screen>
+          </informalexample>
+
+<!--
           <para>Notice that the client credentials are stored in a
             <literal>.p12</literal> file.  To use a client certificate
             with Subversion, it must be in PKCS#12 format, which is a
@@ -5146,28 +5371,60 @@ Passphrase for '/path/to/my/cert.p12':  ********
             and export certificates in that format.  Another option
             is to use the OpenSSL command-line tools to convert
             existing certificates into PKCS#12.</para>
+-->
+          <para>Notez que les éléments d'authentification du client sont
+            stockés dans un conteneur dont l'extension est 
+            <literal>.p12</literal>. Pour utiliser un certificat client
+            avec Subversion, il doit être au format PKCS#12, ce qui est
+            un standard. La plupart des navigateurs Web savent importer
+            et exporter des certificats dans ce format. Une autre
+            possibilité est d'utiliser les utilitaires en ligne de 
+            commande d'OpenSSL pour convertir des certificats existants
+            au format PKCS#12.</para>
 
+<!--
           <para>The runtime <filename>servers</filename> file also
             allows you to automate this challenge on a per-host basis.
             If you set the <literal>ssl-client-cert-file</literal>
             and <literal>ssl-client-cert-password</literal> variables,
             Subversion can automatically respond to a client
             certificate challenge without prompting you:</para>
+-->
+          <para>Le fichier <filename>servers</filename> de la zone de
+            configuration vous permet d'automatiser la phase de défi
+            pour les hôtes que vous spécifiez. Si vous définissez les 
+            variables <literal>ssl-client-cert-file</literal> et
+            <literal>ssl-client-cert-password</literal>, Subversion
+            répond automatiquement aux défis demandés par les serveurs
+            sans vous solliciter&nbsp;:</para>
 
           <informalexample>
             <programlisting>
-[groups]
+[groups]<!--
 examplehost = host.example.com
 
 [examplehost]
 ssl-client-cert-file = /path/to/my/cert.p12
-ssl-client-cert-password = somepassword
+ssl-client-cert-password = somepassword -->
+
+serveur_exemple = hote.exemple.com
+
+[serveur_exemple]
+ssl-client-cert-file = /chemin/vers/mon/conteneur.p12
+ssl-client-cert-password = maphrasedepasseestlongue
+
 </programlisting>
           </informalexample>
 
+<!--
           <para>More security-conscious folk might want to exclude
             <literal>ssl-client-cert-password</literal> to avoid
             storing the passphrase in the clear on disk.</para>
+-->
+          <para>Les plus exigeants en matière de sécurité interdiront
+            l'affectation des phrases de passe dans la
+            variable <literal>ssl-client-cert-password</literal> car 
+            celles-ci sont alors stockées en clair sur le disque.</para>
 
         </sect4>
       </sect3>
@@ -5175,8 +5432,12 @@ ssl-client-cert-password = somepassword
 
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.httpd.perf">
+<!--
       <title>Tuning for Performance</title>
+-->
+      <title>Amélioration des performances</title>
 
+<!--
       <para>The Apache HTTP Server is built for performance, but you
         can improve upon its default configuration to get even better
         results out of your Subversion service offering.  In this
@@ -5188,11 +5449,24 @@ ssl-client-cert-password = somepassword
         to consider the full breadth of your HTTP service offering to
         discern how modifications to these settings for Subversion's
         sake may affect your other services.</para>
+-->
+      <para>Le serveur HTTP Apache a été conçu pour être performant
+        mais vous pouvez modifier la configuration par défaut pour
+        gagner encore en performances pour votre service Subversion. 
+        Dans cette section, nous allons vous proposer quelques 
+        modifications de configuration de 
+        <filename>httpd.conf</filename>. Comprenez cependant que 
+        certaines des modifications proposées affectent le comportement
+        général du serveur, et pas seulement le service Subversion. 
+        Ainsi, vous devez prendre en compte l'ensemble de ces services 
+        pour décider s'il est opportun d'effectuer ou non les 
+        modifications proposées.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.perf.keepalive">
         <title>KeepAlive</title>
 
+<!--
         <para>By default, the Apache HTTP Server is configured to
           enable the re-use of a single server connection for multiple
           requests.  That's very beneficial for Subversion, because
@@ -5206,7 +5480,23 @@ ssl-client-cert-password = somepassword
           boolean flag which enables or disables this connection
           re-use facility, and as we indicated previously, by default
           its value is <literal>On</literal>.</para>
+-->
+        <para>Par défaut, le serveur HTTP Apache est configuré pour
+          autoriser la réutilisation d'une même connexion serveur par
+          plusieurs requêtes client. C'est particulièrement avantageux
+          pour Subversion car, au contraire de beaucoup d'applications
+          sur HTTP, Subversion peut générer très rapidement des 
+          centaines voire des milliers de requêtes vers un serveur pour
+          une seule opération et le coût d'ouvrir une nouvelle connexion
+          vers un serveur n'est pas négligeable. Subversion veut faire
+          rentrer le maximum de requêtes dans une seule connexion avant
+          que celle-ci ne soit fermée par le serveur. La directive
+          <literal>KeepAlive</literal> est un booléen qui active ou 
+          désactive cette réutilisation de connexion et, comme indiqué
+          précédemment, sa valeur par défaut est 
+          <literal>On</literal>.</para>
 
+<!--
         <para>But there's another directive which limits the number of
           requests a client is allowed to submit on a single
           connection:  the <literal>MaxKeepAliveRequests</literal>
@@ -5220,8 +5510,24 @@ ssl-client-cert-password = somepassword
           you increase the value of the
           <literal>MaxKeepAliveRequests</literal> option
           to at least <literal>1000</literal>.</para>
+-->
+        <para>Mais il existe une autre directive qui limite le nombre
+          de requêtes qu'un client peut soumettre sur une seule 
+          connexion&nbsp;: la directive
+          <literal>MaxKeepAliveRequests</literal>. La valeur par défaut
+          pour cette option est <literal>100</literal>. C'était 
+          probablement suffisant pour les vieilles versions de 
+          Subversion, mais Subversion 1.8 utilise une bibliothèque de
+          communication différente (appelée Serf) qui préfère lancer
+          plusieurs petites requêtes pour récupérer des informations
+          bien précises plutôt que de demander au serveur de transmettre
+          d'énormes quantités de données en une seule réponse. Nous vous
+          recommandons d'augmenter la valeur affectée à l'option
+          <literal>MaxKeepAliveRequests</literal> à au moins 
+          <literal>1000</literal>.</para>
 
         <informalexample>
+<!--
           <programlisting>
 #
 # KeepAlive: Whether or not to allow persistent connections (more than
@@ -5236,13 +5542,33 @@ KeepAlive On
 #
 MaxKeepAliveRequests 1000
 </programlisting>
+-->
+          <programlisting>
+#
+# KeepAlive: autoriser ou pas les connexions persistantes (plus d'une
+# requête par connexion). Mettre la valeur "Off" pour la désactiver.
+#
+KeepAlive On
+
+#
+# MaxKeepAliveRequests: nombre maximum de requêtes autorisées pour une
+# connexion persistante. Mettre à 0 pour autoriser un nombre illimité. 
+# Nous recommandons de laisser ce nombre élevé pour améliorer les 
+# performances.
+#
+MaxKeepAliveRequests 1000
+</programlisting>
         </informalexample>
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.perf.bulk-updates">
+<!--
         <title>Bulk updates</title>
+-->
+        <title>Mises à jour groupées</title>
 
+<!--
         <para>The biggest difference between the way that Subversion
           1.8 clients and pre-1.8 clients behave is in how update-style
           operations (<command>svn checkout</command>, <command>svn
@@ -5255,7 +5581,21 @@ MaxKeepAliveRequests 1000
           and then a <literal>REPORT</literal> request with a massive
           response.  That response was the entire checkout/update
           dataset!</para>
+-->
+        <para>La plus grosse différence entre le client Subversion 1.8
+          et ses prédécesseurs concerne la manière dont il effectue les
+          opérations de mises à jour  (<command>svn checkout</command>, 
+          <command>svn update</command>, <command>svn switch</command>, 
+          etc.). Les vieux clients, qui utilisaient la bibliothèque HTTP 
+          Neon pour les communications, préféraient demander au serveur
+          l'ensemble des informations dans une seule requête. Les 
+          administrateurs pouvaient alors voir, dans les journaux de
+          connexions du serveur, la négociation initiale de la 
+          transaction puis une requête <literal>REPORT</literal> dont la
+          réponse était énorme. Cette réponse contenait l'extraction ou
+          la mise à jour dans son ensemble&nbsp;!</para>
 
+<!--
         <para>Subversion clients which use the Serf HTTP
           library&mdash;which includes all clients built atop the
           Subversion 1.8&mdash;still send the <literal>REPORT</literal>
@@ -5268,7 +5608,21 @@ MaxKeepAliveRequests 1000
           that <literal>REPORT</literal> is followed by many smaller
           requests (<literal>GET</literal>s and, in older versions of
           Subversion, <literal>PROPFIND</literal>s).</para>
+-->
+        <para>Les clients Subversion qui utilisent la bibliothèque HTTP 
+          Serf (ce qui inclut tous les clients basés sur Subversion 1.8)
+          envoient toujours la requête <literal>REPORT</literal> mais
+          avec des paramètres légèrement différents. Ces paramètres ne
+          demandent pas au serveur d'envoyer toutes les données 
+          relatives à l'opération mais d'envoyer seulement une liste de
+          vérifications des choses spécifiques que le client devra 
+          récupérer auprès du serveur pour accomplir l'opération. Dans
+          le journal <filename>access_log</filename> du serveur, la
+          ligne <literal>REPORT</literal> est suivie par beaucoup de
+          petites requêtes (<literal>GET</literal> et, pour les vieilles
+          versions de Subversion, <literal>PROPFIND</literal>).</para>
 
+<!--
         <para>There are pros and cons to each approach.  As we've
           mentioned, the so-called bulk updates generate considerably
           less information in the server logs, but a given Apache HTTP
@@ -5291,6 +5645,33 @@ MaxKeepAliveRequests 1000
           is set to <literal>Prefer</literal>, supporting clients (1.8
           or newer) will try to use the bulk update approach unless
           otherwise configured.</para>
+-->
+        <para>Chacune des deux approches a ses avantages et ses 
+          inconvénients. Comme nous l'avons déjà mentionné, les mises à
+          jour groupées (<foreignphrase>bulk updates</foreignphrase> en
+          anglais) produisent beaucoup moins de lignes dans les journaux
+          du serveur mais un processus fils du serveur Apache HTTP est 
+          entièrement dédié à cette opération, qui peut se révéler 
+          particulièrement longue, jusqu'à sa fin. Les mises à jour
+          XXX non-bulk XXX permettent de mettre en place des caches (ce
+          qui contribuera à améliorer les performances) mais vont 
+          générer dans les journaux un nombre de lignes sans commune 
+          mesure avec l'approche par mises à jour groupées. En 
+          conséquence, les administrateurs auront leur mot à dire sur la
+          méthode utilisée par les clients pour se mettre à jour. 
+          Subversion 1.6 a ainsi introduit la directive 
+          <literal>SVNAllowBulkUpdates</literal> de 
+          <command>mod_dav_svn</command>&nbsp;: un simple booléen pour
+          laisser aux administrateurs le choix de spécifier si le 
+          serveur accepte les requêtes de mises à jour groupées. Avec
+          Subversion 1.8, cette directive s'est complétée avec la 
+          possibilité d'indiquer <literal>Prefer</literal> en plus de 
+          <literal>On</literal> et <literal>Off</literal>. Quand
+          <literal>SVNAllowBulkUpdates</literal> vaut
+          <literal>Prefer</literal>, les clients qui reconnaissent cette
+          option (c'est-à-dire les versions 1.8 ou plus récentes) 
+          tenteront des mises à jour groupées à moins d'avoir été 
+          configurés autrement.</para>
 
       </sect3>
     </sect2>
