@@ -5653,8 +5653,8 @@ MaxKeepAliveRequests 1000
           du serveur mais un processus fils du serveur Apache HTTP est 
           entièrement dédié à cette opération, qui peut se révéler 
           particulièrement longue, jusqu'à sa fin. Les mises à jour
-          XXX non-bulk XXX permettent de mettre en place des caches (ce
-          qui contribuera à améliorer les performances) mais vont 
+          par petites touches permettent de mettre en place des caches
+          (ce qui contribuera à améliorer les performances) mais vont 
           générer dans les journaux un nombre de lignes sans commune 
           mesure avec l'approche par mises à jour groupées. En 
           conséquence, les administrateurs auront leur mot à dire sur la
@@ -5678,17 +5678,30 @@ MaxKeepAliveRequests 1000
 
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.httpd.extra">
+<!--
       <title>Extra Goodies</title>
+-->
+      <title>Fonctionnalités bonus</title>
 
+<!--
       <para>We've covered most of the authentication and authorization
         options for Apache and <command>mod_dav_svn</command>.  But
         there are a few other nice features that Apache
         provides.</para>
+-->
+      <para>Nous avons couvert la plupart des options d'authentification
+        et de contrôle d'accès pour Apache et 
+        <command>mod_dav_svn</command>. Mais il existe encore quelques
+        autres directives d'Apache qui méritent d'être abordées.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.extra.browsing">
+<!--
         <title>Repository browsing</title>
+-->
+        <title>Navigation dans les dépôts</title>
 
+<!--
         <para>One of the most useful benefits of an Apache/WebDAV
           configuration for your Subversion repository is that your
           versioned files and directories are immediately available
@@ -5700,10 +5713,29 @@ MaxKeepAliveRequests 1000
           whether that URL represents a versioned directory or
           file, <command>mod_dav_svn</command> will respond with a
           directory listing or with file contents.</para>
+-->
+        <para>Un des avantages les plus frappants d'avoir une
+          configuration Apache/WebDAV pour votre dépôt Subversion est
+          que les révisions les plus récentes de vos fichiers et
+          répertoires suivis en versions sont immédiatement consultables
+          à l'aide d'un navigateur web classique. Puisque Subversion
+          utilise des URL pour identifier les ressources suivies en
+          versions, ces URL utilisées pour accéder aux dépôts 
+          <foreignphrase>via</foreignphrase> HTTP peuvent être tapées 
+          directement dans un navigateur web. Votre navigateur enverra 
+          une requête <literal>HTTP GET</literal> pour cette URL&nbsp;; 
+          selon que cette URL représente ou non un fichier ou un 
+          répertoire suivi en versions, <command>mod_dav_svn</command> 
+          renverra soit la liste des éléments du répertoire, soit le 
+          contenu du fichier.</para>
 
         <sect4 id="svn.serverconfig.httpd.extra.browsing.syntax">
+<!--
           <title>URL syntax</title>
 
+-->
+          <title>Syntaxe des URL</title>
+<!--
           <para>If the URLs do not contain any information about which
             version of the resource you wish to
             see, <command>mod_dav_svn</command> will answer with the
@@ -5713,7 +5745,18 @@ MaxKeepAliveRequests 1000
             always point at the latest manifestation of that document.
             Of course, you can even use the URLs as hyperlinks from
             other web sites, too.</para>
+-->
+          <para>Comme les URL ne contiennent pas d'informations 
+            relatives à la version de la ressource qui vous intéresse,
+            <command>mod_dav_svn</command> renverra toujours la version 
+            la plus récente. Cette fonctionnalité a un merveilleux effet
+            secondaire&nbsp;: vous pouvez partager avec vos pairs des
+            URL&nbsp;Subversion en guise de références à des documents
+            et ces URL pointeront toujours vers la dernière version des
+            documents. Bien sûr, vous pouvez aussi utiliser ces URL en
+            tant que liens hypertextes dans d'autres sites web.</para>
 
+<!--
           <para>As of Subversion 1.6, <command>mod_dav_svn</command>
             supports a public URI syntax for examining older revisions
             of both files and directories.  The syntax uses the query
@@ -5729,49 +5772,91 @@ MaxKeepAliveRequests 1000
             <literal>r=<replaceable>REV</replaceable></literal>,
             where <replaceable>REV</replaceable> is a revision number, to
             specify an operative revision.</para>
+-->
+          <para>Depuis Subversion 1.6, <command>mod_dav_svn</command> 
+            reconnait une syntaxe d'URI particulière pour examiner les
+            vieilles révisions des fichiers et des répertoires. Cette
+            syntaxe utilise la partie <quote>requête</quote> de l'URL
+            pour spécifier une révision pivot ou une révision 
+            opérationnelle. Subversion utilisera ces arguments pour 
+            déterminer la version du fichier ou du répertoire que vous
+            voulez afficher dans votre navigateur. Ajoutez la paire
+            <literal>p=<replaceable>REV_PIVOT</replaceable></literal>,
+            où <replaceable>REV_PIVOT</replaceable> est un numéro
+            de révision, pour spécifier la révision pivot que vous 
+            souhaitez appliquer à la requête. Utilisez
+            <literal>r=<replaceable>REV</replaceable></literal>, où 
+            <replaceable>REV</replaceable> est un numéro de révision,
+            pour spécifier une révision opérationnelle.</para>
 
+<!--
           <para>For example, if you wish to see the latest version of a
             <filename>README.txt</filename> file located in your
             project's <filename>/trunk</filename>, point your web
             browser to that file's repository URL, which might look
             something like the following:</para>
+-->
+          <para>Par exemple, si vous voulez voir la dernière version du
+            fichier <filename>LISEZMOI.txt</filename> situé dans 
+            <filename>/trunk</filename> de votre projet, faites pointer
+            votre navigateur vers l'URL de ce fichier, qui devrait
+            ressembler à quelque chose comme ceci&nbsp;:</para>
 
           <informalexample>
-            <programlisting>
-http://host.example.com/repos/project/trunk/README.txt
+            <programlisting><!--
+http://host.example.com/repos/project/trunk/README.txt-->
+http://hote.exemple.com/depot/projet/trunk/LISEZMOI.txt
 </programlisting>
           </informalexample>
 
+<!--
           <para>If you now wish to see some older version of that
             file, add an operative revision to the URL's query
             string:</para>
+-->
+          <para>Si vous voulez voir une version plus ancienne de ce 
+          fichier, ajouter une révision opérationnelle à l'URL:</para>
 
           <informalexample>
-            <programlisting>
-http://host.example.com/repos/project/trunk/README.txt?r=1234
+            <programlisting><!--
+http://host.example.com/repos/project/trunk/README.txt?r=1234 -->
+http://hote.exemple.com/depot/projet/trunk/LISEZMOI.txt?r=1234
 </programlisting>
           </informalexample>
 
+<!--
           <para>What if the thing you're trying to view no longer exists
             in the youngest revision of the repository?  That's where a
             peg revision is handy:</para>
+-->
+          <para>Que se passe-t-il si ce que vous voulez voir n'existe
+            plus dans la révision la plus récente du dépôt&nbsp;? C'est
+            maintenant qu'une révision pivot est utile&nbsp;:</para>
 
           <informalexample>
-            <programlisting>
-http://host.example.com/repos/project/trunk/deleted-thing.txt?p=321
+            <programlisting><!--
+http://host.example.com/repos/project/trunk/deleted-thing.txt?p=321-->
+http://hote.exemple.com/depot/projet/trunk/LISEZMOI.txt?p=321
 </programlisting>
           </informalexample>
 
+<!--
           <para>And of course, you can combine peg revision and
             operative revision specifiers to fine-tune the exact item
             you wish to view:</para>
+-->
+          <para>Et bien sûr, vous pouvez combiner une révision pivot et
+            une révision opérationnelle pour dénicher l'élément précis
+            que vous souhaitez voir&nbsp;:</para>
 
           <informalexample>
-            <programlisting>
-http://host.example.com/repos/project/trunk/renamed-thing.txt?p=123&amp;r=21
+            <programlisting><!--
+http://host.example.com/repos/project/trunk/renamed-thing.txt?p=123&amp;r=21-->
+http://hote.exemple.com/depot/projet/trunk/LISEZMOI.txt?p=123&amp;r=21
 </programlisting>
           </informalexample>
 
+<!--
           <para>The previous URL would display revision 21 of the
             object which, in revision 123, was located
             at <filename>/trunk/renamed-thing.txt</filename> in the
@@ -5779,7 +5864,17 @@ http://host.example.com/repos/project/trunk/renamed-thing.txt?p=123&amp;r=21
             detailed explanation of these <quote>peg revision</quote>
             and <quote>operative revision</quote> concepts.  They can
             be a bit tricky to wrap your head around.</para>
+-->
+          <para>L'URL ci-dessus affichera la révision 21 de l'objet qui,
+            dans la révision 123, se trouvait à 
+            <filename>/trunk/chose-renommée.txt</filename> dans le 
+            dépôt. Reportez-vous à <xref linkend="svn.advanced.pegrevs" 
+            /> pour une explication détaillée des concepts de 
+            <quote>révision pivot</quote> et <quote>révision 
+            opérationnelle</quote>,  ils peuvent être relativement 
+            difficiles à appréhender.</para>
 
+<!--
           <para>Beginning with Subversion 1.8, <command>mod_dav_svn</command>
             has the ability to substitute keywords.  When
             <command>mod_dav_svn</command>
@@ -5790,32 +5885,71 @@ http://host.example.com/repos/project/trunk/renamed-thing.txt?p=123&amp;r=21
             for that parameter will cause Subversion to use its
             default behavior, which is to deliver the file's content
             without any keywords expanded.</para>
+-->
+          <para>À partir de Subversion 1.8, 
+            <command>mod_dav_svn</command> a acquis la capacité de 
+            substituer des mots-clés. Quand
+            <command>mod_dav_svn</command> trouve dans l'URL de la 
+            requête un argument <literal>kw=1</literal>, il substitue
+            les mots-clés au moment de renvoyer la réponse. Ne pas
+            spécifier de paramètre <literal>kw</literal> ou lui affecter
+            une valeur autre que <literal>1</literal> entraine le 
+            comportement par défaut, c'est-à-dire renvoyer le 
+            contenu du fichier sans avoir substitué les 
+            mots-clés.</para>
 
+<!--
           <para>Because keyword substitution is typically performed by the
             Subversion client as part of its working copy administration
             and management, this is a handy way to get the server to deliver
             a keyword-expanded form of your versioned file without the use
             of a working copy.</para>
+-->
+          <para>Puisque la substitution des mots-clés est typiquement
+            une opération réalisée par le client Subversion, dans le 
+            cadre de l'administration et la gestion des copies de 
+            travail, ce moyen de substituer les mots-clés par le serveur
+            trouve toute son utilité  dans le cas où vous n'utilisez pas
+            de copie de travail.</para>
 
+<!--
           <para>For example, if you wish to see the latest version of a
             <filename>README.txt</filename> file located in your
             project's <filename>/trunk</filename> with keywords
             expanded, add the query argument <literal>kw=1</literal> to the
             URL:</para>
+-->
+          <para>Par exemple, si vous souhaitez voir la dernière version
+            du fichier <filename>LISEZMOI.txt</filename> situé dans 
+            <filename>/trunk</filename> avec les mots-clés substitués,
+            ajoutez l'argument <literal>kw=1</literal> dans l'URL de 
+            votre requête&nbsp;:</para>
 
           <informalexample>
-            <programlisting>
-http://host.example.com/repos/project/trunk/README.txt?kw=1
+            <programlisting><!--
+http://host.example.com/repos/project/trunk/README.txt?kw=1-->
+http://hote.exemple.com/depot/projet/trunk/LISEZMOI.txt?kw=1
 </programlisting>
           </informalexample>
 
+<!--
           <para>As with client-side keyword expansion, only those keywords
             which are explicitly designated for expansion via the
             <literal>svn:keywords</literal> property set on the file itself
             will be expanded.  See
             <xref linkend="svn.advanced.props.special.keywords" /> for a
             detailed description of the keyword substitution feature.</para>
+-->
+          <para>À l'instar de l'opération côté client, seuls les 
+            mots-clés qui sont explicitement désignés 
+            <foreignphrase>via</foreignphrase> la propriété
+            <literal>svn:keywords</literal> du fichier concerné seront
+            substitués. Lisez <xref 
+            linkend="svn.advanced.props.special.keywords" /> pour une
+            description détaillée de la substitution de 
+            mots-clés.</para>
 
+<!--
           <para>As a reminder, <command>mod_dav_svn</command> offers only a
             limited repository browsing experience.  You can see directory
             listings and file contents, but no revision properties
@@ -5831,12 +5965,34 @@ http://host.example.com/repos/project/trunk/README.txt?kw=1
             a much wider set of features, including the display of the
             aforementioned property sets, display of content
             differences between file revisions, and so on.</para>
+-->
+          <para>Pour mémoire, <command>mod_dav_svn</command> n'offre
+            qu'une capacité réduite de navigation dans le dépot. Vous 
+            pouvez visualiser la liste des fichiers d'un répertoire et 
+            le contenu des fichiers mais pas les propriétés de révision 
+            (telles que les messages de propagation) ou les propriétés 
+            des fichiers et répertoires. Pour ceux qui ont besoin de
+            naviguer plus finement dans les dépôts et leurs historiques,  
+            un certain nombre de logiciels tiers répondent présent. Par
+            exemple, nous pouvons citer ViewVC (<ulink 
+            url="http://viewvc.org"/>), Trac (<ulink
+            url="http://trac.edgewall.org"/>) et WebSVN (<ulink
+            url="http://websvn.info"/>). Ces outils tiers ne touchent
+            pas à la <quote>navigabilité</quote> native offerte par 
+            <command>mod_dav_svn</command> et proposent généralement
+            tout un tas de fonctionnalités supplémentaires, y compris
+            l'affichage des propriétés comme mentionné, l'affichage des
+            différences entre plusieurs révisions, etc.</para>
 
         </sect4>
 
         <sect4 id="svn.serverconfig.httpd.extra.browsing.mimetype">
+<!--
           <title>Proper MIME type</title>
+-->
+          <title>Types MIME appropriés</title>
 
+<!--
           <para>When browsing a Subversion repository, the web browser
             gets a clue about how to render a file's contents by
             looking at the <literal>Content-Type:</literal> header
@@ -5851,7 +6007,24 @@ http://host.example.com/repos/project/trunk/README.txt?kw=1
             it might be nice to have a <filename>foo.html</filename> file
             in the repository actually render as HTML when
             browsing.</para>
+-->
+          <para>Quand il consulte un dépôt Subversion, le navigateur web
+            obtient un indice pour savoir comment rendre le contenu d'un
+            fichier en examinant l'entête 
+            <literal>Content-Type:</literal> qui fait partie de la
+            réponse envoyée par Apache à la requête HTTP
+            <literal>GET</literal>. La valeur de cet entête est en
+            quelque sorte un type MIME. Par défaut, Apache va indiquer
+            aux navigateurs web que tous les fichiers du dépôt sont du
+            type MIME par défaut, en général 
+            <literal>text/plain</literal>. Cela peut s'avérer assez
+            frustrant, si un utilisateur désire visualiser les fichiers
+            du dépôt de manière plus appropriée &mdash; par exemple, un 
+            fichier <filename>truc.html</filename> du dépôt sera bien
+            plus lisible s'il est rendu dans le navigateur en tant que
+            fichier HTML.</para>
 
+<!--
           <para>To make this happen, you need only to make sure that
             your files have the proper <literal>svn:mime-type</literal>
             set.  We discuss this in more detail in
@@ -5860,7 +6033,20 @@ http://host.example.com/repos/project/trunk/README.txt?kw=1
             attach proper <literal>svn:mime-type</literal> properties
             to files entering the repository for the first time; see
             <xref linkend="svn.advanced.props.auto"/>.</para>
+-->
+          <para>Pour rendre ceci possible, il suffit de vous assurer que
+            vos fichiers portent bien la propriété
+            <literal>svn:mime-type</literal>. Plus de détails sur ce
+            sujet sont disponibles dans <xref
+            linkend="svn.advanced.props.special.mime-type"/> et vous
+            pouvez même configurer votre dépôt pour qu'il associe
+            automatiquement la valeur de 
+            <literal>svn:mime-type</literal> appropriée aux fichiers qui 
+            arrivent dans le dépôt pour la première fois&nbsp;; 
+            reportez-vous à <xref 
+            linkend="svn.advanced.props.auto"/>.</para>
 
+<!--
           <para>Continuing our example, if one were to set
             the <literal>svn:mime-type</literal> property
             to <literal>text/html</literal> on
@@ -5873,11 +6059,28 @@ http://host.example.com/repos/project/trunk/README.txt?kw=1
             site doesn't contain any dynamically generated
             content.</para>
 
+-->
+          <para>Donc, dans notre exemple, si quelqu'un attribuait la
+            valeur <literal>text/html</literal> à la propriété
+            <literal>svn:mime-type</literal> du fichier
+            <filename>truc.html</filename>, Apache indiquerait avec
+            raison à votre navigateur web de rendre le fichier comme
+            une page HTML. On pourrait aussi associer des propriétés
+            ayant des valeurs <literal>image/*</literal> appropriées aux
+            fichiers d'images et, en fin de compte, faire qu'un site web
+            entier soit consultable directement à travers un 
+            dépôt&nbsp;! Ceci ne pose en général pas de problème, du 
+            moment que le site web ne possède pas de contenu généré
+            dynamiquement.</para>
         </sect4>
 
         <sect4 id="svn.serverconfig.httpd.extra.browsing.xslt">
+<!--
           <title>Customizing the look</title>
+-->
+          <title>Personnalisation de l'aspect</title>
 
+<!--
           <para>You generally will get more use out of URLs to
             versioned files&mdash;after all, that's where the
             interesting content tends to lie.  But you might have
@@ -5893,6 +6096,25 @@ http://host.example.com/repos/project/trunk/README.txt?kw=1
             instruct <command>mod_dav_svn</command> to generate XML
             output when displaying a directory listing, and to
             reference the XSLT stylesheet of your choice:</para>
+-->
+          <para>En général, vous utiliserez principalement des URL de
+            fichiers suivis en versions&nbsp;; après tout c'est là que
+            le contenu intéressant réside. Mais vous aurez peut-être
+            l'occasion de naviguer dans le contenu d'un répertoire
+            Subversion et vous remarquerez rapidement que le code HTML
+            généré pour afficher la liste des éléments du répertoire
+            est très rudimentaire, et certainement pas conçu pour être
+            agréable d'un point de vue esthétique (ni même intéressant).
+            Afin d'activer la personnalisation de l'affichage de ces
+            répertoires, Subversion fournit une fonctionnalité d'index
+            XML. La présence d'une directive
+            <literal>SVNIndexXSLT</literal> dans le bloc
+            <literal>Location</literal> du fichier
+            <filename>httpd.conf</filename> de votre dépôt conduira
+            <command>mod_dav_svn</command> à générer un résultat en XML
+            quand il affiche la liste des éléments d'un répertoire et à
+            faire référence à la feuille de style XSLT de votre
+            choix&nbsp;:</para>
 
           <informalexample>
             <programlisting>
@@ -5905,6 +6127,7 @@ http://host.example.com/repos/project/trunk/README.txt?kw=1
 </programlisting>
           </informalexample>
 
+<!--
           <para>Using the <literal>SVNIndexXSLT</literal> directive
             and a creative XSLT stylesheet, you can make your
             directory listings match the color schemes and imagery
@@ -5916,18 +6139,41 @@ http://host.example.com/repos/project/trunk/README.txt?kw=1
             <literal>SVNIndexXSLT</literal> directory is actually a
             URL path&mdash;browsers need to be able to read your
             stylesheets to make use of them!</para>
+-->
+          <para>À l'aide de la directive <literal>SVNIndexXSLT</literal>
+           et d'une feuille de style XSLT faisant preuve de créativité,
+           vous pouvez adapter les listes de contenus de répertoires aux
+           schémas de couleur et d'illustrations utilisées dans d'autres
+           parties de votre site web. Ou, si vous préférez, vous pouvez
+           utiliser les exemples de feuilles de style fournis dans le
+           répertoire <filename>tools/xslt/</filename> du code source de
+           Subversion. Gardez à l'esprit que le chemin d'accès fourni au
+           répertoire <literal>SVNIndexXSLT</literal> est en fait une
+           URL &mdash; les navigateurs doivent être capables de lire vos 
+           feuilles de style pour les utiliser&nbsp;!</para>
 
         </sect4>
 
         <sect4 id="svn.serverconfig.httpd.extra.browsing.reposlisting">
+<!--
           <title>Listing repositories</title>
+-->
+          <title>Affichage de la liste des dépôts</title>
 
+<!--
           <para>If you're serving a collection of repositories from a
             single URL via the <literal>SVNParentPath</literal>
             directive, then it's also possible to have Apache display
             all available repositories to a web browser.  Just
             activate the <literal>SVNListParentPath</literal>
             directive:</para>
+-->
+          <para>Si vous desservez un ensemble de dépôts à partir d'une
+            URL unique <foreignphrase>via</foreignphrase> la directive 
+            <literal>SVNParentPath</literal>, il est possible de faire 
+            afficher par Apache tous les dépôts disponibles dans un 
+            navigateur web. Il suffit d'activer la directive 
+            <literal>SVNListParentPath</literal>&nbsp;:</para>
 
           <informalexample>
             <programlisting>
@@ -5940,20 +6186,33 @@ http://host.example.com/repos/project/trunk/README.txt?kw=1
 </programlisting>
           </informalexample>
 
+<!--
           <para>If a user now points her web browser to the
             URL <literal>http://host.example.com/svn/</literal>,
             she'll see a list of all Subversion repositories sitting
             in <filename>/var/svn</filename>.  Obviously, this can be
             a security problem, so this feature is turned off by
             default.</para>
+-->
+          <para>Si un utilisateur pointe son navigateur web à l'URL
+            <literal>http://hote.exemple.com/svn/</literal>, il verra
+            une liste de tous les dépôts Subversion situés dans
+            <filename>/var/svn</filename>. Évidemment, ceci peut poser
+            des problèmes de sécurité&nbsp;; cette fonctionnalité est
+            donc désactivée par défaut.</para>
 
         </sect4>
+
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.extra.logging">
+<!--
         <title>Apache logging</title>
+-->
+        <title>Journalisation Apache</title>
 
+<!--
         <para>Because Apache is an HTTP server at heart, it contains
           fantastically flexible logging features.  It's beyond the
           scope of this book to discuss all of the ways logging can be
@@ -5966,7 +6225,22 @@ http://host.example.com/repos/project/trunk/README.txt?kw=1
           logging area of your Apache installation.  (On Unix, they
           often live
           in <filename>/usr/local/apache2/logs/</filename>.)</para>
+-->
+        <para>Comme Apache est avant tout un serveur HTTP, il contient
+          des fonctionnalités de journalisation d'une flexibilité
+          fantastique. Détailler toutes les façons dont la
+          journalisation peut être configurée sort du cadre de ce livre,
+          mais nous voulons quand même vous faire remarquer que même le
+          fichier <filename>httpd.conf</filename> le plus générique
+          conduit Apache à créer deux fichiers de journalisation&nbsp;:
+          <filename>error_log</filename>
+          et <filename>access_log</filename>. Ces journaux peuvent
+          apparaître à différents endroits, mais sont en général créés
+          dans la zone de journalisation de votre installation Apache
+          (sur Unix, ils résident souvent dans
+          <filename>/usr/local/apache2/logs/</filename>).</para>
 
+<!--
         <para>The <filename>error_log</filename> describes any internal
           errors that Apache runs into as it works.
           The <filename>access_log</filename> file records every
@@ -5975,7 +6249,18 @@ http://host.example.com/repos/project/trunk/README.txt?kw=1
           clients are coming from, how often particular clients use
           the server, which users are authenticating properly, and
           which requests succeed or fail.</para>
+-->
+        <para>Le fichier <filename>error_log</filename> décrit toutes
+          les erreurs internes qu'Apache rencontre au cours de son
+          fonctionnement. Le fichier <filename>access_log</filename>
+          enregistre toutes les requêtes HTTP reçues par Apache. Ceci
+          permet de voir facilement, par exemple, à partir de quelles 
+          adresses IP les clients Subversion se connectent, à quelle 
+          fréquence un client donné utilise le serveur, quels 
+          utilisateurs se sont authentifiés correctement et quelles 
+          requêtes ont échoué ou réussi.</para>
 
+<!--
         <para>Unfortunately, because HTTP is a stateless protocol,
           even the simplest Subversion client operation generates
           multiple network requests.  It's very difficult to look at
@@ -5986,32 +6271,63 @@ http://host.example.com/repos/project/trunk/README.txt?kw=1
           requests.  To make things worse, many client operations send
           nearly identical series of requests, so it's even harder to
           tell them apart.</para>
+-->
+        <para>Malheureusement, parce qu'HTTP est un protocole sans
+          notion d'état, même la plus simple opération du client
+          Subversion génère plusieurs requêtes réseau. Il est donc très
+          difficile d'examiner le fichier 
+          <filename>access_log</filename> et d'en déduire ce que le 
+          client faisait &mdash; la plupart des opérations se présentent 
+          sous la forme de séries de requêtes 
+          <literal>PROPPATCH</literal>, <literal>GET</literal>,
+          <literal>PUT</literal> et <literal>REPORT</literal> 
+          énigmatiques. Pour couronner le tout, de nombreuses opérations
+          du client envoient des séries de requêtes quasi-identiques, il
+          est donc encore plus difficile de les distinguer.</para>
 
+<!--
         <para><command>mod_dav_svn</command>, however, can come to
           your aid.  By activating an <quote>operational
           logging</quote> feature, you can
           ask <command>mod_dav_svn</command> to create a separate log
           file describing what sort of high-level operations your
           clients are performing.</para>
+-->
+        <para>Cependant, <command>mod_dav_svn</command> peut venir à
+          votre rescousse. En activant la fonctionnalité de
+          <quote>journalisation opérationnelle</quote>, vous pouvez
+          demander à <command>mod_dav_svn</command> de créer un fichier
+          séparé décrivant quelles sortes d'opérations de haut niveau
+          vos clients effectuent.</para>
 
+<!--
         <para>To do this, you need to make use of
           Apache's <literal>CustomLog</literal> directive (which is
           explained in more detail in Apache's own documentation).
           Be sure to invoke this
           directive <emphasis>outside</emphasis> your
           Subversion <literal>Location</literal> block:</para>
+-->
+        <para>Pour ce faire, vous devez utiliser la directive
+          <literal>CustomLog</literal> d'Apache (qui est expliquée en
+          détail dans la documentation Apache). Prenez soin de placer
+          cette directive <emphasis>en dehors</emphasis> de votre bloc
+          <literal>Location</literal> de Subversion&nbsp;:</para>
 
         <informalexample>
           <programlisting>
 &lt;Location /svn&gt;
   DAV svn
   &hellip;
-&lt;/Location&gt;
+&lt;/Location&gt;<!--
 
-CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
+CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION -->
+
+CustomLog logs/journal-svn "%t %u %{SVN-ACTION}e" env=SVN-ACTION
 </programlisting>
         </informalexample>
 
+<!--
         <para>In this example, we're asking Apache to create a special
           logfile, <filename>svn_logfile</filename>, in the standard
           Apache <filename>logs</filename> directory.
@@ -6023,10 +6339,28 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
           the <literal>SVN-ACTION</literal> environment variable,
           which is automatically set by <command>mod_dav_svn</command>
           whenever it detects a high-level client action.</para>
+-->
+        <para>Dans cet exemple, nous demandons à Apache de créer un
+          fichier journal spécial, <filename>journal-svn</filename>,
+          dans le répertoire habituel de journaux d'Apache
+          (<filename>logs</filename>). Les variables
+          <literal>%t</literal> et <literal>%u</literal> sont remplacées
+          par l'horodatage et le nom d'utilisateur de la requête,
+          respectivement. Les points importants sont les deux instances
+          de <literal>SVN-ACTION</literal>. Quand Apache trouve cette
+          variable, il lui substitue la valeur de la variable
+          d'environnement <literal>SVN-ACTION</literal>, modifiée
+          automatiquement par <command>mod_dav_svn</command>
+          quand il détecte une action haut-niveau du client.</para>
 
+<!--
         <para>So, instead of having to interpret a
           traditional <filename>access_log</filename> like
           this:</para>
+-->
+        <para>Ainsi, au lieu d'avoir à interpréter un fichier
+          <filename>access_log</filename> traditionnel qui ressemble
+          à&nbsp;:</para>
 
         <informalexample>
           <programlisting>
@@ -6040,9 +6374,14 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
 </programlisting>
         </informalexample>
 
+<!--
         <para>you can peruse a much more
           intelligible <filename>svn_logfile</filename> like
           this:</para>
+-->
+        <para>vous pouvez vous contenter de parcourir le fichier
+          <filename>journal-svn</filename> qui est bien plus
+          intelligible&nbsp;:</para>
 
         <informalexample>
           <programlisting>
@@ -6053,6 +6392,7 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
 </programlisting>
         </informalexample>
 
+<!--
         <para>In addition to the <literal>SVN-ACTION</literal>
           environment variable, <command>mod_dav_svn</command> also
           populates the <literal>SVN-REPOS</literal>
@@ -6065,7 +6405,21 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
           multiple repositories into a single log file.  For an
           exhaustive list of all actions logged, see
           <xref linkend="svn.serverconfig.operational-logging"/>.</para>
+-->
+        <para>En complément de la variable d'environnement
+          <literal>SVN-ACTION</literal>, <command>mod_dav_svn</command> 
+          définit aussi les variables <literal>SVN-REPOS</literal> et
+          (resp.) <literal>SVN-REPOS-NAME</literal>, qui contiennent le 
+          chemin dans le système de fichiers vers le dépôt et (resp.) le
+          nom simple. Vous voudrez peut-être inclure des références à 
+          ces variables dans la chaîne de caractères qui définit le 
+          format dans <literal>CustomLog</literal>, surtout si vous
+          combinez dans ce fichier les journaux en provenance de 
+          plusieurs dépôts. Pour obtenir une liste exhaustive de toutes
+          les actions journalisées, reportez-vous à <xref 
+          linkend="svn.serverconfig.operational-logging"/>.</para>
 
+<!--
         <para>Obviously, the more information that Apache logs about
           your Subversion activities, the more disk space on your
           server those logs consume.  It is non uncommon for
@@ -6077,6 +6431,19 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
           outside the scope of this book.  Administrators are
           encouraged to use the log rotation and archival approach
           which works best for them.</para>
+-->
+        <para>Évidemment, plus Apache journalise d'informations 
+           relatives aux activités de Subversion, plus le journal prend
+           de place sur le disque. Il n'est pas rare qu'un serveur 
+           Subversion à gros trafic génère plusieurs gigaoctets de 
+           journaux par jour. Tout aussi évidemment, les journaux ne
+           sont utiles que si vous pouvez en extraire de l'information
+           pertinente et les journaux gigantesques peuvent rapidement
+           devenir difficiles à exploiter. Il existe diverses solutions
+           pour gérer les journaux d'Apache qui sortent du cadre de ce
+           livre. Nous préconisons aux administrateurs d'utiliser la 
+           rotation des journaux et l'archivage qui leur convient le 
+           mieux.</para>
 
         <para>But what if Subversion is simply generating too much log
           information to be useful?  For example, in
