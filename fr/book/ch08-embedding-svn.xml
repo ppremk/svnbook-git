@@ -3,7 +3,7 @@
 <chapter id="svn.developer">
 <!--
   <title>Embedding Subversion</title>
-  
+
 -->
   <title>Intégration de Subversion</title>
 
@@ -117,7 +117,7 @@
 
     <variablelist>
       <varlistentry>
-        <term>libsvn_client</term> 
+        <term>libsvn_client</term>
 <!--
         <listitem><para>Primary interface for client
           programs</para></listitem>
@@ -487,8 +487,6 @@
         versions) jusqu'au moment où vous avez commencé à ajouter des
         éléments dans le système de fichiers.</para>
 
-</para>
-
 <!--
       <para>All the modifications you make to your tree are done
         within the context of a Subversion commit transaction.  The
@@ -763,7 +761,7 @@
         them.  A repository hook system is not strictly related to
         implementing a versioning filesystem, so it lives in the
         repository wrapper library.</para>
-      
+
 -->
       <para>La bibliothèque du dépôt Subversion
         (<filename>libsvn_repos</filename>) se situe (logiquement parlant)
@@ -1035,7 +1033,7 @@ $
           original data is potentially tainted more and more, much
           like the result of making a copy of a copy (of a copy&hellip;)
           of a favorite audio or video cassette.</para>
- 
+
         <para>But the most compelling argument for binding directly to
           the APIs instead of wrapping other programs is that the
           Subversion project makes compatibility promises regarding
@@ -1198,7 +1196,7 @@ $
 
     <!-- =============================================================== -->
     <sect2 id="svn.developer.usingapi.funcsbatons">
-      <title>Functions and Batons</title> 
+      <title>Functions and Batons</title>
 
       <para>
         <indexterm>
@@ -1241,7 +1239,7 @@ $
         back into the locale's encoding before using those paths for
         non-Subversion purposes.  Fortunately, Subversion provides a
         suite of functions (see
-        <filename>subversion/include/svn_utf.h</filename>) that 
+        <filename>subversion/include/svn_utf.h</filename>) that
         any program can use to do these conversions.</para>
 
       <para>Also, Subversion APIs require all URL parameters to be
@@ -1256,7 +1254,7 @@ $
 
     <!-- =============================================================== -->
     <sect2 id="svn.developer.usingapi.otherlangs">
-      <title>Using Languages Other Than C and C++</title> 
+      <title>Using Languages Other Than C and C++</title>
 
       <para>If you are interested in using the Subversion libraries in
         conjunction with something other than a C program&mdash;say, a
@@ -1363,7 +1361,7 @@ $
 
     <!-- =============================================================== -->
     <sect2 id="svn.developer.usingapi.codesamples">
-      <title>Code Samples</title> 
+      <title>Code Samples</title>
 
       <para><xref linkend="svn.developer.layerlib.repos.ex-1" />
         contains a code segment (written in C) that illustrates some
@@ -1419,41 +1417,41 @@ make_new_directory(const char *repos_path,
   svn_fs_root_t *txn_root;
   const char *conflict_str;
 
-  /* Open the repository located at REPOS_PATH. 
+  /* Open the repository located at REPOS_PATH.
    */
   INT_ERR(svn_repos_open(&amp;repos, repos_path, pool));
 
-  /* Get a pointer to the filesystem object that is stored in REPOS. 
+  /* Get a pointer to the filesystem object that is stored in REPOS.
    */
   fs = svn_repos_fs(repos);
 
   /* Ask the filesystem to tell us the youngest revision that
-   * currently exists. 
+   * currently exists.
    */
   INT_ERR(svn_fs_youngest_rev(&amp;youngest_rev, fs, pool));
 
   /* Begin a new transaction that is based on YOUNGEST_REV.  We are
    * less likely to have our later commit rejected as conflicting if we
    * always try to make our changes against a copy of the latest snapshot
-   * of the filesystem tree. 
+   * of the filesystem tree.
    */
   INT_ERR(svn_repos_fs_begin_txn_for_commit2(&amp;txn, repos, youngest_rev,
                                              apr_hash_make(pool), pool));
 
   /* Now that we have started a new Subversion transaction, get a root
-   * object that represents that transaction. 
+   * object that represents that transaction.
    */
   INT_ERR(svn_fs_txn_root(&amp;txn_root, txn, pool));
-  
+
   /* Create our new directory under the transaction root, at the path
-   * NEW_DIRECTORY. 
+   * NEW_DIRECTORY.
    */
   INT_ERR(svn_fs_make_dir(txn_root, new_directory, pool));
 
   /* Commit the transaction, creating a new revision of the filesystem
    * which includes our added directory path.
    */
-  err = svn_repos_fs_commit_txn(&amp;conflict_str, repos, 
+  err = svn_repos_fs_commit_txn(&amp;conflict_str, repos,
                                 &amp;youngest_rev, txn, pool);
   if (! err)
     {
@@ -1465,12 +1463,12 @@ make_new_directory(const char *repos_path,
   else if (err-&gt;apr_err == SVN_ERR_FS_CONFLICT)
     {
       /* Uh-oh.  Our commit failed as the result of a conflict
-       * (someone else seems to have made changes to the same area 
+       * (someone else seems to have made changes to the same area
        * of the filesystem that we tried to modify).  Print an error
        * message.
        */
       printf("A conflict occurred at path '%s' while attempting "
-             "to add directory '%s' to the repository at '%s'.\n", 
+             "to add directory '%s' to the repository at '%s'.\n",
              conflict_str, new_directory, repos_path);
     }
   else
@@ -1478,12 +1476,12 @@ make_new_directory(const char *repos_path,
       /* Some other error has occurred.  Print an error message.
        */
       printf("An error occurred while attempting to add directory '%s' "
-             "to the repository at '%s'.\n", 
+             "to the repository at '%s'.\n",
              new_directory, repos_path);
     }
 
   INT_ERR(err);
-} 
+}
 </programlisting>
       </example>
 
@@ -1769,7 +1767,7 @@ if __name__ == '__main__':
 </chapter>
 
 <!--
-local variables: 
+local variables:
 sgml-parent-document: ("book.xml" "chapter")
 end:
 -->
