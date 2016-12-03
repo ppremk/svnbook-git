@@ -7372,8 +7372,13 @@ svnsync copy-revprops http://esclave3.exemple.com/svn-proxy-sync \
 
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.httpd.ref">
+<!--
       <title>Subversion Apache HTTP Server Configuration Reference</title>
+-->
+      <title>Référence pour la configuration d'un serveur Subversion 
+        HTTP Apache</title>
 
+<!--
       <para>In the previous sections, we've mentioned numerous
         directives that administrators can use in their
         <filename>httpd.conf</filename> files to enable and configure
@@ -7383,13 +7388,34 @@ svnsync copy-revprops http://esclave3.exemple.com/svn-proxy-sync \
         configuration directives supported by both of the Apache HTTP
         Server modules which are provided as part of the standard
         Subversion distribution.</para>
+-->
+      <para>Dans les sections <foreignphrase>supra</foreignphrase>, nous
+        avons mentionné de nombreuses directives que les administrateurs
+        peuvent utiliser dans leurs fichiers 
+        <filename>httpd.conf</filename> pour activer des options et 
+        configurer leur <quote>offre de service</quote>. Chaque 
+        directive a fait l'objet d'une introduction et d'une brève
+        présentation de la fonctionnalité qu'elle pilote. Dans cette
+        section, nous allons rapidement résumer 
+        <emphasis>toutes</emphasis> les directives proposées par à la 
+        fois le serveur HTTP Apache et les modules Subversion qui sont
+        livrés avec la distribution standard Subversion.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.ref.mod_dav_svn">
+<!--
         <title>mod_dav_svn configuration directives</title>
+-->
+        <title>Directives de configuration de mod_dav_svn</title>
 
+<!--
         <para>The following configuration directives are recognized
           and supported by Subversion's Apache HTTP Server module,
+          <command>mod_dav_svn</command>.</para>
+-->
+        <para>Les directive de configuration 
+          <foreignphrase>infra</foreignphrase> sont reconnues et 
+          interprétées par le module Subversion du serveur HTTP Apache
           <command>mod_dav_svn</command>.</para>
 
         <variablelist>
@@ -7398,21 +7424,31 @@ svnsync copy-revprops http://esclave3.exemple.com/svn-proxy-sync \
             <term><literal>DAV svn</literal></term>
             <listitem>
 
+<!--
               <para>Must be included in any
                 <literal>Directory</literal> or <literal>Location</literal>
                 block for a Subversion repository.  It
                 tells <command>httpd</command> to use the Subversion
                 backend for <literal>mod_dav</literal> to handle all
                 requests.</para>
+-->
+              <para>Doit être incluse dans tout bloc
+                <literal>Directory</literal> ou 
+                <literal>Location</literal> d'un dépôt Subversion. Elle
+                indique à <command>httpd</command> d'utiliser le module
+                <literal>mod_dav</literal> pour répondre à toutes les
+                requêtes.</para>
 
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term><literal>SVNActivitiesDB
-              <replaceable>directory-path</replaceable></literal></term>
+            <term><literal>SVNActivitiesDB <!--
+              <replaceable>directory-path</replaceable></literal></term> -->
+              <replaceable>chemin-vers-répertoire</replaceable></literal></term>
             <listitem>
 
+<!--
               <para>Specifies the location in the filesystem where the
                 activities database should be stored.  By default,
                 <command>mod_dav_svn</command> creates and uses a
@@ -7420,14 +7456,31 @@ svnsync copy-revprops http://esclave3.exemple.com/svn-proxy-sync \
                 called <filename>dav/activities.d</filename>.  The
                 path specified with this option must be an absolute
                 path.</para>
+-->
+              <para>Spécifie l'emplacement dans le système de fichiers
+                de la base de données qui stocke les rapports 
+                d'activités. Par défaut, <command>mod_dav_svn</command> 
+                crée et utilise un répertoire dans le dépôt appelé
+                <filename>dav/activities.d</filename>. Le chemin
+                spécifié par cette option doit être un chemin 
+                absolu.</para>
 
+<!--
               <para>If specified for
                 an <literal>SVNParentPath</literal>
                 area, <command>mod_dav_svn</command> appends the
                 basename of the repository to the path specified here.
                 For example:</para>
+-->
+
+              <para>Si elle est incluse dans un bloc 
+                <literal>SVNParentPath</literal>,
+                <command>mod_dav_svn</command> ajoute le nom du 
+                répertoire au chemin spécifié ici. Par 
+                exemple&nbsp;:</para>
 
               <informalexample>
+<!--
           <screen>
 &lt;Location /svn&gt;
   DAV svn
@@ -7440,6 +7493,20 @@ svnsync copy-revprops http://esclave3.exemple.com/svn-proxy-sync \
   #  /var/db/svn/activities/foo
   SVNActivitiesDB       "/var/db/svn/activities"
 &lt;/Location&gt;
+</screen> 
+-->
+          <screen>
+&lt;Location /svn&gt;
+  DAV svn
+
+  # toute URL "/svn/foo" correspond à un dépôt dans
+  # /net/svn.nfs/depots/truc
+  SVNParentPath         "/net/svn.nfs/depots"
+
+  # toute URL "/svn/foo" correspond à un fichier d'activités dans
+  #  /var/db/svn/activites/truc
+  SVNActivitiesDB       "/var/db/svn/activites"
+&lt;/Location&gt;
 </screen>
         </informalexample>
 
@@ -7450,6 +7517,7 @@ svnsync copy-revprops http://esclave3.exemple.com/svn-proxy-sync \
             <term><literal>SVNAdvertiseV2Protocol On|Off</literal></term>
             <listitem>
 
+<!--
               <para>New to Subversion 1.7, this toggles
                 whether <command>mod_dav_svn</command> advertises its
                 support for the new version of its HTTP protocol also
@@ -7461,6 +7529,19 @@ svnsync copy-revprops http://esclave3.exemple.com/svn-proxy-sync \
                 another server which does not support the new
                 protocol, set this directive's value
                 to <literal>Off</literal>.</para>
+-->
+              <para>Nouveau dans Subversion 1.7. Cette directive indique
+                si <command>mod_dav_svn</command> annonce la 
+                compatibilité pour la nouvelle version du protocole HTTP
+                qui a été introduite dans cette version. La plupart des
+                administrateurs n'utilise pas cette directive (dont
+                la valeur par défaut est <literal>On</literal>) car elle
+                préfère bénéficier des performances accrues offertes par
+                le nouveau protocole. Cependant, si vous configurez un
+                serveur en tant que mandataire en écriture devant un 
+                serveur qui n'est pas compatible avec le nouveau 
+                protocole, affectez la valeur <literal>Off</literal> à
+                cette directive.</para>
 
             </listitem>
           </varlistentry>
@@ -7469,6 +7550,7 @@ svnsync copy-revprops http://esclave3.exemple.com/svn-proxy-sync \
             <term><literal>SVNAllowBulkUpdates On|Off</literal></term>
             <listitem>
 
+<!--
               <para>Toggles support for all-inclusive
                 responses to update-style <literal>REPORT</literal>
                 requests.  Subversion clients use
@@ -7488,7 +7570,29 @@ svnsync copy-revprops http://esclave3.exemple.com/svn-proxy-sync \
                 to these <literal>REPORT</literal> requests with
                 skelta responses, regardless of the type of responses
                 requested by the client.</para>
+-->
+              <para>Autorise la compatibilité avec les réponses 
+                <quote>tout compris</quote> pour les requêtes de mises
+                à jour de type <literal>REPORT</literal>. Les clients
+                Subversion utilisent des requêtes 
+                <literal>REPORT</literal> vers 
+                <command>mod_dav_svn</command> pour obtenir des 
+                informations lors des extractions et des mises à jour. 
+                Ils peuvent demander au serveur d'envoyer les 
+                informations soit sous la forme d'une seule réponse 
+                englobant les informations de toute l'arborescence, soit
+                sous la forme de <firstterm>skeltas</firstterm> qui ne
+                contiennent que l'information juste suffisante pour que
+                le client sache quelles données 
+                <emphasis>supplémentaire</emphasis> il doit demander au
+                serveur. Quand cette directive est incluse avec la 
+                valeur <literal>Off</literal>, 
+                <command>mod_dav_svn</command> ne répond que par des
+                skeltas aux requêtes de type <literal>REPORT</literal>,
+                quel que soit le type de réponse demandé par le 
+                client.</para>
 
+<!--
               <para>Most folks won't need to use this directive at
                 all.  It primarily exists for administrators who
                 wish&mdash;for security or auditing reasons&mdash;to
@@ -7498,6 +7602,17 @@ svnsync copy-revprops http://esclave3.exemple.com/svn-proxy-sync \
                 <literal>GET</literal> and <literal>PROPFIND</literal>
                 requests in Apache's logs.  The default value of this
                 directive is <literal>On</literal>.</para>
+-->
+              <para>Beaucoup d'entre vous n'utiliseront pas du tout 
+                cette directive. Elle existe principalement pour les
+                administrateurs qui souhaitent (pour des raisons de
+                sécurité ou d'audit) forcer les clients Subversion à 
+                réclamer individuellement chaque fichier et répertoire
+                dont il a besoin pour la mise à jour ou l'extraction, 
+                laissant toute une série de traces de requêtes 
+                <literal>GET</literal> et <literal>PROPFIND</literal> 
+                dans les journaux d'Apache. La valeur par défaut pour
+                cette directive est <literal>On</literal>.</para>
 
             </listitem>
           </varlistentry>
