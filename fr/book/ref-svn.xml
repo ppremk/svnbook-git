@@ -3094,11 +3094,15 @@ $
         vous aviez avant l'extraction) une fois l'extraction terminée.</para>
 
       <informalexample>
+<!--
         <screen>
 $ mkdir project
 $ mkdir project/lib
 $ touch project/lib/file.c
-$ svn checkout file:///var/svn/repos/project/trunk project --force
+$ svn checkout file:///var/svn/repos/project/trunk project
+svn: Failed to add directory 'project/lib': an unversioned directory of the sa
+me name already exists
+$ svn checkout file:///var/svn/repos/project/trunk project - -force
 E    project/lib
 A    project/lib/subdir
 E    project/lib/file.c
@@ -3110,7 +3114,7 @@ M       project/lib/file.c
 $ svn diff wc
 Index: project/lib/file.c
 ===================================================================
---- project/lib/file.c	(revision 1)
+- - project/lib/file.c	(revision 1)
 +++ project/lib/file.c	(working copy)
 @@ -3 +0,0 @@
 -/* file.c: Code for acting file-ishly. */
@@ -3119,22 +3123,67 @@ Index: project/lib/file.c
 
 $
 </screen>
+-->
+        <screen>
+$ mkdir projet
+$ mkdir projet/lib
+$ touch projet/lib/fichier.c
+$ svn checkout file:///var/svn/depot/projet/trunk projet
+svn: Failed to add directory 'projet/lib': an unversioned directory of the sa
+me name already exists
+$ svn checkout file:///var/svn/depot/projet/trunk projet --force
+E    project/lib
+A    project/lib/sous-rep
+E    project/lib/fichier.c
+A    project/lib/autre-fichier.c
+A    project/include/header.h
+Révision 21 extraite.
+$ svn status wc
+M       project/lib/fichier.c
+$ svn diff wc
+Index: project/lib/fichier.c
+===================================================================
+--- project/lib/fichier.c	(revision 1)
++++ project/lib/fichier.c	(working copy)
+@@ -3 +0,0 @@
+-/* fichier.c: Code pour agir fichier-ment. */
+-#include &lt;stdio.h&gt;
+-/* Pas très productif aujourd'hui */
+
+$
+</screen>
       </informalexample>
 
+<!--
       <para>As in another other working copy, you have the choices
         typically available:  reverting some or all of those
         local <quote>modifications</quote>, committing them, or
         continuing to modify your working copy.</para>
+-->
+      <para>Comme dans une autre copie de travail, vous avez les mêmes choix
+        possibles&nbsp;: annuler toutes ou certaines des
+        <quote>modifications</quote> locales, les propager ou continuer à
+        travailler sur votre copie de travail.</para>
 
+<!--
       <para>This feature is especially useful for performing
         in-place imports of unversioned directory trees.  By first
         importing the tree into the repository, and then checking
         out new repository location atop the unversioned tree with
-        the <option>--force</option> option, you effectively
+        the <option>- -force</option> option, you effectively
         transform the unversioned tree into a working
         copy.</para>
+-->
+      <para>Cette fonctionnalité est particulièrement utile pour effectuer
+        des imports <quote>sur place</quote> d'arborescences non suivies en
+        versions. En commençant par importer l'arborescence dans le dépôt,
+        puis en faisant une extraction du nouveau dépôt par dessus
+        l'arborescence non suivie en versions avec l'option
+        <option>--force</option>, vous transformez effectivement
+        l'arborescence non suivie en versions en copie de travail.</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn mkdir -m "Create newproject project root." \
       file://var/svn/repos/newproject
@@ -3147,9 +3196,8 @@ Adding         newproject/lib/helpers.c
 Adding         newproject/lib/base.c
 Adding         newproject/notes
 Adding         newproject/notes/README
-
 Committed revision 22.
-$ svn checkout file://`pwd`/repos-1.6/newproject/trunk newproject --force
+$ svn checkout file://`pwd`/repos-1.6/newproject/trunk newproject - -force
 E    newproject/include
 E    newproject/include/newproject.h
 E    newproject/lib
@@ -3159,6 +3207,33 @@ E    newproject/notes
 E    newproject/notes/README
 Checked out revision 2.
 $ svn status newproject
+$
+</screen>
+-->
+        <screen>
+$ svn mkdir -m "Créer la racine de nouveau-projet." \
+      file://var/svn/depot/nouveau-projet
+$ svn import -m "Import initial du code source de nouveau-projet." \
+      nouveau-projet \
+      file://var/svn/depot/nouveau-projet/trunk
+Ajout          nouveau-projet/include
+Ajout          nouveau-projet/include/nouveau-projet.h
+Ajout          nouveau-projet/lib
+Ajout          nouveau-projet/lib/helpers.c
+Ajout          nouveau-projet/lib/base.c
+Ajout          nouveau-projet/notes
+Ajout          nouveau-projet/notes/LISEZMOI
+Révision 22 propagée.
+$ svn checkout file://`pwd`/depot-1.6/nouveau-projet/trunk nouveau-projet --force
+E    nouveau-projet/include
+E    nouveau-projet/include/nouveau-projet.h
+E    nouveau-projet/lib
+E    nouveau-projet/lib/helpers.c
+E    nouveau-projet/lib/base.c
+E    nouveau-projet/notes
+E    nouveau-projet/notes/LISEZMOI
+Révision 2 extraite.
+$ svn status nouveau-projet
 $
 </screen>
       </informalexample>
@@ -3173,42 +3248,75 @@ $
 
     <indexterm>
       <primary>svn</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>cleanup</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svn cleanup</refname>
+<!--
       <refpurpose>Recursively clean up the working copy</refpurpose>
+-->
+      <refpurpose>Nettoyer récursivement la copie de travail.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svn cleanup [PATH...]</literal></para>
+-->
+      <para><literal>svn cleanup [CHEMIN...]</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Description</title>
+-->
       <title>Description</title>
 
+<!--
       <para>Recursively clean up the working copy, removing
         working copy locks and resuming unfinished operations.  If
         you ever get a <literal>working copy locked</literal>
         error, run this command to remove stale locks and get your
         working copy into a usable state again.</para>
+-->
+      <para>Nettoyer récursivement la copie de travail en enlevant les
+        verrous et en reprenant les opérations en cours. Si jamais vous
+        obtenez une erreur <literal>copie de travail verrouillée</literal>
+        lancez cette commande pour supprimer les verrous et remettre votre
+        copie de travail dans un état utilsable.</para>
 
+<!--
       <para>If, for some reason, an <command>svn update</command>
         fails due to a problem running an external diff program
         (e.g., user input or network failure), pass the
-        <option>--diff3-cmd</option> to allow the cleanup process
+        <option>- -diff3-cmd</option> to allow the cleanup process
         to complete any required merging using your external diff
         program.  You can also specify any configuration directory
-        with the <option>--config-dir</option> option, but you
+        with the <option>- -config-dir</option> option, but you
         should need these options extremely infrequently.</para>
+-->
+      <para>Si, pour quelque raison que ce soit, une commande <command>svn
+        update</command> échoue suite à un problème de programme diff externe
+        (par exemple en raison d'une entrée utilisateur incorrecte ou d'un
+        problème réseau), passez l'option <option>--diff3-cmd</option> pour
+        autoriser <command>cleanup</command> à terminer l'opération de fusion
+        avec votre programme diff externe. Vous pouvez aussi spécifier un
+        répertoire de configuration particulier avec l'option
+        <option>--config-dir</option> , mais vous ne devriez avoir à utiliser
+        ces options qu'extrêmement rarement.</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Options</title>
+-->
       <title>Options</title>
 
       <informalexample>
@@ -3221,17 +3329,26 @@ $
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>Well, there's not much to the examples here, as
         <command>svn cleanup</command> generates no output.  If
         you pass no <replaceable>PATH</replaceable>, then
         <quote><filename>.</filename></quote> is used:</para>
+-->
+      <para>Il n'y a pas vraiment matière à exemple ici, la commande
+        <command>svn cleanup</command> ne produisant aucun affichage. Si vous
+        ne fournissez pas de paramètre <replaceable>CHEMIN</replaceable>,
+        alors <quote><filename>.</filename></quote> est utilisé&nbsp;:</para>
 
       <informalexample>
         <screen>
 $ svn cleanup
-$ svn cleanup /var/svn/working-copy
+$ svn cleanup <!--/var/svn/working-copy-->/var/svn/copie-de-travail
 </screen>
       </informalexample>
 
@@ -3245,39 +3362,68 @@ $ svn cleanup /var/svn/working-copy
 
     <indexterm>
       <primary>svn</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>commit</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svn commit (ci)</refname>
+<!--
       <refpurpose>Send changes from your working copy to the repository.</refpurpose>
+-->
+      <refpurpose>Envoyer les modifications de la copie de travail vers le
+        dépôt.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svn commit [PATH...]</literal></para>
+-->
+      <para><literal>svn commit [CHEMIN...]</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Description</title>
+-->
       <title>Description</title>
 
+<!--
       <para>Send changes from your working copy to the repository.
         If you do not supply a log message with your commit by
-        using either the <option>--file</option>
-        (<option>-F</option>) or <option>--message</option>
+        using either the <option>- -file</option>
+        (<option>-F</option>) or <option>- -message</option>
         (<option>-m</option>) option,
         <command>svn</command> will launch your editor for you
         to compose a commit message.  See the
         <literal>editor-cmd</literal> list entry in <xref
         linkend="svn.advanced.confarea.opts.config"/>.</para>
+-->
+      <para>Envoyer les modifications de la copie de travail vers le dépôt.
+        Si vous ne fournissez pas d'entrée du journal avec votre propagation
+        en utilisant soit l'option <option>--file</option>, soit l'option
+        <option>--message</option>, <command>svn</command> lance votre
+        éditeur de texte pour que vous en rédigiez une. Lisez le paragraphe
+        relatif à la liste <literal>editor-cmd</literal> dans <xref
+        linkend="svn.advanced.confarea.opts.config"/>.</para>
 
+<!--
       <para><command>svn commit</command> will send any lock
         tokens that it finds and will release locks on all
         <replaceable>PATH</replaceable>s committed (recursively)
-        unless <option>--no-unlock</option> is passed.</para>
+        unless <option>- -no-unlock</option> is passed.</para>
+-->
+      <para><command>svn commit</command> propage tous les jetons de
+        verrouillage qu'il trouve et déverrouille tous les verrous sur les
+        <replaceable>CHEMIN</replaceable>s propagés (récursivement) à moins
+        que l'option <option>--no-unlock</option> ne soit spécifiée.</para>
 
       <tip>
+<!--
         <para>If you begin a commit and Subversion launches your
           editor to compose the commit message, you can still
           abort without committing your changes.  If you want to
@@ -3285,12 +3431,23 @@ $ svn cleanup /var/svn/working-copy
           your commit message and Subversion will prompt you to
           either abort the commit, continue with no message, or
           edit the message again.</para>
+-->
+        <para>Si vous commencez une propagation et que subversion lance votre
+          éditeur de texte pour rédiger l'entrée du journal de propagation,
+          vous pouvez toujours abandonner la propagation. Si vous voulez
+          l'abandonner, quitter simplement l'éditeur sans sauvegarder le
+          message de propagation&nbsp;; Subversion vous demande alors si vous
+          voulez abandonner, continuer sans rien écrire dans le journal de
+          propagation ou éditer à nouveau le message.</para>
       </tip>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Options</title>
+-->
       <title>Options</title>
 
       <informalexample>
@@ -3313,61 +3470,120 @@ $ svn cleanup /var/svn/working-copy
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>Commit a simple modification to a file with the
         commit message on the command line and an implicit
         target of your current directory
         (<quote><filename>.</filename></quote>):</para>
+-->
+      <para>Propager une simple modification sur un fichier avec l'entrée du
+        journal de propagation indiquée dans la ligne de commande et la cible
+        implicite étant le répertoire courant
+        (<quote><filename>.</filename></quote>)&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn commit -m "added howto section."
 Sending        a
 Transmitting file data .
 Committed revision 3.
 </screen>
+-->
+          <screen>
+$ svn commit -m "ajout de la Foire Aux Questions."
+Envoi        a
+Transmission des données .
+Révision 3 propagée.
+</screen>
       </informalexample>
 
+<!--
       <para>Commit a modification to the file
         <filename>foo.c</filename> (explicitly specified on the
         command line) with the commit message in a file named
         <filename>msg</filename>:</para>
+-->
+      <para>Propager une modification sur le fichier
+        <filename>machin.c</filename> (spécifié explicitement sur la ligne de
+        commande) avec l'entrée du journal de propagation dans le fichier
+        nommé <filename>msg</filename>&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn commit -F msg foo.c
 Sending        foo.c
 Transmitting file data .
 Committed revision 5.
 </screen>
+-->
+          <screen>
+$ svn commit -F msg machin.c
+Envoi        machin.c
+Transmission des données .
+Révision 5 propagée.
+</screen>
       </informalexample>
 
+<!--
       <para>If you want to use a file that's under version control
-        for your commit message with <option>--file</option>
+        for your commit message with <option>- -file</option>
         (<option>-F</option>), you need to pass the
-        <option>--force-log</option> option:</para>
+        <option>- -force-log</option> option:</para>
+-->
+      <para>Si vous voulez utiliser un fichier suivi en versions pour votre
+        entrée du journal de propagation avec l'option
+        <option>--file</option>, vous devez également spécifier l'option
+        <option>--force-log</option>&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn commit -F file_under_vc.txt foo.c
-svn: E205004: Log message file is a versioned file; use '--force-log' to override
+svn: E205004: Log message file is a versioned file; use '- -force-log' to override
 
-$ svn commit --force-log -F file_under_vc.txt foo.c
+$ svn commit - -force-log -F file_under_vc.txt foo.c
 Sending        foo.c
 Transmitting file data .
 Committed revision 6.
 </screen>
-      </informalexample>
+-->
+        <screen>
+$ svn commit --file fichier-versionné.txt machin.c
+svn: Le fichier de l'entrée du journal est versionné; forcer avec '--force-log'
 
+$ svn commit --force-log --file fichier-versionné.txt machin.c
+Envoi        machin.c
+Transmission des données .
+Révision 6 propagée.
+</screen>
+       </informalexample>
+
+<!--
       <para>To commit a file scheduled for deletion:</para>
+-->
+      <para>Pour propager un fichier à supprimer&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn commit -m "removed file 'c'."
 Deleting       c
 
 Committed revision 7.
+</screen>
+-->
+          <screen>
+$ svn commit -m "Fichier 'c' supprimé."
+Suppression    c
+
+Révision 7 propagée.
 </screen>
       </informalexample>
 
@@ -3381,14 +3597,21 @@ Committed revision 7.
 
     <indexterm>
       <primary>svn</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>copy</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svn copy (cp)</refname>
+<!--
       <refpurpose>Copy a file or directory in a working copy or
         in the repository.</refpurpose>
+-->
+      <refpurpose>Copier un ou plusieurs fichiers ou répertoires dans une
+        copie de travail ou dans le dépôt.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -3397,8 +3620,12 @@ Committed revision 7.
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Description</title>
+-->
       <title>Description</title>
 
+<!--
       <para>Copy one or more files in a working copy or in the
         repository. <replaceable>SRC</replaceable> and
         <replaceable>DST</replaceable> can each be either a
@@ -3406,58 +3633,104 @@ Committed revision 7.
         sources, add the copies as immediate children
         of <replaceable>DST</replaceable> (which, of course, must
         be a directory).</para>
+-->
+      <para>Copier un ou plusieurs fichiers ou répertoires dans une copie de
+        travail ou dans le dépôt.  Lors de la copie de plusieurs sources,
+        elles seront ajoutées en tant que fils de
+        <replaceable>DST</replaceable>, qui doit être un répertoire.
+        <replaceable>SRC</replaceable> et <replaceable>DST</replaceable>
+        peuvent être dans la copie de travail(WC) ou une URL&nbsp;:</para>
 
         <variablelist>
 
           <varlistentry>
+<!--
+            <term>WC &rarr; WC</term>
+-->
             <term>WC &rarr; WC</term>
             <listitem>
+<!--
               <para>Copy and schedule an item for
                 addition (with history).</para>
+-->
+              <para>Copier et prévoir pour ajout un élément (avec reprise de
+                l'historique).</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
+<!--
+            <term>WC &rarr; URL</term>
+-->
             <term>WC &rarr; URL</term>
             <listitem>
+<!--
               <para>Immediately commit a copy of WC to URL.</para>
+-->
+              <para>Propager immédiatement une copie de WC vers URL.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
+<!--
+            <term>URL &rarr; WC</term>
+-->
             <term>URL &rarr; WC</term>
             <listitem>
+<!--
               <para>Check out URL into WC and schedule it for
                 addition.</para>
+-->
+              <para>Extraire l'URL dans WC et le prévoir pour ajout.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
             <term>URL &rarr; URL</term>
             <listitem>
+<!--
               <para>Complete server-side copy.  This is
                 usually used to branch and tag.</para>
+-->
+              <para>Copier complètement côté serveur. Utilisé habituellement
+                pour créer des branches ou des étiquettes.</para>
             </listitem>
           </varlistentry>
 
         </variablelist>
 
+<!--
       <para>If no peg revision (i.e.,
         <replaceable>@REV</replaceable>) is supplied, by default
         the <literal>BASE</literal> revision will be used for
         files copied from the working copy, while the
         <literal>HEAD</literal> revision will be used for files
         copied from a URL.</para>
+-->
+      <para>S'il n'y pas de révision pivot (c-à-d.
+        <replaceable>@REV</replaceable>) spécifiée, la révision
+        <literal>BASE</literal> est utilisée par défaut pour les fichiers
+        copiés depuis la copie de travail et la révision
+        <literal>HEAD</literal> est utilisée par défaut pour les fichiers
+        copiés depuis une URL.</para>
 
       <note>
+<!--
         <para>You can only copy files within a single repository.
           Subversion does not support cross-repository copying.</para>
+-->
+        <para>Vous ne pouvez copier que des fichiers provenant d'un même
+          dépôt. Subversion n'est pas capable d'effectuer des copies
+          inter-dépôts.</para>
       </note>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Options</title>
+-->
       <title>Options</title>
 
       <informalexample>
@@ -3478,108 +3751,207 @@ Committed revision 7.
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>Copy an item within your working copy (this
         schedules the copy&mdash;nothing goes into the repository
         until you commit):</para>
+-->
+      <para>Copier un élément dans la copie de travail (la copie est prévue
+        pour ajout&nbsp;; rien n'est écrit dans le dépôt avant que vous
+        n'effectuyez une propagation)&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn copy foo.txt bar.txt
 A         bar.txt
 $ svn status
 A  +    bar.txt
 </screen>
+-->
+          <screen>
+$ svn copy machin.txt bidule.txt
+A         bidule.txt
+$ svn status
+A  +   bidule.txt
+</screen>
       </informalexample>
 
+<!--
       <para>Copy several files in a working copy into a
         subdirectory:</para>
+-->
+      <para>Copier plusieurs fichiers de la copie de travail dans un
+        sous-répertoire&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn copy bat.c baz.c qux.c src
 A         src/bat.c
 A         src/baz.c
 A         src/qux.c
 </screen>
+-->
+          <screen>
+$ svn cp bat.c truc.c qux.c src
+A         src/bat.c
+A         src/truc.c
+A         src/qux.c
+</screen>
       </informalexample>
 
+<!--
       <para>Copy revision 8 of <filename>bat.c</filename> into your
         working copy under a different name:</para>
+-->
+      <para>Copier la révision 8 de <filename>bat.c</filename> dans la copie
+        de travail sous un autre nom&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn copy -r 8 bat.c ya-old-bat.c
 A         ya-old-bat.c
 </screen>
-      </informalexample>
-
-      <para>Copy an item in your working copy to a URL in the
-        repository (this is an immediate commit, so you must supply a
-        commit message):</para>
-
-      <informalexample>
-        <screen>
-$ svn copy near.txt file:///var/svn/repos/test/far-away.txt -m "Remote copy."
-
-Committed revision 8.
+-->
+          <screen>
+$ svn cp -r 8 bat.c un-vieux-bat.c
+A         un-vieux-bat.c
 </screen>
       </informalexample>
 
+<!--
+      <para>Copy an item in your working copy to a URL in the
+        repository (this is an immediate commit, so you must supply a
+        commit message):</para>
+-->
+      <para>Copier un élément de la copie de travail vers une URL dans le
+        dépôt (ceci provoque immédiatement une propagation, c'est pourquoi
+        vous devez fournir une entrée dans le journal de
+        propagation)&nbsp;:</para>
+
+      <informalexample>
+<!--
+        <screen>
+$ svn copy near.txt file:///var/svn/repos/test/far-away.txt -m "Remote copy."
+Committed revision 8.
+</screen>
+-->
+          <screen>
+$ svn copy proche.txt file:///var/svn/depot/test/tres-loin.txt -m "Copie distante."
+Révision 8 propagée.
+</screen>
+      </informalexample>
+
+<!--
       <para>Copy an item from the repository to your working
         copy (this just schedules the copy&mdash;nothing goes into the
         repository until you commit):</para>
+-->
+      <para>Copier un élément du dépôt vers la copie de travail (ceci ne fait
+        que prévoir la copie &mdash; rien ne se passe sur le dépôt tant que
+        vous ne faites pas de propagation)&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn copy file:///var/svn/repos/test/far-away -r 6 near-here
 A         near-here
 </screen>
+-->
+          <screen>
+$ svn copy file:///var/svn/depot/test/tres-loin -r 6 près-d-ici
+A         près-d-ici
+</screen>
       </informalexample>
 
       <tip>
+<!--
         <para>This is the recommended way to resurrect a dead
           file in your repository!</para>
+-->
+        <para>C'est la méthode recommandée pour ressuciter un fichier disparu
+          dans le dépôt&nbsp;!</para>
       </tip>
 
+<!--
       <para>And finally, copy between two URLs:</para>
+-->
+      <para>Et enfin, copier entre deux URL&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn copy file:///var/svn/repos/test/far-away \
            file:///var/svn/repos/test/over-there -m "remote copy."
-
 Committed revision 9.
+</screen>
+-->
+          <screen>
+$ svn copy file:///var/svn/depot/test/tres-loin \
+           file:///var/svn/depot/test/là-bas -m "copie distante."
+Révision 9 propagée.
 </screen>
       </informalexample>
 
       <informalexample>
+<!--
         <screen>
 $ svn copy file:///var/svn/repos/test/trunk \
            file:///var/svn/repos/test/tags/0.6.32-prerelease -m "tag tree"
-
 Committed revision 12.
+</screen>
+-->
+          <screen>
+$ svn copy file:///var/svn/depot/test/trunk \
+           file:///var/svn/depot/test/tags/0.6.32-pre-officielle \
+           -m "création d'une étiquette"
+Révision 12 propagée.
 </screen>
       </informalexample>
 
       <tip>
+<!--
         <para>This is the easiest way to <quote>tag</quote> a
           revision in your repository&mdash;just <command>svn
           copy</command> that revision (usually
           <literal>HEAD</literal>) into your <filename>tags</filename> directory.</para>
+-->
+        <para>C'est la méthode la plus facile pour <quote>étiqueter</quote>
+          une révision dans le dépôt &mdash; faites juste <command>svn
+          copy</command> de cette révision (généralement, c'est
+          <literal>HEAD</literal>) vers votre répertoire
+          <filename>tags</filename>.</para>
       </tip>
 
+<!--
       <para>And don't worry if you forgot to tag&mdash;you can
         always specify an older revision and tag anytime:</para>
+-->
+      <para>Et ne vous inquietez pas si vous avez oublié de créer votre
+        étiquette &mdash; vous pouvez toujours indiquer une vieille révision
+        et étiqueter quand bon vous semble&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn copy -r 11 file:///var/svn/repos/test/trunk \
            file:///var/svn/repos/test/tags/0.6.32-prerelease \
            -m "Forgot to tag at rev 11"
-
 Committed revision 13.
+</screen>
+-->
+          <screen>
+$ svn copy -r 11 file:///var/svn/depot/test/trunk \
+           file:///var/svn/depot/test/tags/0.6.32-pre-officielle \
+           -m "Oublié de créer l'étiquette à la révision 11"
+Révision 13 propagée.
 </screen>
       </informalexample>
     </refsect1>
@@ -3592,41 +3964,72 @@ Committed revision 13.
 
     <indexterm>
       <primary>svn</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>delete</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svn delete (del, remove, rm)</refname>
+<!--
       <refpurpose>Delete an item from a working copy
         or the repository.</refpurpose>
+-->
+      <refpurpose>Supprimer un élément de la copie de travail ou du
+        dépôt.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svn delete PATH...</literal></para>
+-->
+      <para><literal>svn delete CHEMIN...</literal></para>
       <para><literal>svn delete URL...</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Description</title>
+-->
       <title>Description</title>
 
+<!--
       <para>Items specified by <replaceable>PATH</replaceable> are
         scheduled for deletion upon the next commit.  Files (and
         directories that have not been committed) are immediately
         removed from the working copy unless the
-        <option>--keep-local</option> option is given.  The
+        <option>- -keep-local</option> option is given.  The
         command will not remove any unversioned or modified items;
-        use the <option>--force</option> option to override this
+        use the <option>- -force</option> option to override this
         behavior.</para>
+-->
+      <para>Les éléments spécifiés par <replaceable>CHEMIN</replaceable>
+        sont prévus pour être supprimés lors de la prochaine propagation.
+        Les fichiers (et répertoires) qui n'ont pas été propagés sont
+        immédiatement supprimés de la copie de travail à moins que l'option
+        <option>--keep-local</option> ne soit spécifiée. La commande ne
+        supprime ni ne modifie aucun élément qui n'est pas suivi en
+        versions&nbsp;; utilisez l'option <option>--force</option> pour
+        passer outre ce comportement.</para>
 
+<!--
       <para>Items specified by URL are deleted from
         the repository via an immediate commit.  Multiple URLs are
         committed atomically.</para>
+-->
+      <para>Les éléments sous forme d'URL sont supprimés du dépôt par une
+         propagation immédiate. Si plusieurs URL sont passées en paramètre,
+         la propagation est atomique.</para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Options</title>
+-->
       <title>Options</title>
 
       <informalexample>
@@ -3647,15 +4050,25 @@ Committed revision 13.
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>Using <command>svn</command> to delete a file from
         your working copy deletes your local copy of the file, but
         it merely schedules the file to be deleted from the
         repository.  When you commit, the file is deleted in the
         repository.</para>
+-->
+      <para>Utiliser <command>svn</command> pour supprimer un fichier de la
+        copie de travail supprime la copie locale du fichier mais, surtout,
+        cela prévoit de supprimer le fichier du dépôt. Lors de la prochaine
+        propagation, le fichier est supprimé du dépôt.</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn delete myfile
 D         myfile
@@ -3665,37 +4078,74 @@ Deleting       myfile
 Transmitting file data .
 Committed revision 14.
 </screen>
+-->
+          <screen>
+$ svn delete mon-fichier
+D         mon-fichier
+
+$ svn commit -m "Supprimé le fichier 'mon-fichier'."
+Suppression     mon-fichier
+Transmission des données .
+Révision 14 propagée.
+</screen>
       </informalexample>
 
+<!--
       <para>Deleting a URL, however, is immediate, so you have
         to supply a log message:</para>
+-->
+      <para>Supprimer une URL, en revanche, est immédiat. C'est pourquoi vous
+        devez fournir une entrée dans le journal de propagation&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn delete -m "Deleting file 'yourfile'" \
              file:///var/svn/repos/test/yourfile
-
 Committed revision 15.
+</screen>
+-->
+          <screen>
+$ svn delete -m "Suppression du fichier 'ton-fichier'" \
+             file:///var/svn/depot/test/ton-fichier
+
+Révision 15 propagée.
 </screen>
       </informalexample>
 
+<!--
       <para>Here's an example of how to force deletion of a file
         that has local mods:</para>
+-->
+      <para>Voici un exemple montrant comment forcer la suppression d'un
+        fichier qui comporte des modifications locales&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn delete over-there
-svn: E195006: Use --force to override this restriction (local modifications m\
+svn: E195006: Use - -force to override this restriction (local modifications m\
 ay be lost)
-svn: E195006: '/home/sally/project/over-there' has local modifications -- com\
+svn: E195006: '/home/sally/project/over-there' has local modifications - - com\
 mit or revert them first
-$ svn delete --force over-there
+$ svn delete - -force over-there
 D         over-there
 $
 </screen>
+-->
+          <screen>
+$ svn delete là-bas
+svn: E195006: Utiliser --force pour passer cette restriction
+svn: E195006: 'là-bas' a des modifications locales
+
+$ svn delete --force là-bas
+D         là-bas
+</screen>
+
       </informalexample>
 
-      <para>Use the <option>--keep-local</option> option to
+<!--
+      <para>Use the <option>- -keep-local</option> option to
         override the default <command>svn delete</command>
         behavior of also removing the target file that was
         scheduled for versioned deletion.  This is helpful when
@@ -3703,10 +4153,19 @@ $
         addition of a file that you need to keep around in your
         working copy, but which shouldn't have been added to
         version control.</para>
+-->
+      <para>Utilisez l'option <option>--keep-local</option> pour passer
+        outre le comportement par défaut de <command>svn delete</command> qui
+        consiste à supprimer aussi le fichier cible qui est prévu d'être
+        enlevé du suivi de version. C'est utile quand vous réalisez que vous
+        avez propagé par erreur l'ajout d'un fichier dont vous aviez besoin
+        au sein de votre copie de travail mais qui n'avait pas à être suivi
+        en versions.</para>
 
       <informalexample>
+<!--
         <screen>
-$ svn delete --keep-local conf/program.conf
+$ svn delete - -keep-local conf/program.conf
 D         conf/program.conf
 
 $ svn commit -m "Remove accidentally-added configuration file."
@@ -3717,16 +4176,37 @@ $ svn status
 ?       conf/program.conf
 $
 </screen>
+-->
+        <screen>
+$ svn delete --keep-local conf/programme.conf
+D         conf/programme.conf
+
+$ svn commit -m "Supprimer le fichier de configuration ajouté par erreur."
+Deleting       conf/program.conf
+Transmission des données .
+Révision 21 propagée.
+$ svn status
+?       conf/programme.conf
+$
+</screen>
       </informalexample>
 
       <note>
-        <para>The behavior of the <option>--keep-local</option>
+<!--
+        <para>The behavior of the <option>- -keep-local</option>
           option does not propagate to other working copies which
           contain the items you've scheduled for deletion.  If you
           commit the deletion of those items they will remain in
           your working copy, but they will be deleted from other
           working copies which contain them when those working
           copies are then updated.</para>
+-->
+        <para>Le comportement de l'option <option>--keep-local</option> ne
+          se propage pas aux autres copies de travail qui contiennent les
+          éléments que vous projeter de supprimer. Si vous propagez la
+          suppression de ces éléments, ils resteront dans votre copie de
+          travail mais ils seront effacés des autres copies de travail qui
+          les contiennent quand elles seront mises à jour.</para>
       </note>
 
     </refsect1>
@@ -3739,37 +4219,60 @@ $
 
     <indexterm>
       <primary>svn</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>diff</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svn diff (di)</refname>
+<!--
       <refpurpose>This displays the differences between two revisions or paths.</refpurpose>
+-->
+      <refpurpose>Afficher les différences entre deux révisions ou
+        chemins.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>diff [-c M | -r N[:M]] [TARGET[@REV]...]</literal></para>
-      <para><literal>diff [-r N[:M]] --old=OLD-TGT[@OLDREV] [--new=NEW-TGT[@NEWREV]] [PATH...]</literal></para>
+      <para><literal>diff [-r N[:M]] - -old=OLD-TGT[@OLDREV] [- -new=NEW-TGT[@NEWREV]] [PATH...]</literal></para>
       <para><literal>diff OLD-URL[@OLDREV] NEW-URL[@NEWREV]</literal></para>
-
+-->
+      <para><literal>diff [-c M | -r N[:M]] [CIBLE[@REV]...]</literal></para>
+      <para><literal>diff [-r N[:M]] --old=VCIBLE[@VREV] [--new=NCIBLE[@NREV]] [CHEMIN...]</literal></para>
+      <para><literal>diff VURL[@VREV] NURL[@NREV]</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Description</title>
+-->
       <title>Description</title>
 
+<!--
       <para>Display the differences between two paths.  You can
         use <command>svn diff</command> in the following ways:</para>
+-->
+      <para>Afficher les différences entre deux chemins. Vous pouvez utiliser
+        <command>svn diff</command> selon différentes formes :</para>
 
       <itemizedlist>
 
         <listitem>
+<!--
           <para>Use just <command>svn diff</command> to display local
             modifications in a working copy.</para>
+-->
+          <para>Tapez juste <command>svn diff</command> pour afficher les
+            modifications faites localement à une copie de travail.</para>
         </listitem>
 
         <listitem>
+<!--
           <para>Display the changes made to
             <replaceable>TARGET</replaceable>s as they are seen in
             <replaceable>REV</replaceable> between two revisions.
@@ -3787,9 +4290,31 @@ $
             M-1</literal>.  Using <literal>-c -M</literal> does the
             reverse: <literal>-r M:N</literal> where <literal>N =
             M-1</literal>.</para>
+-->
+          <para>Afficher les modifications faites à
+            <replaceable>CIBLE</replaceable> entre deux révisions telles
+            qu'elles apparaissent lors de la révision
+            <replaceable>REV</replaceable>. Les
+            <replaceable>CIBLE</replaceable>s peuvent faire référence à des
+            chemins de la copie de travail ou à des
+            <replaceable>URL</replaceable>. Si les
+            <replaceable>CIBLE</replaceable>s font référence à des chemins de
+            la copie de travail, alors <replaceable>N</replaceable> vaut par
+            défaut <literal>BASE</literal> et <replaceable>M</replaceable>
+            à la copie de travail&nbsp;; si les
+            <replaceable>CIBLE</replaceable>s font référence à des
+            <replaceable>URL</replaceable>, alors
+            <replaceable>N</replaceable> doit être spécifié et
+            <replaceable>M</replaceable> vaut par défaut
+            <literal>HEAD</literal>.  L'option <literal>-c M</literal> est
+            équivalente à <literal>-r N:M</literal> avec
+            <literal>N = M-1</literal>. L'utilisation de
+            <literal>-c -M</literal> correspond à l'inverse&nbsp;:
+            <literal>-r M:N</literal> avec <literal>N = M-1</literal>.</para>
         </listitem>
 
         <listitem>
+<!--
           <para>Display the differences between
             <replaceable>OLD-TGT</replaceable> as it was seen in
             <replaceable>OLDREV</replaceable> and
@@ -3811,60 +4336,120 @@ $
             <replaceable>N</replaceable> and
             <replaceable>NEWREV</replaceable> default to
             <replaceable>M</replaceable>.</para>
+-->
+          <para>Afficher les différences entre
+            <replaceable>VCIBLE</replaceable> vue en
+            <replaceable>VREV</replaceable> et
+            <replaceable>NCIBLE</replaceable> vue en
+            <replaceable>NREV</replaceable>. Les
+            <replaceable>CHEMIN</replaceable>s, s'ils sont spécifiés, sont
+            relatifs à <replaceable>VCIBLE</replaceable> et
+            <replaceable>NCIBLE</replaceable> et restreignent l'affichage des
+            différences à ces chemins. <replaceable>VCIBLE</replaceable> et
+            <replaceable>NCIBLE</replaceable> peuvent faire référence à des
+            chemins de la copie de travail ou des
+            <replaceable>URL[@REV]</replaceable>.
+            <replaceable>NCIBLE</replaceable> vaut par défaut
+            <replaceable>VCIBLE</replaceable> si elle n'est pas spécifiée.
+            <literal>-r N</literal> entraine que
+            <replaceable>VREV</replaceable> vaut par défaut
+            <literal>N</literal>&nbsp;; <literal>-r N:M</literal> entraine
+            que <replaceable>VREV</replaceable> vaut par défaut
+            <replaceable>N</replaceable> et <replaceable>NREV</replaceable>
+            vaut par défaut <replaceable>M</replaceable>.</para>
         </listitem>
 
       </itemizedlist>
 
+<!--
       <para><userinput>svn diff OLD-URL[@OLDREV]
         NEW-URL[@NEWREV]</userinput> is shorthand for <userinput>svn
-        diff --old=OLD-URL[@OLDREV]
-        --new=NEW-URL[@NEWREV].</userinput></para>
+        diff - -old=OLD-URL[@OLDREV]
+        - -new=NEW-URL[@NEWREV].</userinput></para>
+-->
+      <para><userinput>svn diff VURL[@VREV]
+        NURL[@NREV]</userinput> est un raccourci pour
+        <userinput>svn diff --old=VURL[@OVREV]
+        --new=NURL[@NREV].</userinput></para>
 
+<!--
       <para><userinput>svn diff -r N:M URL</userinput> is shorthand
-        for <userinput>svn diff -r N:M --old=URL
-        --new=URL</userinput>.</para>
+        for <userinput>svn diff -r N:M - -old=URL
+        - -new=URL</userinput>.</para>
+-->
+      <para><userinput>svn diff -r N:M URL</userinput> est un raccourci pour
+        <userinput>svn diff -r N:M --old=URL --new=URL</userinput>.</para>
 
+<!--
       <para><userinput>svn diff [-r N[:M]] URL1[@N]
         URL2[@M]</userinput> is shorthand for <userinput>svn diff [-r
-        N[:M]] --old=URL1 --new=URL2</userinput>.</para>
+        N[:M]] - -old=URL1 - -new=URL2</userinput>.</para>
+-->
+      <para><userinput>svn diff [-r N[:M]] URL1[@N]
+        URL2[@M]</userinput> est un raccourci pour <userinput>svn
+        diff [-r N[:M]] --old=URL1 --new=URL2</userinput>.</para>
 
+<!--
       <para>If <replaceable>TARGET</replaceable> is a URL, then
         revs <literal>N</literal> and <literal>M</literal> can be
         given either via the
-        <option>--revision</option> (<option>-r</option>) option
+        <option>- -revision</option> (<option>-r</option>) option
         or by using the
         <quote>@</quote> notation as described earlier.</para>
+-->
+      <para>Si <replaceable>CIBLE</replaceable> est une URL, alors les
+        révisions <literal>N</literal> et <literal>M</literal> peuvent être
+        passées via l'option <option>--revision</option> ou en utilisant la
+        notation <quote>@</quote> décrite précédemment.</para>
 
+<!--
       <para>If <replaceable>TARGET</replaceable> is a working copy
         path, the default behavior (when no
-        <option>--revision</option> (<option>-r</option>) option
+        <option>- -revision</option> (<option>-r</option>) option
         is provided) is to display the differences between the
         base and working copies
         of <replaceable>TARGET</replaceable>.  If a
-        <option>--revision</option> (<option>-r</option>) option
+        <option>- -revision</option> (<option>-r</option>) option
         is specified in this scenario, though, it means:</para>
+-->
+      <para>Si <replaceable>CIBLE</replaceable> est un chemin de la copie de
+        travail, le comportement par défaut (sans option
+        <option>--revision</option>) est d'afficher les différences entre les
+        versions <quote>de base</quote> et la copie de travail de
+        <replaceable>CIBLE</replaceable>.  Si l'option
+        <option>--revision</option> est spécifiée dans cette forme, cela
+        correspond à&nbsp;:</para>
 
       <variablelist>
 
         <varlistentry>
           <term><option>--revision N:M</option></term>
           <listitem>
+<!--
             <para>The server compares <replaceable>TARGET@N</replaceable>
               and <replaceable>TARGET@M</replaceable>.</para>
+-->
+            <para>Le serveur compare <replaceable>CIBLE@N</replaceable>
+              et <replaceable>CIBLE@M</replaceable>.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
           <term><option>--revision N</option></term>
           <listitem>
+<!--
             <para>The client compares
               <replaceable>TARGET@N</replaceable>
               against the working copy.</para>
+-->
+            <para>Le client compare <replaceable>CIBLE@N</replaceable> à la
+              copie de travail.</para>
           </listitem>
         </varlistentry>
 
       </variablelist>
 
+<!--
       <para>If the alternate syntax is used, the server compares
         <replaceable>URL1</replaceable> and
         <replaceable>URL2</replaceable> at revisions
@@ -3873,21 +4458,42 @@ $
         <replaceable>N</replaceable> or
         <replaceable>M</replaceable> is omitted, a value of
         <literal>HEAD</literal> is assumed.</para>
+-->
+      <para>Si la syntaxe alternative est utilisée, le serveur compare
+        <replaceable>URL1</replaceable> et <replaceable>URL2</replaceable>
+        aux révisions <replaceable>N</replaceable> et
+        <replaceable>M</replaceable>, respectivement.  Si l'une ou l'autre
+        des révisions <replaceable>N</replaceable> et
+        <replaceable>M</replaceable> n'est pas spécifiée, la valeur
+        <literal>HEAD</literal> est prise par défaut.</para>
 
+<!--
       <para>By default, <command>svn diff</command> ignores the
         ancestry of files and merely compares the contents of the
         two files being compared.  If you use
-        <option>--notice-ancestry</option>, the ancestry of the
+        <option>- -notice-ancestry</option>, the ancestry of the
         paths in question will be taken into consideration when
         comparing revisions (i.e., if you run <command>svn
         diff</command> on two files with identical contents but
         different ancestry, you will see the entire contents of
         the file as having been removed and added again).</para>
+-->
+      <para>Par défaut, <command>svn diff</command> ignore l'héritage des
+        fichiers et ne fait que comparer le contenu des fichiers spécifiés.
+        Si vous utilisez l'option <option>--notice-ancestry</option>,
+        l'héritage des chemins en question sera pris en compte lors de la
+        comparaison des révisions (c-à-d. que si vous lancez <command>svn
+        diff</command> sur deux fichiers dont le contenu est identique mais
+        qui ont des héritages différents, l'affichage correspond à un fichier
+        supprimé puis ajouté de nouveau).</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Options</title>
+-->
       <title>Options</title>
 
       <informalexample>
@@ -3918,85 +4524,162 @@ $
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>Compare <literal>BASE</literal> and your working copy
         (one of the most popular uses of <command>svn
         diff</command>):</para>
+-->
+      <para>Comparer <literal>BASE</literal> et la copie de travail (c'est
+        l'utilisation la plus fréquente de <command>svn
+        diff</command>)&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn diff COMMITTERS
 Index: COMMITTERS
 ===================================================================
---- COMMITTERS	(revision 4404)
+- - COMMITTERS	(revision 4404)
 +++ COMMITTERS	(working copy)
 &hellip;
 </screen>
+-->
+        <screen>
+$ svn diff COMMITTERS
+Index: COMMITTERS
+===================================================================
+--- COMMITTERS	(révision 4404)
++++ COMMITTERS	(copie de travail)
+</screen>
       </informalexample>
 
+<!--
       <para>See what changed in the file
         <filename>COMMITTERS</filename> revision 9115:</para>
+-->
+      <para>Regarder ce qui a changé dans le fichier
+        <filename>COMMITTERS</filename> depuis la révision 9115&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn diff -c 9115 COMMITTERS
 Index: COMMITTERS
 ===================================================================
---- COMMITTERS	(revision 3900)
+- - COMMITTERS	(revision 3900)
 +++ COMMITTERS	(working copy)
 &hellip;
+</screen>
+-->
+        <screen>
+$ svn diff -c 9115 COMMITTERS
+Index: COMMITTERS
+===================================================================
+--- COMMITTERS	(révision 3900)
++++ COMMITTERS	(copie de travail)
 </screen>
       </informalexample>
 
 
+<!--
       <para>See how your working copy's modifications compare
         against an older revision:</para>
+-->
+      <para>Regarder ce qui change dans la copie de travail par rapport aux
+        anciennes révisions&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn diff -r 3900 COMMITTERS
 Index: COMMITTERS
 ===================================================================
---- COMMITTERS	(revision 3900)
+- - COMMITTERS	(revision 3900)
 +++ COMMITTERS	(working copy)
 &hellip;
 </screen>
+-->
+        <screen>
+$ svn diff -r 3900 COMMITTERS
+Index: COMMITTERS
+===================================================================
+--- COMMITTERS	(révision 3900)
++++ COMMITTERS	(copie de travail)
+</screen>
       </informalexample>
 
+<!--
       <para>Compare revision 3000 to revision 3500 using <quote>@</quote>
         syntax:</para>
+-->
+      <para>Comparer la révision 3000 à la révision 3500 en utilisant
+        la syntaxe <quote>@</quote>&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn diff http://svn.collab.net/repos/svn/trunk/COMMITTERS@3000 \
            http://svn.collab.net/repos/svn/trunk/COMMITTERS@3500
 Index: COMMITTERS
 ===================================================================
---- COMMITTERS	(revision 3000)
+- - COMMITTERS	(revision 3000)
 +++ COMMITTERS	(revision 3500)
+&hellip;
+</screen>
+-->
+          <screen>
+$ svn diff http://svn.collab.net/repos/svn/trunk/COMMITTERS@3000 \
+           http://svn.collab.net/repos/svn/trunk/COMMITTERS@3500
+Index: COMMITTERS
+===================================================================
+--- COMMITTERS	(révision 3000)
++++ COMMITTERS	(révision 3500)
 &hellip;
 </screen>
       </informalexample>
 
+<!--
       <para>Compare revision 3000 to revision 3500 using range
         notation (pass only the one URL in this
         case):</para>
+-->
+      <para>Comparer la révision 3000 à la révision 3500 en utilisant la
+        notation pour les intervalles (on ne passe qu'une seule fois l'URL
+        dans ce cas)&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn diff -r 3000:3500 http://svn.collab.net/repos/svn/trunk/COMMITTERS
 Index: COMMITTERS
 ===================================================================
---- COMMITTERS	(revision 3000)
+- - COMMITTERS	(revision 3000)
 +++ COMMITTERS	(revision 3500)
 &hellip;
+</screen>
+-->
+        <screen>
+$ svn diff -r 3000:3500 http://svn.collab.net/repos/svn/trunk/COMMITTERS
+Index: COMMITTERS
+===================================================================
+--- COMMITTERS	(révision 3000)
++++ COMMITTERS	(révision 3500)
 </screen>
       </informalexample>
 
 
+<!--
       <para>Compare revision 3000 to revision 3500 of all the files in
         <filename>trunk</filename> using range notation:</para>
+-->
+      <para>Comparer la révision 3000 à la révision 3500 de tous les fichiers
+        dans <filename>trunk</filename> en utilisant la notation pour les
+        intervalles&nbsp;:</para>
 
       <informalexample>
         <screen>
@@ -4005,9 +4688,14 @@ $ svn diff -r 3000:3500 http://svn.collab.net/repos/svn/trunk
       </informalexample>
 
 
+<!--
       <para>Compare revision 3000 to revision 3500 of only three
         files in <filename>trunk</filename> using range
         notation:</para>
+-->
+      <para>Comparer la révision 3000 à la révision 3500 de seulement trois
+        fichiers dans <filename>trunk</filename> en utilisant la notation
+        pour les intervalles&nbsp;:</para>
 
       <informalexample>
         <screen>
@@ -4016,28 +4704,47 @@ $ svn diff -r 3000:3500 --old http://svn.collab.net/repos/svn/trunk \
 </screen>
       </informalexample>
 
+<!--
       <para>If you have a working copy, you can obtain the
         differences without typing in the long URLs:</para>
+-->
+      <para>Si vous avez une copie de travail, vous pouvez obtenir ces
+        différences sans taper de longues URL&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn diff -r 3000:3500 COMMITTERS
 Index: COMMITTERS
 ===================================================================
---- COMMITTERS	(revision 3000)
+- - COMMITTERS	(revision 3000)
 +++ COMMITTERS	(revision 3500)
 &hellip;
 </screen>
+-->
+        <screen>
+$ svn diff -r 3000:3500 COMMITTERS
+Index: COMMITTERS
+===================================================================
+--- COMMITTERS	(révision 3000)
++++ COMMITTERS	(révision 3500)
+</screen>
       </informalexample>
 
-      <para>Use <option>--diff-cmd</option>
-        <replaceable>CMD</replaceable> <option>--extensions</option>
+<!--
+      <para>Use <option>- -diff-cmd</option>
+        <replaceable>CMD</replaceable> <option>- -extensions</option>
         (<option>-x</option>) to pass arguments directly to the
         external diff program:</para>
+-->
+      <para>Utiliser l'option <option>--diff-cmd</option>
+        <replaceable>CMD</replaceable> <option>-x</option> pour passer
+        directement des paramètres au programme diff externe&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
-$ svn diff --diff-cmd /usr/bin/diff -x "-i -b" COMMITTERS
+$ svn diff - -diff-cmd /usr/bin/diff -x "-i -b" COMMITTERS
 Index: COMMITTERS
 ===================================================================
 0a1,2
@@ -4045,12 +4752,28 @@ Index: COMMITTERS
 &gt;
 $
 </screen>
+-->
+          <screen>
+$ svn diff --diff-cmd /usr/bin/diff -x "-i -b" COMMITTERS
+Index: COMMITTERS
+===================================================================
+0a1,2
+&gt; Ceci est un test
+&gt;
+</screen>
+
       </informalexample>
 
-      <para>Lastly, you can use the <option>--xml</option> option
-        along with the <option>--summarize</option> option to view
+<!--
+      <para>Lastly, you can use the <option>- -xml</option> option
+        along with the <option>- -summarize</option> option to view
         XML describing the changes that occurred between
         revisions, but not the contents of the diff itself:</para>
+-->
+      <para>Pour finir, vous pouvez utiliser l'option <option>--xml</option>
+        avec l'option <option>--summarize</option> pour afficher un document
+        XML décrivant les modifications apportées entre les révisions, mais
+        pas le contenu des différences en tant que tel&nbsp;:</para>
 
       <informalexample>
         <screen>
