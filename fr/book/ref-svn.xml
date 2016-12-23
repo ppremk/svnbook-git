@@ -4809,24 +4809,38 @@ $ svn diff --summarize --xml http://svn.red-bean.com/repos/test@r2 \
 
     <indexterm>
       <primary>svn</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>export</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svn export</refname>
+<!--
       <refpurpose>Export a clean directory tree.</refpurpose>
+-->
+      <refpurpose>Créer une copie non versionnée d'une arborescence.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svn export [-r REV] URL[@PEGREV] [PATH]</literal></para>
       <para><literal>svn export [-r REV] PATH1[@PEGREV] [PATH2]</literal></para>
+-->
+      <para><literal>svn export [-r REV] URL[@REV_PIVOT] [CHEMIN]</literal></para>
+      <para><literal>svn export [-r REV] CHEMIN1[@REV_PIVOT] [CHEMIN2]</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Description</title>
+-->
       <title>Description</title>
 
+<!--
       <para>The first form exports a clean directory tree from the
         repository specified by <replaceable>URL</replaceable>&mdash;at revision
         <replaceable>REV</replaceable> if it is given; otherwise,
@@ -4835,17 +4849,36 @@ $ svn diff --summarize --xml http://svn.red-bean.com/repos/test@r2 \
         <replaceable>PATH</replaceable> is omitted, the last
         component of the <replaceable>URL</replaceable> is used
         for the local directory name.</para>
+-->
+      <para>La première forme exporte une copie non versionnée d'un dépôt
+        spécifié par <replaceable>URL</replaceable> &mdash; à la révision
+        <replaceable>REV</replaceable> si elle est spécifiée&nbsp;; sinon,
+        à <literal>HEAD</literal>, vers <replaceable>CHEMIN</replaceable>. Si
+        <replaceable>CHEMIN</replaceable> est omis, le nom de fichier
+        (<foreignphrase>basename</foreignphrase>) de
+        <replaceable>URL</replaceable> est utilisé comme nom du répertoire
+        local.</para>
 
+<!--
       <para>The second form exports a clean directory tree from
         the working copy specified by
         <replaceable>PATH1</replaceable> into
         <replaceable>PATH2</replaceable>.  All local changes will
         be preserved, but files not under version control will not
         be copied.</para>
+-->
+      <para>La deuxième forme exporte une copie non versionnée de la copie de
+        travail spécifiée par <replaceable>CHEMIN1</replaceable> vers
+        <replaceable>CHEMIN2</replaceable>.  Toutes les modifications locales
+        sont préservées mais les fichiers qui ne sont pas suivis en versions
+        ne sont pas copiés.</para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Options</title>
+-->
       <title>Options</title>
 
       <informalexample>
@@ -4863,22 +4896,41 @@ $ svn diff --summarize --xml http://svn.red-bean.com/repos/test@r2 \
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>Export from your working copy (doesn't print every
         file and directory):</para>
+-->
+      <para>Exporter depuis la copie de travail (n'affiche pas tous les
+        fichiers et répertoires)&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn export a-wc my-export
 Export complete.
 </screen>
+-->
+        <screen>
+$ svn export une-copie-travail mon-export
+Fin d'exportation.
+</screen>
+
       </informalexample>
 
+<!--
       <para>Export directly from the repository (prints every
         file and directory):</para>
+-->
+      <para>Exporter directement depuis le dépôt (affiche chaque fichier et
+        répertoire)&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn export file:///var/svn/repos my-export
 A    my-export/test
@@ -4886,32 +4938,65 @@ A    my-export/quiz
 &hellip;
 Exported revision 15.
 </screen>
+-->
+        <screen>
+$ svn export file:///var/svn/depot mon-export
+A  mon-export/test
+A  mon-export/quizz
+&hellip;
+Exporté à la révision 15.
+</screen>
       </informalexample>
 
+<!--
       <para>When rolling operating-system-specific release
         packages, it can be useful to export a tree that uses a
         specific EOL character for line endings.  The
-        <option>--native-eol</option> option will do this, but it
+        <option>- -native-eol</option> option will do this, but it
         affects only files that have <literal>svn:eol-style =
         native</literal> properties attached to them.  For
         example, to export a tree with all CRLF line endings
         (possibly for a Windows <filename>.zip</filename> file
         distribution):</para>
+-->
+      <para>Lorsque vous produisez une archive spécifique à un système
+        d'exploitation donné, il peut être utile de faire l'export en
+        utilisant le caractère de fin de ligne correspondant au système
+        d'exploitation. L'option <option>--native-eol</option> est prévue à
+        cet effet, mais elle ne s'applique qu'aux fichiers qui possèdent la
+        propriété <literal>svn:eol-style =native</literal>. Par exemple, pour
+        exporter une arborescence avec le marqueur de fin de ligne CRLF
+        (convient pour une archive <filename>.zip</filename> Windows),
+        tapez&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
-$ svn export file:///var/svn/repos my-export --native-eol CRLF
+$ svn export file:///var/svn/repos my-export - -native-eol CRLF
 A    my-export/test
 A    my-export/quiz
 &hellip;
 Exported revision 15.
 </screen>
+-->
+        <screen>
+$ svn export file:///var/svn/depot mon-export --native-eol CRLF
+A  mon-export/test
+A  mon-export/quizz
+&hellip;
+Exporté à la révision 15.
+</screen>
       </informalexample>
 
+<!--
       <para>You can specify <literal>LR</literal>,
         <literal>CR</literal>, or <literal>CRLF</literal> as a
-        line-ending type with the <option>--native-eol</option>
+        line-ending type with the <option>- -native-eol</option>
         option.</para>
+-->
+      <para>Vous pouvez spécifier <literal>LR</literal>,
+        <literal>CR</literal> ou <literal>CRLF</literal> comme marqueur de
+        fin de ligne à l'option <option>--native-eol</option>.</para>
 
     </refsect1>
   </refentry>
@@ -4923,32 +5008,55 @@ Exported revision 15.
 
     <indexterm>
       <primary>svn</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>help</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svn help (h, ?)</refname>
+<!--
       <refpurpose>Help!</refpurpose>
+-->
+      <refpurpose>À l'aide&nbsp;!</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svn help [SUBCOMMAND...]</literal></para>
+-->
+      <para><literal>svn help [SOUS-COMMANDE...]</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Description</title>
+-->
       <title>Description</title>
 
+<!--
       <para>This is your best friend when you're using
         Subversion and this book isn't within reach!</para>
+-->
+      <para>C'est votre meilleure amie quand vous utilisez Subversion et que
+        ce livre n'est pas à portée de main&nbsp;!</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Options</title>
+-->
+      <title>Options</title>
+<!--
       <para>None</para>
+-->
+      <para>Aucune</para>
+
     </refsect1>
   </refentry>
 
@@ -4959,24 +5067,38 @@ Exported revision 15.
 
     <indexterm>
       <primary>svn</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>import</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svn import</refname>
+<!--
       <refpurpose>Commit an unversioned file or tree into the
         repository.</refpurpose>
+-->
+      <refpurpose>Propager un fichier ou une arboresence non versionnée dans
+        le dépôt.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svn import [PATH] URL</literal></para>
+-->
+      <para><literal>svn import [CHEMIN] URL</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Description</title>
+-->
       <title>Description</title>
 
+<!--
       <para>Recursively commit a copy of
         <replaceable>PATH</replaceable> to
         <replaceable>URL</replaceable>.  If
@@ -4984,12 +5106,25 @@ Exported revision 15.
         <quote><filename>.</filename></quote> is assumed.  Parent
         directories are created in the repository as necessary.
         Unversionable items such as device files and pipes are
-        ignored even if <option>--force</option> is
+        ignored even if <option>- -force</option> is
         specified.</para>
+-->
+      <para>Propage récursivement une copie de
+        <replaceable>CHEMIN</replaceable> vers
+        <replaceable>URL</replaceable>.  Si <replaceable>CHEMIN</replaceable>
+        est omis, <quote><filename>.</filename></quote> est la valeur par
+        défaut.  Les répertoires parents sont créés dans le dépôt autant que
+        nécessaire. Les éléments non suivis en versions tels que les
+        descripteurs de périphériques et les tubes de communication
+        (<foreignphrase>pipe</foreignphrase> en anglais) sont ignorés même si
+        l'option <option>--force</option> est spécifiée.</para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Options</title>
+-->
       <title>Options</title>
 
       <informalexample>
@@ -5012,8 +5147,12 @@ Exported revision 15.
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>This imports the local directory
         <filename>myproj</filename> into
         <filename>trunk/misc</filename> in your repository.  The
@@ -5021,8 +5160,15 @@ Exported revision 15.
         before you import into it&mdash;<command>svn
         import</command> will recursively create directories for
         you.</para>
+-->
+      <para>Importer le répertoire local <filename>mon-projet</filename> vers
+        <filename>trunk/misc</filename> dans le dépôt.  Le répertoire
+        <filename>trunk/misc</filename> n'a pas besoin d'exister avant
+        l'import &mdash; <command>svn import</command> crée récursivement
+        les répertoires pour vous.</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn import -m "New import" myproj \
              http://svn.red-bean.com/repos/trunk/misc
@@ -5031,14 +5177,30 @@ Adding         myproj/sample.txt
 Transmitting file data .........
 Committed revision 16.
 </screen>
+-->
+        <screen>
+$ svn import -m "Nouvel import" mon-projet \
+             http://svn.red-bean.com/repos/trunk/misc
+Ajout        mon-projet/echantillon.txt
+&hellip;
+Transmission des données .........
+Révision 16 propagée.
+</screen>
       </informalexample>
 
+<!--
       <para>Be aware that this will <emphasis>not</emphasis>
         create a directory named <filename>myproj</filename> in
         the repository.  If that's what you want, simply add
         <filename>myproj</filename> to the end of the URL:</para>
+-->
+      <para>Attention, cette commande <emphasis>ne crée pas</emphasis> de
+        répertoire <filename>mon-projet</filename> dans le dépôt.  Si vous
+        voulez le faire, ajoutez simplement <filename>mon-projet</filename> à
+        la fin de l'URL&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn import -m "New import" myproj \
             http://svn.red-bean.com/repos/trunk/misc/myproj
@@ -5047,12 +5209,28 @@ Adding         myproj/sample.txt
 Transmitting file data .........
 Committed revision 16.
 </screen>
+-->
+        <screen>
+$ svn import -m "Nouvel import" mon-projet \
+            http://svn.red-bean.com/repos/trunk/misc/mon-projet
+Ajout       mon-projet/echantillon.txt
+&hellip;
+Transmission des données .........
+Révision 16 propagée.
+</screen>
       </informalexample>
 
+<!--
       <para>After importing data, note that the original tree is
         <emphasis>not</emphasis> under version control.  To start
         working, you still need to <command>svn checkout</command>
         a fresh working copy of the tree.</para>
+-->
+      <para>Après avoir importé des données, notez que l'arborescence
+        originale <emphasis>n'est pas</emphasis> placée en suivi de versions.
+        Pour commencer à travailler, vous devez toujours extraire une copie
+        de travail de l'arborescence à l'aide de la commande
+        <command>svn checkout</command>.</para>
 
     </refsect1>
   </refentry>
@@ -5064,43 +5242,83 @@ Committed revision 16.
 
     <indexterm>
       <primary>svn</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>info</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svn info</refname>
+<!--
       <refpurpose>Display information about a local or remote
         item.</refpurpose>
+-->
+      <refpurpose>Afficher les informations sur des éléments locaux ou
+        distants.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svn info [TARGET[@REV]...]</literal></para>
+-->
+      <para><literal>svn info [CIBLE[@REV]...]</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Description</title>
+-->
       <title>Description</title>
 
+<!--
       <para>Print information about the working copy paths or URLs
         specified.  The information displayed for each path may
         include (as pertinent to the object at that path):</para>
+-->
+      <para>Afficher les informations sur des éléments de la copie de travail
+        ou du dépôt. Les informations susceptibles d'être affichées sont,
+        pour les deux formess&nbsp;:</para>
 
       <itemizedlist>
+<!--
         <listitem><para>information about the repository in which
           the object is versioned</para></listitem>
+-->
+        <listitem><para>les informations relatives au dépôt sur lequel
+          l'objet est suivi en versions&nbsp;;</para></listitem>
+<!--
         <listitem><para>the most recent commit made to the
           specified version of the object</para></listitem>
+-->
+        <listitem><para>la dernière propagation en date relatçve à l'objet
+          suivi en versions&nbsp;;</para></listitem>
+<!--
         <listitem><para>any user-level locks held on the
           object</para></listitem>
+-->
+        <listitem><para>les verrous posés sur
+          l'objet&nbsp;;</para></listitem>
+<!--
         <listitem><para>local scheduling information (added,
           deleted, copied, etc.)</para></listitem>
+-->
+        <listitem><para>la tâche programmée pour cet objet (ajout,
+          suppression, copie, etc.)&nbsp;;</para></listitem>
+<!--
         <listitem><para>local conflict information</para></listitem>
+-->
+        <listitem><para>la situation de conflit.</para></listitem>
       </itemizedlist>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Options</title>
+-->
       <title>Options</title>
 
       <informalexample>
@@ -5118,19 +5336,30 @@ Committed revision 16.
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para><command>svn info</command> will show you all the
         useful information that it has for items in your working
         copy.  It will show information for files:</para>
+-->
+      <para><command>svn info</command> affiche toutes les informations
+        pertinentes qu'elle trouve pour les éléments dans la copie de
+        travail. Elle affiche les informations concernant les
+        fichiers&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn info foo.c
 Path: foo.c
 Name: foo.c
 Working Copy Root Path: /home/sally/projects/test
 URL: http://svn.red-bean.com/repos/test/foo.c
+Relative URL: ^/foo.c
 Repository Root: http://svn.red-bean.com/repos/test
 Repository UUID: 5e7d134a-54fb-0310-bd04-b611643e5c25
 Revision: 4417
@@ -5143,16 +5372,42 @@ Text Last Updated: 2003-01-16 21:18:16 -0600 (Thu, 16 Jan 2003)
 Properties Last Updated: 2003-01-13 21:50:19 -0600 (Mon, 13 Jan 2003)
 Checksum: d6aeb60b0662ccceb6bce4bac344cb66
 </screen>
+-->
+          <screen>
+$ svn info machin.c
+Chemin : machin.c
+Nom : machin.c
+Chemin racine de la copie de travail : /home/sally/projects/test
+URL : http://svn.red-bean.com/repos/test/machin.c
+Relative URL: ^/machin.c
+Racine du dépôt : http://svn.red-bean.com/repos/test
+UUID du dépôt : 5e7d134a-54fb-0310-bd04-b611643e5c25
+Révision: 4417
+Type de nœud : fichier
+Tâche programmée : normale
+Auteur de la dernière modification : sally
+Révision de la dernière modification : 20
+Date de la dernière modification : 2003-01-13 16:43:13 -0600 (lun. 13 jan 2003)
+Texte mis à jour : 2003-01-16 21:18:16 -0600 (Thu, 16 Jan 2003)
+Propriétés mises à jour : 2003-01-13 21:50:19 -0600 (lun. 13 jan 2003)
+Somme de contrôle : d6aeb60b0662ccceb6bce4bac344cb66
+</screen>
       </informalexample>
 
+<!--
       <para>It will also show information for directories:</para>
+-->
+      <para>Elle affiche aussi des informations sur les
+        répertoires&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn info vendors
 Path: vendors
 Working Copy Root Path: /home/sally/projects/test
 URL: http://svn.red-bean.com/repos/test/vendors
+Relative URL: ^/vendors
 Repository Root: http://svn.red-bean.com/repos/test
 Repository UUID: 5e7d134a-54fb-0310-bd04-b611643e5c25
 Revision: 19
@@ -5163,19 +5418,44 @@ Last Changed Rev: 19
 Last Changed Date: 2003-01-16 23:21:19 -0600 (Thu, 16 Jan 2003)
 Properties Last Updated: 2003-01-16 23:39:02 -0600 (Thu, 16 Jan 2003)
 </screen>
+-->
+        <screen>
+$ svn info vendors
+Chemmin : vendors
+Chemin racine de la copie de travail : /home/sally/projects/test
+URL : http://svn.red-bean.com/repos/test/vendors
+Relative URL: ^/vendors
+Racine du dépôt : http://svn.red-bean.com/repos/test
+UUID du dépôt : 5e7d134a-54fb-0310-bd04-b611643e5c25
+Révision: 19
+Type de nœud : répertoire
+Tâche programmée : normale
+Auteur de la dernière modification : harry
+Révision de la dernière modification : 19
+Date de la dernière modification : 2003-01-16 23:21:19 -0600 (jeu. 16 jan 2003)
+Properties mises à jour : 2003-01-16 23:39:02 -0600 (jeu. 16 jan 2003)
+</screen>
       </informalexample>
 
+<!--
        <para><command>svn info</command> also acts on URLs (also
          note that the file <filename>readme.doc</filename> in
          this example is locked, so lock information is also
          provided):</para>
+-->
+       <para><command>svn info</command> traite aussi les URL (notez que dans
+         cet exemple, le fichier <filename>lisezmoi.doc</filename> est
+         verrouillé et donc l'information relative à ce verrouillage est
+         fournie)&nbsp;:</para>
 
        <informalexample>
+<!--
          <screen>
 $ svn info http://svn.red-bean.com/repos/test/readme.doc
 Path: readme.doc
 Name: readme.doc
 URL: http://svn.red-bean.com/repos/test/readme.doc
+Relative URL: ^/readme.doc
 Repository Root: http://svn.red-bean.com/repos/test
 Repository UUID: 5e7d134a-54fb-0310-bd04-b611643e5c25
 Revision: 1
@@ -5190,11 +5470,38 @@ Lock Created: 2003-01-15 17:35:12 -0600 (Wed, 15 Jan 2003)
 Lock Comment (1 line):
 My test lock comment
 </screen>
+-->
+         <screen>
+$ svn info http://svn.red-bean.com/repos/test/lisezmoi.doc
+Chemin : lisezmoi.doc
+Nom : lisezmoi.doc
+URL : http://svn.red-bean.com/repos/test/lisezmoi.doc
+Relative URL: ^/lisezmoi.doc
+Racine du dépôt : http://svn.red-bean.com/repos/test
+UUID du dépôt : 5e7d134a-54fb-0310-bd04-b611643e5c25
+Révision: 1
+Type de nœud : fichier
+Tâche programmée : normale
+Auteur de la dernière modification : sally
+Révision de la dernière modification : 42
+Date de la dernière modification : 2003-01-14 23:21:19 -0600 (mar. 14 jan 2003)
+Nom de verrou : opaquelocktoken:14011d4b-54fb-0310-8541-dbd16bd471b2
+Propriétaire du verrou : harry
+Verrou créé : 2003-01-15 17:35:12 -0600 (mer. 15 jan 2003)
+Lock Comment (1 line):
+Mon commentaire pour le verrou de test
+</screen>
+
        </informalexample>
 
+<!--
        <para>Lastly, <command>svn info</command> output is
          available in XML format by passing
-         the <option>--xml</option> option:</para>
+         the<option>- -xml</option> option:</para>
+-->
+       <para>Pour finir, l'affichage de <command>svn info</command> est
+         disponible au format XML en spécifiant l'option
+         <option>--xml</option>&nbsp;:</para>
 
        <informalexample>
          <screen>
@@ -5206,6 +5513,7 @@ $ svn info --xml http://svn.red-bean.com/repos/test
    path="."
    revision="1"&gt;
 &lt;url&gt;http://svn.red-bean.com/repos/test&lt;/url&gt;
+&lt;relative-url&gt;^/&lt;/relative-url&gt;
 &lt;repository&gt;
 &lt;root&gt;http://svn.red-bean.com/repos/test&lt;/root&gt;
 &lt;uuid&gt;5e7d134a-54fb-0310-bd04-b611643e5c25&lt;/uuid&gt;
@@ -5234,62 +5542,123 @@ $ svn info --xml http://svn.red-bean.com/repos/test
 
     <indexterm>
       <primary>svn</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>list</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svn list (ls)</refname>
+<!--
       <refpurpose>List directory entries in the repository.</refpurpose>
+-->
+      <refpurpose>Lister le contenu de répertoires dans le
+        dépôt.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svn list [TARGET[@REV]...]</literal></para>
+-->
+      <para><literal>svn list [CIBLE[@REV]...]</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Description</title>
+-->
       <title>Description</title>
 
+<!--
       <para>List each <replaceable>TARGET</replaceable> file and
         the contents of each <replaceable>TARGET</replaceable>
         directory as they exist in the repository.  If
         <replaceable>TARGET</replaceable> is a working copy path,
         the corresponding repository URL will be used.</para>
+-->
+      <para>Lister chaque fichier <replaceable>CIBLE</replaceable> et le
+        contenu de chaque répertoire <replaceable>CIBLE</replaceable> comme
+        ils existent dans le dépôt. Si <replaceable>CIBLE</replaceable> est
+        un chemin de la copie de travail, alors l'URL correspondante sur le
+        dépôt est utilisée.</para>
 
+<!--
       <para>The default <replaceable>TARGET</replaceable> is
         <quote><filename>.</filename></quote>, meaning the
         repository URL of the current working copy
         directory.</para>
+-->
+      <para>Par défaut, la <replaceable>CIBLE</replaceable> est
+        <quote><filename>.</filename></quote>, c'est-à-dire l'URL du dépôt
+        pour le répertoire courant de la copie de travail.</para>
 
-      <para>With <option>--verbose</option>
+<!--
+      <para>With <option>- -verbose</option>
         (<option>-v</option>), <command>svn list</command> shows
         the following fields for each item:</para>
+-->
+      <para>Avec l'option <option>--verbose</option>, <command>svn
+        list</command> affiche les champs suivants pour chaque
+        élément&nbsp;:</para>
 
       <itemizedlist>
+<!--
         <listitem><para>Revision number of the last
           commit</para></listitem>
+-->
+        <listitem><para>le numéro de révision de la dernière
+            propagation&nbsp;;</para></listitem>
 
+<!--
         <listitem><para>Author of the last commit</para></listitem>
+-->
+        <listitem><para>l'auteur de la dernière
+          propagation&nbsp;;</para></listitem>
 
+<!--
         <listitem><para>If locked, the letter <quote>O</quote> (see the preceding section on <xref
           linkend="svn.ref.svn.c.info"/> for details).</para></listitem>
+-->
+        <listitem><para>Si l'élément est verrouillé, la lettre
+          <quote>O</quote> (lisez la section  <xref
+          linkend="svn.ref.svn.c.info"/> pour plus de
+          détails)&nbsp;;</para></listitem>
 
+<!--
         <listitem><para>Size (in bytes)</para></listitem>
+-->
+        <listitem><para>la taille (en octets)&nbsp;;</para></listitem>
 
+<!--
         <listitem><para>Date and time of the last
           commit</para></listitem>
+-->
+        <listitem><para>la date et l'heure de la dernière
+          propagation.</para></listitem>
       </itemizedlist>
 
-      <para>With <option>--xml</option>, output is in XML format
+<!--
+      <para>With <option>- -xml</option>, output is in XML format
         (with a header and an enclosing document element unless
-        <option>--incremental</option> is also specified).  All of
-        the information is present; the <option>--verbose</option>
+        <option>- -incremental</option> is also specified).  All of
+        the information is present; the <option>- -verbose</option>
         (<option>-v</option>) option is not accepted.</para>
+-->
+      <para>Avec l'option <option>--xml</option>, l'affichage est au format
+        XML format (avec une entête et un élément document qui encadre le
+        tout à moins que l'option <option>--incremental</option> soit aussi
+        spécifiée). Toute l'information disponible est affichée, l'option
+        <option>--verbose</option> n'est pas acceptée.</para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Options</title>
+-->
       <title>Options</title>
 
       <informalexample>
@@ -5306,13 +5675,22 @@ $ svn info --xml http://svn.red-bean.com/repos/test
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para><command>svn list</command> is most useful if you
         want to see what files a repository has without
         downloading a working copy:</para>
+-->
+      <para><command>svn list</command> est particulièrement utile quand vous
+        voulez visualiser des fichiers dans le dépôt sans les télécharger
+        dans votre copie de travail&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn list http://svn.red-bean.com/repos/test/support
 README.txt
@@ -5320,28 +5698,55 @@ INSTALL
 examples/
 &hellip;
 </screen>
+-->
+        <screen>
+$ svn list http://svn.red-bean.com/repos/test/support
+LISEZMOI.txt
+INSTALL
+exemples/
+&hellip;
+</screen>
       </informalexample>
 
-      <para>You can pass the <option>--verbose</option>
+<!--
+      <para>You can pass the <option>- -verbose</option>
         (<option>-v</option>) option for additional information,
         rather like the Unix command
         <command>ls -l</command>:</para>
+-->
+      <para>Vous pouvez passer l'option <option>--verbose</option> pour
+        obtenir des informations complémentaires, un peu comme la commande
+        Unix <command>ls -l</command>&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn list -v file:///var/svn/repos
      16 sally         28361 Jan 16 23:18 README.txt
      27 sally             0 Jan 18 15:27 INSTALL
      24 harry               Jan 18 11:27 examples/
 </screen>
+-->
+        <screen>
+$ svn list -v file:///var/svn/depot
+     16 sally         28361 Jan 16 23:18 LISEZMOI.txt
+     27 sally             0 Jan 18 15:27 INSTALL
+     24 harry               Jan 18 11:27 exemples/
+</screen>
       </informalexample>
 
+<!--
       <para>You can also get <command>svn list</command> output in
-        XML format with the <option>--xml</option> option:</para>
+        XML format with the <option>- -xml</option> option:</para>
+-->
+      <para>Vous pouvez obtenir un affichage au format XML avec la commande
+        <command>svn list</command> en spécifiant l'option
+        <option>--xml</option>&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
-$ svn list --xml http://svn.red-bean.com/repos/test
+$ svn list - -xml http://svn.red-bean.com/repos/test
 &lt;?xml version="1.0"?&gt;
 &lt;lists&gt;
 &lt;list
@@ -5360,9 +5765,34 @@ $ svn list --xml http://svn.red-bean.com/repos/test
 &lt;/list&gt;
 &lt;/lists&gt;
 </screen>
+-->
+          <screen>
+$ svn list --xml http://svn.red-bean.com/repos/test
+&lt;?xml version="1.0"?&gt;
+&lt;lists&gt;
+&lt;list
+   path="http://svn.red-bean.com/repos/test"&gt;
+&lt;entry
+   kind="dir"&gt;
+&lt;name&gt;exemples&lt;/name&gt;
+&lt;size&gt;0&lt;/size&gt;
+&lt;commit
+   revision="24"&gt;
+&lt;author&gt;harry&lt;/author&gt;
+&lt;date&gt;2008-01-18T06:35:53.048870Z&lt;/date&gt;
+&lt;/commit&gt;
+&lt;/entry&gt;
+&hellip;
+&lt;/list&gt;
+&lt;/lists&gt;
+</screen>
       </informalexample>
 
+<!--
       <para>For further details, see the earlier section <xref
+        linkend="svn.tour.history.browsing.list"/>.</para>
+-->
+      <para>Pour plus de détails, lisez la section précédente <xref
         linkend="svn.tour.history.browsing.list"/>.</para>
 
     </refsect1>
@@ -5376,36 +5806,62 @@ $ svn list --xml http://svn.red-bean.com/repos/test
 
     <indexterm>
       <primary>svn</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>lock</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svn lock</refname>
+<!--
         <refpurpose>Lock working copy paths or URLs in the
           repository so that no other user can commit changes to
           them.</refpurpose>
+-->
+        <refpurpose>Verrouiller des chemins ou des URL dans le dépôt, afin
+          qu'aucun autre utilisateur ne puisse propager
+          (<command>commit</command>) des modifications les
+          concernant.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svn lock TARGET...</literal></para>
+-->
+      <para><literal>svn lock CIBLE...</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Description</title>
+-->
       <title>Description</title>
 
+<!--
       <para>Lock each <replaceable>TARGET</replaceable>.  If any
         <replaceable>TARGET</replaceable> is already locked by
         another user, print a warning and continue locking the
         rest of the <replaceable>TARGET</replaceable>s.  Use
-        <option>--force</option> to steal a lock from another user
+        <option>- -force</option> to steal a lock from another user
         or working copy.</para>
+-->
+      <para>Verrouiller chaque <replaceable>CIBLE</replaceable>. Si une
+        <replaceable>CIBLE</replaceable>  est déjà verrouillée par un autre
+        utilisateur, affiche un avertissement et continue de verrouiller les
+        autres <replaceable>CIBLE</replaceable>s. Utilisez l'option
+        <option>--force</option> pour voler un verrou à un autre utilisateur
+        ou à une autre copie de travail.</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Options</title>
+-->
       <title>Options</title>
 
       <informalexample>
@@ -5422,46 +5878,88 @@ $ svn list --xml http://svn.red-bean.com/repos/test
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>Lock two files in your working copy:</para>
+-->
+      <para>Verrouiller deux fichiers de la copie de
+            travail&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn lock tree.jpg house.jpg
 'tree.jpg' locked by user 'harry'.
 'house.jpg' locked by user 'harry'.
 </screen>
+-->
+        <screen>
+$ svn lock arbre.jpg maison.jpg
+'arbre.jpg' verrouillé par l'utilisateur 'harry'.
+'maison.jpg' verrouillé par l'utilisateur 'harry'.
+</screen>
+
       </informalexample>
 
+<!--
       <para>Lock a file in your working copy that is currently
         locked by another user:</para>
+-->
+      <para>Verrouiller un fichier dans la copie de travail qui est déjà
+        verrouillé par un autre utilisateur&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn lock tree.jpg
 svn: warning: W160035: Path '/tree.jpg is already locked by user 'sally' in fi
 lesystem '/var/svn/repos/db'
-$ svn lock --force tree.jpg
+$ svn lock - -force tree.jpg
 'tree.jpg' locked by user 'harry'.
 </screen>
+-->
+        <screen>
+$ svn lock arbre.jpg
+svn: avertissement : W1600035: Chemin '/arbre.jpg' déjà verrouillé par \
+  l'utilisateur 'sally' dans le système de fichiers '/var/svn/depot/db'
+$ svn lock --force arbre.jpg
+'arbre.jpg' verrouillé par l'utilisateur 'harry'.
+</screen>
+
       </informalexample>
 
+<!--
       <para>Lock a file without a working copy:</para>
+-->
+      <para>Verrouiller un fichier sans copie de travail&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn lock http://svn.red-bean.com/repos/test/tree.jpg
 'tree.jpg' locked by user 'harry'.
 </screen>
+-->
+        <screen>
+$ svn lock http://svn.red-bean.com/repos/test/arbre.jpg
+'arbre.jpg' verrouillé par l'utilisateur 'harry'.
+</screen>
+
       </informalexample>
 
+<!--
       <para>For further details, see <xref
+        linkend="svn.advanced.locking"/>.</para>
+-->
+      <para>Pour davantage de détails, référez-vous à <xref
         linkend="svn.advanced.locking"/>.</para>
 
     </refsect1>
   </refentry>
-
 
   <!-- ================================================================= -->
   <!-- ================================================================= -->
