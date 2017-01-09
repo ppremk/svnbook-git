@@ -10843,44 +10843,74 @@ $ svn status --xml wc
 
     <indexterm>
       <primary>svn</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>switch</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svn switch (sw)</refname>
+<!--
       <refpurpose>Update working copy to a different URL.</refpurpose>
+-->
+      <refpurpose>Mettre à jour la copie de travail à partir d'une nouvelle
+        URL.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svn switch URL[@PEGREV] [PATH]</literal></para>
-      <para><literal>switch --relocate FROM TO [PATH...]</literal></para>
+      <para><literal>switch - -relocate FROM TO [PATH...]</literal></para>
+-->
+      <para><literal>svn switch URL[@REV_PIVOT] [CHEMIN]</literal></para>
+      <para><literal>switch --relocate FROM TO [CHEMIN...]</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
       <title>Description</title>
 
+<!--
       <para>The first variant of this subcommand (without the
-        <option>--relocate</option> option) updates your working
+        <option>- -relocate</option> option) updates your working
         copy to point to a new URL.  This is the Subversion way to
         make a working copy begin tracking a new branch.  If
         specified, <replaceable>PEGREV</replaceable> determines in
         which revision the target is first looked up.  See
         <xref linkend="svn.branchmerge.switchwc"/> for an in-depth
         look at switching.</para>
+-->
+      <para>La première forme de cette sous-commande (sans l'option
+        <option>--relocate</option>) actualise votre copie de travail en la
+        faisant pointer sur une nouvelle URL. C'est la manière de faire avec
+        Subversion pour utiliser une nouvelle branche pour votre copie de
+        travail. Si <replaceable>REV_PIVOT</replaceable> est spécifié, cela
+        indique dans quelle révision chercher pour déterminer la cible.
+        Reportez-vous à <xref linkend="svn.branchmerge.switchwc"/> pour une
+        description en profondeur de la gestion des branches.</para>
 
       <note>
+<!--
         <para>Beginning with Subversion 1.7, the <command>svn
           switch</command> command will demand by default that the
           URL to which you are switching your working copy shares
           a common ancestry with item that the working copy
           currently reflects.  You can override this behavior by
-          specifying the <option>--ignore-ancestry</option>
+          specifying the <option>- -ignore-ancestry</option>
           option.</para>
+-->
+        <para>À partir de Subversion 1.7, la commande <command>svn
+          switch</command> demande par défaut que l'URL vers laquelle vous
+          faites pointer votre copie de travail possède un ancêtre commun
+          avec la copie de travail actuelle. Vous pouvez passer outre ce
+          comportement en spécifiant l'option
+          <option>--ignore-ancestry</option>.</para>
       </note>
 
-      <para>If <option>--force</option> is used, unversioned
+<!--
+      <para>If <option>- -force</option> is used, unversioned
         obstructing paths in the working copy do not automatically
         cause a failure if the switch attempts to add the same
         path.  If the obstructing path is the same type (file or
@@ -10893,23 +10923,56 @@ $ svn status --xml wc
         like a local modification to the working copy.  All
         properties from the repository are applied to the
         obstructing path.</para>
+-->
+      <para>Si l'option <option>--force</option> est utilisée, les chemins
+        non gérés en versions de la copie de travail qui font obstacle à
+        l'ajout, par la commande de ré-aiguillage, de chemins ayant le même
+        nom ne font pas échouer automatiquement l'opération.  Si le chemin
+        faisant obstacle est du même type (fichier ou répertoire) que le
+        chemin correspondant dans le dépôt, il passe sous gestion de versions
+        mais son contenu est laissé tel quel dans la copie de travail. Cela
+        veut dire que les enfants d'un répertoire non géré en versions
+        peuvent également faire obstacle et se retrouver gérés en versions.
+        Pour les fichiers, toute différence entre l'obstacle et le dépôt est
+        gérée comme une modification locale à la copie de travail. Toutes les
+        propriétés du dépôt sont appliquées au chemin qui fait
+        obstacle.</para>
 
+<!--
       <para>As with most subcommands, you can limit the scope of
         the switch operation to a particular tree depth using the
-        <option>--depth</option> option.  Alternatively, you can
-        use the <option>--set-depth</option> option to set a new
+        <option>- -depth</option> option.  Alternatively, you can
+        use the <option>- -set-depth</option> option to set a new
         <quote>sticky</quote> working copy depth on the switch
         target.</para>
+-->
+      <para>Comme pour la plupart des sous-commandes, vous pouvez limiter le
+        périmètre d'action de l'opération de ré-aiguillage à une profondeur
+        de l'arborescence en utilisant l'option <option>--depth</option>. De
+        la même manière, vous pouvez utiliser l'option
+        <option>--set-depth</option> pour définir un nouveau niveau de
+        récursion <quote>permanent</quote> associé à la cible de
+        ré-aiguillage.</para>
 
-      <para>The <option>--relocate</option> option is deprecated
+<!--
+      <para>The <option>- -relocate</option> option is deprecated
         as of Subversion 1.7.  Use <command>svn relocate</command>
         (described in <xref linkend="svn.ref.svn.c.relocate" />)
         to perform working copy relocation instead.</para>
+-->
+      <para>L'option <option>--relocate</option> est obsolète depuis
+        Subversion 1.7. Utilisez à la place la commande
+        <command>svn relocate</command> (décrite dans <xref
+        linkend="svn.ref.svn.c.relocate" />) pour suivre un déplacement du
+        dépôt.</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
+      <title>Options</title>
+-->
       <title>Options</title>
 
       <informalexample>
@@ -10930,14 +10993,25 @@ $ svn status --xml wc
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>If you're currently inside the directory
         <filename>vendors</filename>, which was branched to
         <filename>vendors-with-fix</filename>, and you'd like to
         switch your working copy to that branch:</para>
+-->
+      <para>Vous pointez actuellement vers le répertoire
+        <filename>vendors</filename> qui a fait l'objet d'un déplacement vers
+        le répertoire <filename>vendors-with-fix</filename>. Vous voulez
+        maintenant que votre copie de travail pointe vers cette nouvelle
+        branche&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn switch http://svn.red-bean.com/repos/branches/vendors-with-fix .
 U    myproj/foo.txt
@@ -10946,13 +11020,29 @@ U    myproj/baz.c
 U    myproj/qux.c
 Updated to revision 31.
 </screen>
+-->
+        <screen>
+$ svn switch http://svn.red-bean.com/repos/branches/vendors-with-fix .
+U  mon-projet/machin.txt
+U  mon-projet/bidule.txt
+U  mon-projet/truc.c
+U  mon-projet/qux.c
+À la révision 31.
+</screen>
+
       </informalexample>
 
+<!--
       <para>To switch back, just provide the URL to the
         location in the repository from which you originally
         checked out your working copy:</para>
+-->
+      <para>Pour revenir sur la branche initiale, vous n'avez qu'à fournir
+        l'emplacement dans le dépôt à partir duquel vous avez extrait votre
+        copie de travail&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn switch http://svn.red-bean.com/repos/trunk/vendors .
 U    myproj/foo.txt
@@ -10961,9 +11051,19 @@ U    myproj/baz.c
 U    myproj/qux.c
 Updated to revision 31.
 </screen>
+-->
+        <screen>
+$ svn switch http://svn.red-bean.com/repos/trunk/vendors .
+U  mon-projet/machin.txt
+U  mon-projet/bidule.txt
+U  mon-projet/truc.c
+U  mon-projet/qux.c
+À la révision 31.
+</screen>
       </informalexample>
 
       <tip>
+<!--
         <para>You <emphasis>can</emphasis> switch just part of
           your working copy to a branch if you don't want to
           switch your entire working copy, but this is not
@@ -10971,6 +11071,14 @@ Updated to revision 31.
           you've done this and wind up accidentally making and
           committing changes both to the switched and unswitched
           portions of your tree.</para>
+-->
+        <para>Vous <emphasis>pouvez</emphasis> ne ré-aiguiller qu'une partie
+          de votre copie de travail vers une branche si vous ne voulez pas
+          basculer l'ensemble de votre copie de travail, mais ce n'est pas
+          recommandé en général. Il est très aisé d'oublier que vous l'avez
+          fait et ainsi de propager accidentellement des modifications à la
+          fois à la branche ré-aiguillée et celle qui n'a pas bougé de
+          votre arborescence.</para>
       </tip>
 
     </refsect1>
@@ -10984,30 +11092,50 @@ Updated to revision 31.
 
     <indexterm>
       <primary>svn</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>unlock</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svn unlock</refname>
+<!--
         <refpurpose>Unlock working copy paths or URLs.</refpurpose>
+-->
+        <refpurpose>Déverrouiller des chemins de la copie de travail ou des
+          URL.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svn unlock TARGET...</literal></para>
+-->
+      <para><literal>svn unlock CIBLE...</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
       <title>Description</title>
 
+<!--
       <para>Unlock each <replaceable>TARGET</replaceable>.  If any
         <replaceable>TARGET</replaceable> is locked by
         another user or no valid lock token exists in the working
         copy, print a warning and continue unlocking the rest of
         the <replaceable>TARGET</replaceable>s.  Use
-        <option>--force</option> to break a lock belonging to
+        <option>- -force</option> to break a lock belonging to
         another user or working copy.</para>
+-->
+      <para>Déverrouiller chaque <replaceable>CIBLE</replaceable>. Si une
+        <replaceable>CIBLE</replaceable> est verrouillée par un autre
+        utilisateur ou s'il n'existe pas de jeton de verrouillage valide dans
+        la copie de travail, affiche un avertissement et continue à
+        déverrouiller le reste des <replaceable>CIBLE</replaceable>s.
+        Utilisez l'option <option>--force</option> pour casser un verrou
+        appartenant à un autre utilisateur ou à une autre copie de
+        travail.</para>
 
     </refsect1>
 
@@ -11025,40 +11153,79 @@ Updated to revision 31.
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>Unlock two files in your working copy:</para>
+-->
+      <para>Déverrouiller deux fichiers de votre copie de
+        travail&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn unlock tree.jpg house.jpg
 'tree.jpg' unlocked.
 'house.jpg' unlocked.
 </screen>
-      </informalexample>
-
-      <para>Unlock a file in your working copy that is currently
-        locked by another user:</para>
-
-      <informalexample>
+-->
         <screen>
-$ svn unlock tree.jpg
-svn: E195013: 'tree.jpg' is not locked in this working copy
-$ svn unlock --force tree.jpg
-'tree.jpg' unlocked.
+$ svn unlock arbre.jpg maison.jpg
+'/arbre.jpg' déverrouillé.
+'/maison.jpg' déverrouillé.
 </screen>
       </informalexample>
 
-      <para>Unlock a file without a working copy:</para>
+<!--
+      <para>Unlock a file in your working copy that is currently
+        locked by another user:</para>
+-->
+      <para>Déverrouiller un fichier dans votre copie de travail qui est
+        verrouillé par un autre utilisateur&nbsp;:</para>
 
       <informalexample>
+<!--
+        <screen>
+$ svn unlock tree.jpg
+svn: E195013: 'tree.jpg' is not locked in this working copy
+$ svn unlock - -force tree.jpg
+'tree.jpg' unlocked.
+</screen>
+-->
+        <screen>
+$ svn unlock arbre.jpg
+svn: 'arbre.jpg' n'est pas verrouillé dans cette copie de travail
+$ svn unlock --force arbre.jpg
+'arbre.jpg' déverrouillé.
+</screen>
+      </informalexample>
+
+<!--
+      <para>Unlock a file without a working copy:</para>
+-->
+      <para>Déverrouiller un fichier sans copie de travail&nbsp;:</para>
+
+      <informalexample>
+<!--
         <screen>
 $ svn unlock http://svn.red-bean.com/repos/test/tree.jpg
 'tree.jpg unlocked.
 </screen>
+-->
+        <screen>
+$ svn unlock http://svn.red-bean.com/depot/test/arbre.jpg
+'arbre.jpg' déverrouillé.
+</screen>
       </informalexample>
 
+<!--
       <para>For further details, see <xref
+        linkend="svn.advanced.locking"/>.</para>
+-->
+      <para>Pour plus de détails, reportez-vous à <xref
         linkend="svn.advanced.locking"/>.</para>
 
     </refsect1>
@@ -11072,102 +11239,165 @@ $ svn unlock http://svn.red-bean.com/repos/test/tree.jpg
 
     <indexterm>
       <primary>svn</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>update</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svn update (up)</refname>
+<!--
       <refpurpose>Update your working copy.</refpurpose>
+-->
+      <refpurpose>Mettre à jour la copie de travail.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svn update [PATH...]</literal></para>
+-->
+      <para><literal>svn update [CHEMIN...]</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
       <title>Description</title>
 
+<!--
       <para><command>svn update</command> brings changes from the
         repository into your working copy.  If no revision is
         given, it brings your working copy up to date with the
         <literal>HEAD</literal> revision.  Otherwise, it
         synchronizes the working copy to the revision given by the
-        <option>--revision</option> (<option>-r</option>) option.
+        <option>- -revision</option> (<option>-r</option>) option.
         As part of the synchronization, <command>svn
         update</command> also removes any stale locks (see
         <xref linkend="svn.tour.cleanup"/>) found in the working
         copy.</para>
+-->
+      <para><command>svn update</command> actualise la copie de travail par
+        rapport au dépôt. Si aucune révision n'est spécifiée, elle actualise
+        par rapport à la révision <literal>HEAD</literal>.  Sinon, elle
+        synchronise la copie de travail à la révision spécifiée par l'option
+        <option>--revision</option>. La procédure de synchronisation suivie
+        par <command>svn update</command> inclut la suppression des verrous
+        dépassés (voir <xref linkend="svn.tour.cleanup"/>) trouvés dans la
+        copie de travail.</para>
 
+<!--
       <para>For each updated item, it prints a line that starts
         with a character reporting the action taken.  These
         characters have the following meaning:</para>
+-->
+      <para>Pour chaque élément mis à jour, elle affiche une ligne avec un
+        caractère indiquant l'action effectuée. Ces caractères ont la
+        signification suivante&nbsp;:</para>
 
       <variablelist>
 
         <varlistentry>
           <term><literal>A</literal></term>
           <listitem>
+<!--
             <para>Added</para>
+-->
+            <para>Ajouté.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
           <term><literal>B</literal></term>
           <listitem>
+<!--
             <para>Broken lock (third column only)</para>
+-->
+            <para>Verrou cassé (troisième colonne seulement &mdash;
+                  <foreignphrase>broken</foreignphrase> en anglais).</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
           <term><literal>D</literal></term>
           <listitem>
+<!--
             <para>Deleted</para>
+-->
+            <para>Effacé (<foreignphrase>deleted</foreignphrase> en
+              anglais).</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
           <term><literal>U</literal></term>
           <listitem>
+<!--
             <para>Updated</para>
+-->
+            <para>Mis à jour (<foreignphrase>Updated</foreignphrase> en
+              anglais).</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
           <term><literal>C</literal></term>
           <listitem>
+<!--
             <para>Conflicted</para>
+-->
+            <para>En conflit.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
           <term><literal>G</literal></term>
           <listitem>
+<!--
             <para>Merged</para>
+-->
+            <para>Fusionné (<foreignphrase>merged</foreignphrase> en
+              anglais).</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
           <term><literal>E</literal></term>
           <listitem>
+<!--
             <para>Existed</para>
+-->
+            <para>Existant.</para>
           </listitem>
         </varlistentry>
 
       </variablelist>
 
+<!--
       <para>A character in the first column signifies an update to
         the actual file, whereas updates to the file's properties
         are shown in the second column.  Lock information is
         printed in the third column.</para>
+-->
+      <para>Un caractère dans la première colonne signifie une mise à jour du
+        fichier existant, alors que les mises à jour des propriétés de
+        fichiers apparaissent dans la deuxième colonne. Les informations de
+        verrouillage sont affichées dans la troisième colonne.</para>
 
+<!--
       <para>As with most subcommands, you can limit the scope of
         the update operation to a particular tree depth using the
-        <option>--depth</option> option.  Alternatively, you can
-        use the <option>--set-depth</option> option to set a new
+        <option>- -depth</option> option.  Alternatively, you can
+        use the <option>- -set-depth</option> option to set a new
         <quote>sticky</quote> working copy depth on the update
         target.</para>
+-->
+      <para>Comme pour la plupart des sous-commandes, vous pouvez limiter le
+        périmètre d'action de l'opération de mise à jour à une profondeur de
+        l'arborescence en utilisant l'option <option>--depth</option>.  De la
+        même manière, vous pouvez utiliser l'option
+        <option>--set-depth</option> pour définir un nouveau niveau de
+        récursion associé à la cible de mise à jour.</para>
     </refsect1>
 
     <!-- =============================================================== -->
@@ -11193,12 +11423,20 @@ $ svn unlock http://svn.red-bean.com/repos/test/tree.jpg
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>Pick up repository changes that have happened since
         your last update:</para>
+-->
+      <para>Récupèrer les modifications apportées au dépôt depuis la dernière
+        mise à jour&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn update
 Updating '.':
@@ -11208,14 +11446,30 @@ A    newdir/launch.c
 D    newdir/README
 Updated to revision 32.
 </screen>
+-->
+        <screen>
+$ svn update
+A  nouveau-rep/toggle.c
+A  nouveau-rep/disclose.c
+A  nouveau-rep/launch.c
+D  nouveau-rep/LISEZ-MOI
+Actualisé à la révision 32.
+</screen>
       </informalexample>
 
+<!--
       <para>You can also <quote>update</quote> your working copy
         to an older revision (Subversion doesn't have the concept
         of <quote>sticky</quote> files like CVS does; see <xref
         linkend="svn.forcvs"/>):</para>
+-->
+      <para>Vous pouvez aussi <quote>mettre à jour</quote> votre copie de
+        travail vers une vieille révision (Subversion ne connait pas le
+        concept de fichier <quote>sticky</quote> défini dans CVS&nbsp;;
+        reportez-vous à <xref linkend="svn.forcvs"/>)&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svn update -r30
 Updating '.':
@@ -11226,32 +11480,65 @@ D    newdir/launch.c
 U    foo.c
 Updated to revision 30.
 </screen>
+-->
+        <screen>
+$ svn update -r30
+A  nouveau-rep/LISEZ-MOI
+D  nouveau-rep/toggle.c
+D  nouveau-rep/disclose.c
+D  nouveau-rep/launch.c
+U  machin.c
+Actualisé à la révision 30.
+</screen>
       </informalexample>
 
       <tip>
+<!--
         <para>If you want to examine an older revision of a
           single file, you may want to use <command>svn
           cat</command> instead&mdash;it won't change your working
           copy.</para>
+-->
+        <para>Si vous voulez examiner un seul fichier dans une révision
+          antérieure, vous pouvez préférer l'utilisation de <command>svn
+          cat</command> &mdash; cela ne modifiera pas votre copie de
+          travail.</para>
       </tip>
 
+<!--
       <para><command>svn update</command> is also the primary
         mechanism used to configure sparse working copies.  When
-        used with the <option>--set-depth</option>, the update
+        used with the <option>- -set-depth</option>, the update
         operation will omit or reenlist individual working copy
         members by modifying their recorded ambient depth to the
         depth you specify (fetching information from the
         repository as necessary).  See
         <xref linkend="svn.advanced.sparsedirs" /> for more about
         sparse directories.</para>
+-->
+      <para><command>svn update</command> constitue le premier mécanisme
+        pour configurer des copies de travail à répertoires clairsemés. Quand
+        vous l'utilisez avec l'option <option>--set-depth</option>, la mise
+        à jour omet ou réintègre individuellement les membres de la copie de
+        travail en modifiant leur profondeur associée vers la profondeur
+        spécifiée (en allant chercher l'information dans le dépôt si
+        nécessaire). Reportez-vous à <xref linkend="svn.advanced.sparsedirs"
+        /> pour plus d'informations sur les répertoires clairsemés.</para>
 
+<!--
       <para>You can update multiple targets with a single
         invocation, and Subversion will not only gracefully skip
         any unversioned targets you provide it, but as of
         Subversion 1.7 will also include a post-update summary of
         all the updates it performed:</para>
+-->
+      <para>Vous pouvez mettre à jour plusieurs cibles avec une seule
+        commande, Subversion omet silencieusement les cibles qui ne sont pas
+        suivies en versions et, depuis Subversion 1.7, inclut un résumé de la
+        mise à jour qu'il vient d'effectuer&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ cd my-projects
 $ svn update *
@@ -11271,6 +11558,29 @@ Summary of updates:
   Updated 'paint' to r60.
   Updated 'ziptastic' to r43.
 Summary of conflicts:
+Skipped paths: 1
+$
+</screen>
+-->
+        <screen>
+$ cd mes-projets
+$ svn update *
+Mise à jour de 'calc' :
+U    bouton.c
+U    entier.c
+À la révision 394.
+Skipped 'tempfile.tmp'
+Mise à jour de 'paint' :
+A    palettes.c
+U    brushes.c
+À la révision 60.
+Mise à jour de 'ziptastic' :
+À la révision 43.
+Résumé des mises à jour :
+  'calc' actualisé à la révision 394.
+  'paint' actualisé à la révision 60.
+  'zipstatic' actualisé à la révision 43.
+Résumé des conflits :
   Skipped paths: 1
 $
 </screen>
@@ -11286,24 +11596,35 @@ $
 
     <indexterm>
       <primary>svn</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>upgrade</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svn upgrade</refname>
+<!--
       <refpurpose>Upgrade the metadata storage format for a
         working copy.</refpurpose>
+-->
+      <refpurpose>Mettre à niveau le format de stockage des métadonnées d'une
+        copie de travail.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svn upgrade [PATH...]</literal></para>
+-->
+      <para><literal>svn upgrade [CHEMIN...]</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
       <title>Description</title>
 
+<!--
       <para>As new versions of Subversion are released, the format
         used for the working copy metadata changes to accomodate
         new features or fix bugs.  Older versions of Subversion
@@ -11313,6 +11634,16 @@ $
         working copy upgrades must be explicitly performed at the
         user's request.  <command>svn upgrade</command> is the
         subcommand used to trigger that upgrade process.</para>
+-->
+      <para>Au fur et à mesure que les versions de Subversion se succèdent,
+        le format de stockage des métadonnées des copies de travail évolue
+        pour prendre en compte de nouvelles fonctionnalités ou corriger des
+        bugs. Les vieilles versions de Subversion mettent à niveau
+        automatiquement les copies de travail vers le nouveau format la
+        première fois que le logiciel est utilisé. À partir de Subversion
+        1.7, la mise à niveau des copies de travail doit être effectué
+        explicitement par l'utilisateur. <command>svn upgrade</command>
+        permet de déclencher cette mise à niveau.</para>
     </refsect1>
 
     <!-- =============================================================== -->
@@ -11328,13 +11659,30 @@ $
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>If you attempt to use Subversion 1.7 on a working copy
         created with an older version of Subversion, you will see
         an error:</para>
+-->
+      <para>Si vous essayez d'utiliser Subversion 1.7 sur une copie de
+        travail créée avec une ancienne version de Subversion, vous
+        obtenez l'erreur suivante&nbsp;:</para>
 
       <informalexample>
+<!--
+        <screen>
+$ svn status
+svn: E155036: Please see the 'svn upgrade' command
+svn: E155036: Working copy '/home/sally/project' is too old (format 10, create
+d by Subversion 1.6)
+$
+</screen>
+-->
         <screen>
 $ svn status
 svn: E155036: Please see the 'svn upgrade' command
@@ -11343,12 +11691,36 @@ d by Subversion 1.6)
 $
 </screen>
       </informalexample>
-
+<!--
       <para>Use the <command>svn upgrade</command> command to
         upgrade the working copy to the most recent metadata
         format supported by your version of Subversion.</para>
+-->
+      <para>Utilisez la commande <command>svn upgrade</command> pour mettre
+        à niveau la copie de travail vers le format le plus récent de
+        stockage des métadonnées compris par votre version de
+        Subversion.</para>
 
       <informalexample>
+<!--
+        <screen>
+$ svn upgrade
+Upgraded '.'
+Upgraded 'A'
+Upgraded 'A/B'
+Upgraded 'A/B/E'
+Upgraded 'A/B/F'
+Upgraded 'A/C'
+Upgraded 'A/D'
+Upgraded 'A/D/G'
+Upgraded 'A/D/H'
+$ svn status
+D       A/B/E/alpha
+M       A/D/gamma
+A       A/newfile
+$
+</screen>
+-->
         <screen>
 $ svn upgrade
 Upgraded '.'
@@ -11368,17 +11740,27 @@ $
 </screen>
       </informalexample>
 
+<!--
       <para>Notice that <command>svn upgrade</command> preserved
         the local modifications present in the working copy at the
         time of the upgrade, which were introduced by the version
         of Subversion previously used to manipulate this working
         copy.</para>
+-->
+      <para>Notez que <command>svn upgrade</command> conserve les
+        modifications locales présentes dans la copie de travail au moment de
+        la mise à niveau.</para>
 
       <warning>
+<!--
         <para>As was the case with automatically upgraded working
           copies in the past, explicitly upgraded working copies
           will be unusable by older versions of Subversion,
           too.</para>
+-->
+        <para>De même que pour les mises à niveau automatiques effectuées par
+          le passé, les copies de travail mises à niveau explicitement sont
+          inutilisables avec les anciennes versions de Subversion.</para>
       </warning>
 
     </refsect1>
