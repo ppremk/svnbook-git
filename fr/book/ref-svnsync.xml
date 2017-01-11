@@ -1,13 +1,22 @@
 <!-- -*- sgml -*- -->
 
 <reference id="svn.ref.svnsync">
+<!--
   <title>svnsync Reference&mdash;Subversion Repository Mirroring</title>
+-->
+  <title>Référence de svnsync&nbsp;: réplication de dépôt Subversion</title>
     
   <partintro>
+<!--
     <para><command>svnsync</command> is the Subversion remote
       repository mirroring tool.  Put simply, it allows you to replay
       the revisions of one repository into another one.</para>
+-->
+    <para><command>svnsync</command>  est l'outil de réplication de
+      dépôt à distance de Subversion. En clair, il vous permet de
+      rejouer les propagations d'un dépôt sur un autre dépôt.</para>
 
+<!--
     <para>In any mirroring scenario, there are two repositories: the
       source repository, and the mirror (or <quote>sink</quote>)
       repository.  The source repository is the repository from which
@@ -15,50 +24,97 @@
       repository is the destination for the revisions pulled from the
       source repository.  Each of the repositories may be local or
       remote&mdash;they are only ever addressed by their URLs.</para>
+-->
+    <para>Dans tout scénario de réplication, il y a deux dépôts&nbsp;:
+      le dépôt source et le dépôt miroir (ou <quote>destination</quote>).
+      Le dépôt source est le dépôt à partir duquel
+      <command>svnsync</command> lit les révisions. Le dépôt miroir est
+      le dépôt sur lequel <command>svnsync</command> applique les
+      propagations lues sur le dépôt source. Chacun des dépôts peut
+      être un dépôt local ou distant (ils sont toujours uniquement
+      désignés par leur URL).</para>
 
+<!--
     <para>The <command>svnsync</command> process requires only read
       access to the source repository; it never attempts to modify it.
       But obviously, <command>svnsync</command> requires both read and
       write access to the mirror repository.</para>
+-->
+    <para>Le processus <command>svnsync</command> requiert un accès
+      uniquement en lecture sur le dépôt source&nbsp;; il ne tente jamais
+      aucune modification sur celui-ci. En revanche, bien évidemment,
+      <command>svnsync</command> a besoin d'un accès en lecture et écriture
+      sur le dépôt miroir.</para>
 
     <warning>
+<!--
       <para><command>svnsync</command> is very sensitive to changes
         made in the mirror repository that weren't made as part of a
         mirroring operation.  To prevent this from happening, it's
         best if the <command>svnsync</command> process is the only
         process permitted to modify the mirror repository.</para>
+-->
+      <para><command>svnsync</command> est particulièrement sensible aux
+        modifications faites sur le dépôt miroir qui ne sont pas issues
+        d'une opération de réplication. Pour éviter ce genre d'ennui, il
+        est recommandé que <command>svnsync</command> soit le seul
+        processus autorisé à modifier le dépôt miroir.</para>
     </warning>
 
+<!--
     <para>Options in <command>svnsync</command> are global, just
       as they are in <command>svn</command> and
       <command>svnadmin</command>:</para>
+-->
+    <para>Les options de <command>svnsync</command> sont globales, de
+      même que pour <command>svn</command> et
+      <command>svnadmin</command>&nbsp;:</para>
 
     <variablelist id="svn.ref.svnsync.sw">
+<!--
       <title>svnsync Options</title>
+-->
+      <title>Options</title>
+
 
       <varlistentry id="svn.ref.svnsync.sw.allow_non_empty">
         <term><option>--allow-non-empty</option></term>
         <listitem>
+<!--
           <para>Disables the verification (which <command>svnsync
             initialize</command> performs by default) that the
             repository being initialized is empty of history
             version.</para>
+-->
+          <para>Ne pas vérifier (ce que <command>svnsync
+            initialize</command> fait par défaut) que le dépôt en cours
+            d'initialisation est vide de tout historique.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.config_dir">
-        <term><option>--config-dir</option> <replaceable>DIR</replaceable></term>
+<!--
+        <term><option>- -config-dir</option> <replaceable>DIR</replaceable></term>
+-->
+        <term><option>--config-dir</option> <replaceable>REPERTOIRE</replaceable></term>
         <listitem>
+<!--
           <para>Instructs Subversion to read configuration
             information from the specified directory instead of the
             default location (<filename>.subversion</filename> in
             the user's home directory).</para>
+-->
+          <para>Lire les informations de configuration dans le répertoire
+            spécifié plutôt qu'à l'emplacement par défaut
+            (<filename>.subversion</filename> dans le répertoire de
+            l'utilisateur).</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.config_option">
         <term><option>--config-option</option> <replaceable>CONFSPEC</replaceable></term>
         <listitem>
+<!--
           <para>Sets, for the duration of the command, the value of
             a runtime configuration
             option.  <replaceable>CONFSPEC</replaceable> is a string
@@ -74,98 +130,176 @@
             of course, the option itself,
             and <replaceable>VALUE</replaceable> the value (if any)
             you wish to assign to the option.  For example, to
-            temporarily disable the use of the automatic property
-            setting feature,
-            use <option>--config-option=servers:global:http-library=serf</option>.
+            temporarily disable the use of the compression in the
+            HTTP protocol,
+            use <option>- -config-option=servers:global:http-compression=no</option>.
             You can use this option multiple times to change
             multiple option values simultaneously.</para>
+-->
+          <para>Définir, pour la durée de la commande, la valeur d'une
+            option de configuration.
+            <replaceable>CONFSPEC</replaceable> est une chaîne de caractères
+            qui spécifie l'espace de nom de l'option de configuration, son
+            nom et la valeur que vous voulez lui assigner, formatée
+            ainsi&nbsp;:
+            <replaceable>FICHIER</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALEUR</replaceable>]
+            Dans cette syntaxe, <replaceable>FICHIER</replaceable> et
+            <replaceable>SECTION</replaceable> sont des fichiers de la zone
+            de configuration (soit
+            <literal>config</literal> ou
+            <literal>servers</literal>) et de la section où se trouve
+            l'option dont vous voulez changer la valeur.
+            <replaceable>OPTION</replaceable> est, bien sûr, le nom de
+            l'option elle-même et
+            <replaceable>VALEUR</replaceable> est la valeur (si vous la
+            donnez) que vous voulez assigner à l'option. Par exemple, pour
+            désactiver temporairement la compression dans le protocole HTTP,
+            utilisez
+            <option>--config-option=servers:global:http-compression=no</option>.
+            Vous pouvez utiliser cette option plusieurs fois pour modifier
+            les valeurs de plusieurs options temporairement.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.disable_locking">
         <term><option>--disable-locking</option></term>
         <listitem>
+<!--
           <para>Causes <command>svnsync</command> to bypass its own
             exclusive access mechanisms and operate on the
             assumption that its exclusive access to the mirror
             repository is being guaranteed through some other,
             out-of-band mechanism.</para>
+-->
+          <para>Contourner le dispositif de contrôle d'accès exclusif et
+            considérer que l'accès exclusif au dépôt miroir est assuré par un
+            mécanisme extérieur.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.no_auth_cache">
         <term><option>--no-auth-cache</option></term>
         <listitem>
+<!--
           <para>Prevents caching of authentication information
             (e.g., username and password) in the Subversion
             runtime configuration directories.</para>
+-->
+          <para>Ne pas conserver les éléments d'authentification (par exemple
+            l'identifiant et le mot de passe) dans les zones de configuration
+            de Subversion.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.non_interactive">
         <term><option>--non-interactive</option></term>
         <listitem>
+<!--
           <para>In the case of an authentication failure or
             insufficient credentials, prevents prompting for
             credentials (e.g., username or password).  This is useful
             if you're running Subversion inside an automated
             script and it's more appropriate to have Subversion fail
             than to prompt for more information.</para>
+-->
+          <para>Dans le cas d'un échec d'authentification ou de droits
+            insuffisants, ne pas demander d'éléments d'authentification (par
+            exemple identifiant et mot de passe) de manière interactive.
+            Cette option est utile quand vous lancez Subversion dans un
+            script totalement automatique et qu'il est plus pertinent de
+            faire échouer Subversion plutôt que d'attendre une réponse
+            interactive.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.quiet">
         <term><option>--quiet</option> (<option>-q</option>)</term>
         <listitem>
+<!--
           <para>Requests that the client print only essential
             information while performing an operation.</para>
+-->
+          <para>N'afficher que ce qui est essentiel pendant
+            l'opération.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.revision">
         <term><option>--revision</option> (<option>-r</option>) <replaceable>ARG</replaceable></term>
         <listitem>
+<!--
           <para>Used by <command>svnsync copy-revprops</command> to
             specify a particular revision or revision range on which
             to operate.</para>
+-->
+          <para>Utilisé avec <command>svnsync copy-revprops</command> pour
+            spécifier une révision ou un intervalle de révision sur lequel
+            effectuer l'opération.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.source_password">
-        <term><option>--source-password</option> <replaceable>PASSWD</replaceable></term>
+<!--
+        <term><option>- -source-password</option> <replaceable>PASSWD</replaceable></term>
+-->
+        <term><option>--source-password</option> <replaceable>MOT_DE_PASSE</replaceable></term>
         <listitem>
+<!--
           <para>Specifies the password for the Subversion server
             from which you are syncing.  If not provided, or if
             incorrect, Subversion will prompt you for this
             information as needed.</para>
+-->
+          <para>Précise le mot de passe à utiliser pour s'authentifier auprès
+            du serveur Subversion source. Si cette option n'est pas fournie
+            ou si elle ne permet pas de s'authentifier correctement,
+            Subversion demande, en tant que de besoin, le mot de passe de
+            manière interactive.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.source_prop_encoding ">
         <term><option>--source-prop-encoding <replaceable>ARG</replaceable></option></term>
         <listitem>
+<!--
           <para>Instructs <command>svnsync</command> to assume that
             translatable Subversion revision properties found in the
             source repository are stored using the character
             encoding <replaceable>ARG</replaceable> and to transcode
             those into UTF-8 when copying them into the mirror
             repository.</para>
+-->
+          <para>Considérer que les propriétés de révisions du dépôt source
+            sont stockées au format <replaceable>ARG</replaceable> et les
+            transcoder en UTF-8 avant de les copier dans le dépôt
+            miroir.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.source_username">
-        <term><option>--source-username</option> <replaceable>NAME</replaceable></term>
+<!--
+        <term><option>- -source-username</option> <replaceable>NAME</replaceable></term>
+-->
+        <term><option>--source-username</option> <replaceable>NOM</replaceable></term>
         <listitem>
+<!--
           <para>Specifies the username for the Subversion server
             from which you are syncing.  If not provided, or if
             incorrect, Subversion will prompt you for this
             information as needed.</para>
+-->
+          <para>Utiliser le nom d'utilisateur spécifié pour s'authentifier
+            auprès du serveur Subversion source. Si cette option n'est pas
+            fournie ou si elle ne permet pas de s'authentifier correctement,
+            Subversion demande, en tant que de besoin, le nom d'utilisateur
+            de manière interactive.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.steal_lock">
         <term><option>--steal-lock</option></term>
         <listitem>
+<!--
           <para>Causes <command>svnsync</command> to steal, as
             necessary, the lock which it uses on the mirror
             repository to ensure exclusive repository access.  (This
@@ -174,34 +308,66 @@
             is, when you are certain that there are no
             other <command>svnsync</command> processes accessing
             that repository.)</para>
+-->
+          <para>Casser, si nécessaire, les verrous qui assurent l'accès
+            exclusif au dépôt miroir. Cette option ne doit être utilisée que
+            lorsqu'un verrou bloque l'accès au dépôt miroir et que vous savez
+            que ce verrou est obsolète, c'est-à-dire quand vous êtes certain
+            qu'aucun autre processus <command>svnsync</command> n'est en
+            train d'accéder à ce dépôt.</para>
         </listitem>
       </varlistentry>
       
       <varlistentry id="svn.ref.svnsync.sw.sync_password">
-        <term><option>--sync-password</option> <replaceable>PASSWD</replaceable></term>
+<!--
+        <term><option>- -sync-password</option> <replaceable>PASSWD</replaceable></term>
+-->
+        <term><option>--sync-password</option> <replaceable>MOT_DE_PASSE</replaceable></term>
         <listitem>
+<!--
           <para>Specifies the password for the Subversion server to
             which you are syncing.  If not provided, or if
             incorrect, Subversion will prompt you for this
             information as needed.</para>
+-->
+          <para>Utiliser le mot de passe spécifié pour s'authentifier auprès
+            du serveur Subversion destination. Si cette option n'est pas
+            fournie ou si elle ne permet pas de s'authentifier correctement,
+            Subversion demande, en tant que de besoin, le mot de passe de
+            manière interactive.</para>
         </listitem>
       </varlistentry>
       
       <varlistentry id="svn.ref.svnsync.sw.sync_username">
+<!--
         <term><option>--sync-username</option> <replaceable>NAME</replaceable></term>
+-->
+        <term><option>--sync-username</option> <replaceable>NOM</replaceable></term>
         <listitem>
+<!--
           <para>Specifies the username for the Subversion server to
             which you are syncing.  If not provided, or if
             incorrect, Subversion will prompt you for this
             information as needed.</para>
+-->
+          <para>Utiliser le nom d'utilisateur spécifié pour s'authentifier
+            auprès du serveur Subversion destination. Si cette option n'est
+            pas fournie ou si elle ne permet pas de s'authentifier
+            correctement, Subversion demande, en tant que de besoin, le nom
+            d'utilisateur de manière interactive.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.trust_server_cert">
         <term><option>--trust-server-cert</option></term>
         <listitem>
-          <para>Used with <option>--non-interactive</option> to accept
+<!--
+          <para>Used with <option>- -non-interactive</option> to accept
             any unknown SSL server certificates without prompting.</para>
+-->
+          <para>Utilisée avec <option>--non-interactive</option>, accepter
+            les certificats SSL serveurs signés par des autorités inconnues
+            sans en informer l'utilisateur.</para>
         </listitem>
       </varlistentry>
 
@@ -216,28 +382,41 @@
 
     <indexterm>
       <primary>svnsync</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>copy-revprops</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svnsync copy-revprops</refname>
+<!--
       <refpurpose>Copy all revision properties for a particular
         revision (or range of revisions) from the source
         repository to the mirror repository.</refpurpose>
+-->
+      <refpurpose>Copier toutes les propriétés de révision pour une révision
+        donnée (ou un intervalle de révisions) du dépôt source vers le dépôt
+        miroir.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svnsync copy-revprops DEST_URL
         [SOURCE_URL]</literal></para>
       <para><literal>svnsync copy-revprops DEST_URL
         REV[:REV2]</literal></para>
+-->
+      <para><literal>svnsync copy-revprops URL_DEST [URL_SOURCE]</literal></para>
+      <para><literal>svnsync copy-revprops URL_DEST REV[:REV2]</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
       <title>Description</title>
 
+<!--
       <para>Because Subversion revision properties can be changed
         at any time, it's possible that the properties for some
         revision might be changed after that revision has already
@@ -251,7 +430,21 @@
         copy-revprops</command> is the answer to this problem.
         Use it to resynchronize the revision properties for a
         particular revision or range of revisions.</para>
+-->
+      <para>Comme les propriétés de révision Subversion peuvent être
+        modifiées à n'importe quel moment, il est possible que des propriétés
+        d'une révision donnée soient modifiées après que la révision a été
+        répliquée sur le dépôt miroir. Comme la commande <command>svnsync
+        synchronize</command> n'opère que sur un intervalle de révisions qui
+        n'ont pas encore été répliquées, elle ne remarque pas la modification
+        d'une propriété en dehors de cet intervalle. Si rien n'est fait pour
+        contrer ce phénomène, cela entraine une divergence entre les valeurs
+        des propriétés de révision du dépôt source et du dépôt miroir.
+        <command>svnsync copy-revprops</command> répond à ce problème&nbsp;:
+        utilisez-la pour resynchroniser les propriétés de révision pour une
+        révision donnée ou pour un intervalle de révisions.</para>
 
+<!--
       <para>When <replaceable>SOURCE_URL</replaceable> is
         provided, <command>svnsync</command> will use it as the
         repository URL which the destination repository is
@@ -263,13 +456,30 @@
         case <command>svnsync</command> will consult the mirror
         repository's records to determine the source URL which
         should be used.</para>
+-->
+      <para>Quand <replaceable>URL_SOURCE</replaceable> est fourni,
+        <command>svnsync</command> l'utilise comme URL du dépôt que l'on veut
+        répliquer. Généralement, <replaceable>URL_SOURCE</replaceable> est
+        exactement la même URL que celle utilisée avec la commande
+        <command>svnsync initialize</command> quand le miroir a été mis en
+        place. Vous pouvez choisir, néanmoins, d'omettre
+        <replaceable>URL_SOURCE</replaceable>&nbsp; dans ce cas,
+        <command>svnsync</command> consulte le dépôt miroir pour déterminer
+        l'URL source à utiliser.</para>
 
       <warning>
+<!--
         <para>We strongly recommend that you specify the source
           URL on the command-line, especially when untrusted users
           have write access to the revision 0 properties
           which <command>svnsync</command> uses to coordinate its
           efforts.</para>
+-->
+        <para>Nous recommandons vivement de spécifier l'URL source sur la
+          ligne de commande, spécialement quand des utilisateurs non de
+          confiance ont le droit d'écriture sur les propriétés de la révision
+          0, utilisées par <command>svnsync</command> pour se
+          coordonner.</para>
       </warning>
 
     </refsect1>
@@ -300,18 +510,34 @@
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>Resynchronize the revision properties associated with
         a single revision (r6):</para>
+-->
+      <para>Re-synchroniser les propriétés de révision pour une seule
+        révision&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svnsync copy-revprops -r 6 file:///var/svn/repos-mirror \
                              http://svn.example.com/repos
 Copied properties for revision 6.
 $
 </screen>
+-->
+        <screen>
+$ svnsync copy-revprops -r 6 file:///var/svn/depot-miroir \
+                             http://svn.exemple.com/depot
+Propriétés copiées pour la révision 6.
+$
+</screen>
+
       </informalexample>
 
     </refsect1>
@@ -324,13 +550,19 @@ $
 
     <indexterm>
       <primary>svnsync</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>help</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svnsync help</refname>
+<!--
       <refpurpose>Help!</refpurpose>
+-->
+      <refpurpose>À l'aide&nbsp;!</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -341,19 +573,29 @@ $
     <refsect1>
       <title>Description</title>
 
+<!--
       <para>This subcommand is useful when you're trapped in a
         foreign prison with neither a Net connection nor a copy of
         this book, but you do have a local Wi-Fi network running
         and you'd like to sync a copy of your repository over to
         the backup server that Ira The Knife is running over in
         cell block D.</para>
+-->
+      <para>Cette sous-commande est utile quand vous vous retrouvez
+        prisonnier dans une prison à l'étranger sans connexion Internet ni
+        exemplaire de ce livre, mais que vous avez un hotspot WiFi à portée
+        et que vous voulez répliquer votre dépôt vers le serveur de
+        sauvegarde de Marcel Au Couteau situé dans une cellule du bloc
+        D.</para>
         
     </refsect1>
 
-    <!-- =============================================================== -->
     <refsect1>
       <title>Options</title>
+<!--
       <para>None</para>
+-->
+      <para>Aucune</para>
     </refsect1>
 
   </refentry>
