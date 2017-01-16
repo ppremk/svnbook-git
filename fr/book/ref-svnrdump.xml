@@ -1,9 +1,13 @@
 <!-- -*- sgml -*- -->
 
 <reference id="svn.ref.svnrdump">
+<!--
   <title>svnrdump Reference&mdash;Remote Subversion Repository Data Migration</title>
+-->
+  <title>Référence de svnrdump&nbsp;: des données d'un dépôt Subversion</title>
 
   <partintro>
+<!--
     <para><command>svnrdump</command> joined the Subversion tool chain
       in the Subversion 1.7 release.  It is best described as a
       network-aware version of the <command>svnadmin dump</command>
@@ -13,27 +17,59 @@
       both <command>svnadmin</command>
       and <command>svnrdump</command>&mdash; in
       <xref linkend="svn.reposadmin.maint.migrate" />.</para>
+-->
+    <para><command>svnrdump</command> a rejoint la collection d'outils
+      Subversion lors de la sortie de Subversion 1.7. La meilleure façon de
+      le décrire consiste à dire que c'est une version en réseau de
+      <command>svnadmin dump</command> et <command>svnadmin load</command>,
+      mis ensemble et fourni en tant que programme particulier à lui seul.
+      Nous présentons la procédure de décharge et charge des données d'un
+      dépôt (en utilisant <command>svnadmin</command> et
+      <command>svnrdump</command>) dans
+      <xref linkend="svn.reposadmin.maint.migrate" />.</para>
 
+<!--
     <para>Options in <command>svnrdump</command> are global, just
       as they are in <command>svn</command> and
       <command>svnadmin</command>:</para>
+-->
+    <para>Les options de <command>svnrdump</command> sont globales, de la
+      même manière que pour <command>svn</command> et
+      <command>svnadmin</command>&nbsp;:</para>
 
     <variablelist id="svn.ref.svnrdump.sw">
+<!--
       <title>svnrdump Options</title>
+-->
+      <title>Options de svnrdump</title>
+
 
       <varlistentry id="svn.ref.svnrdump.sw.config_dir">
-        <term><option>--config-dir</option> <replaceable>DIR</replaceable></term>
+<!--
+        <term><option>- -config-dir</option> <replaceable>DIR</replaceable></term>
+-->
+        <term><option>--config-dir</option>
+          <replaceable>REPERTOIRE</replaceable></term>
         <listitem>
+<!--
           <para>Instructs Subversion to read configuration
             information from the specified directory instead of the
             default location (<filename>.subversion</filename> in
             the user's home directory).</para>
+-->
+          <para>Lire la configuration dans le répertoire spécifié plutôt que
+            dans l'emplacement par défaut (<filename>.subversion</filename>
+            dans le répertoire de l'utilisateur).</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.config_option">
-        <term><option>--config-option</option> <replaceable>FILE</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALUE</replaceable>]</term>
+<!--
+        <term><option>- -config-option</option> <replaceable>FILE</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALUE</replaceable>]</term>
+-->
+        <term><option>- -config-option</option> <replaceable>FICHIER</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALEUR</replaceable>]</term>
         <listitem>
+<!--
           <para>Sets, for the duration of the command, the value of
             a runtime configuration
             option.  <replaceable>FILE</replaceable>
@@ -45,94 +81,174 @@
             of course, the option itself,
             and <replaceable>VALUE</replaceable> the value (if any)
             you wish to assign to the option.  For example, to
-            temporarily disable the use of the automatic property
-            setting feature,
-            use <option>--config-option=servers:global:http-library=serf</option>.
+            temporarily disable the use of the compression in the HTTP
+            protocol,
+            use <option>- -config-option=servers:global:http-compression=no</option>.
             You can use this option multiple times to change
             multiple option values simultaneously.</para>
+-->
+          <para>Définir, pour la durée de la commande, la valeur d'une option
+            de configuration. <replaceable>CONFSPEC</replaceable> est une
+            chaine qui spécifie l'espace de noms, le nom et la valeur de
+            l'option de configuration que vous voulez assigner, sous la forme
+            <replaceable>FICHIER</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALEUR</replaceable>].
+            Dans cette syntaxe, <replaceable>FICHIER</replaceable> et
+            <replaceable>SECTION</replaceable> représentent le fichier de la
+            zone de configuration (soit <literal>config</literal>, soit
+            <literal>servers</literal>) et la section qui contient l'option
+            dont vous voulez définir la valeur.
+            <replaceable>OPTION</replaceable> est, bien sûr, l'option
+            elle-même et <replaceable>VALEUR</replaceable> est la valeur
+            (s'il y en a une) que vous voulez assigner à cette option. Par
+            exemple, pour désactiver temporairement l'utilisation de la
+            compression dans le protocole HTTP, utilisez
+            <option>--config-option=servers:global:http-compression=no</option>.
+            Vous pouvez utiliser cette option plusieurs fois pour changer
+            plusieurs valeurs d'options pour la commande en cours.</para>
+
+
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.incremental">
         <term><option>--incremental</option></term>
         <listitem>
+<!--
           <para>Dump a revision or revision range only as a diff
             against the previous revision, instead of the default,
             which is begin a dumped revision range with a complete
             expansion of all contents of the repository as of that
             revision.</para>
+-->
+          <para>Décharger la révision ou l'intervalle de révisions en tant
+            que différences par rapport à la révision précédente, au lieu du
+            comportement par défaut qui consiste à décharger complètement la
+            première révision de l'intervalle.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.no_auth_cache">
         <term><option>--no-auth-cache</option></term>
         <listitem>
+<!--
           <para>Prevents caching of authentication information
             (e.g., username and password) in the Subversion
             runtime configuration directories.</para>
+-->
+          <para>Ne pas conserver les éléments d'authentification (par exemple
+            l'identifiant et le mot de passe) dans les répertoires de
+            configuration de Subversion.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.non_interactive">
         <term><option>--non-interactive</option></term>
         <listitem>
+<!--
           <para>In the case of an authentication failure or
             insufficient credentials, prevents prompting for
             credentials (e.g., username or password).  This is useful
             if you're running Subversion inside an automated
             script and it's more appropriate to have Subversion fail
             than to prompt for more information.</para>
+-->
+          <para>Dans le cas d'un échec d'authentification ou de droits
+            insuffisants, ne pas faire de demande interactive pour les
+            éléments d'authentification (par exemple l'identifiant ou le mot
+            de passe). Cette option est utile quand vous lancez Subversion
+            dans un script totalement automatique et qu'il est plus pertinent
+            de faire échouer Subversion plutôt que d'attendre une réponse
+            interactive.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.password">
-        <term><option>--password</option> <replaceable>PASSWD</replaceable></term>
+<!--
+        <term><option>- -password</option> <replaceable>PASSWD</replaceable></term>
+-->
+        <term><option>--password</option>
+          <replaceable>MOT_DE_PASSE</replaceable></term>
         <listitem>
+<!--
           <para>Specifies the password to use when authenticating
             against a Subversion server.  If not provided, or if
             incorrect, Subversion will prompt you for this
             information as needed.</para>
+-->
+          <para>Utiliser le mot de passe
+            <replaceable>MOT_DE_PASSE</replaceable> pour s'authentifier
+            auprès du serveur Subversion. Si cette option n'est pas fournie
+            ou si elle ne permet pas de s'authentifier correctement,
+            Subversion vous demande, en tant que de besoin, le mot de passe
+            de manière interactive.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.quiet">
         <term><option>--quiet</option> (<option>-q</option>)</term>
         <listitem>
+<!--
           <para>Requests that the client print only essential
             information while performing an operation.</para>
+-->
+          <para>N'afficher que ce qui est essentiel pendant une
+            opération.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.revision">
-        <term><option>--revision</option> (<option>-r</option>) <replaceable>ARG</replaceable></term>
+<!--
+        <term><option>- -revision</option> (<option>-r</option>) <replaceable>ARG</replaceable></term>
+-->
+        <term><option>--revision</option> (<option>-r</option>) <replaceable>REV</replaceable></term>
         <listitem>
+<!--
           <para>Used by <command>svnsync copy-revprops</command> to
             specify a particular revision or revision range on which
             to operate.</para>
+-->
+          <para>Travailler sur la révision <replaceable>ARG</replaceable> ou
+            sur l'intervalle
+            <replaceable>REV1</replaceable>:<replaceable>REV2</replaceable>.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.trust_server_cert">
         <term><option>--trust-server-cert</option></term>
         <listitem>
-          <para>Used with <option>--non-interactive</option> to accept
+<!--
+          <para>Used with <option>- -non-interactive</option> to accept
             any unknown SSL server certificates without prompting.</para>
+-->
+          <para>Utilisée avec <option>--non-interactive</option>, accepter
+            les certificats SSL serveurs signés par des autorités inconnues
+            sans en informer l'utilisateur.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.username">
-        <term><option>--username</option> <replaceable>NAME</replaceable></term>
+<!--
+        <term><option>- -username</option> <replaceable>NAME</replaceable></term>
+-->
+        <term><option>--username</option> <replaceable>NOM</replaceable></term>
         <listitem>
+<!--
           <para>Specifies the username to use when authenticating
             against a Subversion server.  If not provided, or if
             incorrect, Subversion will prompt you for this
             information as needed.</para>
+-->
+          <para>Spécifie l'identifiant (ou nom d'utilisateur) à utiliser pour
+            s'authentifier auprès d'un serveur Subversion. S'il n'est pas
+            fourni ou s'il est incorrect, Subversion vous demandera cette
+            information quand il en aura besoin.</para>
         </listitem>
       </varlistentry>
 
     </variablelist>
 
   </partintro>
+
 
   <!-- ================================================================= -->
   <!-- ================================================================= -->
@@ -141,7 +257,10 @@
 
     <indexterm>
       <primary>svnrdump</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>dump</tertiary>
     </indexterm>
 
@@ -151,21 +270,31 @@
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svnrdump dump SOURCE_URL</literal></para>
+-->
+      <para><literal>svnrdump dump URL_SOURCE</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
       <title>Description</title>
 
+<!--
       <para>Dump&mdash;that is, generate a repository dump stream
         of&mdash;revisions of the repository item located
         at <replaceable>SOURCE_URL</replaceable>, printing the
         information to standard output.  By default, the entire
         history will be included in the dump stream, but the scope
         of the operation can be limited via the use of
-        the <option>--revision</option> (<option>-r</option>)
+        the <option>- -revision</option> (<option>-r</option>)
         option.</para>
+-->
+      <para>Décharger les révisions du dépôt situé à
+        <replaceable>URL_SOURCE</replaceable>, en dirigeant le flux produit
+        sur la sortie standard. Par défaut, tout l'historique est inclus dans
+        le flux dump mais l'opération peut être limitée en utilisant l'option
+        <option>--revision</option> (<option>-r</option>).</para>
 
     </refsect1>
 
@@ -191,13 +320,23 @@
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>Generate a dump stream of the full history of a remote
         repository (assuming that the user as who this runs has
         authorization to read all paths in the repository).</para>
+-->
+      <para>Générer un flux dump de tout l'historique d'un dépôt distant
+        (on considère que l'utilisateur qui lance la commande possède les
+        droits suffisants pour accéder à l'ensemble des chemins dans le
+        dépôt)&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svnrdump dump http://svn.example.com/repos/calc &gt; full.dump
 * Dumped revision 0.
@@ -205,15 +344,35 @@ $ svnrdump dump http://svn.example.com/repos/calc &gt; full.dump
 * Dumped revision 2.
 &hellip;
 </screen>
+-->
+        <screen>
+$ svnrdump dump http://svn.exemple.com/depot/calc &gt; dump-complet
+* Dumped revision 0.
+* Dumped revision 1.
+* Dumped revision 2.
+&hellip;
+</screen>
       </informalexample>
 
+<!--
       <para>Incrementally dump a single revision from that same
         repository:</para>
+-->
+      <para>Générer un flux dump incrémental d'une seule révision du même
+        dépôt&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svnrdump dump http://svn.example.com/repos/calc \
-           -r 21 --incremental &gt; inc.dump
+       -r 21 - -incremental &gt; inc.dump
+* Dumped revision 21.
+$
+</screen>
+-->
+        <screen>
+$ svnrdump dump http://svn.exemple.com/depot/calc \
+       -r 21 --incremental &gt; dump-incrémental
 * Dumped revision 21.
 $
 </screen>
@@ -229,13 +388,19 @@ $
 
     <indexterm>
       <primary>svnrdump</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>help</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svnrdump help</refname>
+<!--
       <refpurpose>Help!</refpurpose>
+-->
+      <refpurpose>À l'aide&nbsp;!</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -246,17 +411,26 @@ $
     <refsect1>
       <title>Description</title>
 
+<!--
       <para>Use this to get help.  Well, certain kinds of help.
         Need white lab coat and straightjackets kind of help?
         There's a whole different protocol for that sort of
         thing.</para>
-        
+-->
+      <para>Utilisez cette commande pour obtenir de l'aide. Enfin, juste une
+        certaine sorte d'aide. Si vous avez besoin d'aide pour choisir une
+        chemise, il y a d'autres moyens de vous faire aider.</para>
+
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
       <title>Options</title>
+
+<!--
       <para>None</para>
+-->
+      <para>Aucune</para>
     </refsect1>
 
   </refentry>
@@ -268,7 +442,10 @@ $
 
     <indexterm>
       <primary>svnrdump</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>load</tertiary>
     </indexterm>
 
@@ -278,17 +455,25 @@ $
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svnrdump load DEST_URL</literal></para>
+-->
+      <para><literal>svnrdump load URL_DEST</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
       <title>Description</title>
 
+<!--
       <para>Read from standard input revision information
         described in a Subversion repository dump stream, and load
         that information into the repository located
         at <replaceable>DEST_URL</replaceable>.</para>
+-->
+      <para>Lire sur l'entrée standard le flux dump correspondant au contenu
+        d'un dépôt Subversion et charger ce contenu dans le dépôt situé à
+        <replaceable>DEST_URL</replaceable>.</para>
 
     </refsect1>
     
@@ -312,14 +497,23 @@ $
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemple</title>
 
+<!--
       <para>Dump the contents of a local repository, and
         use <command>svnrdump load</command> to transfer that
         revision information into an existing remote
         repository:</para>
+-->
+      <para>Décharger le contenu du dépôt local et utiliser
+        <command>svnrdump load</command> pour transférer le contenu dans un
+        dépôt distant&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svnadmin dump -q /var/svn/repos/new-project | \
       svnrdump load http://svn.example.com/repos/new-project
@@ -328,15 +522,33 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
 * Loaded revision 2.
 &hellip;
 </screen>
+-->
+        <screen>
+$ svnadmin dump -q /var/svn/depot/nouveau-projet | \
+      svnrdump load http://svn.exemple.com/depot/nouveau-projet
+* Loaded revision 0
+* Loaded revision 1.
+* Loaded revision 2.
+&hellip;
+</screen>
       </informalexample>
 
       <note>
+<!--
         <para>To operate properly <command>svnrdump load</command>
           requires that the target repository have revision
           property modification enabled via the pre-revprop-change
           hook.  For details about that hook, see
           <xref linkend="svn.ref.reposhooks.pre-revprop-change"
           />.</para>
+-->
+        <para>Pour fonctionner correctement,
+          <command>svnrdump load</command> requiert que le dépôt cible soit
+          configuré pour accepter les modifications des propriétés de
+          révisions <foreignphrase>via</foreignphrase> la procédure
+          automatique <literal>pre-revprop-change</literal>. Pour plus de
+          détails sur cette procédure automatique, reportez-vous à
+          <xref linkend="svn.ref.reposhooks.pre-revprop-change"/>.</para>
       </note>
 
     </refsect1>
