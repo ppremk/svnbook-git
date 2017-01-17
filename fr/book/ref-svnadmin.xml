@@ -1,257 +1,435 @@
 <!-- -*- sgml -*- -->
 
 <reference id="svn.ref.svnadmin">
+<!--
   <title>svnadmin Reference&mdash;Subversion Repository Administration</title>
-  
+-->
+  <title>Référence de svnadmin&nbsp;: administration des dépôts
+    Subversion</title>
+
   <partintro>
+<!--
     <para><command>svnadmin</command> is the administrative tool for
       monitoring and repairing your Subversion repository.  For
       detailed information on repository administration, see the maintenance section for <xref
       linkend="svn.reposadmin.maint.tk.svnadmin"/>.</para>
+-->
+    <para><command>svnadmin</command> est l'outil d'administration pour
+      surveiller et réparer votre dépôt Subversion. Pour des
+      informations détaillées sur l'administration d'un dépôt,
+      reportez-vous à <xref
+      linkend="svn.reposadmin.maint.tk.svnadmin"/>.</para>
 
+<!--
     <para>Since <command>svnadmin</command> works via direct repository access
       (and thus can only be used on the machine that holds the
       repository), it refers to the repository with a path, not a URL.</para>
-      
+-->
+    <para>Comme <command>svnadmin</command> fonctionne par un accès
+      direct au dépôt (et ne peut ainsi être utilisé que sur la machine
+      qui héberge le dépôt), il fait référence au dépôt par un chemin et
+      non par une URL.</para>
+
+<!--
     <para>Options in <command>svnadmin</command> are global, just
       as they are in <command>svn</command>:</para>
+-->
+    <para>Les options de <command>svnadmin</command> sont globales, de
+      la même manière que pour <command>svn</command>&nbsp;:</para>
 
     <variablelist id="svn.ref.svnadmin.sw">
+<!--
       <title>svnadmin Options</title>
-      
+-->
+      <title>Options de svnadmin</title>
+
       <varlistentry id="svn.ref.svnadmin.sw.bdb_log_keep">
         <term><option>--bdb-log-keep</option></term>
         <listitem>
+<!--
           <para>(Berkeley DB-specific.) Disable automatic log removal
             of database logfiles.  Having these logfiles around
             can be convenient if you need to restore from a
             catastrophic repository failure.</para>
+-->
+          <para>(spécifique au magasin de données Berkeley DB)
+            désactiver la suppression des fichiers de journalisation
+            automatique de la base de données.  Disposer de ces
+            fichiers de journalisation peut être appréciable si vous
+            devez effectuer une restauration à l'issue d'une panne
+            catastrophique sur le dépôt.</para>
         </listitem>
       </varlistentry>
-      
+
       <varlistentry id="svn.ref.svnadmin.sw.bdb_txn_nosync">
         <term><option>--bdb-txn-nosync</option></term>
         <listitem>
 
+<!--
           <para>(Berkeley DB-specific.) Disables fsync when
             committing database transactions.  Used with the
             <command>svnadmin create</command> command to create a
             Berkeley DB-backed repository with
             <literal>DB_TXN_NOSYNC</literal> enabled (which improves
             speed but has some risks associated with it).</para>
+-->
+          <para>(spécifique au magasin de données Berkeley DB)
+            désactiver fsync lors des validations des transactions de
+            la base de données. Utilisée avec la commande
+            <command>svnadmin create</command> pour créer un dépôt avec
+            magasin de données Berkeley DB dont l'option
+            <literal>DB_TXN_NOSYNC</literal> est activée (cela
+            améliore la vitesse du dépôt mais comporte certains
+            risques).</para>
         </listitem>
       </varlistentry>
-      
+
       <varlistentry id="svn.ref.svnadmin.sw.bypass_hooks">
         <term><option>--bypass-hooks</option></term>
         <listitem>
+<!--
           <para>Bypass the repository hook system.</para>
+-->
+          <para>Ne pas utiliser le système des procédures automatiques
+            du dépôt.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.bypass_prop_validation">
         <term><option>--bypass-prop-validation</option></term>
         <listitem>
+<!--
           <para>When loading a dump file, disable the logic which
             validates property values.</para>
+-->
+          <para>Lors du chargement d'un fichier dump, ne pas utiliser
+            le système qui valide les valeurs des propriétés.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.clean_logs">
         <term><option>--clean-logs</option></term>
         <listitem>
+<!--
           <para>Remove unused Berkeley DB logs.</para>
+-->
+          <para>Supprimer les fichiers de journalisation inutiles de
+            la base de données Berkeley DB.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.compatible_version">
         <term><option>--compatible-version</option> <replaceable>ARG</replaceable></term>
         <listitem>
+<!--
           <para>Use repository format compatible with Subversion version
             <replaceable>ARG</replaceable>.</para>
+-->
+          <para>Utiliser le format de dépôt compatible avec la version
+            <replaceable>ARG</replaceable> de Subversion.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.config_dir">
         <!-- Only 'svnadmin create' accepts it, and the underlying
              logic doesn't even use it.  Weird. -->
-        <term><option>--config-dir</option> <replaceable>DIR</replaceable></term>
+<!--
+        <term><option>- -config-dir</option> <replaceable>DIR</replaceable></term>
+-->
+        <term><option>--config-dir</option> <replaceable>REPERTOIRE</replaceable></term>
         <listitem>
+<!--
           <para>Instructs Subversion to read configuration
             information from the specified directory instead of the
             default location (<filename>.subversion</filename> in
             the user's home directory).</para>
+-->
+          <para>Lire la configuration dans le répertoire spécifié au
+            lieu de l'endroit par défaut
+            (<filename>.subversion</filename> dans le répertoire de
+            l'utilisateur).</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.deltas">
         <term><option>--deltas</option></term>
         <listitem>
+<!--
           <para>When creating a repository dump file, specify
             changes in versioned properties and file contents as
             deltas against their previous state.</para>
+-->
+          <para>Lors de la création d'un fichier dump du dépôt,
+            écrire les modifications dans les propriétés suivies en
+            version et le contenu des fichiers sous la forme de deltas
+            par rapport à leur valeur précédente.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.file">
-        <term><option>--file</option> (<option>-F</option>) <replaceable>FILENAME</replaceable></term>
+<!--
+        <term><option>- -file</option> (<option>-F</option>) <replaceable>FILENAME</replaceable></term>
+-->
+        <term><option>--file</option> (<option>-F</option>) <replaceable>NOM_FICHIER</replaceable></term>
         <listitem>
+<!--
           <para>Uses the contents of the named file for the
             specified subcommand.</para>
+-->
+          <para>Utiliser le contenu du fichier passé en paramètre pour
+            la sous-commande.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.fs_type">
         <term><option>--fs-type</option> <replaceable>ARG</replaceable></term>
         <listitem>
+<!--
           <para>When creating a repository,
             use <replaceable>ARG</replaceable> as the requested
             filesyste type.  <replaceable>ARG</replaceable> may be
             either <literal>bdb</literal>
             or <literal>fsfs</literal>.</para>
+-->
+          <para>Lors de la création d'un dépôt, utiliser
+            <replaceable>ARG</replaceable> comme type de magasin de
+            données.
+            <replaceable>ARG</replaceable> peut valoir soit
+            <literal>bdb</literal>, soit <literal>fsfs</literal>.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.force_uuid">
         <term><option>--force-uuid</option></term>
         <listitem>
+<!--
           <para>By default, when loading data into a repository that
             already contains revisions, <command>svnadmin</command>
             will ignore the UUID from the dump stream.  This option
             will cause the repository's UUID to be set to the UUID
             from the stream.</para>
+-->
+          <para>Par défaut, lorsque des données sont introduites dans
+            un dépôt qui contient déjà des révisions,
+            <command>svnadmin</command> ignore l'<literal>UUID</literal>
+            du flux dump.  Cette option force le dépôt à adopter
+            l'<literal>UUID</literal> indiqué dans le flux dump.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.ignore_uuid">
         <term><option>--ignore-uuid</option></term>
         <listitem>
+<!--
           <para>By default, when loading data into an empty repository,
             <command>svnadmin</command> will set the repository's UUID
             to the UUID from the dump stream.  This option will cause
             the UUID from the stream to be ignored.</para>
+-->
+          <para>Par défaut, lorsque des données sont introduites dans
+            un dépôt vide, <command>svnadmin</command> prend
+            l'<literal>UUID</literal> fourni par le flux dump. Cette
+            option force le dépôt à ignorer l'<literal>UUID</literal> du
+            flux.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.incremental">
         <term><option>--incremental</option></term>
         <listitem>
+<!--
           <para>Dump a revision only as a diff against the
             previous revision, instead of the usual
             fulltext.</para>
+-->
+          <para>Lors de la décharge (dump) d'une révision, ne produit
+            que la différence avec la révision précédente plutôt que le
+            texte complet habituel.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.memory_cache_size">
         <term><option>--memory-cache-size</option> (<option>-M</option>) <replaceable>ARG</replaceable></term>
         <listitem>
+<!--
           <para>Configures the size (in Megabytes) of the extra
             in-memory cache used to minimize redundant operations.
             The default value is <literal>16</literal>.  (This cache
             is used for FSFS-backed repositories only.)</para>
+-->
+          <para>Configurer la taille (en mégaoctets) de la mémoire
+            cache utilisée pour les opérations redondantes. La valeur
+            par défaut est <literal>16</literal>. Cette valeur n'est
+            utilisée que pour les magasins de données de type
+            FSFS.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.parent_dir">
-        <term><option>--parent-dir</option> <replaceable>DIR</replaceable></term>
+<!--
+        <term><option>- -parent-dir</option> <replaceable>DIR</replaceable></term>
+-->
+        <term><option>--parent-dir</option> <replaceable>REPERTOIRE</replaceable></term>
         <listitem>
+<!--
           <para>When loading a dump file, root paths at
             <replaceable>DIR</replaceable> instead of
             <filename>/</filename>.</para>
+-->
+          <para>Lors du chargement d'un flux dump, prend
+              <replaceable>REPERTOIRE</replaceable> comme racine de
+              l'arborescence plutôt que
+              <filename>/</filename>.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.pre_1.4_compatible">
         <term><option>--pre-1.4-compatible</option></term>
         <listitem>
+<!--
           <para><emphasis>Deprecated</emphasis>.  See option
-            <option>--compatible-version</option>.  When creating a new
+            <option>- -compatible-version</option>.  When creating a new
             repository, use a format that is compatible with versions of
             Subversion earlier than Subversion 1.4.</para>
+-->
+          <para><emphasis>Obsolète</emphasis>. Voir l'option
+            <option>--compatible-version</option>. Lors de la création
+            d'un nouveau dépôt, utiliser un format compatible avec les
+            versions de Subversion antérieures à Subversion 1.4.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.pre_1.5_compatible">
         <term><option>--pre-1.5-compatible</option></term>
         <listitem>
+<!--
           <para><emphasis>Deprecated</emphasis>.  See option
-            <option>--compatible-version</option>.  When creating a new
+            <option>- -compatible-version</option>.  When creating a new
             repository, use a format that is compatible with versions of
             Subversion earlier than Subversion 1.5.</para>
+-->
+          <para><emphasis>Obsolète</emphasis>. Voir l'option
+            <option>--compatible-version</option>. Lors de la création
+            d'un nouveau dépôt, utiliser un format compatible avec les
+            versions de Subversion antérieures à Subversion 1.5.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.pre_1.6_compatible">
         <term><option>--pre-1.6-compatible</option></term>
         <listitem>
+<!--
           <para><emphasis>Deprecated</emphasis>.  See option
-            <option>--compatible-version</option>.  When creating a new
+            <option>- -compatible-version</option>.  When creating a new
             repository, use a format that is compatible with versions of
             Subversion earlier than Subversion 1.6.</para>
+-->
+          <para><emphasis>Obsolète</emphasis>. Voir l'option
+            <option>--compatible-version</option>. Lors de la création
+            d'un nouveau dépôt, utiliser un format compatible avec les
+            versions de Subversion antérieures à Subversion 1.6.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.revision">
         <term><option>--revision</option> (<option>-r</option>) <replaceable>ARG</replaceable></term>
         <listitem>
+<!--
           <para>Specify a particular revision to operate
             on.</para>
+-->
+          <para>Spécifie une révision particulière sur laquelle
+            s'effectue l'opération.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.quiet">
         <term><option>--quiet</option> (<option>-q</option>)</term>
         <listitem>
+<!--
           <para>Do not show normal progress&mdash;show only
             errors.</para>
+-->
+          <para>Ne pas afficher le déroulement de l'opération &mdash;
+              afficher uniquement les erreurs.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.use_post_commit_hook">
         <term><option>--use-post-commit-hook</option></term>
         <listitem>
+<!--
           <para>When loading a dump file, runs the repository's
             <literal>post-commit</literal> hook after finalizing each newly loaded
             revision.</para>
+-->
+          <para>Lors du chargement d'un fichier dump, exécute la
+            procédure automatique <literal>post-commit</literal> du
+            dépôt après chaque nouvelle révision chargée.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.use_post_revprop_change_hook">
         <term><option>--use-post-revprop-change-hook</option></term>
         <listitem>
+<!--
           <para>When changing a revision property, runs the
             repository's <literal>post-revprop-change</literal> hook after changing the
             revision property.</para>
+-->
+          <para>Lors du changement d'une propriété de révision,
+            exécute la procédure automatique
+            <literal>post-revprop-change</literal> du dépôt après la
+            modification de la propriété.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.use_pre_commit_hook">
         <term><option>--use-pre-commit-hook</option></term>
         <listitem>
+<!--
           <para>When loading a dump file, runs the repository's
             <literal>pre-commit</literal> hook before finalizing each newly loaded
             revision.  If the hook fails, aborts the commit and
             terminates the load process.</para>
+-->
+          <para>Lors du chargement d'un fichier dump, exécute la
+            procédure automatique <literal>pre-commit</literal> du
+            dépôt avant de conclure chaque nouvelle révision chargée.
+            Si la procédure automatique échoue, la propagation est
+            abandonnée et la procédure de chargement s'arrête.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.use_pre_revprop_change_hook">
         <term><option>--use-pre-revprop-change-hook</option></term>
         <listitem>
+<!--
           <para>When changing a revision property, runs the
             repository's <literal>pre-revprop-change</literal> hook before changing the
             revision property.  If the hook fails, aborts the
             modification and terminates.</para>
+-->
+          <para>Lors du changement d'une propriété de révision,
+            exécute la procédure automatique
+            <literal>pre-revprop-change</literal> du dépôt avant de
+            modifier la propriété. Si la procédure automatique échoue,
+            la modification est annulée et le programme s'arrête.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnadmin.sw.wait">
         <term><option>--wait</option></term>
         <listitem>
+<!--
           <para>For operations which require exclusive repository
             access, wait until the requisite repository lock has
             been obtained instead of immediately erroring out when
             it cannot be.</para>
+-->
+          <para>Pour les opérations qui nécessitent un accès exclusif au
+            dépôt, attendre jusqu'à ce que le verrou du dépôt se libère
+            au lieu de s'arrêter immédiatement avec une erreur.</para>
         </listitem>
       </varlistentry>
 
@@ -263,31 +441,51 @@
   <!-- ================================================================= -->
   <refentry id="svn.ref.svnadmin.c.crashtest">
 
+
     <indexterm>
       <primary>svnadmin</primary>
+  <!--
       <secondary>subcommands</secondary>
+  -->
+      <secondary>sous-commandes</secondary>
       <tertiary>crashtest</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svnadmin crashtest</refname>
+<!--
       <refpurpose>Simulate a process that crashes.</refpurpose>
+-->
+      <refpurpose>Simuler l'arrêt brutal d'un processus.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svnadmin crashtest REPOS_PATH</literal></para>
+-->
+      <para><literal>svnadmin crashtest CHEMIN_DÉPÔT</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
       <title>Description</title>
 
+<!--
         <para>Open the repository at <replaceable>REPOS_PATH</replaceable>, then abort, thus
           simulating a process that crashes while holding an open
           repository handle.  This is used for testing automatic
           repository recovery (a new feature in Berkeley DB 4.4).
           It's unlikely that you'll need to run this
           command.</para>
+-->
+        <para>Ouvre le dépôt situé à
+          <replaceable>CHEMIN_DÉPÔT</replaceable>, puis s'arrête. Cela
+          simule un processus qui se termine brutalement alors qu'il
+          détient un descripteur ouvert sur le dépôt. Cette
+          sous-commande est utilisée pour tester le rétablissement
+          automatique du dépôt (une nouvelle fonctionnalité de
+          Berkeley DB 4.4). Il est peu probable que vous ayez besoin
+          de lancer cette sous-commande.</para>
 
       </refsect1>
 
@@ -295,23 +493,39 @@
     <refsect1>
       <title>Options</title>
 
+<!--
       <para>None</para>
+-->
+      <para>Aucune</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
       <informalexample>
+<!--
         <screen>
 $ svnadmin crashtest /var/svn/repos
 Aborted
 </screen>
+-->
+        <screen>
+$ svnadmin crashtest /var/svn/depot
+svn: E235000: Fichier 'subversion/svnadmin/svnadmin.c' ligne 622 : dysfonctionnement interne
+Abandon
+</screen>
       </informalexample>
 
+<!--
       <para>Exciting, isn't it?</para>
-      
+-->
+      <para>Intéressant, n'est-ce pas&nbsp;?</para>
+
     </refsect1>
   </refentry>
 
@@ -322,23 +536,33 @@ Aborted
 
     <indexterm>
       <primary>svnadmin</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>create</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svnadmin create</refname>
+<!--
       <refpurpose>Create a new, empty repository.</refpurpose>
+-->
+      <refpurpose>Créer un nouveau dépôt vide.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svnadmin create REPOS_PATH</literal></para>
+-->
+      <para><literal>svnadmin create CHEMIN_DÉPÔT</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
       <title>Description</title>
 
+<!--
         <para>Create a new, empty repository at the path provided.
           If the provided directory does not exist, it will be
           created for
@@ -349,7 +573,19 @@ Aborted
           repositories with the
           <literal>FSFS</literal> filesystem backend by
           default.</para>
+-->
+        <para>Créer un nouveau dépôt vide à l'emplacement spécifié. Si
+          le répertoire spécifié n'existe pas, il est créé pour
+          vous<footnote><para>Rappelez-vous que
+          <command>svnadmin</command> ne fonctionne qu'avec des
+          <emphasis>chemins</emphasis> sur votre système de fichiers
+          local, pas avec des
+          <emphasis>URL</emphasis>.</para></footnote>. Depuis Subversion
+          1.2, <command>svnadmin</command> crée les nouveaux dépôts en
+          utilisant le magasin de données <literal>FSFS</literal> par
+          défaut.</para>
 
+<!--
         <para>While <command>svnadmin create</command> will create
           the base directory for a new repository, it will not
           create intermediate directories.  For example, if you
@@ -363,6 +599,19 @@ Aborted
           repository, you might need to run <command>svnadmin
           create</command> as a user with elevated privileges
           (such as the <literal>root</literal> user).</para>
+-->
+        <para>Bien que <command>svnadmin create</command> crée le
+          répertoire de base pour un nouveau dépôt, il ne crée pas les
+          répertoires intermédiaires. Par exemple, si vous avez un
+          répertoire vide appelé <filename>/var/svn</filename>, créer
+          <filename>/var/svn/depot</filename> fonctionne, alors que la
+          tentative de créer
+          <filename>/var/svn/sous-repertoire/depot</filename> échoue
+          avec une erreur. Gardez aussi en mémoire que, en fonction de
+          l'endroit où vous créez votre dépôt, vous devrez peut-être
+          lancer <command>svnadmin create</command> sous l'identité d'un
+          utilisateur avec privilèges (tel que
+          <literal>root</literal>).</para>
 
       </refsect1>
 
@@ -386,28 +635,55 @@ Aborted
 
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>Creating a new repository is this easy:</para>
+-->
+      <para>Créer un nouveau dépôt est aussi simple que ça&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ cd /var/svn
 $ svnadmin create repos
 $
 </screen>
+-->
+        <screen>
+$ cd /var/svn
+$ svnadmin create depot
+$
+</screen>
       </informalexample>
-      
+<!--
       <para>In Subversion 1.0, a Berkeley DB repository is always
         created.  In Subversion 1.1, a Berkeley DB repository is
         the default repository type, but an FSFS repository can be
-        created using the <option>--fs-type</option>
+        created using the <option>- -fs-type</option>
         option:</para>
+-->
+      <para>Dans Subversion 1.0, un dépôt est toujours créé avec un
+        magasin de données Berkeley DB.  Dans Subversion 1.1,  le
+        magasin de données par défaut est Berkeley DB, mais un
+        magasin de données FSFS peut être demandé
+        <foreignphrase>via</foreignphrase> l'option
+        <option>--fs-type</option>&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ cd /var/svn
-$ svnadmin create repos --fs-type fsfs
+$ svnadmin create repos - -fs-type fsfs
+$
+</screen>
+-->
+        <screen>
+$ cd /var/svn
+$ svnadmin create depot --fs-type fsfs
 $
 </screen>
       </informalexample>
@@ -422,32 +698,54 @@ $
 
     <indexterm>
       <primary>svnadmin</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>deltify</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svnadmin deltify</refname>
+<!--
       <refpurpose>Deltify changed paths in a revision range.</refpurpose>
+-->
+      <refpurpose>Ne stocker que les différences dans un intervalle
+            de révisions.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
+<!--
       <para><literal>svnadmin deltify [-r LOWER[:UPPER]] REPOS_PATH</literal></para>
+-->
+      <para><literal>svnadmin deltify [-r BAS[:HAUT]] CHEMIN_DÉPÔT</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
       <title>Description</title>
 
+<!--
       <para><command>svnadmin deltify</command> exists in
         current versions of Subversion only for historical reasons.
         This command is deprecated and no longer needed.</para>
+-->
+      <para><command>svnadmin deltify</command> n'existe dans les
+        versions actuelles de Subversion que pour des raisons
+        historiques. Cette commande est désormais obsolète.</para>
 
+<!--
       <para>It dates from a time when Subversion offered
         administrators greater control over compression strategies
         in the repository.  This turned out to be a lot of
         complexity for <emphasis>very</emphasis> little gain, and
         this <quote>feature</quote> was deprecated.</para>
+-->
+      <para>Elle date du temps où Subersion offrait un contrôle plus fin
+        à l'administrateur sur les stratégies de compression des données
+        dans le dépôt. Cela s'est avéré être beaucoup de complexité pour
+        un gain <emphasis>très</emphasis> faible, c'est pourquoi cette
+        <quote>fonctionnalité</quote> a disparu.</para>
 
         </refsect1>
 
@@ -472,23 +770,34 @@ $
 
     <indexterm>
       <primary>svnadmin</primary>
+<!--
       <secondary>subcommands</secondary>
+-->
+      <secondary>sous-commandes</secondary>
       <tertiary>dump</tertiary>
     </indexterm>
 
     <refnamediv>
       <refname>svnadmin dump</refname>
+<!--
       <refpurpose>Dump the contents of the filesystem to <filename>stdout</filename>.</refpurpose>
+-->
+      <refpurpose>Décharger le contenu du système de fichiers vers
+         <filename>stdout</filename>.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
-      <para><literal>svnadmin dump REPOS_PATH [-r LOWER[:UPPER]] [--incremental] [--deltas]</literal></para>
+<!--
+      <para><literal>svnadmin dump REPOS_PATH [-r LOWER[:UPPER]] [- -incremental] [- -deltas]</literal></para>
+-->
+      <para><literal>svnadmin dump CHEMIN_DÉPÔT [-r BAS[:HAUT]] [--incremental] [--deltas]</literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
     <refsect1>
       <title>Description</title>
 
+<!--
       <para>Dump the contents of the filesystem to <filename>stdout</filename> in a
         <quote>dump file</quote> portable format, sending feedback
         to <filename>stderr</filename>.  Dump revisions
@@ -498,7 +807,20 @@ $
         <replaceable>LOWER</replaceable> is given, dump that one
         revision tree.  See <xref linkend="svn.reposadmin.maint.migrate"/>
         for a practical use.</para>
+-->
+      <para>Décharger le contenu du système de fichiers vers
+        <filename>stdout</filename> dans le format portable
+        <quote>dump</quote>, L'avancement de l'opération est envoyé vers
+        <filename>stderr</filename>. Les révisions de
+        <replaceable>BAS</replaceable> jusqu'à
+        <replaceable>HAUT</replaceable> sont déchargées. Si aucune
+        révision n'est spécifiée, toutes les révisions sont déchargées.
+        Si seule <replaceable>BAS</replaceable> est spécifiée, décharge
+        uniquement cette révision. Reportez-vous à <xref
+        linkend="svn.reposadmin.maint.migrate"/> pour la description
+        pratique de l'utilisation de cette commande.</para>
 
+<!--
       <para>By default, the Subversion dump stream contains a
         single revision (the first revision in the requested
         revision range) in which every file and directory in the
@@ -510,10 +832,22 @@ $
         full-text representation of its contents, as well as all of
         its properties, are presented in the dump file; for a
         directory, all of its properties are presented.</para>
+-->
+      <para>Par défaut, le flux dump Subversion ne contient qu'une seule
+        révision (la première dans l'intervalle demandé) dans laquelle
+        tous les fichiers et les répertoires sont indiqués comme ayant
+        été ajoutés d'un seul coup&nbsp;; les autres révisions
+        (spécifiées par l'intervalle de révisions) ne contiennent que
+        les fichiers et les répertoires qui ont été modifiés par ces
+        révisions. Pour un fichier modifié, le contenu entier du fichier
+        (en représentation plein-texte), ainsi que ses propriétés, est
+        présent dans le fichier dump. Pour un répertoire, toutes les
+        propriétés sont présentes.</para>
 
+<!--
       <para>Two useful options modify the dump file
         generator's behavior.  The first is the
-        <option>--incremental</option> option, which simply causes
+        <option>- -incremental</option> option, which simply causes
         that first revision in the dump stream to contain only
         the files and directories modified in that revision,
         instead of being presented as the addition of a new tree,
@@ -522,8 +856,19 @@ $
         a relatively small dump file to be loaded into another
         repository that already has the files and directories
         that exist in the original repository.</para>
+-->
+      <para>Deux options modifient le comportement par défaut du
+        générateur de flux dump. La première est l'option
+        <option>--incremental</option> qui force la première révision
+        à ne contenir que les fichiers et répertoires modifiés lors de
+        cette révision (au lieu de l'ensemble de l'arborescence) au même
+        format que les autres révisions d'un flux dump. Cette option est
+        utile pour générer un fichier dump relativement petit pour être
+        chargé dans un autre dépôt qui est déjà au courant des révisions
+        précédentes du dépôt original.</para>
 
-      <para>The second useful option is <option>--deltas</option>.
+<!--
+      <para>The second useful option is <option>- -deltas</option>.
         This option causes <command>svnadmin dump</command> to,
         instead of emitting full-text representations of file
         contents and property lists, emit only deltas of those
@@ -535,14 +880,35 @@ $
         not to compress as well as their nondeltified counterparts
         when using third-party tools such as <command>gzip</command>
         and <command>bzip2</command>.</para>
-
+-->
+      <para>L'autre option est <option>--deltas</option>. Cette option
+        indique à <command>svnadmin dump</command> de, au lieu de
+        générer des représentations en plein-texte du contenu des
+        fichiers et la liste des propriétés, générer uniquement le delta
+        des éléments concernés par rapport à leur version antérieure.
+        Cette option réduit (drastiquement dans certains cas) la taille
+        du fichier dump produit par <command>svnadmin dump</command>. Il
+        y a cependant des inconvénients à utiliser cette option&nbsp;:
+        la production de fichiers dump delta est plus consommatrice de
+        puissance CPU, ces fichiers ne peuvent pas être traités par
+        <command>svndumpfilter</command> et ils se révèlent être moins
+        facilement compressés par des outils tiers tels que
+        <command>gzip</command> ou <command>bzip2</command>.</para>
       <tip>
+<!--
         <para>Beginning with Subversion 1.8,
           <command>svndumpfilter</command> can operate on deltified
           dump streams.  Prior to this release,
           <command>svndumpfilter</command> would not work with dump
-          streams created using <option>--deltas</option>
+          streams created using <option>- -deltas</option>
           option.</para>
+-->
+        <para>À partir de Subversion 1.8,
+          <command>svndumpfilter</command> peut traiter les flux
+          <quote>deltifiés</quote>. Avant cette version,
+          <command>svndumpfilter</command> ne pouvait pas traiter les
+          flux dump générés en utilisant l'option
+          <option>--deltas</option>.</para>
       </tip>
 
     </refsect1>
@@ -561,14 +927,21 @@ $
 </screen>
       </informalexample>
     </refsect1>
-    
+
     <!-- =============================================================== -->
     <refsect1>
+<!--
       <title>Examples</title>
+-->
+      <title>Exemples</title>
 
+<!--
       <para>Dump your whole repository:</para>
+-->
+      <para>Décharger complètement le dépôt&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
 $ svnadmin dump /var/svn/repos &gt; full.dump
 * Dumped revision 0.
@@ -576,15 +949,33 @@ $ svnadmin dump /var/svn/repos &gt; full.dump
 * Dumped revision 2.
 &hellip;
 </screen>
+-->
+        <screen>
+$ svnadmin dump /var/svn/depot > depot-complet.dump
+* Révision 0 déchargée.
+* Révision 1 déchargée.
+* Révision 2 déchargée.
+&hellip;
+</screen>
       </informalexample>
 
+<!--
       <para>Incrementally dump a single transaction from your
         repository:</para>
+-->
+      <para>Décharger seulement l'incrément d'une seule révision du
+        dépôt&nbsp;:</para>
 
       <informalexample>
+<!--
         <screen>
-$ svnadmin dump /var/svn/repos -r 21 --incremental &gt; incr.dump
+$ svnadmin dump /var/svn/repos -r 21 - -incremental &gt; incr.dump
 * Dumped revision 21.
+</screen>
+-->
+        <screen>
+$ svnadmin dump /var/svn/depot -r 21 --incremental > increment.dump
+* Révision 21 déchargée.
 </screen>
       </informalexample>
 
@@ -661,7 +1052,7 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
-  
+
   <refentry id="svn.ref.svnadmin.c.help">
 
     <indexterm>
@@ -840,7 +1231,7 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
     <!-- =============================================================== -->
     <refsect1>
       <title>Examples</title>
-      
+
       <para>Remove all unused logfiles from the repository:</para>
 
       <informalexample>
@@ -1033,7 +1424,7 @@ $ svnadmin load --parent-dir new/subdir/for/project \
     </indexterm>
 
     <refnamediv>
-      <refname>svnadmin lslocks</refname> 
+      <refname>svnadmin lslocks</refname>
       <refpurpose>Print descriptions of all locks.</refpurpose>
     </refnamediv>
 
@@ -1057,7 +1448,7 @@ $ svnadmin load --parent-dir new/subdir/for/project \
     <!-- =============================================================== -->
     <refsect1>
       <title>Options</title>
-      
+
       <para>None</para>
     </refsect1>
 
@@ -1076,7 +1467,7 @@ Path: /tree.jpg
 UUID Token: opaquelocktoken:ab00ddf0-6afb-0310-9cd0-dda813329753
 Owner: harry
 Created: 2005-07-08 17:27:36 -0500 (Fri, 08 Jul 2005)
-Expires: 
+Expires:
 Comment (1 line):
 Rework the uppermost branches on the bald cypress in the foreground.
 </screen>
@@ -1122,7 +1513,7 @@ Rework the uppermost branches on the bald cypress in the foreground.
 
       <informalexample>
         <screen>
-$ svnadmin lstxns /var/svn/repos/ 
+$ svnadmin lstxns /var/svn/repos/
 1w
 1x
 </screen>
@@ -1140,7 +1531,7 @@ $ svnadmin lstxns /var/svn/repos/
       <secondary>subcommands</secondary>
       <tertiary>pack</tertiary>
     </indexterm>
-    
+
     <refnamediv>
       <refname>svnadmin pack</refname>
       <refpurpose>Possibly compact the repository into a more
@@ -1215,12 +1606,12 @@ $ svnadmin lstxns /var/svn/repos/
     <!-- =============================================================== -->
     <refsect1>
       <title>Examples</title>
-      
+
       <para>Recover a hung repository:</para>
 
       <informalexample>
         <screen>
-$ svnadmin recover /var/svn/repos/ 
+$ svnadmin recover /var/svn/repos/
 Repository lock acquired.
 Please wait; recovering the repository may take some time...
 
@@ -1296,7 +1687,7 @@ The latest repos revision is 34.
 
     <!-- =============================================================== -->
     <refsect1>
-      <title>Options</title>          
+      <title>Options</title>
       <para>None</para>
     </refsect1>
 
@@ -1700,7 +2091,7 @@ Please wait; upgrading the repository may take some time...
 Upgrade completed.
 </screen>
       </informalexample>
-      
+
     </refsect1>
   </refentry>
 
@@ -1744,7 +2135,7 @@ Upgrade completed.
         didn't you?).</para>
 
     </refsect1>
-    
+
     <!-- =============================================================== -->
     <refsect1>
       <title>Options</title>
@@ -1761,12 +2152,12 @@ Upgrade completed.
     <!-- =============================================================== -->
     <refsect1>
       <title>Examples</title>
-      
+
       <para>Verify a hung repository:</para>
 
       <informalexample>
         <screen>
-$ svnadmin verify /var/svn/repos/ 
+$ svnadmin verify /var/svn/repos/
 * Verified revision 1729.
 </screen>
       </informalexample>
@@ -1776,7 +2167,7 @@ $ svnadmin verify /var/svn/repos/
 </reference>
 
 <!--
-local variables: 
+local variables:
 sgml-parent-document: ("book.xml" "reference")
 end:
 -->
