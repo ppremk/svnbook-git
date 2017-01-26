@@ -4,7 +4,7 @@
 <!--
   <title>Subversion Repository Hook Reference</title>
 -->
-  <title>Référence des procédures automatiques de Subversion</title>
+  <title>Guide de référence des procédures automatiques de Subversion</title>
 
   <partintro>
 
@@ -15,15 +15,15 @@
       Repository hooks are implemented as programs executed by
       Subversion itself at those key moments&mdash;before and after a
       commit, before and after a user locks a file, and so on.</para>
-    
+
 -->
     <para>Les dépôts Subversion fournissent des procédures automatiques
-      (<foreignphrase>hook</foreignphrase> en anglais) dont l'objet 
-      principal est de pouvoir étendre facilement les fonctionnalités de 
+      (<foreignphrase>hook</foreignphrase> en anglais) dont l'objet
+      principal est de pouvoir étendre facilement les fonctionnalités de
       Subversion à des moments clés des opérations importantes. Les
       procédures automatiques sont implémentées sous la forme de
       programmes exécutés par Subversion lui-même à ces moments clés
-      (avant et après une propagation, avant et après le verrouillage 
+      (avant et après une propagation, avant et après le verrouillage
       d'un fichier par un utilisateur, etc.).</para>
 
 <!--
@@ -40,13 +40,13 @@
       or <filename>START-COMMIT.BAT</filename> instead of
       simply <filename>start-commit</filename>.</para>
 -->
-    <para>Pour chaque procédure automatique, Subversion lance le 
+    <para>Pour chaque procédure automatique, Subversion lance le
       programme qui se trouve dans le sous-dossier
-      <filename>hooks/</filename> de l'emplacement du dépôt sur le 
-      système de fichiers et dont le nom correspond à la 
-      procédure voulue. Par exemple, sur un système de type Unix, le 
-      programme correspondant à la procédure automatique exécutée avant 
-      une propagation doit se trouver à 
+      <filename>hooks/</filename> de l'emplacement du dépôt sur le
+      système de fichiers et dont le nom correspond à la
+      procédure voulue. Par exemple, sur un système de type Unix, le
+      programme correspondant à la procédure automatique exécutée avant
+      une propagation doit se trouver à
       <filename><replaceable>CHEMIN_DÉPÔT</replaceable>/hooks/start-commit</filename>.
       Ce peut être un exécutable binaire, un script shell, un programme
       Python, etc. Sur un système Windows, le programme doit se trouver
@@ -61,7 +61,7 @@
       invoked, its input parameters, and how its behavior affects the
       Subversion workflow.</para>
 -->
-    <para>Ce guide de référence décrit les différentes procédures 
+    <para>Ce guide de référence décrit les différentes procédures
       automatiques proposées par Subversion, détaillant le moment où est
       appelée la procédure, ses paramètres d'entrée et la manière dont
       elle modifie le comportement de Subversion.</para>
@@ -72,7 +72,7 @@
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <refentry id="svn.ref.reposhooks.start-commit">
-  
+
     <indexterm>
 <!--
       <primary>hook scripts</primary>
@@ -91,12 +91,12 @@
 
     <refsynopsisdiv>
       <para><literal>start-commit
-<!--      
+<!--
         <replaceable>REPOS-PATH</replaceable>
         <replaceable>USER</replaceable>
         <replaceable>CAPABILITIES</replaceable>
         <replaceable>TXN-NAME</replaceable></literal></para>
--->        
+-->
         <replaceable>CHEMIN_DÉPÔT</replaceable>
         <replaceable>UTILISATEUR</replaceable>
         <replaceable>CAPACITÉS</replaceable>
@@ -106,7 +106,7 @@
     <!-- =============================================================== -->
     <refsect1>
       <title>Description</title>
-      
+
 <!--
       <para>The start-commit hook is run immediately after the
         commit transaction is created and its initial properties
@@ -117,13 +117,13 @@
         metadata validation failure.</para>
 -->
       <para>La procédure automatique <literal>start-commit</literal>
-        est activée immédiatement après que la transaction de 
+        est activée immédiatement après que la transaction de
         propagation ne soit créée et que ses propriétés ne soient fixées
-        aux valeurs initiales. Typiquement, elle est utilisée pour 
+        aux valeurs initiales. Typiquement, elle est utilisée pour
         décider rapidement s'il convient d'interdire la propagation, en
         évitant d'attendre que le long processus de propagation n'échoue
         à la fin en raison, par exemple, de droits insuffisants alloués
-        à l'utilisateur pour propager une révision ou d'invalidation de 
+        à l'utilisateur pour propager une révision ou d'invalidation de
         métadonnées relatives à la propagation.</para>
 
 <!--
@@ -135,8 +135,8 @@
 -->
       <para>Si le code de retour de la procédure automatique
         <literal>start-commit</literal> est non nul, la propagation est
-        arrêtée, la transaction de propagation détruite et tout ce qui a 
-        été écrit vers <filename>stderr</filename> est renvoyé vers le 
+        arrêtée, la transaction de propagation détruite et tout ce qui a
+        été écrit vers <filename>stderr</filename> est renvoyé vers le
         client.</para>
 
 <!--
@@ -148,8 +148,8 @@
         /> elsewhere in this reference) for that purpose.</para>
 -->
       <para>La procédure automatique <literal>start-commit</literal>
-        n'a pas vocation à valider le contenu d'une propagation 
-        puisqu'elle est appelée avant qu'aucune modification de fichier 
+        n'a pas vocation à valider le contenu d'une propagation
+        puisqu'elle est appelée avant qu'aucune modification de fichier
         ou de répertoire ne soit transmise. Utilisez la procédure
         automatique <literal>pre-commit</literal> (qui est décrite dans
         <xref linkend="svn.ref.reposhooks.pre-commit" /> dans ce guide
@@ -168,9 +168,9 @@
       </note>
 -->
         <para>Avant Subversion 1.8, Subversion appelait la procédure
-          automatique <literal>star-commit</literal> 
-          <emphasis>avant</emphasis> de créer la transaction de 
-          propagation. Un échec de la procédure entrainait qu'il n'y 
+          automatique <literal>star-commit</literal>
+          <emphasis>avant</emphasis> de créer la transaction de
+          propagation. Un échec de la procédure entrainait qu'il n'y
           avait aucune transaction créée. Subversion 1.8 a modifié cet
           enchainement, ce qui permet à <literal>start-commit</literal>
           d'avoir accès aux propriétés de la transaction, dont le
@@ -192,7 +192,7 @@
 -->
       <para>Les arguments de la ligne de commande passés à la
         procédure automatique sont, dans l'ordre&nbsp;:</para>
-      
+
       <orderedlist>
         <listitem>
 <!--
@@ -225,12 +225,12 @@
 <!--
           <para>Commit transaction name (new in Subversion 1.8)</para>
 -->
-          <para>nom de la transaction de propagation (nouveau dans 
+          <para>nom de la transaction de propagation (nouveau dans
             Subversion 1.8)</para>
         </listitem>
       </orderedlist>
     </refsect1>
-    
+
     <!-- =============================================================== -->
     <refsect1>
 <!--
@@ -249,17 +249,17 @@
       <para>A means to allow access only from clients that have
         certain capabilities.</para>
 -->
-      <para>Un moyen de n'autoriser l'accès qu'à des clients qui 
+      <para>Un moyen de n'autoriser l'accès qu'à des clients qui
         possèdent certaines capacités.</para>
     </refsect1>
 
   </refentry>
-      
+
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <refentry id="svn.ref.reposhooks.pre-commit">
-  
+
     <indexterm>
 <!--
       <primary>hook scripts</primary>
@@ -273,18 +273,18 @@
 <!--
       <refpurpose>Notification just prior to commit completion.</refpurpose>
 -->
-      <refpurpose>Notification juste avant la fin de la 
+      <refpurpose>Notification juste avant la fin de la
         propagation.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
       <para><literal>pre-commit
-<!--      
+<!--
         <replaceable>REPOS-PATH</replaceable>
         <replaceable>TXN-NAME</replaceable></literal></para>
 -->
         <replaceable>REPOS-PATH</replaceable>
-        <replaceable>TXN-NAME</replaceable></literal></para>        
+        <replaceable>TXN-NAME</replaceable></literal></para>
     </refsynopsisdiv>
 
     <!-- =============================================================== -->
@@ -301,13 +301,13 @@
         incoming log message is nonempty).</para>
 -->
       <para>La procédure automatique <literal>pre-commit</literal> est
-        activée juste avant que la transaction de propagation ne génère 
-        une nouvelle révision. Cette procédure automatique est 
-        typiquement utilisée pour protéger le dépôt vis-à-vis de 
-        propagations qui ne respectent pas certaines règles relatives au 
-        contenu ou au chemin (par exemple, votre dépôt peut imposer que 
-        les propagations sur une certaine branche incluent un numéro de 
-        ticket de l'outil de gestion de suivi des bogues ou alors que 
+        activée juste avant que la transaction de propagation ne génère
+        une nouvelle révision. Cette procédure automatique est
+        typiquement utilisée pour protéger le dépôt vis-à-vis de
+        propagations qui ne respectent pas certaines règles relatives au
+        contenu ou au chemin (par exemple, votre dépôt peut imposer que
+        les propagations sur une certaine branche incluent un numéro de
+        ticket de l'outil de gestion de suivi des bogues ou alors que
         l'entrée du journal de propagation ne soit pas vide).</para>
 
 <!--
@@ -318,8 +318,8 @@
 -->
       <para>Si le code de retour de la procédure automatique
         <literal>pre-commit</literal> est non nul, la propagation est
-        annulée, la transaction de propagation supprimée et tout ce qui 
-        a été écrit vers <filename>stderr</filename> est renvoyé vers le 
+        annulée, la transaction de propagation supprimée et tout ce qui
+        a été écrit vers <filename>stderr</filename> est renvoyé vers le
         client.</para>
 
     </refsect1>
@@ -335,7 +335,7 @@
       <para>The command-line arguments passed to the hook program,
         in order, are:</para>
 -->
-      <para>Les arguments de la ligne de commande passés à la procédure 
+      <para>Les arguments de la ligne de commande passés à la procédure
         automatique sont, dans l'ordre&nbsp;:</para>
 
       <orderedlist>
@@ -367,17 +367,17 @@
 -->
       <para>En complément, Subversion passe les jetons de verrouillage
         fournis par le client à la procédure automatique en utilisant
-        l'entrée standard. Lorsqu'il y en a, ils sont placés dans 
-        l'enchaînement composé d'une ligne qui contient 
-        <literal>LOCK-TOKENS:</literal> suivie par autant de lignes que 
-        de jetons contenant chacune les informations de chaque 
+        l'entrée standard. Lorsqu'il y en a, ils sont placés dans
+        l'enchaînement composé d'une ligne qui contient
+        <literal>LOCK-TOKENS:</literal> suivie par autant de lignes que
+        de jetons contenant chacune les informations de chaque
         jeton&nbsp;: l'URI au format échappé du chemin dans le
         système de fichiers du dépôt du chemin verrouillé, suivi par un
         caractère pipe (<literal>|</literal>) indiquant la séparation et
         enfin la chaine de caractère identifiant le verrou.</para>
 
     </refsect1>
-    
+
     <!-- =============================================================== -->
     <refsect1>
 <!--
@@ -389,14 +389,14 @@
 -->
       <para>Validation et contrôle des modifications</para>
     </refsect1>
-  
+
   </refentry>
-      
+
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <refentry id="svn.ref.reposhooks.post-commit">
-  
+
     <indexterm>
 <!--
       <primary>hook scripts</primary>
@@ -415,11 +415,11 @@
 
     <refsynopsisdiv>
       <para><literal>post-commit
-<!--      
+<!--
         <replaceable>REPOS-PATH</replaceable>
         <replaceable>REVISION</replaceable>
         <replaceable>TXN-NAME</replaceable></literal></para>
--->        
+-->
         <replaceable>CHEMIN_DÉPÔT</replaceable>
         <replaceable>RÉVISION</replaceable>
         <replaceable>NOM_TRANSACTION</replaceable></literal></para>
@@ -438,12 +438,12 @@
         also use this hook to trigger backup processes.</para>
 -->
       <para>La procédure automatique <literal>post-commit</literal>
-        est activée après que la transaction ait été validée et que la 
+        est activée après que la transaction ait été validée et que la
         nouvelle révision soit créée. La plupart des administrateurs
         utilise cette procédure automatique pour envoyer des e-mails
-        décrivant la propagation ou pour notifier à d'autres outils 
-        (tels que les outils de gestion pour le suivi de bogues) qu'une 
-        nouvelle propagation a eu lieu. Certains utilisent cette 
+        décrivant la propagation ou pour notifier à d'autres outils
+        (tels que les outils de gestion pour le suivi de bogues) qu'une
+        nouvelle propagation a eu lieu. Certains utilisent cette
         procédure automatique pour déclencher une sauvegarde.</para>
 
 <!--
@@ -458,10 +458,10 @@
         <literal>post-commit</literal> est non nul, la propagation
         <emphasis>a bien eu lieu</emphasis> puisqu'elle est déjà
         terminée. Cependant, tout ce qui a été écrit vers
-        <filename>stderr</filename> est renvoyé vers le client, afin de 
-        trouver plus facilement la raison de l'échec de la procédure 
+        <filename>stderr</filename> est renvoyé vers le client, afin de
+        trouver plus facilement la raison de l'échec de la procédure
         automatique.</para>
-            
+
     </refsect1>
 
     <!-- =============================================================== -->
@@ -475,7 +475,7 @@
       <para>The command-line arguments passed to the hook program,
         in order, are:</para>
 -->
-      <para>Les arguments de la ligne de commande passés à la procédure 
+      <para>Les arguments de la ligne de commande passés à la procédure
         automatique sont, dans l'ordre&nbsp;:</para>
 
       <orderedlist>
@@ -496,7 +496,7 @@
           <para>Name of the transaction that has become the revision triggering
             the post-commit hook.</para>
 -->
-          <para>nom de la transaction qui a donné la révision et qui 
+          <para>nom de la transaction qui a donné la révision et qui
             appelle la procédure automatique.</para>
         </listitem>
       </orderedlist>
@@ -511,7 +511,7 @@
 <!--
       <para>Commit notification; tool integration</para>
 -->
-      <para>Notification de propagation&nbsp;; intégration avec d'autres 
+      <para>Notification de propagation&nbsp;; intégration avec d'autres
         outils.</para>
     </refsect1>
 
@@ -536,18 +536,18 @@
       <refpurpose>Notification of a revision property change
         attempt.</refpurpose>
 -->
-      <refpurpose>Notification avant le changement d'une propriété de 
+      <refpurpose>Notification avant le changement d'une propriété de
         révision.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
       <para><literal>pre-revprop-change
-<!--      
+<!--
         <replaceable>REPOS-PATH</replaceable>
         <replaceable>REVISION</replaceable>
         <replaceable>USER</replaceable>
         <replaceable>PROPNAME</replaceable>
--->        
+-->
         <replaceable>CHEMIN_DÉPÔT</replaceable>
         <replaceable>RÉVISION</replaceable>
         <replaceable>UTILISATEUR</replaceable>
@@ -568,14 +568,14 @@
         return a zero exit value before a revision property
         modification can happen.</para>
 -->
-      <para>La procédure automatique 
-        <literal>pre-revprop-change</literal> est activée juste avant la 
-        modification d'une propriété de révision quand elle n'a pas lieu 
-        dans le cadre d'une propagation normale. Contrairement aux 
-        autres procédures automatiques, la configuration par défaut de 
-        cette procédure automatique est d'interdire l'action demandée. 
-        La procédure automatique doit exister effectivement et le code 
-        de retour doit être nul pour autoriser la modification d'une 
+      <para>La procédure automatique
+        <literal>pre-revprop-change</literal> est activée juste avant la
+        modification d'une propriété de révision quand elle n'a pas lieu
+        dans le cadre d'une propagation normale. Contrairement aux
+        autres procédures automatiques, la configuration par défaut de
+        cette procédure automatique est d'interdire l'action demandée.
+        La procédure automatique doit exister effectivement et le code
+        de retour doit être nul pour autoriser la modification d'une
         propriété de révision.</para>
 
 <!--
@@ -586,10 +586,10 @@
         client.</para>
 -->
       <para>Si la procédure automatique
-        <literal>pre-revprop-change</literal> n'existe pas, ne possède 
-        pas les droits d'exécution ou si le code de retour n'est pas 
-        nul, la propriété n'est pas modifiée et tout ce qui a été écrit 
-        vers <filename>stderr</filename> est renvoyé vers le 
+        <literal>pre-revprop-change</literal> n'existe pas, ne possède
+        pas les droits d'exécution ou si le code de retour n'est pas
+        nul, la propriété n'est pas modifiée et tout ce qui a été écrit
+        vers <filename>stderr</filename> est renvoyé vers le
         client.</para>
 
     </refsect1>
@@ -619,14 +619,14 @@
 <!--
           <para>Revision whose property is about to be modified</para>
 -->
-          <para>révision dont une propriété va être 
+          <para>révision dont une propriété va être
             modifiée&nbsp;;</para>
         </listitem>
         <listitem>
 <!--
           <para>Authenticated username attempting the property change</para>
 -->
-          <para>identifiant (authentifié) de l'utilisateur qui demande 
+          <para>identifiant (authentifié) de l'utilisateur qui demande
             la modification de la propriété&nbsp;;</para>
         </listitem>
         <listitem>
@@ -690,7 +690,7 @@
     <refnamediv>
       <refname>post-revprop-change</refname>
 <!--
-      <refpurpose>Notification of a successful revision property 
+      <refpurpose>Notification of a successful revision property
         change.</refpurpose>
 -->
       <refpurpose>Notification d'une modification de propriété de
@@ -699,12 +699,12 @@
 
     <refsynopsisdiv>
       <para><literal>post-revprop-change
-<!--      
+<!--
         <replaceable>REPOS-PATH</replaceable>
         <replaceable>REVISION</replaceable>
         <replaceable>USER</replaceable>
         <replaceable>PROPNAME</replaceable>
--->        
+-->
         <replaceable>CHEMIN_DÉPÔT</replaceable>
         <replaceable>RÉVISION</replaceable>
         <replaceable>UTILISATEUR</replaceable>
@@ -728,16 +728,16 @@
         notification of the property change.</para>
 -->
       <para>La procédure automatique
-        <literal>post-revprop-change</literal> est activée immédiatement 
-        après la modification d'une propriété de révision, quand elle 
-        n'a pas lieu dans le cadre d'une propagation normale. Comme vous 
-        pouvez le deviner à la lecture de la description de son 
-        homologue, la procédure automatique 
-        <literal>pre-revprop-change</literal>, cette procédure 
+        <literal>post-revprop-change</literal> est activée immédiatement
+        après la modification d'une propriété de révision, quand elle
+        n'a pas lieu dans le cadre d'une propagation normale. Comme vous
+        pouvez le deviner à la lecture de la description de son
+        homologue, la procédure automatique
+        <literal>pre-revprop-change</literal>, cette procédure
         automatique ne peut être activée que si
-        <literal>pre-revprop-change</literal> est implémentée. Cette 
-        procédure automatique est principalement utilisée pour envoyer 
-        des e-mails de notification qu'une propriété a été 
+        <literal>pre-revprop-change</literal> est implémentée. Cette
+        procédure automatique est principalement utilisée pour envoyer
+        des e-mails de notification qu'une propriété a été
         modifiée.</para>
 
 <!--
@@ -749,11 +749,11 @@
         client, making it easier to diagnose hook failures.</para>
 -->
       <para>Si le code de retour de la procédure automatique
-        <literal>post-revprop-change</literal> est non nul, la 
+        <literal>post-revprop-change</literal> est non nul, la
         modification <emphasis>a bien eu lieu</emphasis> puisqu'elle est
-        déjà terminée. Cependant, tout ce qui a été écrit vers 
-        <filename>stderr</filename> est renvoyé vers le client, afin de 
-        trouver plus facilement la raison de l'échec de la procédure 
+        déjà terminée. Cependant, tout ce qui a été écrit vers
+        <filename>stderr</filename> est renvoyé vers le client, afin de
+        trouver plus facilement la raison de l'échec de la procédure
         automatique.</para>
 
     </refsect1>
@@ -769,7 +769,7 @@
       <para>The command-line arguments passed to the hook program,
         in order, are:</para>
 -->
-      <para>Les arguments de la ligne de commande passés à la procédure 
+      <para>Les arguments de la ligne de commande passés à la procédure
         automatique sont, dans l'ordre&nbsp;:</para>
 
       <orderedlist>
@@ -815,7 +815,7 @@
       <para>Additionally, Subversion passes to the hook program, via
         standard input, the previous value of the property.</para>
 -->
-      <para>Par ailleurs, Subversion fournit la valeur précédente de la 
+      <para>Par ailleurs, Subversion fournit la valeur précédente de la
         propriété à la procédure automatique
         <foreignphrase>via</foreignphrase> l'entrée standard.</para>
 
@@ -865,7 +865,7 @@
         <replaceable>USER</replaceable>
         <replaceable>COMMENT</replaceable>
         <replaceable>STEAL</replaceable></literal></para>
--->        
+-->
         <replaceable>CHEMIN_DÉPÔT</replaceable>
         <replaceable>CHEMIN</replaceable>
         <replaceable>UTILISATEUR</replaceable>
@@ -887,12 +887,12 @@
         to <quote>steal</quote> the existing lock.</para>
 -->
       <para>La procédure automatique <literal>pre-lock</literal> est
-        activée lorsque quelqu'un demande à verrouiller un chemin. Elle 
-        peut être utilisée pour empêcher tout verrouillage ou pour 
-        définir une politique plus complexe où tels utilisateurs sont 
-        autorisés à verrouiller tels chemins. Si la procédure 
+        activée lorsque quelqu'un demande à verrouiller un chemin. Elle
+        peut être utilisée pour empêcher tout verrouillage ou pour
+        définir une politique plus complexe où tels utilisateurs sont
+        autorisés à verrouiller tels chemins. Si la procédure
         automatique détecte un verrou pré-existant, elle peut aussi
-        décider si l'utilisateur est autorisé à <quote>voler</quote> ce 
+        décider si l'utilisateur est autorisé à <quote>voler</quote> ce
         verrou pré-existant.</para>
 
 <!--
@@ -914,7 +914,7 @@
         unexpected output sent to standard output.</para>
 -->
       <para>La procédure automatique peut aussi imposer le jeton de
-        verrouillage qui sera utilisé en affichant le jeton sur la 
+        verrouillage qui sera utilisé en affichant le jeton sur la
         sortie standard. Pour cette raison, les implémentations de cette
         procédure automatique doivent bien faire attention à ce qu'elles
         écrivent sur la sorie standard.</para>
@@ -964,12 +964,12 @@
 <!--
           <para>Versioned path that is to be locked</para>
 -->
-          <para>chemin géré en versions qui va être 
+          <para>chemin géré en versions qui va être
             verrouillé&nbsp;;</para>
         </listitem>
         <listitem>
 <!--
-          <para>Authenticated username of the person attempting the 
+          <para>Authenticated username of the person attempting the
             lock</para>
 -->
           <para>identifiant (authentifié) de l'utilisateur qui demande
@@ -979,7 +979,7 @@
 <!--
           <para>Comment provided when the lock was created</para>
 -->
-          <para>Commentaire fourni lorsque le verrou a été 
+          <para>Commentaire fourni lorsque le verrou a été
             créé&nbsp;</para>
         </listitem>
         <listitem>
@@ -1026,16 +1026,16 @@
 <!--
       <refpurpose>Notification of a successful path lock.</refpurpose>
 -->
-      <refpurpose>Notification d'un verrouillage de chemin 
+      <refpurpose>Notification d'un verrouillage de chemin
         réussi.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
       <para><literal>post-lock
-<!--      
+<!--
         <replaceable>REPOS-PATH</replaceable>
         <replaceable>USER</replaceable></literal></para>
--->        
+-->
         <replaceable>CHEMIN_DÉPÔT</replaceable>
         <replaceable>UTILISATEUR</replaceable></literal></para>
     </refsynopsisdiv>
@@ -1066,8 +1066,8 @@
         <literal>post-lock</literal> est non nul, le verrouillage
         <emphasis>a bien lieu</emphasis> puisqu'il est déjà effectif.
         Cependant, tout ce qui a été écrit vers
-        <filename>stderr</filename> est renvoyé vers le client, afin de 
-        trouver plus facilement la raison de l'échec de la procédure 
+        <filename>stderr</filename> est renvoyé vers le client, afin de
+        trouver plus facilement la raison de l'échec de la procédure
         automatique.</para>
 
     </refsect1>
@@ -1095,7 +1095,7 @@
         </listitem>
         <listitem>
 <!--
-          <para>Authenticated username of the person who locked the 
+          <para>Authenticated username of the person who locked the
             paths</para>
 -->
           <para>identifiant (authentifié) de l'utilisateur qui a
@@ -1151,13 +1151,13 @@
 
     <refsynopsisdiv>
       <para><literal>pre-unlock
-<!--      
+<!--
         <replaceable>REPOS-PATH</replaceable>
         <replaceable>PATH</replaceable>
         <replaceable>USER</replaceable>
         <replaceable>TOKEN</replaceable>
         <replaceable>BREAK-UNLOCK</replaceable></literal></para>
--->        
+-->
         <replaceable>CHEMIN_DÉPÔT</replaceable>
         <replaceable>CHEMIN</replaceable>
         <replaceable>UTILISATEUR</replaceable>
@@ -1183,11 +1183,11 @@
         activée lorsque quelqu'un demande à supprimer un verrou sur un
         fichier.  Elle peut être utilisée pour définir des politiques
         qui spécifient que tels utilisateurs sont autorisés à
-        déverrouiller tels chemins. Ceci est particulièrement important 
-        dans le cadre de votre politique globale de verrouillage. Si un 
-        utilisateur A verrouille un fichier, est-ce que l'utilisateur B 
-        est autorisé à casser ce verrou&nbsp;? Qu'en est-il si le verrou 
-        est âgé de plus d'une semaine&nbsp;? Ce type de  politique peut 
+        déverrouiller tels chemins. Ceci est particulièrement important
+        dans le cadre de votre politique globale de verrouillage. Si un
+        utilisateur A verrouille un fichier, est-ce que l'utilisateur B
+        est autorisé à casser ce verrou&nbsp;? Qu'en est-il si le verrou
+        est âgé de plus d'une semaine&nbsp;? Ce type de  politique peut
         être implémenté par la procédure automatique.</para>
 
 <!--
@@ -1228,12 +1228,12 @@
 <!--
           <para>Versioned path which is to be unlocked</para>
 -->
-          <para>Chemin géré en versions qui va être 
+          <para>Chemin géré en versions qui va être
             déverrouillé&nbsp;;</para>
         </listitem>
         <listitem>
 <!--
-          <para>Authenticated username of the person attempting the 
+          <para>Authenticated username of the person attempting the
             unlock</para>
 -->
           <para>identifiant (authentifié) de l'utilisateur qui demande
@@ -1290,16 +1290,16 @@
 <!--
       <refpurpose>Notification of a successful path unlock.</refpurpose>
 -->
-      <refpurpose>Notification d'un déverrouillage de chemin 
+      <refpurpose>Notification d'un déverrouillage de chemin
         réussi.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
       <para><literal>post-unlock
-<!--      
+<!--
         <replaceable>REPOS-PATH</replaceable>
         <replaceable>USER</replaceable></literal></para>
--->        
+-->
         <replaceable>CHEMIN_DÉPÔT</replaceable>
         <replaceable>UTILISATEUR</replaceable></literal></para>
     </refsynopsisdiv>
@@ -1315,7 +1315,7 @@
 -->
       <para>La procédure automatique <literal>post-unlock</literal> est
         activée après qu'un ou plusieurs chemins aient été d
-        éverrouillés. Elle est utilisée typiquement pour envoyer des 
+        éverrouillés. Elle est utilisée typiquement pour envoyer des
         e-mails de notification signalant ce déverrouillage.</para>
 
 <!--
@@ -1328,9 +1328,9 @@
 -->
       <para>Si le code de retour de la procédure automatique
         <literal>post-unlock</literal> est non nul, le déverrouillage
-        <emphasis>a bien eu lieu</emphasis>. Cependant, tout ce qui a 
-        été écrit vers <filename>stderr</filename> est renvoyé vers le 
-        client, afin de  trouver plus facilement la raison de l'échec de 
+        <emphasis>a bien eu lieu</emphasis>. Cependant, tout ce qui a
+        été écrit vers <filename>stderr</filename> est renvoyé vers le
+        client, afin de  trouver plus facilement la raison de l'échec de
         la procédure automatique.</para>
 
     </refsect1>
@@ -1358,7 +1358,7 @@
         </listitem>
         <listitem>
 <!--
-          <para>Authenticated username of the person who unlocked the 
+          <para>Authenticated username of the person who unlocked the
             paths</para>
 -->
           <para>identifiant (authentifié) de l'utilisateur qui a
@@ -1370,9 +1370,9 @@
       <para>Additionally, the list of paths unlocked is passed to the
         hook program via standard input, one path per line.</para>
 -->
-      <para>En complément, la liste des chemins déverrouillés est 
-        fournie à la procédure automatique 
-        <foreignphrase>via</foreignphrase> l'entrée standard, un chemin 
+      <para>En complément, la liste des chemins déverrouillés est
+        fournie à la procédure automatique
+        <foreignphrase>via</foreignphrase> l'entrée standard, un chemin
         par ligne.</para>
 
     </refsect1>
@@ -1393,7 +1393,7 @@
 </reference>
 
 <!--
-local variables: 
+local variables:
 sgml-parent-document: ("book.xml" "reference")
 end:
 -->
