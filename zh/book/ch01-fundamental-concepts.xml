@@ -390,7 +390,7 @@
               There's no need for them to take turns in this
               situation.</para>
     -->
-            <para><emphasis>加锁可能会屋不必要的串行化.</emphasis>
+            <para><emphasis>加锁可能会导致不必要的串行化.</emphasis>
 
               如果 Harry 想要修改文件的开头部分, 而 Sally 只想修改同一文件
               的结尾部分? 此时他们的修改就不会重叠. 如果他们的修改可以恰当
@@ -399,6 +399,7 @@
           </listitem>
 
           <listitem>
+    <!--
             <para><emphasis>Locking may create a false sense of
               security.</emphasis>
 
@@ -413,6 +414,16 @@
               insulated task, and thus they need not bother discussing
               their incompatible changes early on.  Locking often
               becomes a substitute for real communication.</para>
+    -->
+            <para><emphasis>加锁可能会造成安全上的错觉.</emphasis>
+
+              假设 Harry 加锁并修改了文件 A, 同时 Sally 加锁并修改了文件 B,
+              文件 A 和文件 B 在内容是互相依赖的, 如果 Harry 和 Sally 的
+              修改在语义上是不兼容的, 那将会如何? 文件 A 和文件 B 可能无法
+              再正常工作. 加锁-修改-解锁 模型对这种情况无能为力&mdash;但是用
+              户会错误地认为只要在加锁后修改就是安全的. 通过加锁, Harry 和
+              Sally 都错误地认为自己的修改是安全的, 也就不会事先和对方沟通.
+              锁机制常常会代替真正的交流.</para>
           </listitem>
         </itemizedlist>
 
@@ -420,14 +431,19 @@
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.basic.vsn-models.copy-merge">
+    <!--
         <title>The copy-modify-merge solution</title>
+    -->
+        <title>复制-修改-合并 解决方案</title>
 
         <para>
           <indexterm>
             <primary>version control</primary>
             <secondary>models</secondary>
             <tertiary>copy-modify-merge</tertiary>
-          </indexterm>Subversion, CVS, and many other version control
+          </indexterm>
+    <!--
+          Subversion, CVS, and many other version control
           systems use a <firstterm>copy-modify-merge</firstterm> model
           as an alternative to locking.  In this model, each user's
           client contacts the project repository and creates a
@@ -437,11 +453,21 @@
           version.  The version control system often assists with the
           merging, but ultimately, a human being is responsible for
           making it happen correctly.</para>
+    -->
+        Subversion, CVS 和许多其他的版本控制系统使用
+        <firstterm>复制-修改-合并</firstterm> (<firstterm>copy-modify-merge
+        </firstterm>) 模型作为锁机制的替代品. 在这个模型中, 每一个用户的
+        客户端都与仓库接触, 在本地创建一份私有的工作副本, 然后用户可以同时
+        地, 互不干扰地修改自己的私有副本, 最后, 私有副本被合并到一个新的
+        最终版本. 为了支持 复制-修改-合并 模型, 版本控制系统通常会提供合并
+        操作, 但是归根到底, 必须由用户自己来确保合并的结果是正确的.</para>
 
         <para>
           <indexterm>
             <primary>out of date</primary>
-          </indexterm>Here's an example.  Say that Harry and Sally
+          </indexterm>
+    <!--
+          Here's an example.  Say that Harry and Sally
           each create working copies of the same project, copied from
           the repository.  They work concurrently and make changes to
           the same file A within their copies.  Sally saves her
@@ -457,21 +483,41 @@
           <xref linkend="svn.basic.vsn-models.copy-merge.dia-1"/> and
           <xref linkend="svn.basic.vsn-models.copy-merge.dia-2"/> show
           this process.</para>
+    -->
+          我们通过例子来说明. 假设 Harry 和 Sally 各自创建了同一项目
+          的工作副本, 并在各自的工作副本中修改了同一文件 A. Sally 先把
+          修改保存到仓库中, 后面 Harry 试图保存自己的修改时, 仓库告诉他
+          文件 A 已经 <firstterm>过时</firstterm> (<firstterm>out of date
+          </firstterm>) 了, 换句话说, 自从他上一次复制了文件 A 之后, 仓库中
+          的文件 A 被更新了. 于是, Harry 告诉客户端把仓库中文件 A 的更新合
+          并到他的工作副本中 (这里不妨假设 Sally 的修改没有和他的修改重叠),
+          修改合并后, Harry 再一次向仓库保存了他自己的修改.
+          <xref linkend="svn.basic.vsn-models.copy-merge.dia-1"/> 和
+          <xref linkend="svn.basic.vsn-models.copy-merge.dia-2"/> 展示了
+          工作流程.</para>
 
         <figure id="svn.basic.vsn-models.copy-merge.dia-1">
+    <!--
           <title>The copy-modify-merge solution</title>
+    -->
+          <title>复制-修改-合并 解决方案</title>
           <graphic fileref="images/ch02dia4.png"/>
         </figure>
 
         <figure id="svn.basic.vsn-models.copy-merge.dia-2">
+    <!--
           <title>The copy-modify-merge solution (continued)</title>
+    -->
+          <title>复制-修改-合并 解决方案 (续)</title>
           <graphic fileref="images/ch02dia5.png"/>
         </figure>
 
         <para>
           <indexterm>
             <primary>conflicts</primary>
-          </indexterm>But what if Sally's changes
+          </indexterm>
+    <!--
+          But what if Sally's changes
           <emphasis>do</emphasis> overlap with Harry's changes?  What
           then?  This situation is called a
           <firstterm>conflict</firstterm>, and it's usually not much
@@ -486,7 +532,17 @@
           changes&mdash;perhaps after a discussion with Sally&mdash;he
           can safely save the merged file back to the
           repository.</para>
+    -->
+        但是如果 Sally 的修改和 Harry 重叠了, 那又会产生什么结果?
+        这种情况称为 <firstterm>冲突</firstterm>
+        (<firstterm>conflict</firstterm>), 通常不是什么大问题. 当 Harry
+        告诉客户端把仓库的最新修改合并到他的工作副本时, 副本中的文件 A
+        被标记为冲突状态: Harry 可以同时看到互相冲突的两套修改, 并对它们
+        进行手工选择. 软件不会自动地解决冲突, 只有人类才能理解冲突并做出
+        正确地选择. Harry 把重叠的修改解决后&mdash;可能是在和 Sally 沟通
+        之后&mdash;就可以把合并后的文件安全地保存到仓库中.</para>
 
+    <!--
         <para>The copy-modify-merge model may sound a bit chaotic, but
           in practice, it runs extremely smoothly.  Users can work in
           parallel, never waiting for one another.  When they work on
@@ -494,6 +550,11 @@
           changes don't overlap at all; conflicts are infrequent.  And
           the amount of time it takes to resolve conflicts is usually
           far less than the time lost by a locking system.</para>
+    -->
+        <para>复制-修改-合并 模型看起来好像有点混乱, 但是在实际使用中它
+          运行地很流畅. 用户可以并发地工作, 不用等待其他人, 当用户操作
+          同一文件时, 经验表明他们的大多数修改不会重叠, 冲突情况其实很少发
+          生. 解决冲突花费的时间通常要比使用锁机制浪费的时间要少得多.</para>
 
         <para>In the end, it all comes down to one critical factor:
           user communication.  When users communicate poorly, both
