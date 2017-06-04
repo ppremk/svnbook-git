@@ -624,8 +624,12 @@
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.basic.in-action">
+    <!--
     <title>Version Control the Subversion Way</title>
+    -->
+    <title>Subversion 的版本控制方法</title>
 
+    <!--
     <para>We've mentioned already that Subversion is a modern,
       network-aware version control system.  As we described in
       <xref linkend="svn.basic.version-control-basics"/> (our
@@ -635,11 +639,21 @@
       interact with that data.  In this section, we'll begin to
       introduce the specific ways in which Subversion implements
       version control.</para>
+    -->
+    <para>我们已经提到 Subversion 是一个现代的, 可识别网络的版本控制系统. 在
+      <xref linkend="svn.basic.version-control-basics"/> 说过 (从较高的层次
+      看待版本控制), 仓库是存放 Subversion 的版本控制数据的中央位置, 用户及
+      其软件通过工作副本与仓库交互. 本节介绍 Subversion 的版本控制实现方法.
+    </para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.basic.svn-repositories">
+    <!--
       <title>Subversion Repositories</title>
+    -->
+      <title>Subversion 的仓库</title>
 
+    <!--
       <para>Subversion implements the concept of a version control
         repository much as any other modern version control system
         would.  Unlike a working copy, a Subversion repository is an
@@ -651,8 +665,15 @@
         copy and how to manipulate it.  For the finer details of the
         repository, though, check out
         <xref linkend="svn.reposadmin"/>.</para>
+    -->
+      <para>Subversion 实现仓库的方式与其他版本控制系统非常类似. 与工作副本
+        不同, 一个 Subversion 仓库是一个抽象的实体, 可以被 Subversion 的库
+        和工具进行独占性地操作. 因为大多数用户是在工作副本中通过客户端工具
+        与 Subversion 交互, 所以本书主要讨论工作副本以及如何操作它, 关于
+        仓库的细节请参考 <xref linkend="svn.reposadmin"/>.</para>
 
       <warning id="svn.basic.svn-repositories.not-working-copy">
+    <!--
         <para>In Subversion, the client-side object which every user
           of the system has&mdash;the directory of versioned files,
           along with metadata that enables the system to track them
@@ -662,17 +683,31 @@
           the client-side object, it is both incorrect and a common
           source of confusion to use the term in that way in the
           context of Subversion.</para>
+    -->
+        <para>在 Subversion 中, 每一个版本控制系统用户都有的客户端对象
+          &mdash;一个目录, 目录中除了存放被版本控制的文件外, 还有用于跟踪
+          文件和与服务器通信的元数据&mdash;叫做 <emphasis>工作副本</emphasis>
+          (working copy). 虽然有些版本控制系统使用 <quote>仓库</quote> 表示
+          存放在客户端的对象, 但这种说法并不正确, 而且在 Subversion 中会让
+          用户感到困惑.</para>
 
+    <!--
         <para>Working copies are described later, in
           <xref linkend="svn.basic.in-action.wc"/>.</para>
+    -->
+        <para><xref linkend="svn.basic.in-action.wc"/> 介绍工作副本.</para>
       </warning>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.basic.in-action.revs">
+    <!--
       <title>Revisions</title>
+    -->
+      <title>版本号</title>
 
+    <!--
       <para>A Subversion client commits (that is, communicates the
         changes made to) any number of files and directories as a
         single atomic transaction.  By atomic transaction, we mean
@@ -680,38 +715,65 @@
         repository, or none of them is.  Subversion tries to retain
         this atomicity in the face of program crashes, system crashes,
         network problems, and other users' actions.</para>
+    -->
+      <para>Subversion 客户端将任意多的文件和目录的修改作为一个原子事务提交
+        给仓库. 原子事务的意思是要么所有的修改都被仓库接受, 要么一个也没有.
+        Subversion 尽量保证即使是在程序崩溃, 操作系统崩溃, 网络断开和有其他
+        用户干扰的情况下, 也能维持住原子性.</para>
 
       <para>
         <indexterm>
           <primary>revisions</primary>
-        </indexterm>Each time the repository accepts a commit, this
+        </indexterm>
+    <!--
+        Each time the repository accepts a commit, this
         creates a new state of the filesystem tree, called a
         <firstterm>revision</firstterm>.  Each revision is assigned a
         unique natural number, one greater than the number assigned to
         the previous revision.  The initial revision of a freshly
         created repository is numbered 0 and consists of nothing but
         an empty root directory.</para>
+    -->
+        仓库每接受一次提交都会为文件系统树创建一个新状态, 叫作一个
+        <firstterm>修订号</firstterm> (<firstterm>revision</firstterm>).
+        每一个修订号都与一个独一无二的自然数相关联, 后一个修订号都比前一个
+        大一. 新创建的仓库的初始修订号是 0, 除了一个空的根目录外, 什么也没
+        有.</para>
 
+    <!--
       <para><xref linkend="svn.basic.in-action.revs.dia-1"/>
         illustrates a nice way to visualize the repository.  Imagine
         an array of revision numbers, starting at 0, stretching from
         left to right.  Each revision number has a filesystem tree
         hanging below it, and each tree is a <quote>snapshot</quote>
         of the way the repository looked after a commit.</para>
+    -->
+      <para><xref linkend="svn.basic.in-action.revs.dia-1"/> 以可视化的方式
+        展示了仓库的修订号在时间上的变化. 想像有一个由修订号号码组成的队列,
+        从 0 开始, 从左向右伸展. 每一个修订号下面都挂着一个文件系统树, 每一
+        个文件系统树都是本次提交后仓库的 <quote>快照</quote> (snapshot).</para>
 
       <figure id="svn.basic.in-action.revs.dia-1">
+    <!--
         <title>Tree changes over time</title>
+    -->
+        <title>文件系统树在时间上的变化</title>
         <graphic fileref="images/ch02dia7.png"/>
       </figure>
 
       <sidebar>
+    <!--
         <title>Global Revision Numbers</title>
+    -->
+        <title>全局的版本号号码</title>
 
         <para>
           <indexterm>
             <primary>revisions</primary>
             <secondary>global</secondary>
-          </indexterm>Unlike most version control systems,
+          </indexterm>
+    <!--
+          Unlike most version control systems,
           Subversion's revision numbers apply to <emphasis>the entire
           repository tree</emphasis>, not individual files.  Each
           revision number selects an entire tree, a particular state
@@ -727,6 +789,17 @@
           so this concept may seem unusual at first. (Former CVS users
           might want to see <xref linkend="svn.forcvs"/> for more
           details.)</para>
+    -->
+        不像其他大多数的版本控制系统, Subversion 的修订号被应用到
+          <emphasis>整个仓库</emphasis>, 而不是单个文件. 每一个修订号都对应
+          着仓库的一个提交后的状态, 例如修订号 N 表示仓库在第 N 次提交后的状
+          态. 如果有一个 Subversion 用户在讨论 <quote><filename>foo.c
+            </filename> 的修订号 5</quote>, 实际上他们说的是 <quote>在修订号
+            5 中的 <filename>foo.c</filename></quote>. 需要注意的是一个文件
+          在修订号 N 和 M 中可能是一样的! 很多版本控制系统使用的修订号是针
+          对每个文件的, 所以全局的版本号号码一开始可能会让用户觉得不太寻常
+          (以前的 CVS 用户可以从 <xref linkend="svn.forcvs"/> 得到更多的
+          细节).</para>
       </sidebar>
 
     </sect2>
