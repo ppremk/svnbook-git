@@ -735,9 +735,9 @@
         an empty root directory.</para>
     -->
         仓库每接受一次提交都会为文件系统树创建一个新状态, 叫作一个
-        <firstterm>修订号</firstterm> (<firstterm>revision</firstterm>).
-        每一个修订号都与一个独一无二的自然数相关联, 后一个修订号都比前一个
-        大一. 新创建的仓库的初始修订号是 0, 除了一个空的根目录外, 什么也没
+        <firstterm>版本号</firstterm> (<firstterm>revision</firstterm>).
+        每一个版本号都与一个独一无二的自然数相关联, 后一个版本号都比前一个
+        大一. 新创建的仓库的初始版本号是 0, 除了一个空的根目录外, 什么也没
         有.</para>
 
     <!--
@@ -749,8 +749,8 @@
         of the way the repository looked after a commit.</para>
     -->
       <para><xref linkend="svn.basic.in-action.revs.dia-1"/> 以可视化的方式
-        展示了仓库的修订号在时间上的变化. 想像有一个由修订号号码组成的队列,
-        从 0 开始, 从左向右伸展. 每一个修订号下面都挂着一个文件系统树, 每一
+        展示了仓库的版本号在时间上的变化. 想像有一个由版本号号码组成的队列,
+        从 0 开始, 从左向右伸展. 每一个版本号下面都挂着一个文件系统树, 每一
         个文件系统树都是本次提交后仓库的 <quote>快照</quote> (snapshot).</para>
 
       <figure id="svn.basic.in-action.revs.dia-1">
@@ -790,13 +790,13 @@
           might want to see <xref linkend="svn.forcvs"/> for more
           details.)</para>
     -->
-        不像其他大多数的版本控制系统, Subversion 的修订号被应用到
-          <emphasis>整个仓库</emphasis>, 而不是单个文件. 每一个修订号都对应
-          着仓库的一个提交后的状态, 例如修订号 N 表示仓库在第 N 次提交后的状
+        不像其他大多数的版本控制系统, Subversion 的版本号被应用到
+          <emphasis>整个仓库</emphasis>, 而不是单个文件. 每一个版本号都对应
+          着仓库的一个提交后的状态, 例如版本号 N 表示仓库在第 N 次提交后的状
           态. 如果有一个 Subversion 用户在讨论 <quote><filename>foo.c
-            </filename> 的修订号 5</quote>, 实际上他们说的是 <quote>在修订号
+            </filename> 的版本号 5</quote>, 实际上他们说的是 <quote>在版本号
             5 中的 <filename>foo.c</filename></quote>. 需要注意的是一个文件
-          在修订号 N 和 M 中可能是一样的! 很多版本控制系统使用的修订号是针
+          在版本号 N 和 M 中可能是一样的! 很多版本控制系统使用的版本号是针
           对每个文件的, 所以全局的版本号号码一开始可能会让用户觉得不太寻常
           (以前的 CVS 用户可以从 <xref linkend="svn.forcvs"/> 得到更多的
           细节).</para>
@@ -806,16 +806,24 @@
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.reposurls">
+    <!--
       <title>Addressing the Repository</title>
+    -->
+      <title>仓库寻址</title>
 
       <para>
         <indexterm>
           <primary>repository URL</primary>
-        </indexterm>Subversion client programs use URLs to identify
+        </indexterm>
+    <!--
+        Subversion client programs use URLs to identify
         versioned files and directories in Subversion repositories.
         For the most part, these URLs use the standard syntax,
         allowing for server names and port numbers to be specified as
         part of the URL.</para>
+    -->
+      Subversion 客户端工具使用 URL 识别仓库中的文件与目录. 在大部分情况下,
+      这些 URL 使用标准的语法, 允许在 URL 中包含服务器的域名和端口号.</para>
 
       <informalexample>
         <itemizedlist spacing="compact">
@@ -828,6 +836,7 @@
         </itemizedlist>
       </informalexample>
 
+    <!--
       <para>Subversion repository URLs aren't limited to only
         the <literal>http://</literal> variety.  Because Subversion
         offers several different ways for its clients to communicate
@@ -838,51 +847,89 @@
         repository access methods.  For more details about
         Subversion's server options, see
         <xref linkend="svn.serverconfig"/>.</para>
+    -->
+      <para>Subversion 仓库的 URL 不仅限于 <literal>http://</literal>,
+        因为 Subversion 向客户端提供了几种不同的通信方式, 所以根据具体的仓库
+        访问方式, 用于寻址仓库的 URL 参数也会有微妙的差别.
+        <xref linkend="svn.basic.in-action.wc.tbl-1"/> 展示了不同的 URL 模式
+        如何映射到仓库的访问方式. 关于 Subversion 的服务器选项的更多内容,
+        见 <xref linkend="svn.serverconfig"/>.</para>
 
       <table id="svn.basic.in-action.wc.tbl-1">
+    <!--
         <title>Repository access URLs</title>
+    -->
+        <title>访问仓库的 URL 参数</title>
         <tgroup cols="2">
           <thead>
             <row>
+    <!--
               <entry>Schema</entry>
               <entry>Access method</entry>
+    -->
+              <entry>模式</entry>
+              <entry>访问方式</entry>
             </row>
           </thead>
           <tbody>
             <row>
               <entry><literal>file:///</literal></entry>
+    <!--
               <entry>Direct repository access (on local disk)</entry>
+    -->
+              <entry>直接仓库访问 (仓库在本地磁盘上)</entry>
             </row>
             <row>
               <entry><literal>http://</literal></entry>
+    <!--
               <entry>Access via WebDAV protocol to Subversion-aware
                 Apache server</entry>
+    -->
+              <entry>通过 WebDAV 协议访问可识别 Subversion 的 Apache 服务器
+              </entry>
             </row>
             <row>
               <entry><literal>https://</literal></entry>
+    <!--
               <entry>Same as <literal>http://</literal>, but with
                 SSL encapsulation (encryption and authentication)</entry>
+    -->
+              <entry>和 <literal>http://</literal> 相同, 但是增加了
+                SSL 封装 (加密和授权)</entry>
             </row>
             <row>
               <entry><literal>svn://</literal></entry>
+    <!--
               <entry>Access via custom protocol to an
                 <literal>svnserve</literal> server</entry>
+    -->
+              <entry>通过传统的协议访问 <literal>svnserve</literal> 服务器
+              </entry>
             </row>
             <row>
               <entry><literal>svn+ssh://</literal></entry>
+    <!--
               <entry>Same as <literal>svn://</literal>, but through
                 an SSH tunnel</entry>
+    -->
+              <entry>和 <literal>svn://</literal> 相同, 但是增加了 SSH
+                隧道</entry>
             </row>
           </tbody>
         </tgroup>
       </table>
 
+    <!--
       <para>Subversion's handling of URLs has some notable nuances.
         For example, URLs containing the <literal>file://</literal>
         access method (used for local repositories) must, in
         accordance with convention, have either a server name
         of <literal>localhost</literal> or no server name at
         all:</para>
+    -->
+      <para>Subversion 处理 URL 的方式有一些细微的差别, 例如包含
+        <literal>file://</literal> 的 URL 要么以 <literal>localhost</literal>
+        作为服务器名, 要么不含有服务器名:</para>
 
       <informalexample>
         <itemizedlist spacing="compact">
