@@ -942,6 +942,7 @@
         </itemizedlist>
       </informalexample>
 
+      <!--
       <para>Also, users of the <literal>file://</literal> scheme on
         Windows platforms will need to use an unofficially
         <quote>standard</quote> syntax for accessing repositories
@@ -950,6 +951,11 @@
         following URL path syntaxes will work, where
         <literal>X</literal> is the drive on which the repository
         resides:</para>
+      -->
+      <para>如果工作副本和仓库不在同一个驱动器上, 那么 Windows 用户在使用
+        <literal>file://</literal> 模式时需要用到一种非官方的
+        <quote>标准</quote> 语法. 下面是两个例子, 其中 <literal>X</literal>
+        表示仓库所在的驱动器盘符:</para>
 
       <informalexample>
         <itemizedlist spacing="compact">
@@ -962,6 +968,7 @@
         </itemizedlist>
       </informalexample>
 
+      <!--
       <para>Note that a URL uses forward slashes even though the
         native (non-URL) form of a path on Windows uses backslashes.
         Also note that when using
@@ -969,8 +976,15 @@
         form at the command line, you need to quote the URL (wrap it
         in quotation marks) so that the vertical bar character is not
         interpreted as a pipe.</para>
+      -->
+      <para>注意, 虽然 Windows 的路径使用反斜杠, 但是 URL 仍然需要使用
+        正斜杠. 另外还要注意的是在命令行上输入
+        <literal>file://<replaceable>X</replaceable>|/</literal>
+        形式的字符串时, 你需要用双引号把它包裹起来, 这样的话竖线符就不会
+        被翻译成管道.</para>
 
       <note>
+      <!--
         <para>You cannot use Subversion's <literal>file://</literal> URLs
           in a regular web browser the way you can use typical
           <literal>file://</literal> URLs.  When you attempt to view
@@ -981,8 +995,15 @@
           linkend="svn.developer.layerlib.repos" />), and your browser
           will not understand how to interact with that
           filesystem.</para>
+      -->
+        <para>你不能在网页浏览器上输入 Subversion 的 <literal>file://</literal>
+          形式的 URL 来访问仓库, 如果真这样做了, 网页浏览器会以访问普通文件系
+          统的方式显示目录中文件的内容. 然而, Subversion 的资源存放在一个虚拟
+          的文件系统中 (见 <xref linkend="svn.developer.layerlib.repos"/>),
+          而网页浏览器不知道如何与这种文件系统进行交互.</para>
       </note>
 
+      <!--
       <para>The Subversion client will automatically encode URLs as
         necessary, just like a web browser does.  For example, the URL
         <literal>http://host/path with space/project/españa</literal>
@@ -993,7 +1014,15 @@
         If the URL contains spaces, be sure to place it within
         quotation marks at the command line so that your shell treats
         the whole thing as a single argument to the program.</para>
+      -->
+      <para>Subversion 客户端会自动对 URL 进行编码, 就像网页浏览器那样. 例如,
+        URL <literal>http://host/path with space/project/españa</literal>
+        &mdash;其中包含了空格和超 ASCII 字符&mdash;被 Subversion 自动解释成
+        <literal>http://host/path%20with%20space/project/espa%C3%B1a</literal>.
+        如果 URL 包含空格, 就要用双引号把它包裹起来, 这样的话 Shell 就不会
+        错误地把它切分成多个参数.</para>
 
+      <!--
       <para>There is one notable exception to Subversion's handling of
         URLs which also applies to its handling of local paths in many
         contexts, too.  If the final path component of your URL or
@@ -1001,6 +1030,12 @@
         to use a special syntax&mdash;described in
         <xref linkend="svn.advanced.pegrevs" />&mdash;in order to make
         Subversion properly address that resource.</para>
+      -->
+      <para>Subversion 在处理 URL 参数 (包括本地路径) 时, 有一个例外情况需
+        要特别注意. 如果 URL 或本地路径的最后一个分量含有符号
+        <literal>@</literal>, 为了让 Subversion 能够正确地对资源进行寻址,
+        你需要使用一种特殊的语法&mdash;具体内容将在
+        <xref linkend="svn.advanced.pegrevs"/> 介绍.</para>
 
       <para>
         <indexterm>
@@ -1012,7 +1047,9 @@
         <indexterm>
           <primary>^</primary>
           <see>caret syntax</see>
-        </indexterm>In Subversion 1.6, a new caret (<literal>^</literal>)
+        </indexterm>
+    <!--
+        In Subversion 1.6, a new caret (<literal>^</literal>)
         notation was introduced as a shorthand for <quote>the URL of
         the repository's root directory</quote>.  For example, you can
         use the <literal>^/tags/bigsandwich/</literal> to refer to the
@@ -1030,6 +1067,18 @@
         a caret is an escape character on their platform.  Therefore,
         use a double caret <literal>^^</literal> if you run the
         Subversion client on a Windows machine.
+    -->
+        Subversion 1.6 引入了一个新记号&mdash;脱字符 (<literal>^</literal>)
+        &mdash;用来表示仓库根目录的 URL. 比如说用户可以用
+        <literal>^/tags/bigsandwich/</literal> 表示项目根目录中的
+        <filename>/tags/bigsandwich</filename> 的 URL, 这种 URL 称为
+        <firstterm>仓库的相对 URL</firstterm>
+        (<firstterm>repository-relative URL</firstterm>). 这种语法只能在
+        工作副本中使用&mdash;客户端需要从工作副本的元数据中获取仓库根目录的
+        URL. 另外, 使用仓库的相对 URL 访问仓库的根目录时需要写成
+        <literal>^/</literal> (末尾要有一个斜杠), 而不是 <literal>^</literal>.
+        Windows 用户不要忘了在他们的操作系统中, 脱字符是一个转义字符,
+        因此为了表示一个脱字符, 需要写成 <literal>^^</literal>.
       </para>
 
         
