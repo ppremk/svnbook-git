@@ -1422,7 +1422,9 @@ $
           <indexterm>
             <primary>checking in</primary>
             <see>committing</see>
-          </indexterm>Suppose you make changes
+          </indexterm>
+      <!--
+          Suppose you make changes
           to <filename>button.c</filename>.  Since
           the <filename>.svn</filename> directory remembers the file's
           original modification date and contents, Subversion can tell
@@ -1431,6 +1433,14 @@ $
           The act of publishing your changes is more commonly known as
           <firstterm>committing</firstterm> (or <firstterm>checking
           in</firstterm>) changes to the repository.</para>
+      -->
+          假设用户修改了文件 <filename>button.c</filename>, 因为
+          <filename>.svn</filename> 记录了文件原来的修改日期和内容, 所以
+          Subversion 可以检测到用户修改了文件, 但是 Subversion 不会自动地
+          发布修改, 除非用户显式地告诉它要这么做. <quote>发布修改</quote>
+          这个操作更常见的说法是向仓库 <firstterm>提交</firstterm>
+          (<firstterm>committing</firstterm>) 或 <firstterm>检入</firstterm>
+          (<firstterm>checking in</firstterm>) 修改.</para>
 
         <para>
           <indexterm>
@@ -1440,8 +1450,13 @@ $
           </indexterm>
           <indexterm>
             <primary>committing</primary>
-          </indexterm>To publish your changes, you can use
+          </indexterm>
+      <!--
+          To publish your changes, you can use
           Subversion's <command>svn commit</command> command:</para>
+      -->
+        用户为了发布修改, 需要使用 Subversion 的命令
+        <command>svn commit</command>:</para>
 
         <informalexample>
           <screen>
@@ -1453,19 +1468,33 @@ $
 </screen>
         </informalexample>
 
+      <!--
         <para>Now your changes to <filename>button.c</filename> have
           been committed to the repository, with a note describing your
           change (namely, that you fixed a typo).  If another user
           checks out a working copy of <filename>/calc</filename>, she
           will see your changes in the latest version of the
           file.</para>
+      -->
+        <para>用户对文件 <filename>button.c</filename> 的修改现在就已经正式
+          提交到了仓库中, 提交日志还附带了一条描述修改的注解 (在上面的例子中是
+          修改了一个拼写错误). 如果有另一个用户检出了
+          <filename>/calc</filename> 的工作副本, 他就会在最新版本
+          <filename>button.c</filename> 中看到用户新提交的修改.</para>
 
+      <!--
         <para>Suppose you have a collaborator, Sally, who checked out a
           working copy of <filename>/calc</filename> at the same time
           you did.  When you commit your change to
           <filename>button.c</filename>, Sally's working copy is left
           unchanged; Subversion modifies working copies only at the
           user's request.</para>
+      -->
+        <para>假设你有一个同事 Sally, 在你修改 <filename>button.c</filename>
+          的同时, 他也检出了一个 <filename>/calc</filename> 的工作副本. 当
+          你把 <filename>button.c</filename> 的修改提交到仓库后, Sally 的
+          工作副本并不会自动地把修改同步到本地&mdash;只有在用户的显式要求下,
+          Subversion 才会更新工作副本.</para>
 
         <para>
           <indexterm>
@@ -1480,12 +1509,20 @@ $
             <primary>working copies</primary>
             <secondary>updating</secondary>
             <see>updating</see>
-          </indexterm>To bring her project up to date, Sally can ask
+          </indexterm>
+      <!--
+          To bring her project up to date, Sally can ask
           Subversion to <firstterm>update</firstterm> her working
           copy, by using the <command>svn update</command> command.
           This will incorporate your changes into her working copy, as
           well as any others that have been committed since she
           checked it out.</para>
+      -->
+        为了把工作副本更新到最新的状态, Sally 可以要求 Subversion
+        <firstterm>更新</firstterm> (<firstterm>update</firstterm>) 他的工作
+        副本, 用到的命令是 <command>svn update</command>. 如果在 Sally 检
+        出工作副本之后, 有人向仓库提交了修改, 命令就会把这些修改都合并到他
+        的工作副本中.</para>
 
         <informalexample>
           <screen>
@@ -1501,6 +1538,7 @@ $
 </screen>
         </informalexample>
 
+      <!--
         <para>The output from the <command>svn update</command> command
           indicates that Subversion updated the contents of
           <filename>button.c</filename>.  Note that Sally didn't need to
@@ -1508,18 +1546,28 @@ $
           in the <filename>.svn</filename> directory as well as further
           information in the repository, to decide which files need to
           be brought up to date.</para>
+      -->
+        <para>上面 <command>svn update</command> 的输出指出了 Subversion
+          更新了 <filename>button.c</filename> 的内容. 注意, Sally 不需要
+          指定应该更新哪些文件, 根据 <filename>.svn</filename> 和仓库中的
+          信息, Subversion 可以自动判断出哪些文件需要被更新.</para>
 
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.basic.in-action.mixedrevs">
+      <!--
         <title>Mixed-revision working copies</title>
+      -->
+        <title>版本号混合的工作副本</title>
 
         <para>
           <indexterm>
             <primary>working copies</primary>
             <secondary>mixed-revision</secondary>
-          </indexterm>As a general principle, Subversion tries to be
+          </indexterm>
+      <!--
+          As a general principle, Subversion tries to be
           as flexible as possible.  One special kind of flexibility is
           the ability to have a working copy containing files and
           directories with a mix of different working revision
@@ -1528,6 +1576,12 @@ $
           files from several different revisions.  For example,
           suppose you check out a working copy from a repository whose
           most recent revision is 4:</para>
+      -->
+        尽量保持灵活性是 Subversion 的总体原则, 其中一项灵活性是 Subversion
+        支持同一个工作副本中的文件和目录可以拥有不同的工作版本号. Subversion
+        的工作副本不必总是对应仓库中的一个单一的版本号, 其中的文件可以来自
+        不同的版本号. 例如, 假设用户从仓库检出了一个工作副本, 而该仓库最新
+        的版本号是 4:</para>
 
         <informalexample>
           <literallayout>
@@ -1538,12 +1592,18 @@ calc/
 </literallayout>
         </informalexample>
 
+      <!--
         <para>At the moment, this working directory corresponds exactly
           to revision 4 in the repository.  However, suppose you make a
           change to <filename>button.c</filename>, and commit that
           change.  Assuming no other commits have taken place, your
           commit will create revision 5 of the repository, and your
           working copy will now look like this:</para>
+      -->
+        <para>此时的工作副本对应仓库的版本号 4. 如果用户修改了文件
+          <filename>button.c</filename>, 并提交了修改, 假设在此之前没有其他
+          用户向提交提交过修改, 那么刚才的提交将会为仓库创建版本号 5,
+          工作副本变成了:</para>
 
         <informalexample>
           <literallayout>
@@ -1554,10 +1614,15 @@ calc/
 </literallayout>
         </informalexample>
 
+      <!--
         <para>Suppose that, at this point, Sally commits a change to
           <filename>integer.c</filename>, creating revision 6.  If you
           use <command>svn update</command> to bring your working copy
           up to date, it will look like this:</para>
+      -->
+        <para>假设这时候 Sally 提交了 <filename>integer.c</filename> 的
+          修改, 创建了版本号 6. 如果你执行了命令 <command>svn update</command>,
+          Subversion 就会把工作副本更新到最新版, 变成:</para>
 
         <informalexample>
           <literallayout>
@@ -1568,6 +1633,7 @@ calc/
 </literallayout>
         </informalexample>
 
+      <!--
         <para>Sally's change to <filename>integer.c</filename> will
           appear in your working copy, and your change will still be
           present in <filename>button.c</filename>.  In this example,
@@ -1577,10 +1643,21 @@ calc/
           indicate that it is still current.  So, after you do a clean
           update at the top of your working copy, it will generally
           correspond to exactly one revision in the repository.</para>
+      -->
+        <para>Sally 对 <filename>integer.c</filename> 的修改出现在了你的工作
+          副本中, 你的修改依然保留在 <filename>button.c</filename> 中. 在这
+          个例子里, <filename>Makefile</filename> 在版本号 4, 5 和 6 中都
+          保持不变. 于是, 在工作副本的顶层目录执行了
+          <command>svn update</command> 后, 工作副本才精确地对应到了仓库的
+          同一个版本号.</para>
   
         <sect4 id="svn.basic.in-action.mixedrevs.update-commit">
+      <!--
           <title>Updates and commits are separate</title>
+      -->
+          <title>更新和提交是分开的</title>
 
+      <!--
           <para>One of the fundamental rules of Subversion is that
             a <quote>push</quote> action does not cause
             a <quote>pull</quote> nor vice versa.  Just
@@ -1590,6 +1667,13 @@ calc/
             <command>svn update</command> should gracefully merge
             repository changes into your own, rather than forcing you to
             publish them.</para>
+      -->
+          <para>Subversion 的一条基本规则是一次 <quote>推送</quote> (push)
+            操作不会产生一次 <quote>抓取</quote> (pull) 操作, 反之依然成立.
+            理由是用户准备好向仓库提交修改并不表示他已经准备好接收其他人提交
+            的修改, 另外, 如果用户的修改还未完全完成, 命令
+            <command>svn update</command> 应该把仓库的修改合并到本地, 但不
+            应该强迫用户提交本地未完成的修改.</para>
 
           <para>The main side effect of this rule is that it means a
             working copy has to do extra bookkeeping to track mixed
