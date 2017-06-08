@@ -1675,12 +1675,18 @@ calc/
             <command>svn update</command> 应该把仓库的修改合并到本地, 但不
             应该强迫用户提交本地未完成的修改.</para>
 
+      <!--
           <para>The main side effect of this rule is that it means a
             working copy has to do extra bookkeeping to track mixed
             revisions as well as be tolerant of the mixture.  It's made
             more complicated by the fact that directories themselves are
             versioned.</para>
+      -->
+          <para>这条规则主要的副作用是工作副本必须记录额外的信息来跟踪混合
+            的版本号, 同时还要能够处理版本号混合的情况. 目录也是版本库的一部
+            分, 这使得情况变得更加复杂.</para>
 
+      <!--
           <para>For example, suppose you have a working copy entirely
             at revision 10, while others have been committing their
             changes so that the youngest revision in the repository is
@@ -1707,12 +1713,31 @@ calc/
             revision 10.  Only by running <command>svn
             update</command> can the latest changes be downloaded and
             the whole working copy be marked as revision 15.</para>
+      -->
+          <para>举例来说, 假设你有一个版本号是 10 的工作副本, 检出后有人往
+            仓库提交了修改, 仓库最新的版本号是 14. 你修改了文件
+            <filename>foo.html</filename>, 然后向仓库提交了修改, 创建了新版本
+            号 15, 提交完成后, 许多 Subversion 新手可能会认为工作副本的版本号
+            会自动更新到 16, 但事实并非如此. 在版本号 10 和 15 之间, 仓库可
+            能发生了任意次数的修改, 但是客户端对此一无所知, 因为你并没有执行
+            <command>svn update</command>, 而 <command>svn commit</command>
+            并不会自动从仓库抓取更新. 如果让 <command>svn commit</command>
+            自动下载更新, 它就会把工作副本整体的版本号更新到 15&mdash;但是这
+            样做就违背了基本规则 <quote>推送和抓取是分开</quote>. 于是, 客户
+            端唯一能做的安全操作是只把文件 <filename>foo.html</filename> 的
+            版本号更新到 15, 工作副本中的其他文件与目录的版本号依然停留在 10.
+            只有在执行 <command>svn update</command> 后, 仓库的最新修改才会
+            被下载到本地, 并把工作副本的版本号更新到 15.</para>
 
         </sect4>
 
         <sect4 id="svn.basic.in-action.mixedrevs.normal">
+      <!--
           <title>Mixed revisions are normal</title>
+      -->
+          <title>版本号混合是正常情况</title>
 
+      <!--
           <para>The fact is, <emphasis>every time</emphasis> you run
             <command>svn commit</command> your working copy ends up
             with some mixture of revisions.  The things you just
@@ -1722,11 +1747,22 @@ calc/
             of revisions.  Even if you're the only person using the
             repository, you will still see this phenomenon.  To examine
             your mixture of working revisions, use the <command>svn
-            status</command> command with the <option>--verbose</option>
+            status</command> command with the <option>- -verbose</option>
             (<option>-v</option>) option (see
             <xref linkend="svn.tour.cycle.examine.status"/> for more
             information).</para>
+      -->
+          <para>事实上, <emphasis>每次</emphasis> 执行
+            <command>svn commit</command> 都会产生新的版本号混合的情况, 刚被
+            提交的文件或目录的版本号是工作副本中的最大值. 再经历过几次提交
+            后 (提交之间没有执行更新操作), 工作副本的版本号就已经处于一种非常
+            混乱的情况, 即使在此期间只有一个人在往仓库提交修改, 这种情况也会
+            发生. 为了查看版本号的混乱情况, 带上选项
+            <option>--verbose</option> (<option>-v</option>) 执行
+            <command>svn status</command> (参考
+            <xref linkend="svn.tour.cycle.examine.status"/>.</para>
 
+      <!--
           <para>Often, new users are completely unaware that their
             working copy contains mixed revisions.  This can be
             confusing, because many client commands are sensitive to the
@@ -1740,16 +1776,30 @@ calc/
             <command>svn update</command> hasn't been run in a long
             time), the history of the <emphasis>older</emphasis>
             version of the object is shown.</para>
+      -->
+          <para>新用户常常没有意识到他们的工作副本包含了混合的版本号, 有时候
+            可能会让他们感到很困惑, 因为很多客户端命令对文件或目录的版本号
+            很敏感. 例如, 命令 <command>svn log</command> 会列出文件或目录
+            的修改历史 (见 <xref linkend="svn.tour.history.log"/>, 当用户对
+            某个文件执行 <command>svn log</command> 时, 他很可能想看到文件的
+            全部修改历史, 但是如果文件在工作副本中的版本号太老了 (常常是因
+            为太久没有执行过 <command>svn update</command>), 那么较新的修改
+            历史就不会显示出来.</para>
 
         </sect4>
 
         <sect4 id="svn.basic.in-action.mixedrevs.useful">
+      <!--
           <title>Mixed revisions are useful</title>
+      -->
+          <title>版本号混合是有益的</title>
 
           <para>
             <indexterm>
               <primary>backdating</primary>
-            </indexterm>If your project is sufficiently complex, you'll
+            </indexterm>
+      <!--
+            If your project is sufficiently complex, you'll
             discover that it's sometimes nice to
             forcibly <firstterm>backdate</firstterm> (or update to a
             revision older than the one you already have) portions of
@@ -1762,21 +1812,41 @@ calc/
             version control system&mdash;the feature that allows you
             to move any portion of your working copy forward and
             backward in history.</para>
+      -->
+          如果项目足够复杂, 你就会发现只把工作副本的某一部分
+          <firstterm>回退</firstterm> (<firstterm>backdate</firstterm>)
+          到一个较旧的版本会很方便&mdash;我们将会在 <xref linkend="svn.tour"/>
+          介绍如何完成这种操作. 也许是你想要测试存放在某个子目录中的子模块
+          早期版本, 又或许是你想要查出某个文件的问题是在什么时候第一次出现.
+          这是版本控制系统 <quote>时间机器</quote> 特性, 该特性允许用户把
+          工作副本的任意一部分在时间上向前或向后移动.</para>
 
         </sect4>
 
         <sect4 id="svn.basic.in-action.mixedrevs.limits">
+      <!--
           <title>Mixed revisions have limitations</title>
+      -->
+          <title>版本号混合的限制</title>
 
+      <!--
           <para>However you make use of mixed revisions in your working
             copy, there are limitations to this flexibility.</para>
+      -->
+          <para>不过, 在使用工作副本的版本号混合特性时会有一些限制条件.</para>
 
+      <!--
           <para>First, you cannot commit the deletion of a file or
             directory that isn't fully up to date.  If a newer version
             of the item exists in the repository, your attempt to delete
             will be rejected to prevent you from accidentally
             destroying changes you've not yet seen.</para>
+      -->
+          <para>首先, 如果你删除了过时的文件或目录, 则不能提交删除. 因为如果
+            仓库中有更新的版本, 该限制就可以避免用户在没有看到新版本的情况下
+            做出错误的决定.</para>
 
+      <!--
           <para>Second, you cannot commit a metadata change to a
             directory unless it's fully up to date.  You'll learn about
             attaching <quote>properties</quote> to items in <xref
@@ -1784,11 +1854,20 @@ calc/
             defines a specific set of entries and properties, and thus
             committing a property change to an out-of-date directory may
             destroy properties you've not yet seen.</para>
+      -->
+          <para>然后, 除非目录是最新的, 否则不能提交该目录的元数据修改 (我们
+            将在 <xref linkend="svn.advanced"/> 介绍如何为项目 (item) 添加
+            属性). 目录的工作版本号定义了一个条目和属性的特定集合, 提交过时
+            的目录的属性修改可以会销毁用户还没有看到的属性.</para>
 
+      <!--
           <para>Finally, beginning in Subversion 1.7, you cannot by
             default use a mixed-revision working copy as the target of
             a merge operation.  (This new requirement was introduced
             to prevent common problems which stem from doing so.)</para>
+      -->
+          <para>最后, 从 Subversion 1.7 开始, 含有版本号混合情况的工作副本
+            不能作为合并操作的目标 (引入这个限制的原因和前面两条类似).</para>
 
         </sect4>
       </sect3>
@@ -1799,36 +1878,57 @@ calc/
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.basic.summary">
+      <!--
     <title>Summary</title>
+      -->
+    <title>小结</title>
     
+      <!--
     <para>We covered a number of fundamental Subversion concepts in
       this chapter:</para>
+      -->
+    <para>本章介绍了 Subversion 的很多基本概念:</para>
 
     <itemizedlist>
       <listitem>
+      <!--
         <para>We introduced the notions of the central repository,
           the client working copy, and the array of repository
           revision trees.</para>
+      -->
+        <para>介绍了中央版本库, 客户端工作副本, 以及仓库版本号树组成的队列.
+        </para>
       </listitem>
 
       <listitem>
+      <!--
         <para>We saw some simple examples of how two collaborators
           can use Subversion to publish and receive changes from one
           another, using the <quote>copy-modify-merge</quote>
           model.</para>
+      -->
+        <para>通过几个简单的例子, 介绍了如何利用 <quote>复制-修改-合并</quote>
+          模型, 和同事协作使用 Subversion 发布和接收修改.</para>
       </listitem>
 
       <listitem>
         <para>We talked a bit about the way Subversion tracks and
           manages information in a working copy.</para>
+        <para>关于 Subversion 如何跟踪和管理工作副本的信息本章也进行了一
+          些介绍.</para>
       </listitem>
 
     </itemizedlist>
 
+      <!--
     <para>At this point, you should have a good idea of how Subversion
       works in the most general sense.  Armed with this knowledge, you
       should now be ready to move into the next chapter, which is a
       detailed tour of Subversion's commands and features.</para>
+      -->
+    <para>到这里为止, 对于 Subversion 的工作方式读者应该有了一个很直观的感受,
+      有了本章的基础知识作为后盾, 读者可以接着阅读下一章, 下一章会更加详细地
+      介绍 Subversion 的命令和特性.</para>
 
   </sect1>
 
