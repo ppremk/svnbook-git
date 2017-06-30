@@ -316,18 +316,23 @@ $ svn diff -r BASE:14 foo.c
         <secondary>as dates</secondary>
       </indexterm>
 
+    <!--
       <para>Revision numbers reveal nothing about the world outside
         the version control system, but sometimes you need to
         correlate a moment in real time with a moment in version
-        history.  To facilitate this, the <option>--revision</option>
+        history.  To facilitate this, the <option>- -revision</option>
         (<option>-r</option>) option can also accept as input date
         specifiers wrapped in curly braces (<literal>{</literal> and
         <literal>}</literal>).  Subversion accepts the standard
         ISO-8601 date and time formats, plus a few others.  Here are
         some examples.</para>
+    -->
       <para>版本号没有透露出一丝一毫与版本控制系统外部世界相关的信息, 但是有
         时候你需要把真实世界的时间与版本控制历史的时间联系起来. 为此, 选项
-        <option>--revision</option> (<option>-r</option>) 也支持</para>
+        <option>--revision</option> (<option>-r</option>) 也接受日期形式的
+        参数, 日期用一对花括号 (<literal>{</literal> 和 <literal>}</literal>)
+        包裹起来, Subversion 接受标准的 ISO-8601 格式的日期与时间, 以及其他
+        一些形式, 下面是一些例子.</para>
 
       <informalexample>
         <screen>
@@ -347,18 +352,27 @@ $ svn update -r {20060217T1530-0500}
       </informalexample>
 
       <note>
+    <!--
         <para>Keep in mind that most shells will require you to, at a
           minimum, quote or otherwise escape any spaces that are
           included as part of revision date specifiers.  Certain
           shells may also take issue with the unescaped use of curly
           braces, too.  Consult your shell's documentation for the
           requirements specific to your environment.</para>
+    -->
+        <para>如果版本号日期参数中含有空格, 那么大多数 shell 都会要求用引号
+          包围参数, 或者对参数中的空格进行转义, 某些 shell 可能还会要求对花
+          括号号进行转义, 具体的细节可以查阅你所用的 shell 的文档.</para>
       </note>
     
+    <!--
       <para>When you specify a date, Subversion resolves that date to
         the most recent revision of the repository as of that date,
         and then continues to operate against that resolved revision
         number:</para>
+    -->
+      <para>如果用户指定了一个日期, Subversion 就把该日期解析成最近的版本号,
+        然后再针对该版本号进行操作:</para>
         
       <informalexample>
         <screen>
@@ -370,8 +384,12 @@ r12 | ira | 2006-11-27 12:31:51 -0600 (Mon, 27 Nov 2006) | 6 lines
       </informalexample>
         
       <sidebar>
+    <!--
         <title>Is Subversion a Day Early?</title>
+    -->
+        <title>是 Subversion 早了一天吗</title>
         
+    <!--
         <para>If you specify a single date as a revision without
           specifying a time of day (for example
           <literal>2006-11-27</literal>), you may think that Subversion
@@ -384,16 +402,33 @@ r12 | ira | 2006-11-27 12:31:51 -0600 (Mon, 27 Nov 2006) | 6 lines
           <literal>2006-11-27</literal>, Subversion assumes a time of
           00:00:00, so looking for the most recent revision won't
           return anything on the 27th.</para>
+    -->
+        <para>如果用户指定了一个日期作为版本号, 但没有指定一天中的时间 (例如
+          <literal>2006-11-27</literal>), 你可能希望 Subversion 得到的是
+          11 月 27 号这一天的最后一个版本号, 可事实上是 Subversion 得到的是
+          26 号或者更早的版本号. 记住 Subversion 要找的是那天 <emphasis>仓库
+            的最近的版本号</emphasis>, 如果没有指定时间, 例如
+            <literal>2006-11-27</literal>, Subversion 默认时间是
+            <literal>00:00:00</literal>, 所以不会出现 27 号那天的版本号.</para>
 
+    <!--
         <para>If you want to include the 27th in your search, you can
           either specify the 27th with the time (<literal>{"2006-11-27
           23:59"}</literal>), or just specify the next day
           (<literal>{2006-11-28}</literal>).</para>
+    -->
+        <para>如果你希望 27 号的版本号也在搜索的范围里, 那就在参数中指定时间
+          (<literal>{"2006-11-27 23:59"}</literal>), 或者干脆指定后一天
+          (<literal>{2006-11-28}</literal>).</para>
         
       </sidebar>
       
+    <!--
       <para>You can also use a range of dates.  Subversion will find
         all revisions between both dates, inclusive:</para>
+    -->
+      <para>还可以指定一段日期范围, 此时 Subversion 会找到这段时间内的所有
+        版本号, 包括开始日期和结束日期:</para>
       
       <informalexample>
         <screen>
@@ -403,6 +438,7 @@ $ svn log -r {2006-11-20}:{2006-11-29}
       </informalexample>
         
       <warning>
+    <!--
         <para>Since the timestamp of a revision is stored as an
           unversioned, modifiable property of the revision (see <xref
           linkend="svn.advanced.props" />), revision timestamps can be
@@ -415,6 +451,13 @@ $ svn log -r {2006-11-20}:{2006-11-29}
           you will likely find that trying to use dates to specify
           revision ranges in your repository doesn't always return the
           data you might have expected.</para>
+    -->
+        <para>因为版本号的时间戳被当成属性存放在版本号中, 而该属性是可修改的
+          且未被纳入版本管理 (见 <xref linkend="svn.advanced.props"/>), 因此
+          版本号的时间戳可以被任意地修改, 甚至完全删除. Subversion 能够根据
+          版本号日期得到版本号是因为版本号的时间戳维护一个串行化的序列&mdash;
+          版本号越年轻, 时间戳就越小. 如果顺序被打乱了, 那么当你用日期指定
+          版本号范围时, Subversion 返回的数据很有可能不是你所想要的.</para>
       </warning>
         
     </sect2>
