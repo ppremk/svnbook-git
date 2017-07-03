@@ -685,12 +685,20 @@ $ svn log -r {2006-11-20}:{2006-11-29}
   </para>
 
     <sidebar id="svn.advanced.pegrevs.algorithm">
+    <!--
       <title>The Peg Revision Algorithm</title>
+    -->
+      <title>挂勾版本号算法</title>
       
+    <!--
       <para>The Subversion command-line client performs the peg revision
         algorithm any time it needs to resolve possible ambiguities in
         the paths and revisions provided to it.  Here's an example of
         such an invocation:</para>
+    -->
+      <para>提供给客户端命令行工具的路径和版本号参数如果可能含有歧义,
+        Subversion 就会运行挂勾版本号算法来消除歧义, 下面是一个说明用的
+        示例:</para>
 
       <informalexample>
         <screen>
@@ -698,28 +706,45 @@ $ svn <replaceable>command</replaceable> -r <replaceable>OPERATIVE-REV</replacea
 </screen>
       </informalexample>
       
+    <!--
       <para>If <replaceable>OPERATIVE-REV</replaceable> is older than
         <replaceable>PEG-REV</replaceable>, the algorithm is as
         follows:</para>
+    -->
+      <para>如果 <replaceable>OPERATIVE-REV</replaceable> 比 <replaceable>
+          PEG-REV</replaceable> 老, 算法的执行过程是:</para>
 
       <orderedlist>
         <listitem>
+    <!--
           <para>Locate <replaceable>item</replaceable> in the revision
             identified by <replaceable>PEG-REV</replaceable>.  There
             can be only one such object.</para>
+    -->
+          <para>定位由版本号 <replaceable>PEG-REV</replaceable> 识别的
+            <replaceable>item</replaceable>, 有且仅有一个对象.</para>
         </listitem>
         <listitem>
+    <!--
           <para>Trace the object's history backwards (through any
             possible renames) to its ancestor in the revision
             <replaceable>OPERATIVE-REV</replaceable>.</para>
+    -->
+          <para>反向追踪对象的历史 (还要考虑重命名操作带来的影响), 直到版本号
+            <replaceable>OPERATIVE-REV</replaceable> 里的祖先.</para>
         </listitem>
         <listitem>
+    <!--
           <para>Perform the requested action on that ancestor,
             wherever it is located, or whatever its name might
             be or might have been at that time.</para>
+    -->
+          <para>对祖先执行用户所请求的操作, 无论当时这个祖先位于何处, 叫什么
+            名字.</para>
         </listitem>
       </orderedlist>
 
+    <!--
       <para>But what if <replaceable>OPERATIVE-REV</replaceable> is
         <emphasis>younger</emphasis> than
         <replaceable>PEG-REV</replaceable>?  Well, that adds some
@@ -731,19 +756,37 @@ $ svn <replaceable>command</replaceable> -r <replaceable>OPERATIVE-REV</replacea
         all&mdash;Subversion doesn't store enough information to
         performantly trace an object's history forward, anyway.  So
         the algorithm is a little different:</para>
+    -->
+      <para>但是如果 <replaceable>OPERATIVE-REV</replaceable> 比 <replaceable>
+          PEG-REV</replaceable> <emphasis>年轻</emphasis> 的话又会怎样?
+        这会给定位 <replaceable>OPERATIVE-REV</replaceable> 中的路径的理论
+        问题增加一些复杂度, 因为在 <replaceable>PEG-REV</replaceable> 和
+        <replaceable>OPERATIVE-REV</replaceable> 之间, 路径的历史可能会多
+        次发生分叉 (由于复制操作). 不仅如此, Subversion 不会为了高效地正向
+        追踪对象的历史而记录足够多的信息. 所以在这种情况下的算法会有一些差别:
+      </para>
 
       <orderedlist>
         <listitem>
+    <!--
           <para>Locate <replaceable>item</replaceable> in the revision
             identified by <replaceable>OPERATIVE-REV</replaceable>.  There
             can be only one such object.</para>
+    -->
+          <para>定位由版本号 <replaceable>OPERATIVE-REV</replaceable> 识别的
+            <replaceable>item</replaceable>, 有且仅有一个对象.</para>
         </listitem>
         <listitem>
+    <!--
           <para>Trace the object's history backward (through any
             possible renames) to its ancestor in the revision
             <replaceable>PEG-REV</replaceable>.</para>
+    -->
+          <para>反向追踪对象的历史 (还要考虑重命名操作带来的影响), 直到版本号
+            <replaceable>PEG-REV</replaceable> 里的祖先.</para>
         </listitem>
         <listitem>
+    <!--
           <para>Verify that the object's location (path-wise) in
             <replaceable>PEG-REV</replaceable> is the same as it is in
             <replaceable>OPERATIVE-REV</replaceable>.  If that's the
@@ -755,9 +798,17 @@ $ svn <replaceable>command</replaceable> -r <replaceable>OPERATIVE-REV</replacea
             (Someday, we expect that Subversion will be able to handle
             this usage scenario with more flexibility and
             grace.)</para>
+    -->
+          <para>检查对象在 <replaceable>PEG-REV</replaceable> 和 <replaceable>
+              OPERATIVE-REV</replaceable> 中的位置 (路径) 是否相同, 如果是,
+            说明至少这两个位置是直接相关的, 那就在 <replaceable>OPERATIVE-REV
+            </replaceable> 的位置上执行用户所请求的操作. 否则的话相关性无法
+            建立, 输出错误信息, 表示无法找到可用的路径 (也许某一天 Subversion
+            对这种情况会处理得更加灵活与优雅).</para>
         </listitem>
       </orderedlist>
 
+    <!--
       <para>Note that even when you don't explicitly supply a peg
         revision or operative revision, they are still present.  For
         your convenience, the default peg revision is
@@ -765,9 +816,15 @@ $ svn <replaceable>command</replaceable> -r <replaceable>OPERATIVE-REV</replacea
         <literal>HEAD</literal> for repository URLs.  And when no
         operative revision is provided, it defaults to being the same
         revision as the peg revision.</para>
+    -->
+      <para>注意, 即使用户没有显式地给出挂勾版本号或实施版本号, 它们仍然存在.
+        为了方便用户, 工作副本里的项目的挂勾版本号默认是 <literal>BASE
+        </literal>, 仓库 URL 默认是 <literal>HEAD</literal>. 如果没有显式
+        指定实施版本号, 则默认与挂勾版本号相同.</para>
         
     </sidebar>
 
+    <!--
     <para>Say that long ago we created our repository, and in revision 1
       we added our first <filename>concept</filename> directory, plus an
       <filename>IDEA</filename> file in that directory talking about
@@ -778,7 +835,16 @@ $ svn <replaceable>command</replaceable> -r <replaceable>OPERATIVE-REV</replacea
       hold it, and a new <filename>IDEA</filename> file to describe
       it.  And then five years and thousands of revisions flew by,
       just like they would in any good romance story.</para>
+    -->
+    <para>比如说用户在很久以前就创建了仓库, 在版本号 1 添加了第一个目录
+      <filename>concept</filename>, 里面放了一个介绍概念的文件
+      <filename>IDEA</filename>. 几次提交后, 项目的代码逐渐成型, 在版本号
+      20 用户把 <filename>concept</filename> 重命名为 <filename>frabnaggilywort
+      </filename>. 在版本号 27, 用户又有了一个新主意, 所以在项目根目录下又
+      创建了目录 <filename>concept</filename>, 里面也放了一个描述概念的文件
+      <filename>IDEA</filename>. 然后又过了 5 年, 期间提交了几千次修改.</para>
 
+    <!--
     <para>Now, years later, we wonder what the
       <filename>IDEA</filename> file looked like back in revision 1.
       But Subversion needs to know whether we are asking about how the
@@ -789,6 +855,13 @@ $ svn <replaceable>command</replaceable> -r <replaceable>OPERATIVE-REV</replacea
       revisions, you can ask those questions.  To find out how the
       current <filename>IDEA</filename> file looked in that old
       revision, you run:</para>
+    -->
+    <para>几年后, 用户想知道文件 <filename>IDEA</filename> 在版本号 1 中是什么
+      样子, 但是 Subversion 需要知道用户是在询问 <emphasis>当前</emphasis> 文件
+      在版本号 1 时的内容, 还是在问版本号 1 中文件 <filename>concept/IDEA
+      </filename> 的内容. 当然这两个问题的答案是不一样的, 利用挂勾版本号, 用户
+      就可以向 Subversion 说明他想问的是哪一个问题. 为了确定当前的
+      <filename>IDEA</filename> 在版本号 1 时的内容, 用户执行了:</para>
 
     <informalexample>
       <screen>
