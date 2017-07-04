@@ -837,7 +837,7 @@ $ svn <replaceable>command</replaceable> -r <replaceable>OPERATIVE-REV</replacea
       just like they would in any good romance story.</para>
     -->
     <para>比如说用户在很久以前就创建了仓库, 在版本号 1 添加了第一个目录
-      <filename>concept</filename>, 里面放了一个介绍概念的文件
+      <filename>concept</filename>, 用户后来在目录里放了一个介绍概念的文件
       <filename>IDEA</filename>. 几次提交后, 项目的代码逐渐成型, 在版本号
       20 用户把 <filename>concept</filename> 重命名为 <filename>frabnaggilywort
       </filename>. 在版本号 27, 用户又有了一个新主意, 所以在项目根目录下又
@@ -870,11 +870,16 @@ svn: E195012: Unable to find repository location for 'concept/IDEA' in revision 
 </screen>
     </informalexample>
 
+    <!--
     <para>Of course, in this example, the current
       <filename>IDEA</filename> file didn't exist yet in revision 1,
       so Subversion gives an error.  The previous command is shorthand
       for a longer notation which explicitly lists a peg revision.
       The expanded notation is:</para>
+    -->
+    <para>当然, 在这个例子里, 当前的文件 <filename>IDEA</filename> 在版本号 1
+      时并不存在, 于是 Subversion 报了一个错误. 上面的命令实际上是以下显式
+      指定持勾版本号命令的简写形式:</para>
 
     <informalexample>
       <screen>
@@ -883,8 +888,12 @@ svn: E195012: Unable to find repository location for 'concept/IDEA' in revision 
 </screen>
     </informalexample>
 
+    <!--
     <para>And when executed, it has the expected results.</para>
+    -->
+    <para>命令的执行结果是预料之中的.</para>
 
+    <!--
     <para>The perceptive reader is probably wondering at this point whether
       the peg revision syntax causes problems for working copy paths
       or URLs that actually have at signs in them.  After
@@ -901,11 +910,27 @@ svn: E195012: Unable to find repository location for 'concept/IDEA' in revision 
       even applies to paths that end in an at sign&mdash;you would
       use <literal>filename@@</literal> to talk about a file named
       <filename>filename@</filename>.</para>
+    -->
+    <para>敏锐的读者可能想知道是否是挂勾版本号的语法导致了问题, 因为工作副本
+      路径或 URL 本身可能就带有符号 <literal>@</literal>, 毕竟 <command>svn
+      </command> 怎么知道 <literal>news@11</literal> 是表示一个目录的普通名字,
+      还是表示 <quote><filename>news</filename> 的版本号 11</quote>? 谢天谢地,
+      <filename>svn</filename> 总是当成后一种情况, 方法是在路径的末尾添加一
+      个 <literal>@</literal> 符号, 例如 <literal>news@11@</literal>.
+      <command>svn</command> 只关心参数中的最后一个 <literal>@</literal>,
+      即使省略了 <literal>@</literal> 后面的版本号也是合法的. 这个方法也适用
+      于以 <literal>@</literal> 结尾的路径&mdash;你可以用 <literal>filename@@
+    </literal> 表示一个名为 <literal>filename@</literal> 的文件.</para>
 
+    <!--
     <para>Let's ask the other question, then&mdash;in revision 1, what
       were the contents of whatever file occupied the address
       <filename>concepts/IDEA</filename> at the time?  We'll use an
       explicit peg revision to help us out.</para>
+    -->
+    <para>再考虑另一个问题&mdash;在版本号 1 中, 占用路径
+      <filename>concept/IDEA</filename> 的文件的内容是什么? 我们要以用一个
+      带有显式的挂勾版本号的命令来回答这个问题.</para>
 
     <informalexample>
       <screen>
@@ -918,11 +943,16 @@ mechanisms.
 </screen>
     </informalexample>
 
+    <!--
     <para>Notice that we didn't provide an operative revision this
       time.  That's because when no operative revision is specified,
       Subversion assumes a default operative revision that's the same
       as the peg revision.</para>
+    -->
+    <para>注意在上面的命令中我们并没有提供实施版本号, 这是因为如果没有指定
+      实施版本号, Subversion 默认使用挂勾版本号作为实施版本号.</para>
 
+    <!--
     <para>As you can see, the output from our operation appears to be
       correct.  The text even mentions frabbing naggily worts, so this
       is almost certainly the file that describes the software now
@@ -935,6 +965,14 @@ mechanisms.
       <literal>HEAD</literal> as the path
       <filename>frabnaggilywort/IDEA</filename> looked in revision
       1.</para>
+    -->
+    <para>命令的执行结果看来是正确的, 输出的文本甚至提到了 <quote>frab a
+        naggily wort</quote>, 所以它描述的软件应该就是现在的 Frabnaggilywort,
+      实际上我们还可以通过组合显式的挂勾版本号和显式的实施版本号来验证这一点.
+      我们已经知道在 <literal>HEAD</literal> 里, 项目 Frabnaggilywort 位于目录
+      <filename>frabnaggilywort</filename>, 于是我们希望看到 <literal>HEAD
+    </literal> 的 <filename>frabnaggilywort/IDEA</filename> 在版本号 1 中
+    的内容.</para>
 
     <informalexample>
       <screen>
@@ -947,6 +985,7 @@ mechanisms.
 </screen>
     </informalexample>
 
+    <!--
     <para>And the peg and operative revisions need not be so trivial,
       either.  For example, say <filename>frabnaggilywort</filename>
       had been deleted from <literal>HEAD</literal>, but we know it
@@ -956,6 +995,13 @@ mechanisms.
       would have held Frabnaggilywort's <filename>IDEA</filename> file
       in revision 20, and then use 4 and 10 as our operative revision
       range.</para>
+    -->
+    <para>挂勾版本号和实施版本号也不需要如此琐碎, 举例来说, <filename>
+        frabnaggilywort</filename> 已经从 <literal>HEAD</literal> 删除,
+      但是我们知道它在版本号 20 时还是存在的, 而且我们想知道其中存放的
+      <filename>IDEA</filename> 在版本号 4 和版本号 10 之间的差异, 可以使用挂
+      勾版本号 20, 结合上文件 <filename>IDEA</filename> 的版本号 20 的 URL,
+      然后使用 4 和 10 作为实施版本号范围.</para>
 
     <informalexample>
       <screen>
@@ -978,9 +1024,13 @@ Index: frabnaggilywort/IDEA
 </screen>
     </informalexample>
 
+    <!--
     <para>Fortunately, most folks aren't faced with such complex
       situations.  But when you are, remember that peg revisions are
       that extra hint Subversion needs to clear up ambiguity.</para>
+    -->
+    <para>幸运的是, 大多数人都不会碰到哪些复杂的情况, 但是如果遇到了, 记住
+      挂勾版本号可以帮助 Subversion 清除歧义.</para>
 
   </sect1>
 
