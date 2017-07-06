@@ -1187,15 +1187,24 @@ Index: frabnaggilywort/IDEA
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.props.why">
+    <!--
       <title>Why Properties?</title>
+    -->
+      <title>为什么需要属性?</title>
 
+    <!--
       <para>Just as Subversion uses properties to store extra
         information about the files, directories, and revisions that
         it contains, you might also find properties to be of similar
         use.  You might find it useful to have a place
         close to your versioned data to hang custom metadata about
         that data.</para>
+    -->
+      <para>Subversion 使用属性存放和文件, 目录, 版本号相关的额外信息, 读者
+        可能也会发现属性的类似用法. 你会发现, 如果在数据附近能有个地方保存
+        自定义元数据将会是一项非常有用的特性.</para>
 
+    <!--
       <para>Say you wish to design a web site that houses many digital
         photos and displays them with captions and a datestamp.  Now,
         your set of photos is constantly changing, so you'd like to
@@ -1203,7 +1212,13 @@ Index: frabnaggilywort/IDEA
         can be quite large, so as is common with sites of this nature,
         you want to provide smaller thumbnail images to your site
         visitors.</para>
+    -->
+      <para>假设你想要设计一个网站, 其中存放了很多数字照片, 在显示时会给照片
+        加上标题和日期. 因为你的照片经常发生变化, 所以你希望网站能够尽量地自动
+        处理由于照片变动而产生的影响. 照片可以很大, 你希望在网站上可以显示照片
+        的缩略图.</para>
 
+    <!--
       <para>Now, you can get this functionality using traditional
         files.  That is, you can have your
         <filename>image123.jpg</filename> and an
@@ -1215,7 +1230,16 @@ Index: frabnaggilywort/IDEA
         separated from the original image file.  But the problem here
         is that your collection of files multiplies with each new
         photo added to the site.</para>
+    -->
+      <para>你可以用传统的文件实现缩略图, 也就是说你可以把照片
+        <filename>image123.jpg</filename> 及其缩略图
+        <filename>image123-thumbnail.jpg</filename> 放在同一个目录里. 如果你
+        希望照片及其缩略图能使用相同的文件名, 也可以把缩略图放在不同的目录里,
+        例如 <filename>thumbnails/image123.jpg</filename>. 你可以按照类似的方
+        法存放标题和日期. 这里最大的问题是每增加一个新图片, 网站的文件数量都
+        会成倍地增加.</para>
 
+    <!--
       <para>Now consider the same web site deployed in a way that
         makes use of Subversion's file properties.  Imagine having a
         single image file, <filename>image123.jpg</filename>, with
@@ -1230,8 +1254,18 @@ Index: frabnaggilywort/IDEA
         linkend="svn.developer.usingapi" />) to dig out the extra
         information that your site needs to display without having to
         read an index file or play path manipulation games.</para>
+    -->
+      <para>现在考虑如果利用 Subversion 的文件属性来部署网站. 设想有一个图片
+        文件 <filename>image123.jpg</filename>, 带有属性
+        <literal>caption</literal>, <literal>datestamp</literal> 和
+        <literal>thumbnail</literal>. 使用属性后的工作副本看起来更容量管理
+        &mdash;实际上, 普通的浏览器只能看到图片文件, 但是你的自动化管理脚本
+        可以知道得更多. 脚本可以使用 <command>svn</command> (更好的做法是用
+        Subversion 的语言绑定&mdash;见 <xref linkend="svn.developer.usingapi"/>)
+        获取图片的属性信息, 而不必读取索引文件或处理路径.</para>
 
       <note>
+    <!--
         <para>While Subversion places few restrictions on the names
           and values you use for properties, it has not been designed
           to optimally carry large property values or large sets of
@@ -1240,8 +1274,14 @@ Index: frabnaggilywort/IDEA
           with a single item in memory at the same time, which can
           cause detrimental performance or failed operations when
           extremely large property sets are used.</para>
+    -->
+        <para>Subversion 对属性的名字和值有一些限制, 如果属性的值很大, 或者在
+          单个的文件或目录上设置了很多的属性, 对于这两种情况 Subversion 处理
+          起来非常笨拙. Subversion 通常会把单个项目的所有属性及其值同时加载
+          到内存中, 如果属性过多, 性能就会受到影响, 甚至引起命令失败.</para>
       </note>
 
+    <!--
       <para>Custom revision properties are also frequently used.  One
         common such use is a property whose value contains an issue
         tracker ID with which the revision is associated, perhaps
@@ -1252,8 +1292,17 @@ Index: frabnaggilywort/IDEA
         if there's, say, a <literal>test-results</literal> property on
         that revision with the value <literal>all passing</literal>,
         that's meaningful information to have.  And Subversion allows
-        you to easily do this via the <option>--with-revprop</option>
+        you to easily do this via the <option>- -with-revprop</option>
         option of the <command>svn commit</command> command:</para>
+    -->
+      <para>自定义版本号属性也经常用到, 一种常见的用法是为版本号添加一个包含
+        问题跟踪 ID 的属性, 表示该版本号修复了这个问题. 其他一些用法还可以
+        是为版本号附加一个更友好的名字&mdash;人们很难记住版本号 1935 是一个
+        经过充分测试的版本, 但是如果给版本号 1935 添加一个属性
+        <literal>test-results</literal>, 属性值是
+        <literal>all passing</literal>, 这样一来就方便多了. 用户可以通过
+        <command>svn commit</command> 的选项 <option>--with-revprop</option>
+        为新提交的版本号附加属性 <literal>test-results</literal>:</para>
 
       <informalexample>
         <screen>
