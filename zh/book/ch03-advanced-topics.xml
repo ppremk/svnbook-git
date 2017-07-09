@@ -1665,10 +1665,11 @@ $
 </screen>
       </informalexample>
 
+    <!--
       <para>Remember those unversioned revision properties?  You can
         modify those, too, using the same <command>svn</command>
         subcommands that we just described.  Simply add the
-        <option>--revprop</option> command-line parameter and specify
+        <option>- -revprop</option> command-line parameter and specify
         the revision whose property you wish to modify.  Since
         revisions are global, you don't need to specify a target path
         to these property-related commands so long as you are
@@ -1680,10 +1681,20 @@ $
         revision.<footnote><para>Fixing spelling errors, grammatical
         gotchas, and <quote>just-plain-wrongness</quote> in commit log
         messages is perhaps the most common use case for
-        the <option>--revprop</option> option.</para></footnote>  If
+        the <option>- -revprop</option> option.</para></footnote>  If
         your current working directory is part of a working copy of
         your repository, you can simply run the
         <command>svn propset</command> command with no target path:</para>
+    -->
+      <para>还记得那些非版本化的版本号属性吗? 用户也可以用我们刚刚介绍过的
+        <command>svn</command> 的子命令去修改它们, 只要加上选项
+        <option>--revprop</option> 和欲修改的版本号. 因为版本号是全局的, 所以
+        只要用户已经位于欲修改的版本号的工作副本中, 就不需要为命令指定目标路径,
+        否则的话, 可以在命令行上提供目标路径的 URL 参数. 例如, 用户可能想修改
+        一个已存在的版本号的提交日志,<footnote><para>修改提交日志的拼写错误,
+            语法问题和其他的一般性错误可能是 <option>--revprop</option> 最常见
+            的应用场景.</para></footnote> 如果你的当前工作目录是工作副本的一
+        部分, 可以不带目标路径地执行命令 <command>svn propset</command>:</para>
 
       <informalexample>
         <screen>
@@ -1693,9 +1704,13 @@ $
 </screen>
       </informalexample>
 
+    <!--
       <para>But even if you haven't checked out a working copy from
         that repository, you can still effect the property change by
         providing the repository's root URL:</para>
+    -->
+      <para>即使用户没有检出仓库的工作副本, 仍然可以通过提供仓库的根 URL 来
+        修改属性:</para>
 
       <informalexample>
         <screen>
@@ -1706,6 +1721,7 @@ $
 </screen>
       </informalexample>
 
+    <!--
       <para>Note that the ability to modify these unversioned
         properties must be explicitly added by the repository
         administrator (see <xref linkend="svn.reposadmin.maint.setlog" />).
@@ -1714,8 +1730,14 @@ $
         The repository administrator can set up methods to protect
         against this loss, and by default, modification of
         unversioned properties is disabled.</para>
+    -->
+      <para>需要注意的是只有在仓库管理员配置后用户才能修改非版本化属性 (见
+        <xref linkend="svn.reposadmin.maint.setlog"/>). 这是因为如果属性是非
+        版本化的, 用户一不小心就有可能弄丢信息. 仓库管理员可以采取一定的措施
+        防止信息丢失, 在默认上, 修改非版本化属性是被禁止的.</para>
 
       <tip>
+    <!--
         <para>Users should, where possible, use <command>svn
           propedit</command> instead of <command>svn
           propset</command>.  While the end result of the commands is
@@ -1726,14 +1748,25 @@ $
           modifying unversioned revision properties.  Also, it is
           significantly easier to modify multiline property values in
           a text editor than at the command line.</para>
+    -->
+        <para>如果可以的话, 用户应该尽量使用 <command>svn propedit</command>,
+          而不是 <command>svn propset</command>. 虽然这两个命令的执行结果是
+          一样的, 但是 <command>svn propedit</command> 允许用户看到将要被修改
+          的属性的当前值, 这可以帮助他们确认自己是否正在按照自己想要的那样
+          操作. 另外, 在编辑器中修改具有多行文本的属性, 要比在命令行上修改方便
+          得多.</para>
       </tip>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.props.workflow">
+    <!--
       <title>Properties and the Subversion Workflow</title>
+    -->
+      <title>属性和 Subversion 工作流程</title>
 
+    <!--
       <para>Now that you are familiar with all of the
         property-related <command>svn</command> subcommands, let's see
         how property modifications affect the usual Subversion
@@ -1742,7 +1775,13 @@ $
         result, Subversion provides the same opportunities for
         merging&mdash;cleanly or with conflicts&mdash;someone
         else's modifications into your own.</para>
+    -->
+      <para>既然读者已经熟悉了所有与属性相关的 <command>svn</command> 子命令,
+        现在来看属性修改将会如何影响 Subversion 的工作流程. 我们已经说过,
+        文件和目录的属性是被版本控制的, 就像文件内容那样, 因此 Subversion 也
+        支持属性的合并&mdash;干净利落地, 或带有冲突.</para>
 
+    <!--
       <para>As with file contents, your property changes are local
         modifications, made permanent only when you commit them to the
         repository with <command>svn commit</command>.  Your property
@@ -1753,6 +1792,13 @@ $
         the state of your file and directory properties by using the
         <command>svn status</command> and <command>svn diff</command>
         commands.</para>
+    -->
+      <para>和文件内容一样, 属性修改一开始只是本地的, 只有用
+        <command>svn commit</command> 提交后, 属性的修改才会持久化. 属性的修改
+        也能轻易地撤消&mdash;命令 <command>svn revert</command> 可以撤消所有
+        文件和目录的本地修改, 包括属性修改, 内容修改, 以及其他所有的本地修改.
+        你也可以用 <command>svn status</command> 和 <command>svn diff</command>
+        获取文件和目录的属性状态.</para>
 
       <informalexample>
         <screen>
@@ -1768,6 +1814,7 @@ $
 </screen>
       </informalexample>
 
+    <!--
       <para>Notice how the <command>status</command> subcommand
         displays <literal>M</literal> in the second column instead of
         the first.  That is because we have modified the properties on
@@ -1776,16 +1823,30 @@ $
         <literal>M</literal> in the first column, too.  (We cover
         <command>svn status</command> in <xref
         linkend="svn.tour.cycle.examine.status" />).</para>
+    -->
+    <para>注意, 子命令 <command>status</command> 把 <literal>M</literal> 显示
+      在了第二列, 而不是第一列, 这是因为我们修改的是
+      <filename>calc/button.c</filename> 的属性, 而不是内容. 如果我们同时修改
+      了内容和属性, 我们就会同时在第一列和第二列看到 <literal>M</literal>
+      (我们在 <xref linkend="svn.tour.cycle.examine.status"/> 介绍了
+      <command>svn status</command>).</para>
 
       <sidebar>
+    <!--
         <title>Property Conflicts</title>
+    -->
+        <title>属性冲突</title>
 
+    <!--
         <para>As with file contents, local property modifications can
           conflict with changes committed by someone else.  If you
           update your working copy directory and receive property
           changes on a versioned object that clash with your own,
           Subversion will report that the object is in a conflicted
           state.</para>
+    -->
+        <para>和文件内容一样, 本地的属性修改有可能和其他人提交的修改产生冲突,
+          发生冲突后, Subversion 把条目设置成冲突状态.</para>
  
         <informalexample>
           <screen>
@@ -1803,6 +1864,7 @@ $
 </screen>
         </informalexample>
          
+    <!--
         <para>Subversion will also create, in the same directory as
           the conflicted object, a file with a
           <filename>.prej</filename> extension that contains the
@@ -1812,6 +1874,13 @@ $
           <literal>C</literal> in the second column of <command>svn
           status</command> output for that object, and attempts to
           commit your local modifications will fail.</para>
+    -->
+        <para>发生冲突后, Subversion 也会在冲突对象的同一个目录下创建一个以
+          <filename>.prej</filename> 作为后缀名的文件, 其中包含了冲突的细节,
+          用户应该检查这个文件的内容, 从而决定应该如何解决冲突. 在冲突解决之
+          前, 冲突条目的 <command>svn status</command> 输出信息的第二列会有
+          一个字母 <literal>C</literal>, 如果试图提交修改, 提交操作将会失败.
+        </para>
 
         <informalexample>
           <screen>
