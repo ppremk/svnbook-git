@@ -1894,14 +1894,20 @@ $
 </screen>
         </informalexample>
  
+    <!--
         <para>To resolve property conflicts, simply ensure that the
           conflicting properties contain the values that they should,
-          and then use the <command>svn resolve --accept=working</command>
+          and then use the <command>svn resolve - -accept=working</command>
           command to alert Subversion that you have manually resolved the
           problem.</para>
+    -->
+        <para>为了解决冲突, 只需要确保发生冲突的属性包含了正确的值, 然后用命令
+          <command>svn resolve --accept=working</command> 告诉 Subversion 你
+          已经手动解决了冲突问题.</para>
 
       </sidebar>
 
+    <!--
       <para>You might also have noticed the nonstandard way that
         Subversion currently displays property differences.  You can
         still use <command>svn diff</command> and redirect its output
@@ -1912,7 +1918,16 @@ $
         <command>svn diff</command> using <command>patch</command>,
         any property modifications will need to be applied by
         hand.</para>
+    -->
+      <para>读者可能已经注意到了 Subversion 的属性差异输出并不是一种标准的
+        格式, 用户仍然可以用 <command>svn diff</command> 并把它的输出重定向
+        到补丁文件里, 但 <command>patch</command> 会忽略属性的补丁&mdash;
+        <command>patch</command> 的一条规则是忽略所有不能理解的内容, 这就意味
+        着如果用户用的是 <command>patch</command>, 为了完整地打上
+        <command>svn diff</command> 生成的补丁, 用户必须地打上和属性相关的
+        修改.</para>
 
+    <!--
       <para>Subversion 1.7 improves this situation in two ways.
         First, its nonstandard display of property differences is at
         least machine-readable&mdash;an improvement over the display
@@ -1928,8 +1943,20 @@ $
         about <command>svn patch</command>, see
         <xref linkend="svn.ref.svn.c.patch" /> in
         <xref linkend="svn.ref.svn"/>.</para>
+    -->
+      <para>Subversion 1.7 从两个方面改善了这个问题, 首先, 属性的差异输出至少
+        是机器可读的&mdash;这是对 1.7 版之前的属性显示的改进. 然后 Subversion
+        1.7 引入了新命令 <command>svn patch</command>, 专门用来处理
+        <command>svn diff</command> 的输出中带有的额外信息, 并把这些信息应用
+        到工作副本中. 对于属性来说, 使用 Subversion 1.7 及以后版本的
+        <command>svn diff</command> 生成的补丁, 如果其中包含了属性差异, 那么
+        <command>svn patch</command> 可以自动地把这些差异应用到工作副本.
+        关于 <command>svn patch</command> 的更多信息, 见
+        <xref linkend="svn.ref.svn"/> 的 <xref linkend="svn.ref.svn.c.patch"/>.
+      </para>
 
       <note>
+    <!--
         <para>There's one exception to how property changes are
           reported by <command>svn diff</command>: changes to
           Subversion's special <literal>svn:mergeinfo</literal>
@@ -1944,6 +1971,16 @@ $
           the <command>svn merge</command> subcommand.  For more about
           merge tracking, see <xref linkend="svn.branchmerge"
           />.</para>
+    -->
+      <para><command>svn diff</command> 在报告属性的变化时有一个例外, 那就是
+        特殊的 <literal>svn:mergeinfo</literal> 属性&mdash;该属性用于跟踪合
+        并信息&mdash;的变化会以一种更适合人类阅读的方式呈现出来, 这对于那些
+        需要阅读合并信息的用户来说特别有帮助. 不过, 补丁程序 (包括 <command>
+          svn patch</command>) 仍然会忽略与 <literal>svn:mergeinfo</literal>
+        相关的补丁. 这样做看起来好像是有问题的, 但事实上并非如此, 因为属性
+        <literal>svn:mergeinfo</literal> 由 <command>svn merge</command> 单独
+        进行管理, 关于合并跟踪的更多信息, 见 <xref linkend="svn.branchmerge"/>.
+      </para>
       </note>
 
     </sect2>
