@@ -2144,6 +2144,7 @@ from '.':
         </informalexample>
 
         <warning>
+    <!--
           <para>You can only inherit properties from repository paths
             which you have read authorization to&mdash;see
             <xref linkend="svn.serverconfig.svnserve.auth" /> and
@@ -2151,13 +2152,24 @@ from '.':
             don't have read authorization to a parent path then it will
             appear as if the parent has no properties set on it.
           </para>
+    -->
+          <para>用户只能从他拥有读权限的仓库路径上继承属性&mdash;见
+            <xref linkend="svn.serverconfig.svnserve.auth"/> 和
+            <xref linkend="svn.serverconfig.httpd.authz"/>. 如果用户对某条
+            父路径没有读权限, 看起来的效果就像是父路径上没有设置属性.</para>
         </warning>
 
+    <!--
       <para>As mentioned above, the <command>svnlook proplist</command>
         and <command>svnlook propget</command> commands also support the
-        <option>--show-inherited-props</option> option, but instead of
+        <option>- -show-inherited-props</option> option, but instead of
         reporting the inherited props by working copy path or URL, they
         are listed by repository paths:</para>
+    -->
+      <para>前面已经说过, <command>svnlook proplist</command> 和
+        <command>svnlook propget</command> 也支持选项
+        <option>--show-inherited-props</option>, 但它们不是以工作副本路径或
+        URL 作为目标路径, 而是以仓库的路径作为目标路径:</para>
 
         <informalexample>
           <screen>
@@ -2176,6 +2188,7 @@ from '/site':
 </screen>
         </informalexample>
 
+    <!--
       <para>Properties inherited from above the root of the working copy
         are cached in the working copy's administrative database when the
         working copy is initially checked out and then refreshed whenever
@@ -2191,7 +2204,17 @@ from '/site':
         the absolute latest value of some inherited property, it's always
         safest to update your working copy first or query the repository
         directly.</para>
+    -->
+      <para>当工作副本被首次检出或者更新时, 从工作副本根目录上层继承而来的属性
+        会被缓存在工作副本的管理数据库里, 这样的话在查看继承的属性时就不用再
+        访问仓库了, 同时也允许那些不要求访问仓库的子命令 (例如 <command>svn add
+        </command>) 在保持 <quote>无连接</quote> 的同时, 仍然可以访问到从工作
+        副本之外的路径继承而来的属性. 但同时也意味着在最近一次更新之后, 来自工
+        作副本根目录上层的继承属性可能已经发生了变化, 使得本地缓存变成过时了的.
+        所以如果用户要求继承的属性始终是最新的, 最好更新一下工作副本或直接询问
+        仓库.</para>
 
+    <!--
       <para>At this point you might be thinking, "nice trick, but what
         good is it?"  By itself property inheritance isn't very useful.
         Before 1.8, all of Subversion's own reserved <literal>svn:*
@@ -2210,6 +2233,20 @@ from '/site':
         <xref linkend="svn.advanced.props.special.ignore" /> for more
         information about these special properties and how to use them.
         </para>
+    -->
+        <para>到这里读者可能会想 <quote>看起来挺有趣的, 但这有什么好处呢?
+          </quote> 对于属性继承本身来说是没多大用处, 在 1.8 之前, Subversion
+          所有的保留属性 <literal>svn:*</literal> (还可能包括所有的用户自定
+          义属性) 都只能应用到它们所在的路径上, 至多再加上直接子路径
+          <footnote><para>有一个例外是 <literal>svn:mergeinfo</literal> 属性,
+              它是可继承的&mdash;见
+              <xref linkend="svn.branchmerge.basicmerging.mergeinfo"/></para>
+          </footnote>. Subversion 使用继承属性完成另一些更有趣的事情, 比如说用
+          属性 <literal>svn:auto-props</literal> 设置自动属性, 用属性
+          <literal>svn:global-ignores</literal> 实现全局的忽略模式&mdash;
+          关于这些特殊属性的更多信息和使用方法, 见
+        <xref linkend="svn.advanced.props.auto" /> 和
+        <xref linkend="svn.advanced.props.special.ignore" />.</para>
 
         <tip>
           <para>Currently inheritable properties are primarily useful only
