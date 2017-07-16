@@ -2427,6 +2427,7 @@ from '/site':
       <xref linkend="svn.advanced.confarea.opts.config"/>.</para>
 
 
+    <!-- TODO -->
       <para>While automatic property support via the runtime
         configuration system is certainly handy, Subversion
         administrators might prefer a set of property definitions
@@ -2436,6 +2437,7 @@ from '/site':
         through the <literal>svn:auto-props</literal> inheritable
         property.</para>
 
+    <!--
       <para>The <literal>svn:auto-props</literal> property works like
         the runtime configuration to automatically set properties on
         files when they are added or imported.  The value of the
@@ -2445,17 +2447,32 @@ from '/site':
         the format FILE_PATTERN = PROPNAME=VALUE[;PROPNAME=VALUE ...])
         Like the <literal>auto-props</literal> runtime option, the
         <literal>svn:auto-props</literal> property can be disregarded
-        when using the <option>--no-auto-props</option> option, but unlike
+        when using the <option>- -no-auto-props</option> option, but unlike
         the config option, the <literal>svn:auto-props</literal> property
         is <emphasis>not</emphasis> disabled when the
         <literal>enable-auto-props</literal> configuration option is set
         to <literal>no</literal>.
         </para>
+    -->
+        <para>属性 <literal>svn:auto-props</literal> 可以像运行时配置系统那样,
+          自动地为新增的文件设置属性, 属性 <literal>svn:auto-props</literal>
+          的值应该和运行时配置选项 <literal>auto-props</literal> 的值相同 (也
+          就是任意数量的键值对, 格式是
+          FILE_PATTERN = PROPNAME=VALUE[;PROPNAME=VALUE ...]). 和运行时选项
+          <literal>auto-props</literal> 一样, 如果使用了选项 <option>
+            --no-auto-props</option>, 属性 <literal>svn:auto-props</literal>
+          就会被忽略, 但是有所不同的是, 即使配置选项
+          <literal>enable-auto-props</literal> 被设置为 <literal>no</literal>,
+          属性 <literal>svn:auto-props</literal> 也不会被禁止.</para>
 
+    <!--
       <para>For example, say you have checked out a working copy of your
         <filename>trunk</filename> branch and need to add a new file
         (let's assume that automatic properties in your runtime
         configuration are disabled):</para>
+    -->
+      <para>举例来说, 你检出了主干的工作副本, 想在其中添加一个新文件 (假设
+        运行时配置系统禁止了自动属性):</para>
 
     <informalexample>
       <screen>
@@ -2472,6 +2489,7 @@ Properties on 'calc/data.c':
 </screen>
     </informalexample>
 
+    <!--
       <para>Notice that after you place the unversioned file
         <filename>data.c</filename> under version control the
         <literal>svn:eol-style</literal> property was automatically set
@@ -2480,8 +2498,16 @@ Properties on 'calc/data.c':
         that the <literal>svn:auto-props</literal> property must be set
         on some parent path of <filename>data.c</filename>.  Using the
         <command>svn propget</command> subcommand with the
-        <option>--show-inherited-props</option> option we see that this
+        <option>- -show-inherited-props</option> option we see that this
         is indeed the case:</para>
+    -->
+      <para>可以看到, 当 <filename>data.c</filename> 被版本控制后, 文件自动
+        设置了属性 <literal>svn:eol-style</literal>. 因为运行时配置选项
+        <literal>auto-props</literal> 是禁止了的, 所以属性 <literal>
+          svn:auto-props</literal> 肯定来自 <filename>data.c</filename> 的
+        父路径. 执行带上选项 <option>--show-inherited-props</option> 的命令
+        <command>svn propget</command> 可以看到, 事实的确是如我们所想的那样:
+      </para>
 
     <informalexample>
       <screen>
@@ -2495,6 +2521,7 @@ from 'http://svn.example.com/repos':
 </screen>
     </informalexample>
 
+    <!--
       <para>Unlike the <literal>svn:global-ignores</literal> property and
         its analogous runtime configuration
         <literal>global-ignores</literal>, which are combined, the
@@ -2512,30 +2539,62 @@ from 'http://svn.example.com/repos':
         override the <emphasis>identical</emphasis> pattern inherited from
         a different path.  The hierarchy of these overrides works as
         follows:</para>
+    -->
+      <para>属性 <literal>svn:global-ignores</literal> 及其对应的运行时配置
+        选项 <literal>global-ignores</literal> 是一起起作用, 但属性
+        <literal>svn:auto-props</literal> 和运行时选项
+        <literal>auto-props</literal> 的关系就不这样, 如果运行时选项
+        <literal>auto-props</literal> 在一个模式上设置了一个自动属性, 而
+        属性 <literal>svn:auto-props</literal> 也在 <emphasis>同一个</emphasis>
+        模式上设置了自动属性, 那么属性的设置就会覆盖运行时配置选项的设置.
+        从一个路径继承而来的自动属性 <footnote><para>用户只能从他拥有读权限
+            路径上继承属性, 所以说如果管理员在较高层的父路径上 (例如仓库的
+            根目录) 设置了属性 <literal>svn:auto-props</literal>, 他就应该
+            确保所有用户都能读取该路径或者期望的自动属性设置不会失效.</para>
+        </footnote>也只会覆盖从其他路径继承的 <emphasis>同一个</emphasis> 模式.
+        这些覆盖的工作过程是:</para>
 
       <itemizedlist>
         <listitem>
+    <!--
           <para>An auto-prop, for a given pattern, defined in
             <literal>svn:auto-props</literal> overrides the same auto-prop
             for the identical pattern in the <literal>auto-props</literal>
             runtime configuration.</para>
+    -->
+          <para>在 <literal>svn:auto-props</literal> 上定义的, 针对某一模式的
+            自动属性会覆盖运行时配置选项 <literal>auto-props</literal> 上设置
+            的同一模式的自动属性.</para>
         </listitem>
         <listitem>
+    <!--
           <para>If an auto-prop, for a given pattern, is inherited from
             more than one parents' <literal>svn:auto-props</literal>
             property, the nearer path-wise parent overrides the more
             distant parents.</para>
+    -->
+          <para>对于一个给定的模式而言, 如果它的自动属性继承自多个父路径的
+            <literal>svn:auto-props</literal> 属性, 那么在路径上最近的父路径
+            的自动属性会覆盖其中父路径.</para>
         </listitem>
         <listitem>
+    <!--
           <para>An auto-prop, for a given pattern, defined in a
             <literal>svn:auto-props</literal> property explicitly set on
             a path overrides the same auto-prop(s) for the identical
             pattern inherited from any parents.</para>
+    -->
+          <para>对一个给定的模式而言, 如果在路径的 <literal>svn:auto-props
+            </literal> 属性上显式地设置了一个自动属性, 那它就会覆盖从其他路径
+            继承而来的相同模式上的自动属性.</para>
         </listitem>
       </itemizedlist>
 
+    <!--
       <para>Let's look at an example.  Suppose you have this runtime
         configuration:</para>
+    -->
+      <para>现在来看一个例子. 假设你有一个如下所示的运行时配置:</para>
 
     <informalexample>
       <screen>
@@ -2549,8 +2608,11 @@ enable-auto-props = yes
 </screen>
     </informalexample>
 
+    <!--
       <para>And you want to add three files in the <filename>calc</filename>
         directory of your working copy:</para>
+    -->
+      <para>你想添加 <filename>calc</filename> 目录中的三个文件:</para>
 
     <informalexample>
       <screen>
@@ -2561,8 +2623,12 @@ $ svn st
 </screen>
     </informalexample>
 
+    <!--
       <para>Let's check what <literal>svn:auto-props</literal> apply to
         <filename>calc</filename>:</para>
+    -->
+      <para>先看一下 <filename>calc</filename> 的 <literal>svn:auto-props
+      </literal> 属性:</para>
 
     <informalexample>
       <screen>
