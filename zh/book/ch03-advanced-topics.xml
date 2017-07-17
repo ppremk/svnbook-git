@@ -2552,7 +2552,7 @@ from 'http://svn.example.com/repos':
             根目录) 设置了属性 <literal>svn:auto-props</literal>, 他就应该
             确保所有用户都能读取该路径或者期望的自动属性设置不会失效.</para>
         </footnote>也只会覆盖从其他路径继承的 <emphasis>同一个</emphasis> 模式.
-        这些覆盖的工作过程是:</para>
+        覆盖的先后顺序是:</para>
 
       <itemizedlist>
         <listitem>
@@ -2648,8 +2648,11 @@ from '.':
 </screen>
     </informalexample>
 
+    <!--
       <para>When we add these three files what auto-props do we expect?
         We add the trio to version control and then check:</para>
+    -->
+      <para>添加这三个文件, 然后检查它们的自动属性:</para>
 
     <informalexample>
       <screen>
@@ -2660,11 +2663,17 @@ A         calc/editor.py
 </screen>
     </informalexample>
 
+    <!--
       <para>The file <filename>data-binding.cpp</filename> has only one
         matching pattern, <literal>*.cpp = svn:eol-style=CR</literal>
         in the runtime configuration, so obviously the
         <literal>svn:eol-style</literal> property is set to
         <literal>CR</literal>:</para>
+    -->
+      <para>文件 <filename>data-binding.cpp</filename> 只有一个匹配的模式,
+        也就是运行时配置选项里的 <literal>*.cpp = svn:eol-style=CR</literal>,
+        显然文件的属性 <literal>svn:eol-style</literal> 被设置为 <literal>CR
+      </literal>:</para>
 
     <informalexample>
       <screen>
@@ -2675,6 +2684,7 @@ Properties on 'calc/data-binding.cpp':
 </screen>
     </informalexample>
 
+    <!--
       <para>The file <filename>editor.py</filename> matches a single
         pattern in runtime config and both of the
         <literal>svn:auto-props</literal> properties, but by the hierarchy
@@ -2683,6 +2693,13 @@ Properties on 'calc/data-binding.cpp':
         <literal>*.py = svn:eol-style=native</literal>, takes precedence.
         So the <literal>svn:eol-style</literal> property is set to
         <literal>native:</literal>:</para>
+    -->
+      <para>文件 <filename>editor.py</filename> 既匹配运行时配置选项里的一
+        条模式, 也匹配属性 <literal>svn:auto-props</literal> 里的模式, 根据前
+        面介绍的覆盖顺序, 显式设置在 <filename>calc</filename> 上的属性值
+        (<literal>*.py = svn:eol-style=native</literal>) 的优先级较高, 所以
+        属性 <literal>svn:eol-style</literal> 被设置为 <literal>native</literal>
+        :</para>
 
     <informalexample>
       <screen>
@@ -2693,6 +2710,7 @@ Properties on 'calc/editor.py':
 </screen>
     </informalexample>
 
+    <!--
       <para>The file <filename>data.c</filename> also matches patterns
         in the runtime config and both of the inherited
         <literal>svn:auto-props</literal> properties.  The
@@ -2704,6 +2722,14 @@ Properties on 'calc/editor.py':
         the nearest inherited parent,
         <literal>http://svn.example.com/repos</literal>,
         provides that value:</para>
+    -->
+      <para>文件 <filename>data.c</filename> 同时匹配运行时配置选项和继承属性
+        <literal>svn:auto-props</literal> 的模式. 自动属性 <literal>
+          svn:keywords</literal> 只被定义了一次, 在 <filename>calc</filename>
+        上定义, 所以 <filename>data.c</filename> 自动获取了该属性.
+        <filename>calc</filename> 上的 <literal>svn:auto-props</literal> 没有
+        为 <literal>svn:eol-style</literal> 定义值, 所以最近的父路径
+        <literal>http://svn.example.com/repos</literal> 提供了这个值:</para>
 
     <informalexample>
       <screen>
@@ -2717,6 +2743,7 @@ Properties on 'calc/data.c':
     </informalexample>
 
       <warning>
+    <!--
         <para>Overriding auto-props only applies for
           <emphasis>identical</emphasis> patterns.  If a file to be added
           or imported matches more than one pattern, then there is no
@@ -2726,6 +2753,12 @@ Properties on 'calc/data.c':
           <filename>bar</filename>.  Further, suppose the
           <literal>svn:auto-props</literal> property is set on
           <filename>bar</filename> with the value:</para>
+    -->
+        <para>自动属性的覆盖只发生在 <emphasis>相同地</emphasis> 模式上, 如果
+          新增的文件同时匹配多个模式, 那就无法确定最终应用的是哪一个自动属性.
+          比如说用户想把文件 <filename>foo.cpp</filename> 添加到目录
+          <filename>bar</filename>, 而 <filename>bar</filename> 的属性
+          <literal>svn:auto-props</literal> 的值是:</para>
 
     <informalexample>
       <screen>
@@ -2734,10 +2767,15 @@ Properties on 'calc/data.c':
 </screen>
     </informalexample>
 
+    <!--
         <para>Since <filename>foo.cpp</filename> matches both patterns,
           there is no way to know if the <literal>svn:keywords</literal>
           property will be set on <filename>foo.cpp</filename> when it
           is added.</para>
+    -->
+        <para>因为 <filename>foo.cpp</filename> 同时匹配两个不同的模式, 所以
+          我们没办法事先确定属性 <literal>svn:keywords</literal> 是否被设置到
+          <filename>foo.cpp</filename> 上.</para>
       </warning>
 
       <para>A final note on <literal>svn:auto-props</literal>.  This
