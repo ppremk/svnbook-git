@@ -980,6 +980,105 @@ U    src/main.c
         test, and <command>svn commit</command> the local modifications
         to your branch.</para>
 
+    </sect2>
+
+    <!-- =============================================================== -->
+    <sect2 id="svn.branchmerge.basicmerging.stayinsync.subtree">
+      <title>Subtree Merges and Subtree Mergeinfo</title>
+      <para>
+        <indexterm>
+          <primary>merging</primary>
+          <secondary>subtree merge</secondary>
+        </indexterm>
+        <indexterm>
+          <primary>mergeinfo</primary>
+          <secondary>subtree mergeinfo</secondary>
+        </indexterm>In most of the examples in this chapter the
+        merge target is the root directory of a branch (see
+        <xref linkend="svn.branchmerge.whatis"/>). While this is a
+        best practice, you may occasionally need to merge directly
+        to some child of the branch root. This type of merge is
+        called a <firstterm>subtree merge</firstterm> and the
+        mergeinfo recorded to describe it is called
+        <firstterm>subtree mergeinfo</firstterm>. There is nothing
+        special about subtree merges or subtree mergeinfo.  In fact
+        there is really only one important point to keep in mind
+        about these concepts: the complete record of merges to a
+        branch may not be contained solely in the mergeinfo on the
+        branch root.  You may have to consider subtree mergeinfo
+        to get a full accounting.  Fortunately Subversion does this
+        for you and rarely will you need to concern yourself with
+        it.  A brief example will help explain:</para>
+
+      <informalexample>
+        <screen>
+# We need to merge r958 from trunk to branches/proj-X/doc/INSTALL,
+# but that revision also affects main.c, which we don't want to merge:
+$ svn log --verbose --quiet -r 958 ^/
+------------------------------------------------------------------------
+r958 | bruce | 2011-10-20 13:28:11 -0400 (Thu, 20 Oct 2011)
+Changed paths:
+   M /trunk/doc/INSTALL
+   M /trunk/src/main.c
+------------------------------------------------------------------------
+
+# No problem, we'll do a subtree merge targeting the INSTALL file
+# directly, but first take a note of what mergeinfo exists on the
+# root of the branch:
+$ cd branches/proj-X
+
+$ svn propget svn:mergeinfo --recursive
+Properties on '.':
+  svn:mergeinfo
+    /trunk:651-652
+
+# Now we perform the subtree merge, note that merge source
+# and target both point to INSTALL:
+$ svn merge ^/trunk/doc/INSTALL doc/INSTALL -c 958
+--- Merging r958 into 'doc/INSTALL':
+U    doc/INSTALL
+--- Recording mergeinfo for merge of r958 into 'doc/INSTALL':
+ G   doc/INSTALL
+
+# Once the merge is complete there is now subtree mergeinfo on INSTALL:
+$ svn propget svn:mergeinfo --recursive
+Properties on '.':
+  svn:mergeinfo
+    /trunk:651-652
+Properties on 'doc/INSTALL':
+  svn:mergeinfo
+    /trunk/doc/INSTALL:651-652,958
+
+# What if we then decide we do want all of r958? Easy, all we need do is
+# repeat the merge of that revision, but this time to the root of the
+# branch, Subversion notices the subtree mergeinfo on INSTALL and doesn't
+# try to merge any changes to it, only the changes to main.c are merged:
+$ svn merge ^/subversion/trunk . -c 958
+--- Merging r958 into '.':
+U    src/main.c
+--- Recording mergeinfo for merge of r958 into '.':
+ U   .
+--- Eliding mergeinfo from 'doc/INSTALL':
+ U   doc/INSTALL
+</screen>
+      </informalexample>
+
+      <para>
+        <indexterm>
+          <primary>mergeinfo</primary>
+          <secondary>elision</secondary>
+        </indexterm>You might be wondering
+        why <filename>INSTALL</filename> in the above example has
+        mergeinfo for r651-652, when we only merged r958. This is
+        due to mergeinfo inheritance, which we'll cover in the
+        sidebar
+        <xref linkend="svn.branchmerge.basicmerging.mergeinfo.inheritance"
+        />.  Also note that the subtree mergeinfo on
+        <filename>doc/INSTALL</filename> was removed, or
+        <quote>elided</quote>.  This is called
+        <firstterm>mergeinfo elision</firstterm> and it occurs
+        whenever Subversion detects redundant subtree mergeinfo.</para>
+
       <tip>
         <para>Prior to Subversion 1.7, merges unconditionally updated
           <emphasis>all</emphasis> of the subtree mergeinfo under the
@@ -2489,106 +2588,6 @@ Summary of conflicts:
         side. In any case, these differing names help you distinguish
         between conflicts that happened as a result of an  update and
         ones that happened as a result of a merge.</para>
-
-    </sect2>
-
-
-    <!-- =============================================================== -->
-    <sect2 id="svn.branchmerge.basicmerging.stayinsync.subtree">
-      <title>Subtree Merges and Subtree Mergeinfo</title>
-      <para>
-        <indexterm>
-          <primary>merging</primary>
-          <secondary>subtree merge</secondary>
-        </indexterm>
-        <indexterm>
-          <primary>mergeinfo</primary>
-          <secondary>subtree mergeinfo</secondary>
-        </indexterm>In most of the examples in this chapter the
-        merge target is the root directory of a branch (see
-        <xref linkend="svn.branchmerge.whatis"/>). While this is a
-        best practice, you may occasionally need to merge directly
-        to some child of the branch root. This type of merge is
-        called a <firstterm>subtree merge</firstterm> and the
-        mergeinfo recorded to describe it is called
-        <firstterm>subtree mergeinfo</firstterm>. There is nothing
-        special about subtree merges or subtree mergeinfo.  In fact
-        there is really only one important point to keep in mind
-        about these concepts: the complete record of merges to a
-        branch may not be contained solely in the mergeinfo on the
-        branch root.  You may have to consider subtree mergeinfo
-        to get a full accounting.  Fortunately Subversion does this
-        for you and rarely will you need to concern yourself with
-        it.  A brief example will help explain:</para>
-
-      <informalexample>
-        <screen>
-# We need to merge r958 from trunk to branches/proj-X/doc/INSTALL,
-# but that revision also affects main.c, which we don't want to merge:
-$ svn log --verbose --quiet -r 958 ^/
-------------------------------------------------------------------------
-r958 | bruce | 2011-10-20 13:28:11 -0400 (Thu, 20 Oct 2011)
-Changed paths:
-   M /trunk/doc/INSTALL
-   M /trunk/src/main.c
-------------------------------------------------------------------------
-
-# No problem, we'll do a subtree merge targeting the INSTALL file
-# directly, but first take a note of what mergeinfo exists on the
-# root of the branch:
-$ cd branches/proj-X
-
-$ svn propget svn:mergeinfo --recursive
-Properties on '.':
-  svn:mergeinfo
-    /trunk:651-652
-
-# Now we perform the subtree merge, note that merge source
-# and target both point to INSTALL:
-$ svn merge ^/trunk/doc/INSTALL doc/INSTALL -c 958
---- Merging r958 into 'doc/INSTALL':
-U    doc/INSTALL
---- Recording mergeinfo for merge of r958 into 'doc/INSTALL':
- G   doc/INSTALL
-
-# Once the merge is complete there is now subtree mergeinfo on INSTALL:
-$ svn propget svn:mergeinfo --recursive
-Properties on '.':
-  svn:mergeinfo
-    /trunk:651-652
-Properties on 'doc/INSTALL':
-  svn:mergeinfo
-    /trunk/doc/INSTALL:651-652,958
-
-# What if we then decide we do want all of r958? Easy, all we need do is
-# repeat the merge of that revision, but this time to the root of the
-# branch, Subversion notices the subtree mergeinfo on INSTALL and doesn't
-# try to merge any changes to it, only the changes to main.c are merged:
-$ svn merge ^/subversion/trunk . -c 958
---- Merging r958 into '.':
-U    src/main.c
---- Recording mergeinfo for merge of r958 into '.':
- U   .
---- Eliding mergeinfo from 'doc/INSTALL':
- U   doc/INSTALL
-</screen>
-      </informalexample>
-
-      <para>
-        <indexterm>
-          <primary>mergeinfo</primary>
-          <secondary>elision</secondary>
-        </indexterm>You might be wondering
-        why <filename>INSTALL</filename> in the above example has
-        mergeinfo for r651-652, when we only merged r958. This is
-        due to mergeinfo inheritance, which we'll cover in the
-        sidebar
-        <xref linkend="svn.branchmerge.basicmerging.mergeinfo.inheritance"
-        />.  Also note that the subtree mergeinfo on
-        <filename>doc/INSTALL</filename> was removed, or
-        <quote>elided</quote>.  This is called
-        <firstterm>mergeinfo elision</firstterm> and it occurs
-        whenever Subversion detects redundant subtree mergeinfo.</para>
 
     </sect2>
 
