@@ -3304,7 +3304,7 @@ Properties on 'calc/data.c':
       <para>和许多应用程序一样, Subversion 也会使用 MIME (多用途互联网邮件扩展
         类型, Multipurpose Internet Mail Extensions) 内容类型. 属性
         <literal>svn:mime-type</literal> 除了可以作为文件内容类型的存放位置,
-        它的值还决定了 Subversion 的某些特为特征.</para>
+        它的值还决定了 Subversion 的某些行为特征.</para>
 
       <sidebar>
     <!--
@@ -3402,6 +3402,7 @@ Properties on 'calc/data.c':
 
       </sidebar>
     
+    <!--
       <para>For example, one of the benefits that Subversion typically
         provides is contextual, line-based merging of changes received
         from the server during an update into your working file.  But
@@ -3421,7 +3422,19 @@ Properties on 'calc/data.c':
         is really for the protection of the user against failed
         attempts at performing contextual merges on files that simply
         cannot be contextually merged.</para>
+    -->
+      <para>比如说, Subversion 提供的一项特性是在更新工作副本时, 支持基于行
+        的文件内容合并, 但是二进制文件没有 <quote>行</quote> 的概念, 于是,
+        如果文件的 <literal>svn:mime-type</literal> 属性被设置成非文本 MIME
+        类型 (非文本的 MIME 类型通常以 <literal>text/</literal> 开始, 但是也有
+        例外), Subversion 就不会对文件执行合并操作. 作为替代, 如果被更新的二
+        进制文件含有本地修改, 那文件就不会被更新, Subversion 会另外创建两个
+        新的文件, 其中一个的扩展名是 <filename>.oldrev</filename>, 对应文件的
+        BASE 版本号; 另一个的扩展名是 <filename>.newrev</filename>, 对应更新
+        后的版本号. 这样做是为了避免对不支持合并的文件进行合并而带来的错误.
+      </para>
 
+    <!--
       <para>Additionally, since the acts of displaying line-based
         differences and line-based change attribution are, rather
         obviously, dependent on there being a meaningful definition
@@ -3434,9 +3447,18 @@ Properties on 'calc/data.c':
         such as <literal>application/xml</literal> which is not
         unambiguously human-readable and as such is treated as
         nontextual by Subversion.  Fortunately, those subcommands
-        offer a <option>--force</option> option for forcing
+        offer a <option>- -force</option> option for forcing
         Subversion to attempt the operations in spite of the apparent
         non-human-readability of the files.</para>
+    -->
+      <para>另外, 为了能够以行为单位显示修改, 文件必须能被划分成
+        <quote>行</quote>, 如果 <command>svn diff</command> 和
+        <command>svn annotate</command> 的目标文件的 MIME 类型是非文本的, 这
+        两个命令默认会报错. 如果用户的文件是 XML 文件, 它们的 <literal>
+          svn:mime-type</literal> 被设置成 <literal>application/xml</literal>,
+        虽然它们是人类可读的文本文件, 但 Subversion 仍然会把它们看成是非文本
+        文件, 幸好, 为命令添加选项 <option>--force</option> 可以强制 Subversion
+        不管文件的 MIME 类型, 直接执行操作.</para>
 
       <warning>
         <para>The <literal>svn:mime-type</literal> property, when set
