@@ -3518,6 +3518,7 @@ Properties on 'calc/data.c':
     -->
       <title>文件的可执行性</title>
  
+    <!--
       <para>On many operating systems, the ability to execute a file
         as a command is governed by the presence of an execute
         permission bit.  This bit usually defaults to being disabled,
@@ -3530,7 +3531,14 @@ Properties on 'calc/data.c':
         specify that the executable bit for the file on which that
         property is set should be enabled, and Subversion honors that
         request when populating working copies with such files.</para>
+    -->
+      <para>在很多操作系统里, 一个文件是否可以补执行取决于该文件是否被设置了
+        可执行权限位. 该位默认是不开启的, 如果用户需要可执行权限, 必须显式地
+        开启它. 但是记住应该为哪些检出的文件设置可执行位是一件很麻烦的事情,
+        所以 Subversion 提供了属性 <literal>svn:executable</literal>, 如果文件
+        设置了该属性, Subversion 就会在工作副本里打开文件的可执行位.</para>
 
+    <!--
       <para>This property has no effect on filesystems that have no
         concept of an executable permission bit, such as FAT32 and
         NTFS.<footnote><para>The Windows filesystems use file
@@ -3542,19 +3550,35 @@ Properties on 'calc/data.c':
         to <literal>*</literal> when setting this property.  Finally,
         this property is valid only on files, not on
         directories.</para>
+    -->
+      <para>该属性对不支持可执行位的文件系统是没有效果的, 比如 FAT32 和 NTFS.
+        <footnote><para>Windows 的文件系统使用文件的扩展名 (比如 <filename>
+              .EXE</filename>, <filename>.BAT</filename> 和 <filename>.COM
+        </filename>) 表示文件是可执行的.</para></footnote> 另外, 尽管该属性
+        没有预定义的值, 在设置属性时, Subversion 强制把它的值设置为
+        <literal>*</literal>. 最后, 该属性只对文件有效, 对目录不起作用.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.props.special.eol-style">
+    <!--
       <title>End-of-Line Character Sequences</title>
+    -->
+      <title>行结束符</title>
 
+    <!--
       <para>Unless otherwise noted using a versioned file's
         <literal>svn:mime-type</literal> property, Subversion
         assumes the file contains human-readable data.  Generally
         speaking, Subversion uses this knowledge only to determine
         whether contextual difference reports for that file are
         possible.  Otherwise, to Subversion, bytes are bytes.</para>
+    -->
+      <para>除非属性 <literal>svn:mime-type</literal> 进行了额外说明, 否则
+        Subversion 总是假设文件的内容是人类可读的. 一般来说, Subversion 会根据
+        自己的知识来判断是否可以对文件进行内容上的差异比较, 如果不能的话, 就
+        按字节比较差异.</para>
       
       <para>
         <indexterm>
@@ -3563,6 +3587,7 @@ Properties on 'calc/data.c':
         <indexterm>
           <primary>end-of-line (EOL) markers</primary>
           <see>line endings</see>
+    <!--
         </indexterm>This means that by default, Subversion doesn't pay
         any attention to the type of <firstterm>end-of-line (EOL)
         markers</firstterm> used in your files.  Unfortunately,
@@ -3574,11 +3599,20 @@ Properties on 'calc/data.c':
         followed by a line feed (<literal>LF</literal>).  Unix
         software, however, just uses the <literal>LF</literal>
         character to denote the end of a line.</para>
+    -->
+        </indexterm>Subversion 默认情况下并不关心文件的 <firstterm>
+        行结束 (EOL) 标记</firstterm> (<firstterm>end-of-line (EOL) markers
+      </firstterm>) 类型. 不幸的是, 如何结束一行, 不同的操作系统有着不同的约
+      定. 比如说, Windows 软件使用一对 ASCII 控制字符表示一行的结束&mdash;
+      一个回车符 (<literal>CR</literal>) 后面再跟一个换行符 (<literal>LF
+        </literal>); 而 Unix 系统中的软件只用单一的换行符 (<literal>LF
+      </literal>) 表示一行的结束.</para>
 
       <para>
         <indexterm>
           <primary>line endings</primary>
           <secondary>native</secondary>
+    <!--
         </indexterm>Not all of the various tools on these operating
         systems understand files that contain line endings in a format
         that differs from the <firstterm>native line-ending
@@ -3589,6 +3623,13 @@ Properties on 'calc/data.c':
         and Windows programs combine all of the lines of a Unix file
         into one giant line because no <literal>CR</literal>
         characters are found to denote the ends of the lines.</para>
+    -->
+      </indexterm>如果文件的行结束符与操作系统的 <firstterm>本地的行结束风格
+        </firstterm> 不同, 有些软件可能无法正确地处理这种文件. 所以在典型情况
+        下, Unix 程序把来自 Windows 的文件里的回车符 (<literal>CR</literal>) 当
+        成一个普通字符 (通常显示成 <literal>^M</literal>), 而 Windows 程序会
+        把来自 Unix 系统的文件显示成一段很长的行, 因为它们找不到用来结束一行
+        的回车符 (<literal>CR</literal>).</para>
 
       <para>This sensitivity to foreign EOL markers can be
         frustrating for folks who share a file across different
