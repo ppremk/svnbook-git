@@ -3565,7 +3565,7 @@ Properties on 'calc/data.c':
     <!--
       <title>End-of-Line Character Sequences</title>
     -->
-      <title>行结束符</title>
+      <title>行结束标记</title>
 
     <!--
       <para>Unless otherwise noted using a versioned file's
@@ -3624,13 +3624,14 @@ Properties on 'calc/data.c':
         into one giant line because no <literal>CR</literal>
         characters are found to denote the ends of the lines.</para>
     -->
-      </indexterm>如果文件的行结束符与操作系统的 <firstterm>本地的行结束风格
+      </indexterm>如果文件的行结束标记与操作系统的 <firstterm>本地的行结束风格
         </firstterm> 不同, 有些软件可能无法正确地处理这种文件. 所以在典型情况
         下, Unix 程序把来自 Windows 的文件里的回车符 (<literal>CR</literal>) 当
         成一个普通字符 (通常显示成 <literal>^M</literal>), 而 Windows 程序会
         把来自 Unix 系统的文件显示成一段很长的行, 因为它们找不到用来结束一行
         的回车符 (<literal>CR</literal>).</para>
 
+    <!--
       <para>This sensitivity to foreign EOL markers can be
         frustrating for folks who share a file across different
         operating systems.  For example, consider a source code
@@ -3638,7 +3639,13 @@ Properties on 'calc/data.c':
         Unix systems.  If all the developers always use tools that
         preserve the line-ending style of the file, no problems
         occur.</para>
+    -->
+      <para>如果用户要在不同的操作系统之间分享文件, 如此敏感的 EOL 标记可不
+        是什么好事. 比如说有一个源代码文件, 开发人员可能会同时在 Unix 和
+        Windows 系统中编辑它, 如果所有开发人员所使用的工具都能保留文件原来的行
+        结束风格, 那就不会产生什么问题.</para>
 
+    <!--
       <para>But in practice, many common tools either fail to
         properly read a file with foreign EOL markers, or
         convert the file's line endings to the native style when the
@@ -3654,7 +3661,17 @@ Properties on 'calc/data.c':
         line-ending style that it was in before his edits were made,
         or he can simply commit the file&mdash;new EOL markers and
         all.</para>
+    -->
+      <para>可惜的是, 如果文件的行结束标记和本地不同, 很多程序要么不能正确地读
+        取并显示文件, 要么在保存时, 把文件的行结束标记转换成本地风格. 如果是前
+        一种情况, 开发人员在开始编辑文件之前, 需要使用一种格式转换工具 (比如
+        <command>dos2unix</command> 及其伙伴 <command>unix2dos</command>) 把
+        文件的行结束标记转换成本地风格. 如果是后一种情况就不用在编辑之前转换文件
+        格式. 但是两种情况都会导致文件的每一行都发生变化! 在提交修改之前, 用户
+        有两种选择, 一是使用格式转换工具把文件的行结束标记转换成与原来一样的
+        风格, 二是直接提交&mdash;使用新的行结束标记.</para>
 
+    <!--
       <para>The result of scenarios like these include wasted time
         and unnecessary modifications to committed files.  Wasted
         time is painful enough.  But when commits change every line
@@ -3662,7 +3679,13 @@ Properties on 'calc/data.c':
         those lines were changed in a nontrivial way.  Where was
         that bug really fixed?  On what line was a syntax error
         introduced?</para>
+    -->
+      <para>这种情况的结果是既浪费了时间, 也提交了很多没必要的修改. 浪费时间
+        已经足够烦人了, 更糟糕的是一次提交修改了文件的每一行, 这会给后面的历史
+        查询带来很大的麻烦&mdash;是哪几行修改解决了问题, 或者是哪一行修改引入
+        了语法错误.</para>
 
+    <!--
       <para>The solution to this problem is the
         <literal>svn:eol-style</literal> property.  When this
         property is set to a valid value, Subversion uses it to
@@ -3670,11 +3693,16 @@ Properties on 'calc/data.c':
         that the file's line-ending style isn't flip-flopping with
         every commit that comes from a different operating
         system.  The valid values are:</para>
+    -->
+      <para>问题的解决办法是使用属性 <literal>svn:eol-style</literal>. 如果属
+        性的值是有效的, Subversion 将根据属性值对文件进行特殊的处理, 这样文件
+        的行结束风格就不会随着操作系统的变化而变化. 属性的有效值包括:</para>
 
       <variablelist>
         <varlistentry>
           <term><literal>native</literal></term>
           <listitem>
+    <!--
             <para>This causes the file to contain the EOL markers
               that are native to the operating system on which
               Subversion was run.  In other words, if a user on a
@@ -3686,37 +3714,60 @@ Properties on 'calc/data.c':
               checking out a working copy that contains the same
               file will see <literal>LF</literal> EOL markers in his
               copy of the file.</para>
+    -->
+            <para>文件的行结束标记是操作系统的本地风格, 换句话说, 如果一个用户
+              在 Windows 操作系统上检出了工作副本, 文件的 <literal>
+                svn:eol-style</literal> 被设置成 <literal>native</literal>,
+              则文件将使用 <literal>CRLF</literal> 作为行结束标记. 而 Unix 用户
+              检出的文件的行结束标记是 <literal>LF</literal>.</para>
 
+    <!--
             <para>Note that Subversion will actually store the file
               in the repository using normalized
               <literal>LF</literal> EOL markers regardless of the
               operating system.  This is basically transparent to
               the user, though.</para>
+    -->
+            <para>注意, 不管操作系统是什么类型, Subversion 仓库中存放的文件
+              的行结束标记总是 <literal>LF</literal>, 这对用户来说是透明的.
+            </para>
           </listitem>
         </varlistentry>
         <varlistentry>
           <term><literal>CRLF</literal></term>
           <listitem>
+    <!--
             <para>This causes the file to contain
               <literal>CRLF</literal> sequences for EOL markers,
               regardless of the operating system in use.</para>
+    -->
+            <para>无论是什么操作系统, 文件总是使用 <literal>CRLF</literal>
+              作为行结束标记.</para>
           </listitem>
         </varlistentry>
         <varlistentry>
           <term><literal>LF</literal></term>
           <listitem>
+    <!--
             <para>This causes the file to contain
               <literal>LF</literal> characters for EOL markers,
               regardless of the operating system in use.</para>
+    -->
+            <para>无论是什么操作系统, 文件总是使用 <literal>LF</literal> 作为
+              行结束标记.</para>
           </listitem>
         </varlistentry>
         <varlistentry>
           <term><literal>CR</literal></term>
           <listitem>
+    <!--
             <para>This causes the file to contain
               <literal>CR</literal> characters for EOL markers,
               regardless of the operating system in use.  This
               line-ending style is not very common.</para>
+    -->
+            <para>无论是什么操作系统, 文件总是使用 <literal>CR</literal>
+              作为行结束标记. 这种行结束标记用得很少.</para>
           </listitem>
         </varlistentry>
       </variablelist>
