@@ -4289,6 +4289,7 @@ I       calc/wip.1.diff
 </screen>
     </informalexample>
 
+    <!--
     <para>All of your previously hidden unversioned paths are once
       again shown, but now with the <literal>'I' Ignored</literal>
       status.  But wait, what about <filename>wip.1.diff</filename>?
@@ -4301,10 +4302,22 @@ I       calc/wip.1.diff
       Subversion can disregard unversioned paths, the inheritable
       <literal>svn:global-ignores</literal> property.  Using the
       <command>svn propget</command> subcommand with the
-      <option>--show-inherited-props</option> option, you see that
+      <option>- -show-inherited-props</option> option, you see that
       the <literal>svn:global-ignores</literal> property is set on the
       root of your working copy, and sure enough, it defines a
       matching ignore pattern:</para>
+    -->
+    <para>被隐藏的未被版本控制的项目再度显示出来, 但是在项目的左边加上了字母
+      <literal>I</literal> (Ignored). 请等一下, 为什么 <filename>wip.1.diff
+      </filename> 也有 <literal>I</literal>? <filename>calc</filename> 的属性
+      <literal>svn:ignore</literal> 里并没有匹配 <filename>wip.1.diff</filename>
+      的模式, 那么它为什么会被忽略?<footnote><para>假设用户的运行时配置选项
+          <literal>global-ignores</literal> 里也没有匹配的模式</para></footnote>
+      答案是继承的属性 <literal>svn:global-ignores</literal>. 执行带上选项
+      <option>--show-inherited-props</option> 的命令 <command>svn propget
+      </command>, 就可以看到属性 <literal>svn:global-ignores</literal> 被设置
+      在了工作副本的根目录上, 果然在这个属性里找到了匹配 <filename>wip.1.diff
+    </filename> 的模式:</para>
 
     <informalexample>
       <screen>
@@ -4317,6 +4330,7 @@ from '.':
 </screen>
     </informalexample>
     
+    <!--
     <para>As mentioned earlier, the list of file patterns to ignore is
       also used by <command>svn add</command> and <command>svn
       import</command>.  Both of these operations involve asking
@@ -4327,9 +4341,16 @@ from '.':
       lists&mdash;to determine which files should not be swept into
       the version control system as part of a larger recursive
       addition or import operation.  And here again, you can use the
-      <option>--no-ignore</option> option to tell Subversion to disregard
+      <option>- -no-ignore</option> option to tell Subversion to disregard
       its ignores list and operate on all the files and directories
       present.</para>
+    -->
+    <para>之前提过, <command>svn add</command> 和 <command>svn import</command>
+      也会用到忽略模式列表, 这两个操作都会要求 Subversion 开始管理文件与目录
+      的集合. 在递归的添加操作或导入操作中, Subversion 不会要求用户去选择目录
+      中的哪些文件应该被版本控制, 而是使用忽略模式&mdash;包括全局的, 每个目录
+      与继承的&mdash;来决定哪些文件应该被忽略. 同样, 用户也可以用选项
+      <option>--no-ignore</option> 告诉 Subversion 不会忽略任意一个文件.</para>
 
     <tip>
       <para>Even if <literal>svn:ignore</literal> or
@@ -4356,6 +4377,14 @@ from '.':
         files</option> option to the <command>svn add</command>
         command if you don't want a fully recursive crawl for things
         to add.</para>
+      <para>即使已经设置了属性 <literal>svn:ignore</literal> 和 <literal>
+          svn:global-ignores</literal>, 使用 shell 的通配符可能还是会产生一些
+        问题. 在 Subversion 接收到参数之前, shell 会把通配符扩展成显式的文件
+        名列表, 所以执行 <userinput>svn <replaceable>SUBCOMMAND</replaceable> *
+            </userinput> 相当于执行 <userinput>svn <replaceable>SUBCOMMAND
+          </replaceable> file1 file2 file3 &hellip;</userinput>. 如果是
+          <command>svn add</command>, 效果就像是给命令带上选项 <option>
+            --no-ignore</option>.</para>
 
       </tip>
 
