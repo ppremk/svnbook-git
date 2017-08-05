@@ -2298,7 +2298,7 @@ from '/site':
         few simple but useful features.</para>
     -->
       <para>属性是 Subversion 最强大的特性之一, 它是本章和其他章节介绍的众多
-        Subversion 特性&mdash;文本差异比较, 合并支持, 关键词替换和换行符转换
+        Subversion 特性&mdash;文本差异比较, 合并支持, 关键字替换和换行符转换
         等&mdash;的关键基础. 为了充分发挥属性的作用, 它们必须被设置到正确的
         文件和目录上, 不幸的是, 这个步骤在在日常工作常常被人遗忘, 尤其是因为
         即使属性设置不当通常也不会造成很明显的错误 (至少和文件添加失败比起
@@ -2388,7 +2388,7 @@ from '/site':
         <para>有很多文件使用的是 UTF-16 编码, 虽然在语义上文件的内容是纯文本
           的, 但是 UTF-16 使用的字节在 ASCII 字符的范围之外, 因此 Subversion
           更倾向于把它们分类成二进制文件, 用户在给这些文件进行差异比较, 合并
-          和关键词替换时也会因此遇到一些小麻烦.</para>
+          和关键字替换时也会因此遇到一些小麻烦.</para>
       </note>
 
     <!--
@@ -2943,7 +2943,7 @@ Properties on 'calc/data.c':
                 />.</para>
     -->
             <para>如果该属性出现在一个文件上, 属性的值指出了客户端应该如何
-              扩展文件内的特定关键词, 见
+              扩展文件内的特定关键字, 见
                 <xref linkend="svn.advanced.props.special.keywords" />.</para>
             </listitem>
           </varlistentry>
@@ -4353,6 +4353,7 @@ from '.':
       <option>--no-ignore</option> 告诉 Subversion 不会忽略任意一个文件.</para>
 
     <tip>
+      <!-- TODO -->
       <para>Even if <literal>svn:ignore</literal> or
         <literal>svn:global-ignores</literal> is set, you may run
         into problems if you use shell wildcards in a command.  Shell
@@ -4394,12 +4395,23 @@ from '.':
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.advanced.props.special.keywords">
+    <!--
     <title>Keyword Substitution</title>
+    -->
+    <title>关键字替换</title>
 
     <para>
       <indexterm>
         <primary>keywords</primary>
-      </indexterm>Subversion has the ability to substitute
+      </indexterm>
+      Subversion 支持把 <firstterm>关键字</firstterm> (<firstterm>keywords
+      </firstterm>)&mdash;跟文件有关的一段有用的动态信息&mdash;替换成文件
+      的内容. 关键字提供了与文件最后一次修改有关的信息, 但是每次文件被修改时,
+      这个信息都会发生变化, 更重要的是, 文件刚被修改后, 除了版本控制系统, 对
+      任何一个企图保持数据最新的过程都是一场混乱, 如果把工作交给用户, 就很容易
+      造成信息过旧.</para>
+    <!--
+      Subversion has the ability to substitute
       <firstterm>keywords</firstterm>&mdash;pieces of useful,
       dynamic information about a versioned file&mdash;into the
       contents of the file itself.  Keywords generally provide
@@ -4410,7 +4422,9 @@ from '.':
       for any process except the version control system to keep
       the data completely up to date.  Left to human authors, the
       information would inevitably grow stale.</para>
+    -->
 
+    <!--
     <para>For example, say you have a document in which you would
       like to display the last date on which it was modified.  You
       could burden every author of that document to, just before
@@ -4424,7 +4438,18 @@ from '.':
       location in the file.  This anchor is just a string of text
       formatted as
       <literal>$</literal><replaceable>KeywordName</replaceable><literal>$</literal>.</para>
+    -->
+    <para>比如说用户有一个文档, 他想显示文档最后一次被修改的日期. 他可以要求
+      文档的每一个作者在他们提交修改之前, 在文档中记录一下本次修改的日期. 但
+      是很快就会出现, 总有人会忘记记录修改日期. 更好的做法是让 Subversion 去
+      完成记录时间的操作, 比如说在每次提交时, 把文档中的关键字 <literal>
+        LastChangedDate</literal> 替换成当时的日期. 通过在文档中放置一个
+      <firstterm>关键字锚点</firstterm> (<firstterm>keyword anchor</firstterm>),
+      用户可以控制关键字的插入位置. 锚点就是一段简单的文本, 格式是
+      <literal>$</literal><replaceable>KeywordName</replaceable><literal>$
+    </literal>.</para>
 
+    <!--
     <para>Adding keyword anchor text alone to your file does nothing
       special.  Subversion will never attempt to perform textual
       substitutions on your file contents unless explicitly asked to
@@ -4433,17 +4458,31 @@ from '.':
       book &hellip;</para></footnote> about how to use keywords, and
       you don't want Subversion to substitute your beautiful examples
       of unsubstituted keyword anchors!</para>
+    -->
+    <para>如果只想单纯地往文件中添加关键字锚点并不会产生什么特别的效果, 除非
+      用户显式要求 Subversion, 否则的话它决不会执行文本替换操作, 毕竟用户有可
+      能只是想写一篇介绍如何使用关键字的文档<footnote><para>&hellip;或者是书中
+          的一节&hellip;</para></footnote>, 此时用户当然不希望 Subversion 把
+      示例中的关键字锚点都替换掉.</para>
 
+    <!--
     <para>To tell Subversion whether to substitute keywords
       on a particular file, we again turn to the property-related
       subcommands.  The <literal>svn:keywords</literal> property,
       when set on a versioned file, controls which keywords will
       be substituted on that file.  The value is a space-delimited
       list of keyword names or aliases.</para>
+    -->
+    <para>为了告诉 Subversion 是否要替换某个文件中的关键字, 我们要再次使用
+      与属性有关的子命令. 设置在文件上的属性 <literal>svn:keywords</literal>
+      决定了文件中的哪些关键词将会被替换, 属性值是空格分隔的关键字名或别名列表.
+    </para>
 
     <para>For example, say you have a versioned file named
       <filename>weather.txt</filename> that looks like
       this:</para>
+    <para>举个例子, 假设用户一个叫作 <filename>weather.txt</filename> 的文件,
+      文件的内容是:</para>
 
     <informalexample>
       <programlisting>
@@ -4454,10 +4493,15 @@ Cumulus clouds are appearing more frequently as summer approaches.
 </programlisting>
     </informalexample>
         
+    <!--
     <para>With no <literal>svn:keywords</literal> property set on
       that file, Subversion will do nothing special.  Now, let's
       enable substitution of the
       <literal>LastChangedDate</literal> keyword.</para>
+    -->
+    <para>如果文件上没有设置属性 <literal>svn:keywords</literal>, Subversion
+      就不会对文件做什么特别的操作. 现在开启关键字 <literal>LastChangedDate
+    </literal> 的替换.</para>
 
     <informalexample>
       <screen>
@@ -4467,6 +4511,7 @@ $
 </screen>
     </informalexample>
     
+    <!--
     <para>Now you have made a local property modification on the
       <filename>weather.txt</filename> file.  You will see no
       changes to the file's contents (unless you made some of your
@@ -4477,7 +4522,16 @@ $
       substitute keywords that are not present in the file and
       will not substitute keywords that are not present in the
       <literal>svn:keywords</literal> property value.</para>
+    -->
+    <para>文件 <filename>weather.txt</filename> 此时含有未被提交的属性修改,
+      但文件的内容并没有发生变化 (除非用户在设置属性之前又修改了文件). 注意
+      文件还包含了关键字 <literal>Rev</literal> 的锚点, 但
+      <literal>svn:keywords</literal> 的属性值并没有包含关键字 <literal>Rev
+      </literal>. 如果文件中没有要被替换的关键字, 或者关键字没有出现在
+      <literal>svn:keywords</literal> 的属性值里, Subversion 就不会真正地替换
+      关键字.</para>
 
+    <!--
     <para>Immediately after you commit this property change,
       Subversion will update your working file with the new
       substitute text.  Instead of seeing your keyword anchor
@@ -4487,11 +4541,24 @@ $
       (<literal>$</literal>) characters.  And as we predicted, the
       <literal>Rev</literal> keyword was not substituted because
       we didn't ask for it to be.</para>
+    -->
+    <para>属性修改提交后, Subversion 会立刻更新工作副本里的文件, 将其中的关键
+      字替换成对应的文本. 关键字锚点将会出现替换后的文本, 替换的结果仍然包含
+      关键字的名字以及两边的美元符 (<literal>$</literal>). 因为 <literal>
+        svn:keywords</literal> 的属性值里没有包含对应的关键字, 所以 <literal>
+        Rev</literal> 没有被替换.</para>
 
+    <!--
     <para>Note also that we set the <literal>svn:keywords</literal>
       property to <literal>Date Author</literal>, yet the keyword
       anchor used the alias <literal>$LastChangedDate$</literal>
       and still expanded correctly:</para>
+    -->
+    <para>注意我们把属性 <literal>svn:keywords</literal> 设置成 <literal>
+        Date Author</literal>, 而关键字锚点则写成了 <literal>
+        $LastChangedDate$</literal>, 但仍然得到了正确的结果, 这是因为
+      <literal>LastChangedDate</literal> 是 <literal>Date</literal> 的别名.
+    </para>
 
     <informalexample>
       <programlisting>
@@ -4502,6 +4569,7 @@ Cumulus clouds are appearing more frequently as summer approaches.
 </programlisting>
     </informalexample>
         
+    <!--
     <para>If someone else now commits a change to
       <filename>weather.txt</filename>, your copy of that file
       will continue to display the same substituted keyword value
@@ -4509,7 +4577,13 @@ Cumulus clouds are appearing more frequently as summer approaches.
       time, the keywords in your <filename>weather.txt</filename>
       file will be resubstituted with information that
       reflects the most recent known commit to that file.</para>
+    -->
+    <para>如果其他人向 <filename>weather.txt</filename> 提交了新的修改, 自己
+      工作副本里的文件不会自动更新&mdash;直到用户显式地更新了工作副本, 此时,
+      <filename>weather.txt</filename> 的关键字会被重新替换, 以反应最新的修改
+      时间.</para>
 
+    <!--
     <para>All keywords are case-sensitive where they appear as
       anchors in files: you must use the correct capitalization
       for the keyword to be expanded.  You should consider the
@@ -4517,10 +4591,19 @@ Cumulus clouds are appearing more frequently as summer approaches.
       case-sensitive, too&mdash;for the sake of backward
       compatibility, certain keyword names will be recognized
       regardless of case, but this behavior is deprecated.</para>
+    -->
+    <para>作出锚点出现在文件里的关键字都区分大小写: 用户必须使用大小写正确的
+      关键字. 同样也要注意属性 <literal>svn:keywords</literal> 的值也区分大
+      小写. 为了保持向后兼容, 某几个关键词是不区分大小写的, 但不建议用户使用
+      这个特性.</para>
 
+    <!--
     <para>Subversion defines the list of keywords available for
       substitution.  That list contains the following keywords, 
       some of which have aliases that you can also use:</para>
+    -->
+    <para>Subversion 定义几个支持替换的关键字, 下面列出这些关键字, 其中一些
+      关键字拥有别名:</para>
 
     <variablelist>
       <indexterm>
