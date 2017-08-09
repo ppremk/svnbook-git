@@ -5136,6 +5136,7 @@ $Date:: 2006-03-15 0#$:  Date of last commit
 </programlisting>
     </informalexample>
 
+    <!-- TODO -->
     <para>The use of fixed-length keywords is especially handy when
       performing substitutions into complex file formats that
       themselves use fixed-length fields for data, or for which the
@@ -5150,6 +5151,7 @@ $Date:: 2006-03-15 0#$:  Date of last commit
       the faint of heart!</para>
 
     <warning>
+    <!--
       <para>Be aware that because the width of a keyword field is
         measured in bytes, the potential for corruption of
         multibyte values exists.  For example, a username that
@@ -5165,6 +5167,13 @@ $Date:: 2006-03-15 0#$:  Date of last commit
         altogether.  So, when limiting keywords to a fixed size,
         choose a size that allows for this type of byte-wise
         expansion.</para> 
+    -->
+      <para>注意关键字字段的长度以字节为单位, 在处理多字节字符时可能会出问题.
+        比如说, 用户名如果包含 UTF-8 字符, 截断可能会发生在组成一个字符的多个
+        字节之间. 从字节来看这可能只是一个非常普通的截断, 但是在解释成 UTF-8
+        字符就会产生错误, 很可能会产生乱码. 有些应用程序在打开这种含有错误编
+        码的文件时会认为整个文件已经损坏, 拒绝进一步对文件进行操作. 所以在限
+        制关键字的长度时, 注意避免在字符当中发生截断.</para>
     </warning>
 
   </sect1>
@@ -5173,7 +5182,10 @@ $Date:: 2006-03-15 0#$:  Date of last commit
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.advanced.sparsedirs">
+    <!--
     <title>Sparse Directories</title>
+    -->
+    <title>稀疏目录</title>
 
     <para>
       <indexterm>
@@ -5183,7 +5195,16 @@ $Date:: 2006-03-15 0#$:  Date of last commit
         <primary>checkouts</primary>
         <secondary>shallow</secondary>
         <see>sparse directories</see>
-      </indexterm>By default, most Subversion operations on
+      </indexterm>
+      默认情况下, 大多数 Subversion 操作在处理目录时会采用递归的方式, 比如说,
+      <command>svn checkout</command> 会检出仓库指定区域内的所有文件与目录.
+      Subversion 1.5 引入了一个新特性: <firstterm>稀疏目录</firstterm>
+      (<firstterm>sparse directories</firstterm>, 或 <firstterm>浅检出
+      </firstterm> (<firstterm>shallow checkouts</firstterm>)). 和完整的递归
+      操作相比, 新特性允许用户更加轻浅的检出工作副本&mdash;或工作副本的一部分,
+      以后仍然还能访问到原来被忽略的文件与子目录.</para>
+    <!--
+      By default, most Subversion operations on
       directories act in a recursive manner.  For
       example, <command>svn checkout</command> creates a working copy
       with every file and directory in the specified area of the
@@ -5196,6 +5217,7 @@ $Date:: 2006-03-15 0#$:  Date of last commit
       shallowly than full recursion, with the freedom to bring in
       previously ignored files and subdirectories at a later
       time.</para>
+    -->
 
     <para>For example, say we have a repository with a tree of files
       and directories with names of the members of a human family with
