@@ -5219,11 +5219,16 @@ $Date:: 2006-03-15 0#$:  Date of last commit
       time.</para>
     -->
 
+    <!--
     <para>For example, say we have a repository with a tree of files
       and directories with names of the members of a human family with
       pets.  (It's an odd example, to be sure, but bear with us.)  A
       regular <command>svn checkout</command> operation will give us a
       working copy of the whole tree:</para>
+    -->
+    <para>举个例子, 假设我们有一个仓库, 仓库中存放的是拥有宠物的家庭成员 (这个
+      例子确实有点奇怪), 普通的 <command>svn checkout</command> 操作会得到
+      一个目录完整的工作副本:</para>
 
     <informalexample>
       <screen>
@@ -5243,9 +5248,13 @@ $
 </screen>
     </informalexample>
 
+    <!--
     <para>Now, let's check out the same tree again, but this time
       we'll ask Subversion to give us only the topmost directory
       with none of its children at all:</para>
+    -->
+    <para>现在我们再次执行检出操作, 不过这次要求 Subversion 只检出最上层的目
+      录, 不包括其中的文件与子目录:</para>
 
     <informalexample>
       <screen>
@@ -5255,18 +5264,28 @@ $
 </screen>
     </informalexample>
  
+    <!--
     <para>Notice that we added to our original <command>svn
-      checkout</command> command line a new <option>--depth</option>
+      checkout</command> command line a new <option>- -depth</option>
       option.  This option is present on many of Subversion's
       subcommands and is similar to the
-      <option>--non-recursive</option> (<option>-N</option>) and
-      <option>--recursive</option> (<option>-R</option>) options.  In
+      <option>- -non-recursive</option> (<option>-N</option>) and
+      <option>- -recursive</option> (<option>-R</option>) options.  In
       fact, it combines, improves upon, supercedes, and ultimately
       obsoletes these two older options.  For starters, it expands the
       supported degrees of depth specification available to users,
       adding some previously unsupported (or inconsistently supported)
       depths.  Here are the depth values that you can request for a
       given Subversion operation:</para>
+    -->
+    <para>注意我们这次给命令 <command>svn checkout</command> 加了一个选项
+      <option>--depth</option>. 很多子命令都支持这个选项, 选项的意义类似于
+      <option>--non-recursive</option> (<option>-N</option>) 和
+      <option>--recursive</option> (<option>-R</option>). 实际上, Subversion
+      希望选项 <option>--depth</option> 最终能超过并替换掉这两个旧选项. 对
+      新手来说, <option>--depth</option> 拓宽了用户能够指定的操作深度, 增加了
+      一些原来不支持 (或支持地不一致) 的深度. 下面是用户可以使用的几种深度值:
+    </para>
 
     <variablelist>
 
@@ -5290,34 +5309,48 @@ $
       <varlistentry>
         <term><literal>--depth empty</literal></term>
         <listitem>
+    <!--
           <para>Include only the immediate target of the operation,
             not any of its file or directory children.</para>
+    -->
+          <para>只包含操作的直接目标, 不包括其中的文件或子目录.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry>
         <term><literal>--depth files</literal></term>
         <listitem>
+    <!--
           <para>Include the immediate target of the operation and any
             of its immediate file children.</para>
+    -->
+          <para>只包含操作的直接目标及其中的直接子文件.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry>
         <term><literal>--depth immediates</literal></term>
         <listitem>
+    <!--
           <para>Include the immediate target of the operation and any
             of its immediate file or directory children.  The directory
             children will themselves be empty.</para>
+    -->
+          <para>包括操作的目标自身, 及它的直接子文件与直接子目录, 子目录为空.
+          </para>
         </listitem>
       </varlistentry>
       
       <varlistentry>
         <term><literal>--depth infinity</literal></term>
         <listitem>
+    <!--
           <para>Include the immediate target, its file and directory
             children, its children's children, and so on to full
             recursion.</para>
+    -->
+          <para>包括目标自身, 及它的所有子文件与子目录, 子目录的子文件与
+            子目录, 等等.</para>
         </listitem>
       </varlistentry>
 
@@ -5327,7 +5360,17 @@ $
       <indexterm>
         <primary>depth</primary>
         <secondary>ambient</secondary>
-      </indexterm>Of course, merely combining two existing options into one
+      </indexterm>
+      当然, 如果仅仅是把两个选项合并成一个选项, 那就没必要花费整整一节的笔墨
+      来介绍, 幸运的是, 远不止选项合并这么简单. 深度的概念不仅延伸到 Subversion
+      客户端执行的操作, 同时还描述了工作副本的 <firstterm>周围深度</firstterm>
+      (<firstterm>ambient depth</firstterm>), 它是工作副本为项目记录的深度.
+      深度的关键之处在于它是 "粘着" (sticky) 的, 工作副本记住了用户为每一个项目
+      指定的深度, 在用户显式地修改之前, 项目的深度不会发生变化. 默认情况下,
+      不管文件的深度设置是什么样的, Subversion 的命令只会操作工作副本中已有
+      的项目.</para>
+    <!--
+      Of course, merely combining two existing options into one
       hardly constitutes a new feature worthy of a whole section in
       our book.  Fortunately, there is more to this story.  This idea
       of depth extends not just to the operations you perform with
@@ -5340,13 +5383,19 @@ $
       change that depth selection; by default, Subversion commands
       operate on the working copy citizens present, regardless of
       their selected depth settings.</para>
+    -->
 
     <tip>
+    <!--
       <para>You can check the recorded ambient depth of a working copy
         using the <command>svn info</command> command.  If the ambient
         depth is anything other than infinite recursion, <command>svn
         info</command> will display a line describing that depth
         value:</para>
+    -->
+      <para>可以用命令 <command>svn info</command> 查看工作副本的周围深度,
+        如果周围深度是除了无限递归外的其他内容, <command>svn info</command>
+        就会显示一行描述深度值的信息:</para>
 
       <informalexample>
         <screen>
@@ -5357,10 +5406,15 @@ $
       </informalexample>
     </tip>
 
+    <!--
     <para>Our previous examples demonstrated checkouts of infinite
       depth (the default for <command>svn checkout</command>) and
       empty depth.  Let's look now at examples of the other depth
       values:</para>
+    -->
+    <para>前面的两个例子演示的深度值 <literal>infinity</literal> (<command>
+        svn checkout</command> 的默认行为) 和 <literal>empty</literal> 的效果,
+      现在看一下其他深度的例子:</para>
 
     <informalexample>
       <screen>
@@ -5378,8 +5432,12 @@ $
 </screen>
     </informalexample>
 
+    <!--
     <para>As described, each of these depths is something more than
       only the target, but something less than full recursion.</para>
+    -->
+    <para>和 <literal>empty</literal> 相比, 这些深度会得到更多的内容, 但和
+      <literal>infinity</literal> 相比, 会得到更少的内容.</para>
 
     <para>We've used <command>svn checkout</command> as an example
       here, but you'll find the <option>--depth</option> option
