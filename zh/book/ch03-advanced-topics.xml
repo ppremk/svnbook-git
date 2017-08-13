@@ -5558,17 +5558,26 @@ $
 </screen>
     </informalexample>
 
+    <!--
     <para>Fortunately, having a complex collection of ambient depths
       in a single working copy doesn't complicate the way you interact
       with that working copy.  You can still make, revert, display,
       and commit local modifications in your working copy without
-      providing any new options (including <option>--depth</option> and
-      <option>--set-depth</option>) to the relevant subcommands.  Even
+      providing any new options (including <option>- -depth</option> and
+      <option>- -set-depth</option>) to the relevant subcommands.  Even
       <command>svn update</command> works as it does elsewhere when no
       specific depth is provided&mdash;it updates the working copy
       targets that are present while honoring their sticky
       depths.</para>
+    -->
+    <para>幸运的是, 在一个工作副本里出现如此复杂的周围深度并不会使用户与工作
+      副本的交互也变得复杂. 用户仍然可以像以往那样修改文件, 显示修改, 撤消或
+      提交修改, 而不用给相关命令提供新的选项 (包括 <option>--depth</option>
+      和 <option>--set-depth</option>). 当没有指定深度时, <command>svn update
+      </command> 也能正常工作&mdash;命令根据各个项目的粒着深度更新工作副本里
+      已有的文件和目录.</para>
 
+    <!--
     <para>You might at this point be wondering, <quote>So what?  When
       would I use this?</quote>  One scenario where this feature
       finds utility is tied to a particular repository layout,
@@ -5589,34 +5598,69 @@ $
       empty-depth checkout of the common parent directory of the
       projects, and then update with infinite depth only the items you
       wish to have, like we demonstrated in the previous example.
+      TODO
       Think of it like an opt-in system for working copy
       citizens.</para>
+    -->
+    <para>读者心里可能在想 <quote>那么, 我什么时候会用到稀疏目录呢?</quote> 
+      用到稀疏目录的一种场景是仓库的布局比较特殊, 尤其是许多相关的项目模块都
+      在同一个仓库中分别占据一个单独的目录 (例如 <filename>trunk/project1
+        </filename>, <filename>trunk/project2</filename>, <filename>
+        trunk/project3</filename> 等), 但是用户可能只关心其中的部分模块&mdash;
+      比如说项目的主要模块及其依赖模块. 用户可以分别检出他所关心的各个模块的
+      工作副本, 但是这些工作副本之间是分离的, 如果想同时对它们执行同一个操作
+      就会很麻烦, 必须多次切换目录. 另一种选择是利用稀疏目录特性, 检出一个只
+      包含了感兴趣的模块的工作副本. 首先为模块的公共父目录检出一个深度为
+      <literal>empty</literal> 的工作副本, 然后按照深度 <literal>infinity
+    </literal> 更新感兴趣的模块目录, 就像我们在上一个例子中展示的那样.</para>
 
+    <!--
     <para>The original (Subversion 1.5) implementation of shallow
       checkouts was good, but didn't support de-telescoping of working
       copy items.  Subversion 1.6 remedied this problem.  For example,
-      running <userinput>svn update --set-depth empty</userinput> in
+      running <userinput>svn update - -set-depth empty</userinput> in
       an infinite-depth working copy will discard everything but the
       topmost directory.<footnote><para>Safely, of course.  As in
       other situations, Subversion will leave on disk any files you've
       modified or which aren't versioned.</para></footnote>  Subversion
       1.6 also introduced another supported value for
-      the <option>--set-depth</option>
-      option: <literal>exclude</literal>.  Using <option>--set-depth
+      the <option>- -set-depth</option>
+      option: <literal>exclude</literal>.  Using <option>- -set-depth
       exclude</option> with <command>svn update</command> will cause
       the update target to be removed from the working copy
       entirely&mdash;a directory target won't even be left
       present-but-empty.  This is especially handy when there are more
       things that you'd like to keep in a working copy than things
       you'd like to <emphasis>not</emphasis> keep.</para>
+    -->
+    <para>浅检出的原始实现 (Subversion 1.5) 就已经很不错了, 但是它不能缩减
+      工作副本项目的深度, Subversion 1.6 解决了这个问题. 比如说在一个深度
+      原来是 <literal>infinity</literal> 的工作副本里执行 <command>
+        svn update --set-depth empty</command>, 工作副本就会删除除了顶层目录
+      外的所有文件与目录 <footnote><para>删除操作是安全的, Subversion 会保留
+          修改过的或未被版本控制的项目.</para></footnote> Subversion 1.6 还
+      为选项 <option>--set-depth</option> 引入的一个新的值: <literal>exclude
+      </literal>. 如果给命令 <command>svn update</command> 带上选项
+      <option>--set-depth exclude</option> 会造成被更新的目标从工作副本中完全
+      删除&mdash;如果目标是一个目录, 那么目录也会被完全删除, 而不是留下一个
+      空目录. 如果工作副本中用户想保留的东西要比不想保留的东西多, 那
+      <literal>--set-depth exclude</literal> 就能提供很大的方便.</para>
 
+    <!--
     <para>Consider a directory with hundreds of subdirectories, one of
       which you would like to omit from your working copy.  Using
       an <quote>additive</quote> approach to sparse directories, you
       might check out the directory with an empty depth, then
-      explicitly telescope (using <userinput>svn update --set-depth
+      explicitly telescope (using <userinput>svn update - -set-depth
       infinity</userinput>) each and every subdirectory of the
       directory except the one you don't care about.</para>
+    -->
+    <para>考虑一个包含了几百个子目录的目录, 用户想要从工作副本中忽略其中一个
+      子目录, 如果是用 <quote>增量</quote> 的方法得到稀疏目录, 首先先检出一
+      个深度为 <literal>empty</literal> 的工作副本, 然后显式地把每一个子目录
+      的深度设置成 <literal>infinity</literal> (使用
+      <userinput>svn update --set-depth infinity</userinput>), 除了那个用户
+      不感兴趣的子目录.</para>
 
     <informalexample>
       <screen>
