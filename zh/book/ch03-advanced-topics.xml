@@ -5931,6 +5931,7 @@ $
       other version control systems.</para>
     -->
 
+    <!--
     <para>Subversion's locking feature exists ultimately to minimize
       wasted time and effort.  By allowing a user to programmatically
       claim the exclusive right to change a file in the repository,
@@ -5943,7 +5944,14 @@ $
       then avoid wasting their time and energy on unmergeable changes
       that won't be committable due to eventual
       out-of-dateness.</para>
+    -->
+    <para>Subversion 的锁定特性是为了最大化地减少时间和精力的浪费. 允许用户
+      独占地修改仓库中的文件, 保证了用户在不支持合并的修改上所花费的精力不会
+      被浪费&mdash;他的修改总能提交成功. 并且, Subversion 把对象正在被锁定的
+      事实告诉给了其他用户, 其他用户就可以知道该对象正在被修改, 也就不会把时
+      间浪费在无法成功提交与合并的修改上.</para>
 
+    <!--
     <para>When referring to Subversion's locking feature, one is
       actually talking about a fairly diverse collection of behaviors,
       which include the ability to lock a versioned
@@ -5954,22 +5962,45 @@ $
       and by whom, to annotate files for which locking before editing
       is strongly advised, and so on.  In this section, we'll cover
       all of these facets of the larger locking feature.</para>
+    -->
+    <para>当我们谈到 Subversion 的锁定特性时, 实际上说的是多种不同行为的集合,
+      包括锁定文件的的能力 <footnote><para>Subversion 目前不支持锁定目录.
+      </para></footnote> (获得独占修改文件的权利), 解锁一个文件 (放弃独占修改
+      文件的权利), 查看哪些文件被哪些用户锁定, 为锁定的文件添加注释 (强力建议)
+      等, 所有的这些都会在本节进行详细介绍.</para>
 
     <sidebar id="svn.advanced.locking.meanings">
+    <!--
       <title>The Three Meanings of <quote>Lock</quote></title>
+    -->
+      <title><quote>锁</quote> 的 3 种涵义</title>
 
+    <!--
       <para>In this section, and almost everywhere in this book, the
         words <quote>lock</quote> and <quote>locking</quote> describe
         a mechanism for mutual exclusion between users to avoid
         clashing commits.  Unfortunately, there are two other sorts
         of <quote>lock</quote> with which Subversion, and therefore
         this book, sometimes needs to be concerned.</para>
+    -->
+      <para>本节及书中的其他地方, 单词 <quote>锁 (lock) </quote> 和 <quote>
+          加锁 (locking)</quote> 描述一种用于实现用户间互斥的机制, 避免提交
+        产生碰撞. 不幸的是, Subversion 还有两种 <quote>锁</quote> 需要注意.
+      </para>
 
       <para>
         <indexterm>
           <primary>locks</primary>
           <secondary>administrative</secondary>
-        </indexterm>The second is <firstterm>administrative
+          </indexterm>
+          第二种是 <firstterm>管理锁</firstterm> (<firstterm>administrative
+            locks</firstterm>), 由 Subversion 内部使用, 用于防止多个客户端在
+          操作同一个工作副本时产生碰撞. <command>svn status</command> 输出中
+          第三列的 <computeroutput>L</computeroutput> 指的就是管理锁, 命令
+          <command>svn cleanup</command> 会删除管理锁, 见
+          <xref linkend="svn.tour.cleanup"/>.</para>
+    <!--
+          The second is <firstterm>administrative
         locks</firstterm>, used internally by Subversion to prevent
         clashes between multiple Subversion clients operating on the
         same working copy.  This is the sort of lock indicated by an
@@ -5977,30 +6008,46 @@ $
         <command>svn status</command> output, and removed by the
         <command>svn cleanup</command> command, as described in <xref
         linkend="svn.tour.cleanup"/>.</para>
+    -->
 
       <para>
         <indexterm>
           <primary>locks</primary>
           <secondary>database</secondary>
-        </indexterm>Third, there are <firstterm>database
+          </indexterm>
+          第三种是 <firstterm>数据库锁</firstterm> (<firstterm>database locks
+          </firstterm>), 由 Berkeley DB 内部使用, 防止多个程序在访问数据库时
+          产生碰撞.</para>
+    <!--
+          Third, there are <firstterm>database
         locks</firstterm>, used internally by the Berkeley DB backend
         to prevent clashes between multiple programs trying to access
+        TODO
         the database.  This is the sort of lock whose unwanted
         persistence after an error can cause a repository to
         be <quote>wedged,</quote> as described in
         <xref linkend="svn.berkeleydb.maintenance.recovery" />.</para>
+    -->
 
+    <!--
       <para>You can generally forget about these other kinds of locks
         until something goes wrong that requires you to care about
         them.  In this book, <quote>lock</quote> means the first sort
         unless the contrary is either clear from context or explicitly
         stated.</para>
+    -->
+      <para>除非出现问题, 否则的话用户可以不用考虑后两种锁. 贯穿全书, <quote>
+          锁</quote> 都指的是第一种锁, 除非显式地或者从上下文可以明显地推断
+        出锁的其他类型.</para>
 
     </sidebar>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.locking.creation">
+    <!--
       <title>Creating Locks</title>
+    -->
+      <title>创建锁</title>
       
       <para>
         <indexterm>
@@ -6013,7 +6060,15 @@ $
         <indexterm>
           <primary>locking</primary>
           <secondary>lock owner</secondary>
-        </indexterm>In the Subversion repository, a
+        </indexterm>
+        在 Subversion 仓库里, 一个 <firstterm>锁</firstterm> (<firstterm>lock
+        </firstterm>) 就是一段元数据, 它赋予了一个用户独占修改文件的权利. 仓库
+        负责管理锁, 具体来说就是锁的创建, 实施和删除. 如果有一个提交试图修改或
+        删除被锁定了的文件 (或删除文件的某个父目录), 仓库就会要求客户端提供 2
+        项信息&mdash;一是执行提交操作的客户端已被授权为锁的所有者, 二是提供了
+        锁令牌, 表明客户端知道它用的是哪一个锁.</para>
+    <!--
+        In the Subversion repository, a
         <firstterm>lock</firstterm> is a piece of metadata that
         grants exclusive access to one user to change a file.  This
         user is said to be the <firstterm>lock owner</firstterm>.
@@ -6028,6 +6083,7 @@ $
         owner, and that the lock token has been provided as part of
         the commit process as a form of proof that the client knows which
         lock it is using.</para>
+    -->
       
       <para>
         <indexterm>
