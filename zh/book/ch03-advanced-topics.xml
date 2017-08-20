@@ -5966,7 +5966,7 @@ $
     <para>当我们谈到 Subversion 的锁定特性时, 实际上说的是多种不同行为的集合,
       包括锁定文件的的能力 <footnote><para>Subversion 目前不支持锁定目录.
       </para></footnote> (获得独占修改文件的权利), 解锁一个文件 (放弃独占修改
-      文件的权利), 查看哪些文件被哪些用户锁定, 为锁定的文件添加注释 (强力建议)
+      文件的权利), 查看哪些文件被哪些用户锁定, 为锁定的文件添加注释 (强烈建议)
       等, 所有的这些都会在本节进行详细介绍.</para>
 
     <sidebar id="svn.advanced.locking.meanings">
@@ -6094,13 +6094,19 @@ $
         <indexterm>
           <primary>locks</primary>
           <secondary>creation</secondary>
-        </indexterm>To demonstrate lock creation, let's refer back to
+        </indexterm>
+        为了演示锁的创建, 我们再以海报设计作为例子. Harry 决定修改一个 JPEG
+        图片, 为了防止其他用户在他完成修改之前向该文件提交修改, 他使用命令
+        <command>svn lock</command> 锁定了仓库中的文件:</para>
+    <!--
+        To demonstrate lock creation, let's refer back to
         our example of multiple graphic designers working on the same
         binary image files.  Harry has decided to change a JPEG image.
         To prevent other people from committing changes to the file
         while he is modifying it (as well as alerting them that he is
         about to change it), he locks the file in the repository using
         the <command>svn lock</command> command.</para>
+    -->
 
       <informalexample>
         <screen>
@@ -6110,19 +6116,31 @@ $
 </screen>
       </informalexample>
 
+    <!--
       <para>The preceding example demonstrates a number of new things.
         First, notice that Harry passed the
-        <option>--message</option> (<option>-m</option>) option to
+        <option>- -message</option> (<option>-m</option>) option to
         <command>svn lock</command>.  Similar to <command>svn
         commit</command>, the <command>svn lock</command> command can
-        take comments&mdash;via either <option>--message</option>
-        (<option>-m</option>) or <option>--file</option>
+        take comments&mdash;via either <option>- -message</option>
+        (<option>-m</option>) or <option>- -file</option>
         (<option>-F</option>)&mdash;to describe the reason for locking the
         file.  Unlike <command>svn commit</command>, however,
         <command>svn lock</command> will not demand a message by
         launching your preferred text editor.  Lock comments are
         optional, but still recommended to aid communication.</para>
+    -->
+      <para>上面的例子展示了一些新东西. 首先, Harry 向命令 <command>svn lock
+        </command> 传递了选项 <option>--message</option>
+        (<option>-m</option>), 和命令 <command>svn commit</command> 类似,
+        <command>svn lock</command> 支持注释&mdash;借助选项 <option>--message
+        </option> (<option>-m</option>) 或 <option>--file</option>
+        (<option>-F</option>)&mdash;注释描述了锁定文件的原因. 然而, 和
+        <command>svn commit</command> 不同的是 <command>svn lock</command> 不
+        不通过启动文本编辑器来要求用户输入注释, 注释是可选的, 但是为了更好地
+        与其他用户沟通, 建议输入注释.</para>
 
+    <!--
       <para>Second, the lock attempt succeeded.  This means that the
         file wasn't already locked, and that Harry had the latest
         version of the file.  If Harry's working copy of the file had
@@ -6131,12 +6149,22 @@ $
         reattempt the locking command.  The locking command would also
         have failed if the file had already been locked by someone
         else.</para>
+    -->
+      <para>第二, 加锁尝试成功了, 这就是说文件之前未被加锁, 而且 Harry 工作副本
+        里的文件是最新的. 如果 Harry 工作副本里的文件是过时了的, 仓库将会拒绝
+        加锁请求, 要求 Harry 执行 <command>svn update</command> 并重新尝试加
+        锁命令. 如果文件已经处于加锁状态, 加锁命令也会失败.</para>
 
+    <!--
       <para>As you can see, the <command>svn lock</command> command
         prints confirmation of the successful lock.  At this point,
         the fact that the file is locked becomes apparent in the
         output of the <command>svn status</command> and <command>svn
         info</command> reporting subcommands.</para>
+    -->
+    <para>如果加锁成功, <command>svn lock</command> 会输出确认信息, 从现在开始,
+      文件已经被锁定的事实会体现在 <command>svn status</command> 和
+      <command>svn info</command> 的输出信息里.</para>
 
       <informalexample>
         <screen>
@@ -6170,6 +6198,7 @@ $
 </screen>
       </informalexample>
 
+    <!--
       <para>The fact that the <command>svn info</command> command,
         which does not contact the repository when run against working
         copy paths, can display the lock token reveals an important
@@ -6179,10 +6208,20 @@ $
         lock later on.  Also, the <command>svn status</command>
         command shows a <literal>K</literal> next to the file (short
         for locKed), indicating that the lock token is present.</para>
+    -->
+      <para><command>svn info</command> 在执行时不会与仓库通信, 但是它仍然可
+        以显示锁令牌, 说明了一个很重要的信息: 它们被缓存在工作副本里. 锁令牌
+        的存在非常重要, 它向工作副本提供了使用锁的授权. 并且, <command>
+          svn status</command> 在文件名的旁边显示一个 <literal>K</literal>
+        (locKed 的缩写), 表示该文件存在锁令牌.</para>
 
       <sidebar>
+    <!--
         <title>Regarding Lock Tokens</title>
+    -->
+        <title>关于锁令牌</title>
 
+    <!--
         <para>A lock token isn't an authentication token, so much as
           an <emphasis>authorization</emphasis> token.  The token
           isn't a protected secret.  In fact, a lock's unique token is
@@ -6193,6 +6232,13 @@ $
           copy, and not somewhere else by some other client.  Merely
           authenticating as the lock owner isn't enough to prevent
           accidents.</para>
+    -->
+        <para>锁令牌不是验证令牌 (authentication token), 是 <emphasis>授权
+          </emphasis> 令牌 (authorization token). 令牌不是一个受保护的秘密,
+          实际上, 任意一个用户都可以用 <userinput>svn info <replaceable>URL
+          </replaceable></userinput> 发现锁的一个独一无二的令牌. 只有当一个
+          锁令牌处在工作副本里时它才是特殊的, 这说明了锁是在这个特定的工作
+          副本里被创建出来的, 仅仅验证锁的所有者并足以完全避免出现意外.</para>
 
         <para>
           <indexterm>
