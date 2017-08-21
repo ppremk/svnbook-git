@@ -6244,7 +6244,15 @@ $
           <indexterm>
             <primary>locks</primary>
             <secondary>breaking</secondary>
-          </indexterm>For example, suppose you lock a file using a
+          </indexterm>
+          比如说, 你在办公室的电脑上锁定了一个文件, 但是还没有提交修改就下
+          班回家了, 如果你想在家里完成提交就会失败, 因为仅仅被授权为锁的所有
+          者并不能保证提交成功. 换句话说, 锁令牌阻止了一部分的 Subversion 相关
+          软件破坏另一部分的工作. (在我们的例子里, 如果你确实需要从另一个工作
+          副本提交修改, 就必须先 <emphasis>破坏</emphasis> 锁, 然后重新锁定文
+          件).</para>
+    <!--
+          For example, suppose you lock a file using a
           computer at your office, but leave work for the day before
           you finish your changes to that file.  It should not be
           possible to accidentally commit changes to that same file
@@ -6256,11 +6264,16 @@ $
           alternative working copy, you would need
           to <firstterm>break</firstterm> the lock and relock the
           file.)</para>
+    -->
 
       </sidebar>
 
+    <!--
       <para>Now that Harry has locked <filename>banana.jpg</filename>,
         Sally is unable to change or delete that file:</para>
+    -->
+      <para>因为 Harry 已经锁定了文件 <filename>banana.jpg</filename>, 所以
+        Sally 不能提交和 <filename>banana.jpg</filename> 有关的修改:</para>
 
       <informalexample>
         <screen>
@@ -6276,10 +6289,14 @@ $
 </screen>
       </informalexample>
 
+    <!--
       <para>But Harry, after touching up the banana's shade of yellow,
         is able to commit his changes to the file.  That's because he
         authenticates as the lock owner and also because his working
         copy holds the correct lock token:</para>
+    -->
+      <para>修改完香蕉的黄色阴影后, Harry 可以向仓库提交修改, 这是因为他被授
+        权为锁的拥有者, 而且工作副本包含了正确的锁令牌:</para>
 
       <informalexample>
         <screen>
@@ -6294,6 +6311,7 @@ $
 </screen>
       </informalexample>
 
+    <!--
       <para>Notice that after the commit is finished, <command>svn
         status</command> shows that the lock token is no longer
         present in the working copy.  This is the standard behavior of
@@ -6311,15 +6329,33 @@ $
         he needs to change, yet changes only four of those files, when he
         runs <userinput>svn commit images</userinput>, the process will
         still release all 30 locks.</para>
+    -->
+      <para>注意提交完成后, <command>svn status</command> 显示锁令牌不再出现
+        在工作副本里, 这是 <command>svn commit</command> 的标准行为&mdash;
+        它搜索工作副本 (如果提供了目标列表, 则搜索该列表) 的本地修改, 并将所
+        有遇到的锁令牌作为提交事务的一部分发送给服务器, 如果提交成功, 仓库中
+        所有涉及到的锁都会被释放&mdash;<emphasis>即使是未被提交的文件上的锁
+        也会被释放</emphasis>. 这是为了防止粗心的用户持锁时间过长. 如果 Harry
+      随意地把目录 <filename>images</filename> 下的 30 个文件都锁定了 (因为他
+      不确定哪些文件需要修改), 而他只修改了其中 4 个文件, 当他执行完
+      <userinput>svn commit images</userinput> 后, 所有 30 个文件的锁都会被
+      释放.</para>
 
+    <!--
       <para>This behavior of automatically releasing locks can be
-        overridden with the <option>--no-unlock</option> option to
+        overridden with the <option>- -no-unlock</option> option to
         <command>svn commit</command>.  This is best used for those
         times when you want to commit changes, but still plan to make
         more changes and thus need to retain existing locks.  You can
         also make this your default behavior by setting the
         <literal>no-unlock</literal> runtime configuration option (see
         <xref linkend="svn.advanced.confarea" />).</para>
+    -->
+      <para>为 <command>svn commit</command> 添加选项 <option>--no-unlock
+        </option> 就不会在提交成功后自动释放锁, 适用选项的场景是用户需要多次
+        提交修改. 你可以通过运行时配置选项 <literal>no-unlock</literal> (见
+        <xref linkend="svn.advanced.confarea"/>) 把不自动释放锁设置成默认行为.
+      </para>
 
       <para>
         <indexterm>
@@ -6330,9 +6366,14 @@ $
         <indexterm>
           <primary>locks</primary>
           <secondary>releasing</secondary>
-        </indexterm>Of course, locking a file doesn't oblige one to
+        </indexterm>
+        当然, 锁定文件后并不要求一定要向该文件提交修改才能释放锁, 用户可以在
+        任何时候用命令 <command>svn unlock</command> 释放文件上的锁:</para>
+    <!--
+        Of course, locking a file doesn't oblige one to
         commit a change to it.  The lock can be released at any time
         with a simple <command>svn unlock</command> command:</para>
+    -->
 
       <informalexample>
         <screen>
