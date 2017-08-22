@@ -6386,7 +6386,10 @@ $ svn unlock banana.c
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.locking.discovery">
+    <!--
       <title>Discovering Locks</title>
+    -->
+      <title>发现锁</title>
 
       <para>
         <indexterm>
@@ -6397,9 +6400,14 @@ $ svn unlock banana.c
         <indexterm>
           <primary>locks</primary>
           <secondary>discovery</secondary>
-        </indexterm>When a commit fails due to someone else's locks, it's
+        </indexterm>
+        如果由于其他用户锁定了文件而导致提交失败, 获取有关锁的信息非常方便,
+        最简单的方式是执行 <userinput>svn status -u</userinput>:</para>
+    <!--
+        When a commit fails due to someone else's locks, it's
         fairly easy to learn about them.  The easiest way is to run
         <userinput>svn status -u</userinput>:</para>
+    -->
 
       <informalexample>
         <screen>
@@ -6417,7 +6425,16 @@ $
           <primary>svn</primary>
           <secondary>subcommands</secondary>
           <tertiary>info</tertiary>
-        </indexterm>In this example, Sally can see not only that her copy of
+        </indexterm>
+        在这个例子里, Sally 不仅可以看到 <filename>foo.h</filename> 是过时了的,
+        而且他打算提交的两个文件中, 有一个在仓库中是被锁定了的. 字符 <literal>
+          O</literal> 表示 <quote>其他</quote> (<quote>Other</quote>), 意思是说
+        文件被其他用户锁定了, 如果 Sally 试图提交,
+        <filename>raisin.jpg</filename> 上的锁会阻止提交成功. Sally 想知道是
+        谁在什么时候, 因为什么原因锁定了文件, <command>svn info</command> 可以
+        回答他的问题:</para>
+    <!--
+        In this example, Sally can see not only that her copy of
         <filename>foo.h</filename> is out of date, but also that one of the
         two modified files she plans to commit is locked in the
         repository.  The <literal>O</literal> symbol stands for
@@ -6427,6 +6444,7 @@ $
         prevent it.  Sally is left wondering who made the lock, when,
         and why.  Once again, <command>svn info</command> has the
         answers:</para>
+    -->
 
       <informalexample>
         <screen>
@@ -6451,6 +6469,7 @@ $
 </screen>
       </informalexample>
 
+    <!--
       <para>Just as you can use <command>svn info</command> to examine
         objects in the working copy, you can also use it to examine
         objects in the repository.  If the main argument to
@@ -6464,6 +6483,16 @@ $
         information reflects the latest version of an object in the
         repository, and any mention of a lock describes the current
         lock on the object.</para>
+    -->
+      <para><command>svn info</command> 除了可以检查工作副本里的项目外, 也可以
+        检查仓库里的项目. 如果传递给 <command>svn info</command> 的参数是一个
+        工作副本路径, 那么缓存在工作副本里的所有信息都会显示出来; 只要显示的
+        信息中提到了锁, 那就说明工作副本持有一个锁令牌 (如果文件是被其他用户
+        或者是在另一个工作副本里锁定的, 那么在一个工作副本路径上执行
+        <command>svn info</command> 将不会显示关于锁的任何信息). 如果传递给
+        <command>svn info</command> 的是一个 URL, 输出的信息反映了仓库中的
+        项目的最新版, 信息中提到关于锁的任何信息都是在描述项目的当前加锁情况.
+      </para>
 
       <para>So in this particular example, Sally can see that Harry
         locked the file on February 16 to <quote>make a quick
