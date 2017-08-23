@@ -6494,6 +6494,7 @@ $
         项目的最新版, 信息中提到关于锁的任何信息都是在描述项目的当前加锁情况.
       </para>
 
+    <!--
       <para>So in this particular example, Sally can see that Harry
         locked the file on February 16 to <quote>make a quick
         tweak.</quote>  It being June, she suspects that he probably
@@ -6501,29 +6502,51 @@ $
         and ask him to release the lock.  If he's unavailable, she
         might try to forcibly break the lock herself or ask an
         administrator to do so.</para>
+    -->
+      <para>在我们的例子里, Sally 可以看到 Harry 在 2 月 16 日锁定了文件
+        <filename>raisin.jpg</filename>, 原因是 <quote>Need to make a quick
+          tweak to this image</quote>. 现在已经 6 月了, Sally 怀疑 Harry
+        忘记给文件解锁, 她可能会打电话给 Harry, 向他抱怨, 让他马上释放锁. 如
+        果联系不到 Harry, 她可能会强行地破坏锁, 或者让管理员来帮她解决.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.locking.break-steal">
+    <!--
       <title>Breaking and Stealing Locks</title>
+    -->
+      <title>破坏与窃取锁</title>
 
       <para>
         <indexterm>
           <primary>locks</primary>
           <secondary>breaking</secondary>
-        </indexterm>A repository lock isn't sacred&mdash;in Subversion's
+        </indexterm>
+        锁并非是不可侵犯的&mdash;在 Subversion 的默认配置状态下, 除了创建锁的
+        用户可以释放锁之外, 任意一个用户也可以释放锁. 如果释放锁的用户不是锁
+        的创建者, 我们把这种行为叫作 <firstterm>破坏锁</firstterm>
+        (<firstterm>breaking the lock</firstterm>).</para>
+    <!--
+        A repository lock isn't sacred&mdash;in Subversion's
         default configuration state, locks can be released not only by
         the person who created them, but by anyone.  When somebody
         other than the original lock creator destroys a lock, we refer
         to this as <firstterm>breaking the lock</firstterm>.</para>
+    -->
 
+    <!--
       <para>From the administrator's chair, it's simple to break
         locks.  The <command>svnlook</command>
         and <command>svnadmin</command> programs have the ability to
         display and remove locks directly from the repository.  (For
         more information about these tools, see
         <xref linkend="svn.reposadmin.maint.tk"/>.)</para>
+    -->
+      <para>对于管理员来说, 破坏锁非常简单. 命令 <command>svnlook</command>
+        和 <command>svnadmin</command> 可以直接从仓库中显示与移除锁 (关于
+        <command>svnlook</command> 和 <command>svnadmin</command> 的更多信息,
+        见 <xref linkend="svn.reposadmin.maint.tk"/>).</para>
 
       <informalexample>
         <screen>
@@ -6550,10 +6573,15 @@ $
 </screen>
       </informalexample>
 
+    <!--
       <para>The more interesting option is to allow users to break
         each other's locks over the network.  To do this, Sally simply
-        needs to pass the <option>--force</option> option to the
+        needs to pass the <option>- -force</option> option to the
         <command>svn unlock</command> command:</para>
+    -->
+      <para>Subversion 还允许用户通过网络破坏其他用户的锁, 为了破坏 Harry 设置
+        在 <filename>raisin.jpg</filename> 上的锁, Sally 要给 <command>
+          svn unlock</command> 加上选项 <option>--force</option>:</para>
 
       <informalexample>
         <screen>
@@ -6574,6 +6602,7 @@ $
 </screen>
       </informalexample>
 
+    <!--
       <para>Now, Sally's initial attempt to unlock failed because she
         ran <command>svn unlock</command> directly on her working copy
         of the file, and no lock token was present.  To remove the
@@ -6581,25 +6610,44 @@ $
         to <command>svn unlock</command>.  Her first attempt to unlock
         the URL fails, because she can't authenticate as the lock
         owner (nor does she have the lock token).  But when she
-        passes <option>--force</option>, the authentication and
+        passes <option>- -force</option>, the authentication and
         authorization requirements are ignored, and the remote lock is
         broken.</para>
+    -->
+      <para>在上面的例子里, Sally 第一次尝试解锁失败了, 因为她直接在工作副本
+        的 <filename>raisin.jpg</filename> 执行 <command>svn unlock</command>,
+        而她的工作副本里并没有锁令牌. 为了直接从仓库中删除锁, 她需要向
+        <command>svn unlock</command> 传递一个 URL 参数. 增加 URL 参数后的第
+        一次尝试失败了, 因为她并没有授权为锁的所有者 (而且她也没有锁令牌). 但
+        是增加了选项 <option>--force</option> 后, 锁成功的被打开 (破坏) 了.
+      </para>
         
       <para>
         <indexterm>
           <primary>locks</primary>
           <secondary>stealing</secondary>
-        </indexterm>Simply breaking a lock may not be enough.  In
+        </indexterm>
+        仅仅把锁破坏掉可能还不够. Sally 除了要打开 Harry 忘记打开的锁之外, 她
+        还想重新锁定文件, 以便自己对文件进行编辑. 她可以先用带上选项 <option>
+          --force</option> 的 <command>svn unlock</command> 把锁打开, 然后再
+        用 <command>svn lock</command> 锁定文件. 但是在两个命令之间可能会有
+        其他用户锁定了文件. 更简单的做法是 <firstterm>窃取</firstterm>
+        (<firstterm>steal</firstterm>) 锁, 它是把锁的破坏与重新加锁合并成一个
+        原子操作, 具体的做法是给 <command>svn lock</command> 加上选项
+        <option>--force</option>:</para>
+    <!--
+        Simply breaking a lock may not be enough.  In
         the running example, Sally may not only want to break Harry's
         long-forgotten lock, but relock the file for her own use.
         She can accomplish this by using <command>svn unlock</command>
-        with <option>--force</option> and then <command>svn lock</command>
+        with <option>- -force</option> and then <command>svn lock</command>
         back-to-back, but there's a small chance that somebody else
         might lock the file between the two commands.  The simpler thing
         to do is to <firstterm>steal</firstterm> the lock, which involves
         breaking and relocking the file all in one atomic step.  To
-        do this, Sally passes the <option>--force</option> option
+        do this, Sally passes the <option>- -force</option> option
         to <command>svn lock</command>:</para>
+    -->
 
       <informalexample>
         <screen>
