@@ -6664,7 +6664,14 @@ $
         <indexterm>
           <primary>locks</primary>
           <secondary>defunct</secondary>
-        </indexterm>In any case, whether the lock is broken or stolen,
+        </indexterm>
+        无论锁是被破坏还是被窃取, Harry 都会感到惊讶. Harry 的工作副本仍然包
+        含原来的锁令牌, 但是锁却不存在了, 此时把锁令牌称为 <firstterm>失效的
+        </firstterm> (<firstterm>defunct</firstterm>), 锁令牌对应的锁要么被
+        破坏 (不在仓库里), 要么被窃取 (被另一把不同的锁替换掉). 不管是哪一种
+        情况, Harry 都可以用 <command>svn status</command> 查看详情:</para>
+    <!--
+        In any case, whether the lock is broken or stolen,
         Harry may be in for a surprise.  Harry's working copy still
         contains the original lock token, but that lock no longer
         exists.  The lock token is said to
@@ -6674,6 +6681,7 @@ $
         Either way, Harry can see this by asking
         <command>svn status</command> to contact the
         repository:</para>
+    -->
 
       <informalexample>
         <screen>
@@ -6691,17 +6699,28 @@ $
 </screen>
       </informalexample>
 
+    <!--
       <para>If the repository lock was broken, then <userinput>svn
-        status --show-updates</userinput> (<option>-u</option>)
+        status - -show-updates</userinput> (<option>-u</option>)
         displays a <literal>B</literal> (Broken) symbol next to the
         file.  If a new lock exists in place of the old one, then a
         <literal>T</literal> (sTolen) symbol is shown.  Finally,
         <command>svn update</command> notices any defunct lock tokens
         and removes them from the working copy.</para>
+    -->
+      <para>如果仓库的锁被破坏了, <userinput>svn status --show-updates
+          </userinput> (<option>-u</option>) 会在文件的旁边显示字符 <literal>B
+        </literal> (Broken). 如果有一把新锁出现在原来的位置上, 显示的就是字符
+        <literal>T</literal> (sTolen). 最后, <command>svn update</command>
+        会从工作副本中移除所有的失效锁.</para>
 
       <sidebar>
+    <!--
         <title>Locking Policies</title>
+    -->
+        <title>加锁策略</title>
         
+    <!--
         <para>Different systems have different notions of how strict a
           lock should be.  Some folks argue that locks must be
           strictly enforced at all costs, releasable only by the
@@ -6712,7 +6731,14 @@ $
           users are constantly breaking each other's locks, it
           represents a cultural failure within the team and the
           problem falls outside the scope of software enforcement.</para>
+    -->
+        <para>不同的系统对锁的严格程度都有不同的理解. 有些人认为应该不惜代价地
+          维护锁的持有, 只有管理员或创建锁的原始用户才能释放锁, 他们的观点是
+          如果任何人都可以破坏锁, 就会产生混乱, 也就实现不了加锁的目的. 另一些
+          人认为锁是一个重要的沟通工具, 如果用户频繁地破坏其他人的锁, 那就说明
+          是团队管理出现了问题, 而这种问题与软件无关.</para>
 
+    <!--
         <para>Subversion defaults to the <quote>softer</quote>
           approach, but still allows administrators to create stricter
           enforcement policies through the use of hook scripts.  In
@@ -6727,6 +6753,15 @@ $
           and can be used to send email after locking actions.  To
           learn more about repository hooks, see
           <xref linkend="svn.reposadmin.hooks" />.</para>
+    -->
+        <para>Subversion 默认使用比较温和的做法, 但允许管理员通过钩子脚本, 创建
+          更严格的加锁策略. 特别的, 钩子 <filename>pre-lock</filename> 和
+          <filename>pre-unlock</filename> 允许管理员决定什么时候才能允许创建
+          锁与释放锁, 取决于一个锁是否已经事先存在, 这两个钩子还可以决定一个
+          特定的用户是否可以破坏或窃取锁. 还可以使用钩子
+          <filename>post-lock</filename> 和 <filename>post-unlock</filename>
+          在加锁与解锁后发送通知邮件. 关于钩子的更多信息, 见
+          <xref linkend="svn.reposadmin.hooks"/>.</para>
 
       </sidebar>
 
@@ -6734,14 +6769,23 @@ $
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.locking.lock-communication">
+    <!--
       <title>Lock Communication</title>
+    -->
+      <title>锁通信</title>
 
+    <!--
       <para>We've seen how <command>svn lock</command>
         and <command>svn unlock</command> can be used to create,
         release, break, and steal locks.  This satisfies the goal of
         serializing commit access to a file.  But what about the
         larger problem of preventing wasted time?</para>
+    -->
+      <para>我们已经介绍了如何使用 <command>svn lock</command> 和 <command>
+          svn unlock</command> 完成锁的创建, 释放, 破坏与窃取. 锁实现了文件
+        的串行提交, 但是我们应该如何防止浪费时间?</para>
 
+    <!--
       <para>For example, suppose Harry locks an image file and then
         begins editing it.  Meanwhile, miles away, Sally wants to do
         the same thing.  She doesn't think to run <userinput>svn status
@@ -6752,7 +6796,16 @@ $
         Regardless, her changes aren't mergeable with Harry's.  One of
         these two people has to throw away his or her work, and a lot of
         time has been wasted.</para>
+    -->
+      <para>比如说, Harry 锁定了一个图片文件, 然后开始编辑. 同时在几英里之外,
+        Sally 也想编辑同一个文件, 她忘了执行
+        <userinput>svn status -u</userinput>, 所以她完全不知道 Harry 已经锁定了
+        她要编辑的文件. 她花了几个小时完成了图片的修改, 当她试图提交修改时,
+        发现文件被锁定或者工作副本里的文件过时了. 无论如何, 她的修改无法与
+        Harry 的修改合并, 两人中必须有一个人要放弃他的工作成果.</para>
+
       
+    <!--
       <para>Subversion's solution to this problem is to provide a
         mechanism to remind users that a file ought to be locked
         <emphasis>before</emphasis> the editing begins.  The mechanism
@@ -6765,7 +6818,15 @@ $
         <command>svn lock</command>), the file becomes read/write.
         When the lock is released, the file becomes read-only
         again.</para>
+    -->
+      <para>Subversion 的解决办法是提供了一种机制, 这种机制会提醒用户在开始
+        修改文件之前, 要先锁定文件, 这种机制是一个特殊的属性 <literal>
+          svn:needs-lock</literal>. 如果文件设置了该属性 (属性值并不重要),
+        Subversion 将试图使用文件系统的权限把文件设置成只读&mdash;除非用户显式
+        地锁定了文件. 如果提供了锁令牌 (<command>svn lock</command> 的运行结果),
+        文件的权限就变成可读写, 如果锁被释放了, 文件再次变成只读.</para>
 
+    <!--
       <para>The theory, then, is that if the image file has this
         property attached, Sally would immediately notice
         something is strange when she opens the file for editing:
@@ -6774,6 +6835,12 @@ $
         prevent her from saving changes to the file.  This
         reminds her to lock the file before editing, whereby she
         discovers the preexisting lock:</para>
+    -->
+      <para>如果图片文件设置了属性 <literal>svn:needs-lock</literal>, 当
+        Sally 打开并开始修改图片时就会注意到有些地方不对劲: 很多程序在以读
+        写方式打开文件时, 如果发现文件是只读的, 将会向用户发出警告, 并阻止用户
+        向只读文件保存修改. 这将会提醒 Sally 应该在修改之前先锁定文件, 到那时
+        她就会发现锁已经预先被别人锁定了:</para>
 
       <informalexample>
         <screen>
@@ -6795,20 +6862,31 @@ $
       </informalexample>
 
       <tip>
+    <!--
         <para>Users and administrators alike are encouraged to attach
           the <literal>svn:needs-lock</literal> property to any file
           that cannot be contextually merged.  This is the primary
           technique for encouraging good locking habits and preventing
           wasted effort.</para>
+    -->
+        <para>建议用户和管理员把属性 <literal>svn:needs-lock</literal> 设置到
+          所有不支持合并的文件上, 这是养成良好的加锁习惯和避免浪费时间的主要
+          方法.</para>
       </tip>
 
+    <!--
       <para>Note that this property is a communication tool that
         works independently from the locking system.  In other words,
         any file can be locked, whether or not this property is
         present.  And conversely, the presence of this property
         doesn't make the repository require a lock when
         committing.</para>
+    -->
+      <para>注意 <literal>svn:needs-lock</literal> 是一个通信工具, 与锁定系统
+        独立工作. 换句话说, 无论是否设置了这个属性, 文件都可以被锁定, 相反,
+        设置了这个属性, 仓库也不会要求在提交时必须提供锁.</para>
 
+    <!--
       <para>Unfortunately, the system isn't flawless.  It's possible
         that even when a file has the property, the read-only reminder
         won't always work.  Sometimes applications misbehave and
@@ -6817,7 +6895,16 @@ $
         Subversion can do in this situation&mdash;at the end of the
         day, there's simply no substitution for good interpersonal
         communication.<footnote><para>Except, perhaps, a classic
+        TODO
         Vulcan mind-meld.</para></footnote></para>
+    -->
+  <para>不幸的是, 这种机制并非毫无缺点. 即使文件设置了属性
+    <literal>svn:needs-lock</literal>, 只读提醒也可能不会起作用. 有时候应用
+    程序不够规范, 会 <quote>劫持</quote> 只读文件, 然后悄无声息地允许用户修改并
+    保存文件. Subversion 对这种情况无能为力&mdash;目前为止还没有什么方法可以
+    完全替代人与从之间的交流<footnote><para>Except, perhaps, a classic Vulcan
+        mind-meld.</para></footnote></para>
+
 
     </sect2>
 
