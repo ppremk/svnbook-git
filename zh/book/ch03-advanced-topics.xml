@@ -6914,8 +6914,12 @@ $
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.advanced.externals">
+    <!--
     <title>Externals Definitions</title>
+    -->
+    <title>外部定义</title>
     
+    <!--
     <para>Sometimes it is useful to construct a working copy that is
       made out of a number of different checkouts.  For example, you
       may want different subdirectories to come from different
@@ -6926,6 +6930,12 @@ $
       to achieve.  But if this layout is important for everyone who
       uses your repository, every other user will need to perform the
       same checkout operations that you did.</para>
+    -->
+    <para>有时候, 构造一个由多个不同的检出所组成的工作副本是很有用的, 比如说,
+      用户可能想把多个来自不同位置的子目录放到一个目录里, 这些子目录甚至来自不
+      同的仓库. 用户当然可以手工实现&mdash;用 <command>svn checkout</command>
+      创建出嵌套的工作副本结构. 但是如果每个用户都有这种需求, 那么所有的用户
+      都得自己手工构造.</para>
 
     <para>
       <indexterm>
@@ -6938,7 +6948,17 @@ $
       <indexterm>
         <primary>properties</primary>
         <secondary>svn:externals</secondary>
-      </indexterm>Fortunately, Subversion provides support for
+      </indexterm>
+      幸运的是, Subversion 支持 <firstterm>外部定义</firstterm> (<firstterm>
+        externals definitions</firstterm>), 外部定义是一个本地目录到仓库目录
+      URL 的映射. 用户使用属性 <literal>svn:externals</literal> 批量地声明外
+      部定义, 创建或修改属性的命令是 <command>svn propset</command> 或
+      <command>svn propedit</command> (见 <xref
+        linkend="svn.advanced.props.manip" />). 属性 <literal>svn:externals
+      </literal> 可以设置在任意一个被版本控制的目录上, 属性的值描述了外部
+      仓库的位置, 以及检出到本地时得到的本地目录.</para>
+    <!--
+      Fortunately, Subversion provides support for
       <firstterm>externals definitions</firstterm>.  An externals
       definition is a mapping of a local directory to the
       URL&mdash;and ideally a particular revision&mdash;of a versioned
@@ -6950,7 +6970,9 @@ $
       versioned directory, and its value describes both the external
       repository location and the client-side directory to which that
       location should be checked out.</para>
+    -->
 
+    <!--
     <para>The convenience of the <literal>svn:externals</literal>
       property is that once it is set on a versioned directory,
       everyone who checks out a working copy with that directory also
@@ -6959,14 +6981,25 @@ $
       copy structure, no one else has to bother&mdash;Subversion will,
       after checking out the original working copy, automatically also
       check out the external working copies.</para>
+    -->
+    <para><literal>svn:externals</literal> 的方便之处是一旦目录设置了该属性,
+      所有检出该目录的用户都会受益. 换句话说, 如果有一个用户已经用外部定义
+      构造好了一个嵌套的工作副本结构, 其他用户就不用再重新做一遍&mdash;
+      当原始的工作副本检出完毕后, Subversion 还会自动检出外部的工作副本.
+    </para>
 
     <warning>
+    <!--
       <para>The relative target subdirectories of externals
         definitions <emphasis>must not</emphasis> already exist on
         your or other users' systems&mdash;Subversion will create them
         when it checks out the external working copy.</para>
+    -->
+      <para>外部定义里的目标子目录事先 <emphasis>不能</emphasis> 存在&mdash;
+        Subversion 在检出外部的工作副本时会自动创建它们.</para>
     </warning>
 
+    <!--
     <para>You also get in the externals definition design all the
       regular benefits of Subversion properties.  The definitions are
       versioned.  If you need to change an externals definition, you
@@ -6977,12 +7010,23 @@ $
       <userinput>svn update</userinput>.  The same thing will happen when
       others update their working copies and receive your changes to
       the externals definition.</para>
+    -->
+    <para><literal>svn:externals</literal> 是版本化的属性, 如果用户需要
+      修改一个外部定义, 使用普通的属性修改子命令即可. 如果提交了属性
+      <literal>svn:externals</literal> 的修改, 下一次执行 <userinput>
+        svn update</userinput> 时, Subversion 将会根据修改后的外部定义更新
+      检出的项目, 同样的事情也会发生在其他用户的工作副本里.</para>
 
     <tip>
+    <!--
       <para>Because the <literal>svn:externals</literal> property has
         a multiline value, we strongly recommend that you use
         <command>svn propedit</command> instead of <command>svn
         propset</command>.</para>
+    -->
+    <para>因为属性 <literal>svn:externals</literal> 的值由多行文本组成, 所以我
+      们强烈建议用户使用 <command>svn propedit</command> (而不是 <command>
+        svn propset</command>) 修改属性.</para>
     </tip>
 
     <para>Subversion releases prior to 1.5 honor an externals
