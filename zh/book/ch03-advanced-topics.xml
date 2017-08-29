@@ -7132,6 +7132,7 @@ http://svn.example.com/skin-maker@21 third-party/skins/toolkit
     </informalexample>
 
     <tip>
+      <!-- TODO -->
       <para>You should seriously consider using explicit revision
         numbers in all of your externals definitions.  Doing so means
         that you get to decide when to pull down a different snapshot
@@ -7149,6 +7150,7 @@ http://svn.example.com/skin-maker@21 third-party/skins/toolkit
         an older snapshot of your complex codebase.</para>
     </tip>
 
+    <!--
     <para>For most repositories, these three ways of formatting the
       externals definitions have the same ultimate effect.  They all
       bring the same benefits.  Unfortunately, they all bring the same
@@ -7164,6 +7166,15 @@ http://svn.example.com/skin-maker@21 third-party/skins/toolkit
       (<filename>my-project/some-dir</filename>) that tracks the
       latest revision of another of its subdirectories
       (<filename>my-project/external-dir</filename>).</para>
+    -->
+    <para>对大多数仓库而言, 三种格式的外部定义的最终效果都是一样的, 它们都有
+      同样的好处, 也都有同样的麻烦. 因为用到了 URL 的绝对路径, 如果移动或
+      复制一个带有外部定义的目录, 这并不会对外部定义的检出造成影响 (虽然本地
+      目标子目录的绝对路径会随着目录的重命名而发生变化). 在某些情况下, 这会给
+      用户造成困扰, 比如说, 用户有一个名为 <filename>my-project</filename>
+      的顶层目录, 用户在它的其中一个子目录 (<filename>my-project/some-dir
+      </filename>) 上设置了外部定义, 外部定义指向的是另一个子目录 (<filename>
+      my-project/external-dir</filename>).</para>
 
     <informalexample>
       <screen>
@@ -7183,11 +7194,16 @@ $
 </screen>
     </informalexample>
 
+    <!--
     <para>Now you use <command>svn move</command> to rename the
       <filename>my-project</filename> directory.  At this point, your
       externals definition will still refer to a path under the
       <filename>my-project</filename> directory, even though that
       directory no longer exists.</para>
+    -->
+    <para>现在用户用 <command>svn move</command> 重命名 <filename>my-project
+      </filename>, 但外部定义仍然指向 <filename>my-project</filename> 的子目
+      录, 即使这个目录已经不存在了.</para>
 
     <informalexample>
       <screen>
@@ -7210,6 +7226,7 @@ $
 </screen>
     </informalexample>
 
+    <!--
     <para>Also, absolute URLs can cause problems with repositories
       that are available via multiple URL schemes.  For example, if
       your Subversion server is configured to allow everyone to check
@@ -7227,12 +7244,27 @@ $
       need to reparent your working copy (using <command>svn
       relocate</command>), externals definitions will
       <emphasis>not</emphasis> also be reparented.</para>
+    -->
+    <para>另外, 当使用绝对的 URL 路径时, 如果仓库支持多种 URL 模式, 这也会产
+      生问题. 比如说仓库服务器允许任意用户通过 <literal>http://</literal>
+      或 <literal>https://</literal> 访问仓库, 但只允许通过 <literal>https://
+      </literal> 提交修改. 如果用户的外部定义使用了 <literal>http://</literal>
+      形式的 URL, 用户将无法从外部定义创建的工作副本里提交修改. 另一方面,
+      如果仓库服务器只支持 <literal>https://</literal> 形式的 URL, 但客户端
+      只支持 <literal>http://</literal>, 那么它将无法检出外部项目. 还要注意,
+      如果用户重定位了工作副本 (通过命令 <command>svn relocate</command>),
+      外部定义检出的工作副本并 <emphasis>不会</emphasis> 被重定位.</para>
 
+    <!--
    <para>Subversion 1.5 takes a huge step in relieving these
      frustrations.  As mentioned earlier, the URLs used in the new
      externals definition format can be relative, and Subversion
      provides syntax magic for specifying multiple flavors of URL
      relativity.</para>
+    -->
+   <para>在改善这些问题方面, Subversion 1.5 前进了一大步. 前面已经说过新的
+     外部定义支持 URL 的相对路径, Subversion 1.5 提供了多种指定相对 URL 路径
+     的语法.</para>
 
     <variablelist id="svn.advanced.externals.urlmagic">
       <indexterm>
