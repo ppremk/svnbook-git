@@ -7273,40 +7273,64 @@ $
 
       <varlistentry>
         <term><literal>../</literal></term> 
+    <!--
         <listitem><para>Relative to the URL of the directory on which
           the <literal>svn:externals</literal> property is
           set</para></listitem>
+    -->
+      <listitem><para>相对于设置了 <literal>svn:externals</literal> 的目录的
+          URL</para></listitem>
       </varlistentry>
       <varlistentry>
         <term><literal>^/</literal></term> 
+    <!--
         <listitem><para>Relative to the root of the repository in
           which the <literal>svn:externals</literal> property is
           versioned</para></listitem>
+    -->
+      <listitem><para>相对于 <literal>svn:externals</literal> 所在的仓库的根
+          目录</para></listitem>
       </varlistentry>
       <varlistentry>
         <term><literal>//</literal></term> 
+    <!--
         <listitem><para>Relative to the scheme of the URL of the
           directory on which the <literal>svn:externals</literal>
           property is set</para></listitem>
+    -->
+      <listitem><para>相对于设置了属性 <literal>svn:externals</literal> 的目录
+          的 URL 模式</para></listitem>
       </varlistentry>
       <varlistentry>
         <term><literal>/</literal></term>
+    <!--
         <listitem><para>Relative to the root URL of the server on
           which the <literal>svn:externals</literal> property is
           versioned</para></listitem>
+    -->
+      <listitem><para>相对于 <literal>svn:externals</literal> 所在的仓库的根
+          URL</para></listitem>
       </varlistentry>
       <varlistentry>
         <term><literal>^/../<replaceable>REPO-NAME</replaceable></literal></term> 
+    <!--
         <listitem><para>Relative to a sibling repository beneath the
           same <literal>SVNParentPath</literal> location as the
           repository in which the <literal>svn:externals</literal> is
           defined.</para></listitem>
+    -->
+      <listitem><para>相对于和定义了 <literal>svn:externals</literal> 的仓库
+          处于同一个 <literal>SVNParentPath</literal> 位置下的兄弟仓库</para>
+      </listitem>
       </varlistentry>
     </variablelist>
 
+    <!--
     <para>So, looking a fourth time at our previous externals
       definition example, and making use of the new absolute URL
       syntax in various ways, we might now see:</para>
+    -->
+    <para>如果把绝对的 URL 路径改成相对路径, 之前的例子就可以写成:</para>
 
     <informalexample>
       <screen>
@@ -7318,18 +7342,26 @@ $
 </screen>
     </informalexample>
 
+    <!--
     <para>Subversion 1.6 brought two more improvements to externals
       definitions.  First, it added a quoting and escape mechanism to
       the syntax so that the path of the external working copy may
       contain whitespace.  This was previously problematic, of course,
       because whitespace is used to delimit the fields in an externals
       definition.  Now you need only wrap such a path specification in
-      double-quote (<literal>"<!-- " --></literal>) characters or
+      double-quote (<literal>"</literal>) characters or
       escape the problematic characters in the path with a backslash
       (<literal>\</literal>) character.  Of course, if you have spaces
       in the <emphasis>URL</emphasis> portion of the external
       definition, you should use the standard URI-encoding mechanism
       to represent those.</para>
+    -->
+    <para>Subversion 1.6 为外部定义添加了两个增强功能, 首先, 利用引号和转义字
+      符, 外部工作副本的路径就可以包含空格, 在此之前如何处理路径中的空格是一
+      件很麻烦的事情, 因为空格被用作外部定义的字段分隔符, 现在只需要用双引号
+      包裹路径, 或者用反斜杆 (<literal>\</literal>) 转义路径中会引起问题的字符.
+      如果外部定义的 URL 部分包含空格, 此时应该使用标准的 URL 编码表示空格.
+    </para>
 
     <informalexample>
       <screen>
@@ -7344,19 +7376,33 @@ $
       <indexterm>
         <primary>externals</primary>
         <secondary>file</secondary>
-      </indexterm>Subversion 1.6 also introduced support for external
+      </indexterm>
+      Subversion 1.6 还支持为文件设置外部定义. <firstterm>外部文件</firstterm>
+      (<firstterm>file externals</firstterm>) 的配置方式与目录相同, 外部文件
+      将以版本化文件的形式出现在工作副本里.</para>
+    <!--
+      Subversion 1.6 also introduced support for external
       definitions for files.  <firstterm>File externals</firstterm>
       are configured just like externals for directories and appear as
       a versioned file in the working copy.</para>
+    -->
       
+    <!--
     <para>For example, let's say you had the file
       <filename>/trunk/bikeshed/blue.html</filename> in your repository,
       and you wanted this file, as it appeared in revision 40,
       to appear in your working copy of <filename>/trunk/www/</filename>
       as <filename>green.html</filename>.</para>
+    -->
+    <para>比如说仓库中有一个文件 <filename>/trunk/bikeshed/blue.html</filename>,
+      现在你想把文件在版本号 40 时的版本放在 <filename>/trunk/www/</filename>
+      的工作副本里, 作为 <filename>green.html</filename>.</para>
 
+    <!--
     <para>The externals definition required to achieve this should
       look familiar by now:</para>
+    -->
+    <para>实现这个要求的外部定义是:</para>
 
     <informalexample>
       <screen>
@@ -7376,25 +7422,35 @@ $
 </screen>
     </informalexample>
 
+    <!--
     <para>As you can see in the previous output, Subversion denotes file
       externals with the letter <literal>E</literal> when they are
       fetched into the working copy, and with the letter
       <literal>X</literal> when showing the working copy status.</para>
+    -->
+    <para>可以看到, 把文件抓取到工作副本里时, Subversion 在外部文件的左边显示字
+      符 <literal>E</literal>, 执行 <command>svn status</command> 时, 在外部文
+      件的左边显示字符 <literal>X</literal>.</para>
 
     <!-- ### TODO: Is Subversion using 'E' in the update output to
          ### mean "external"?  Or is this 'E' an "exists" notification,
          ### the side-effect of the file externals implementation? -->
 
     <warning>
+      <!-- TODO -->
       <para>While directory externals can place the external
         directory at any depth, and any missing intermediate
         directories will be created, file externals must be placed
         into a working copy that is already checked out.</para>
     </warning>
 
+    <!--
     <para>When examining the file external with
       <command>svn info</command>, you can see the URL and revision
       the external is coming from:</para>
+    -->
+    <para>使用 <command>svn info</command> 检查外部文件时, 可以看到外部文件
+      URL 与版本号:</para>
 
     <informalexample>
       <screen>
@@ -7418,6 +7474,7 @@ $
 </screen>
     </informalexample>
 
+    <!--
     <para>Because file externals appear in the working copy as
       versioned files, they can be modified and even committed
       if they reference a file at the HEAD revision. The committed
@@ -7425,6 +7482,11 @@ $
       referenced by the external. However, in our example, we pinned
       the external to an older revision, so attempting to commit
       the external fails:</para>
+    -->
+    <para>因为外部文件是作为版本化的文件出现在工作副本里, 它们可以被修改, 如
+      果引用的是版本号 HEAD 的文件, 还可以提交修改, 提交后的修改不仅会出现在
+      外部文件时, 还包括被引用的文件. 然而在我们的例子里, 外部文件被指定了一
+      个较旧的版本号, 所以无法提交成功:</para>
 
     <informalexample>
       <screen>
@@ -7438,13 +7500,20 @@ $
 </screen>
     </informalexample>
 
+    <!--
     <para>Keep this in mind when defining file externals.
       If you need the external to refer to a certain revision
       of a file you will not be able to modify the external.
       If you want to be able to modify the external, you cannot
       specify a revision other than the <literal>HEAD</literal>
       revision, which is implied if no revision is specified.</para>
+    -->
+    <para>定义外部文件时要始终牢记这点: 如果外部定义指向的是一个特定版本号的
+      文件, 将无法提交外部文件的修改. 如果用户希望可以提交外部文件的修改,
+      就不要指定除了 <literal>HEAD</literal> 之外的其他版本号, 这与没有指定
+      版本号是同样的效果.</para>
 
+    <!--
     <para>Unfortunately, the support which exists for externals definitions
       in Subversion remains less than ideal.  Both file and directory
       externals have shortcomings. For either type of external, the
@@ -7456,7 +7525,14 @@ $
       external will be inserted into. Also, file externals cannot be
       moved or deleted. The <literal>svn:externals</literal> property
       must be modified instead. However, file externals can be copied.</para>
+    -->
+    <para>不幸的是, Subversion 对外部定义的支持仍然不够理想. 外部文件与外部
+      目录都还有不足之外需要完善. 比如说外部定义的本地子目录不能包含父目录指示
+      符 <literal>..</literal> (例如 <filename>../../skins/myskin</filename>).
+      外部文件不能引用其他仓库的文件, 不能直接对外部文件进行移动或删除 (但可被
+      复制), 而是应该修改 <literal>svn:externals</literal>.</para>
 
+    <!--
     <para>Perhaps most disappointingly, the working copies created via the
       externals definition support are still disconnected from the primary
       working copy (on whose versioned directories the
@@ -7467,7 +7543,14 @@ $
       must run <command>svn commit</command> explicitly on those
       working copies&mdash;committing on the primary working copy will
       not recurse into any external ones.</para>
+    -->
+    <para>或许最令人失望的是由外部定义创建的工作副本与主工作副本 (属性 <literal>
+        svn:externals</literal> 所在的工作副本) 之间是分离的, 而且 Subversion
+      也只能操作不相交的工作副本. 也就是说如果你想要提交一个或多个外部工作副本
+      里的修改, 你只能显式地在每个外部工作副本里执行 <command>svn commit
+    </command>&mdash;在主工作副本内提交并不会影响外部工作副本.</para>
 
+    <!--
     <para>We've already mentioned some of the additional shortcomings
       of the old <literal>svn:externals</literal> format and how the
       newer Subversion 1.5 format improves upon it.  But be careful
@@ -7486,6 +7569,16 @@ $
       revision (with a peg revision of <literal>HEAD</literal> unless
       otherwise specified; see <xref linkend="svn.advanced.pegrevs" />
       for a full explanation of the distinction here).</para>
+    -->
+    <para>我们已经介绍了 <literal>svn:externals</literal> 旧格式的缺点, 以及
+      Subversion 1.5 的新格式如何改善这些缺点, 但是在使用新的格式时注意不要
+      引用新的问题. 举个例子, 最新的客户端仍然支持旧的外部定义格式, 1.5 版以前
+      的客户端却不支持新格式. 如果用户把所有的外部定义格式都更新成新格式, 那
+      就相当于强迫所有的用户都要把客户端更新成最新版. 同时还要注意外部定义里的
+      <literal>-r<replaceable>NNN</replaceable></literal> 部分&mdash;旧格式把
+      它作部挂勾版本号, 而新格式把它作为实施版本号 (除非显式指定, 否则使用
+      <literal>HEAD</literal> 作为挂勾版本号, 挂勾版本号与实施版本号的区别见
+      <xref linkend="svn.advanced.pegrevs"/>).</para>
 
     <warning>
       <para>External working copies are still completely
