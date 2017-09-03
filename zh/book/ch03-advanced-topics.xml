@@ -7148,6 +7148,9 @@ http://svn.example.com/skin-maker@21 third-party/skins/toolkit
         at that previous revision.  For software projects, this could
         be the difference between a successful and a failed build of
         an older snapshot of your complex codebase.</para>
+      <para>用户应该在经过慎重地考虑后再决定要不要在外部定义显式地指定版本号,
+        这意味着用户必须决定应该在什么时候抓取哪一个版本的快照到外部目录里.
+      </para>
     </tip>
 
     <!--
@@ -7437,11 +7440,14 @@ $
          ### the side-effect of the file externals implementation? -->
 
     <warning>
-      <!-- TODO -->
+    <!--
       <para>While directory externals can place the external
         directory at any depth, and any missing intermediate
         directories will be created, file externals must be placed
         into a working copy that is already checked out.</para>
+    -->
+      <para>外部目录可以把工作副本检出到任意深度的子目录内, 中间缺失的目录会
+        被自动创建, 而外部文件只能检出到已存在的目录内.</para>
     </warning>
 
     <!--
@@ -7581,6 +7587,7 @@ $
       <xref linkend="svn.advanced.pegrevs"/>).</para>
 
     <warning>
+    <!--
       <para>External working copies are still completely
         self-sufficient working copies.  You can operate directly on
         them as you would any other working copy.  This can be a handy
@@ -7600,13 +7607,33 @@ $
         thereof) to another URL could cause similar problems if the
         contents of the primary working copy are expecting particular
         contents in the external content.</para>
+    -->
+      <para>外部工作副本是一个完全自给自足的工作副本, 和普通的工作副本没有
+        任何区别. 这是一个很方便的特性, 允许用户独立地对外部工作副本进行操作,
+        而不会受到主工作副本 (属性 <literal>svn:externals</literal> 所在的工
+        作副本) 的影响, 但要注意不要无意间修改工作副本而产生一些微妙的问题.
+        比如说外部定义可能指定了外部工作副本的版本号, 如果用户直接在外部工作
+        副本里执行 <command>svn update</command>, Subversion 将允许操作执行,
+        这会导致外部工作副本的版本号与外部定义指定的版本号不一致. 如果主工作
+        副本期望外部工作副本具有特定的内容, 那么使用 <command>svn switch
+        </command> 把外部工作副本 (或其中的一部分) 切换到另一个 URL 也会造成
+        类似的问题.</para>
     </warning>
 
     <para>
       <indexterm>
         <primary>working copies</primary>
         <secondary>disjoint</secondary>
-      </indexterm>Besides the <command>svn checkout</command>, <command>svn
+        </indexterm>
+        <command>svn checkout</command>, <command>svn update</command>,
+        <command>svn switch</command> 和 <command>svn export</command> 这些
+        命令在管理不同子目录内的工作副本时是分开进行的, 但 <command>svn status
+        </command> 可以识别外部工作副本. <command>svn status</command> 为外部
+        工作副本所在的子目录显示字符 <literal>X</literal>, 然后递归地显示外部
+        工作副本内的各个项目的状态. 为子命令添加选项 <command>--ignore-externals
+      </command> 将会禁止子命令处理外部定义.</para>
+    <!--
+        Besides the <command>svn checkout</command>, <command>svn
       update</command>, <command>svn switch</command>, and
       <command>svn export</command> commands which actually manage the
       <firstterm>disjoint</firstterm> (or disconnected) subdirectories
@@ -7616,15 +7643,19 @@ $
       disjoint external subdirectories, and then recurses into those
       subdirectories to display the status of the external items
       themselves.  You can pass the
-      <option>--ignore-externals</option> option to any of these
+      <option>- -ignore-externals</option> option to any of these
       subcommands to disable externals definition processing.</para>
+    -->
   </sect1>
 
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.advanced.changelists">
+    <!--
     <title>Changelists</title>
+    -->
+    <title>修改列表</title>
 
     <para>It is commonplace for a developer to find himself working at
       any given time on multiple different, distinct changes to a
