@@ -7655,7 +7655,7 @@ $
     <!--
     <title>Changelists</title>
     -->
-    <title>修改列表</title>
+    <title>变更列表</title>
 
     <!--
     <para>It is commonplace for a developer to find himself working at
@@ -7703,8 +7703,8 @@ $
       <indexterm>
         <primary>changelists</primary>
       </indexterm>
-      Subversion 提供了一种新方法: <firstterm>修改列表</firstterm> (<firstterm>
-        changelists</firstterm>). 修改列表基本上就是一些应用到工作副本文件上
+      Subversion 提供了一种新方法: <firstterm>变更列表</firstterm> (<firstterm>
+        changelists</firstterm>). 变更列表基本上就是一些应用到工作副本文件上
       的任意标签 (每个文件上最多只能有一个标签), 用于多个互相关联的文件一起表
       示目的, 经常使用谷歌软件的用户对此比较熟悉. 比如说 <ulink url=
         "http://mail.google.com/">谷歌邮箱</ulink> 并没有提供传统的基于文件夹
@@ -7740,16 +7740,24 @@ $
       some applications.</para>
     -->
 
+    <!--
     <para>Subversion's changelist support allows you to create
       changelists by applying labels to files you want to be
       associated with that changelist, remove those labels, and limit
       the scope of the files on which its subcommands operate to only
       those bearing a particular label.  In this section, we'll look
       in detail at how to do these things.</para>
+    -->
+    <para>Subversion 允许用户通过向文件打标签来创建变更列表, 如果一个文件被打
+      上标签, 说明该文件和这个变更列表是相关的, 用户还可以删除标签, 把命令的
+      操作限定到具有特定标签的文件上, 具体的细节将在本节进行介绍.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.changelists.creating">
+    <!--
       <title>Creating and Modifying Changelists</title>
+    -->
+      <title>创建与修改变更列表</title>
 
       <para>
         <indexterm>
@@ -7760,7 +7768,14 @@ $
         <indexterm>
           <primary>changelists</primary>
           <secondary>creating</secondary>
-        </indexterm>You can create, modify, and delete changelists using the
+        </indexterm>
+        命令 <command>svn changelist</command> 用于创建, 修改和删除变更列表,
+        更准确地说这个命令可以设置或清除某个特定的工作副本文件上的变更列表关
+        联. 当用户第一次用某个修改列表为文件打标签时, 修改列表才被创建出来;
+        当用户把最后一个标签从文件上移除时, 对应的修改列表被删除. 下面用一个
+        例子来解释这些概念.</para>
+    <!--
+        You can create, modify, and delete changelists using the
         <command>svn changelist</command> command.  More accurately,
         you use this command to set or unset the changelist
         association of a particular working copy file.  A changelist
@@ -7768,10 +7783,15 @@ $
         that changelist; it is deleted when you remove that label from
         the last file that had it.  Let's examine a usage scenario
         that demonstrates these concepts.</para>
+    -->
 
+    <!--
       <para>Harry is fixing some bugs in the calculator application's
         mathematics logic.  His work leads him to change a couple of
         files:</para>
+    -->
+      <para>Harry 正在解决计算器程序中数字运算过程的几个问题, 他已经修改了几
+        个文件:</para>
 
       <informalexample>
         <screen>
@@ -7782,6 +7802,7 @@ $
 </screen>
       </informalexample>
 
+    <!--
       <para>While testing his bug fix, Harry notices that his changes
         bring to light a tangentially related bug in the user
         interface logic found in <filename>button.c</filename>.  Harry
@@ -7792,11 +7813,22 @@ $
         mentally organized without any problem.  But today he's going
         to use Subversion's changelists feature as a special favor to
         the authors of this book.</para>
+    -->
+      <para>在测试的过程中, Harry 发现他的修改暴露了用户接口实现 <filename>
+          button.c</filename> 里的一个问题, Harry 决定在另一个单独的提交中把
+        这个问题也解决掉. 在一个只包含了少量文件和修改的小工作副本里, Harry 可
+        以不依靠 Subversion 就可以对两个逻辑上不相关的修改进行组织, 但是今天
+        他想试用一下 Subversion 的变更列表.</para>
 
+    <!--
       <para>Harry first creates a changelist and associates with it
         the two files he's already changed.  He does this by using the
         <command>svn changelist</command> command to assign the same
         arbitrary changelist name to those files:</para>
+    -->
+      <para>Harry 先创建一个变更列表, 并关联两个已被修改的文件, 具体的做法是
+        用命令 <command>svn changelist</command> 向这两个文件分配一个任意的
+        变更列表名:</para>
 
       <informalexample>
         <screen>
@@ -7812,13 +7844,21 @@ $
 </screen>
       </informalexample>
 
+    <!--
       <para>As you can see, the output of <command>svn
         status</command> reflects this new grouping.</para>
+    -->
+    <para>可以看到, <command>svn status</command> 的输出反映了新的分组.</para>
 
+    <!--
       <para>Harry now sets off to fix the secondary UI problem.  Since
         he knows which file he'll be changing, he assigns that path to
         a changelist, too.  Unfortunately, Harry carelessly assigns this
         third file to the same changelist as the previous two files:</para>
+    -->
+      <para>现在 Harry 着手修改用户接口的问题. 因为他知道将要修改哪个文件, 所
+        以他也向这个文件分配了一个变更列表, 不幸的是, Harry 错误地向第三个文件
+        分配了和前两个文件一样的变更列表:</para>
 
       <informalexample>
         <screen>
