@@ -8208,8 +8208,12 @@ $
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.serverconfig.netmodel">
+    <!--
     <title>Network Model</title>
+    -->
+    <title>网络模型</title>
 
+    <!--
     <para>At some point, you're going to need to understand how your
       Subversion client communicates with its server.  Subversion's
       networking layer is abstracted, meaning that Subversion clients
@@ -8222,11 +8226,22 @@ $
       explain the basics of that network model, including how
       Subversion manages authentication and authorization
       matters.</para>
+    -->
+    <para>在某些情况下, 用户需要了解 Subversion 客户端如何与服务器通信.
+      Subversion 的网络层是抽象的, 也就是说无论服务器是什么类型, Subversion
+      表现出的行为总是类似的. 不管是用 HTTP 协议 (<literal>http://</literal>)
+      与 Apache HTTP 服务器通信, 还是传统的 Subversion 协议 (<literal>
+        svn://</literal>), 基本网络模式都是相同的. 本节将介绍 Subversion 网络
+      模式的基本概念, 包括 Subversion 如何管理授权与认证.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.netmodel.reqresp">
+    <!--
       <title>Requests and Responses</title>
+    -->
+      <title>请求与响应</title>
 
+    <!--
       <para>The Subversion client spends most of its time managing
         working copies.  When it needs information from a remote
         repository, however, it makes a network request, and the
@@ -8235,17 +8250,37 @@ $
         attempts to access a URL, and depending on the URL scheme, a
         particular protocol is used to contact the server (see <xref
         linkend="svn.advanced.reposurls"/>).</para>
+    -->
+    <para>Subversion 客户端的大部分时间都用在工作副本的管理上, 当它需要从远
+      程仓库获取信息时, 客户端生成并向服务器发送网络请求, 服务器再用适当的回答
+      响应该请求. 网络协议的细节对用户是透明的&mdash;客户端试图访问一个 URL,
+      根据 URL 模式, 客户端将使用某种特定的协议与服务器通信.</para>
 
       <tip>
-        <para>Run <userinput>svn --version</userinput> to see which
+    <!--
+        <para>Run <userinput>svn - -version</userinput> to see which
           URL schemes and protocols the client knows how to use.</para>
+    -->
+        <para>运行 <userinput>svn --version</userinput> 查看客户客户端支持的
+          URL 模式与协议.</para>
       </tip>
 
       <para>
         <indexterm>
           <primary>authentication</primary>
           <secondary>credentials</secondary>
-        </indexterm>When the server process receives a client request, it
+        </indexterm>
+        当服务器接收到客户端发来的请求时, 它经常会要求客户端阐明自己的身份.
+        服务器向客户端发送一个认证消息, 客户端提供 <firstterm>证书</firstterm>
+        (<firstterm> credentials</firstterm>) 进行响应, 认证一旦完成, 服务器便
+        向客户端返回它所请求的信息. 这与 CVS 系统不同, CVS 系统的客户端先向服
+        务器提供证书 (<quote>登录</quote>), 然后再发送请求. 而在 Subversion
+        中, 服务器在适当的时候向客户端索要证书, 在此之前客户端不会主动向服务
+        器发送证书, 这样的话某些操作就更加方便. 比如说如果服务器被配置成允许
+        任何用户读取仓库, 当客户端试图检出工作副本时 (<command>svn checkout
+      </command>, 服务器将不会要求客户端提供证书.</para>
+    <!--
+        When the server process receives a client request, it
         often demands that the client identify itself.  It issues
         an authentication challenge to the client, and the client
         responds by providing <firstterm>credentials</firstterm> back
@@ -8261,7 +8296,9 @@ $
         configured to allow anyone in the world to read a repository,
         the server will never issue an authentication challenge
         when a client attempts to <command>svn checkout</command>.</para>
+    -->
 
+    <!--
       <para>If the particular network requests issued by the client
         result in a new revision being created in the repository
         (e.g., <command>svn commit</command>), Subversion uses the
@@ -8273,6 +8310,14 @@ $
         client was not authenticated (i.e., if the server never issued
         an authentication challenge), the revision's
         <literal>svn:author</literal> property is empty.</para>
+    -->
+      <para>如果客户端发起的请求将会产生一个新的版本号 (例如 <command>svn commit
+        </command>), Subversion 就使用请求中的, 经过认证的用户名作为新的版本号
+        的作者, 具体来说就是把经过认证的用户名作为新版本号的 <literal>
+          svn:author</literal> 属性值 (见
+        <xref linkend="svn.advanced.props.ref"/>). 如果客户端未经过认证 (也就
+        是说服务器没有向客户端发送认证请求), 新版本号的 <literal>svn:author
+      </literal> 属性值将为空.</para>
 
     </sect2>
 
