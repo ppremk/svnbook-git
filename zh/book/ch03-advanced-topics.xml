@@ -8391,15 +8391,21 @@ $
           没有找到合适的证书, 或者是缓存的证书认证失败, 此时客户端就会提示用户
           输入用户名与密码.</para>
 
+        <!--
         <para>The Subversion developers recognize that on-disk caches
           of authentication credentials can be a security risk.  To
           offset this, Subversion works with available mechanisms
           provided by the operating system and environment to try to
           minimize the risk of leaking this information.</para>
+        -->
+        <para>Subversion 开发人员承认在磁盘上缓存认证证书有可能成为安全隐患,
+          为了解决这个问题, Subversion 会利用操作系统环境, 把信息泄漏的风险
+          降到最低.</para>
 
         <itemizedlist>
 
           <listitem>
+          <!--
             <para>On Windows, the Subversion client stores passwords
               in the <filename>%APPDATA%/Subversion/auth/</filename>
               directory.  On Windows 2000 and later, the standard
@@ -8412,9 +8418,19 @@ $
               passwords become undecipherable.  The Subversion client
               will behave as though they don't exist, prompting for
               passwords when required.)</para>
+    -->
+            <para>在 Windows 操作系统, Subversion 客户端把密码存放在
+              <filename>%APPDATA%/Subversion/auth/</filename> 目录内. 在
+              Windows 2000 及之后的系统里, 磁盘上的密码会使用标准的 Windows
+              加密服务进行加密. 因为密钥由 Windows 管理, 且绑定到用户个人的
+              登录证书, 所以只有用户才能解密缓存的密码. (如果用户的 Windows
+              帐户密码被管理员重围, 那么所有缓存的密码都不能再被解密,
+              此时 Subversion 就认为缓存密码不存在, 在需要时重新提示用户输入.)
+            </para>
           </listitem>
 
           <listitem>
+        <!--
             <para>Similarly, on Mac OS X, the Subversion client stores
               all repository passwords in the login keyring (managed
               by the Keychain service), which is protected by the
@@ -8422,9 +8438,15 @@ $
               impose additional policies, such as requiring that the
               user's account password be entered each time the
               Subversion password is used.</para>
+        -->
+            <para>类似的, 在 Mac OS X 系统中, Subversion 用登录名作为键值存放
+              所有仓库的密码 (由 keychain 服务进行管理), 键值由登录密码进行
+              保护. 用户可以施加额外的策略, 例如每当 Subversion 要使用密码时,
+              就要求用户输入帐户密码.</para>
           </listitem>
 
           <listitem>
+        <!--
             <para>For other Unix-like operating systems, no single
               standard <quote>keychain</quote> service exists.
               However, the Subversion client knows how to store
@@ -8442,22 +8464,40 @@ $
               same system, provided they have no direct physical access
               to the storage media of the home directory, or backups
               thereof.</para>
+        -->
+        <para>类 Unix 系统没有标准的 <quote>keychain</quote> 服务, 但
+          Subversion 仍然知道如何 <quote>GNOME Keyring</quote>, <quote>
+                KDE Wallet</quote> 和 <quote>GnuPG Agent</quote> 服务安全地
+              存放密码. 把未加密的密码存放在 <filename>~/.subversion/auth/
+              </filename> 之前, Subversion 会询问用户是否要这么做. 注意缓存
+              区 <filename>auth/</filename> 仍然受到权限的保护, 只有用户
+              (所有者) 才能读取其中的数据. 操作系统的文件权限保护避免了密码
+              被系统中的其他非管理员用户看到, 当然前提是其他用户不能直接接触
+              存储设备或备份.</para>
           </listitem>
 
         </itemizedlist>
 
+      <!--
         <para>Of course, for the truly paranoid, none of these
           mechanisms meets the test of perfection.  So for those folks
           willing to sacrifice convenience for the ultimate in security,
           Subversion provides various ways of disabling its credentials
           caching system altogether.</para>
+    -->
+        <para>当然, 这些机制并不能完全解决问题, 对于那些为了追求安全而不惜牺牲
+          便利的用户来说, Subversion 提供了多种方式用于禁止证书缓存.</para>
 
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.tour.initial.disabling-password-caching">
+      <!--
         <title>Disabling password caching</title>
+      -->
+        <title>禁止密码缓存</title>
 
+      <!--
         <para>When you perform a Subversion operation that requires
           you to authenticate, by default Subversion tries to cache
           your authentication credentials on disk in encrypted form.
@@ -8465,6 +8505,10 @@ $
           authentication data.  In those situations, Subversion will
           ask whether you want to cache your credentials to disk in
           plaintext:</para>
+    -->
+        <para>用户在执行一个要求认证的操作时, Subversion 默认把密码加密后缓存
+          在本地, 在某些操作系统中, Subversion 可能无法进行加密, 在这种情况
+          下 Subversion 将会询问用户是否以明文地方式缓存证书:</para>
   
         <informalexample>
           <screen>
@@ -8486,13 +8530,19 @@ Store password unencrypted (yes/no)?
 </screen>
         </informalexample>
 
+      <!--
         <para>If you want the convenience of not having to continually
           reenter your password for future operations, you can
           answer <literal>yes</literal> to this prompt.  If you're
           concerned about caching your Subversion passwords in
           plaintext and do not want to be asked about it again and
           again, you can disable caching of plaintext passwords either
+          TODO
           permanently, or on a server-by-server basis.</para>
+    -->
+        <para>如果用户贪图方便, 不想每次都输入密码, 那就输入 <literal>yes
+          </literal>. 如果用户担心以明文的方式缓存密码不太安全, 而且不想每次
+          都被询问是否要缓存密码, 你可以永久地禁止密码明文缓存.</para>
 
         <warning>
           <para>When considering how to use Subversion's password
