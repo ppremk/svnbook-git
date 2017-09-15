@@ -126,7 +126,10 @@ Global options:
   - -username ARG           : specify a username ARG
   - -password ARG           : specify a password ARG
   - -no-auth-cache          : do not cache authentication tokens
-  - -non-interactive        : do no interactive prompting
+  - -non-interactive        : do no interactive prompting (default is to prompt
+                             only if standard input is a terminal device)
+  - -force-interactive      : do interactive prompting even if standard input
+                             is not a terminal device
   - -trust-server-cert      : accept SSL server certificates from unknown
                              certificate authorities without prompting (but only
                              with '- -non-interactive')
@@ -141,6 +144,10 @@ Globale Optionen:
   --password PAR           : Passwort PAR angeben
   --no-auth-cache          : Anmeldeinformationen nicht zwischenspeichern
   --non-interactive        : keine interaktiven Rückfragen ausgeben
+                             (Standard ist Eingabeaufforderung nur auf
+                             Terminals)
+  --force-interactive      : interaktive Rückfragen, auch falls Eingabe
+                             nicht über ein Terminal erfolgt
   --trust-server-cert      : accept SSL server certificates from unknown
                              certificate authorities without prompting (but only
                              with '--non-interactive')
@@ -825,6 +832,29 @@ $
         </listitem>
       </varlistentry>
 
+      <varlistentry id="svn.ref.svn.sw.force_interactive">
+        <term><option>--force-interactive</option></term>
+        <listitem>
+<!--
+          <para>Forces the <command>svn</command> command-line client to run in
+            interactive mode when standard input is not a terminal device.</para>
+
+          <note>
+            <para>This option is accepted by
+              all <command>svn</command> subcommands.</para>
+          </note>
+-->
+          <para>Erzwingt, dass der <command>svn</command>-Kommandozeilen-Client
+            sich im interaktiven Modus befindet, falls die Standard-Eingabe
+            kein Terminal ist.</para>
+
+          <note>
+            <para>Diese Option wird von 
+              allen <command>svn</command>-Unterbefehlen akzeptiert.</para>
+          </note>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="svn.ref.svn.sw.git">
         <term><option>--git</option></term>
         <listitem>
@@ -1183,6 +1213,19 @@ $ svn commit -m "Sie schaffen es nicht bis Sonntag."
             automatisierten Skriptes aufrufen und somit ein Abbruch
             mit Fehlermeldung angebrachter ist als eine
             Nachfrage.</para>
+
+<!--
+          <para>Beginning with Subversion 1.8, the <command>svn</command>
+            command-line client, by default, is non-interactive when standard
+            input is not a terminal device. Pass the
+            <option>- -force-interactive</option> option to make the client run
+            in interactive mode.</para>
+-->
+          <para>Beginnend mit Subversion 1.8 ist der
+            <command>svn</command>-Kommandozeilen-Client standardmäßig
+            nicht interaktiv, falls die Standard-Eingabe kein Terminal ist.
+            Übergeben Sie die Option <option>--force-interactive</option>,
+            um den Client im interaktiven Modus laufen zu lassen.</para>
 
           <note>
 <!--
@@ -3406,7 +3449,7 @@ Revision 7 übertragen.
         working copy (WC) path or URL.  When copying multiple
         sources, add the copies as immediate children
         of <replaceable>DST</replaceable> (which, of course, must
-        be a directory).</para>
+        be an existing directory).</para>
 -->
       <para>Kopieren einer Datei oder mehrerer Dateien in der
         Arbeitskopie. <replaceable>SRC</replaceable> und
@@ -3414,7 +3457,7 @@ Revision 7 übertragen.
         Pfad in der Arbeitskopie (AK) oder ein URL sein. Sollen
         mehrere Quellen kopiert werden, fügen Sie diese als
         unmittelbare Kindobjekte <replaceable>DST</replaceable>
-        hinzu (welches natürlich ein Verzeichnis sein
+        hinzu (welches natürlich ein bestehendes Verzeichnis sein
         muss).</para>
 
         <variablelist>

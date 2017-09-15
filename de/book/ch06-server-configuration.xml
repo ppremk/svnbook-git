@@ -1233,7 +1233,7 @@ $ svn checkout svn://host.example.com/project1
           <command>svnserve</command> beim Aufruf die Option
           <option>-i</option> (<option>--inetd</option>). Im folgenden
           Beispiel sehen wir die Ausgaben beim Aufruf von
-          <literal>svnserve -i</literal> auf der Kommandozeile.
+          <literal>svnserve -i</literal> auf der Befehlszeile.
           Beachten Sie aber, dass dies nicht der Weg ist, wie der
           Dienst normalerweise gestartet wird &ndash; eine genaue
           Beschreibung, wie <command>svnserve</command> über
@@ -2991,7 +2991,7 @@ baz
       <informalexample>
         <programlisting>
 [tunnels]
-rsh = rsh
+rsh = rsh --
 </programlisting>
       </informalexample>
 
@@ -3003,9 +3003,8 @@ rsh = rsh
         command <userinput>rsh host svnserve -t</userinput> behind the
         scenes.  If you include a username in the URL (e.g.,
         <literal>svn+rsh://username@host/path</literal>), the client
-        will also include that in its command (<userinput>rsh
-        username@host svnserve -t</userinput>).  But you can define new
-        tunneling schemes to be much more clever than that:</para>
+        will also include that in its command (<userinput>rsh - -
+        username@host svnserve -t</userinput>).</para>
 -->
       <para>Ab jetzt können Sie diese neue Tunneldefinition
         verwenden, indem Sie ein URL-Schema benutzen, welches dem
@@ -3017,14 +3016,36 @@ rsh = rsh
         angeben (z.B.
         <literal>svn+rsh://username@host/path</literal>), wird der
         Client das auch mit in seinen Befehl übernehmen
-        (<userinput>rsh username@host svnserve -t</userinput>). Sie
-        können jedoch auch viel raffiniertere neue Tunnel-Schemata
-        definieren:</para>
+        (<userinput>rsh -- username@host svnserve -t</userinput>).</para>
+
+      <warning>
+<!--
+        <para>Notice that when defining an RSH-based tunnel, we've
+          added the <literal>- -</literal> end-of-options argument to
+          the tunnel command line.  This is to prevent a malformed
+          hostname from being treated as another option to the tunnel
+          command.  You should do the same for other tunnel programs
+          (for example, SSH).</para>
+-->
+        <para>Beachten Sie, dass wir beim Definieren eines RSH-basierten
+          Tunnels das <literal>--</literal>-Optionsende-Argument der
+          Tunnel-Bwfehlszeile hinzugefügt haben. Das geschieht, um zu
+          vermeiden, dass ein falsch gebildeter Host-Name als eine weitere
+          Option des Tunnel-Befehls behandelt wird. Das gleiche sollten
+          Sie für andere Tunnel-Befehle machen (zum Beispiel SSH).</para>
+      </warning>
+
+<!--
+      <para>But you can define new tunneling schemes to be much more
+        clever than that:</para>
+-->
+        <para>Sie können jedoch auch viel raffiniertere neue
+          Tunnel-Schemata definieren:</para>
 
       <informalexample>
         <programlisting>
 [tunnels]
-joessh = $JOESSH /opt/alternate/ssh -p 29934
+joessh = $JOESSH /opt/alternate/ssh -p 29934 --
 </programlisting>
       </informalexample>
 
@@ -5789,7 +5810,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
             CA nicht automatisch vertrauen kann, oder falls ein
             anderes Problem auftaucht (etwa ein abgelaufenes
             Zertifikat oder ein nicht übereinstimmender Rechnername),
-            fragt Sie der Subversion-Kommandozeilen-Client, ob Sie dem
+            fragt Sie der Subversion-Befehlszeilen-Client, ob Sie dem
             Server-Zertifikat dennoch vertrauen möchten:</para>
 
 <!--
@@ -5958,7 +5979,7 @@ Passphrase für »/path/to/my/cert.p12«:  ********
             Standard entspricht. Die meisten Web-Browser können
             Zertifikate in diesem Format im-
             und exportieren. Eine weitere Option ist es, die
-            OpenSSL-Kommandozeilenwerkzeuge zu verwenden, um
+            OpenSSL-Befehlszeilenwerkzeuge zu verwenden, um
             bestehende Zertifikate in PKCS#12 zu überführen.</para>
 
 <!--
@@ -9173,7 +9194,7 @@ sally = r
         deren Pfade beziehen, die für Server ,wie oben beschrieben,
         erkennbar sind.</para></footnote>, während
         <command>svnserve</command> den vollständigen, relativen Pfad
-        vom Server-Wurzelverzeichnis (wie in der Kommandozeilen-Option
+        vom Server-Wurzelverzeichnis (wie in der Befehlszeilen-Option
         <option>--root</option> (<option>-r</option>) angegeben) zum
         Projektarchiv verwendet.</para>
 
@@ -9830,7 +9851,7 @@ calc = @calc-developers, @calc-owners
 -->
     <para>Um dieses hohe Protokollierungsniveau in
       <command>svnserve</command> zu ermöglichen, brauchen Sie nur
-      beim Start des Servers die Kommandozeilenoption
+      beim Start des Servers die Befehlszeilen-Option
       <option>--log-file</option> zu verwenden, deren Wert der Name
       der Datei ist, in die <command>svnserve</command> seine
       Protokollausgaben schreibt.</para>
@@ -10424,8 +10445,8 @@ $
       eigentliche Client-Programm <command>svn</command> startet. Ein
       ähnliches Skript können Sie für das Programm
       <command>svnserve</command> schreiben, und in das Startskript
-      von Apache, <filename>apachectl</filename>, fügen Sie das
-      Kommando <userinput>umask 002</userinput> ein. Zum
+      von Apache, <filename>apachectl</filename>, fügen Sie den
+      Befehl <userinput>umask 002</userinput> ein. Zum
       Beispiel:</para>
 
     <informalexample>
