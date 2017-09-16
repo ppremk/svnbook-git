@@ -8640,18 +8640,25 @@ END
 </screen>
         </informalexample>
 
+      <!--
         <para>Once you have located the proper cache file, just delete
           it.</para>
+      -->
+      <para>一旦找到了对应的缓存文件, 直接删除即可.</para>
 
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.tour.initial.different-user">
+      <!--
         <title>Command-line authentication</title>
+      -->
+        <title>命令行认证</title>
 
+      <!--
         <para>All Subversion command-line operations accept
-          the <option>--username</option>
-          and <option>--password</option> options, which allow you to
+          the <option>- -username</option>
+          and <option>- -password</option> options, which allow you to
           specify your username and password, respectively, so that
           Subversion isn't forced to prompt you for that information.
           This is especially handy if you need to invoke Subversion
@@ -8662,19 +8669,34 @@ END
           the ones you want it to use.  Perhaps several system users
           share a login to the system, but each have distinct
           Subversion identities.  You can omit
-          the <option>--password</option> option from this pair if
+          the <option>- -password</option> option from this pair if
           you wish Subversion to use only the provided username, but
           still prompt you for that username's password.</para>
+      -->
+        <para>所有的 Subversion 命令都支持选项 <option>--username</option>
+          和 <option>--password</option>, 选项的作用分别是指定用户名与密码,
+          这样 Subversion 就不会再提示用户输入这两项信息. 有了这两个选项, 就
+          可以很方便地在脚本里执行 Subversion 命令, 而不用依赖缓存的认证证书.
+          除此之外, 如果 Subversion 已经缓存了认证证书, 但你知道这不是你想使
+          用的那个 (比如多个人使用相同的登录名登录系统, 但每个人所使用的
+          Subversion 认证证书却不一样), 可以用这两个选项重新指定用户名与密码.
+          用户可以不指定选项 <option>--password</option>, 只让 Subversion 从
+          命令行参数中获取用户名, 但它仍然会提示用户输入与用户名对应的密码.
+        </para>
 
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.tour.initial.authn-wrapup">
+      <!--
         <title>Authentication wrap-up</title>
+      -->
+        <title>认证小结</title>
 
+      <!--
         <para>One last word about <command>svn</command>'s
           authentication behavior, specifically regarding the
-          <option>--username</option> and <option>--password</option>
+          <option>- -username</option> and <option>- -password</option>
           options.  Many client subcommands accept these options, but it
           is important to understand that using these options does
           <emphasis>not</emphasis> automatically send credentials to the
@@ -8688,52 +8710,92 @@ END
           system login name) or when trying to avoid interactive
           prompting (such as when calling <command>svn</command> from a
           script).</para>
+      -->
+        <para>关于 Subversion 的认证行为最后再讲一点, 尤其是 <option>--username
+          </option> 和 <option>--password</option> 这两个选项. 很多客户端子
+          命令都支持这两个选项, 但是要注意使用它们并不会 <emphasis>自动
+          </emphasis> 地把证书发送给服务器, 前面已经说过, 只有当服务器认为需要
+          证书时, 才会主动向客户端 <quote>索要</quote> 证书, 客户端不能随心所
+          欲地向服务器 <quote>推送</quote> 证书. 如果在命令行选项上指定了用户
+          名和 (或) 密码, 只有当服务器需要时, 它们才会被递送给服务器. 使用这
+          两个选项的最典型情况是用户想要明确地指定用户名, 而不是让 Subversion
+          自己猜一个 (例如登录操作系统的用户名), 又或者是避免出现交互式的提示
+          信息 (例如命令是在脚本里执行的).</para>
 
         <note>
+      <!--
           <para>A common mistake is to misconfigure a server so
             that it never issues an authentication challenge.  When
-            users pass <option>--username</option> and
-            <option>--password</option> options to the client, they're
+            users pass <option>- -username</option> and
+            <option>- -password</option> options to the client, they're
             surprised to see that they're never used; that is, new
             revisions still appear to have been committed
             anonymously!</para>
+      -->
+          <para>服务器的一个常见的配置错误是从来不向客户端发起认证请求, 如果
+            用户在命令行上指定了选项 <option>--username</option> 和
+            <option>--password</option>, 会发现它们不起作用, 新的版本号总是
+            匿名提交的.</para>
         </note>
 
+      <!--
         <para>Here is a final summary that describes how a Subversion
           client behaves when it receives an authentication
           challenge.</para>
+      -->
+        <para>下面几点介绍了当客户端收到一个认证请求时所做的操作.</para>
 
         <orderedlist>
           <listitem>
+      <!--
             <para>First, the client checks whether the user specified
               any credentials as command-line options
-              (<option>--username</option> and/or
-              <option>--password</option>).  If so, the client will try
+              (<option>- -username</option> and/or
+              <option>- -password</option>).  If so, the client will try
               to use those credentials to authenticate against the
               server.</para>
+      -->
+            <para>首先, 客户端检查用户是否在命令行上输入了证书 (选项 <option>
+                --username</option> 和 (或) <option>--password</option>), 如果
+              是, 客户端将使用它们响应服务器的认证请求.</para>
           </listitem>
           <listitem>
+      <!--
             <para>If no command-line credentials were provided, or the
               provided ones were invalid, the client looks up the server's
               hostname, port, and realm in the runtime configuration's
               <filename>auth/</filename> area, to see whether appropriate 
               credentials are cached there.  If so, it attempts to use
               those credentials to authenticate.</para>
+      -->
+            <para>如果命令行参数没有提供证书, 又或者是提供的证书是无效的, 客户
+              端就在运行时配置的 <filename>auth/</filename> 区域查找服务器的
+              主机名, 端口和认证域, 检查是否有合适的证书缓存. 如果是就使用缓存
+              的证书响应请求.</para>
           </listitem>
           <listitem>
+      <!--
             <para>Finally, if the previous mechanisms failed to
               successfully authenticate the user against the server, the
               client resorts to interactively prompting the user for
               valid credentials (unless instructed not to do so via the
-              <option>--non-interactive</option> option or its
+              <option>- -non-interactive</option> option or its
               client-specific equivalents).</para>
+      -->
+            <para>最后, 如果前面的认证都失败了, 客户端就会提示用户输入用户
+              名与密码 (除非指定了选项 <option>--non-interactive</option> 或
+              其他等效的设置).</para>
           </listitem>
         </orderedlist>
 
+      <!--
         <para>If the client successfully authenticates by any of these
           methods, it will attempt to cache the credentials on disk
           (unless the user has disabled this behavior, as mentioned
           earlier).</para>
+      -->
+        <para>如果客户端成功地用上面的任意一种方法满足了服务器的认证请求,
+          它就试图把证书缓存在本地磁盘上 (除非用户禁止了缓存).</para>
 
       </sect3>
     </sect2>
