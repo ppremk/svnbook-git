@@ -9109,6 +9109,7 @@ $
         (相对来说没什么价值).</para>
       </warning>
 
+      <!--
       <para>The <command>svnmucc</command> tool is not limited to
         merely remixing actions that <command>svn</command> itself can
         perform.  It introduces some additional functionality not
@@ -9123,25 +9124,49 @@ $
         from a local file) and for deleting properties on the same.
         Those actions are unsupported in the command-line client at
         this time.</para>
+      -->
+      <para><command>svnmucc</command> 的作用不仅仅是混合 <command>svn</command>
+        的操作, 它还增加了一些其他命令行工具不支持的功能. 例如用户可以使用操作
+        <command>put</command> 添加或修改仓库里的文件, 把来自本地文件或标准输入
+        的内容复制到仓库的文件中. <command>svnmucc</command> 还提供了
+        <command>propset</command>, <command>propsetf</command> 和
+        <command>propdel</command> 这三种操作,  用于设置或删除文件和目录的属性
+        (属性值既可以显式地在命令行指定, 也可以从本地文件中读取), 而其他客户端
+        命令行工具还不支持这些操作 (其他命令行工具只能直接操作工作副本里的文件
+        的属性).
+      </para>
 
+      <!--
       <para>At this point, though, it seems prudent to discuss the
         difference between what <emphasis>can</emphasis> be done
         with <command>svnmucc</command> and what
         <emphasis>should</emphasis> be done.  A pair of notable quotes
         comes to mind:</para>
+      -->
+      <para><command>svnmucc</command> 可以做哪些事, 以及什么事应该由它来做
+        &mdash;这两者的区别非常重要, 先来两句名言:</para>
 
       <blockquote>
+      <!--
         <attribution>Jesus</attribution>
         <para><quote>To whom much has been given, much will be
           expected.</quote></para>
+      -->
+        <attribution>耶稣</attribution>
+      <para><quote>给予越多, 期望越多.</quote></para>
       </blockquote>
 
       <blockquote>
+      <!--
         <attribution>"Spiderman" Peter Parker's Uncle Ben</attribution>
         <para><quote>With great power comes great
           responsibility.</quote></para>
+      -->
+        <attribution>Ben, 蜘蛛侠 Peter Parker 的叔叔</attribution>
+        <para><quote>能力越大, 责任越大.</quote></para>
       </blockquote>
 
+      <!--
       <para>Inherent in working-copy-less modifications is the loss of
         the very conflict detection safeguards which make the use of a
         working copy so valuable.  When using <command>svn</command>
@@ -9161,6 +9186,16 @@ $
         base state against which you are working.  But hopefully it is
         obvious to you that this is not a power you should cavalierly
         wield.</para>
+      -->
+      <para>不使用工作副本的坏处是丧失了冲突检测的能力. 当按照典型的方式使用
+        <command>svn</command> 时, 被提交的修改是相对于仓库中文件的特定基础
+        版本, 这样用户就不会无意中覆盖其他用户对相同文件提交的修改. 服务器知道
+        被用户修改的文件的版本, 也知道在该版本之后是否有其他用户修改了文件,
+        有了这些, 当用户的提交会破坏其他用户的修改时, Subversion 就会拒绝提交,
+        强迫用户合并其他用户已提交的修改, 并重新考虑自己的修改. 因为
+        <command>svnmucc</command> 没有用到工作副本, 也就绕过了冲突检测,
+        使得 <command>svnmucc</command> 提交的每个修改都是相对于仓库中的最新
+        版本, 希望这种情况不是用户正想看到的样子.</para>
 
       <para>Fortunately, <command>svnmucc</command> allows you to be
         more conservative in the way you use the tool.  In order to
@@ -9171,11 +9206,20 @@ $
         are attempting to commit.  The base revision you choose
         is ideally the most recent revision in your repository of
         which you can reasonably claim knowledge.</para>
+      <para>幸运的是, <command>svnmucc</command> 也希望用户在使用它时能更加地
+        谨慎, 方法是使用选项 <option>--revision</option> (<option>-r</option>).
+        通过这个选项, 用户可以明确地指定相对于提交的基础版本号, 该版本号应该是
+        用户在提交前看到的最新的版本号.</para>
       
       <warning>
+      <!--
         <para>Users are strongly encouraged to use, and to use
-          correctly, the <option>--revision (-r)</option> option
+          correctly, the <option>- -revision (-r)</option> option
           to <command>svnmucc</command>.</para>
+      -->
+        <para>强烈建议用户总是为 <command>svnmucc</command> 加上选项
+          <option>--revision</option> (<option>-r</option>), 并指定正确的
+          版本号.</para>
       </warning>
 
       <para>Proper use of the <command>svnmucc put</command> action
