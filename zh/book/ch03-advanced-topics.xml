@@ -9197,15 +9197,17 @@ $
         使得 <command>svnmucc</command> 提交的每个修改都是相对于仓库中的最新
         版本, 希望这种情况不是用户正想看到的样子.</para>
 
+      <!--
       <para>Fortunately, <command>svnmucc</command> allows you to be
         more conservative in the way you use the tool.  In order to
         provide a safety mechanism similar to what is offered by the
         use of a working copy, <command>svnmucc</command> offers
-        a <option>--revision (-r)</option> option.  With this option,
+        a <option>- -revision (-r)</option> option.  With this option,
         you can manually specify a base revision for the changes you
         are attempting to commit.  The base revision you choose
         is ideally the most recent revision in your repository of
         which you can reasonably claim knowledge.</para>
+      -->
       <para>幸运的是, <command>svnmucc</command> 也希望用户在使用它时能更加地
         谨慎, 方法是使用选项 <option>--revision</option> (<option>-r</option>).
         通过这个选项, 用户可以明确地指定相对于提交的基础版本号, 该版本号应该是
@@ -9222,11 +9224,13 @@ $
           版本号.</para>
       </warning>
 
+      <!--
       <para>Proper use of the <command>svnmucc put</command> action
-        best demonstrates how this <option>--revision (-r)</option>
+        best demonstrates how this <option>- -revision (-r)</option>
         option should be used.  Say Harry wishes to change the
         contents of a versioned <filename>README</filename> file
         without bothering with a full checkout of a working copy.
+        TODO
         (We'll assume that there is no other value in using a working
         copy for this operation, such as the presence of scripts Harry
         should run in advance of his commit to verify that it's a
@@ -9236,6 +9240,14 @@ $
         queries the revision in which the file was last modified, and
         then uses that revision to fetch the contents of the file into
         a temporary local file:</para>
+      -->
+      <para>说明选项 <option>--revision</option> (<option>-r</option>) 重要性
+        的最好方式是展示如何正确地使用命令 <command>svnmucc put</command>.
+        假设 Harry 想在没有工作副本的情况下修改仓库里的文件
+        <filename>README</filename>, 他要确定的第一件事是针对文件的哪个版本进行
+        修改. 在典型的情况下, 用户总是想修改文件的最新版, 于是 Harry 查询文件
+        最后一次被提交的版本号, 并把该版本号对应的文件内容抓取到本地的一个临时
+        文件中.</para>
 
       <informalexample>
         <screen>
@@ -9257,12 +9269,18 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>Harry now has a copy of the <filename>README</filename>
         file as it looked when it it was last modified.  He makes the
         edits he wishes to make to this copy of the file.  Naturally,
         when he's finished, he wishes to then commit those changes to
         the repository.</para>
+      -->
+      <para>现在 Harry 有了 <filename>README</filename> 的一个副本, 副本的内容
+        和它最后一次被提交时的内容相同. 他按照自己的想法对副本进行了修改, 修改
+        完成后, 他打算提交到仓库中.</para>
 
+      <!--
       <para>Now, if Harry naively uses <userinput>svnmucc put
         &hellip;</userinput> at this point to replace the contents of
         <filename>README</filename> in the repository with his locally
@@ -9276,6 +9294,15 @@ $
         <command>svnmucc</command> will happily replace the current
         latest version of the file with the contents specified.  Harry
         will be oblivious.  Sally will be livid.</para>
+      -->
+      <para>如果 Harry 单纯地使用 <userinput>svnmucc put&hellip;</userinput>,
+        将仓库中 <filename>README</filename> 的内容替换成本地修改后的版本,
+        那他就是在滥用 <command>svnmucc</command> 的能力. 要是在他提交前一
+        毫秒, Sally 也提交了 <filename>README</filename> 的修改, 那会怎样?
+        和 <command>svn</command> 相比, <command>svnmucc</command> 不会为了同时
+        保留两个用户的修改, 而尝试在服务器端做一些内容合并操作,
+        <command>svnmucc</command> 会直接使用指定的内容替换掉文件的最新版本.
+        Harry 不会察觉到这些, 但 Sally 可能会大发雷霆.</para>
 
       <informalexample>
         <screen>
@@ -9290,13 +9317,19 @@ EOF
 </screen>
       </informalexample>
 
+      <!--
       <para>Harry should instead recall the revision he originally
         used as the revision on which to base his changes, supplying
         that revision to <command>svnmucc</command> via
-        the <option>--revision (-r)</option> option, and thus giving
+        the <option>- -revision (-r)</option> option, and thus giving
         the server the opportunity to bounce his commit if, by his own
         (perhaps ignorant) admission, he's attempting to modify an
         out-of-date item:</para>
+      -->
+      <para>Harry 应该回想被自己修改的本地文件来自哪个版本号, 然后把该版本号
+        通过选项 <option>--revision</option> (<option>-r</option>) 传递给命令
+        <command>svnmucc</command>, 这样服务器就有机会检查被用户修改的文件是否
+        过旧, 如果是的话就拒绝提交.</para>
 
       <informalexample>
         <screen>
@@ -9308,8 +9341,9 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>Like other <command>svnmucc</command> options,
-        the <option>--revision (-r)</option> option operates at a
+        the <option>- -revision (-r)</option> option operates at a
         scope global to the whole command&mdash;every action specified
         in that command.  This enables you to have the same sort of
         safeguards you would have if you had checked out a working
@@ -9317,11 +9351,22 @@ $
         entirely at a single uniform revision), made changes to that
         working copy, and then committed all those changes at
         once.</para>
+      -->
+      <para>和 <command>svnmucc</command> 的其他其他选项一样, 选项
+        <option>--revision</option> (<option>-r</option>) 的作用域是整个命令
+        &mdash;命令中指定的每一个操作. 这就使得用户在使用
+        <command>svnmucc</command> 时, 具有了和下面这种情形同样的保护措施
+        &mdash;检出整个仓库的工作副本 (并且工作副本具有一致的版本号), 修改工作
+        副本里的文件, 最后提交工作副本的所有修改.</para>
 
+      <!--
       <para>As you can see, <command>svnmucc</command> is a handy
         addition to the Subversion user's tool chest.  For a complete
         reference of this tool's offerings, see
         <xref linkend="svn.ref.svnmucc" />.</para>
+      -->
+      <para><command>svnmucc</command> 是 Subversion 客户端工具集的有益补充,
+        它的完整手册见 <xref linkend="svn.ref.svnmucc"/>.</para>
 
     </sect2>
 
