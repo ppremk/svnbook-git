@@ -308,18 +308,24 @@ $ svn log -r {2006-11-20}:{2006-11-29}
       </informalexample>
         
       <warning>
-        <para>Since the timestamp of a revision is stored as an
-          unversioned, modifiable property of the revision (see <xref
-          linkend="svn.advanced.props" />), revision timestamps can be
-          changed to represent complete falsifications of true
-          chronology, or even removed altogether.  Subversion's
-          ability to correctly convert revision dates into real
-          revision numbers depends on revision datestamps maintaining
-          a sequential ordering&mdash;the younger the revision, the
-          younger its timestamp.  If this ordering isn't maintained,
-          you will likely find that trying to use dates to specify
-          revision ranges in your repository doesn't always return the
-          data you might have expected.</para>
+        <para>Subversion's ability to correctly convert revision dates
+          into real revision numbers depends on revision datestamps
+          maintaining a sequential ordering&mdash;the younger the
+          revision, the younger its datestamp.  But datestamps are
+          stored in the unversioned, modifiable
+          <literal>svn:date</literal> property of the revision (see
+          <xref linkend="svn.advanced.props" />), so it is possible
+          for revision datestamps to get out of sequence.  Now, most
+          of Subversion's operations are unaffected by this
+          situation&mdash;after all, the revision number itself is the
+          primary identifier of each revision.  But if the datestamp
+          ordering isn't maintained, you will likely find that trying
+          to use dates to specify revision ranges in your repository
+          doesn't always return the data you might have expected.
+          Combining the histories of multiple repositories into a
+          single one (as described in
+          <xref linkend="svn.reposadmin.maint.migrate" />) is the most
+          common cause of this scenario.</para>
       </warning>
         
     </sect2>
