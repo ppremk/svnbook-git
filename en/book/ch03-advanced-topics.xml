@@ -4001,12 +4001,12 @@ $
       all of these facets of the larger locking feature.</para>
 
     <sidebar id="svn.advanced.locking.meanings">
-      <title>The Three Meanings of <quote>Lock</quote></title>
+      <title>The Many Meanings of <quote>Lock</quote></title>
 
       <para>In this section, and almost everywhere in this book, the
         words <quote>lock</quote> and <quote>locking</quote> describe
         a mechanism for mutual exclusion between users to avoid
-        clashing commits.  Unfortunately, there are two other sorts
+        clashing commits.  Unfortunately, there are other sorts
         of <quote>lock</quote> with which Subversion, and therefore
         this book, sometimes needs to be concerned.</para>
 
@@ -4014,8 +4014,8 @@ $
         <indexterm>
           <primary>locks</primary>
           <secondary>administrative</secondary>
-        </indexterm>The second is <firstterm>administrative
-        locks</firstterm>, used internally by Subversion to prevent
+        </indexterm>Subversion uses <firstterm>administrative
+        locks</firstterm> internally to prevent
         clashes between multiple Subversion clients operating on the
         same working copy.  This is the sort of lock indicated by an
         <computeroutput>L</computeroutput> in the third column of
@@ -4027,13 +4027,35 @@ $
         <indexterm>
           <primary>locks</primary>
           <secondary>database</secondary>
-        </indexterm>Third, there are <firstterm>database
-        locks</firstterm>, used internally by the Berkeley DB backend
-        to prevent clashes between multiple programs trying to access
-        the database.  This is the sort of lock whose unwanted
-        persistence after an error can cause a repository to
-        be <quote>wedged,</quote> as described in
+        </indexterm>Administrators using the older Berkeley DB repository
+        backend will need to be familiar with <firstterm>database
+        locks</firstterm>, which exist to prevent clashes between multiple
+        programs trying to access the database.  This is the sort of lock
+        whose unwanted persistence after an error can cause a repository
+        to be <quote>wedged,</quote> as described in
         <xref linkend="svn.berkeleydb.maintenance.recovery" />.</para>
+
+      <para>
+        <indexterm>
+          <primary>locks</primary>
+          <secondary>svnsync</secondary>
+        </indexterm>Additionally, there are <firstterm>svnsync
+        locks</firstterm>, which effect mutual exclusion between multiple
+        instances of the <command>svnsync</command> command that write
+        to the same mirror of a repository.  This is the sort of lock
+        implemented by the <literal>svn:sync-lock</literal> revision
+        property, as described in <xref
+        linkend="svn.reposadmin.maint.replication.svnsync" />.</para>
+
+      <para>
+        <indexterm>
+          <primary>locks</primary>
+          <secondary>svnrdump</secondary>
+        </indexterm>Finally, there are <firstterm>svnrdump
+        locks</firstterm>.  These are very much like svnsync locks, but
+        are associated with the <command>svnrdump</command> command
+        (described in <xref linkend="svn.reposadmin.maint.migrate.svnrdump"
+        />) instead of <command>svnsync</command>.</para>
 
       <para>You can generally forget about these other kinds of locks
         until something goes wrong that requires you to care about
