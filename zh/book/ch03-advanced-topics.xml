@@ -439,18 +439,24 @@ $ svn log -r {2006-11-20}:{2006-11-29}
         
       <warning>
     <!--
-        <para>Since the timestamp of a revision is stored as an
-          unversioned, modifiable property of the revision (see <xref
-          linkend="svn.advanced.props" />), revision timestamps can be
-          changed to represent complete falsifications of true
-          chronology, or even removed altogether.  Subversion's
-          ability to correctly convert revision dates into real
-          revision numbers depends on revision datestamps maintaining
-          a sequential ordering&mdash;the younger the revision, the
-          younger its timestamp.  If this ordering isn't maintained,
-          you will likely find that trying to use dates to specify
-          revision ranges in your repository doesn't always return the
-          data you might have expected.</para>
+        <para>Subversion's ability to correctly convert revision dates
+          into real revision numbers depends on revision datestamps
+          maintaining a sequential ordering&mdash;the younger the
+          revision, the younger its datestamp.  But datestamps are
+          stored in the unversioned, modifiable
+          <literal>svn:date</literal> property of the revision (see
+          <xref linkend="svn.advanced.props" />), so it is possible
+          for revision datestamps to get out of sequence.  Now, most
+          of Subversion's operations are unaffected by this
+          situation&mdash;after all, the revision number itself is the
+          primary identifier of each revision.  But if the datestamp
+          ordering isn't maintained, you will likely find that trying
+          to use dates to specify revision ranges in your repository
+          doesn't always return the data you might have expected.
+          Combining the histories of multiple repositories into a
+          single one (as described in
+          <xref linkend="svn.reposadmin.maint.migrate" />) is the most
+          common cause of this scenario.</para>
     -->
         <para>因为版本号的时间戳被当成属性存放在版本号中, 而该属性是可修改的
           且未被纳入版本管理 (见 <xref linkend="svn.advanced.props"/>), 因此
@@ -2061,7 +2067,7 @@ Properties on 'site':
     <!--
       <para>If we were to instead make the target of the subcommand the
         subdirectory <filename>site</filename>, then using the <option>
-        -show-inherited-props</option> option, we find that the <literal>
+        --show-inherited-props</option> option, we find that the <literal>
         svn:auto-props</literal> property is set on the target <emphasis>
         and</emphasis> its parent.  The parent's properties are called out
         as "inherited":</para>
@@ -5995,7 +6001,7 @@ $
 
     <sidebar id="svn.advanced.locking.meanings">
     <!--
-      <title>The Three Meanings of <quote>Lock</quote></title>
+      <title>The Many Meanings of <quote>Lock</quote></title>
     -->
       <title><quote>锁</quote> 的 3 种涵义</title>
 
@@ -6003,7 +6009,7 @@ $
       <para>In this section, and almost everywhere in this book, the
         words <quote>lock</quote> and <quote>locking</quote> describe
         a mechanism for mutual exclusion between users to avoid
-        clashing commits.  Unfortunately, there are two other sorts
+        clashing commits.  Unfortunately, there are other sorts
         of <quote>lock</quote> with which Subversion, and therefore
         this book, sometimes needs to be concerned.</para>
     -->
@@ -6024,8 +6030,8 @@ $
           <command>svn cleanup</command> 会删除管理锁, 见
           <xref linkend="svn.tour.cleanup"/>.</para>
     <!--
-          The second is <firstterm>administrative
-        locks</firstterm>, used internally by Subversion to prevent
+        </indexterm>Subversion uses <firstterm>administrative
+        locks</firstterm> internally to prevent
         clashes between multiple Subversion clients operating on the
         same working copy.  This is the sort of lock indicated by an
         <computeroutput>L</computeroutput> in the third column of
@@ -6043,17 +6049,38 @@ $
           </firstterm>), 由 Berkeley DB 内部使用, 防止多个程序在访问数据库时
           产生碰撞.</para>
     <!--
-          Third, there are <firstterm>database
-        locks</firstterm>, used internally by the Berkeley DB backend
-        to prevent clashes between multiple programs trying to access
-        TODO
-        the database.  This is the sort of lock whose unwanted
-        persistence after an error can cause a repository to
-        be <quote>wedged,</quote> as described in
+        </indexterm>Administrators using the older Berkeley DB repository
+        backend will need to be familiar with <firstterm>database
+        locks</firstterm>, which exist to prevent clashes between multiple
+        programs trying to access the database.  This is the sort of lock
+        whose unwanted persistence after an error can cause a repository
+        to be <quote>wedged,</quote> as described in
         <xref linkend="svn.berkeleydb.maintenance.recovery" />.</para>
     -->
 
     <!--
+      <para>
+        <indexterm>
+          <primary>locks</primary>
+          <secondary>svnsync</secondary>
+        </indexterm>Additionally, there are <firstterm>svnsync
+        locks</firstterm>, which effect mutual exclusion between multiple
+        instances of the <command>svnsync</command> command that write
+        to the same mirror of a repository.  This is the sort of lock
+        implemented by the <literal>svn:sync-lock</literal> revision
+        property, as described in <xref
+        linkend="svn.reposadmin.maint.replication.svnsync" />.</para>
+
+      <para>
+        <indexterm>
+          <primary>locks</primary>
+          <secondary>svnrdump</secondary>
+        </indexterm>Finally, there are <firstterm>svnrdump
+        locks</firstterm>.  These are very much like svnsync locks, but
+        are associated with the <command>svnrdump</command> command
+        (described in <xref linkend="svn.reposadmin.maint.migrate.svnrdump"
+        />) instead of <command>svnsync</command>.</para>
+
       <para>You can generally forget about these other kinds of locks
         until something goes wrong that requires you to care about
         them.  In this book, <quote>lock</quote> means the first sort

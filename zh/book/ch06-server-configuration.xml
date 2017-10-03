@@ -1503,7 +1503,7 @@ baz
       <informalexample>
         <programlisting>
 [tunnels]
-rsh = rsh
+rsh = rsh --
 </programlisting>
       </informalexample>
 
@@ -1511,17 +1511,28 @@ rsh = rsh
         URL scheme that matches the name of your new variable:
         <literal>svn+rsh://host/path</literal>.  When using the new
         URL scheme, the Subversion client will actually be running the
-        command <userinput>rsh host svnserve -t</userinput> behind the
+        command <userinput>rsh -- host svnserve -t</userinput> behind the
         scenes.  If you include a username in the URL (e.g.,
         <literal>svn+rsh://username@host/path</literal>), the client
-        will also include that in its command (<userinput>rsh
-        username@host svnserve -t</userinput>).  But you can define new
-        tunneling schemes to be much more clever than that:</para>
+        will also include that in its command (<userinput>rsh --
+        username@host svnserve -t</userinput>).</para>
+
+      <warning>
+        <para>Notice that when defining an RSH-based tunnel, we've
+          added the <literal>--</literal> end-of-options argument to
+          the tunnel command line.  This is to prevent a malformed
+          hostname from being treated as another option to the tunnel
+          command.  You should do the same for other tunnel programs
+          (for example, SSH).</para>
+      </warning>
+
+      <para>But you can define new tunneling schemes to be much more
+        clever than that:</para>
 
       <informalexample>
         <programlisting>
 [tunnels]
-joessh = $JOESSH /opt/alternate/ssh -p 29934
+joessh = $JOESSH /opt/alternate/ssh -p 29934 --
 </programlisting>
       </informalexample>
 
