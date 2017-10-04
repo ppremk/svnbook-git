@@ -458,12 +458,15 @@ $ svn log -r {2006-11-20}:{2006-11-29}
           <xref linkend="svn.reposadmin.maint.migrate" />) is the most
           common cause of this scenario.</para>
     -->
-        <para>因为版本号的时间戳被当成属性存放在版本号中, 而该属性是可修改的
-          且未被纳入版本管理 (见 <xref linkend="svn.advanced.props"/>), 因此
-          版本号的时间戳可以被任意地修改, 甚至完全删除. Subversion 能够根据
-          版本号日期得到版本号是因为版本号的时间戳被维护成一个串行化的序列&mdash;
-          版本号越年轻, 时间戳就越小. 如果顺序被打乱了, 那么当你用日期指定
-          版本号范围时, Subversion 返回的数据很有可能不是你所想要的.</para>
+    <para>Subversion 能够根据版本号日期得到版本号是因为版本号的时间戳被维护
+      成一个串行化的序列&mdash;版本号越年轻, 时间戳也就越年轻. 但是时间戳
+      是存放在版本号的 <literal>svn:date</literal> 属性内 (见
+      <xref linkend="svn.advanced.props"/>), 而该属性是可修改的, 且未被纳
+      入版本管理, 所以说打乱版本号的时间戳是有可能的. 如果时间戳被打乱了,
+      大多数操作都不会受到影响, 毕竟它们都是使用版本号的整数编号作为版本
+      号的标识, 但是当你用日期指定版本号范围时, Subversion 返回的数据很可
+      能不是你所想要的. 导致版本号时间戳不再有序的常见操作是把多个仓库的
+      历史组合成单独的一个.</para>
       </warning>
         
     </sect2>
@@ -6003,7 +6006,7 @@ $
     <!--
       <title>The Many Meanings of <quote>Lock</quote></title>
     -->
-      <title><quote>锁</quote> 的 3 种涵义</title>
+      <title><quote>锁</quote> 的多种涵义</title>
 
     <!--
       <para>In this section, and almost everywhere in this book, the
@@ -6015,15 +6018,15 @@ $
     -->
       <para>本节及书中的其他地方, 单词 <quote>锁 (lock) </quote> 和 <quote>
           加锁 (locking)</quote> 描述一种用于实现用户间互斥的机制, 避免提交
-        产生碰撞. 不幸的是, Subversion 还有两种 <quote>锁</quote> 需要注意.
-      </para>
+        产生碰撞. 不幸的是, Subversion 还有其他种类的 <quote>锁</quote> 需要
+        注意.</para>
 
       <para>
         <indexterm>
           <primary>locks</primary>
           <secondary>administrative</secondary>
           </indexterm>
-          第二种是 <firstterm>管理锁</firstterm> (<firstterm>administrative
+          <firstterm>管理锁</firstterm> (<firstterm>administrative
             locks</firstterm>), 由 Subversion 内部使用, 用于防止多个客户端在
           操作同一个工作副本时产生碰撞. <command>svn status</command> 输出中
           第三列的 <computeroutput>L</computeroutput> 指的就是管理锁, 命令
@@ -6045,9 +6048,11 @@ $
           <primary>locks</primary>
           <secondary>database</secondary>
           </indexterm>
-          第三种是 <firstterm>数据库锁</firstterm> (<firstterm>database locks
-          </firstterm>), 由 Berkeley DB 内部使用, 防止多个程序在访问数据库时
-          产生碰撞.</para>
+          使用老的 Berkeley DB 作为仓库后端的管理员需要了解 <firstterm>数据库锁
+          </firstterm>, 它由 Berkeley DB 数据库内部使用, 防止多个程序在访问数
+          据库时产生碰撞. 这种类型的锁如果在遭遇错误出现了不应该出现的持久化
+          状态, 将导致仓库 <quote>楔形化</quote> (见
+          <xref linkend="svn.berkeleydb.maintenance.recovery" />.</para>
     <!--
         </indexterm>Administrators using the older Berkeley DB repository
         backend will need to be familiar with <firstterm>database
@@ -6058,29 +6063,44 @@ $
         <xref linkend="svn.berkeleydb.maintenance.recovery" />.</para>
     -->
 
-    <!--
       <para>
         <indexterm>
           <primary>locks</primary>
           <secondary>svnsync</secondary>
-        </indexterm>Additionally, there are <firstterm>svnsync
+        </indexterm>
+        另外, <firstterm>svnsync 锁</firstterm> 可以让命令
+        <command>svnsync</command> 的多个实例在操作仓库的同一个镜像时保持互斥.
+        这种锁类型通过版本号的 <literal>svn:sync-lock</literal> 属性实现, 
+        <command>svnsync</command> 的介绍见
+        <xref linkend="svn.reposadmin.maint.replication.svnsync" />.</para>
+      <!--
+        Additionally, there are <firstterm>svnsync
         locks</firstterm>, which effect mutual exclusion between multiple
         instances of the <command>svnsync</command> command that write
         to the same mirror of a repository.  This is the sort of lock
         implemented by the <literal>svn:sync-lock</literal> revision
         property, as described in <xref
         linkend="svn.reposadmin.maint.replication.svnsync" />.</para>
+      -->
 
       <para>
         <indexterm>
           <primary>locks</primary>
           <secondary>svnrdump</secondary>
-        </indexterm>Finally, there are <firstterm>svnrdump
+        </indexterm>
+        最后还有一个 <firstterm>svnrdump 锁</firstterm>. 它和 svnsync 锁非常
+        类似, 只是它和命令 <command>svnrdump</command> 相关, <command>svnrdump
+        </command> 的介绍见
+        <xref linkend="svn.reposadmin.maint.migrate.svnrdump" />.</para>
+      <!--
+        Finally, there are <firstterm>svnrdump
         locks</firstterm>.  These are very much like svnsync locks, but
         are associated with the <command>svnrdump</command> command
         (described in <xref linkend="svn.reposadmin.maint.migrate.svnrdump"
         />) instead of <command>svnsync</command>.</para>
+      -->
 
+    <!--
       <para>You can generally forget about these other kinds of locks
         until something goes wrong that requires you to care about
         them.  In this book, <quote>lock</quote> means the first sort
