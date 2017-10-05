@@ -116,13 +116,22 @@
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.branchmerge.using">
+      <!--
     <title>Using Branches</title>
+      -->
+    <title>使用分支</title>
 
+      <!--
     <para>At this point, you should understand how each commit creates
       a new state of the filesystem tree (called a <quote>revision</quote>)
       in the repository.  If you don't, go back and read about revisions in
       <xref linkend="svn.basic.in-action.revs"/>.</para>
+      -->
+    <para>阅读到这里, 读者应该理解了每一次提交是如何创建一个新的文件系统树
+      状态 (称为 <quote>版本号</quote>), 如果还不理解, 读者应该回去阅读
+      <xref linkend="svn.basic.in-action.revs"/> 的内容.</para>
 
+      <!--
     <para>Let's revisit the example from
       <xref linkend="svn.basic"/>.  Remember that you and your
       collaborator, Sally, are sharing a repository that contains two
@@ -132,12 +141,23 @@
       directory now contains subdirectories named
       <filename>trunk</filename> and <filename>branches</filename>.
       The reason for this will soon become clear.</para>
+      -->
+    <para>再次回顾 <xref linkend="svn.basic"/> 的例子: 你和你的同事, Sally,
+      共享一个包含了两个项目的仓库, 这两个项目是 <filename>paint</filename>
+      和 <filename>calc</filename>. 如
+      <xref linkend="svn.branchmerge.using.dia-1"/> 所示, 每一个项目都包含了
+      子目录 <filename>trunk</filename> 和 <filename>branches</filename>. 读
+      者很快就会明白如此布局的原因.</para>
 
     <figure id="svn.branchmerge.using.dia-1">
+      <!--
       <title>Starting repository layout</title>
+      -->
+      <title>仓库的起始布局</title>
       <graphic fileref="images/ch04dia2.png"/>
     </figure>
 
+      <!--
     <para>As before, assume that Sally and you both have working
       copies of the <quote>calc</quote> project.  Specifically, you
       each have a working copy of <filename>/calc/trunk</filename>.
@@ -146,7 +166,15 @@
       decided that <filename>/calc/trunk</filename> is where the
       <quote>main line</quote> of development is going to take
       place.</para>
+      -->
+    <para>假设 Sally 和你都有一份项目 <quote>calc</quote> 的工作副本, 更确切
+      地说, 你们每个人都有一份 <filename>/calc/trunk</filename> 的工作副本.
+      项目的所有材料都放在子目录 <filename>trunk</filename> 内, 而不直接放到
+      <filename>/calc</filename> 里, 因为开发团队把
+      <filename>/calc/trunk</filename> 作为开发 <quote>主线</quote>
+      (main line).</para>
 
+      <!--
     <para>Let's say that you've been given the task of implementing a
       large software feature.  It will take a long time to write, and
       will affect all the files in the project.  The immediate problem
@@ -156,7 +184,15 @@
       <filename>/calc/trunk</filename>) is always usable.  If you
       start committing your changes bit by bit, you'll surely break
       things for Sally (and other team members as well).</para>
+      -->
+    <para>现在团队要求你为软件项目实现一个比较大的特性, 这项工作的时间会比较
+      长, 而且会影响到项目内的所有文件. 首先想到的第一个问题是你不想干扰 Sally
+      &mdash;她目前正在解决软件的几个小问题. Sally 的工作依赖于这样一个事实,
+      那就是项目的最新版 (存放在 <filename>/calc/trunk</filename>) 总是可用的.
+      如果你开始一点一点地提交你的修改, 那肯定会影响到 Sally 的工作, 甚至包括
+      团队内的其他成员.</para>
 
+      <!--
     <para>One strategy is to crawl into a hole: you can stop sharing
       information for a week or two, gutting and reorganizing all the
       files in your private working copy but not committing or
@@ -179,13 +215,30 @@
       repository that are difficult to incorporate into your working
       copy when you eventually run <command>svn update</command> after
       weeks of isolation.</para>
+      -->
+    <para>一种可能的办法是在你完成全部的修改之前, 不向仓库提交修改, 也不更新
+      工作副本, 这种情况会持续几周, 但是这会产生很多问题. 首先这不太安全. 如果
+      你的工作副本或机器遭到破坏, 之前所有的工作都会白费. 第二, 不够灵活. 除非
+      你手动地把你的修改复制到其他工作副本或机器中, 否则的话你就只能在一个固定
+      的工作副本上工作, 如果要把半成员品分享给其他人也会很麻烦. 一种比较良好的
+      软件工程做法是允许团队中的其他成员审核你的修改, 如果别人不能看到你在中间
+      阶段的提交, 你将得不到别人的反馈, 甚至在错误的方向上努力多日, 直到别人
+      注意到你的工作. 最后, 当你完成所有的修改时, 你可能会发现很难把你的修改
+      合并到仓库里. Sally (或其他人) 可能在你工作的过程中向仓库提交了很多修改,
+      几周后, 当你最终执行 <command>svn update</command> 时, 这些修改很难合并
+      到你的工作副本里.</para>
 
+      <!--
     <para>The better solution is to create your own branch, or line of
       development, in the repository.  This allows you to save your
       not-yet-completed work frequently without interfering with
       others' changes and while still selectively sharing information
       with your collaborators.  You'll see exactly how this works as
       we continue.</para>
+      -->
+    <para>更好的做法是在仓库中创建一个属于你自己的分支 (或一条开发线), 这样
+      你就可以保存尚未完成的工作, 也不会干扰到其他人, 还可以与其他人分享你的
+      工作进度. 下面我们将会介绍具体的步骤.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.using.create">
