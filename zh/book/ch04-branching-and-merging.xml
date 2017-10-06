@@ -242,8 +242,12 @@
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.using.create">
+      <!--
       <title>Creating a Branch</title>
+      -->
+      <title>创建分支</title>
 
+      <!--
       <para>Creating a branch is very simple&mdash;you make a copy of
         your project tree in the repository using the <command>svn
         copy</command> command.  Since your project's source code is
@@ -255,7 +259,16 @@
         distinguish it from other branches.  Once again, the name you
         choose is unimportant to Subversion&mdash;you can use whatever
         name works best for you and your team.</para>
+      -->
+      <para>创建分支非常简单&mdash;就是用命令 <command>svn copy</command> 在
+        仓库中为项目目录树创建一个副本. 因为项目的源代码放在
+        <filename>/calc/trunk</filename>, 所以你要复制的就是这个目录.
+        那么新副本应该
+        放在哪里? 分支在仓库里的存放位置由项目自己来决定. 最后, 你的分支需要
+        一个名字, 用于和其他分支区分开. 分支的名字对 Subversion 而言并不重要
+        &mdash;你可以根据工作的特点为分支取一个你认为最好的名字.</para>
 
+      <!--
       <para>Let's assume that your team (like most) has a policy of
         creating branches in the <filename>branches</filename>
         directory that is a sibling of the project's trunk
@@ -266,6 +279,14 @@
         directory, <filename>/calc/branches/my-calc-branch</filename>,
         which begins its life as a copy
         of <filename>/calc/trunk</filename>.</para>
+      -->
+      <para>假设团队规定分支存放在目录 <filename>branches</filename> 内 (这是
+        最常见的情况), 而 <filename>branches</filename> 是项目主干的兄弟目录
+        (在我们这个例子里, 存放分支的目录就是 <filename>/calc/branches
+          </filename>). 虽然没什么创意, 但你还是想把新的分支叫做 <literal>
+          my-calc-branch</literal>, 这就意味着你将会创建一个新目录
+        <filename>/calc/branches/my-calc-branch</filename>, 新目录的生命周期
+        以 <filename>/calc/trunk</filename> 的副本作为开始.</para>
 
       <para>
         <indexterm>
@@ -280,13 +301,21 @@
         <indexterm>
           <primary>branches</primary>
           <secondary>creating</secondary>
-        </indexterm>You may already have seen <command>svn
+          </indexterm>
+          读者应该已经见过如何在工作副本中, 用命令 <command>svn copy</command>
+          复制出一个新文件, 除了工作副本, 它还可以完成 <firstterm>远程复制
+          </firstterm> (<firstterm>remote copy</firstterm>)&mdash;复制操作会
+          立刻提交到仓库中, 产生一个新的版本号, 完全不需要工作副本的参与. 从
+          命令的形式上看, 只是从一个 URL 中复制出新的一个:</para>
+      <!--
+          You may already have seen <command>svn
         copy</command> used to copy one file to another within a
         working copy.  But it can also be used to do
         a <firstterm>remote copy</firstterm>&mdash;a copy that
         immediately results in a newly committed repository revision
         and for which no working copy is required at all.  Just copy
         one URL to another:</para>
+      -->
 
       <informalexample>
         <screen>
@@ -298,6 +327,7 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>This command causes a near-instantaneous commit in the
         repository, creating a new directory in revision 341.  The new
         directory is a copy of <filename>/calc/trunk</filename>.  This
@@ -320,9 +350,27 @@ $
         during merging.  If you do choose to create a branch by copying a
         working copy path, you should be sure the source directory has no
         local modifications and is not at mixed-revisions.</para>
+      -->
+      <para>上面的命令立刻在仓库中产生了一次提交, 在版本号 341 创建了一个新
+        目录, 它是目录 <filename>/calc/trunk</filename> 的拷贝, 如图
+        <xref linkend="svn.branchmerge.using.create.dia-1"/> 所示.
+        <footnote><para>Subversion 不支持在不同的仓库间复制, 当命令
+            <command>svn copy</command> 和 <command>svn move</command> 的参数
+            带有 URL 时, 这些 URL 必须都在同一个仓库内.</para></footnote>
+        当然, 使用 <command>svn copy</command> 复制工作副本里的目录来创建分支
+        也是可以的, 但我们不推荐这种做法, 因为可能会很慢. 在客户端复制目录是
+        一个线性时间复杂度的操作, 实际上它需要递归地复制目录内的每一个文件和
+        子目录, 这些文件和子目录都存放在本地磁盘上. 然而, 远程复制是一个时间
+        复杂度为常量的操作, 大多数用户都是采用这种方式创建分支. 另外, 工作副
+        本中的目录可能含有混合的版本号, 虽然不会产生有害的影响, 但是在合并时
+        会可能会产生不必要的麻烦. 如果用户选择通过复制工作副本中的目录来创建
+        分支, 在复制前应该确保被复制的目录不含有本地修改和混合的版本号.</para>
             
       <figure id="svn.branchmerge.using.create.dia-1">
+      <!--
         <title>Repository with new copy</title>
+      -->
+        <title>创建了分支后的仓库</title>
         <graphic fileref="images/ch04dia3.png"/>
       </figure>
 
