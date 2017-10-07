@@ -375,8 +375,12 @@ $
       </figure>
 
       <sidebar>
+      <!--
         <title>Cheap Copies</title>
+      -->
+        <title>廉价拷贝</title>
 
+      <!--
         <para>Subversion's repository has a special design.  When you
           copy a directory, you don't need to worry about the
           repository growing huge&mdash;Subversion doesn't actually
@@ -388,7 +392,16 @@ $
           Subversion continues to employ this hard link concept where
           it can.  It duplicates data only when it is necessary to
           disambiguate different versions of objects.</para>
+      -->
+        <para>Subversion 的设计非常特殊, 当你复制一个目录时, 不必担心仓库会
+          增长过大&mdash;实际上 Subversion 不会复制任何数据, 作为替代, 它
+          创建了一个新的目录项, 将其指向一个 <emphasis>已存在</emphasis> 的
+          目录树. 如果你是一名有经验的 Unix 用户, 马上就能看出来这和硬链接是
+          同样的概念. 随着文件和目录的修改不断增多, Subversion 会继续尽可能地
+          利用这种硬链接思想, 只有在必要时 (消除对象的不同版本之间的歧义) 才会
+          真正地复制数据.</para>
 
+      <!--
         <para>This is why you'll often hear Subversion users talk
           about <quote>cheap copies.</quote>  It doesn't matter how
           large the directory is&mdash;it takes a very tiny, constant
@@ -399,7 +412,15 @@ $
           more about this, visit Subversion's web site and read about
           the <quote>bubble up</quote> method in Subversion's design
           documents.)</para>
+      -->
+        <para>你会经常听到 Subversion 用户谈论 <quote>廉价拷贝</quote>. 无论
+          目录有多大, Subversion 都只需要一段极小的, 常量的时间和空间就能完成
+          复制操作. 实际上, 这个特性也是 Subversion 处理提交操作的基础: 每一
+          个版本号都是前一个版本号的 <quote>廉价拷贝</quote>, 只有少数几个项目
+          被修改了. (关于这部分的更多内容, 请登录到 Subversion 官网, 阅读
+          Subversion 设计文档中的 <quote>bubble up</quote> 方法).</para>
 
+      <!--
         <para>Of course, these internal mechanics of copying and
           sharing data are hidden from the user, who simply sees
           copies of trees.  The main point here is that copies are
@@ -408,16 +429,28 @@ $
           <replaceable>URL1</replaceable> <replaceable>URL2</replaceable></userinput>),
           it's a quick, constant-time operation.  Make branches as
           often as you want.</para>
+      -->
+        <para>当然, 这些复制和共享数据的内部机制对用户而言都是透明的, 他们只能
+          看到目录被复制了. 我们的重点是复制在时间和空间上都很廉价, 如果用户是
+          在仓库内创建分支 (通过执行命令 <userinput>svn copy <replaceable>URL1
+          </replaceable> <replaceable>URL2</replaceable></userinput>), 操作消耗
+          的时间是常量的, 而且非常快. 只要用户希望, 可以随意地创建分支.</para>
       </sidebar>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.using.work">
+      <!--
       <title>Working with Your Branch</title> 
+      -->
+      <title>在分支上工作</title> 
 
+      <!--
       <para>Now that you've created a branch of the project, you can
         check out a new working copy to start using it:</para>
+      -->
+      <para>创建完分支后, 用户就可以检出它的工作副本, 然后开始工作:</para>
 
       <informalexample>
         <screen>
@@ -437,6 +470,7 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>There's nothing special about this working copy; it simply
         mirrors a different directory in the repository.  When you
         commit changes, however, Sally won't see them when she
@@ -445,39 +479,73 @@ $
         linkend="svn.branchmerge.switchwc"/> later in this chapter: the
         <command>svn switch</command> command is an alternative way of
         creating a working copy of a branch.)</para>
+      -->
+      <para>和其他工作副本相比, 这个工作副本并没有什么特别的地方, 它只不是映射
+        到了仓库的另一个目录. 然而, Sally 在更新时将不会看到在这个工作副本里提
+        交的修改, 因为她的工作副本映射的是 <filename>/calc/trunk</filename>.
+        (记得看一下本章后面的 <xref linkend="svn.branchmerge.switchwc"/>, 它是
+        创建分支工作副本的另一种办法)</para>
 
+      <!--
       <para>Let's pretend that a week goes by, and the following
         commits happen:</para>
+      -->
+      <para>假设分支创建后又过了一周, 期间提交了下面这些修改:</para>
 
       <itemizedlist>
         <listitem>
+      <!--
           <para>You make a change to
             <filename>/calc/branches/my-calc-branch/src/button.c</filename>,
             which creates revision 342.</para>
+      -->
+          <para>在版本号 342 修改了文件
+            <filename>/calc/branches/my-calc-branch/src/button.c</filename>
+          </para>
         </listitem>
         <listitem>
+      <!--
           <para>You make a change to
             <filename>/calc/branches/my-calc-branch/src/integer.c</filename>,
             which creates revision 343.</para>
+      -->
+          <para>在版本号 343 修改了文件
+            <filename>/calc/branches/my-calc-branch/src/integer.c</filename>
+          </para>
         </listitem>
         <listitem>
+      <!--
           <para>Sally makes a change to
             <filename>/calc/trunk/src/integer.c</filename>, which creates
             revision 344.</para>
+      -->
+          <para>Sally 在版本号 344 修改了文件
+            <filename>/calc/trunk/src/integer.c</filename>.</para>
         </listitem>
       </itemizedlist>
 
+      <!--
       <para>Now two independent lines of development (shown
         in <xref linkend="svn.branchmerge.using.work.dia-1"/>) are happening on
         <filename>integer.c</filename>.</para>
+      -->
+      <para>现在, 文件 <filename>integer.c</filename> 产生了两条独立的开发线,
+        如 <xref linkend="svn.branchmerge.using.work.dia-1"/> 所示.</para>
 
       <figure id="svn.branchmerge.using.work.dia-1">
+      <!--
         <title>The branching of one file's history</title>
+      -->
+        <title>一个文件历史的分叉</title>
         <graphic width="4.81in" depth="2.18in" fileref="images/basic-branch.png" />
       </figure>
 
+      <!--
       <para>Things get interesting when you look at the history of
         changes made to your copy of <filename>integer.c</filename>:</para>
+      -->
+      <para>当用户查看文件 <filename>integer.c</filename> 副本的修改历史时, 事
+        情开始变得有趣起来:</para>
 
       <informalexample>
         <screen>
