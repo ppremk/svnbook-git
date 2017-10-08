@@ -595,6 +595,7 @@ Initial trunk code import for calc project.
 </screen>
       </informalexample>
 
+      <!--
       <para>Notice that Subversion is tracing the history of your
         branch's <filename>integer.c</filename> all the way back
         through time, even traversing the point where it was copied.
@@ -603,6 +604,13 @@ Initial trunk code import for calc project.
         copied when all of <filename>/calc/trunk/</filename> was
         copied.  Now look at what happens when Sally runs the same
         command on her copy of the file:</para>
+      -->
+      <para>注意到 Subversion 在追溯分支 <literal>my-calc-branch</literal>
+        中的文件 <filename>integer.c</filename> 的历史时, 即使到达了创建分支
+        的时间点, 也仍然会继续往下追踪. 在历史中显示的是分支被创建的事件, 这
+        是因为当 <filename>/calc/trunk/</filename> 中所有的文件都被复制时,
+        自然也就复制了 <filename>integer.c</filename>. 现在再看一下 Sally 在
+        她的副本上执行同样的命令会输出什么内容:</para>
 
       <informalexample>
         <screen>
@@ -646,6 +654,7 @@ Initial trunk code import for calc project.
 </screen>
       </informalexample>
 
+      <!--
       <para>Sally sees her own revision 344 change, but not the change
         you made in revision 343.  As far as Subversion is concerned,
         these two commits affected different files in different
@@ -655,13 +664,24 @@ Initial trunk code import for calc project.
         341, the files used to be the same file.  That's why you and
         Sally both see the changes made between revisions 8 and
         154.</para>
+      -->
+      <para>Sally 看到了她提交的版本号 334, 但没有看到版本号 343. 对 Subversion
+        而言, 这两个提交影响的是存放在仓库中不同位置上的不同文件, 然而,
+        Subversion 的输出 <emphasis>确实</emphasis> 表明了这两个文件共享一段
+        相同的历史&mdash;在创建分支 (版本号 341) 之前, 它们是同一个文件.
+        也就是因为这个原因, 所以你和 Sally 都能看到版本号 8 到版本号 154 的提交
+        历史.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.using.concepts">
+      <!--
       <title>The Key Concepts Behind Branching</title> 
+      -->
+      <title>分支背后的关键概念</title>
 
+      <!--
       <para>You should remember two important lessons
         from this section.  First, Subversion has no internal concept
         of a branch&mdash;it knows only how to make copies.  When you
@@ -671,7 +691,14 @@ Initial trunk code import for calc project.
         differently, or treat it differently, but to Subversion it's
         just an ordinary directory that happens to carry some extra
         historical information.</para>
+      -->
+      <para>在阅读完这一节后, 读者应该牢记以下两点. 第一, 在 Subversion 内部是
+        没有分支这个概念的&mdash;它只知道如何复制. 当用户复制一个目录时, 产生
+        的新目录被称为 <quote>分支</quote> 完全是用户赋予它的意义, 用户也可以
+        从其他角度看待它, 但是对于 Subversion 而言, 它只是个带有额外历史信息
+        普通的目录.</para>
 
+      <!--
       <para>Second, because of this copy mechanism, Subversion's
         branches exist as <emphasis>normal filesystem
         directories</emphasis> in the repository.  This is different
@@ -682,6 +709,13 @@ Initial trunk code import for calc project.
         to Subversion.  Most teams follow a convention of putting all
         branches into a <filename>/branches</filename> directory, but
         you're free to invent any policy you wish.</para>
+      -->
+      <para>第二, Subversion 的分支作为 <emphasis>普通的文件系统目录</emphasis>
+        存在于仓库中, 这和其他版本控制系统不太一样, 其他版本控制系统创建分支的
+        典型做法是为文件集添加处于额外维度的 <quote>标签</quote>. Subversion
+        不关心分支目录的存放位置, 但是大多数开发团队都遵循传统做法: 把所有的
+        分支都放在 <filename>branches/</filename> 目录内, 当然, 用户也可以制订
+        自己的策略.</para>
 
     </sect2>
 
@@ -692,19 +726,33 @@ Initial trunk code import for calc project.
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.branchmerge.basicmerging">
+      <!--
     <title>Basic Merging</title>
+      -->
+      <title>基本合并</title>
 
+      <!--
     <para>Now you and Sally are working on parallel branches of the
       project: you're working on a private branch, and Sally is
       working on the trunk, or main line of development.</para>
+      -->
+    <para>现在你和 Sally 并行地在两个分支上进行开发: 你在自己的私有分支上工作,
+      Sally 在项目的主干 (开发主线) 上工作.</para>
 
+      <!--
     <para>For projects that have a large number of contributors, it's
       common for most people to have working copies of the trunk.
       Whenever someone needs to make a long-running change that is
       likely to disrupt the trunk, a standard procedure is to create a
       private branch and commit changes there until all the work is
       complete.</para>
+      -->
+    <para>如果项目有很多开发人员, 大多数人都会检出主干的工作副本. 如果有人需要
+      完成一个长期的修改, 而这个修改的中间成果很可能会扰乱主干, 那么比较标准
+      的做法是为它创建一个私有分支, 把修改都提交到这个分支上, 直接所有的相关
+      工作都完成为止.</para>
 
+      <!--
     <para>So, the good news is that you and Sally aren't interfering
       with each other.  The bad news is that it's very easy to drift
       <emphasis>too</emphasis> far apart.  Remember that one of the
@@ -712,6 +760,11 @@ Initial trunk code import for calc project.
       that by the time you're finished with your branch, it may be
       near-impossible to merge your changes back into the trunk
       without a huge number of conflicts.</para>
+      -->
+    <para>有了分支后, 好消息是你和 Sally 的工作不会互相干扰, 但坏消息是分支
+      容易偏离主干过远. 记住, <quote>缓慢爬行</quote> 策略的问题是当你完成
+      分支上的工作时, 把分支上的修改合并到主干上而不产生大量的冲突, 几乎是不
+      可能的.</para>
 
     <para>
       <indexterm>
