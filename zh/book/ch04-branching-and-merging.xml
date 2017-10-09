@@ -769,7 +769,15 @@ Initial trunk code import for calc project.
     <para>
       <indexterm>
         <primary>merging</primary>
-      </indexterm>Instead, you and Sally might continue to share changes as
+      </indexterm>
+      因此在工作的过程中, 你和 Sally 会继续分享修改, 哪些修改值得分享完全由你
+      来决定, Subversion 允许用户有选择地在分支之间 <quote>复制</quote> 修改.
+      当你在分支上的工作全部完成时, 分支上的整个修改集合就可以被复制到主干上.
+      用 Subversion 的行话来讲, 把一个分支上的修改复制到其他分支上&mdash; 这
+      种操作称为 <firstterm>合并</firstterm> (<firstterm>merging</firstterm>),
+      完成这种操作的命令是 <command>svn merge</command>.</para>
+      <!--
+      Instead, you and Sally might continue to share changes as
       you work.  It's up to you to decide which changes are worth
       sharing; Subversion gives you the ability to selectively
       <quote>copy</quote> changes between branches.  And when you're
@@ -779,7 +787,9 @@ Initial trunk code import for calc project.
       branch to another is called <firstterm>merging</firstterm>, and
       it is performed using various invocations of the <command>svn
       merge</command> subcommand.</para>
+      -->
 
+      <!--
     <para>In the examples that follow, we're assuming that both your
       Subversion client and server are running Subversion 1.8 (or
       later).  If either client or server is older than version 1.5,
@@ -793,13 +803,35 @@ Initial trunk code import for calc project.
       already been merged and what hasn't.  For this reason,
       we <emphasis>strongly</emphasis> recommend that you make sure your
       client and server are at least at version 1.5.</para>
+      -->
+    <para>在下面的例子里, 我们假设 Subversion 客户端和服务器端的版本都是 1.8
+      或之后的版本. 如果客户端或服务器端的版本小于 1.5, 事情就会变得很复杂:
+      旧版的 Subversion 不会自动跟踪修改, 这就迫使用户必须手工实现类似的效果,
+      而这种过程相对来说比较痛苦, 具体来说, 用户必须按照合并语法, 详细地指定
+      被复制的版本号范围 (见本章后面的
+      <xref linkend="svn.branchmerge.advanced.advancedsyntax"/>), 而且还要注
+      意哪些修改已经合并, 哪些没有. 因此, 我们 <emphasis>强烈</emphasis> 建
+      议用户不要使用 1.5 版本之前的 Subversion 客户端与服务器端.</para>
 
     <sidebar id="svn.branchmerge.basicmerging.mergetracking">
+      <!--
       <title>Merge Tracking</title>
+      -->
+      <title>合并跟踪</title>
       <para>
         <indexterm>
           <primary>merge tracking</primary>
-        </indexterm>Subversion 1.5 introduced the
+        </indexterm>
+        Subversion 1.5 增加了 <firstterm>合并跟踪</firstterm> (<firstterm>
+          merge tracking</firstterm>) 特性, 在引入这个特性之前, 为了跟踪合并,
+        要求用户手工执行一些笨拙的操作, 或使用外部工具, 后面发布的 Subversion
+        在合并跟踪上增加了很多功能, 也修复了很多问题, 所以我们才建议读者总是
+        使用最新版的 Subversion, 无论是在客户端, 还是在服务器端. 记住, 即使
+        服务器端的版本是 1.5-1.7, 你仍然可以使用 1.8 版的客户端, 这对于合并
+        跟踪来说非常重要, 因为与合并跟踪有关的绝大多数功能增强和问题修复都是在
+        客户端完成.</para>
+      <!--
+        Subversion 1.5 introduced the
         <firstterm>merge tracking</firstterm> feature to Subversion.
         Prior to this feature keeping track of merges required cumbersome
         manual procedures or the use of external tools. Subsequent
@@ -810,23 +842,36 @@ Initial trunk code import for calc project.
         use a 1.8 client.  This is particularly important with regard to merge
         tracking, because the overwhelming majority of fixes and enhancements
         to it are on the client side.</para>
+      -->
     </sidebar>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.changesets">
+      <!--
       <title>Changesets</title>
+      -->
+      <title>变更集</title>
 
       <para>
         <indexterm>
           <primary>changesets</primary>
-        </indexterm>Before we proceed further, we should warn you that there's
+        </indexterm>
+        在继续之前, 我们需要提醒读者后面的内容会经常讨论到 <quote>修改</quote>.
+        对版本控制系统有经验的用户经常混用 <quote>修改</quote> (change) 和
+        <quote>变更集</quote> (changeset) 这两个概念, 但我们必须弄清楚
+        Subversion 是怎么理解 <firstterm>变更集</firstterm> (<firstterm>
+          changeset</firstterm>) 的.</para>
+      <!--
+        Before we proceed further, we should warn you that there's
         a lot of discussion of <quote>changes</quote> in
         the pages ahead.  A lot of people experienced with version
         control systems use the terms <quote>change</quote>
         and <quote>changeset</quote> interchangeably, and we should
         clarify what Subversion understands as
         a <firstterm>changeset</firstterm>.</para>
+      -->
 
+      <!--
       <para>Everyone seems to have a slightly different definition
         of changeset, or at least a different
         expectation of what it means for a version control system to
@@ -835,6 +880,11 @@ Initial trunk code import for calc project.
         include textual edits to file contents, modifications to tree
         structure, or tweaks to metadata.  In more common speak, a
         changeset is just a patch with a name you can refer to.</para>
+      -->
+      <para>每个人对变更集的理解似乎都有所不同, 至少在变更集对版本控制系统的
+        意义上, 都有不同的期待. 从我们的角度来说, 变更集只是一个带有独特的名
+        字的修改集合. 修改可能包括文件的修改, 目录结构的修改, 或元数据的修改.
+        更一般的说, 变更集只是带有名字的补丁.</para>
 
       <para>In Subversion, a global revision
         number <replaceable>N</replaceable> names a tree in the
