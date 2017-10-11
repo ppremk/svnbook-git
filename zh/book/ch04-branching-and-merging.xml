@@ -886,6 +886,7 @@ Initial trunk code import for calc project.
         字的修改集合. 修改可能包括文件的修改, 目录结构的修改, 或元数据的修改.
         更一般的说, 变更集只是带有名字的补丁.</para>
 
+      <!--
       <para>In Subversion, a global revision
         number <replaceable>N</replaceable> names a tree in the
         repository: it's the way the repository looked after the
@@ -909,12 +910,31 @@ Initial trunk code import for calc project.
         arguments: passing <userinput>-c 9238</userinput>
         to <command>svn merge</command> would merge changeset r9238
         into your working copy.</para>
+      -->
+      <para>在 Subversion 中, 一个全局的版本号 <replaceable>N</replaceable>
+        确定了仓库中的一棵目录树: 它是仓库在第 <replaceable>N</replaceable>
+        次提交后的样子. 同时它还确定一个隐式的变更集: 如果用户对目录树
+        <replaceable>N</replaceable> 和 <replaceable>N</replaceable>-1 进行
+        比较, 就可以得到与第 <replaceable>N</replaceable> 次提交对应的补丁.
+        正因为如此, 版本号 <replaceable>N</replaceable> 不仅可以代表了一棵
+        目录树, 还可以表示一个变更集. 如果用户使用了一个问题跟踪系统来管理
+        问题, 用户就可以使用版本号指代修复问题的特定补丁&mdash;例如,
+        <quote>这个问题在 r9238 中解决</quote>, 然后其他人就可以执行
+        <userinput>svn log -r 9238</userinput> 查看修复问题的提交日志, 再用
+        <userinput>svn diff -c 9238</userinput> 查看补丁的具体内容. Subversion
+        命令 <command>svn merge</command> 也可以使用版本号作为参数 (读者马上就
+        会看到). 通过指定参数, 用户可以把一个分支上的特定的变更集合并到另一个
+        分支上: 为 <command>svn merge</command> 添加参数 <userinput>-c 9238
+      </userinput> 就可以把变更集 r9238 合并到你的工作副本里.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.basicmerging.stayinsync">
+      <!--
       <title>Keeping a Branch in Sync</title>
+      -->
+      <title>保持分支同步</title>
 
       <para>
         <indexterm>
@@ -925,7 +945,25 @@ Initial trunk code import for calc project.
           <primary>svn</primary>
           <secondary>subcommands</secondary>
           <tertiary>merge</tertiary>
-        </indexterm>Continuing with our running example, let's suppose
+        </indexterm>
+        继续我们的例子, 假设自从你开始在自己的私有分支上工作后, 时间过了一周,
+        你要添加的新特性还未完成, 但你知道在你工作的同时, 团队里的其他人会
+        继续向项目的主干 <filename>/trunk</filename> 提交修改. 最好把主干上
+        的修改复制到你自己的分支上, 以便确保他们的修改能够与你的分支契合, 这可
+        以通过 <firstterm>自动同步合并</firstterm> (<firstterm>automatic
+          sync merge</firstterm>) 完成, 自动同步合并的目的是为了保持分支与祖先
+        分支上的修改保持同步.
+        <indexterm>
+          <primary>merging</primary>
+          <secondary>automatic</secondary>
+        </indexterm> <quote>自动</quote> 合并的意思是用户只需要提供
+        合并所需的最小信息 (也就是合并的源以及被合并的工作副本目标), 至少哪些
+        修改需要合并则交由 Subversion 来决定&mdash;在自动合并中, 不需要通过
+        选项 <option>-r</option> 或 <option>-c</option> 向 <command>svn merge
+      </command> 传递变更集.</para>
+
+      <!--
+        Continuing with our running example, let's suppose
         that a week has passed since you started working on your
         private branch.  Your new feature isn't finished yet, but at
         the same time you know that other people on your team continue
@@ -947,20 +985,30 @@ Initial trunk code import for calc project.
         changesets are passed to <command>svn merge</command> via the
         <option>-r</option> or <option>-c</option> options in an automatic
         merge.</para>
+      -->
 
       <tip>
+      <!--
         <para>Frequently keeping your branch in sync with the main
           development line helps prevent <quote>surprise</quote>
           conflicts when the time comes for you to fold your changes
           back into the trunk.</para>
+      -->
+        <para>经常保持分支与开发主线同步可以降低分支被合并到主干上时发生冲突
+          的概率.</para>
       </tip>
 
+      <!--
       <para>Subversion is aware of the history of your branch and
         knows when it split away from the trunk.  To perform a sync
         merge, first make sure your working copy of the branch
         is <quote>clean</quote>&mdash;that it has no local
         modifications reported by <command>svn status</command>.  Then
         simply run:</para>
+      -->
+      <para>Subversion 知道分支的历史, 也知道它是在什么时候从主干上分离出来.
+        为了执行一个同步合并, 首先要确保分支的工作副本是 <quote>干净的</quote>
+        &mdash;也就是没有本地修改. 然后只需要执行:</para>
 
       <informalexample>
         <screen>
@@ -983,7 +1031,19 @@ U    Makefile
         <indexterm>
           <primary>properties</primary>
           <secondary>svn:mergeinfo</secondary>
-        </indexterm>This basic syntax&mdash;<userinput>svn merge
+          </indexterm>
+          命令 <userinput>svn merge <replaceable>URL</replaceable></userinput>
+          告诉 Subversion 把 <replaceable>URL</replaceable> 上的所有未被合并
+          的修改都合并到当前工作副本上 (在典型的情况下, 也就是你的工作副本的
+          根目录). 注意到我们用的是带有脱字符 (<literal>^</literal>) 的语法
+          <footnote><para>脱字符语法在 1.6 加入</para></footnote>), 这样我们
+          就不用输入完整的主干 URL 地址. 还要注意输出信息中的 <quote>
+            Recording mergeinfo for merge&hellip;</quote>, 这是在说合并正在
+          更新属性 <literal>svn:mergeinfo</literal>, 我们会在本章后面的
+          <xref linkend="svn.branchmerge.basicmerging.mergeinfo"/> 介绍它们.
+        </para>
+      <!--
+          This basic syntax&mdash;<userinput>svn merge
         <replaceable>URL</replaceable></userinput>&mdash;tells
         Subversion to merge all changes which have not been previously
         merged from the URL to the current working directory (which is
@@ -998,6 +1058,7 @@ U    Makefile
         both this property and these notifications later in this
         chapter, in
         <xref linkend="svn.branchmerge.basicmerging.mergeinfo"/>.</para>
+      -->
 
       <tip>
         <para>
