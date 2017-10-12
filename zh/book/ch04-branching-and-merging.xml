@@ -1064,16 +1064,26 @@ U    Makefile
         <para>
           <indexterm>
             <primary>mergeinfo</primary>
-          </indexterm>In this book and elsewhere (Subversion mailing
+          </indexterm>
+          在本书及其他地方 (包括 Subversion 邮件列表, 讨论合并跟踪的文章等),
+          你会经常听到一个术语 <firstterm>mergeinfo</firstterm>, 其实它就是
+          属性 <literal>svn:mergeinfo</literal> 的缩写.</para>
+      <!--
+          In this book and elsewhere (Subversion mailing
           lists, articles on merge tracking, etc.) you will frequently
           come across the term <firstterm>mergeinfo</firstterm>. This
           is simply shorthand for the <literal>svn:mergeinfo</literal>
           property.</para>
+      -->
       </tip>
 
       <sidebar>
+      <!--
         <title>Keeping a Branch in Sync Without Merge Tracking</title>
+      -->
+        <title>在无需跟踪合并的情况下保持分支同步</title>
 
+      <!--
         <para>You may not always be able to use Subversion's merge
           tracking feature, perhaps because your server is running
           Subversion 1.4 or earlier or you must use an older client.
@@ -1081,16 +1091,31 @@ U    Makefile
           but Subversion will need you to manually do many of the historical
           calculations that it automatically does on your behalf when the
           merge tracking feature is available.</para>
+      -->
+        <para>用户可能无法使用 Subversion 的合并跟踪特性, 也许是因为服务器端
+          的版本过老, 也许是客户端过老. 这时候用户仍然可以执行合并操作, 但
+          Subversion 需要用户手工完成历史计算工作, 这些工作在支持合并跟踪的
+          版本中是自动完成的.</para>
 
+      <!--
         <para>To replicate the most recent trunk changes you need to
           perform sync merges the <quote>old-fashioned</quote>
           way&mdash;by specifying ranges of revisions you wish to
           merge.</para>
+      -->
+        <para>为了复制主干上最近的修改, 你需要按照 <quote>老式</quote> 的方法
+          执行同步合并&mdash;指定你想合并的版本号范围.</para>
 
+      <!--
         <para>Using the ongoing example, you know that you branched
           <filename>/calc/trunk</filename> to 
           <filename>/calc/branches/my-calc-branch</filename> in revision
           341:</para>
+      -->
+        <para>继续使用前面的例子, 用户已经知道从
+          <filename>/calc/trunk</filename> 创建分支
+          <filename>/calc/branches/my-calc-branch</filename> 的版本号
+          是 341:</para>
 
         <informalexample>
           <screen>
@@ -1106,6 +1131,7 @@ Creating a private branch of /calc/trunk.
         </informalexample>
 
         <para>When you are ready to synchronize your branch with the
+          <!-- TODO -->
           ongoing changes from trunk, you specify the starting
           revision as the revision of <filename>/calc/trunk</filename>
           which the branch was copied from and the ending revision as
@@ -1128,6 +1154,7 @@ U    Makefile
 </screen>
         </informalexample>
 
+      <!--
         <para>After any conflicts have been resolved, you can commit
           the merged changes to your branch.  Now, to avoid
           accidentally trying to merge these same changes into your
@@ -1136,6 +1163,11 @@ U    Makefile
           record be kept?  One of the simplest places to record this
           information is in the log message for the commit of the
           merge:</para>
+      -->
+        <para>解决掉可能会出现的冲突后, 就可以把合并后的修改提交到你的分支上.
+          现在, 为了避免以后再浪费时间合并已经合并过的修改, 用户最好把这次
+          合并的版本号范围记录下来, 但是应该把它们记在哪里比较好? 最直接的地
+          方就是这次合并的提交日志消息:</para>
 
         <informalexample>
           <screen>
@@ -1144,6 +1176,7 @@ $ svn ci -m "Sync the my-calc-branch with ^/calc/trunk through r351."
 </screen>
         </informalexample>
 
+      <!--
         <para>The next time you sync
           <filename>/calc/branches/my-calc-branch</filename>  with
           <filename>/calc/trunk</filename> you repeat this process, except
@@ -1154,6 +1187,13 @@ $ svn ci -m "Sync the my-calc-branch with ^/calc/trunk through r351."
           that youngest revision was by reading the revision logs
           associated with your branch.  Once you know your starting
           revision, you can perform another sync merge:</para>
+      -->
+        <para>在下一次把 <filename>/calc/branches/my-calc-branch</filename>
+          向 <filename>/calc/trunk</filename> 同步时, 步骤是一样的, 除了把
+          起始版本号改成已经合并过的 <emphasis>最年轻的</emphasis> 的版本号.
+          如果用户在提交日志里记录了关于合并的信息, 就可以很方便地在提交日
+          志消息里找到起始版本号. 起始版本号确定后, 就可以再次执行同步合并:
+        </para>
 
         <informalexample>
           <screen>
@@ -1169,10 +1209,14 @@ $ svn merge http://svn.example.com/repos/calc/trunk -r351:959
 
       </sidebar>
 
+      <!--
       <para>After running the prior example, your branch working copy
         now contains new local modifications, and these edits are
         duplications of all of the changes that have happened on the
         trunk since you first created your branch:</para>
+      -->
+      <para>执行完上面的例子后, 分支的工作副本就包含了本地修改, 而且这些修改
+        都是创建完分支后, 主干上的修改的副本:</para>
 
       <informalexample>
         <screen>
@@ -1185,6 +1229,7 @@ M       src/real.c
 </screen>
       </informalexample>
 
+      <!--
       <para>At this point, the wise thing to do is look at the changes
         carefully with <command>svn diff</command>, and then build and
         test your branch.  Notice that the current working directory
@@ -1192,6 +1237,11 @@ M       src/real.c
         modified; <command>svn diff</command> shows that
         its <literal>svn:mergeinfo</literal> property has been created.
         </para>
+      -->
+        <para>这时候比较明智的操作是使用 <command>svn diff</command> 查看修
+          改的内容, 并构建测试分支里的代码. 注意当前工作目录 (<quote><filename>
+              .</filename></quote>) 也被修改了, <command>svn diff</command>
+          显示它新增了 <literal>svn:mergeinfo</literal> 属性.</para>
 
       <informalexample>
         <screen>
