@@ -549,34 +549,45 @@ $ svn log -r {2006-11-20}:{2006-11-29}
 
       <warning>
 <!--
-        <para>Since the timestamp of a revision is stored as an
-          unversioned, modifiable property of the revision (see <xref
-          linkend="svn.advanced.props" />), revision timestamps can be
-          changed to represent complete falsifications of true
-          chronology, or even removed altogether.  Subversion's
-          ability to correctly convert revision dates into real
-          revision numbers depends on revision datestamps maintaining
-          a sequential ordering&mdash;the younger the revision, the
-          younger its timestamp.  If this ordering isn't maintained,
-          you will likely find that trying to use dates to specify
-          revision ranges in your repository doesn't always return the
-          data you might have expected.</para>
+        <para>Subversion's ability to correctly convert revision dates
+          into real revision numbers depends on revision datestamps
+          maintaining a sequential ordering&mdash;the younger the
+          revision, the younger its datestamp.  But datestamps are
+          stored in the unversioned, modifiable
+          <literal>svn:date</literal> property of the revision (see
+          <xref linkend="svn.advanced.props" />), so it is possible
+          for revision datestamps to get out of sequence.  Now, most
+          of Subversion's operations are unaffected by this
+          situation&mdash;after all, the revision number itself is the
+          primary identifier of each revision.  But if the datestamp
+          ordering isn't maintained, you will likely find that trying
+          to use dates to specify revision ranges in your repository
+          doesn't always return the data you might have expected.
+          Combining the histories of multiple repositories into a
+          single one (as described in
+          <xref linkend="svn.reposadmin.maint.migrate" />) is the most
+          common cause of this scenario.</para>
 -->
 
-        <para>Da der Zeitstempel einer Revision als eine
-          unversionierte, änderbare Eigenschaft einer Revision gespeichert
-          ist (siehe <xref linkend="svn.advanced.props" />), können
-          Revisions-Zeitstempel geändert werden, um die wahre
-          Chronologie zu fälschen, oder gar vollständig entfernt
-          werden. Die Fähigkeit von Subversion, Revisionsdaten in
+        <para>Die Fähigkeit von Subversion, Revisionsdaten in
           Revisionsnummern überführen zu können, beruht auf einer
-          sequentiellen Ordnung der Revisions-Zeitstempel &ndash; je
-          jünger die Revision, desto jünger der Zeitstempel. Falls
-          diese Ordnung nicht aufrechterhalten wird, werden Sie
+          sequentiellen Ordnung der Revisions-Datumsstempel &ndash; je jünger
+          die Revision, desto jünger der Datumsstempel. Da Datumsstempel
+          jedoch in der unversionierten, änderbaren
+          <literal>svn:date</literal>-Eigenschaft einer Revision
+          gespeichert werden (siehe <xref linkend="svn.advanced.props" />),
+          können Revisions-Datumsstempel aus der Reihenfolge geraten. Die
+          meisten Operationen von Subversion jedoch bekommen davon nichts
+          mit &ndash; schließlich ist die Versionsnummer an sich das primäre
+          Unterscheidungsmerkmal jeder Revision. Falls die Reihenfolge der
+          Datumsstempel jedoch nicht aufrechterhalten wird, werden Sie
           voraussichtlich feststellen, dass der Versuch, Daten zur
           Angabe von Revisionsbereichen in Ihrem Projektarchiv zu
           verwenden, nicht immer die Daten zurückliefern wird, die Sie
-          erwartet hätten.</para>
+          erwartet hätten. Die Verschmelzung von Historien mehrerer
+          Projektarchive in ein einzelnes (wie unter
+          <xref linkend="svn.reposadmin.maint.migrate" /> beschrieben) ist
+          der häufigste Ursache für dieses Szenario.</para>
       </warning>
 
     </sect2>
@@ -7501,15 +7512,15 @@ $
 
     <sidebar id="svn.advanced.locking.meanings">
 <!--
-      <title>The Three Meanings of <quote>Lock</quote></title>
+      <title>The Many Meanings of <quote>Lock</quote></title>
 -->
-      <title>Die drei Bedeutungen von <quote>Sperre</quote></title>
+      <title>Die vielen Bedeutungen von <quote>Sperre</quote></title>
 
 <!--
       <para>In this section, and almost everywhere in this book, the
         words <quote>lock</quote> and <quote>locking</quote> describe
         a mechanism for mutual exclusion between users to avoid
-        clashing commits.  Unfortunately, there are two other sorts
+        clashing commits.  Unfortunately, there are other sorts
         of <quote>lock</quote> with which Subversion, and therefore
         this book, sometimes needs to be concerned.</para>
 -->
@@ -7518,7 +7529,7 @@ $
         <quote>sperren</quote> einen Mechanismus des gegenseitigen
         Ausschlusses zwischen Benutzern, um kollidierende
         Übertragungen zu vermeiden. Unglücklicherweise gibt es noch
-        zwei weitere Arten von <quote>Sperre</quote> mit dem sich
+        weitere Arten von <quote>Sperre</quote> mit dem sich
         manchmal Subversion, und somit auch dieses Buch, befassen
         muss.</para>
 
@@ -7527,8 +7538,8 @@ $
         <indexterm>
           <primary>locks</primary>
           <secondary>administrative</secondary>
-        </indexterm>The second is <firstterm>administrative
-        locks</firstterm>, used internally by Subversion to prevent
+        </indexterm>Subversion uses <firstterm>administrative
+        locks</firstterm> internally to prevent
         clashes between multiple Subversion clients operating on the
         same working copy.  This is the sort of lock indicated by an
         <computeroutput>L</computeroutput> in the third column of
@@ -7540,9 +7551,8 @@ $
         <indexterm>
           <primary>Sperren</primary>
           <secondary>administrative</secondary>
-        </indexterm>Die zweite Art sind <firstterm>administrative
-        Sperren</firstterm>, die intern von Subversion verwendet
-        werden, um Kollisionen zwischen mehreren Subversion-Clients zu
+        </indexterm>Subversion verwendet intern <firstterm>administrative
+        Sperren</firstterm>, um Kollisionen zwischen mehreren Subversion-Clients zu
         verhindern, die in derselben Arbeitskopie arbeiten. Diese Art
         Sperre wird durch ein <computeroutput>L</computeroutput> in
         der dritten Spalte der Ausgabe von <command>svn
@@ -7555,27 +7565,50 @@ $
         <indexterm>
           <primary>locks</primary>
           <secondary>database</secondary>
-        </indexterm>Third, there are <firstterm>database
-        locks</firstterm>, used internally by the Berkeley DB backend
-        to prevent clashes between multiple programs trying to access
-        the database.  This is the sort of lock whose unwanted
-        persistence after an error can cause a repository to
-        be <quote>wedged,</quote> as described in
+        </indexterm>Administrators using the older Berkeley DB repository
+        backend will need to be familiar with <firstterm>database
+        locks</firstterm>, which exist to prevent clashes between multiple
+        programs trying to access the database.  This is the sort of lock
+        whose unwanted persistence after an error can cause a repository
+        to be <quote>wedged,</quote> as described in
         <xref linkend="svn.berkeleydb.maintenance.recovery" />.</para>
 -->
       <para>
         <indexterm>
           <primary>Sperren</primary>
           <secondary>Datenbank-</secondary>
-        </indexterm>Zum Dritten gibt es
-        <firstterm>Datenbank-Sperren</firstterm>, die intern vom
-        Berkeley-DB-Backend verwendet werden, um Kollisionen zwischen
-        mehreren Programmen zu verhindern, die auf die Datenbank
-        zugreifen möchten. Dies ist die Sorte von Sperren, deren
-        unerwünschte Persistenz nach einem Fehler dazu führen kann,
-        dass das Projektarchiv sich <quote>verklemmt</quote>, wie in
+        </indexterm>Administratoren, die das ältere Berkeley-DB-Backend für
+        das Projektarchiv verwenden, werden mit
+        <firstterm>Datenbank-Sperren</firstterm> vertraut sein, die
+        vorhanden sind, um Kollisionen zwischen mehreren Programmen zu
+        verhindern, die auf die Datenbank zugreifen möchten. Dies ist die
+        Sorte von Sperren, deren unerwünschte Persistenz nach einem Fehler
+        dazu führen kann, dass das Projektarchiv sich
+        <quote>verklemmt</quote>, wie in
         <xref linkend="svn.berkeleydb.maintenance.recovery" />
         beschrieben.</para>
+
+<!--
+      <para>
+        <indexterm>
+          <primary>locks</primary>
+          <secondary>svnrdump</secondary>
+        </indexterm>Finally, there are <firstterm>svnrdump
+        locks</firstterm>.  These are very much like svnsync locks, but
+        are associated with the <command>svnrdump load</command> command
+        (described in <xref linkend="svn.reposadmin.maint.migrate.svnrdump"
+        />) instead of <command>svnsync</command>.</para>
+-->
+      <para>
+        <indexterm>
+          <primary>Sperren</primary>
+          <secondary>svnrdump</secondary>
+        </indexterm>Schließlich gibt es noch
+        <firstterm>svnrdump-Sperren</firstterm>. Diese sind den
+        svnsync-Sperren sehr ähnlich, stehen aber mit dem Befehl
+        <command>svnrdump load</command> in Verbindung (beschrieben in
+        <xref linkend="svn.reposadmin.maint.migrate.svnrdump" />) statt mit
+        <command>svnsync</command>.</para>
 
 <!--
       <para>You can generally forget about these other kinds of locks
