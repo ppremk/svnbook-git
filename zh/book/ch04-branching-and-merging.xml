@@ -1258,13 +1258,19 @@ Added: svn:mergeinfo
 </screen>
       </informalexample>
 
+      <!--
       <para>
         This new property is important merge-related metadata
         that you should <emphasis>not</emphasis> touch, since it is
         needed by future <command>svn merge</command> commands.
         (We'll learn more about this metadata later in the
         chapter.)</para>
+      -->
+      <para>这个属性是非常重要的与合并相关的元数据, 用户 <emphasis>不</emphasis>
+        应该直接修改它的值, 因为后面的 <command>svn merge</command> 会用到该
+        属性 (关于合并元数据的更多内容, 我们稍后就会进行介绍).</para>
 
+      <!--
       <para>After performing the merge, you might also need to resolve
         some conflicts&mdash;just as you do with <command>svn
         update</command>&mdash;or possibly make some small edits to get
@@ -1277,6 +1283,14 @@ Added: svn:mergeinfo
         long <quote>what's going on?</quote> discussion with your
         collaborators.  If things look good, however, you can
         submit these changes into the repository:</para>
+      -->
+      <para>执行完合并后, 可能会有冲突需要处理&mdash;就像执行完 <command>
+          svn update</command> 那样&mdash;或者可能还需要进行一些小修改, 保证
+        合并的结果是正确的 (记住, 没有 <emphasis>语法</emphasis> 冲突并不表
+        示没有 <emphasis>语义</emphasis> 冲突!). 如果合并后产生了很多问题,
+        用户总是可以用 <userinput>svn revert . -R</userinput> 撤消本地的所有
+        修改, 然后就可以和同事讨论 <quote>怎么回事</quote>. 如果一切都很顺利,
+        用户就可以把修改提交到仓库里:</para>
 
       <informalexample>
         <screen>
@@ -1291,19 +1305,31 @@ Committed revision 352.
 </screen>
       </informalexample>
 
+      <!--
       <para>At this point, your private branch is now <quote>in
         sync</quote> with the trunk, so you can rest easier knowing
         that as you continue to work in isolation, you're not drifting
         too far away from what everyone else is doing.</para>
+      -->
+      <para>现在, 用户的私有分支就和主干 <quote>同步</quote> 了, 用户也就不用
+        担心自己的工作和其他人的相差太远.</para>
 
       <sidebar>
+      <!--
         <title>Why Not Use Patches Instead?</title>
+      -->
+        <title>为何不用补丁?</title>
 
+      <!--
         <para>A question may be on your mind, especially if you're a
           Unix user: why bother to use <command>svn merge</command> at
           all?  Why not simply use <command>svn patch</command> or the
           operating system's <command>patch</command> command to
           accomplish the same job?  For example:</para>
+      -->
+        <para>Unix 用户可能会想: 何必要用 <command>svn merge</command>, 为什
+          么不直接使用 <command>svn patch</command> 或操作系统的 <command>
+            patch</command> 命令完成同样的工作? 例如:</para>
 
         <informalexample>
           <screen>
@@ -1319,6 +1345,7 @@ U         Makefile
 </screen>
         </informalexample>
 
+      <!--
         <para>In this particular example, there really isn't much
           difference.  But <command>svn merge</command> has special
           abilities that surpass the <command>patch</command> program.
@@ -1335,7 +1362,20 @@ U         Makefile
           express.  Even Subversion's own <command>svn patch</command>
           subcommand, while more flexible than the patch program, still has
           similar limitations.</para>
+      -->
+        <para>对于这个例子而言, <command>svn merge</command> 与 <command>
+            svn patch</command>, <command>patch</command> 相比, 的确没什么区
+          别, 但 <command>svn merge</command> 拥有 <command>patch</command>
+          所不具备的功能. <command>patch</command> 可使用的补丁格式很有限,
+          它只能修改文件内容, 却无法表示 <emphasis>目录结构</emphasis> 的修改,
+          例如文件和目录的添加, 删除或移动, <command>patch</command> 也不能
+          识别属性的修改. 如果 Sally 添加了一个新目录, <command>svn diff
+          </command> 的输出也体现不出这一修改. <command>svn diff</command> 的
+          输出格式也有限制, 所以它也无法表示某些修改. 即使是 Subversion 自己的
+          <command>svn patch</command> 命令 (比如操作系统的 <command>patch
+          </command> 命令灵活得多) 也有类似的限制.</para>
 
+      <!--
         <para>The <command>svn merge</command> command, however, can
           express changes in tree structure and properties by directly
           applying them to your working copy.  Even more important,
@@ -1347,15 +1387,28 @@ U         Makefile
           usable; without it, users would have to manually keep notes
           on which sets of changes have or haven't been merged
           yet.</para>
+      -->
+        <para>而命令 <command>svn merge</command> 通过直接修改工作副本来表示
+          目录结构和属性上的变化. 更重要的是 <command>svn merge</command> 会
+          把已经复制到分支上的修改记录下来, 从而 Subversion 可以精确地知道
+          每个位置都存在着哪些修改 (见
+          <xref linkend="svn.branchmerge.basicmerging.mergeinfo"/>). 这个特性
+          使得分支是可管理的, 否则的话用户必须手工记录哪些修改已经合并, 哪些
+          没有.</para>
 
       </sidebar>
 
+      <!--
       <para>Suppose that another week has passed.  You've committed
         more changes to your branch, and your comrades have continued
         to improve the trunk as well.  Once again, you want to
         replicate the latest trunk changes to your branch and bring
         yourself in sync.  Just run the same merge command
         again!</para>
+      -->
+      <para>假设又过去了一周, 你在自己的分支上提交了更多的修改, 而你的同事也
+        在不断地修改主干. 再一次, 你想把主干上的修改合并到自己的分支上, 于是
+        执行下面的命令:</para>
 
       <informalexample>
         <screen>
