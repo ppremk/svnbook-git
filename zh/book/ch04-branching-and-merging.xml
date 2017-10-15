@@ -1066,7 +1066,8 @@ U    Makefile
             <primary>mergeinfo</primary>
           </indexterm>
           在本书及其他地方 (包括 Subversion 邮件列表, 讨论合并跟踪的文章等),
-          你会经常听到一个术语 <firstterm>mergeinfo</firstterm>, 其实它就是
+          你会经常听到一个术语 <firstterm>合并信息</firstterm>
+          (<firstterm>mergeinfo</firstterm>), 其实它就是
           属性 <literal>svn:mergeinfo</literal> 的缩写.</para>
       <!--
           In this book and elsewhere (Subversion mailing
@@ -1419,6 +1420,7 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>Well that was unexpected!  After making changes to your
         branch over the past week you now find yourself with a working
         copy that contains a mixture of revisions (see
@@ -1433,12 +1435,26 @@ $
         mixed-revision working copies can result in unexpected text
         and tree conflicts.<footnote><para>The <command>svn
         merge</command> subcommand
-        option <option>--allow-mixed-revisions</option> allows you to
+        option <option>- -allow-mixed-revisions</option> allows you to
         override this prohibition, but you should only do so if you
         understand the ramifications and have a good reason for
         it.</para></footnote>  We don't want any needless conflicts, so
         we update the working copy and then reattempt the
         merge.</para>
+      -->
+      <para>这种情况可能不在用户的预料之中! 在自己的分支了工作了一周后, 用户
+        发现工作副本包含了混合的版本号 (见
+        <xref linkend="svn.basic.in-action.mixedrevs"/>). 1.7 及之后版本的
+        <command>svn merge</command> 在默认情况下禁止向含有混合版本号的工作
+        副本合并, 简单来说, 这是属性 <literal>svn:mergeinfo</literal> 合并跟踪
+        方式的限制导致的 (见
+        <xref linkend="svn.branchmerge.basicmerging.mergeinfo"/>), 这些限制意味
+        着向一个含有混合版本号的工作副本合并将导致无法预料的内容与目录冲突
+        <footnote><para>命令 <command>svn merge</command> 的选项
+            <option>--allow-mixed-revisions</option> 允许用户关闭这个限制,
+            但是这样做的前提是用户必须理解可能的后果, 以及动机要足够充分.
+        </para></footnote>. 我们不希望产生任何不必要的冲突, 所以先更新工作副
+        本, 然后再尝试合并.</para>
 
       <informalexample>
         <screen>
@@ -1455,17 +1471,25 @@ U    src/main.c
 </screen>
       </informalexample>
 
+      <!--
       <para>Subversion knows which trunk changes you previously
         replicated to your branch, so it carefully replicates only
         those changes you don't yet have.  And once again, you build,
         test, and <command>svn commit</command> the local modifications
         to your branch.</para>
+      -->
+      <para>Subversion 知道主干上的哪些修改已经合并到了分支上, 所以它只会合并
+        那些未合并过的主干修改. 如果构建, 测试都没有问题, 用户就可以用
+        <command>svn commit</command> 把分支的修改提交到仓库里.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.basicmerging.stayinsync.subtree">
+      <!--
       <title>Subtree Merges and Subtree Mergeinfo</title>
+      -->
+      <title>子目录合并与子目录合并信息</title>
       <para>
         <indexterm>
           <primary>merging</primary>
@@ -1474,7 +1498,20 @@ U    src/main.c
         <indexterm>
           <primary>mergeinfo</primary>
           <secondary>subtree mergeinfo</secondary>
-        </indexterm>In most of the examples in this chapter the
+        </indexterm>
+        在本章的大部分例子中, 被合并的目标都是分支 (见
+        <xref linkend="svn.branchmerge.whatis"/>) 的根目录, 虽然这是最常见的
+        情况, 但是偶尔也需要直接合并分支的子目录, 这种类型的合并称为
+        <firstterm>子目录合并</firstterm>
+        (<firstterm>subtree merge</firstterm>), 它的合并信息也相应地称为
+        <firstterm>子目录合并信息</firstterm> (<firstterm>subtree mergeinfo
+        </firstterm>). 子目录合并和子目录合并信息其实并没有什么特别的地方,
+        唯一需要注意的一点是: 一个分支上完整的合并记录可能不仅仅记录在分支根
+        目录的合并信息里, 可能还要查看子目录的合并信息才能得到完整的合并信息.
+        幸运的是 Subversion 会替用户完整这些操作, 用户很少需要这种事情, 用
+        一个简单的例子解释一下:</para>
+      <!--
+        In most of the examples in this chapter the
         merge target is the root directory of a branch (see
         <xref linkend="svn.branchmerge.whatis"/>). While this is a
         best practice, you may occasionally need to merge directly
@@ -1490,6 +1527,7 @@ U    src/main.c
         to get a full accounting.  Fortunately Subversion does this
         for you and rarely will you need to concern yourself with
         it.  A brief example will help explain:</para>
+      -->
 
       <informalexample>
         <screen>
