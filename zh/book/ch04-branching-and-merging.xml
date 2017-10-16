@@ -1530,6 +1530,7 @@ U    src/main.c
       -->
 
       <informalexample>
+        <!-- TODO -->
         <screen>
 # We need to merge r958 from trunk to branches/proj-X/doc/INSTALL,
 # but that revision also affects main.c, which we don't want to merge:
@@ -1586,7 +1587,17 @@ U    src/main.c
         <indexterm>
           <primary>mergeinfo</primary>
           <secondary>elision</secondary>
-        </indexterm>You might be wondering
+        </indexterm>
+        你可能会感到奇怪, 为什么上面的例子里我们只合并了 r958, 但
+        <filename>INSTALL</filename> 却含有 r651-652 的合并信息, 这是由于合并
+        信息的继承性, 合并信息的继承性我们会在
+        <xref linkend="svn.branchmerge.basicmerging.mergeinfo.inheritance"/>
+        介绍. 另外还要注意 <filename>doc/INSTALL</filename> 上的子目录合并信息
+        被移除了, 或者说被 <quote>省略</quote> 了, 这被称为 <firstterm>合并信息
+          省略</firstterm> (<firstterm>mergeinfo elision</firstterm>), 当
+        Subversion 检测到多余的子目录合并信息时, 就会发生这种现象.</para>
+      <!--
+        You might be wondering
         why <filename>INSTALL</filename> in the above example has
         mergeinfo for r651-652, when we only merged r958. This is
         due to mergeinfo inheritance, which we'll cover in the
@@ -1597,8 +1608,10 @@ U    src/main.c
         <quote>elided</quote>.  This is called
         <firstterm>mergeinfo elision</firstterm> and it occurs
         whenever Subversion detects redundant subtree mergeinfo.</para>
+      -->
 
       <tip>
+      <!--
         <para>Prior to Subversion 1.7, merges unconditionally updated
           <emphasis>all</emphasis> of the subtree mergeinfo under the
           target to describe the merge. For users with a lot of subtree
@@ -1609,6 +1622,7 @@ U    src/main.c
           caused some level of confusion and frustration. Subversion 1.7
           and later addresses this problem by only updating the mergeinfo
           on subtrees which are parents of the paths modified by the merge
+          TODO
           (i.e. paths changed, added, or deleted by application of the
           difference, see
           <xref linkend="svn.branchmerge.advanced.advancedsyntax"/>).
@@ -1616,14 +1630,26 @@ U    src/main.c
           target; the merge target's mergeinfo is always updated to
           describe the merge, even if the applied difference made no
           changes.</para>
+      -->
+        <para>在 Subversion 1.7 版之前, 合并操作会无条件地更新目标所有的子
+          目录合并信息, 对于拥有大量子目录合并信息的用户而言, 即使是相对比较
+          简单的合并 (例如只合并了一个文件), 也会影响所有子目录的合并信息,
+          甚至包括那些不是受影响路径的父目录的目录, 在某种程度上会让人感到
+          困惑和沮丧. Subversion 1.7 以及之后的版本解决了这个问题, 方法是只
+          更新受影响路径的父目录的子目录合并信息, 有一个例外是目标的合并信息
+          总是会被更新, 即使被应用的差异不会产生任何修改.</para>
       </tip>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.basicmerging.reintegrate">
+      <!--
       <title>Reintegrating a Branch</title>
+      -->
+      <title>重新整合分支</title>
 
+      <!--
       <para>What happens when you finally finish your work, though?
         Your new feature is done, and you're ready to merge your
         branch changes back to the trunk (so your team can enjoy the
@@ -1633,10 +1659,19 @@ U    src/main.c
         absolutely have to do all your sync merges to the root of your
         branch as we do in this example.  <emphasis>If</emphasis> your
         branch is effectively synced via a series of subtree
+        TODO
         merges then the reintegrate will work, but ask yourself, if the
         branch is effectively synced, then why are you doing subtree
         merges? Doing so is almost always needlessly
         complex.</para></footnote>:</para>
+      -->
+  <para>如果用户完成了分支上的所有工作, 也就是说新特性已经完成, 你已经准备好
+    把分支合并到主干上 (这样的话团队中的其他成员就可以分享你的工作成果), 合并
+    的步骤很简单, 首先把分支与主干同步, 就像之前做过的那样<footnote><para>
+        从 Subversion 1.7 开始, 用户并非一定要像例子中演示的那样, 将分支与主
+        干同步. <emphasis>如果</emphasis> 分支已经通过一系列的子目录合并,
+        在效果上已经实际了与主干的同步, 那就没必要再做一遍与主干同步.</para>
+  </footnote></para>
 
       <informalexample>
         <screen>
@@ -1660,6 +1695,17 @@ Committed revision 379.
 </screen>
       </informalexample>
 
+      <para>现在, 使用 <command>svn merge</command> 把分支上的修改合并到主干
+        上, 这种类型的合并称为
+        <indexterm>
+          <primary>merging</primary>
+          <secondary>reintegrate merges</secondary>
+        </indexterm> <quote>自动再整合</quote> (automatic reintegrate) 合并,
+        在执行合并之前, 用户需要 <filename>/calc/trunk</filename> 的一个工作
+        副本, 可以用 <command>svn checkout</command> 或
+        <command>svn switch</command> (见
+        <xref linkend="svn.branchmerge.switchwc" />) 获取.</para>
+      <!--
       <para>Now, use <command>svn merge</command> subcommand to automatically
         replicate your branch changes back into the trunk.  This type of
         merge is called an
@@ -1672,6 +1718,7 @@ Committed revision 379.
         working copy from somewhere on your disk, or
         using <command>svn switch</command> (see
         <xref linkend="svn.branchmerge.switchwc" />).</para>
+      -->
 
       <tip>
         <para>The term <quote>reintegrating</quote> comes from the
