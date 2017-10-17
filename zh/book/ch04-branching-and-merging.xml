@@ -1721,23 +1721,38 @@ Committed revision 379.
       -->
 
       <tip>
+      <!--
         <para>The term <quote>reintegrating</quote> comes from the
-          <command>merge</command> option <option>--reintegrate</option>.
+          <command>merge</command> option <option>- -reintegrate</option>.
           This option is deprecated in Subversion 1.8 (which automatically
           detects when a reintegrate merge is needed), but is required
           for Subversion 1.5 through 1.7 clients when performing reintegrate
           merges.</para>
+      -->
+        <para>术语 <quote>再整合</quote> 来自子命令 <command>merge</command>
+          的选项 <option>--reintegrate</option>. 该选项在 Subversion 1.8 被
+          废弃 (1.8 可以自动检测什么时候才需要执行再整合合并), 但是 1.5 到
+          1.7 版的 Subversion 客户端在执行再整合合并时都要求提供该选项.</para>
       </tip>
 
+      <!--
       <para>Your trunk working copy cannot have any local edits, switched
         paths, or contain a mixture of revisions (see
         <xref linkend="svn.basic.in-action.mixedrevs" />).  While
         these are typically best practices for merging anyway, they
         are <emphasis>required</emphasis> for automatic reintegrate
         merges.</para>
+      -->
+      <para>在合并分支前, 主干的工作副本不能含有本地修改, 已切换的路径, 或混合
+        的版本号 (见 <xref linkend="svn.basic.in-action.mixedrevs" />), 这种状
+        态不仅会带来很多方便, 而且是自动再整合合并所要求的.</para>
 
+      <!--
       <para>Once you have a clean working copy of the trunk, you're
         ready to merge your branch back into it:</para>
+      -->
+      <para>一旦准备好了一个整洁的主干工作副本, 用户就可以把分支合并到主干上了:
+      </para>
 
       <informalexample>
         <screen>
@@ -1768,6 +1783,7 @@ Committed revision 380.
 </screen>
       </informalexample>
 
+      <!--
       <para>Congratulations, your branch-specific changes have now
         been merged back into the main line of development.  Notice that
         the automatic reintegrate merge did a different sort of work than
@@ -1783,7 +1799,18 @@ Committed revision 380.
         later on, it continues by merging the next contiguously
         available range, 351:361.  When doing the final sync, it
         merges the range 361:378.</para>
+      -->
+      <para>恭喜, 你在分支上提交的修改现在都已经合并到了开发主线. 应该注意的
+        是和你到目前为止所做的合并操作相比, 自动再整合合并所做的工作不太一样.
+        之前我们是要求 <command>svn merge</command> 从另一条开发线 (主干) 上
+        抓取下一个变更集, 然后把变更集复制到另一个条开发线 (你的私有分支) 上.
+        这种操作非常直接, Subversion 每一次都知道如何从一次停止的地方开始.
+        在我们前面讲过的例子里, Subversion 第一次是把
+        <filename>/calc/trunk </filename> 的 r341-351 合并到
+        <filename>/calc/branches/my-calc-branch</filename>, 后来它就继续合并
+        下一段范围, r351-361, 在最后一次同步, 它又合并了 r361-378.</para>
 
+      <!--
       <para>When merging <filename>/calc/branches/my-calc-branch</filename>
         back to the <filename>/calc/trunk</filename>, however, the
         underlying mathematics are quite different.  Your feature
@@ -1795,6 +1822,13 @@ Committed revision 380.
         this by comparing the latest trunk tree with the latest branch
         tree:  the resulting difference is exactly your branch
         changes!)</para>
+      -->
+      <para>然而, 在把 <filename>/calc/branches/my-calc-branch</filename>
+        合并到 <filename>/calc/trunk</filename> 时, 其底层的数学行为是非常
+        不一样的. 特性分支现在已经是同时包含了主干修改和分支私有修改的大杂烩,
+        所以没办法简单地复制一段连续的版本号范围. 通过使用自动合并, 你是在要求
+        Subversion 只复制那些分支特有的修改 (具体的实现方式是比较最新版的分支
+        与主干, 最终得到的差异就是分支所特有的修改).</para>
 
       <para>Keep in mind that the automatic reintegrate merges only support
         the use case described above.  Because of this narrow focus, in
