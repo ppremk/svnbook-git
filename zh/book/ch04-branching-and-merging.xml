@@ -1830,6 +1830,7 @@ Committed revision 380.
         Subversion 只复制那些分支特有的修改 (具体的实现方式是比较最新版的分支
         与主干, 最终得到的差异就是分支所特有的修改).</para>
 
+      <!--
       <para>Keep in mind that the automatic reintegrate merges only support
         the use case described above.  Because of this narrow focus, in
         addition to the requirements previously mentioned (up-to-date working
@@ -1842,12 +1843,27 @@ Committed revision 380.
         with no mixed-revisions, switched paths or local changes) it will not
         function in combination with most of the other
         <command>svn merge</command> options. You'll get an error if you
-        use any non-global options but these: <option>--accept</option>,
-        <option>--dry-run</option>, <option>--diff3-cmd</option>,
-        <option>--extensions</option>, or <option>--quiet</option>.</para>
+        use any non-global options but these: <option>- -accept</option>,
+        <option>- -dry-run</option>, <option>- -diff3-cmd</option>,
+        <option>- -extensions</option>, or <option>- -quiet</option>.</para>
+      -->
+      <para>始终记住自动再整合合并只支持上面描述的使用案例, 由于这个狭隘的
+        重点, 除了前面提到的要求 (最新的工作副本 <footnote><para>自动再整合合
+            并也支持目标是浅检出的 (见
+            <xref linkend="svn.advanced.sparsedirs"/>), 但是如果受影响的路径
+            由于目录是稀疏的, 而不出现在工作副本中, 那么该路径就会被忽略&mdash;
+            这可能 <emphasis>不是</emphasis> 用户想要的结果!</para></footnote>
+        , 不含有混合的版本号, 已切换的路径或本地修改) 外, <command>svn merge
+        </command> 的大部分选项都会使它不能正常工作, 如果用户用到了除
+        <option>--accept</option>, <option>--dry-run</option>, <option>
+          --diff3-cmd</option>, <option>--extensions</option>, <option>--quiet
+      </option> 之外的其他非全局选项, 将会得到一个错误.</para>
 
+      <!--
       <para>Now that your private branch is merged to trunk, you may
         wish to remove it from the repository:</para>
+      -->
+      <para>既然你的私有分支已经合并到了主干上, 现在就可以把它删除了:</para>
 
       <informalexample>
         <screen>
@@ -1857,6 +1873,7 @@ $ svn delete ^/calc/branches/my-calc-branch \
 </screen>
       </informalexample>
 
+      <!--
       <para>But wait!  Isn't the history of that branch valuable?
         What if somebody wants to audit the evolution of your feature
         someday and look at all of your branch changes?  No need to
@@ -1868,7 +1885,16 @@ $ svn delete ^/calc/branches/my-calc-branch \
         history of your branch.  Your branch can even be resurrected
         at some point, should you desire (see
         <xref linkend="svn.branchmerge.basicmerging.resurrect"/>).</para>
+      -->
+      <para>不过, 分支的历史不是很重要吗? 如果有人想查看分支的每一次修改,
+        审核特性的演变怎么办? 不用担心, 虽然你的分支在
+        <filename>/calc/branches</filename> 再也看不到了, 但是它在仓库的历史
+        里依然存在. 在 <filename>/calc/branches</filename> 的 URL 上执行
+        一个简单的 <command>svn log</command>, 就可以看到分支的全部历史.
+        你的分支甚至可以某一时刻复活, 你期待吗 (见
+        <xref linkend="svn.branchmerge.basicmerging.resurrect"/>).</para>
 
+      <!--
       <para>If you choose not to delete your branch after reintegrating
         it to the trunk you may continue to perform sync merges from the
         trunk and then reintegrate the branch again<footnote><para>Only
@@ -1879,17 +1905,36 @@ $ svn delete ^/calc/branches/my-calc-branch \
         url="http://svnbook.red-bean.com/en/1.7/svn.branchmerge.basicmerging.html#svn.branchemerge.basicmerging.reintegrate"
         /></para></footnote>. If you do this, only the changes made on your
         branch after the first reintegrate are merged to the trunk.</para>
+      -->
+      <para>分支被合并到主干后, 如果选择不删除分支, 你可能会继续从主干同步
+        修改, 然后再次重新整合分支 <footnote><para>只有 Subversion 1.8 允许
+        这样重用一个特性分支. 较早的版本要求一个特性分支在被多次重新整合
+        之前, 需要一些特殊的处理, 更多的信息参见本书较早的版本:
+        <ulink
+        url="http://svnbook.red-bean.com/en/1.7/svn.branchmerge.basicmerging.html#svn.branchemerge.basicmerging.reintegrate"
+        /></para></footnote>. 如果你这样做了, 那么只有第一次重新整合后的修改
+      才会被合并到主干上.</para>
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.basicmerging.mergeinfo">
+      <!--
       <title>Mergeinfo and Previews</title>
+      -->
+      <title>合并信息和预览</title>
 
       <para>
         <indexterm>
           <primary>mergeinfo</primary>
           <secondary>property</secondary>
-        </indexterm>The basic mechanism Subversion uses to track
+        </indexterm>
+        Subversion 跟踪变更集的基本机制&mdash;也就是判断哪些修改已经合并到哪些
+        分支上&mdash;是在版本化的属性中记录数据. 更确切地说, 与合并相关的数据
+        记录在文件和目录的 <literal>svn:mergeinfo</literal> 属性中. (如果读者
+        还不了解 Subversion 的属性, 见 <xref linkend="svn.advanced.props"/>.)
+      </para>
+      <!--
+        The basic mechanism Subversion uses to track
         changesets&mdash;that is, which changes have been merged to
         which branches&mdash;is by recording data in versioned
         properties.  Specifically, merge data is tracked in
@@ -1897,9 +1942,14 @@ $ svn delete ^/calc/branches/my-calc-branch \
         files and directories.  (If you're not familiar with
         Subversion properties, see <xref linkend="svn.advanced.props"
         />.)</para>
+      -->
 
+      <!--
       <para>You can examine the mergeinfo property, just like any other
         versioned property:</para>
+      -->
+      <para>你可以像查看其他属性那样, 查看属性 <literal>svn:mergeinfo</literal>
+        :</para>
 
       <informalexample>
         <screen>
@@ -1913,11 +1963,15 @@ Properties on '.':
       </informalexample>
 
       <warning>
+      <!--
         <para>While it is possible to
           modify <literal>svn:mergeinfo</literal> just as you might
           any other versioned property, we strongly discourage doing
           so unless you <emphasis>really</emphasis> know what you're
           doing.</para>
+      -->
+        <para>虽然你可以像修改其他属性那样修改 <literal>svn:mergeinfo</literal>,
+          但我们强烈建议你不要这么做, 除非你真地知道自己在做什么.</para>
       </warning>
 
       <tip>
