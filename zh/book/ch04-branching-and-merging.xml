@@ -1975,17 +1975,27 @@ Properties on '.':
       </warning>
 
       <tip>
+      <!--
         <para>The amount of <literal>svn:mergeinfo</literal> on a single
           path can get quite large, as can the output of a
-          <command>svn propget --recursive</command> or
-          <command>svn proplist --recursive</command> when dealing with
+          <command>svn propget - -recursive</command> or
+          <command>svn proplist - -recursive</command> when dealing with
           large amounts of subtree mergeinfo. See
           <xref linkend="svn.branchmerge.basicmerging.stayinsync.subtree"/>
           . The formatted output produced by the
-          <option>--verbose</option> option with either of these
+          <option>- -verbose</option> option with either of these
           subcommands is often very helpful in these cases.</para>
+      -->
+        <para>在单个路径上的 <literal>svn:mergeinfo</literal> 数量可以变得
+          非常庞大, <command>svn propget --recursive</command> 和
+          <command>svn proplist --recursive</command> 在处理大量的子目录合并
+          信息时, 命令的输出也会很多 (见
+          <xref linkend="svn.branchmerge.basicmerging.stayinsync.subtree"/>).
+          为了减少输出的内容, 比较常用的方法是为命令添加选项
+          <option>--verbose</option>.</para>
       </tip>
 
+      <!--
       <para>The <literal>svn:mergeinfo</literal> property is
         automatically maintained by Subversion whenever you
         run <command>svn merge</command>.  Its value indicates which
@@ -2004,14 +2014,32 @@ Properties on '.':
         Subversion 1.7 and later this is no longer true as there are
         several notifications to alert you when a merge updates the
         <literal>svn:mergeinfo</literal> property. These notifications
-        all begin with <quote>--- Recording mergeinfo for</quote>
+        all begin with <quote>- - - Recording mergeinfo for</quote>
         and appear at the end of the merge.  Unlike other merge
         notifications, these don't describe the application of a
+        TODO
         difference to a working copy
         (see <xref linkend="svn.branchmerge.advanced.advancedsyntax"/>),
         but instead describe "housekeeping" changes made to keep
         track of what was merged.</para>
+      -->
+      <para>当用户执行 <command>svn merge</command> 时, Subversion 就会自动
+        更新属性 <literal>svn:Mergeinfo</literal>, 属性的值指出了给定路径上
+        的哪些修改已经复制到目录上. 在我们之前的例子里, 修改的来源是
+        <filename>/calc/trunk</filename>, 被合并的目录是 <filename>
+          /calc/branches/my-calc-branch</filename>. 旧版的 Subversion 会悄无
+        声息地维护属性 <literal>svn:mergeinfo</literal>, 合并后, 用户仍然可
+        以用命令 <command>svn diff</command> 或 <command>svn status</command>
+        查看合并产生的修改, 但是当合并操作修改属性 <literal>svn:mergeinfo
+        </literal> 时不会显示任何提示信息. 而 Subversion 1.7 及以后的版本就
+        不再这样了, 当合并操作更新属性 <literal>svn:mergeinfo</literal> 时,
+        Subversion 会给出一些提示信息. 这些提示信息都是以
+        <literal>--- Recording mergeinfo for</literal> 开始, 在合并的末尾输出.
+        不像其他的合并提示信息, 这些信息不是在描述差异被应用到工作副本 (见
+        <xref linkend="svn.branchmerge.advanced.advancedsyntax"/>), 而是在描述
+        为了跟踪合并而产生的 <quote>家务</quote> 变化.</para>
 
+      <!--
       <para>Subversion also provides a subcommand, <command>svn
         mergeinfo</command>, which is helpful in seeing the merge
         relationships between two branches; specifically which changesets
@@ -2023,6 +2051,15 @@ Properties on '.':
         Returning to our earlier example, we use the subcommand to analyze
         the relationship between <filename>/calc/trunk</filename> and
         <filename>/calc/branches/my-calc-branch</filename>:</para>
+      -->
+      <para>Subversion 提供了子命令 <command>svn mergeinfo</command>, 用于查看
+        两个分支间的合并关系, 特别是查看目录吸收了哪些变更集, 或者查看哪些变
+        更集它是有资格接收的, 后者提供了一种预览, 预览随后的 <command>
+          svn merge</command> 命令将会复制哪些修改到分支上. 在默认情况下,
+        <command>svn mergeinfo</command> 将会输出两条分支之间的关系的图形化
+        概览. 回到我们先前的例子, 用命令 <command>svn mergeinfo</command>
+        分析 <filename>/calc/trunk</filename> 和
+        <filename>/calc/branches/my-calc-branch</filename> 之间的关系:</para>
 
       <informalexample>
         <screen>
@@ -2045,6 +2082,7 @@ $ svn mergeinfo ^/calc/trunk
 </screen>
       </informalexample>
 
+      <!--
       <para>The diagram shows that <filename>/calc/branches/my-calc-branch
       </filename> was copied from <filename>/calc/trunk@340</filename> and
       that most recent automatic merge was the reintegrate merge we made
@@ -2056,7 +2094,17 @@ $ svn mergeinfo ^/calc/trunk
       (automatic reintegrate) merges.</para></footnote>, is shown.  This
       default output is useful for obtaining an overview of the merges
       between two branches, but to see the specific revisions which were
-      merged we use the <option>--show-revs=merged</option> option:</para>
+      merged we use the <option>- -show-revs=merged</option> option:</para>
+      -->
+    <para>图中显示了 <filename>/cal/branches/my-calc-branch</filename> 拷贝
+      自 <filename>/calc/trunk@340</filename>, 最近的一次自动合并是从分支到
+      主干的自动再整合合并, 在版本号 380. 注意到图中 <emphasis>没有</emphasis>
+      显示我们在版本号 352, 362, 372 和 379 执行的自动同步合并, 在做任意的
+      方向上只显示了最近的自动合并 <footnote><para>这里的 <quote>方向</quote>
+          指的是从主干到分支 (自动同步) 或从分支到主干 (自动再整合) 的合并.
+      </para></footnote> 这种默认输出对于获取两个分支之间的合并概览非常有用,
+      如果想要清楚地看到分支上合并了哪些版本号, 就增加选项 <option>
+        --show-revs=merged</option>:</para>
 
       <informalexample>
         <screen>
