@@ -2253,6 +2253,7 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c \
 </screen>
         </informalexample>
 
+      <!--
         <para>Notice from our first subcommand that only the root of
           <filename>/branches/proj-X</filename> has any explicit
           mergeinfo.  However, when we use
@@ -2264,7 +2265,19 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c \
           no explicit mergeinfo of its own, inherits the mergeinfo from
           its nearest parent with explicit mergeinfo,
           <filename>/branches/proj-X</filename>.</para>
+      -->
+        <para>执行的第一个命令中, 只有 <filename>/branches/proj-X</filename>
+          的根目录含有显式的合并信息, 然而, 如果我们用 <command>svn mergeinfo
+            </command> 询问哪些修改被合并到
+            <filename>/branches/proj-X/src/main.c</filename>, 命令报告有两个
+            版本号被合并到 <filename>/branches/proj-X/src/main.c</filename>,
+            而这两个版本号也出现在 <filename>/branches/proj-X</filename> 显式
+            的合并信息中. 这是因为
+            <filename>/branches/proj-X/src/main.c</filename> 没有属于它自己的
+            显式合并信息, 它的合并信息继承自最近的, 含有显式合并信息的父目录,
+            也就是 <filename>/branches/proj-X</filename>.</para>
 
+      <!--
         <para>There are two cases in which mergeinfo is not inherited.
           First, if a path has explicit mergeinfo, then it never inherits
           mergeinfo. Another way to think of this is that explicit
@@ -2276,6 +2289,14 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c \
           the <literal>svn:mergeinfo</literal> property is set (and it's
           only directories, non-inheritable mergeinfo is never set on
           files). For example:</para>
+      -->
+        <para>在两种情况下, 合并信息不会被继承. 第一种是如果一个路径含有显式
+          的合并信息, 该路径就不会继承任何合并信息, 我们可以这样理解: 一个路径
+          上的显式合并信息总是一个完整的合并记录. 一旦存在显式的合并信息, 它就
+          会覆盖路径可能从其他地方继承的合并信息. 第二种是合并信息本身是不可
+          继承的, 这种特殊类型的合并信息 <emphasis>只能</emphasis> 应用到设置了
+          属性 <literal>svn:mergeinfo</literal> 的目录上 (不可继承的合并信息不
+          能设置在文件上), 例如:</para>
 
         <informalexample>
           <screen>
@@ -2300,16 +2321,26 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c \
 </screen>
         </informalexample>
 
+      <!--
         <para>You might never have to think about mergeinfo inheritance
           or encounter non-inheritable mergeinfo in your own repository.
           A discussion of the full ramifications of mergeinfo inheritance
           are beyond the scope of this book.  If you have more questions
           check out some of the references mentioned in
           <xref linkend="svn.branchmerge.advanced.finalword"/></para>
+      -->
+        <para>在你自己的仓库中, 你可能永远不需要考虑合并信息的继承, 也不会遇到
+          不可继承的合并信息. 关于合并信息继承的完整讨论已经超出了本书的范围,
+          如果读者还有问题没有想明白, 可以阅读
+          <xref linkend="svn.branchmerge.advanced.finalword"/> 列出的参考资料.
+        </para>
       </sidebar>
 
+      <!--
       <para>Let's say we have a branch with both subtree and
         non-inheritable mergeinfo:</para>
+      -->
+      <para>假设有一个分支同时包含了子目录合并信息和不可继承的合并信息:</para>
 
         <informalexample>
           <screen>
@@ -2325,14 +2356,22 @@ Properties on 'Makefile':
 </screen>
         </informalexample>
 
+      <!--
       <para>From the above mergeinfo we see that r385-388 has only been
         merged into the root of the branch, but not any of the root's
         children.  We also see that r380 has only been merged to
         <filename>Makefile</filename>.
         When we use <command>svn mergeinfo</command> with the
-        <option>--recursive</option> option to see what has been merged
+        <option>- -recursive</option> option to see what has been merged
         from <filename>/calc/trunk</filename> to this branch, we see three
         revisions are flagged with the <literal>*</literal> marker:</para>
+      -->
+      <para>从合并信息中可以看到 r385-388 只被合并到了分支的根目录上, 但不
+        包括任何一个子文件. 还要以看到 r380 只被合并到了 <filename>Makefile
+        </filename> 上. 如果用带上选项 <option>--recursive</option> 的
+        <command>svn mergeinfo</command> 查看从 <filename>/calc/trunk</filename>
+        那里合并了哪些版本号到这个分支上, 我们可以看到其中三个版本号带有星号
+        标记:</para>
       
         <informalexample>
           <screen>
