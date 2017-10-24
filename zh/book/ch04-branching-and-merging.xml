@@ -2485,8 +2485,12 @@ $ svn status
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.basicmerging.undo">
+      <!--
       <title>Undoing Changes</title>
+      -->
+      <title>撤消修改</title>
 
+      <!--
       <para>An extremely common use for <command>svn merge</command>
         is to roll back a change that has already been committed.
         Suppose you're working away happily on a working copy of
@@ -2498,8 +2502,17 @@ $ svn status
         working copy, and then commit the local modification to the
         repository.  All you need to do is to specify a
         <emphasis>reverse</emphasis> difference.  (You can do this by
-        specifying <option>--revision 392:391</option>, or by an
-        equivalent <option>--change -392</option>.)</para>
+        specifying <option>- -revision 392:391</option>, or by an
+        equivalent <option>- -change -392</option>.)</para>
+      -->
+      <para>人们经常使用 <command>svn merge</command> 撤消已经提交的修改.
+        假设你正开心地在 <filename>/calc/trunk</filename> 的工作副本上工作,
+        突然发现版本号 392 提交的修改是完全错误的, 它就不应该被提交. 此时你可
+        以用 <command>svn merge</command> 在工作副本中 <quote>撤消</quote>
+        版本号 392 的修改, 然后把用于撤消 r392 的修改提交到仓库中. 你所要做
+        的只是指定一个 <emphasis>逆</emphasis> 差异 (对于这个例子而言, 指定
+        逆差异的命令行参数是 <literal>--revision 392:391</literal> 或
+        <literal>--change -392</literal>).</para>
 
 
       <informalexample>
@@ -2534,6 +2547,7 @@ Committed revision 399.
 </screen>
       </informalexample>
 
+      <!--
       <para>As we mentioned earlier, one way to think about a
         repository revision is as a specific changeset.  By using the
         <option>-r</option> option, you can ask <command>svn
@@ -2542,22 +2556,41 @@ Committed revision 399.
         change, we're asking <command>svn merge</command> to apply
         changeset r392 to our working copy
         <emphasis>backward</emphasis>.</para>
+      -->
+      <para>我们以前说过, 可以把版本号当成一个特定的变更集, 通过选项 <option>
+          -r</option>, 可以要求 <command>svn merge</command> 向工作副本应用一
+        个特定的变更集, 或一段变更集范围. 在上面这个例子里, 我们是要求
+        <command>svn merge</command> 把变更集 r392 的逆修改应用到工作副本上.
+      </para>
 
+      <!--
       <para>Keep in mind that rolling back a change like this is just
         like any other <command>svn merge</command> operation, so you
         should use <command>svn status</command> and <command>svn
         diff</command> to confirm that your work is in the state you
         want it to be in, and then use <command>svn commit</command>
         to send the final version to the repository.  After
+        TODO
         committing, this particular changeset is no longer reflected
         in the <literal>HEAD</literal> revision.</para>
+      -->
+      <para>记住, 像这样撤消修改和其他 <command>svn merge</command> 操作一样,
+        用户应该用 <command>svn status</command> 和 <command>svn diff</command>
+        确认修改的内容正是心里所期望的那样, 检查没问题后再用 <command>svn
+          commit</command> 提交.</para>
 
+      <!--
       <para>Again, you may be thinking: well, that really didn't undo
         the commit, did it?  The change still exists in revision 392.
         If somebody checks out a version of the
         <filename>calc</filename> project between revisions 392 and
         398, she'll still see the bad change, right?</para>
+      -->
+      <para>读者可能在想: 好吧, 其实并没有真正地撤消提交, 版本号 392 的修改仍然
+        存在于历史中, 如果有人检出了版本在 r392 到 r398 之间的
+        <filename>calc</filename>, 他就会看到错误的修改, 对吧?</para>
 
+      <!--
       <para>Yes, that's true.  When we talk about
         <quote>removing</quote> a change, we're really talking about
         removing it from the <literal>HEAD</literal> revision.  The
@@ -2578,6 +2611,19 @@ Committed revision 399.
         information.  In the meantime, see
         <xref linkend="svn.reposadmin.maint.tk.svndumpfilter"/> for a
         possible workaround.</para></footnote></para>
+      -->
+  <para>说得没错, 当我们谈论 <quote>删除</quote> 一个修改时, 我们实际上说得是
+    把修改从版本号 <literal>HEAD</literal> 中删除, 原始的修改仍然存在于仓库中
+    的历史中. 在大多数时候, 这种做法已经足够好了, 毕竟大多数人只对项目的
+    <literal>HEAD</literal> 感兴趣. 然而, 在少数情况下, 用户可能真地需要把
+    提交从仓库的历史中完全擦除 (可能是不小心提交了一份机密文档). 这做起来并不
+    容易, 因为 Subversion 的设计目标之一是不能丢失任何一个修改, 版本号是以其他
+    版本号为基础的不可修改的目录树, 从历史中删除一个版本号将会产生多米诺骨牌
+    效应, 使后面的版本号产生混乱, 甚至可能会使所有的工作副本失效.<footnote>
+      <para>Subversion 已经计划在未来的某一天, 能够实现永久地删除提交历史,
+        但在 Subversion 实现之前, 可以从
+        <xref linkend="svn.reposadmin.maint.tk.svndumpfilter"/> 找到变通
+        办法.</para></footnote></para>
 
     </sect2>
 
