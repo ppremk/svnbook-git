@@ -2629,15 +2629,25 @@ Committed revision 399.
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.basicmerging.resurrect">
+      <!--
       <title>Resurrecting Deleted Items</title>
+      -->
+      <title>恢复已删除的文件</title>
 
+      <!--
       <para>The great thing about version control systems is that
         information is never lost.  Even when you delete a file or
         directory, it may be gone from the <literal>HEAD</literal>
         revision, but the object still exists in earlier revisions.
         One of the most common questions new users ask is, <quote>How
         do I get my old file or directory back?</quote></para>
+      -->
+    <para>版本控制系统的一大好处是信息永远不会丢失. 即使你删除了一个文件或
+      目录, 虽然在版本号 <literal>HEAD</literal> 中已经看不到被删除的文件,
+      但它们在早先的版本中仍然存在. 新用户经常问的一个问题是 <quote>怎样才
+        能找回以前的文件或目录?</quote></para>
 
+      <!--
       <para>The first step is to define
         exactly <emphasis>which</emphasis> item you're
         trying to resurrect.  Here's a useful metaphor: you can think
@@ -2649,20 +2659,36 @@ Committed revision 399.
         <quote>peg revision</quote>
         syntax&mdash;foo.c@224&mdash;mentioned back in
         <xref linkend="svn.advanced.pegrevs"/>.)</para>
+      -->
+      <para>第一步是准确地指定你想要恢复的是哪一项条目. 一种比较形象的比喻是
+        把仓库中的每个对象都想像成一个二维坐标, 第一个坐标是特定的版本号目录
+        树, 第二个坐标是目录内的路径, 于是文件或目录的每一个版本都可以由一对
+        坐标唯一地确定.</para>
 
+      <!--
       <para>First, you might need to use <command>svn log</command> to
         discover the exact coordinate pair you wish to resurrect.  A
-        good strategy is to run <userinput>svn log --verbose</userinput>
+        good strategy is to run <userinput>svn log - -verbose</userinput>
         in a directory that used to contain your deleted item.  The
-        <option>--verbose</option> (<option>-v</option>) option shows
+        <option>- -verbose</option> (<option>-v</option>) option shows
         a list of all changed items in each revision; all you need to
         do is find the revision in which you deleted the file or
         directory.  You can do this visually, or by using another tool
         to examine the log output (via <command>grep</command>, or
         perhaps via an incremental search in an editor).  If you know that
         the item in question was recently deleted you might also use
-        the <option>--limit</option> option to keep the log output brief
+        the <option>- -limit</option> option to keep the log output brief
         enough to examine manually.</para>
+      -->
+      <para>首先, 用户可能要用 <command>svn log</command> 找到他想恢复的二维
+        坐标, 比较好的策略是在曾经含有被删除的项目的目录中运行
+        <userinput>svn log --verbose</userinput>, 选项
+        <option>--verbose</option> (<option>-v</option>) 显示了在每个版本号中,
+        被修改的所有项目, 你所要做的就是找到那个删除了文件或目录的版本号. 用户
+        可以依靠自己的肉眼寻找, 也可以借助其他工具 (例如 <command>grep
+        </command>) 扫描 <command>svn log</command> 的输出. 如果用户已经知道
+        待恢复的项目是在最近的提交中才被删除, 那还可以用选项 <option>--limit
+      </option> 限制 <command>svn log</command> 的输出.</para>
 
       <informalexample>
         <screen>
@@ -2698,6 +2724,7 @@ Undoing erroneous change committed in r392.
 </screen>
       </informalexample>
 
+      <!--
       <para>In the example, we're assuming that you're looking for a
         deleted file <filename>real.c</filename>.  By looking through
         the logs of a parent directory, you've spotted that this file
@@ -2706,10 +2733,21 @@ Undoing erroneous change committed in r392.
         Conclusion: you want to resurrect the path
         <filename>/calc/trunk/real.c</filename> from revision
         399.</para>
+      -->
+      <para>在上面的例子里, 我们假设用记要找的文件是
+        <filename>real.c</filename>, 通过查看父目录的日志, 可以看到
+        <filename>real.c</filename> 是在版本号 400 被删除. 因此, <filename>
+          real.c</filename> 的最后一个版本就是紧挨着 400 的前一个版本号, 也
+        就是说你要从版本号 399 中恢复 <filename>/calc/trunk/real.c</filename>.
+      </para>
 
+      <!--
       <para>That was the hard part&mdash;the research.  Now that you
         know what you want to restore, you have two different
         choices.</para>
+      -->
+      <para>这本来是最难的地方&mdash;调查. 既然已经知道了要复原的是哪个项目,
+        接下来你有两个选择.</para>
 
       <para>One option is to use <command>svn merge</command> to apply
         revision 400 <quote>in reverse.</quote> (We already
