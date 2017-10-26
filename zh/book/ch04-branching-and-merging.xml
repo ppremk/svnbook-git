@@ -2749,6 +2749,7 @@ Undoing erroneous change committed in r392.
       <para>这本来是最难的地方&mdash;调查. 既然已经知道了要复原的是哪个项目,
         接下来你有两个选择.</para>
 
+      <!--
       <para>One option is to use <command>svn merge</command> to apply
         revision 400 <quote>in reverse.</quote> (We already
         discussed how to undo changes in
@@ -2757,7 +2758,14 @@ Undoing erroneous change committed in r392.
         as a local modification.  The file would be scheduled for
         addition, and after a commit, the file would again exist
         in <literal>HEAD</literal>.</para>
+      -->
+      <para>其中一个选择是使用 <command>svn merge</command> <quote>反向</quote>
+        应用版本号 400 (我们已经在 <xref
+          linkend="svn.branchmerge.basicmerging.undo"/> 介绍了如何撤消修改).
+        命令的效果是把 <filename>real.c</filename> 重新添加到工作副本里, 提交
+        后, 文件将重新出现在版本号 <literal>HEAD</literal> 中.</para>
 
+      <!--
       <para>In this particular example, however, this is probably not
         the best strategy.  Reverse-applying revision 400 would not
         only schedule <filename>real.c</filename> for addition, but
@@ -2768,12 +2776,23 @@ Undoing erroneous change committed in r392.
         <filename>main.c</filename>, but this technique doesn't
         scale well.  What if 90 files were changed in revision
         400?</para>
+      -->
+      <para>然而对于我们这个例子而言, 可能并不是最好的办法. 反向应用版本号
+        400 不仅会添加 <filename>real.c</filename>, 从版本号 400 的提交日志
+        可以看到, 反向应用还会撤消 <filename>main.c</filename> 的某些修改,
+        这应该不是用户想要的效果. 当然, 你也可以在逆合并完 r400 后, 再手动地
+        对 <filename>main.c</filename> 执行 <command>svn revert</command>.
+        但这种解决办法可扩展性不好, 如果有 90 个文件在 r400 中被修改了, 难道
+        也要一个个地执行 <command>svn revert</command> 吗?</para>
 
       <para>A second, more targeted strategy is not to use
         <command>svn merge</command> at all, but rather to use the
         <command>svn copy</command> command.  Simply copy the exact
         revision and path <quote>coordinate pair</quote> from the
         repository to your working copy:</para>
+      <para>第二种选择的目标性更强, 不使用 <command>svn merge</command>, 而是
+        用 <command>svn copy</command> 从仓库中复制特定的版本号与路径 <quote>
+          坐标</quote> 到工作副本里:</para>
 
       <informalexample>
         <screen>
@@ -2788,6 +2807,7 @@ A  +    real.c
 </screen>
       </informalexample>
 
+      <!--
       <para>The plus sign in the status output indicates that the item
         isn't merely scheduled for addition, but scheduled for
         addition <quote>with history.</quote>  Subversion remembers
@@ -2801,6 +2821,13 @@ A  +    real.c
         to resurrect the file <emphasis>without</emphasis>
         maintaining a historical link to the old file, this technique
         works just as well:</para>
+      -->
+      <para>状态输出中的加号表示这个项目不仅仅是新增的, 而且还带有历史信息,
+        Subversion 知道它是从哪里复制来的. 以后对 <filename>real.c</filename>
+        执行 <command>svn log</command> 将会遍历到 r399 之前的历史, 也就是说
+        <filename>real.c</filename> 并不是真正的新文件, 它是已删除的原始文件
+        的后继, 通常这就是用户想要的效果. 然而, 如果你不想维持文件以前的历史,
+        还可以下面的方法恢复文件:</para>
 
       <informalexample>
         <screen>
@@ -2814,11 +2841,16 @@ A         real.c
 </screen>
       </informalexample>
 
+      <!--
       <para>Although our example shows us resurrecting a file, note
         that these same techniques work just as well for resurrecting
         deleted directories.  Also note that a resurrection doesn't
         have to happen in your working copy&mdash;it can happen
         entirely in the repository:</para>
+      -->
+      <para>虽然我们的例子都是在演示如何恢复被删除的文件, 但同样的技术也可以
+        用在恢复目录上. 另外, 恢复被删除的文件不仅可以发生在工作副本中, 还可
+        直接发生在仓库中:</para>
 
       <informalexample>
         <screen>
@@ -2842,8 +2874,12 @@ Updated to revision 402.
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.branchmerge.advanced">
+      <!--
     <title>Advanced Merging</title>
+      -->
+    <title>高级合并</title>
 
+      <!--
     <para>Here ends the automated magic.  Sooner or later, once you
       get the hang of branching and merging, you're going to have to
       ask Subversion to merge <emphasis>specific</emphasis> changes
@@ -2852,6 +2888,11 @@ Updated to revision 402.
       merge</command>.  The next section describes the fully expanded
       syntax of the command and discusses a number of common
       scenarios that require it.</para>
+      -->
+    <para>一旦用户开始频繁地使用分支与合并, 很快就会要求 Subversion 把一个
+      <emphasis>特定的</emphasis> 的修改从一个地方合并到另一个地方. 为了完成
+      这项工作, 用户要给 <command>svn merge</command> 传递更多的参数, 下一节
+      将对命令的语法进行完整地介绍, 同时还将讨论它们的典型应用场景.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.cherrypicking">
