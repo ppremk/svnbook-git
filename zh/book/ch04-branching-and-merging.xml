@@ -3014,6 +3014,7 @@ M       src/main.c
 </screen>
       </informalexample>
 
+      <!--
       <para>You can now go through the usual testing procedures before
         committing this change to your branch.  After the commit,
         Subversion updates the <literal>svn:mergeinfo</literal> on your
@@ -3028,6 +3029,16 @@ M       src/main.c
         r380.  When we created the <filename>my-calc-branch</filename>
         branch in r403, this mergeinfo was carried along with the copy.
         </para>
+      -->
+        <para>如果测试后没什么问题, 就可以把修改提交到仓库中. 提交后, Subversion
+          更新分支属性 <literal>svn:mergeinfo</literal>, 以反映 r413 已经合并到
+          分支中, 这可以避免今后自动同步合并时再去合并 r413 (在同一分支内多次
+          合并同一修改通常会导致冲突). 还要注意合并信息
+          <literal>/calc/branches/my-calc-branch:341-379</literal>, 这条信息
+          是早先 <filename>/calc/trunk</filename> 在 r380 再整合合并
+          <filename>/calc/branches/my-calc-branch</filename> 时记录的, 当我们
+          在 r403 创建分支 <filename>my-calc-feature-branch</filename> 时,
+          这条合并信息也被一并复制.</para>
 
       <informalexample>
         <screen>
@@ -3039,8 +3050,12 @@ Properties on '.':
 </screen>
       </informalexample>
 
+      <!--
       <para>Notice too that the <command>mergeinfo</command> doesn't list r413
         as "eligible" to merge, because it's already been merged:</para>
+      -->
+      <para>从下面 <command>mergeinfo</command> 的输出中可以看到, r413 并没有
+        被列为可合并的版本号, 这是因为它已经被合并了:</para>
 
       <informalexample>
         <screen>
@@ -3063,12 +3078,18 @@ r457
 </screen>
       </informalexample>
 
+      <!--
       <para>The preceding means that when the time finally comes to do an
         automatic sync merge, Subversion breaks the merge into two parts.
         First it merges all eligible merges up to revision 412.  Then it
         merges all eligible revisions from revisions 414 to the <literal>HEAD
         </literal> revision.  Because we already cherrypicked r413, that
         change is skipped:</para>
+      -->
+      <para>上面的输出表示当分支要自动同步合并主干时, Subversion 将把合并分成
+        两步进行, 第一步是合并所有可合并的修改, 直到 r412, 第二步是从 r414 开始
+        合并所有可合并的修改, 直到 <literal>HEAD</literal>. 因为我们已经合并了
+        r413, 所以它会被跳过:</para>
 
       <informalexample>
         <screen>
@@ -3094,13 +3115,21 @@ G    Makefile
         <indexterm>
           <primary>merging</primary>
           <secondary>backporting</secondary>
-        </indexterm>This use case of replicating
+        </indexterm>
+        将一个新版本上的修改 <firstterm>回植</firstterm> (<firstterm>
+          backporting</firstterm>) 到另一个分支可能是精选修改最常见的需求,
+        例如, 当开发团队在维护软件的 <quote>发布分支</quote> 时, 就会经常遇到
+        这种情况 (见
+        <xref linkend="svn.branchmerge.commonpatterns.release"/>.)</para>
+      <!--
+        This use case of replicating
         (or <firstterm>backporting</firstterm>) bug fixes from one
         branch to another is perhaps the most popular reason for
         cherrypicking changes; it comes up all the time, for example,
         when a team is maintaining a <quote>release branch</quote> of
         software.  (We discuss this pattern in
         <xref linkend="svn.branchmerge.commonpatterns.release"/>.)</para>
+      -->
 
       <warning>
         <para>Did you notice how, in the last example, the merge
