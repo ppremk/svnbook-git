@@ -3254,10 +3254,14 @@ G    Makefile
         合并过程中所发生的事情: 比较两个仓库目录, 然后把差异应用到工作副本上.
       </para>
 
+      <!--
       <para>If you're using <command>svn merge</command> to do basic
         copying of changes between branches, an automatic merge will
         generally do the right thing.  For example, a command such as the
         following,</para>
+      -->
+      <para>如果你是用 <command>svn merge</command> 在分支之间复制修改, 那么
+        通常情况下自动合并会工作得很好. 例如下面的命令</para>
 
       <informalexample>
         <screen>
@@ -3265,6 +3269,7 @@ $ svn merge ^/calc/branches/some-branch
 </screen>
       </informalexample>
 
+      <!--
       <para>will attempt to duplicate any changes made
         on <filename>some-branch</filename> into your current working
         directory, which is presumably a working copy that shares some
@@ -3273,11 +3278,22 @@ $ svn merge ^/calc/branches/some-branch
         doesn't yet have.  If you repeat this command once a week, it
         will only duplicate the <quote>newest</quote> branch changes
         that happened since you last merged.</para>
+      -->
+      <para>尝试把分支 <filename>some-branch</filename> 上的修改合并到当前
+        的工作目录上 (假定当前目录是工作副本或工作副本的一部分, 而且和
+        <filename>some-branch</filename> 有历史上的联系), 命令只会合并当前
+        目录还没有的修改. 如果用户在一周后再执行相同的命令, 命令就只会复制在
+        上一次合并后新出现的修改.</para>
 
+      <!-- TODO -->
+      <!--
       <para>If you choose to use the <command>svn merge</command>
         command in all its full glory by giving it specific revision
         ranges to duplicate, the command takes three main
         arguments:</para>
+      -->
+      <para>如果用户在使用 <command>svn merge</command> 时指定的被复制的版本
+        号范围, 则命令接受三个参数:</para>
 
       <orderedlist>
         <indexterm>
@@ -3294,21 +3310,34 @@ $ svn merge ^/calc/branches/some-branch
         </indexterm>
 
         <listitem>
+      <!--
           <para>An initial repository tree (often called the
             <firstterm>left side</firstterm> of the comparison)</para>
+      -->
+          <para>一个初始的仓库目录 (通常被叫作比较的 <firstterm>左侧</firstterm>
+            (<firstterm>left side</firstterm>))</para>
         </listitem>
         <listitem>
+      <!--
           <para>A final repository tree (often called the
             <firstterm>right side</firstterm> of the
             comparison)</para>
+      -->
+          <para>一个最终的仓库目录 (通常被叫作比较的 <firstterm>右侧</firstterm>
+            (<firstterm>right side</firstterm>)</para>
         </listitem>
         <listitem>
+      <!--
           <para>A working copy to accept the differences as local
             changes (often called the <firstterm>target</firstterm> of
             the merge)</para>
+      -->
+          <para>接受差异的工作副本 (通常被叫作合并的 <firstterm>目标</firstterm>
+            (<firstterm>target</firstterm>))</para>
         </listitem>
       </orderedlist>
 
+      <!--
       <para>Once these three arguments are specified, then the two trees
         are compared and the differences applied to the
         target working copy as local modifications.  When the command
@@ -3318,10 +3347,21 @@ $ svn merge ^/calc/branches/some-branch
         yourself.  If you like the results, you can commit them.  If
         you don't like the results, you can simply <command>svn
         revert</command> all of the changes.</para>
+      -->
+    <para>这三个参数一旦指定, Subversion 就比较两个仓库目录, 将比较产生的差异
+      作为本地修改应用到目标工作副本. 命令执行结束后, 得到的结果和用户手工编
+      辑文件或执行各种命令 (例如 <command>svn add</command> 和 <command>svn
+        delete</command>) 得到的效果是等价的. 如果合并的结果没什么问题, 用户
+      就可以把它们提交到仓库中, 如果用户不喜欢合并的结果, 只要用 <command>
+        svn revert</command> 就可以撤消所有的修改.</para>
 
+      <!--
       <para>The syntax of <command>svn merge</command> allows you to
         specify the three necessary arguments rather flexibly.  Here
         are some examples:</para>
+      -->
+      <para><command>svn merge</command> 允许用户灵活地指定这三个参数, 下面是
+        一些例子:</para>
 
       <informalexample>
         <screen>
@@ -3335,6 +3375,7 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
 </screen>
       </informalexample>
 
+      <!--
       <para>The first syntax lays out all three arguments explicitly,
         naming each tree in the form <emphasis>URL@REV</emphasis> and
         naming the working copy target.  The second syntax is used
@@ -3347,12 +3388,27 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
         reasons) as a <quote>2-URL</quote> merge. The last syntax shows
         how the working copy argument is optional; if omitted, it
         defaults to the current directory.</para>
+      -->
+        <para>第一种语法显式地指定了三个参数; 如果被比较的是同一 URL 的两个不同
+        版本号, 可以像第二种语法那样简写,
+        <indexterm>
+          <primary>merging</primary>
+          <secondary>2-URL</secondary>
+        </indexterm>
+        这种类型的合并称为 <quote>两路 URL
+        </quote> 合并 (原因显而易见); 第三种语法说明的工作副本参数是可选的,
+        如果省略工作副本参数, 默认是当前工作目录.</para>
 
+      <!--
       <para>While the first example shows the <quote>full</quote>
         syntax of <command>svn merge</command>, use it
         very carefully;  it can result in merges which do not record
         any <literal>svn:mergeinfo</literal> metadata at all.  The
         next section talks a bit more about this.</para>
+      -->
+      <para>虽然第一个例子展示了 <command>svn merge</command> 的 <quote>完整
+        </quote> 语法, 但使用时要小心, 它会导致 Subversion 不去更新元数据
+        <literal>svn:mergeinfo</literal>, 下一节将对此进行更详细的介绍.</para>
 
     </sect2>
 
