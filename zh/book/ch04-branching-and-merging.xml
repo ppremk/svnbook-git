@@ -3506,6 +3506,7 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
       -->
           <term>反向合并目标的修改历史</term>
           <listitem>
+      <!--
             <para>Earlier in this chapter
               (<xref linkend="svn.branchmerge.basicmerging.undo"/>) we
               discussed how to use <command>svn merge</command> to
@@ -3520,9 +3521,20 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
               reapply the revision using <userinput>svn merge . -c
               5</userinput>, since the mergeinfo would already list r5
               as being applied.  We would have to use
-              the <option>--ignore-ancestry</option> option to make
+              the <option>- -ignore-ancestry</option> option to make
               the merge command ignore the existing
               mergeinfo!</para></footnote></para>
+      -->
+        <para>在本章的 <xref linkend="svn.branchmerge.basicmerging.undo"/> 我们
+          介绍了如何使用 <command>svn merge</command> 应用一个 <quote>逆补丁
+          </quote>, 从而回滚已提交的修改. 如果使用这项技术撤消某个对象的已
+          提交的修改 (例如在主干上提交了 r5, 之后又马上用 <userinput>svn
+            merge . -c -5</userinput> 撤消 r5 的修改), 这种类型的合并也不会更新
+          合并信息.<footnote><para>有趣的是, 像这样撤消一个版本号的修改后,
+              我们就不能再用 <userinput>svn merge . -c 5</userinput> 重新合并
+              r5, 因为合并信息记录的是 r5 已经合并过了. 为了忽略合并信息,
+              必须加上选项 <option>--ignore-ancestry</option></para></footnote>
+        </para>
           </listitem>
         </varlistentry>
       </variablelist>
@@ -3533,7 +3545,10 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
                  we've not really defined "mergeinfo" either.  -->
 
       <sidebar id="svn.branchmerge.nomergedata.impicit.mergeinfo">
+      <!--
         <title>Natural History and Implicit Mergeinfo</title>
+      -->
+        <title>自然历史和隐式合并信息</title>
 
         <para>
           <indexterm>
@@ -3543,7 +3558,19 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
           <indexterm>
             <primary>natural history</primary>
             <see>mergeinfo, implicit</see>
-          </indexterm>As we mentioned earlier when discussing
+          </indexterm>
+          在讨论
+          <xref linkend="svn.branchmerge.basicmerging.mergeinfo.inheritance"/>
+          时我们说过, 如果在一个路径上设置了属性 <literal>svn:mergeinfo
+          </literal>, 我们就说这个路径含有 <quote>显式的</quote> 合并信息, 与
+          些相对, 一个路径上可以有 <quote>隐式的</quote> 合并信息. 隐式的合并
+          信息 (或 <firstterm>自然历史</firstterm> (<firstterm>natural
+            history</firstterm>)) 仅仅是把路径自己的历史 (见
+          <xref linkend="svn.tour.history" />) 解释成合并信息. 虽然隐式的合
+          并信息在很大程度上只是一个实现上的细节, 但在理解合并跟踪上很有帮助.
+        </para>
+      <!--
+          As we mentioned earlier when discussing
           <xref linkend="svn.branchmerge.basicmerging.mergeinfo.inheritance"/>,
           a path that has the
           <literal>svn:mergeinfo</literal> property set on it is said to
@@ -3555,15 +3582,24 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
           While implicit mergeinfo is largely
           an implementation detail, it can be a useful abstraction for
           understanding merge tracking behavior.</para>
+      -->
 
+      <!--
         <para>Let's say you created <filename>^/trunk</filename> in
           revision 100 and then later, in revision 201,
           created <filename>^/branches/feature-branch</filename> as
           a copy of <filename>^/trunk@200</filename>.  The natural
           history of <filename>^/branches/feature-branch</filename>
           contains all the repository paths and revision ranges
+          TODO
           through which the history of the new branch has ever
           passed:</para>
+      -->
+        <para>如果说用户在 r100 创建了 <filename>^/trunk</filename>, 在 r201
+          基于 <filename>^/trunk@200</filename> 创建了 <filename>
+            ^/branches/feature-branch</filename>.
+          <filename>^/branches/feature-branch</filename> 的自然历史包含了所有
+          的仓库路径和版本号.</para>
 
         <informalexample>
           <literallayout>
@@ -3572,6 +3608,7 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
 </literallayout>
         </informalexample>
 
+      <!--
         <para>With each new revision added to the repository, the
           natural history&mdash;and thus, implicit mergeinfo&mdash;of
           the branch continues to expand to include those revisions
@@ -3579,6 +3616,11 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
           implicit mergeinfo of our branch would look like when
           the <literal>HEAD</literal> revision of the repository had
           grown to 234:</para>
+      -->
+        <para>随着仓库中新的版本号的出现, 分支的自然历史&mdash;即隐式的合
+          并信息&mdash;也在不断地包含这些版本号, 直到分支被删除的那天. 当
+          仓库的 <literal>HEAD</literal> 增长到 234 时, 下面的例子展示了
+          分支的隐式合并信息:</para>
 
         <informalexample>
           <literallayout>
@@ -3587,6 +3629,7 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
 </literallayout>
         </informalexample>
 
+      <!--
         <para>Implicit mergeinfo does not actually show up in the
           <literal>svn:mergeinfo</literal> property, but Subversion
           acts as if it does.  This is why if you check out
@@ -3599,6 +3642,15 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
           After all, avoiding repeated merges of
           changes <emphasis>is</emphasis> the primary goal of
           Subversion's merge tracking feature!</para>
+      -->
+        <para>隐式的合并信息不会显示在属性 <literal>svn:mergeinfo</literal> 中,
+          但 Subversion 会表现得好像它确实把隐式的合并信息放到了 <literal>
+            svn:mergeinfo</literal> 里, 所以说当用户检出 <filename>
+            ^/branches/feature-branch</filename>, 然后执行 <userinput>svn merge
+            ^/trunk -c 58</userinput>, 却什么也不会发生. 这是因为 Subversion
+          知道提交到 <filename>^/trunk</filename> 的 r58 已经存在于目标的自然
+          历史里, 也就没必要再合并一次, 毕竟避免重要的合并
+          <emphasis>是</emphasis> Subversion 合并路径特性的主要目标!</para>
 
       </sidebar>
 
