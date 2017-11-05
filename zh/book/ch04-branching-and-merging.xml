@@ -3806,12 +3806,19 @@ Summary of conflicts:
 </screen>
       </informalexample>
 
+      <!--
       <para>How can a conflict possibly happen?  Again, because the user
         can request <command>svn merge</command> to define and apply any
         old delta to the working copy, that delta may contain textual
         changes that don't cleanly apply to a working file, even if
         the file has no local modifications.</para>
+      -->
+      <para>为什么会发生这种冲突呢? 因为用户可以要求 <command>svn merge
+        </command> 定义并应用任意一个老差异到工作副本中, 而这个差异所包含的
+        修改可能不能被干净地应用到文件中, 即使这个文件不含有本地修改.</para>
 
+
+      <!--
       <para>Another small difference between <command>svn
         update</command> and <command>svn merge</command> is the names
         of the full-text files created when a conflict happens.  In
@@ -3831,13 +3838,32 @@ Summary of conflicts:
         side. In any case, these differing names help you distinguish
         between conflicts that happened as a result of an  update and
         ones that happened as a result of a merge.</para>
+      -->
+      <para><command>svn update</command> 和 <command>svn merge</command> 的另
+        一个不同点是当冲突发生时, 新创建的文件的名字. 在
+        <xref linkend="svn.tour.cycle.resolve"/> 我们已经看到更新操作可能会
+        创建形如 <filename>filename.mine</filename>,
+        <filename>filename.rOLDREV</filename> 和 <filename>filename.rNEWREV
+        </filename>. 的新文件. 当 <command>svn merge</command> 发生冲突时, 它会
+        创建 3 个形如 <filename>filename.working</filename>,
+        <filename>filename.merge-left.rOLDREV</filename> 和
+        <filename>filename.merge-right.rNEWREV</filename> 的新文件. 模式中的
+        <quote>merge-left</quote> 和 <quote>merge-right</quote> 分别指出了文件
+        来自比较的左侧和右侧, <quote>rOLDREV</quote> 描述了左侧的版本号, 而
+        <quote>rNEWREV</quote> 描述了右侧的版本号. 无论是 <command>svn update
+        </command>, 还是 <command>svn merge</command>, 这些文件名都可以帮助
+        用户分辨冲突的来源.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.advanced.blockchanges">
+      <!--
       <title>Blocking Changes</title>
+      -->
+      <title>拦截修改</title>
 
+      <!--
       <para>Sometimes there's a particular changeset that you don't
         want automatically merged.  For example, perhaps your
         team's policy is to do new development work on
@@ -3852,13 +3878,28 @@ Summary of conflicts:
         this case, you want a way to mask a few specific changes
         out, that is, prevent them from ever being automatically
         merged.</para>
+      -->
+      <para>有时候, 用户可能不想让某个特定的变更集被自动合并, 比如说你所在的
+        团队的开发策略是在 <filename>/trunk</filename> 完成新的开发工作, 但
+        是, 在向稳定分支回植修改时非常保守, 因为稳定分支是面向发布的分支.
+        在比较极端的情况下, 你可以手动地从主干精选修改&mdash;只精选那些足够
+        稳定的修改&mdash;再合并到分支上. 不过实际做起来可能没这么严格, 大多数时
+        候你只想让 <command>svn merge</command> 把主干的大多数修改自动合并
+        到分支上, 这时候就需要一种方法能够屏蔽掉一些特定的变更集, 阻止它们
+        被自动合并.</para>
 
+      <!--
       <para>To block a changeset you must make Subversion believe that the
         change has <emphasis>already</emphasis> been merged.  To do this,
-        invoke the merge subcommand with the <option>--record-only</option>
+        invoke the merge subcommand with the <option>- -record-only</option>
         option.  The option makes Subversion record mergeinfo as if it had
         actually performed the merge, but no difference is actually
         applied:</para>
+      -->
+      <para>为了拦截一个变更集, 必须让 Subversion 认为变更集 <emphasis>已经
+        </emphasis> 被合并了. 为了实现这点, 在执行 <command>svn merge</command>
+        时添加选项 <option>--record-only</option>, 该选项使得 Subversion 更新
+        合并信息, 就好像它真得执行了合并, 但实际上文件内容并没有被修改.</para>
 
       <informalexample>
         <screen>
@@ -3884,7 +3925,8 @@ Committed revision 461.
 </screen>
       </informalexample>
 
-      <para>Since Subversion 1.7, <option>--record-only</option>
+      <!--
+      <para>Since Subversion 1.7, <option>- -record-only</option>
         merges are transitive.  This means that, in addition to recording
         mergeinfo describing the blocked revision(s), any
         <literal>svn:mergeinfo</literal> property differences in the
@@ -3895,6 +3937,15 @@ Committed revision 461.
         the work on this feature was done on its own branch, which was
         reintegrated to <filename>/paint/trunk</filename> in revision
         465:</para>
+      -->
+      <para>从 Subversion 1.7 开始, 带有选项 <option>--record-only</option>
+        的合并是传递的, 这就意味着除了在被合并的目标上记录被拦截的合并信息外,
+        源的 <literal>svn:mergeinfo</literal> 属性上的任意修改都会被应用到目
+        标的 <literal>svn:mergeinfo</literal>> 属性上. 举例来说, 我们想要拦截
+        <filename>^/paint/trunk</filename> 上与特性 'paint-python-wrapper' 
+        有关的修改被合并到分支 <filename>^/paint/branches/paint-1.0.x</filename>
+        上. 我们已经知道特性 'paint-python-wrapper' 已经在自己的分支上开发完成,
+        并且在 r465 合并到了 <filename>/paint/trunk</filename> 上:</para>
       
       <informalexample>
         <screen>
