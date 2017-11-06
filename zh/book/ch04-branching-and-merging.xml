@@ -3941,7 +3941,7 @@ Committed revision 461.
       <para>从 Subversion 1.7 开始, 带有选项 <option>--record-only</option>
         的合并是传递的, 这就意味着除了在被合并的目标上记录被拦截的合并信息外,
         源的 <literal>svn:mergeinfo</literal> 属性上的任意修改都会被应用到目
-        标的 <literal>svn:mergeinfo</literal>> 属性上. 举例来说, 我们想要拦截
+        标的 <literal>svn:mergeinfo</literal> 属性上. 举例来说, 我们想要拦截
         <filename>^/paint/trunk</filename> 上与特性 'paint-python-wrapper' 
         有关的修改被合并到分支 <filename>^/paint/branches/paint-1.0.x</filename>
         上. 我们已经知道特性 'paint-python-wrapper' 已经在自己的分支上开发完成,
@@ -3961,8 +3961,13 @@ Reintegrate Paint Python wrapper.
 </screen>
       </informalexample>
 
+      <!--
       <para>Because revision 465 was a reintegrate merge we know
+        TODO
         that mergeinfo was recorded describing the merge:</para>
+      -->
+      <para>因为 r465 是一个再整合合并, 所以我们知道记录的合并信息描述了合并:
+      </para>
 
       <informalexample>
         <screen>
@@ -3979,18 +3984,28 @@ Added: svn:mergeinfo
 </screen>
       </informalexample>
 
+      <!--
       <para>Now simply blocking merges of revision 465 from
         <filename>/paint/trunk</filename> isn't foolproof since someone could
         merge r462:464 directly from
         <filename>/paint/branches/paint-python-wrapper</filename>.
         Fortunately the transitive nature
-        of <option>--record-only</option> merges prevents this; the
-        <option>--record-only</option> merge
+        of <option>- -record-only</option> merges prevents this; the
+        <option>- -record-only</option> merge
         applies the <literal>svn:mergeinfo</literal> diff from
         revision 465, thus blocking merges of that change directly from
         <filename>/paint/trunk</filename> <emphasis>and</emphasis> indirectly
         from <filename>/paint/branches/paint-python-wrapper</filename>:
         </para>
+      -->
+        <para>如果只是简单地拦截 <filename>/paint/trunk</filename> 的 r465 并
+          不能确保万无一失, 因为其他人可能会直接从
+          <filename>/paint/branches/paint-python-wrapper</filename> 合并
+          r462:464, 幸运的是选项 <option>--record-only</option> 的传递性质
+          可以防止这种情况发生. 选项 <option>--record-only</option> 把 r465
+          生成的 <literal>svn:mergeinfo</literal> 差异应用到工作副本上, 从而
+          拦截住来自 <filename>/paint/trunk</filename> 和 <filename>
+            /paint/branches/paint-python-wrapper</filename> 的直接合并.</para>
 
       <informalexample>
         <screen>
@@ -4021,8 +4036,12 @@ Committed revision 466.
 </screen>
       </informalexample>
 
+      <!--
       <para>Now any subsequent attempts to merge the feature to <filename>
         /paint/trunk</filename> are inoperative:</para>
+      -->
+    <para>现在, 无论怎么尝试从 <filename>/paint/trunk</filename> 合并特性都
+      不会产生任何实际的效果.</para>
 
       <informalexample>
         <screen>
@@ -4042,6 +4061,7 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>If at a later time you realize that you actually <emphasis>do
         </emphasis> need the blocked feature merged to <filename>/paint/trunk
         </filename> you have a couple of choices.  You can reverse merge r466,
@@ -4050,9 +4070,18 @@ $
         that change you can repeat the merge of r465 from <filename>
         /paint/trunk</filename>.  Alternatively, you can simply repeat the
         merge of r465 from <filename>/paint/trunk</filename> using the
-        <option>--ignore-ancestry</option> option, which will cause the merge
+        <option>- -ignore-ancestry</option> option, which will cause the merge
         to disregard any mergeinfo and simply apply the requested diff, see
         <xref linkend="svn.branchmerge.advanced.ancestry"/>.</para>
+      -->
+      <para>如果以后用户意识到自己实际上 <emphasis>需要</emphasis> 被拦截的
+        修改, 那么有两种选择. 一种是用户可以撤消 r466, 撤消的方法见
+        <xref linkend="svn.branchmerge.basicmerging.undo"/>, 把撤消 r466 的修
+        改提交后, 用户就可以再次从 <filename>/paint/trunk</filename> 合并 r465.
+        另一种是在合并 r465 时带上选项 <option>--ignore-ancestry</option>,
+        这将导致命令 <command>svn merge</command> 忽略合并信息, 直接应用所
+        请求的差异, 见 <xref linkend="svn.branchmerge.advanced.ancestry"/>.
+      </para>
 
       <informalexample>
         <screen>
@@ -4064,7 +4093,8 @@ A    python/paint.py
 </screen>
       </informalexample>
 
-      <para>Blocking changes with <option>--record-only</option>
+      <!--
+      <para>Blocking changes with <option>- -record-only</option>
         works, but it's also a little bit
         dangerous.  The main problem is that we're not clearly
         differentiating between the ideas of <quote>I already have
@@ -4078,6 +4108,15 @@ A    python/paint.py
         track them (so that you can unblock them someday) you'll need
         to record them in a text file somewhere, or perhaps in an
         invented property.</para>
+      -->
+      <para>使用 <option>--record-only</option> 有一点危险, 因为我们经常无
+        法分辨什么时候是 <quote>我已经包含了这个修改</quote>, 什么时候是
+        <quote>我没有这个修改, 但目前还不想要它</quote>. 使用 <option>
+          --record-only</option> 实际上是在向 Subversion 撒谎, 让它以为修改
+        已经被合并了. 记住修改是否被真正地合并是用户的责任, Subversion 无法
+        回答 <quote>有哪些修改被拦截了</quote> 这样的问题. 如果用户想跟踪
+        被拦截的修改 (以后可能会放开对它们的拦截), 就要自己找地方记录, 例如
+        记在某个文本文件上, 或自定义的属性里.</para>
 
     </sect2>
 
