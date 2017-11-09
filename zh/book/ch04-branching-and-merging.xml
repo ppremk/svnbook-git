@@ -4323,18 +4323,30 @@ G    348    sally   return retval;
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.advanced.ancestry">
+      <!--
+           TODO
       <title>Noticing or Ignoring Ancestry</title>
+      -->
+      <title>关注或忽略祖先</title>
 
       <para>
         <indexterm>
           <primary>ancestry</primary>
-        </indexterm>When conversing with a Subversion developer, you
+        </indexterm>
+        如果与 Subversion 开发人员交谈, 你可能会经常听到一个术语: <firstterm>
+          祖先</firstterm> (<firstterm>ancestry</firstterm>). 这个术语描述了
+        仓库中两个对象间的一种关系: 如果它们之间是相关的, 那么其中一个对象就
+        是另一个对象的祖先.</para>
+      <!--
+        When conversing with a Subversion developer, you
         might very likely hear reference to the term
         <firstterm>ancestry</firstterm>.  This word is used to
         describe the relationship between two objects in a
         repository: if they're related to each other, one
         object is said to be an ancestor of the other.</para>
+      -->
 
+      <!--
       <para>For example, suppose you commit revision 100, which
         includes a change to a file <filename>foo.c</filename>.
         Then <filename>foo.c@99</filename> is an
@@ -4347,7 +4359,16 @@ G    348    sally   return retval;
         (they have the same path), but in fact are completely
         different objects in the repository.  They share no history
         or <quote>ancestry.</quote></para>
+      -->
+      <para>比如说你在 r100 提交了文件 <filename>foo.c</filename> 的修改,
+        那么 <filename>foo.c@99</filename> 就是 <filename>foo.c@100</filename>
+        的一个 <quote>祖先</quote>. 另一方面, 如果你在 r101 删除了文件
+        <filename>foo.c</filename>, 然后在 r102 又提交了一个具有相同名字的文件,
+        虽然从名字上看, <filename>foo.c@99</filename> 和 <filename>foo.c@102
+        </filename> 是相关的, 但实际上它们是两个完全不相关的对象, 只是碰巧名
+        字相同罢了, 它们之间不共享历史或 <quote>祖先</quote>.</para>
 
+      <!--
       <para>The reason for bringing this up is to point out an
         important difference between <command>svn diff</command> and
         <command>svn merge</command>.  The former command ignores
@@ -4360,6 +4381,15 @@ G    348    sally   return retval;
         it would notice that they're unrelated and first attempt to
         delete the old file, then add the new file;  the output would
         indicate a deletion followed by an add:</para>
+      -->
+      <para>介绍 <quote>祖先</quote> 是为了说明 <command>svn diff</command>
+        和 <command>svn merge</command> 之间的一个重要区别. <command>svn diff
+        </command> 会忽略祖先, 而 <command>svn merge</command> 对祖先非常敏感.
+        举例来说, 如果用户要求 <command>svn diff</command> 去比较 <filename>
+          foo.c</filename> 在 r99 和 r102 时的版本, 命令将会盲目地比较这两个
+        版本, 并输出以行为单位的差异. 但是如果用户要求 <command>svn merge
+        </command> 去比较相同的两个对象, 它将会注意到两个对象之间是不相关的,
+        于是先删除旧文件, 再添加新文件, 从命令的输出信息中可以看得很清楚:</para>
 
       <informalexample>
         <screen>
@@ -4368,6 +4398,7 @@ A    foo.c
 </screen>
       </informalexample>
 
+      <!--
       <para>Most merges involve comparing trees that are ancestrally
         related to one another; therefore, <command>svn
         merge</command> defaults to this behavior.  Occasionally,
@@ -4381,12 +4412,26 @@ A    foo.c
         of the entire second tree!  In these situations, you'll want
         <command>svn merge</command> to do a path-based comparison
         only, ignoring any relations between files and directories.
-        Add the <option>--ignore-ancestry</option> option to your
+        Add the <option>- -ignore-ancestry</option> option to your
         <command>merge</command> command, and it will behave just
         like <command>svn diff</command>.  (And conversely, the
-        <option>--notice-ancestry</option> option will cause
+        <option>- -notice-ancestry</option> option will cause
         <command>svn diff</command> to behave like the
         <command>svn merge</command> command.)</para>
+      -->
+      <para>大多数合并操作都会涉及比较两个在历史上相关的目录树, 因此 <command>
+          svn merge</command> 就把这种情况当成默认条件. 然而, 在少数情况下用户
+        可能希望 <command>svn merge</command> 去比较两个不相关的目录树. 比如说
+        用户导入了两份源代码, 分别表示软件的两个不同的供应商发布版 (见
+        <xref linkend="svn.advanced.vendorbr"/>), 如果用户要求 <command>
+          svn merge</command> 去比较这两个目录树, 将会看到第一个目录树被整
+        体删除, 然后再整体添加第二个目录树. 对于这种情况, 用户其实是希望
+        <command>svn merge</command> 只做基于路径的比较, 完全忽略文件和目录
+        之间的任何关系. 添加选项 <option>--ignore-ancestry</option> 后,
+        <command>svn merge</command> 的行为将变得和 <command>svn diff</command>
+        一样. (反之, 添加 <command>--notice-ancestry</command> 后, 命令
+        <command>svn diff</command> 的行为将变得和 <command>svn merge</command>
+        一样)</para>
 
       <tip>
         <para>
