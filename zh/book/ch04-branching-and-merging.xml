@@ -4672,8 +4672,12 @@ D    src/integer.c
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.advanced.pre1.5clients">
+      <!--
       <title>Blocking Merge Tracking Unaware Clients</title>
+      -->
+      <title>为旧客户端禁止合并跟踪</title>
 
+      <!--
       <para>If you've just upgraded your server to Subversion 1.5 or
         later, there's a risk that pre-1.5 Subversion
         clients can cause problems with
@@ -4688,7 +4692,18 @@ D    src/integer.c
         when <quote>merge-aware</quote> clients attempt automatic
         merging, they're likely to run into all sorts of conflicts
         resulting from repeated merges.</para>
+      -->
+      <para>如果用户只是把服务器端升级到 Subversion 1.5 及以后的版本, 那么 1.5
+        版之前的客户端在
+        <xref linkend="svn.branchmerge.basicmerging.mergetracking"/> 方面会产生
+        问题, 这是因为 1.5 版之前的客户端不支持这项特性. 当旧版客户端执行
+        <command>svn merge</command> 时, 命令不会去更新属性
+        <literal>svn:mergeinfo</literal>, 因此, 随后的提交虽然是合并的结果, 但
+        关于被复制的修改的信息不会告诉给服务器&mdash;这些信息就此丢失. 以后,
+        如果新版客户端执行自动合并, 很可能会因为合并重复的修改而产生大量冲突.
+      </para>
 
+      <!--
       <para>If you and your team are relying on the merge-tracking
         features of Subversion, you may want to configure your
         repository to prevent older clients from committing changes.
@@ -4701,9 +4716,20 @@ D    src/integer.c
         deny the commit.
         <xref linkend="svn.branchmerge.advanced.hook-ex1" /> gives an
         example of such a hook script:</para>
+      -->
+      <para>如果你和你的团队非常依赖 Subversion 的合并跟踪特性, 你可能需要对
+        仓库进行配置, 使得仓库禁止旧客户端提交修改. 最简单的配置方法是在钩子
+        脚本 <literal>start-commit</literal> 里检查参数 <quote>capabilities
+        </quote>, 如果客户端反映它支持 <literal>mergeinfo</literal> 功能,
+        钩子脚本就允许客户端提交, 否则的话就禁止该客户端提交修改,
+        <xref linkend="svn.branchmerge.advanced.hook-ex1" /> 给出了
+        钩子脚本 <literal>start-commit</literal> 的一个示例:</para>
 
       <example id="svn.branchmerge.advanced.hook-ex1">
+      <!--
         <title>Merge-tracking gatekeeper start-commit hook script</title>
+      -->
+        <title>合并跟踪的看门狗&mdash;钩子脚本 start-commit</title>
 
         <programlisting>
 #!/usr/bin/env python
@@ -4731,8 +4757,12 @@ sys.exit(0)
 </programlisting>
       </example>
 
+      <!--
       <para>For more information about hook scripts, see
         <xref linkend="svn.reposadmin.hooks" />.</para>
+      -->
+      <para>关于钩子脚本的更多信息, 见 <xref linkend="svn.reposadmin.hooks" />.
+      </para>
 
     </sect2>
     <!-- =============================================================== -->
