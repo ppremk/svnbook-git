@@ -4554,6 +4554,7 @@ Committed revision 470.
 </screen>
       </informalexample>
 
+      <!--
       <para>Then you rename <filename>integer.c</filename> to <filename>
         whole.c</filename> in r471 and then make some edits to the same
         file in r473.  Effectively you've created a new file in your branch
@@ -4561,6 +4562,12 @@ Committed revision 470.
         the original file.  Meanwhile, back on <filename>/calc/trunk
         </filename>, Sally has committed some improvements of her own to
         <filename>integer.c</filename> in r472:</para>
+      -->
+      <para>然后用户在 r471 把 <filename>integer.c</filename> 重命名为
+        <filename>whole.c</filename>, 又在 r473 修改了 <filename>whole.c
+        </filename>. 从效果上来看等价于创建了一个新文件 (原文件的副本再加上
+        一些修改), 再删除原文件. 同时在 <filename>/calc/trunk</filename>,
+        Sally 在 r472 提交了 <filename>integer.c</filename> 的修改:</para>
 
       <informalexample>
         <screen>
@@ -4575,9 +4582,13 @@ Trunk work on integer.c.
 </screen>
       </informalexample>
 
+      <!--
       <para>Now you decide to merge your branch back to the trunk.
         How will Subversion combine the rename and edits you made
         with Sally's edits?</para>
+      -->
+      <para>现在用户打算把自己的分支上的工作合并到主干上, 你觉得 Subversion
+        会如何组合你和 Sally 的修改?</para>
 
       <informalexample>
         <screen>
@@ -4602,6 +4613,7 @@ Summary of conflicts:
 </screen>
       </informalexample>
 
+      <!--
       <para>The answer is that Subversion <emphasis>won't</emphasis>
         combine those changes, but rather raises a tree conflict<footnote>
         <para>If Sally hadn't made her change in r472, then Subversion would
@@ -4612,6 +4624,26 @@ Summary of conflicts:
         <informalexample>
           <screen>
 $ svn merge ^/calc/branches/my-calc-branch
+- - - Merging differences between repository URLs into '.':
+ U   src/real.c
+A    src/whole.c
+D    src/integer.c
+- - - Recording mergeinfo for merge between repository URLs into '.':
+ U   .
+</screen>
+      </informalexample></footnote>because it needs your help
+        to figure out what part of your changes and what part of Sally's
+        changes should ultimately end up in <filename>whole.c</filename>
+        or even if the rename should take place at all!</para>
+      -->
+      <para>实际情况是 Subversion <emphasis>不会</emphasis> 把这些修改组合起来,
+        而是产生一个目录冲突<footnote><para>如果 Sally 没有提交 r472 的修改,
+            那么 Subversion 将会注意到目标工作副本的 <filename>integer.c
+            </filename> 和合并左端的 <filename>whole.c</filename> 其实是同一
+            个文件, 此时合并将会成功, 不会有冲突产生:</para>
+        <informalexample>
+          <screen>
+$ svn merge ^/calc/branches/my-calc-branch
 --- Merging differences between repository URLs into '.':
  U   src/real.c
 A    src/whole.c
@@ -4619,17 +4651,22 @@ D    src/integer.c
 --- Recording mergeinfo for merge between repository URLs into '.':
  U   .
 </screen>
-      </informalexample></footnote>because it needs your help
-        to figure out what part of your changes and what part of Sally's
-        changes should ultimately end up in <filename>whole.c</filename>
-        or even if the rename should take place at all!</para>
+      </informalexample></footnote> 因为 Subversion 需要用户帮它算出你和
+      Sally 的哪些修改应该留在 <filename>whole.c</filename> 上, 或者是重命
+      名操作是否应该保留.</para>
 
+      <!--
       <para>You will need to resolve this tree conflict before committing
         the merge and this may require some manual intervention on your
         part, see <xref linkend="svn.tour.treeconflicts"/>.  The moral of
         this story is that until Subversion improves, be careful about
         merging copies and renames from one branch to another and when you
         do, be prepared for some manual resolution.</para>
+      -->
+      <para>用户解决完目录冲突后才能提交, 这可能需要用户人工介入, 见
+        <xref linkend="svn.tour.treeconflicts"/>. 我们举这个例子的目的是提醒
+        用户, 在 Subversion 改良之前, 要小心对待从一个分支合并复制和重命名操
+        作到另一个分支, 如果确实这样做了, 要做好解决目录冲突的准备.</para>
 
     </sect2>
 
