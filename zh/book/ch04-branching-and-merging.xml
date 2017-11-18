@@ -5176,17 +5176,28 @@ $
         上移动.</para>
     </sidebar>
 
+      <!--
     <para>Because <command>svn switch</command> is essentially a
       variant of <command>svn update</command>, it shares the same
       behaviors; any local modifications in your working copy are
       preserved when new data arrives from the repository.</para>
+      -->
+    <para>因为 <command>svn switch</command> 本质上是
+      <command>svn update</command> 的一个变种, 所以它有着和
+      <command>svn update</command> 相同的行为: 从服务器接收更新时, 工作副本
+      的本地修改将被保留.</para>
 
     <tip>
+      <!--
       <para>Have you ever found yourself making some complex edits (in
         your <filename>/trunk</filename> working copy) and suddenly
         realized, <quote>Hey, these changes ought to be in their own
         branch?</quote> There is a great two step technique to do
         this:</para>
+      -->
+      <para>读者是否遇到过这种情形: 在 <filename>/trunk</filename> 的工作副本
+        中做了一些复杂的修改, 结果却发现这些修改应该有一个自己的分支, 这时候
+        用户可以这样做:</para>
 
       <informalexample>
         <screen>
@@ -5199,11 +5210,17 @@ At revision 353.
 </screen>
       </informalexample>
 
+      <!--
       <para>The <command>svn switch</command> command, like
         <command>svn update</command>, preserves your local edits.  At
         this point, your working copy is now a reflection of the newly
         created branch, and your next <command>svn commit</command>
         invocation will send your changes there.</para>
+      -->
+      <para>和 <command>svn update</command> 一样, <command>svn switch</command>
+        保留了本地修改. 现在你的工作副本已经映射到了新创建的分支, 如果后面执行
+        了 <command>svn commit</command>, 修改将会被提交上新创建的分支中.
+      </para>
     </tip>
 
   </sect1>
@@ -5213,33 +5230,54 @@ At revision 353.
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.branchmerge.tags">
+      <!--
     <title>Tags</title>
+      -->
+    <title>标签</title>
 
     <para>
       <indexterm>
         <primary>tags</primary>
       </indexterm>
+      另一个常见的版本控制概念是标签. 标签是项目的一个 <quote>快照</quote>,
+      它在 Subversion 中到处都是, 因为每一个版本号都对应着提交后, 文件系统的
+      一个快照.</para>
+      <!--
       Another common version control concept is a tag.  A tag is
       just a <quote>snapshot</quote> of a project in time.  In
       Subversion, this idea already seems to be everywhere.  Each
       repository revision is exactly that&mdash;a snapshot of the
       filesystem after each commit.</para>
+      -->
 
+      <!--
     <para>However, people often want to give more human-friendly names
       to tags, such as <literal>release-1.0</literal>.  And they want
       to make snapshots of smaller subdirectories of the filesystem.
       After all, it's not so easy to remember that release 1.0 of a
       piece of software is a particular subdirectory of revision
       4822.</para>
+      -->
+    <para>然而, 用户经常想给标签取一个更人性化的名字, 例如 <literal>release-1.0
+      </literal>, 而且用户只想对文件系统的某个子目录做快照, 毕竟人们更容易记住
+      项目的发布版 1.0 是版本号为 4822 的特定子目录.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.tags.mksimple">
+      <!--
       <title>Creating a Simple Tag</title>
+      -->
+      <title>创建简单的标签</title>
 
+      <!--
       <para>Once again, <command>svn copy</command> comes to the
         rescue.  If you want to create a snapshot of
         <filename>/calc/trunk</filename> exactly as it looks in the
         <literal>HEAD</literal> revision, make a copy of it:</para>
+      -->
+      <para>创建标签的命令是 <command>svn copy</command>. 如果用户想为
+        处于 <literal>HEAD</literal> 的 <filename>/calc/trunk</filename>
+        创建一个快照, 就执行:</para>
 
       <informalexample>
         <screen>
@@ -5251,6 +5289,7 @@ Committed revision 902.
 </screen>
       </informalexample>
 
+      <!--
       <para>This example assumes that a
         <filename>/calc/tags</filename> directory already exists.  (If
         it doesn't, you can create it using <command>svn
@@ -5265,7 +5304,17 @@ Committed revision 902.
         <filename>/calc/trunk</filename> is exactly the snapshot you
         want, you can specify it by passing <option>-r 901</option> to
         the <command>svn copy</command> command.</para>
+      -->
+      <para>这个例子假设目录 <filename>/calc/tags</filename> 已经存在 (如果不
+        存在, 就先用 <command>svn mkdir</command> 创建它). 复制完成后, 新目录
+        <filename>release-1.0</filename> 就成为了
+        <filename>/calc/trunk</filename> 在复制那一刻的永久快照. 当然, 用户也
+        可以指定被复制的版本号, 避免其他在用户没有觉察的时候, 向仓库提交了新
+        的修改. 如果说用户已经知道版本号为 901 的
+        <filename>/calc/trunk</filename> 正是自己想要的快照, 就给命令
+        <command>svn copy</command> 添加选项 <option>-r 901</option>.</para>
 
+      <!--
       <para>But wait a moment: isn't this tag creation procedure the
         same procedure we used to create a branch?  Yes, in fact, it
         is.  In Subversion, there's no difference between a tag and a
@@ -5276,7 +5325,15 @@ Committed revision 902.
         as long as nobody ever commits to the directory, it forever
         remains a snapshot.  If people start committing to it, it
         becomes a branch.</para>
+      -->
+      <para>请等一下, 这和创建分支的步骤不是一样的吗? 事实上的确如此. 对于
+        Subversion 而言, 标签和分支没有区别, 它们都是通过命令 <command>
+          svn copy</command> 创建的目录. 之所以把复制出的目录叫作 <quote>标签
+        </quote> 的唯一原因是 <emphasis>用户</emphasis> 已经决定把该目录看成
+        标签&mdash;只要没有人往标签提交修改, 它就永远保持创建时的样子. 如果用户
+        在创建标签后, 往标签提交了新的修改, 那它就变成了一个分支.</para>
 
+      <!--
       <para>If you are administering a repository, there are two
         approaches you can take to managing tags.  The first approach
         is <quote>hands off</quote>: as a matter of project policy,
@@ -5291,6 +5348,15 @@ Committed revision 902.
         commits a change to a tag directory, you can simply undo the
         change as discussed in the previous section.  This is version
         control, after all!</para>
+      -->
+      <para>如果读者是仓库的管理员, 那么你有 2 种标签管理方法. 第 1 种是
+        <quote>放任不管</quote>: 作为一种项目管理策略, 一开始便规定好标签
+        的存放位置, 确保所有用户都知道如何对待他们复制的目录 (也就是确保他们不
+        会向标签提交修改). 第 2 种更具有强制性: 使用和 Subversion 配合的
+        访问控制脚本, 禁止任何人在标签区提交修改, 除了创建新的标签 (见
+        <xref linkend="svn.serverconfig"/>). 第 2 种方法通常是没有必要的, 因
+        为如果用户不小心向标签提交了修改, 总是可以用之前介绍的方法, 撤消已经
+        提交的修改.</para>
 
     </sect2>
 
