@@ -6380,10 +6380,14 @@ A    newdirectory/newfile
         vendor branch.</para>
       -->
 
+      <!--
       <para>So let's create our vendor branch.  We'll begin by
         creating a placeholder directory for all such vendor branches
         in our repository, and then checking out a working copy of
         that location.</para>
+      -->
+      <para>现在开始创建我们的供方分支. 一开始先在仓库中创建一个存放所有供方
+        分支的目录, 然后检出该目录的工作副本.</para>
 
       <informalexample>
         <screen>
@@ -6397,10 +6401,14 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>Now, we'll take advantage of Subversion's foreign
         repository copy support to get an exact copy of libcomplex
         1.0.0&mdash;including any Subversion properties stored on its
         files and directories&mdash;from the vendor repository.</para>
+      -->
+      <para>利用 Subversion 的外部仓库复制特性, 从供方仓库获取 libcomplex
+        1.0.0 的一份副本&mdash;包括文件和目录上所有的 Subversion 属性.</para>
 
       <informalexample>
         <screen>
@@ -6431,23 +6439,36 @@ $
       </informalexample>
 
       <note>
+      <!--
         <para>If you happen to be using an older version of
           Subversion, the closest available approximation of the new
           foreign repository copy support in <command>svn
           copy</command> is to instead import (via <command>svn
           import</command>) a working copy of the vendor's tag,
-          including the <option>--no-auto-props</option>
-          and <option>--no-ignore</option> options so that the
+          including the <option>- -no-auto-props</option>
+          and <option>- -no-ignore</option> options so that the
           complete tree and any of its versioned properties are
           accurately replicated in your own repository.</para>
+      -->
+        <para>如果用户使用的 Subversion 版本较旧, 不支持外部仓库复制, 那么与
+          此最类似的替代操作是导入 (通过命令 <command>svn import</command>)
+          供方标签的工作副本, 导入时需要加上选项 <option>--no-auto-props
+          </option> 和 <option>--no-ignore</option>, 这样才能保证目录及其
+          所有的属性都能被完整地导入到你的仓库中.</para>
       </note>
 
+      <!--
       <para>Now that we have a vendor branch based on libcomplex 1.0.0,
         we can begin making the customizations to libcomplex required
         for our purposes, committing them directly to the vendor
         branch we've created.  And of course, we can begin using
         libcomplex in our own application.</para>
+      -->
+      <para>有了基于 libcomplex 1.0.0 的供方分支后, 我们就可以开始对 libcomplex
+        进行定制化修改, 然后提交到分支上, 并且可以开始在自己的应用程序中使用
+        修改后的 libcomplex.</para>
 
+      <!--
       <para>Some time later, libcomplex 1.0.1 is released.  After
         reviewing its changes, we decide we'd like to upgrade our
         vendor branch to the new version.  Here is where Subversion's
@@ -6458,6 +6479,13 @@ $
         vendor branch, ideally without clobbering our own
         customizations.  This is precisely what the 2-URL form of
         the <command>svn merge</command> command is for.</para>
+      -->
+      <para>一段时间后, 官方发布了 libcomplex 1.0.1, 查看新版的修改日志后, 我
+        们决定把自己的供方分支也升级到 1.0.1, 这时候需要用到 Subversion 的
+        外部仓库合并. 当前的供方分支是原始的 libcomplex 1.0.0 再加上我们的定
+        制化修改, 现在我们需要把原始的 1.0.0 与 1.0.1 之间的差异应用到供方分
+        支, 最理想的情况是被应用的差异不会影响到我们的定制化修改. 合并操作需要
+        使用 2-URL 形式的 <command>svn merge</command>.</para>
 
       <informalexample>
         <screen>
@@ -6477,6 +6505,7 @@ Select: (p) postpone, (df) diff-full, (e) edit, (m) merge,
 </screen>
       </informalexample>
 
+      <!--
       <para>As you can see, <command>svn merge</command> has merged
         the changes required to make libcomplex 1.0.0 look like
         libcomplex 1.0.1 into our working copy.  In our example, it has
@@ -6487,10 +6516,21 @@ Select: (p) postpone, (df) diff-full, (e) edit, (m) merge,
         customizations to what is now libcomplex 1.0.1 continue to
         make sense.  (See <xref linkend="svn.tour.cycle.resolve" />
         for more on resolving conflicts of this sort.)</para>
+      -->
+      <para>可以看到, <command>svn merge</command> 把 libcomplex 1.0.0 升级
+        到 1.0.1 的修改合并到了我们的工作副本. 在例子中, 有一个文件发生了冲突,
+        应该是供方修改的区域与我们的定制化修改有所重叠. Subversion 安全地检测
+        到了冲突, 并询问我们如何解决, 使得定制化修改在 libcomplex 1.0.1 上仍然
+        有效. (关于冲突解决, 见 <xref linkend="svn.tour.cycle.resolve"/>).
+      </para>
 
+      <!--
       <para>Once we've resolved the conflicts and performed any
         testing or review we need, we can commit the changes to our
         vendor branch.</para>
+      -->
+      <para>冲突一旦解决, 并且测试和审核都没有问题后, 就可以提交到供方分支上.
+      </para>
 
       <informalexample>
         <screen>
@@ -6509,6 +6549,7 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>That, in a nutshell, is how to manage vendor branches when
         the original source is Subversion-accessible.  There are some
         notable shortcomings, though.  First, foreign repository
@@ -6521,6 +6562,12 @@ $
         cause no small amount of complication and frustration.
         Unfortunately, at this time, we don't have a particularly
         solid recommendation to offer to alleviate that pain.</para>
+      -->
+      <para>这就是当供方源是 Subversion 仓库时, 管理供方分支的方式. 这种方式
+        有几个值得注意的缺点, 首先, 外部仓库合并不能像同一仓库那样自动跟踪,
+        这就意味着必须由用户记住供方分支已经做过哪些合并, 以及下次升级时如何
+        构造合并. 另外&mdash;对于其他形式的合并同样适用&mdash;源的重全名操作
+        会造成不小的麻烦, 不幸的是目前并没有有效的办法缓解这个问题.</para>
 
     </sect2>
 
