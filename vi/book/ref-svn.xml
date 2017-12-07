@@ -70,7 +70,10 @@ Global options:
   --username ARG           : specify a username ARG
   --password ARG           : specify a password ARG
   --no-auth-cache          : do not cache authentication tokens
-  --non-interactive        : do no interactive prompting
+  --non-interactive        : do no interactive prompting (default is to prompt
+                             only if standard input is a terminal device)
+  --force-interactive      : do interactive prompting even if standard input
+                             is not a terminal device
   --trust-server-cert      : accept SSL server certificates from unknown
                              certificate authorities without prompting (but only
                              with '--non-interactive')
@@ -470,6 +473,19 @@ $
         </listitem>
       </varlistentry>
 
+      <varlistentry id="svn.ref.svn.sw.force_interactive">
+        <term><option>--force-interactive</option></term>
+        <listitem>
+          <para>Forces the <command>svn</command> command-line client to run in
+            interactive mode when standard input is not a terminal device.</para>
+
+          <note>
+            <para>This option is accepted by
+              all <command>svn</command> subcommands.</para>
+          </note>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="svn.ref.svn.sw.git">
         <term><option>--git</option></term>
         <listitem>
@@ -687,6 +703,12 @@ $ svn commit -m "They don't make Sunday."
             inside an automated script and it's more appropriate to
             have Subversion fail than to prompt for more
             information.</para>
+
+          <para>Beginning with Subversion 1.8, the <command>svn</command>
+            command-line client, by default, is non-interactive when standard
+            input is not a terminal device. Pass the
+            <option>--force-interactive</option> option to make the client run
+            in interactive mode.</para>
 
           <note>
             <para>This option is accepted by
@@ -2123,7 +2145,7 @@ Committed revision 7.
         working copy (WC) path or URL.  When copying multiple
         sources, add the copies as immediate children
         of <replaceable>DST</replaceable> (which, of course, must
-        be a directory).</para>
+        be an existing directory).</para>
         
         <variablelist>
 
@@ -2336,7 +2358,9 @@ Committed revision 13.
         <option>--keep-local</option> option is given.  The
         command will not remove any unversioned or modified items;
         use the <option>--force</option> option to override this
-        behavior.</para>
+        behavior. A directory that contains unversioned or modified
+        items will not be deleted, unless the <option>--force</option>
+        is used.</para>
 
       <para>Items specified by URL are deleted from
         the repository via an immediate commit.  Multiple URLs are
@@ -3841,7 +3865,7 @@ $
         output using <option>--search</option> and <option>--search-and</option>
         options.  When using these options, a log message is shown only if a
         revision's author, date, log message text, or list of changed paths,
-        matches a search pattern. Searching by changed patch requies
+        matches a search pattern. Searching by changed patch requires
         <option>--verbose</option> option, otherwise <command>svn log</command>
         does not show changed paths therefore they can't be filtered.</para>
 
