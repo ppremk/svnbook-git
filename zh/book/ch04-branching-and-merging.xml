@@ -1538,7 +1538,6 @@ U    src/main.c
       -->
 
       <informalexample>
-        <!-- TODO -->
         <screen>
 # We need to merge r958 from trunk to branches/proj-X/doc/INSTALL,
 # but that revision also affects main.c, which we don't want to merge:
@@ -1630,7 +1629,6 @@ U    src/main.c
           caused some level of confusion and frustration. Subversion 1.7
           and later addresses this problem by only updating the mergeinfo
           on subtrees which are parents of the paths modified by the merge
-          TODO
           (i.e. paths changed, added, or deleted by application of the
           difference, see
           <xref linkend="svn.branchmerge.advanced.advancedsyntax"/>).
@@ -1644,7 +1642,9 @@ U    src/main.c
           简单的合并 (例如只合并了一个文件), 也会影响所有子目录的合并信息,
           甚至包括那些不是受影响路径的父目录的目录, 在某种程度上会让人感到
           困惑和沮丧. Subversion 1.7 以及之后的版本解决了这个问题, 方法是只
-          更新受影响路径的父目录的子目录合并信息, 有一个例外是目标的合并信息
+          更新受影响路径 (也就是通过应用差异而被修改, 添加或删除的路径, 见
+          <xref linkend="svn.branchmerge.advanced.advancedsyntax"/>)
+          的父目录的子目录合并信息, 有一个例外是目标的合并信息
           总是会被更新, 即使被应用的差异不会产生任何修改.</para>
       </tip>
 
@@ -1667,7 +1667,6 @@ U    src/main.c
         absolutely have to do all your sync merges to the root of your
         branch as we do in this example.  <emphasis>If</emphasis> your
         branch is effectively synced via a series of subtree
-        TODO
         merges then the reintegrate will work, but ask yourself, if the
         branch is effectively synced, then why are you doing subtree
         merges? Doing so is almost always needlessly
@@ -1676,9 +1675,12 @@ U    src/main.c
   <para>如果用户完成了分支上的所有工作, 也就是说新特性已经完成, 你已经准备好
     把分支合并到主干上 (这样的话团队中的其他成员就可以分享你的工作成果), 合并
     的步骤很简单, 首先把分支与主干同步, 就像之前做过的那样<footnote><para>
-        从 Subversion 1.7 开始, 用户并非一定要像例子中演示的那样, 将分支与主
-        干同步. <emphasis>如果</emphasis> 分支已经通过一系列的子目录合并,
-        在效果上已经实际了与主干的同步, 那就没必要再做一遍与主干同步.</para>
+        从 Subversion 1.7 开始, 用户并非一定要像例子中演示的那样, 每次都将分支
+        的根目录与主
+        干进行同步. <emphasis>如果</emphasis> 分支已经通过一系列的子目录合并,
+        在效果上已经实现了与主干的同步, 后面的再整合合并也可以正常工作. 但是请
+        读者扪心自问, 如果分支在效果上已经同步了, 那为什么还要再做子目录合并呢?
+        此时再做子目录合并只会带来无谓的复杂性.</para>
   </footnote></para>
 
       <informalexample>
@@ -2025,7 +2027,6 @@ Properties on '.':
         all begin with <quote>- - - Recording mergeinfo for</quote>
         and appear at the end of the merge.  Unlike other merge
         notifications, these don't describe the application of a
-        TODO
         difference to a working copy
         (see <xref linkend="svn.branchmerge.advanced.advancedsyntax"/>),
         but instead describe "housekeeping" changes made to keep
@@ -2396,7 +2397,6 @@ r388*
 
       <!--
       <para>The <literal>*</literal> indicates revisions that are only
-        TODO
         <emphasis>partially</emphasis> merged to the target in question
         (the meaning is the same if we are checking for eligible
         revisions).  What this means in this example is that if we tried
@@ -2579,14 +2579,14 @@ Committed revision 399.
         diff</command> to confirm that your work is in the state you
         want it to be in, and then use <command>svn commit</command>
         to send the final version to the repository.  After
-        TODO
         committing, this particular changeset is no longer reflected
         in the <literal>HEAD</literal> revision.</para>
       -->
       <para>记住, 像这样撤消修改和其他 <command>svn merge</command> 操作一样,
         用户应该用 <command>svn status</command> 和 <command>svn diff</command>
         确认修改的内容正是心里所期望的那样, 检查没问题后再用 <command>svn
-          commit</command> 提交.</para>
+          commit</command> 提交. 提交后, 在 <literal>HEAD</literal> 上就再也看
+        不到 r392 的修改.</para>
 
       <!--
       <para>Again, you may be thinking: well, that really didn't undo
@@ -3303,8 +3303,8 @@ $ svn merge ^/calc/branches/some-branch
         ranges to duplicate, the command takes three main
         arguments:</para>
       -->
-      <para>如果用户在使用 <command>svn merge</command> 时指定的被复制的版本
-        号范围, 则命令接受三个参数:</para>
+      <para>如果用户想通过指定被复制的版本号范围, 最大程度地使用
+        <command>svn merge</command>, 则命令接受三个参数:</para>
 
       <orderedlist>
         <indexterm>
@@ -3602,15 +3602,14 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
           a copy of <filename>^/trunk@200</filename>.  The natural
           history of <filename>^/branches/feature-branch</filename>
           contains all the repository paths and revision ranges
-          TODO
           through which the history of the new branch has ever
           passed:</para>
       -->
         <para>如果说用户在 r100 创建了 <filename>^/trunk</filename>, 在 r201
           基于 <filename>^/trunk@200</filename> 创建了 <filename>
-            ^/branches/feature-branch</filename>.
-          <filename>^/branches/feature-branch</filename> 的自然历史包含了所有
-          的仓库路径和版本号.</para>
+            ^/branches/feature-branch</filename>, 则
+          <filename>^/branches/feature-branch</filename> 的自然历史包含了该
+          分支历史曾经经历过的所有仓库路径与版本号:</para>
 
         <informalexample>
           <literallayout>
@@ -3974,11 +3973,10 @@ Reintegrate Paint Python wrapper.
 
       <!--
       <para>Because revision 465 was a reintegrate merge we know
-        TODO
         that mergeinfo was recorded describing the merge:</para>
       -->
-      <para>因为 r465 是一个再整合合并, 所以我们知道记录的合并信息描述了合并:
-      </para>
+      <para>因为 r465 是一个再整合合并, 所以我们知道描述合并的信息被
+        记录了下来:</para>
 
       <informalexample>
         <screen>
@@ -4337,7 +4335,6 @@ G    348    sally   return retval;
     <!-- =============================================================== -->
     <sect2 id="svn.branchmerge.advanced.ancestry">
       <!--
-           TODO
       <title>Noticing or Ignoring Ancestry</title>
       -->
       <title>关注或忽略祖先</title>
@@ -4506,7 +4503,6 @@ A    foo.c
         but it fails to transmit that information to the client which
         is running <command>svn update</command> or <command>svn
         merge</command>.  Instead of telling the client, <quote>Copy
-        TODO
         that file you already have to this new location,</quote> it
         sends down an entirely new file.  This can lead to
         problems, particularly tree conflicts in the case of renames,
@@ -4519,7 +4515,9 @@ A    foo.c
       -->
     <para>使用 <command>svn copy</command> 复制一个文件时, 仓库记住了新文件的
       来源, 但这项信息并不会传递给正在执行 <command>svn update</command> 或
-      <command>svn merge</command> 的客户端, 相反, 它会向客户端下发一个全新的
+      <command>svn merge</command> 的客户端. 仓库不会告诉客户端 <quote>把
+        工作副本中已有的这个文件复制到另一个位置</quote>, 相反, 它会向客户端下发
+      一个全新的
       文件. 这可能会导致问题, 尤其是和重命名有关的目录冲突. 重命名不仅涉及到
       一个新的副本, 还涉及到删除一个旧路径&mdash;一个不为人知的事实是
       Subversion 没有 <quote>直正的重命名</quote>&mdash;<command>svn move
@@ -5946,14 +5944,14 @@ Committed revision 476.
           <secondary>feature branches</secondary>
         </indexterm>
         <firstterm>特性分支</firstterm> (<firstterm>feature branch</firstterm>)
-        是分支的一种类型, 它曾是本章的主要例子. 这是一个临时分支, 为了完成一
+        是分支的一种类型, 它曾是本章的主要例子 (在这个例子中, 你在分支上工作,
+        而 Sally 在 <filename>/trunk</filename> 上工作). 这是一个临时分支, 为了完成一
         个复杂的修改, 在完成前不能影响 <filename>/trunk</filename> 的稳定性.
         与发布分支不同 (发布分支可能需要永远支持), 特性分支被创建后, 使用一
         段时间, 被合并到主干后就会被删除&mdash;它们的寿命是很有限的.</para>
       <!--
         A <firstterm>feature branch</firstterm> is the sort of
         branch that's been the dominant example in this chapter (the
-        TODO
         one you've been working on while Sally continues to work on
         <filename>/trunk</filename>).  It's a temporary branch created
         to work on a complex change without interfering with the
@@ -6183,7 +6181,6 @@ A    newdirectory/newfile
     <para>Now you face an interesting situation.  Your project could
       house its custom modifications to the third-party data in some
       disjointed fashion, such as using patch files or full-fledged
-      TODO
       alternative versions of files and directories.  But these quickly
       become maintenance headaches, requiring some mechanism by which
       to apply your custom changes to the third-party code and
@@ -6191,7 +6188,8 @@ A    newdirectory/newfile
       version of the third-party code that you track.</para>
       -->
     <para>现在你面临一种非常有趣的情况. 你的项目可以使用几种分离的方式存放
-      第三方数据的定制化修改, 例如使用补丁文件. 但是维护人员很快就会感到头疼,
+      第三方数据的定制化修改, 比如说使用补丁文件, 或文件和目录的成熟的替代
+      版本. 但是维护人员很快就会感到头疼,
       因此迫切需要一种机制, 能够方便地把你的定制化修改应用到第三方代码上, 并
       且当第三方代码更新时能够迫使开发人员重新生成这些修改.</para>
 
@@ -6210,7 +6208,6 @@ A    newdirectory/newfile
       a directory tree in your own version control system that
       contains information provided by a third-party entity, or
       vendor.  Each version of the vendor's data that you decide to
-      TODO
       absorb into your project is called a <firstterm>vendor
       drop</firstterm>.</para>
       -->
@@ -6239,14 +6236,14 @@ A    newdirectory/newfile
       branches in Subversion.  The flexibility of the system offers
       several different approaches, each of which has its advantages
       and disadvantages, and none of which can be clearly considered
-      TODO
       a <quote>silver bullet</quote> for the problem.  We'll cover a
       few of these approaches at a high level in the following
       sections, using the common example of a software project which
       depends on a third-party library.</para>
       -->
     <para>不幸的是, 在 Subversion 中并不存在一种管理供方分支的最佳方法. 系统
-      的灵活性提供了多种不同的管理方法, 每一种都有各自的优缺点. 在下面几节里,
+      的灵活性提供了多种不同的管理方法, 每一种都有各自的优缺点, 没有一种方法
+      可以当成 <quote>万能钥匙</quote>. 在下面几节里,
       我们将从较高的层面介绍其中几种方法, 所使用的例子也是依赖第三方函数库的
       典型示例.</para>
 
@@ -6275,7 +6272,8 @@ A    newdirectory/newfile
       -->
       <para>维护第三方函数库的定制化修改会牵涉到 3 个数据源: 定制化修改所基于
         的第三方函数库的最后一个版本, 项目所使用的定制化版本 (即实际上的供方
-        分支), 以及第三方函数库的新版本. 于是, 管理供方分支本质上可以归结为
+        分支), 以及第三方函数库的新版本. 于是, 管理供方分支 (供方分支应
+        存放在用户自己的代码仓库中) 本质上可以归结为
         执行合并操作 (指的是一般意义上的合并), 但是其他开发团队可能会对其他
         数据源&mdash;第三方函数库代码的全新版本&mdash;采取不同的策略, 所以说
         同样存在几种不同的方法去执行合并操作.</para>
@@ -7063,7 +7061,7 @@ $
       在长期存在的分支上工作的开发人员有时候需要付出额外的努力, 以确保分支的
       演化方向与同事的保持一致. 对于有些分支而言, 这些缺点都不算是问题, 因为
       它们只是试探性的分支, 仅仅是在尝试代码库未来的发展方向, 将来不会被整合
-      到主线上&mdash;mere policy needn't be a vision-killer! 但是有一个简单的
+      到主线上. 但是有一个简单的
       事实不容忽视, 那就是代码及其修改如果能得到更多人的审核与理解, 那么对项目
       而言通常是有好处的.</para>
 
