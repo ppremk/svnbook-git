@@ -142,8 +142,8 @@
       <filename>trunk</filename> and <filename>branches</filename>.
       The reason for this will soon become clear.</para>
       -->
-    <para>再次回顾 <xref linkend="svn.basic"/> 的例子: 你和你的同事, Sally,
-      共享一个包含了两个项目的仓库, 这两个项目是 <filename>paint</filename>
+    <para>再次回顾 <xref linkend="svn.basic"/> 的例子: 你和你的同事&mdash;Sally
+      &mdash;共享一个包含了两个项目的仓库, 这两个项目是 <filename>paint</filename>
       和 <filename>calc</filename>. 如
       <xref linkend="svn.branchmerge.using.dia-1"/> 所示, 每一个项目都包含了
       子目录 <filename>trunk</filename> 和 <filename>branches</filename>. 读
@@ -167,9 +167,9 @@
       <quote>main line</quote> of development is going to take
       place.</para>
       -->
-    <para>假设 Sally 和你都有一份项目 <quote>calc</quote> 的工作副本, 更确切
+    <para>假设 Sally 和你都有一份 <quote>calc</quote> 项目的工作副本, 更确切
       地说, 你们每个人都有一份 <filename>/calc/trunk</filename> 的工作副本.
-      项目的所有材料都放在子目录 <filename>trunk</filename> 内, 而不直接放到
+      项目的所有材料都放在子目录 <filename>trunk</filename> 内, 而不是直接放到
       <filename>/calc</filename> 里, 因为开发团队把
       <filename>/calc/trunk</filename> 作为开发 <quote>主线</quote>
       (main line).</para>
@@ -217,10 +217,10 @@
       weeks of isolation.</para>
       -->
     <para>一种可能的办法是在你完成全部的修改之前, 不向仓库提交修改, 也不更新
-      工作副本, 这种情况会持续几周, 但是这会产生很多问题. 首先这不太安全. 如果
-      你的工作副本或机器遭到破坏, 之前所有的工作都会白费. 第二, 不够灵活. 除非
+      工作副本, 这种情况会持续几周, 但是这会产生很多问题. 首先这不太安全, 如果
+      你的工作副本或机器遭到破坏, 之前所有的工作都会白费. 第二, 不够灵活, 除非
       你手动地把你的修改复制到其他工作副本或机器中, 否则的话你就只能在一个固定
-      的工作副本上工作, 如果要把半成员品分享给其他人也会很麻烦. 一种比较良好的
+      的工作副本上工作, 如果要把半成员品分享给其他人也很麻烦. 一种比较良好的
       软件工程做法是允许团队中的其他成员审核你的修改, 如果别人不能看到你在中间
       阶段的提交, 你将得不到别人的反馈, 甚至在错误的方向上努力多日, 直到别人
       注意到你的工作. 最后, 当你完成所有的修改时, 你可能会发现很难把你的修改
@@ -303,7 +303,7 @@
           <secondary>creating</secondary>
           </indexterm>
           读者应该已经见过如何在工作副本中, 用命令 <command>svn copy</command>
-          复制出一个新文件, 除了工作副本, 它还可以完成 <firstterm>远程复制
+          复制出一个新文件或目录, 除了工作副本, 它还可以完成 <firstterm>远程复制
           </firstterm> (<firstterm>remote copy</firstterm>)&mdash;复制操作会
           立刻提交到仓库中, 产生一个新的版本号, 完全不需要工作副本的参与. 从
           命令的形式上看, 只是从一个 URL 中复制出新的一个:</para>
@@ -360,10 +360,10 @@ $
         当然, 使用 <command>svn copy</command> 复制工作副本里的目录来创建分支
         也是可以的, 但我们不推荐这种做法, 因为可能会很慢. 在客户端复制目录是
         一个线性时间复杂度的操作, 实际上它需要递归地复制目录内的每一个文件和
-        子目录, 这些文件和子目录都存放在本地磁盘上. 然而, 远程复制是一个时间
+        子目录, 这些文件和子目录都存放在本地磁盘上. 而远程复制是一个时间
         复杂度为常量的操作, 大多数用户都是采用这种方式创建分支. 另外, 工作副
         本中的目录可能含有混合的版本号, 虽然不会产生有害的影响, 但是在合并时
-        会可能会产生不必要的麻烦. 如果用户选择通过复制工作副本中的目录来创建
+        可能会产生不必要的麻烦. 如果用户选择通过复制工作副本中的目录来创建
         分支, 在复制前应该确保被复制的目录不含有本地修改和混合的版本号.</para>
             
       <figure id="svn.branchmerge.using.create.dia-1">
@@ -393,7 +393,7 @@ $
           it can.  It duplicates data only when it is necessary to
           disambiguate different versions of objects.</para>
       -->
-        <para>Subversion 的设计非常特殊, 当你复制一个目录时, 不必担心仓库会
+        <para>Subversion 的设计非常特殊, 用户复制一个目录时, 不必担心仓库会
           增长过大&mdash;实际上 Subversion 不会复制任何数据, 作为替代, 它
           创建了一个新的目录项, 将其指向一个 <emphasis>已存在</emphasis> 的
           目录树. 如果你是一名有经验的 Unix 用户, 马上就能看出来这和硬链接是
@@ -416,9 +416,9 @@ $
         <para>你会经常听到 Subversion 用户谈论 <quote>廉价拷贝</quote>. 无论
           目录有多大, Subversion 都只需要一段极小的, 常量的时间和空间就能完成
           复制操作. 实际上, 这个特性也是 Subversion 处理提交操作的基础: 每一
-          个版本号都是前一个版本号的 <quote>廉价拷贝</quote>, 只有少数几个项目
+          个版本号都是前一个版本号的 <quote>廉价拷贝</quote>, 只有少数几项
           被修改了. (关于这部分的更多内容, 请登录到 Subversion 官网, 阅读
-          Subversion 设计文档中的 <quote>bubble up</quote> 方法).</para>
+          Subversion 设计文档中的 <quote>冒泡 (bubble up)</quote> 方法).</para>
 
       <!--
         <para>Of course, these internal mechanics of copying and
@@ -434,7 +434,7 @@ $
           看到目录被复制了. 我们的重点是复制在时间和空间上都很廉价, 如果用户是
           在仓库内创建分支 (通过执行命令 <userinput>svn copy <replaceable>URL1
           </replaceable> <replaceable>URL2</replaceable></userinput>), 操作消耗
-          的时间是常量的, 而且非常快. 只要用户希望, 可以随意地创建分支.</para>
+          的时间是常量的, 而且非常快. 只要用户有需要, 可以随意地创建分支.</para>
       </sidebar>
 
     </sect2>
@@ -480,8 +480,8 @@ $
         <command>svn switch</command> command is an alternative way of
         creating a working copy of a branch.)</para>
       -->
-      <para>和其他工作副本相比, 这个工作副本并没有什么特别的地方, 它只不是映射
-        到了仓库的另一个目录. 然而, Sally 在更新时将不会看到在这个工作副本里提
+      <para>和其他工作副本相比, 这个工作副本并没有什么特别的地方, 它只不过是映射
+        到了仓库的另一个目录. 而 Sally 在更新时将不会看到在这个工作副本里提
         交的修改, 因为她的工作副本映射的是 <filename>/calc/trunk</filename>.
         (记得看一下本章后面的 <xref linkend="svn.branchmerge.switchwc"/>, 它是
         创建分支工作副本的另一种办法)</para>
@@ -666,7 +666,7 @@ Initial trunk code import for calc project.
         154.</para>
       -->
       <para>Sally 看到了她提交的版本号 334, 但没有看到版本号 343. 对 Subversion
-        而言, 这两个提交影响的是存放在仓库中不同位置上的不同文件, 然而,
+        而言, 这两个提交影响的是存放在仓库中不同位置上的不同文件, 而
         Subversion 的输出 <emphasis>确实</emphasis> 表明了这两个文件共享一段
         相同的历史&mdash;在创建分支 (版本号 341) 之前, 它们是同一个文件.
         也就是因为这个原因, 所以你和 Sally 都能看到版本号 8 到版本号 154 的提交
@@ -695,8 +695,8 @@ Initial trunk code import for calc project.
       <para>在阅读完这一节后, 读者应该牢记以下两点. 第一, 在 Subversion 内部是
         没有分支这个概念的&mdash;它只知道如何复制. 当用户复制一个目录时, 产生
         的新目录被称为 <quote>分支</quote> 完全是用户赋予它的意义, 用户也可以
-        从其他角度看待它, 但是对于 Subversion 而言, 它只是个带有额外历史信息
-        普通的目录.</para>
+        从其他角度看待它, 但是对于 Subversion 而言, 它只是一个含有额外历史信息
+        的普通目录.</para>
 
       <!--
       <para>Second, because of this copy mechanism, Subversion's
@@ -749,7 +749,7 @@ Initial trunk code import for calc project.
       -->
     <para>如果项目有很多开发人员, 大多数人都会检出主干的工作副本. 如果有人需要
       完成一个长期的修改, 而这个修改的中间成果很可能会扰乱主干, 那么比较标准
-      的做法是为它创建一个私有分支, 把修改都提交到这个分支上, 直接所有的相关
+      的做法是为它创建一个私有分支, 把修改都提交到这个分支上, 直到所有的相关
       工作都完成为止.</para>
 
       <!--
@@ -829,7 +829,7 @@ Initial trunk code import for calc project.
         使用最新版的 Subversion, 无论是在客户端, 还是在服务器端. 记住, 即使
         服务器端的版本是 1.5-1.7, 你仍然可以使用 1.8 版的客户端, 这对于合并
         跟踪来说非常重要, 因为与合并跟踪有关的绝大多数功能增强和问题修复都是在
-        客户端完成.</para>
+        客户端实现.</para>
       <!--
         Subversion 1.5 introduced the
         <firstterm>merge tracking</firstterm> feature to Subversion.
@@ -916,7 +916,7 @@ Initial trunk code import for calc project.
         次提交后的样子. 同时它还确定一个隐式的变更集: 如果用户对目录树
         <replaceable>N</replaceable> 和 <replaceable>N</replaceable>-1 进行
         比较, 就可以得到与第 <replaceable>N</replaceable> 次提交对应的补丁.
-        正因为如此, 版本号 <replaceable>N</replaceable> 不仅可以代表了一棵
+        正因为如此, 版本号 <replaceable>N</replaceable> 不仅可以表示一棵
         目录树, 还可以表示一个变更集. 如果用户使用了一个问题跟踪系统来管理
         问题, 用户就可以使用版本号指代修复问题的特定补丁&mdash;例如,
         <quote>这个问题在 r9238 中解决</quote>, 然后其他人就可以执行
@@ -951,14 +951,14 @@ Initial trunk code import for calc project.
         继续向项目的主干 <filename>/trunk</filename> 提交修改. 最好把主干上
         的修改复制到你自己的分支上, 以便确保他们的修改能够与你的分支契合, 这可
         以通过 <firstterm>自动同步合并</firstterm> (<firstterm>automatic
-          sync merge</firstterm>) 完成, 自动同步合并的目的是为了保持分支与祖先
+          sync merge</firstterm>) 完成, 自动同步合并的目的是为了让分支与祖先
         分支上的修改保持同步.
         <indexterm>
           <primary>merging</primary>
           <secondary>automatic</secondary>
         </indexterm> <quote>自动</quote> 合并的意思是用户只需要提供
         合并所需的最小信息 (也就是合并的源以及被合并的工作副本目标), 至少哪些
-        修改需要合并则交由 Subversion 来决定&mdash;在自动合并中, 不需要通过
+        修改需要合并则交由 Subversion 决定&mdash;在自动合并中, 不需要通过
         选项 <option>-r</option> 或 <option>-c</option> 向 <command>svn merge
       </command> 传递变更集.</para>
 
@@ -1036,11 +1036,12 @@ U    Makefile
           告诉 Subversion 把 <replaceable>URL</replaceable> 上的所有未被合并
           的修改都合并到当前工作副本上 (在典型的情况下, 也就是你的工作副本的
           根目录). 注意到我们用的是带有脱字符 (<literal>^</literal>) 的语法
-          <footnote><para>脱字符语法在 1.6 加入</para></footnote>), 这样我们
+          <footnote><para>脱字符语法在 1.6 加入</para></footnote>, 这样我们
           就不用输入完整的主干 URL 地址. 还要注意输出信息中的 <quote>
-            Recording mergeinfo for merge&hellip;</quote>, 这是在说合并正在
+            Recording mergeinfo for merge&hellip;</quote>, 这是说合并正在
           更新属性 <literal>svn:mergeinfo</literal>, 我们会在本章后面的
-          <xref linkend="svn.branchmerge.basicmerging.mergeinfo"/> 介绍它们.
+          <xref linkend="svn.branchmerge.basicmerging.mergeinfo"/> 介绍
+          <literal>svn:mergeinfo</literal>.
         </para>
       <!--
           This basic syntax&mdash;<userinput>svn merge
@@ -1131,14 +1132,20 @@ Creating a private branch of /calc/trunk.
 </screen>
         </informalexample>
 
+      <!--
         <para>When you are ready to synchronize your branch with the
-          <!-- TODO -->
           ongoing changes from trunk, you specify the starting
           revision as the revision of <filename>/calc/trunk</filename>
           which the branch was copied from and the ending revision as
           the youngest change on <filename>/calc/trunk</filename>.  You
           can find the latter with the <command>svn log</command> command
           with the <option>-r</option> set to <literal>HEAD</literal>:</para>
+      -->
+        <para>如果你已经准备好把主干的修改同步到分支上, 首先指定
+          <filename>/calc/trunk</filename> 被复制时的版本号作为起始版本号,
+          然后把 <filename>/calc/trunk</filename> 上最年轻的修改指定为结束
+          版本号, 后者可以通过 <userinput>svn log -rHEAD</userinput>
+          找到:</para>
 
         <informalexample>
           <screen>
@@ -1369,12 +1376,12 @@ U         Makefile
             svn patch</command>, <command>patch</command> 相比, 的确没什么区
           别, 但 <command>svn merge</command> 拥有 <command>patch</command>
           所不具备的功能. <command>patch</command> 可使用的补丁格式很有限,
-          它只能修改文件内容, 却无法表示 <emphasis>目录结构</emphasis> 的修改,
+          它只能修改文件内容, 却无法表示 <emphasis>目录结构</emphasis> 的变化,
           例如文件和目录的添加, 删除或移动, <command>patch</command> 也不能
           识别属性的修改. 如果 Sally 添加了一个新目录, <command>svn diff
           </command> 的输出也体现不出这一修改. <command>svn diff</command> 的
           输出格式也有限制, 所以它也无法表示某些修改. 即使是 Subversion 自己的
-          <command>svn patch</command> 命令 (比如操作系统的 <command>patch
+          <command>svn patch</command> 命令 (比操作系统的 <command>patch
           </command> 命令灵活得多) 也有类似的限制.</para>
 
       <!--
@@ -1480,7 +1487,7 @@ U    src/main.c
         to your branch.</para>
       -->
       <para>Subversion 知道主干上的哪些修改已经合并到了分支上, 所以它只会合并
-        那些未合并过的主干修改. 如果构建, 测试都没有问题, 用户就可以用
+        那些未合并过的主干修改. 如果构建和测试都没有问题, 用户就可以用
         <command>svn commit</command> 把分支的修改提交到仓库里.</para>
 
     </sect2>
@@ -1509,8 +1516,8 @@ U    src/main.c
         </firstterm>). 子目录合并和子目录合并信息其实并没有什么特别的地方,
         唯一需要注意的一点是: 一个分支上完整的合并记录可能不仅仅记录在分支根
         目录的合并信息里, 可能还要查看子目录的合并信息才能得到完整的合并信息.
-        幸运的是 Subversion 会替用户完整这些操作, 用户很少需要这种事情, 用
-        一个简单的例子解释一下:</para>
+        幸运的是 Subversion 会替用户完成这些操作, 用户几乎不需要直接参与,
+        用一个简单的例子解释一下:</para>
       <!--
         In most of the examples in this chapter the
         merge target is the root directory of a branch (see
@@ -1702,7 +1709,7 @@ Committed revision 379.
           <primary>merging</primary>
           <secondary>reintegrate merges</secondary>
         </indexterm> <quote>自动再整合</quote> (automatic reintegrate) 合并,
-        在执行合并之前, 用户需要 <filename>/calc/trunk</filename> 的一个工作
+        在执行合并之前, 用户需要一份 <filename>/calc/trunk</filename> 的工作
         副本, 可以用 <command>svn checkout</command> 或
         <command>svn switch</command> (见
         <xref linkend="svn.branchmerge.switchwc" />) 获取.</para>
@@ -2025,7 +2032,7 @@ Properties on '.':
         track of what was merged.</para>
       -->
       <para>当用户执行 <command>svn merge</command> 时, Subversion 就会自动
-        更新属性 <literal>svn:Mergeinfo</literal>, 属性的值指出了给定路径上
+        更新属性 <literal>svn:mergeinfo</literal>, 属性的值指出了给定路径上
         的哪些修改已经复制到目录上. 在我们之前的例子里, 修改的来源是
         <filename>/calc/trunk</filename>, 被合并的目录是 <filename>
           /calc/branches/my-calc-branch</filename>. 旧版的 Subversion 会悄无
@@ -2055,7 +2062,7 @@ Properties on '.':
       -->
       <para>Subversion 提供了子命令 <command>svn mergeinfo</command>, 用于查看
         两个分支间的合并关系, 特别是查看目录吸收了哪些变更集, 或者查看哪些变
-        更集它是有资格接收的, 后者提供了一种预览, 预览随后的 <command>
+        更集它是有资格吸收的, 后者提供了一种预览, 预览随后的 <command>
           svn merge</command> 命令将会复制哪些修改到分支上. 在默认情况下,
         <command>svn mergeinfo</command> 将会输出两条分支之间的关系的图形化
         概览. 回到我们先前的例子, 用命令 <command>svn mergeinfo</command>
@@ -2100,7 +2107,7 @@ $ svn mergeinfo ^/calc/trunk
     <para>图中显示了 <filename>/cal/branches/my-calc-branch</filename> 拷贝
       自 <filename>/calc/trunk@340</filename>, 最近的一次自动合并是从分支到
       主干的自动再整合合并, 在版本号 380. 注意到图中 <emphasis>没有</emphasis>
-      显示我们在版本号 352, 362, 372 和 379 执行的自动同步合并, 在做任意的
+      显示我们在版本号 352, 362, 372 和 379 执行的自动同步合并, 在每个
       方向上只显示了最近的自动合并 <footnote><para>这里的 <quote>方向</quote>
           指的是从主干到分支 (自动同步) 或从分支到主干 (自动再整合) 的合并.
       </para></footnote> 这种默认输出对于获取两个分支之间的合并概览非常有用,
@@ -2161,14 +2168,14 @@ r382
         <para>选项 <option>--show-revs</option> 列出的版本号只包含了在合并时
           (将) 会产生实际修改的版本号, 所以说当用户从
           <filename>/calc/trunk</filename>
-          合并一段连续的版本号范围时 (例如 r341-378) 到 <filename>
+          合并一段连续的版本号 (例如 r341-378) 到 <filename>
             /calc/branches/my-calc-branch</filename> 时, 只有那些包含在选项
           <option>--show-revs=merged</option> 输出的列表中的版本号才真正地含
           有针对 <filename>/cal/trunk</filename> 的修改, 对于合并而言, 这些
           版本号被称为 <quote>可实施的版本号</quote>, 注意不要和选项
           <option>-r</option> 使用的实施版本号搞混, 实施版本号见
           <xref linkend="svn.advanced.pegrevs"/>. 反之, r341-378 中未出现在
-          选项 <option>--show-revs=merged</option> 输出的列表中的版本号被称
+          选项 <option>--show-revs=merged</option> 输出列表中的版本号被称
           为 <quote>不可实施的版本号</quote>.</para>
       </sidebar>
 
@@ -2184,7 +2191,7 @@ r382
         </filename> from the specified trunk URL.</para>
       -->
         <para>命令 <command>svn mergeinfo</command> 需要一个 <quote>源</quote>
-          URL (修改的来源), 接受一个可选的 <quote>目标</quote> URL (修改合并
+          URL (修改的来源), 接受一个可选的 <quote>目标</quote> URL (合并修改
           的目标). 如果没有指定目标 URL, 命令就把当前工作目录当成目标. 在上面
           的例子里, 因为我们要查询的是分支工作副本, 命令假定我们想知道的是主干
           URL 上的哪些修改可以合并到 <filename>/calc/branches/my-calc-branch
@@ -2291,10 +2298,11 @@ $ svn mergeinfo ^/trunk/src/main.c ^/branches/proj-X/src/main.c \
           only directories, non-inheritable mergeinfo is never set on
           files). For example:</para>
       -->
-        <para>在两种情况下, 合并信息不会被继承. 第一种是如果一个路径含有显式
+        <para>在两种情况下, 合并信息不会被继承. 第一种情况是如果一个路径含有显式
           的合并信息, 该路径就不会继承任何合并信息, 我们可以这样理解: 一个路径
           上的显式合并信息总是一个完整的合并记录. 一旦存在显式的合并信息, 它就
-          会覆盖路径可能从其他地方继承的合并信息. 第二种是合并信息本身是不可
+          会覆盖路径可能从其他地方继承而来的合并信息. 第二种情况是合并信息本
+          身是不可
           继承的, 这种特殊类型的合并信息 <emphasis>只能</emphasis> 应用到设置了
           属性 <literal>svn:mergeinfo</literal> 的目录上 (不可继承的合并信息不
           能设置在文件上), 例如:</para>
@@ -2368,7 +2376,7 @@ Properties on 'Makefile':
         revisions are flagged with the <literal>*</literal> marker:</para>
       -->
       <para>从合并信息中可以看到 r385-388 只被合并到了分支的根目录上, 但不
-        包括任何一个子文件. 还要以看到 r380 只被合并到了 <filename>Makefile
+        包括任何一个子文件. 还可以看到 r380 只被合并到了 <filename>Makefile
         </filename> 上. 如果用带上选项 <option>--recursive</option> 的
         <command>svn mergeinfo</command> 查看从 <filename>/calc/trunk</filename>
         那里合并了哪些版本号到这个分支上, 我们可以看到其中三个版本号带有星号
@@ -2457,10 +2465,10 @@ $ svn status
       -->
         <para>执行完合并, 但是在提交之前, 可以用 <userinput>svn diff
             --depth=empty <replaceable>/path/to/merge/target</replaceable>
-          </userinput> 被合并的直接目标的修改, 如果被合并的目标是目录,
+          </userinput> 查看被合并的直接目标的修改, 如果被合并的目标是目录,
           那么命令就只会输出属性的修改. 这是查看合并后属性
           <literal>svn:mergeinfo</literal> 的变化的简便方法, 从属性的
-          变化中可以看到这次合并了哪些版本号.</para>
+          变化中可以看到这次合并合并了哪些版本号.</para>
       </tip>
 
       <!--
@@ -2735,7 +2743,7 @@ Undoing erroneous change committed in r392.
         <filename>/calc/trunk/real.c</filename> from revision
         399.</para>
       -->
-      <para>在上面的例子里, 我们假设用记要找的文件是
+      <para>在上面的例子里, 我们假设要找的文件是
         <filename>real.c</filename>, 通过查看父目录的日志, 可以看到
         <filename>real.c</filename> 是在版本号 400 被删除. 因此, <filename>
           real.c</filename> 的最后一个版本就是紧挨着 400 的前一个版本号, 也
@@ -2786,12 +2794,14 @@ Undoing erroneous change committed in r392.
         但这种解决办法可扩展性不好, 如果有 90 个文件在 r400 中被修改了, 难道
         也要一个个地执行 <command>svn revert</command> 吗?</para>
 
+      <!--
       <para>A second, more targeted strategy is not to use
         <command>svn merge</command> at all, but rather to use the
         <command>svn copy</command> command.  Simply copy the exact
         revision and path <quote>coordinate pair</quote> from the
         repository to your working copy:</para>
-      <para>第二种选择的目标性更强, 不使用 <command>svn merge</command>, 而是
+      -->
+      <para>第二种选择的目的性更强, 不使用 <command>svn merge</command>, 而是
         用 <command>svn copy</command> 从仓库中复制特定的版本号与路径 <quote>
           坐标</quote> 到工作副本里:</para>
 
@@ -2909,8 +2919,8 @@ Updated to revision 402.
         </indexterm>
         和术语 <quote>变更集</quote> 一样, 术语 <firstterm>精选</firstterm>
         (<firstterm>cherrypicking</firstterm>) 也经常出现在版本控制系统中.
-        精选指的是这样一种操作: 从分支中挑选 <emphasis>一个</emphasis> 的变更
-        集, 将其复制到其他地方. 精选也可以指这样一种操作: 将一个特定的变更集
+        精选指的是这样一种操作: 从分支中挑选 <emphasis>一个</emphasis> 特定的
+        变更集, 将其复制到其他地方. 精选也可以指这样一种操作: 将一个特定的变更集
         集合 (不一定是连续的) 从一个分支复制到另一个分支上. 这和典型的合并
         场景相反 (典型的合并场景是自动合并下一段版本号范围).</para>
       <!--
@@ -2962,7 +2972,7 @@ Create a new calc branch for Feature 'X'.
         your work.</para>
       -->
       <para>在饮水机接水时, 你听说 Sally 向主干上的 <filename>main.c</filename>
-        提交了一个很有意思的修改, 通过查看主干的提交历史, 你发现在版本号 413,
+        提交了一个很重要的修改, 通过查看主干的提交历史, 你发现在版本号 413,
         Sally 修正了一个很严重的错误, 而这个错误也会影响你正在开发的新特性.
         你的分支可能还没有准备好合并主干上的所有修改, 但是为了能让工作继续
         下去, 你确实需要 r413 的修改.</para>
@@ -3234,7 +3244,7 @@ G    Makefile
         看到几个, 如果你对合并的工作原理感到疑惑, 不用太过自责, 你不是唯一
         一个有这种感觉的人. 很多用户 (特别是版本控制的新手) 一开始都会被命令
         的语法和适用它们的场景搞蒙. 其实这个命令比你想像中的要简单很多, 有一
-        个非常的办法可以帮助你理解 <command>svn merge</command> 如何工作.
+        个非常简单的办法可以帮助你理解 <command>svn merge</command> 如何工作.
       </para>
 
       <!--
@@ -3396,8 +3406,8 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
           <primary>merging</primary>
           <secondary>2-URL</secondary>
         </indexterm>
-        这种类型的合并称为 <quote>两路 URL
-        </quote> 合并 (原因显而易见); 第三种语法说明的工作副本参数是可选的,
+        这种类型的合并称为 <quote>二路 URL
+        </quote> 合并 (原因显而易见); 第三种语法说明工作副本参数是可选的,
         如果省略工作副本参数, 默认是当前工作目录.</para>
 
       <!--
@@ -3428,7 +3438,7 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
         changed.  Remember to be a bit wary of these scenarios:</para>
       -->
       <para>如果可能的话, Subversion 都会去尝试生成合并的元数据, 从而帮助后面
-        调用 <command>svn merge</command> 更加智能, 但在某些情况下, <literal>
+        调用的 <command>svn merge</command> 更加智能, 但在某些情况下, <literal>
           svn:mergeinfo</literal> 既不会被创建, 也不会被更新, 对这些情况要稍
         微注意一点:</para>
 
@@ -3650,8 +3660,8 @@ $ svn merge -r 100:200 http://svn.example.com/repos/trunk
             ^/branches/feature-branch</filename>, 然后执行 <userinput>svn merge
             ^/trunk -c 58</userinput>, 却什么也不会发生. 这是因为 Subversion
           知道提交到 <filename>^/trunk</filename> 的 r58 已经存在于目标的自然
-          历史里, 也就没必要再合并一次, 毕竟避免重要的合并
-          <emphasis>是</emphasis> Subversion 合并路径特性的主要目标!</para>
+          历史里, 也就没必要再合并一次, 毕竟避免重复的合并
+          <emphasis>是</emphasis> Subversion 合并跟踪特性的主要目标!</para>
 
       </sidebar>
 
@@ -4005,8 +4015,8 @@ Added: svn:mergeinfo
           r462:464, 幸运的是选项 <option>--record-only</option> 的传递性质
           可以防止这种情况发生. 选项 <option>--record-only</option> 把 r465
           生成的 <literal>svn:mergeinfo</literal> 差异应用到工作副本上, 从而
-          拦截住来自 <filename>/paint/trunk</filename> 和 <filename>
-            /paint/branches/paint-python-wrapper</filename> 的直接合并.</para>
+          拦截住来自 <filename>/paint/trunk</filename>直接合并和 <filename>
+            /paint/branches/paint-python-wrapper</filename> 的间接合并.</para>
 
       <informalexample>
         <screen>
@@ -4141,7 +4151,7 @@ A    python/paint.py
         候, 修改了什么地方, Subversion 完成这些功能的命令是 <command>svn
           log</command> 和 <command>svn blame</command>. 在单独的文件上执行
         这两个命令时, 它们不仅会显示影响文件的变更集历史, 还可以精确地指出
-        每一行是哪个用户, 在什么时候修改的.</para>
+        每一行是哪个用户在什么时候修改的.</para>
 
       <!--
       <para>When changes start getting replicated between branches,
@@ -4265,7 +4275,7 @@ Refactor the bazzle functions.
         that came along on the ride with it&mdash;Sally's work on trunk.
         This is a much more complete picture of history!</para>
       -->
-      <para>为了 <command>svn log</command> 增加选项 <option>--use-merge-history
+      <para>为 <command>svn log</command> 增加选项 <option>--use-merge-history
         </option> (<option>-g</option>), 我们不仅可以看到 r352, 还可以看到通过
         r352 从主干合并到分支的提交, 这些提交是 Sally 在主干上的工作. 这才是历
         史的更完整的刻画!</para>
@@ -4294,10 +4304,12 @@ $ svn blame src/button.c
 </screen>
       </informalexample>
 
+      <!--
       <para>And while it's true that you did actually commit those
         three lines in revision 352, two of them were actually written
         by Sally back in revision 348 and were brought into your branch
         via a sync merge:</para>
+      -->
       <para>用户 <literal>user</literal> 的确在 r352 提交了这 3 行修改, 但其中
         2 行实际上来自 Sally 在 r348 的修改, 它们通过同步合并被合并到了分支中:
       </para>
@@ -4390,7 +4402,7 @@ G    348    sally   return retval;
           foo.c</filename> 在 r99 和 r102 时的版本, 命令将会盲目地比较这两个
         版本, 并输出以行为单位的差异. 但是如果用户要求 <command>svn merge
         </command> 去比较相同的两个对象, 它将会注意到两个对象之间是不相关的,
-        于是先删除旧文件, 再添加新文件, 从命令的输出信息中可以看得很清楚:</para>
+        于是先删除旧文件, 再添加新文件, 从命令的输出信息可以看得很清楚:</para>
 
       <informalexample>
         <screen>
@@ -4664,7 +4676,7 @@ D    src/integer.c
         merging copies and renames from one branch to another and when you
         do, be prepared for some manual resolution.</para>
       -->
-      <para>用户解决完目录冲突后才能提交, 这可能需要用户人工介入, 见
+      <para>用户解决完目录冲突后才能提交, 这可能需要人工介入, 见
         <xref linkend="svn.tour.treeconflicts"/>. 我们举这个例子的目的是提醒
         用户, 在 Subversion 改良之前, 要小心对待从一个分支合并复制和重命名操
         作到另一个分支, 如果确实这样做了, 要做好解决目录冲突的准备.</para>
@@ -4779,7 +4791,7 @@ sys.exit(0)
         the <literal>svn:mergeinfo</literal> property is the only
         window the user has into the machinery.</para>
       -->
-      <para>最后要说的是 Subversion 的合并跟踪特性有一个复杂的内容实现, 而
+      <para>最后要说的是 Subversion 的合并跟踪特性有一个复杂的内部实现, 而
         属性 <literal>svn:mergeinfo</literal> 是用户了解合并跟踪内部机制的
         唯一窗口.</para>
 
@@ -4950,7 +4962,7 @@ sys.exit(0)
       到另一个不同的分支. 虽然在使用分支时, 该命令并不是必须的, 但它提供了很
       方便的快捷键. 在一个我们讲过的例子里, 当用户创建完私有分支后, 检出了该
       分支的工作副本. 现在用户多了一种选择, 用命令 <command>svn switch</command>
-      把 <filename>/calc/trunk</filename> 的工作副本映射新创建的分支:</para>
+      把 <filename>/calc/trunk</filename> 的工作副本映射到新创建的分支:</para>
 
     <informalexample>
       <screen>
@@ -5112,7 +5124,7 @@ $
         重定向 (通过配置项 <literal>RedirectPermanent</literal>), 将旧的 URL
         重定向至新的 URL, 这样的话, 当用户仍然使用旧的 URL 访问仓库时,
         Subversion 客户端就会在错误信息中显示仓库的新 URL. 从 Subversion 1.7
-        开始, 客户端可以自动地把工作副本重定位至新的 URL.</para>
+        开始, 客户端可以自动地把工作副本重定向至新的 URL.</para>
     </tip>
 
     <sidebar>
@@ -5576,7 +5588,7 @@ Committed revision 940.
         重新组织仓库的布局. 因为分支和标签都是普通目录, 所以用户可以随心所欲地
         用命令 <command>svn move</command> 移动或重命名它们. 从一种布局切换到
         另一种布局只是服务器端的一系列移动而已, 如果你不喜欢当前的仓库布局,
-        要以任意修改目录结构.</para>
+        可以任意修改目录结构.</para>
 
       <!--
       <para>Remember, though, that while moving directories is
@@ -5617,9 +5629,9 @@ Committed revision 940.
         anymore:</para>
       -->
       <para>Subversion 模型具有的另一个优良特性是分支和标签的寿命是有限的,
-        就像一个普通的被版本控制的条目. 比如说用户在自己的分支中最终完成了工
+        就像一个普通的被版本控制的条目. 比如说用户最终在自己的分支中完成了工
         作, 当分支上所有的修改都被合并到 <filename>/calc/trunk</filename> 后,
-        就没必须再在仓库中保留自己的分支了.</para>
+        就没必要再在仓库中保留自己的分支了.</para>
 
       <informalexample>
         <screen>
@@ -5677,7 +5689,7 @@ Updated to revision 474.
       <para>现在你的分支就消失了, 当然并非永远地消失: 分支只是在 <literal>HEAD
         </literal> 上看不到了. 如果用 <command>svn checkout</command>,
         <command>svn switch</command> 或 <command>svn list</command> 查看较
-        早的版本号, 你仍然可以看到你的旧分支.</para>
+        早的版本号, 仍然可以看到你的旧分支.</para>
 
       <!--
       <para>If browsing your deleted directory isn't enough, you can
@@ -6485,7 +6497,7 @@ $
         外部仓库合并. 当前的供方分支是原始的 libcomplex 1.0.0 再加上我们的定
         制化修改, 现在我们需要把原始的 1.0.0 与 1.0.1 之间的差异应用到供方分
         支, 最理想的情况是被应用的差异不会影响到我们的定制化修改. 合并操作需要
-        使用 2-URL 形式的 <command>svn merge</command>.</para>
+        使用 二路 URL 形式的 <command>svn merge</command>.</para>
 
       <informalexample>
         <screen>
@@ -6566,7 +6578,7 @@ $
       <para>这就是当供方源是 Subversion 仓库时, 管理供方分支的方式. 这种方式
         有几个值得注意的缺点, 首先, 外部仓库合并不能像同一仓库那样自动跟踪,
         这就意味着必须由用户记住供方分支已经做过哪些合并, 以及下次升级时如何
-        构造合并. 另外&mdash;对于其他形式的合并同样适用&mdash;源的重全名操作
+        构造合并. 另外&mdash;对于其他形式的合并同样适用&mdash;源的重命名操作
         会造成不小的麻烦, 不幸的是目前并没有有效的办法缓解这个问题.</para>
 
     </sect2>
@@ -6716,7 +6728,7 @@ $
         把供方分支升级到新版. 为了升级供方分支, 我们需要把 1.0.0 和 1.0.1
         之间的差异应用到供方分支中, 而且不能影响定制化修改. 完成这项操作最
         案例的方式是先把 libcomplex 1.0.1 <emphasis>作为 libcomplex 1.0.0
-          的增量版本</emphasis> 导入到我们的仓库中, 然后使用 2-URL 形式的
+          的增量版本</emphasis> 导入到我们的仓库中, 然后使用 二路 URL 形式的
         <command>svn merge</command>, 把差异应用到供方分支中.</para>
 
       <!--
@@ -6872,7 +6884,7 @@ $
         vendor branch, comes into play.</para>
       -->
       <para>我们终于准备好了升级供方分支. 记住, 我们的目标是把原始的 1.0.1
-        和 1.0.0 之间的差异应用到供方分支中. 下面展示了如何使用 2-URL 形式的
+        和 1.0.0 之间的差异应用到供方分支中. 下面展示了如何使用 二路 URL 形式的
         <command>svn merge</command> 去更新供方分支的工作副本.</para>
 
       <informalexample>
@@ -7104,7 +7116,7 @@ $
       这个角度来看, Subversion 用户其实一直都在和分支与合并打交道. 不用对
       更新与合并之间的相似性过于惊讶, Subversion 短处最集中的地方&mdash;也就是
       对文件和目录重命名的处理, 以及目录冲突的处理&mdash;都会给 <command>svn
-        update</command> 和 <command>svn merge</command> 造成麻烦. 不幸的是,
+        update</command> 和 <command>svn merge</command> 造成麻烦. 不幸的是
       <command>svn merge</command> 的麻烦更大, 一个真正的合并操作既不针对特殊
       情况, 也不简单. 由于这个原因, 合并操作执行起来比更新更慢, 还要求显式的跟
       踪 (通过本章讨论过的属性 <literal>svn:mergeinfo</literal>) 和历史分析计
