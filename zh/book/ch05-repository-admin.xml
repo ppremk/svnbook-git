@@ -292,6 +292,7 @@ conf/  db/  format  hooks/  locks/  README.txt
         脚步, 后来, 几乎在每一项指标上&mdash;从性能, 到可扩展性, 再到可靠性
         &mdash;FSFS 都超越了 Berkeley DB.</para> 
 
+      <!--
       <para>These days, it is generally assumed that if you are using
         the open source Subversion product, you are using the FSFS
         backend for your repositories.  In fact, beginning with
@@ -303,7 +304,15 @@ conf/  db/  format  hooks/  locks/  README.txt
         expansion&mdash;is planned for the Berkeley DB backend.
         Subversion effectively offers a single viable repository
         storage layer option.  FSFS won.</para>
+      -->
+      <para>如今, 如果用户使用的是开源的 Subversion 产品, 那么一般情况下使用
+        FSFS 作为仓库的后端存储. 实际上从 Subversion 1.8 开始, 官方不再推荐
+        使用 Berkeley DB 作为仓库的后端存储, 仍然使用 Berkeley DB 的仓库在新
+        版的 Subversion 1.x 下可以继续工作, 但与 Berkeley DB 相关的开发工作
+        不再继续&mdash;包括新特性或扩展. Subversion 只想提供一种单一的仓库
+        后端存储机制, 而 FSFS 赢得了青睐.</para>
 
+      <!--
       <para>This book will continue to provide information relevant to
         administrators of BDB-backed repositories where it makes sense
         to do so, but most of this chapter will assume what the rest
@@ -312,6 +321,10 @@ conf/  db/  format  hooks/  locks/  README.txt
         <xref linkend="svn.berkeleydb"/> or to older versions of this
         documentation for more complete information about
         administering such repositories.</para>
+      -->
+      <para>必要时, 本书仍然会介绍如何管理基于 BDB 的仓库, 但本章的大部分内容
+        假设仓库后端存储用的是 FSFS. 关于如何管理基于 BDB 仓库的更完整的信息,
+        请参考 <xref linkend="svn.berkeleydb"/> 或本书的旧版.</para>
     </sidebar>
 
   </sect1>
@@ -320,8 +333,12 @@ conf/  db/  format  hooks/  locks/  README.txt
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.reposadmin.planning">
+      <!--
     <title>Strategies for Repository Deployment</title>
+      -->
+    <title>仓库部署策略</title>
 
+      <!--
     <para>Due largely to the simplicity of the overall design of the
       Subversion repository and the technologies on which it relies,
       creating and configuring a repository are fairly straightforward
@@ -330,30 +347,53 @@ conf/  db/  format  hooks/  locks/  README.txt
       Subversion repository is pretty basic, tending toward
       mindless repetition if you find yourself setting up multiples of
       these things.</para>
+      -->
+    <para>得益于 Subversion 仓库在整体设计和技术上的简洁, 创建与配置一个仓库
+      是一个相对来说比较简单的任务. 需要做一些初步决定, 但是设置仓库所涉及
+      到的实际工作非常基础, 多做几次就能得心应手.</para>
 
+      <!--
     <para>Some things you'll want to consider beforehand, though, are:</para>
+      -->
+    <para>在开始创建仓库之前需要考虑的事情有:</para>
 
     <itemizedlist>
       <listitem>
+      <!--
         <para>What data do you expect to live in your repository (or
           repositories), and how will that data be organized?</para>
+      -->
+        <para>仓库会存放哪些数据, 如何组织这些数据?</para>
       </listitem>
       <listitem>
+      <!--
         <para>Where will your repository live, and how will it be
           accessed?</para>
+      -->
+        <para>仓库会放在哪儿, 如何访问仓库?</para>
       </listitem>
       <listitem>
+      <!--
         <para>What types of access control do you need?</para>
+      -->
+        <para>你需要哪些类型的访问控制?</para>
       </listitem>
     </itemizedlist>
 
+      <!--
     <para>In this section, we'll try to help you answer those
       questions.</para>
+      -->
+    <para>本节将帮助读者如何回答上面的几个问题.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.reposadmin.projects.chooselayout">
+      <!--
       <title>Planning Your Repository Organization</title>
+      -->
+      <title>规划仓库的组织方式</title>
 
+      <!--
       <para>While Subversion allows you to move around versioned files
         and directories without any loss of information, and even
         provides ways of moving whole sets of versioned history from
@@ -365,13 +405,25 @@ conf/  db/  format  hooks/  locks/  README.txt
         conscientiously <quote>laying out</quote> your repository or
         repositories and their versioned contents ahead of time, you
         can prevent many future headaches.</para>
+      -->
+      <para>虽然 Subversion 允许用户随意的移动目录和文件, 而不丢失任何信息,
+        甚至还可以把版本历史的整个集合从一个仓库移动到另一个仓库, 但这样做
+        难免会影响到那些需要经常访问仓库的人, 他们希望仓库及其文件的位置能
+        够保持稳定. 所以说在创建新的仓库之前, 试着为将来考虑, 提前做好规划.
+        提前认真地规划好仓库及其所管理的数据, 可以避免将来出现很多不必要的
+        麻烦.</para>
 
+      <!--
       <para>Let's assume that as repository administrator, you will be
         responsible for supporting the version control system for
         several projects.  Your first decision is whether to use a
         single repository for multiple projects, or to give each
         project its own repository, or some compromise of these
         two.</para>
+      -->
+      <para>假设仓库管理员需要为几个项目提供版本控制支持, 首先需要决定的是
+        是用一个单独的仓库存放这些项目, 还是每个项目一个仓库, 还是介于两者
+        之间.</para>
 
       <para>There are benefits to using a single repository for
         multiple projects, most obviously the lack of duplicated
