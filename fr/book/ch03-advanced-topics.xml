@@ -554,33 +554,44 @@ $ svn log -r {2006-11-20}:{2006-11-29}
 
       <warning>
 <!--
-        <para>Since the timestamp of a revision is stored as an
-          unversioned, modifiable property of the revision (see <xref
-          linkend="svn.advanced.props" />), revision timestamps can be
-          changed to represent complete falsifications of true
-          chronology, or even removed altogether.  Subversion's
-          ability to correctly convert revision dates into real
-          revision numbers depends on revision datestamps maintaining
-          a sequential ordering&mdash;the younger the revision, the
-          younger its timestamp.  If this ordering isn't maintained,
-          you will likely find that trying to use dates to specify
-          revision ranges in your repository doesn't always return the
-          data you might have expected.</para>
+        <para>Subversion's ability to correctly convert revision dates
+          into real revision numbers depends on revision datestamps
+          maintaining a sequential ordering&mdash;the younger the
+          revision, the younger its datestamp.  But datestamps are
+          stored in the unversioned, modifiable
+          <literal>svn:date</literal> property of the revision (see
+          <xref linkend="svn.advanced.props" />), so it is possible
+          for revision datestamps to get out of sequence.  Now, most
+          of Subversion's operations are unaffected by this
+          situation&mdash;after all, the revision number itself is the
+          primary identifier of each revision.  But if the datestamp
+          ordering isn't maintained, you will likely find that trying
+          to use dates to specify revision ranges in your repository
+          doesn't always return the data you might have expected.
+          Combining the histories of multiple repositories into a
+          single one (as described in
+          <xref linkend="svn.reposadmin.maint.migrate" />) is the most
+          common cause of this scenario.</para>
 -->
 
-        <para>Puisque l'horodatage d'une révision est stocké comme une
+        <para>L'aptitude de Subversion à convertir correctement les
+          horodatages de révisions en numéros de révision repose sur le
+          fait que les horodatages de révisions sont ordonnées de manière
+          croissante (plus le numéro est élevé, plus l'horodatage est
+          récent). Mais l'horodatage d'une révision étant stocké comme une
           propriété modifiable et non suivie en versions de la révision
           (reportez-vous à <xref linkend="svn.advanced.props" />), les
-          horodatages peuvent être changés et ne pas refléter la
-          chronologie réelle. Ils peuvent même être tous supprimés. Or
-          la capacité de Subversion à convertir correctement les dates
-          en numéros de révision dépend des horodatages de révisions et
-          de leur ordonnancement correct dans le temps&nbsp;: à une
-          révision antérieure correspond un horodatage antérieur. Si cet
-          ordonnancement n'est pas maintenu, il y a de grandes chances
-          que l'utilisation des dates pour spécifier des intervalles de
-          révisions dans votre dépôt ne fournisse pas les résultats
-          attendus.</para>
+          horodatages peuvent être modifiés et ne plus suivre la
+          chronologie réelle. Aujourd'hui, cela n'affecte pas la plupart
+          des opérations de Subversion (c'est le numéro de révision qui
+          est l'identifiant primaire d'une révision). Mais si
+          l'ordonnacement des horodatages n'est pas maintenu, il y a de
+          grandes chances que l'utilisation des dates pour spécifier des
+          intervalles de révisions dans votre dépôt ne fournisse pas les
+          résultats attendus. Combiner les historiques de plusieurs
+          dépôts pour n'en former qu'un (tel que décrit dans <xref
+          linkend="svn.reposadmin.maint.migrate" />) est la cause
+          principale de ce type de situation.</para>
       </warning>
 
     </sect2>
@@ -2648,7 +2659,7 @@ Propriétés sur 'site':
 <!--
       <para>If we were to instead make the target of the subcommand the
         subdirectory <filename>site</filename>, then using the <option>
-        -show-inherited-props</option> option, we find that the <literal>
+        - -show-inherited-props</option> option, we find that the <literal>
         svn:auto-props</literal> property is set on the target <emphasis>
         and</emphasis> its parent.  The parent's properties are called out
         as "inherited":</para>
@@ -7568,15 +7579,15 @@ $
 
     <sidebar id="svn.advanced.locking.meanings">
 <!--
-      <title>The Three Meanings of <quote>Lock</quote></title>
+      <title>The Many Meanings of <quote>Lock</quote></title>
 -->
-      <title>Les trois types de <quote>verrous</quote></title>
+      <title>Les différents types de <quote>verrous</quote></title>
 
 <!--
       <para>In this section, and almost everywhere in this book, the
         words <quote>lock</quote> and <quote>locking</quote> describe
         a mechanism for mutual exclusion between users to avoid
-        clashing commits.  Unfortunately, there are two other sorts
+        clashing commits.  Unfortunately, there are other sorts
         of <quote>lock</quote> with which Subversion, and therefore
         this book, sometimes needs to be concerned.</para>
 -->
@@ -7584,7 +7595,7 @@ $
         les mots <quote>verrou</quote> et <quote>verrouillage</quote>
         décrivent un mécanisme d'exclusion mutuelle entre utilisateurs
         pour éviter des propagations incompatibles. Malheureusement, il
-        existe deux autres sortes de <quote>verrous</quote> auxquels
+        existe d'autres sortes de <quote>verrous</quote> auxquels
         Subversion et donc ce livre sont confrontés.</para>
 
 <!--
@@ -7592,8 +7603,8 @@ $
         <indexterm>
           <primary>locks</primary>
           <secondary>administrative</secondary>
-        </indexterm>The second is <firstterm>administrative
-        locks</firstterm>, used internally by Subversion to prevent
+        </indexterm>Subversion uses <firstterm>administrative
+        locks</firstterm> internally to prevent
         clashes between multiple Subversion clients operating on the
         same working copy.  This is the sort of lock indicated by an
         <computeroutput>L</computeroutput> in the third column of
@@ -7605,8 +7616,8 @@ $
         <indexterm>
           <primary>verrous</primary>
           <secondary>administratifs</secondary>
-        </indexterm>Les premiers sont des <firstterm>verrous
-        administratifs</firstterm>, utilisés en interne par Subversion pour
+        </indexterm>Subversion utilise en interne des <firstterm>verrous
+        administratifs</firstterm> pour
         éviter des collisions entre de multiples instances du client
         Subversion travaillant sur la même copie de travail. Ce type de
         verrou est repérable au <computeroutput>L</computeroutput> situé
@@ -7620,27 +7631,27 @@ $
         <indexterm>
           <primary>locks</primary>
           <secondary>database</secondary>
-        </indexterm>Third, there are <firstterm>database
-        locks</firstterm>, used internally by the Berkeley DB backend
-        to prevent clashes between multiple programs trying to access
-        the database.  This is the sort of lock whose unwanted
-        persistence after an error can cause a repository to
-        be <quote>wedged,</quote> as described in
+        </indexterm>Administrators using the older Berkeley DB repository
+        backend will need to be familiar with <firstterm>database
+        locks</firstterm>, which exist to prevent clashes between multiple
+        programs trying to access the database.  This is the sort of lock
+        whose unwanted persistence after an error can cause a repository
+        to be <quote>wedged,</quote> as described in
         <xref linkend="svn.berkeleydb.maintenance.recovery" />.</para>
 -->
       <para>
         <indexterm>
           <primary>verrous</primary>
           <secondary>bases de données</secondary>
-        </indexterm>Ensuite, il y a les <firstterm>verrous des bases de
-        données</firstterm>, utilisés en interne par les bases de données
-        Berkeley DB pour éviter les collisions entre de multiples
+        </indexterm>Ensuite, pour les administrateurs qui utilisent l'ancien
+        magasin de données Berkeley DB pour leurs dépôts, il y a les
+        <firstterm>verrous des bases de données</firstterm>, utilisés en
+        interne pour éviter les collisions entre de multiples
         programmes accédant à la base de données. C'est le type de
         verrou qui, s'il est encore présent à notre insu après une
         erreur, peut provoquer un <quote>plantage</quote> du dépôt, comme
         indiqué dans <xref linkend="svn.berkeleydb.maintenance.recovery"
         />.</para>
-
 <!--
       <para>You can generally forget about these other kinds of locks
         until something goes wrong that requires you to care about
@@ -8155,7 +8166,7 @@ $ svn unlock banane.c
           <secondary>discovery</secondary>
         </indexterm>When a commit fails due to someone else's locks, it's
         fairly easy to learn about them.  The easiest way is to run
-        <userinput>svn status - -show-updates</userinput>:</para>
+        <userinput>svn status -u</userinput>:</para>
 -->
       <para>
         <indexterm>
@@ -8168,8 +8179,7 @@ $ svn unlock banane.c
           <secondary>identification</secondary>
         </indexterm>Quand une propagation échoue parce que quelqu'un d'autre a
         posé un verrou, il est facile de savoir pourquoi. La commande la
-        plus simple est <userinput>svn status
-        --show-updates</userinput>:</para>
+        plus simple est <userinput>svn status -u</userinput>:</para>
 
       <informalexample>
         <screen>
@@ -8178,9 +8188,9 @@ M               23   bar.c
 M    O          32   raisin.jpg
         *       72   foo.h
 Status against revision:     105-->
-M              23   truc.c
-M    O         32   raisin.jpg
-       *       72   machin.h
+M               23   truc.c
+M    O          32   raisin.jpg
+        *       72   machin.h
 État par rapport à la révision      105
 
 $
@@ -8240,6 +8250,7 @@ Lock Token: opaquelocktoken:fc2b4dee-98f9-0310-abf3-653ff3226e6b
 Lock Owner: harry
 Lock Created: 2006-02-16 13:29:18 -0500 (Thu, 16 Feb 2006)
 Lock Comment (1 line):
+Need to make a quick tweak to this image.
 -->
 Chemin : raisin.jpg
 Nom : raisin.jpg
@@ -8363,6 +8374,7 @@ Owner: frank
 Created: 2006-06-15 13:29:18 -0500 (Thu, 15 Jun 2006)
 Expires:
 Comment (1 line):
+Still improving the yellow color.
 -->
 $ svnadmin lslocks /var/svn/depot
 Chemin : /projet2/images/banane.jpg
@@ -8373,12 +8385,14 @@ Expire :
 Commentaire (1 ligne):
 J'améliore encore la couleur jaune.
 <!--
+
 Path: /project/raisin.jpg
 UUID Token: opaquelocktoken:fc2b4dee-98f9-0310-abf3-653ff3226e6b
 Owner: harry
 Created: 2006-02-16 13:29:18 -0500 (Thu, 16 Feb 2006)
 Expires:
 Comment (1 line):
+Need to make a quick tweak to this image.
 -->
 Chemin : /projet/raisin.jpg
 Chaîne UUID : opaquelocktoken:fc2b4dee-98f9-0310-abf3-653ff3226e6b
@@ -8387,11 +8401,11 @@ Créé : 2006-02-16 13:29:18 -0500 (jeu. 16 fév. 2006)
 Expire :
 Commentaire (1 ligne):
 Besoin de faire une retouche rapide sur cette image.
-<!--
-$ svnadmin rmlocks /var/svn/repos/project/raisin.jpg
+  <!--
+$ svnadmin rmlocks /var/svn/repos /project/raisin.jpg
 Removed lock on '/project/raisin.jpg'.
 -->
-$ svnadmin rmlocks /var/svn/depot/projet/raisin.jpg
+$ svnadmin rmlocks /var/svn/depot /projet/raisin.jpg
 '/projet/raisin.jpg' déverrouillé
 $
 </screen>
@@ -8400,8 +8414,8 @@ $
 <!--
       <para>The more interesting option is to allow users to break
         each other's locks over the network.  To do this, Sally simply
-        needs to pass the <option>- -force</option> to the <command>svn
-        unlock</command> command:</para>
+        needs to pass the <option>- -force</option> to the
+        <command>svn unlock</command> command:</para>
 -->
       <para>L'option la plus intéressante est celle qui permet aux
         utilisateurs de casser les verrous détenus par d'autres
@@ -8417,9 +8431,9 @@ M    O          32   raisin.jpg
         *       72   foo.h
 Status against revision:     105
 -->
-M              23   machin.c
-M    O         32   raisin.jpg
-       *       72   truc.h
+M               23   machin.c
+M    O          32   raisin.jpg
+        *       72   truc.h
 État par rapport à la révision     105
 $ svn unlock raisin.jpg<!--
 svn: E195013: 'raisin.jpg' is not locked in this working copy -->
@@ -8503,7 +8517,8 @@ $ svn lock raisin.jpg <!--
 svn: warning: W160035: Path '/project/raisin.jpg' is already locked by user 'h
 arry' in filesystem '/var/svn/repos/db'
 -->
-svn: avertissement : W160035: Path '/project/raisin.jpg' is already locked by user 'harry' in filesystem '/var/svn/repos/db'
+svn: avertissement : W160035: Path '/project/raisin.jpg' is already locked by
+user 'harry' in filesystem '/var/svn/repos/db'
 $ svn lock --force raisin.jpg
  <!--
 'raisin.jpg' locked by user 'sally'.
@@ -8760,7 +8775,8 @@ gimp: erreur: le fichier est en lecture seule !
 $ ls -l raisin.jpg
 -r--r--r--   1 sally   sally   215589 juin  8 19:23 raisin.jpg
 $ svn lock raisin.jpg
-svn: avertissement : W160035: Échec de la demande de verrou : 423 verrouillé (http://svn.exemple.com)
+svn: avertissement : W160035: Échec de la demande de verrou : '/projet/raisin.jpg'
+is already locked by user 'harry' in filesystem '/var/svn/depot/db'
 <!--
 $ svn info http://svn.example.com/repos/project/raisin.jpg | grep Lock
 Lock Token: opaquelocktoken:fc2b4dee-98f9-0310-abf3-653ff3226e6b
@@ -9975,7 +9991,7 @@ $
 <!--
       <title>Creating and Modifying Changelists</title>
 -->
-      <title>Créer et modifier une liste de modifications</title>
+      <title>Création et modification de listes de modifications</title>
 
 <!--
       <para>
@@ -10802,7 +10818,7 @@ $
 <!--
         <title>Caching credentials</title>
 -->
-        <title>Mettre en cache des éléments d'authentification</title>
+        <title>Mise en cache des éléments d'authentification</title>
 
 <!--
         <para>Subversion offers a remedy for the annoyance caused when
@@ -10907,9 +10923,10 @@ $
             <para>For other Unix-like operating systems, no single
               standard <quote>keychain</quote> service exists.
               However, the Subversion client knows how to store
-              passwords securely using the <quote>GNOME Keyring</quote>
-              and <quote>KDE Wallet</quote> services.  Also, before
-              storing unencrypted passwords in the
+              passwords securely using the <quote>GNOME Keyring</quote>,
+              <quote>KDE Wallet</quote>, and <quote>GnuPG
+              Agent</quote> services.  Also, before storing
+              unencrypted passwords in the
               <filename>~/.subversion/auth/</filename> caching area,
               the Subversion client will ask the user for permission
               to do so.  Note that the <filename>auth/</filename>
@@ -10927,7 +10944,7 @@ $
             standard de service de type <quote>Keychain</quote>. Cependant,
             le client Subversion sait stocker de manière sûre les mots de
             passe en utilisant les services <quote>Gnome Keyring</quote>,
-            et <quote>KDE Wallet</quote>. Aussi,
+            <quote>KDE Wallet</quote> et <quote>GnuPG Agent</quote>. Aussi,
             avant de stocker les mots de passe sans chiffrement dans la zone
             de cache <filename>~/.subversion/auth/</filename>, le client
             Subversion demandera à l'utilisateur l'autorisation de le faire.
@@ -10963,7 +10980,7 @@ $
 <!--
         <title>Disabling password caching</title>
 -->
-        <title>Désactiver la mise en cache des mots de passe</title>
+        <title>Désactivation de la mise en cache des mots de passe</title>
 
 <!--
         <para>When you perform a Subversion operation that requires
@@ -11510,7 +11527,7 @@ END
 <!--
       <title>Using svnmucc</title>
 -->
-      <title>Utiliser svnmucc</title>
+      <title>Utilisation de svnmucc</title>
 
 <!--
       <para>One shortcoming of the remote commit operation support

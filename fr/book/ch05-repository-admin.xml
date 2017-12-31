@@ -162,11 +162,11 @@ conf/  db/  format  hooks/  locks/  README.txt
 -->
           <para>Le magasin de données pour toutes vos données suivies en
             versions<footnote>
-			<para>Strictement parlant, Subversion n'oblige pas à ce que
-			les données suivies en versions soient stockées ici et il
-			existe des variantes (quoique propriétaires) de
-			stockage des données qui ne stockent pas réellement leurs
-			données dans ce dossier.</para></footnote>.</para>
+            <para>Strictement parlant, Subversion n'oblige pas à ce que
+            les données suivies en versions soient stockées ici et il
+            existe des variantes (quoique propriétaires) de
+            stockage des données qui ne stockent pas réellement leurs
+            données dans ce dossier.</para></footnote>.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -230,7 +230,6 @@ conf/  db/  format  hooks/  locks/  README.txt
     <note>
 <!--
       <para>
-
         <indexterm>
           <primary>WebDAV</primary>
           <secondary>activities</secondary>
@@ -249,7 +248,6 @@ conf/  db/  format  hooks/  locks/  README.txt
         been configured to store its activities database elsewhere.
         See <xref linkend="svn.serverconfig.httpd.ref.mod_dav_svn" />
         for more information.</para>
-
 -->
       <para>
         <indexterm>
@@ -299,6 +297,113 @@ conf/  db/  format  hooks/  locks/  README.txt
       conservant l'historique de tous les changements effectués de
       manière sûre et pérenne. C'est là que la totalité de vos données
       suivies en versions réside.</para>
+
+    <sidebar id="svn.reposadmin.basics.backends">
+<!--
+      <title>Speaking of Filesystems&hellip;</title>
+-->
+      <title>À propos des magasins de données</title>
+
+<!--
+      <para>When the initial design phase of Subversion was in
+        progress, the developers decided to use Berkeley DB (BDB) as
+        the storage mechanism behind the virtual versioned filesystem
+        implementation.  Berkeley DB was a logical choice for a
+        variety of reasons, including its open source license,
+        transaction support, reliability, performance, API simplicity,
+        thread safety, support for cursors, and so on.</para>
+-->
+      <para>Lors de la conception initiale de Subversion, les
+        développeurs ont décidé d'utiliser le gestionnaire de bases de
+        données Berkeley DB pour tout un tas de raisons, entre autres
+        sa licence Open Source, son support des transactions, sa
+        fiabilité, ses performances, la simplicité de son interface de
+        programmation (API), le bon support des processus légers
+        (threads), le support des curseurs,&nbsp;etc.</para>
+
+<!--
+      <para>In the years since, the
+        newer <firstterm>FSFS</firstterm><footnote><para>While it is
+        often pronounced <quote>fuzz-fuzz,</quote> per Jack
+        Repenning's rendition, this book assumes that the reader is
+        thinking <quote>eff-ess-eff-ess.</quote></para></footnote>
+        backend was introduced.  This so-called <quote>filesystem
+        filesystem</quote> was a versioned filesystem implemented not
+        within an opaque database container, but instead as a larger
+        collection of more transparent files stored in the OS's
+        filesystem.  FSFS enjoyed continual development and
+        improvement, and eventually earned the right to be the default
+        Subversion backend.  But improvements to that backend kept
+        coming, and ultimately the FSFS storage layer surpassed the
+        Berkeley DB one in nearly every meaningful metric, from
+        performance to scalability to reliability and beyond.</para>
+-->
+
+      <para>Le temps passant, un nouveau magasin de données<footnote>
+          <para>NdT&nbsp;: souvent désigné par
+            <foreignphrase>backend</foreignphrase> en
+            anglais (sans équivalent en français) ou, ce qui peut être
+            source de confusion,
+            <quote>le système de fichiers)</quote></para>
+        </footnote>, dénommé <firstterm>FSFS</firstterm><footnote>
+          <para>Souvent prononcé <quote>feuzz-feuzz</quote> par Jack
+            Repenning (ce livre, cependant, suppose que le
+            lecteur pense <quote>eff-ess-eff-ess</quote>).</para>
+        </footnote> a fait son apparition. Ce que l'on pourrait appeler
+        <quote>le système de fichiers du système de fichiers</quote>
+        était un système de fichiers suivis en versions. Cependant, il
+        utilise le système de fichiers natif du système d'exploitation
+        directement plutôt que le côté obscur d'une base de données.
+        FSFS a fait l'objet d'améliorations et de développement en
+        continu, ce qui lui a permis finalement de devenir le magasin
+        de données par défaut de Subversion. Les améliorations se sont
+        toujours poursuivies et, en fin de compte, la couche de
+        stockage FSFS a surpassé Berkeley DB dans presque toutes les
+        caractéristiques significatives, de la performance à la
+        fiabilité en passant par la capacité à monter en charge.</para>
+<!--
+
+      <para>These days, it is generally assumed that if you are using
+        the open source Subversion product, you are using the FSFS
+        backend for your repositories.  In fact, beginning with
+        Subversion 1.8, the Berkeley DB Subversion repository
+        filesystem backend has been officially deprecated.  Subversion
+        repositories which still use this storage layer option will
+        continue to function with newer Subversion 1.x releases, but
+        no further development&mdash;including feature introduction or
+        expansion&mdash;is planned for the Berkeley DB backend.
+        Subversion effectively offers a single viable repository
+        storage layer option.  FSFS won.</para>
+-->
+      <para>De nos jours, on considère en général que si vous utilisez
+        le produit standard Subversion, les magasins de données de vos
+        dépôts sont au format FSFS. En fait, à partir de Subversion 1.8,
+        le magasin Berkeley DB est officiellement obsolète. Les dépôts
+        qui utilisent toujours ce magasin continueront à fonctionner avec
+        les nouvelles versions Subversion 1.x, mais aucun développement
+        (ce qui inclut l'ajout de fonctionnalités ou d'extensions) n'est
+        planifié pour le magasin Berkeley DB. Subversion ne promeut
+        qu'un seul magasin de données pour les dépôts&nbsp;: FSFS.</para>
+
+<!--
+      <para>This book will continue to provide information relevant to
+        administrators of BDB-backed repositories where it makes sense
+        to do so, but most of this chapter will assume what the rest
+        of the world does: that FSFS is <emphasis>the</emphasis>
+        Subversion storage backend implementation.  Please refer to
+        <xref linkend="svn.berkeleydb"/> or to older versions of this
+        documentation for more complete information about
+        administering such repositories.</para>
+-->
+      <para>Ce livre continue à fournir les informations nécessaires aux
+        administrateurs de magasins BDB autant que nécessaire, mais une
+        grande partie de ce chapitre considère que, à l'instar du reste
+        du monde, FSFS est <emphasis>le</emphasis> magasin de données
+        de Subversion. Reportez-vous à <xref linkend="svn.berkeleydb"/> ou
+        à d'anciennes versions de la documentation pour obtenir des
+        informations complètes quant à l'administration de tels
+        dépôts.</para>
+    </sidebar>
 
   </sect1>
 
@@ -353,19 +458,10 @@ conf/  db/  format  hooks/  locks/  README.txt
       </listitem>
       <listitem>
 <!--
-        <para>What types of access control and repository event
-          reporting do you need?</para>
+        <para>What types of access control do you need?</para>
 -->
-        <para>De quels types de contrôle d'accès et de notifications
-          d'événements avez-vous besoin&nbsp;?</para>
-      </listitem>
-      <listitem>
-<!--
-        <para>Which of the available types of data store do you want
-          to use?</para>
--->
-        <para>Quel type de magasin de données désirez-vous
-          utiliser&nbsp;?</para>
+        <para>De quels types de contrôle d'accès avez-vous
+          besoin&nbsp;?</para>
       </listitem>
     </itemizedlist>
 
@@ -762,846 +858,73 @@ conf/  db/  format  hooks/  locks/  README.txt
         sauvegarde et ainsi de suite.</para>
 
 <!--
-      <para>We cover server choice and configuration in <xref
-        linkend="svn.serverconfig" />, but the point we'd like to
-        briefly make here is simply that the answers to some of these
-        other questions might have implications that force your hand
-        when deciding where your repository will live.  For example,
-        certain deployment scenarios might require accessing the
-        repository via a remote filesystem from multiple computers, in
-        which case (as you'll read in the next section) your choice of
-        a repository backend data store turns out not to be a choice
-        at all because only one of the available backends will work
-        in this scenario.</para>
+      <para>We cover server choice and configuration in
+        <xref linkend="svn.serverconfig" />, but the point we'd like
+        to briefly make here is simply that the answers to some of
+        these other questions might have implications that force your
+        hand when deciding where your repository will live.  For
+        example, certain deployment scenarios might require accessing
+        the repository via a remote filesystem from multiple
+        computers, or using multiple repositories with syncronized
+        contents distributed geographically to permit more performant
+        access to that data by users around the globe.  Addressing
+        each possible way to deploy Subversion is both impossible and
+        outside the scope of this book.  We simply encourage you to
+        evaluate your options using these pages and other sources as
+        your reference material and to plan ahead.</para>
 -->
       <para>Le choix et la configuration du serveur sont abordés au
         <xref linkend="svn.serverconfig" />, mais nous voulons signaler
         dès maintenant que certains choix pour l'une ou l'autre de ces
         questions ont des implications sur l'endroit où implémenter
         votre serveur. Par exemple, certains scénarios de déploiement
-        nécessitent, pour plusieurs ordinateurs, l'accès au dépôt via
-        un système de fichiers distant et, dans ce cas (nous le verrons
-        à la prochaine section), le choix du type de magasin de données
-        n'en est plus un, puisqu'un seul type de magasin de données
-        convient dans ce scénario.</para>
-
-<!--
-      <para>Addressing each possible way to deploy
-        Subversion is both impossible and outside the scope of this
-        book.  We simply encourage you to evaluate your options using
-        these pages and other sources as your reference material and to
-        plan ahead.</para>
--->
-      <para>Décrire l'ensemble des possibilités de déploiement de
-        Subversion est impossible et n'est pas l'objectif de ce livre.
-        Nous vous encourageons simplement à évaluer vos choix avec ces
-        quelques pages ainsi qu'avec d'autres ressources en guise de
-        référence afin de planifier correctement les opérations.</para>
+        nécessitent, pour plusieurs ordinateurs, l'accès au dépôt
+        <foreignphrase>via</foreignphrase> un système de fichiers distant ou
+        l'utilisation de plusieurs dépôts dont les contenus sont répartis
+        géographiquement afin d'offrir des accès performants à tous les
+        utilisateurs quels que soient leurs emplacements. Étudier chaque cas
+        possible de déploiement de Subversion est à la fois impossible et
+        hors du champ de ce livre. Nous vous encourageons simplement à
+        considérer les différentes options présentées dans ces pages et
+        ailleurs dans d'autres références, puis de planifier vos déploiements
+        en conséquence.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
-    <sect2 id="svn.reposadmin.basics.backends">
+    <sect2 id="svn.reposadmin.basics.accesscontrol">
 <!--
-      <title>Choosing a Data Store</title>
+      <title>Controlling Access to Your Repository</title>
 -->
-      <title>Choix du magasin de données</title>
+      <title>Contrôle d'accès au dépôt</title>
 
 <!--
-      <para>
-        <indexterm>
-          <primary>FSFS</primary>
-        </indexterm>
-        <indexterm>
-          <primary>Berkeley DB</primary>
-        </indexterm>
-        <indexterm>
-          <primary>BDB</primary>
-          <see>Berkeley DB</see>
-        </indexterm>
-        <indexterm>
-          <primary>repositories</primary>
-          <secondary>filesystem</secondary>
-        </indexterm>Subversion provides two options for the
-        type of underlying data store&mdash;often referred to as
-        <quote>the backend</quote> or, somewhat confusingly,
-        <quote>the (versioned) filesystem</quote>&mdash;that each
-        repository uses.  One type of data store keeps everything in a
-        Berkeley DB (or BDB) database environment; repositories that
-        use this type are often referred to as being
-        <quote>BDB-backed.</quote> The other type stores data in
-        ordinary flat files, using a custom format.  Subversion
-        developers have adopted the habit of referring to this latter
-        data storage mechanism
-        as <firstterm>FSFS</firstterm><footnote><para>Often
-        pronounced <quote>fuzz-fuzz,</quote> if Jack Repenning has
-        anything to say about it.  (This book, however, assumes that
-        the reader is
-        thinking <quote>eff-ess-eff-ess.</quote>)</para></footnote>&mdash;a
-        versioned filesystem implementation that uses the native OS
-        filesystem directly&mdash;rather than via a database library
-        or some other abstraction layer&mdash;to store data.</para>
+      <para>Access control in Subversion is almost entirely managed by
+        the Subversion server processes.  We discuss the available
+        Subversion servers in <xref linkend="svn.serverconfig" />, and
+        explain path-based access control specifically in
+        <xref linkend="svn.serverconfig.pathbasedauthz" />.  In
+        addition to those user-level access control questions, you'll also
+        want to ensure that your repository is accessible by the
+        programs on your hosting machine which need to access it.
+        Consider the OS-level user and group ownership that makes
+        sense for your repository.  Once again, the information found
+        in <xref linkend="svn.serverconfig" /> should be able to help
+        you make these decisions.</para>
 -->
-      <para>
-        <indexterm>
-          <primary>FSFS</primary>
-        </indexterm>
-        <indexterm>
-          <primary>Berkeley DB</primary>
-        </indexterm>
-        <indexterm>
-          <primary>BDB</primary>
-          <see>Berkeley DB</see>
-        </indexterm>
-        <indexterm>
-          <primary>dépôts</primary>
-          <secondary>système de fichiers</secondary>
-        </indexterm>Subversion offre deux types de stockage interne pour
-        le magasin de données<footnote>
-          <para>NdT&nbsp;: souvent désigné par
-            <foreignphrase>backend</foreignphrase> en
-            anglais (sans équivalent en français) ou, ce qui peut être
-            source de confusion, <quote>le système de fichiers
-            (suivi en versions)</quote></para>
-        </footnote>
-        utilisé par le dépôt. Un des types de magasin de données
-        conserve tout dans une base de données Berkeley DB (ou
-        BDB)&nbsp;; les dépôts qui utilisent ce type de magasin sont
-        qualifiés de <quote>dépôts gérés par BDB</quote> ou
-        <quote>dépôts BDB</quote>. L'autre type de magasin stocke les
-        données dans des fichiers ordinaires, en utilisant un format
-        particulier. Les développeurs de Subversion ont pris l'habitude
-        d'appeler ce type de stockage
-        <firstterm>FSFS</firstterm><footnote>
-          <para>Souvent prononcé <quote>feuzz-feuzz</quote> si Jack
-            Repenning en parle (ce livre, cependant, suppose que le
-            lecteur pense <quote>eff-ess-eff-ess</quote>).</para>
-        </footnote>
-        &mdash; une implémentation d'un système de fichiers suivis
-        en versions qui utilise le système de fichiers natif du système
-        d'exploitation directement plutôt que par l'intermédiaire d'une
-        bibliothèque de gestionnaire de base de données ou toute autre
-        couche d'abstraction.</para>
+      <para>Le contrôle d'accès dans Subversion est presqu'entièrement
+        géré par le processus serveur. Nous abordons les serveurs
+        fournis par Subversion dans <xref linkend="svn.serverconfig" />
+        et nous expliquons le contrôle d'accès basé sur les chemins
+        spécifiquement dans <xref
+        linkend="svn.serverconfig.pathbasedauthz" />. En complément
+        du contrôle d'accès des utilisateurs, vous devez vous assurer de
+        l'accès à votre dépôt par les programmes hébergés sur votre machine
+        et qui ont besoin cet accès. Là encore, reportez-vous à <xref
+        linkend="svn.serverconfig" /> pour trouver toutes les informtions
+        utiles pour prendre vos décisions.</para>
 
-<!--
-      <para><xref linkend="svn.reposadmin.basics.backends.tbl-1" />
-        gives a comparative overview of Berkeley DB and FSFS
-        repositories.</para>
--->
-      <para>Une comparaison des dépôts utilisant Berkeley DB et FSFS
-        fait l'objet du <xref
-        linkend="svn.reposadmin.basics.backends.tbl-1" />.
-        </para>
-
-      <table id="svn.reposadmin.basics.backends.tbl-1">
-<!--
-        <title>Repository data store comparison</title>
--->
-        <title>Comparaison des magasins de données de dépôts</title>
-        <tgroup cols="4">
-          <thead>
-            <row>
-<!--
-              <entry>Category</entry>
-              <entry>Feature</entry>
-              <entry>Berkeley DB</entry>
-              <entry>FSFS</entry>
--->
-              <entry>Catégorie</entry>
-              <entry>Fonctionnalité</entry>
-              <entry>Berkeley DB</entry>
-              <entry>FSFS</entry>
-            </row>
-          </thead>
-          <tbody>
-            <row>
-<!--
-              <entry morerows="1">Reliability</entry>
-              <entry>Data integrity</entry>
-              <entry>When properly deployed, extremely reliable;
-                Berkeley DB 4.4 brings auto-recovery</entry>
-              <entry>Older versions had some rarely demonstrated, but
-                data-destroying bugs</entry>
--->
-              <entry morerows="1">Fiabilité</entry>
-              <entry>Intégrité des données</entry>
-              <entry>Très fiable quand déployé correctement&nbsp;;
-                Berkeley DB 4.4 apporte l'auto-restauration</entry>
-              <entry>Les vieilles versions avaient quelques bogues
-                (rarement démontrés) qui détruisaient des
-                données</entry>
-            </row>
-            <row>
-<!--
-              <entry>Sensitivity to interruptions</entry>
-              <entry>Very; crashes and permission problems can leave the
-                database <quote>wedged,</quote> requiring journaled
-                recovery procedures</entry>
-              <entry>Quite insensitive</entry>
--->
-              <entry>Sensibilité aux interruptions</entry>
-              <entry>Forte&nbsp;; les <quote>plantages</quote> et les
-                problèmes de droits peuvent laisser la base de données
-                dans un état instable, nécessitant le recours aux
-                procédures de restauration issues de la
-                journalisation</entry>
-              <entry>Quasiment insensible</entry>
-            </row>
-            <row>
-<!--
-              <entry morerows="3">Accessibility</entry>
-              <entry>Usable from a read-only mount</entry>
-              <entry>No</entry>
-              <entry>Yes</entry>
--->
-              <entry morerows="3">Accessibilité</entry>
-              <entry>Utilisable depuis un montage en lecture seule</entry>
-              <entry>Non</entry>
-              <entry>Oui</entry>
-            </row>
-            <row>
-<!--
-              <entry>Platform-independent storage</entry>
-              <entry>No</entry>
-              <entry>Yes</entry>
--->
-              <entry>Stockage indépendant de la plateforme</entry>
-              <entry>Non</entry>
-              <entry>Oui</entry>
-            </row>
-            <row>
-<!--
-              <entry>Usable over network filesystems</entry>
-              <entry>Generally, no</entry>
-              <entry>Yes</entry>
--->
-              <entry>Utilisable sur des systèmes de fichiers en
-                réseau</entry>
-              <entry>Généralement non</entry>
-              <entry>Oui</entry>
-            </row>
-            <row>
-<!--
-              <entry>Group permissions handling</entry>
-              <entry>Sensitive to user umask problems; best if accessed
-                by only one user</entry>
-              <entry>Works around umask problems</entry>
--->
-              <entry>Gestion des droits pour les groupes</entry>
-              <entry>Sensible aux problèmes de umask de
-                l'utilisateur&nbsp;; c'est mieux si un seul utilisateur
-                y accède</entry>
-              <entry>Contourne les problèmes de umask</entry>
-            </row>
-            <row>
-<!--
-              <entry morerows="2">Scalability</entry>
-              <entry>Repository disk usage</entry>
-              <entry>Larger (especially if logfiles aren't purged)</entry>
-              <entry>Smaller</entry>
--->
-              <entry morerows="2">Extensibilité</entry>
-              <entry>Utilisation des disques sur le dépôt</entry>
-              <entry>Plus grande (surtout si les fichiers de
-                journalisation ne sont pas purgés) </entry>
-              <entry>Plus faible</entry>
-            </row>
-            <row>
-<!--
-              <entry>Number of revision trees</entry>
-              <entry>Database; no problems</entry>
-              <entry>Some older native filesystems don't scale well with
-                thousands of entries in a single directory</entry>
--->
-              <entry>Nombre de révisions</entry>
-              <entry>Base de données, pas de problème</entry>
-              <entry>De vieux systèmes de fichiers fonctionnent moins
-                bien lorsqu'il y a plusieurs milliers d'entrées dans un
-                seul répertoire</entry>
-            </row>
-            <row>
-<!--
-              <entry>Directories with many files</entry>
-              <entry>Slower</entry>
-              <entry>Faster</entry>
--->
-              <entry> Répertoires avec beaucoup de fichiers</entry>
-              <entry>Plus lent</entry>
-              <entry>Plus rapide</entry>
-            </row>
-            <row>
-<!--
-              <entry morerows="1">Performance</entry>
-              <entry>Checking out latest revision</entry>
-              <entry>No meaningful difference</entry>
-              <entry>No meaningful difference</entry>
--->
-              <entry morerows="1">Performances</entry>
-              <entry>Extraire la dernière révision</entry>
-              <entry>Pas de différence significative</entry>
-              <entry>Pas de différence significative</entry>
-            </row>
-            <row>
-<!--
-              <entry>Large commits</entry>
-              <entry>Slower overall, but cost is amortized across the
-                lifetime of the commit</entry>
-              <entry>Faster overall, but finalization delay may cause
-                client timeouts</entry>
--->
-              <entry>Grosses propagations</entry>
-              <entry>Globalement plus lent, mais mais cette lenteur est
-                répartie sur toute la durée de la propagation</entry>
-              <entry>Globalement plus rapide, mais le délai de
-                finalisation peut amener le client à considérer que sa
-                requête a expiré avant qu'il ne reçoive la
-                réponse</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
-
-<!--
-      <para>There are advantages and disadvantages to each of these
-        two backend types.  Neither of them is more
-        <quote>official</quote> than the other, though the newer FSFS
-        is the default data store as of Subversion 1.2.  Both are
-        reliable enough to trust with your versioned data.  But as you
-        can see in <xref
-        linkend="svn.reposadmin.basics.backends.tbl-1" />, the FSFS
-        backend provides quite a bit more flexibility in terms of its
-        supported deployment scenarios.  More flexibility means you
-        have to work a little harder to find ways to deploy it
-        incorrectly.  Those reasons&mdash;plus the fact that not using
-        Berkeley DB means there's one fewer component in the
-        system&mdash;largely explain why today almost everyone uses
-        the FSFS backend when creating new repositories.</para>
--->
-      <para>Chaque type de magasin de données a ses avantages et ses
-        inconvénients. Aucun n'est plus <quote>officiel</quote> que
-        l'autre, même si le nouveau FSFS est le magasin par défaut
-        depuis Subversion 1.2. Les deux sont suffisamment fiables pour
-        y stocker vos données suivies en versions en toute confiance.
-        Mais comme l'indique le <xref
-        linkend="svn.reposadmin.basics.backends.tbl-1" />, FSFS est un
-        peu plus souple à déployer. Plus de souplesse signifie que vous
-        devez y mettre un peu plus du vôtre pour faire des erreurs lors
-        du déploiement. C'est pourquoi, en plus du fait que ne pas
-        utiliser Berkeley DB permet de compter un composant de moins
-        dans le système, aujourd'hui, presque tout le monde utilise FSFS
-        lors de la création de nouveaux dépôts.</para>
-
-<!--
-      <para>Fortunately, most programs that access Subversion
-        repositories are blissfully ignorant of which backend data
-        store is in use.  And you aren't even necessarily stuck with
-        your first choice of a data store&mdash;in the event that you
-        change your mind later, Subversion provides ways of migrating
-        your repository's data into another repository that uses a
-        different backend data store.  We talk more about that later
-        in this chapter.</para>
--->
-      <para>Heureusement, en général, les programmes qui accèdent aux
-        dépôts Subversion ignore royalement quel type de magasin de
-        données est utilisé. Et vous n'êtes même pas prisonnier de votre
-        premier choix de magasin&nbsp;: si vous changez d'avis
-        plus tard, Subversion offre différentes façons de migrer les
-        données de votre dépôt dans un autre dépôt utilisant un magasin
-        de données différent. Nous en reparlons plus loin dans ce
-        chapitre.</para>
-
-<!--
-      <para>The following subsections provide a more detailed look at
-        the available backend data store types.</para>
--->
-      <para>Les paragraphes suivants abordent plus en détail les
-        différents types de magasins de données disponibles.</para>
-
-      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <sect3 id="svn.reposadmin.basics.backends.bdb">
-        <title>Berkeley DB</title>
-
-<!--
-        <para>
-          <indexterm>
-            <primary>Berkeley DB</primary>
-          </indexterm>When the initial design phase of Subversion was in
-          progress, the developers decided to use Berkeley DB for a
-          variety of reasons, including its open source license,
-          transaction support, reliability, performance, API
-          simplicity, thread safety, support for cursors, and so
-          on.</para>
--->
-        <para>
-          <indexterm>
-            <primary>Berkeley DB</primary>
-          </indexterm>Lors de la conception initiale de Subversion, les
-          développeurs ont décidé d'utiliser le gestionnaire de bases de
-          données Berkeley DB pour tout un tas de raisons, entre autres
-          sa licence Open Source, son support des transactions, sa
-          fiabilité, ses performances, la simplicité de son interface de
-          programmation (API), le bon support des processus légers
-          (threads), le support des curseurs,&nbsp;etc.</para>
-
-<!--
-        <para>Berkeley DB provides real transaction
-          support&mdash;perhaps its most powerful feature.  Multiple
-          processes accessing your Subversion repositories don't have
-          to worry about accidentally clobbering each other's data.
-          The isolation provided by the transaction system is such
-          that for any given operation, the Subversion repository code
-          sees a static view of the database&mdash;not a database that
-          is constantly changing at the hand of some other
-          process&mdash;and can make decisions based on that view.  If
-          the decision made happens to conflict with what another
-          process is doing, the entire operation is rolled back as though
-          it never happened, and Subversion gracefully retries the
-          operation against a new, updated (and yet still static) view
-          of the database.</para>
--->
-        <para>Le gestionnaire de bases de données Berkeley DB apporte un
-          support réel des transactions (c'est peut-être sa
-          fonctionnalité la plus puissante). Si de nombreux processus
-          accèdent en même temps au dépôt, ils n'ont pas à se soucier
-          d'éventuelles corruptions de données de la part des autres
-          processus. L'isolement créé par le système de transaction est
-          tel que, pour une opération donnée, Subversion voit une base de
-          données statique &mdash; pas une base de données en perpétuel
-          changement en raison des autres processus &mdash; et peut donc
-          prendre des décisions à partir de cette perspective. Si la
-          décision entraîne un conflit avec ce que fait un autre
-          processus, l'opération complète est annulée, tout se passe
-          comme si elle n'avait jamais eu lieu et Subversion essaie une
-          nouvelle fois son opération sur la base de données mise à jour
-          (qui apparaît toujours statique).</para>
-
-<!--
-        <para>Another great feature of Berkeley DB is <firstterm>hot
-          backups</firstterm>&mdash;the ability to back up the
-          database environment without taking it
-          <quote>offline.</quote> We'll discuss how to back up your
-          repository later in this chapter (in <xref
-          linkend="svn.reposadmin.maint.backup"/>), but the benefits
-          of being able to make fully functional copies of your
-          repositories without any downtime should be obvious.</para>
--->
-        <para>Une autre fonctionnalité phare du gestionnaire de bases de
-          données Berkeley DB est la <firstterm>sauvegarde à
-          chaud</firstterm> &mdash; la capacité de sauvegarder
-          l'environnement de la base de données sans la couper du
-          réseau. Nous voyons comment réaliser une sauvegarde de votre
-          dépôt plus loin dans ce chapitre (dans <xref
-          linkend="svn.reposadmin.maint.backup"/>), mais le bénéfice de
-          pouvoir faire des copies opérationnelles de vos dépôts sans
-          interruption de service doit vous sauter aux yeux.</para>
-
-<!--
-        <para>Berkeley DB is also a very reliable database system when
-          properly used.  Subversion uses Berkeley DB's logging
-          facilities, which means that the database first writes to
-          on-disk logfiles a description of any modifications it is
-          about to make, and then makes the modification itself.  This
-          is to ensure that if anything goes wrong, the database
-          system can back up to a previous
-          <firstterm>checkpoint</firstterm>&mdash;a location in the
-          logfiles known not to be corrupt&mdash;and replay
-          transactions until the data is restored to a usable state.
-          See <xref linkend="svn.reposadmin.maint.diskspace"/> later
-          in this chapter for more about Berkeley DB logfiles.</para>
--->
-        <para>Le gestionnaire de bases de données Berkeley DB est aussi
-          très fiable quand il est utilisé correctement. Subversion
-          utilise les fonctions de journalisation du gestionnaire de
-          bases de données Berkeley DB, ce qui veut dire que la base de
-          données consigne d'abord dans un fichier de journalisation
-          situé sur disque chaque modification qu'elle s'apprête à
-          effectuer, puis effectue la modification elle-même. Cela
-          garantit que si quelque chose se passe mal, le gestionnaire de
-          base de données peut revenir à un <firstterm>point de
-          contrôle</firstterm> précédent &mdash; un point précis des
-          fichiers de journalisation dont il sait qu'il n'est pas
-          corrompu &mdash; et rejouer les transactions jusqu'à ce que
-          les données soient dans un état opérationnel. Voir <xref
-          linkend="svn.reposadmin.maint.diskspace"/> plus loin dans ce
-          chapitre pour plus de détails sur les fichiers de
-          journalisation Berkeley DB.</para>
-
-<!--
-        <para>But every rose has its thorn, and so we must note some
-          known limitations of Berkeley DB.  First, Berkeley DB
-          environments are not portable.  You cannot simply copy a
-          Subversion repository that was created on a Unix system onto
-          a Windows system and expect it to work.  While much of the
-          Berkeley DB database format is architecture-independent,
-          other aspects of the environment are not.
-          Second, Subversion uses Berkeley DB in a way that will not
-          operate on Windows 95/98 systems&mdash;if you need to house
-          a BDB-backed repository on a Windows machine, stick with
-          Windows 2000 or later.</para>
--->
-        <para>Mais chaque médaille à son revers et nous devons vous
-          avertir de quelques limitations du gestionnaire de bases de
-          données Berkeley DB. Premièrement, les environnements du
-          gestionnaire de bases de données Berkeley DB ne sont pas
-          portables. Vous ne pouvez pas simplement copier un dépôt
-          Subversion qui a été créé sur un système Unix vers un système
-          Windows et espérer qu'il fonctionne. Bien que la majeure
-          partie de la base de données Berkeley DB soit indépendante de
-          l'architecture, d'autres aspects de l'environnement ne le sont
-          pas. Deuxièmement, Subversion utilise le gestionnaire de bases
-          de données Berkeley DB de telle façon que cela ne fonctionne
-          pas sur un système Windows 95/98&nbsp;: si vous avez besoin
-          d'héberger un dépôt géré par BDB sur une machine Windows,
-          adoptez Windows 2000 ou plus.</para>
-
-<!--
-        <para>While Berkeley DB promises to behave correctly on
-          network shares that meet a particular set of
-          specifications,<footnote><para>Berkeley DB requires that the
-          underlying filesystem implement strict POSIX locking
-          semantics, and more importantly, the ability to map files
-          directly into process memory.</para></footnote> most
-          networked filesystem types and appliances do
-          <emphasis>not</emphasis> actually meet those requirements.
-          And in no case can you allow a BDB-backed repository that
-          resides on a network share to be accessed by multiple
-          clients of that share at once (which quite often is the
-          whole point of having the repository live on a network share
-          in the first place).</para>
--->
-        <para>Alors que le gestionnaire de bases de données Berkeley DB
-          prétend fonctionner correctement sur un système de fichiers en
-          réseau, pour peu que celui-ci respecte des caractéristiques
-          particulières<footnote>
-            <para>Berkeley DB requiert que le système de fichiers
-              sous-jacent implémente strictement la sémantique POSIX sur
-              les verrous et, plus important encore, la possibilité de
-              projeter les fichiers directement en mémoire vive.</para>
-          </footnote>,
-          la plupart des systèmes de fichiers en réseau et des systèmes
-          dédiés <emphasis>n'atteint pas</emphasis> ces pré-requis.
-          Et en aucun cas il ne vous est possible de partager ce dépôt
-          sur un système de fichiers en réseau entre plusieurs clients
-          (alors que c'est quand même souvent le principal intérêt d'un
-          dépôt accessible sur un partage réseau).</para>
-
-<!--
-        <warning>
-          <para>If you attempt to use Berkeley DB on a noncompliant
-            remote filesystem, the results are unpredictable&mdash;you
-            may see mysterious errors right away, or it may be months
-            before you discover that your repository database is
-            subtly corrupted.  You should strongly consider using the
-            FSFS data store for repositories that need to live on a
-            network share.</para>
-        </warning>
-
--->
-        <warning>
-          <para>Si vous tentez d'utiliser le gestionnaire de bases de
-            données Berkeley DB sur un système de fichiers en réseau non
-            compatible, les résultats sont imprévisibles&nbsp;: vous
-            vous apercevrez peut-être immédiatement de mystérieuses
-            erreurs, mais il se peut qu'il se passe des mois avant que
-            vous ne découvriez que votre base de données de dépôt est
-            corrompue. Songez sérieusement à utiliser un magasin FSFS
-            pour les dépôts qui doivent être hébergés sur un partage
-            réseau.</para>
-        </warning>
-
-<!--
-
-        <para>Finally, because Berkeley DB is a library linked
-          directly into Subversion, it's more sensitive to
-          interruptions than a typical relational database system.
-          Most SQL systems, for example, have a dedicated server
-          process that mediates all access to tables.  If a program
-          accessing the database crashes for some reason, the database
-          daemon notices the lost connection and cleans up any mess
-          left behind.  And because the database daemon is the only
-          process accessing the tables, applications don't need to
-          worry about permission conflicts.  These things are not the
-          case with Berkeley DB, however.  Subversion (and programs
-          using Subversion libraries) access the database tables
-          directly, which means that a program crash can leave the
-          database in a temporarily inconsistent, inaccessible state.
-          When this happens, an administrator needs to ask Berkeley DB
-          to restore to a checkpoint, which is a bit of an annoyance.
-          Other things can cause a repository to <quote>wedge</quote>
-          besides crashed processes, such as programs conflicting over
-          ownership and permissions on the database files.</para>
--->
-        <para>Finalement, parce que la bibliothèque du gestionnaire de
-          bases de données Berkeley DB est directement incluse dans
-          Subversion, elle est plus sensible aux interruptions qu'une
-          base de données relationnelle classique. La plupart des
-          systèmes SQL, par exemple, dispose d'un processus serveur
-          dédié qui coordonne tous les accès aux tables. Si un programme
-          qui accède aux tables plante pour une raison ou une autre, le
-          processus serveur de la base de données s'en aperçoit et fait
-          le ménage. Et comme le processus serveur est le seul processus
-          accédant réellement aux tables, les applications n'ont pas à
-          se soucier des conflits de droits. Cependant, ce n'est pas le
-          cas avec le gestionnaire de bases de données Berkeley DB.
-          Subversion (et les programmes utilisant les bibliothèques de
-          Subversion) accèdent aux tables directement, ce qui veut dire
-          que le plantage d'un programme peut laisser la base de données
-          dans un état temporairement incohérent et inaccessible. Quand
-          cela arrive, un administrateur doit demander au gestionnaire
-          de bases de données Berkeley DB de revenir à un point de
-          contrôle, ce qui est assez ennuyeux. D'autres incidents
-          peuvent faire planter la base de données, comme
-          des conflits entre programmes pour la possession ou les droits
-          sur les fichiers de la base de données.</para>
-
-        <note>
-<!--
-          <para>Berkeley DB 4.4 brings (to Subversion 1.4 and later)
-            the ability for Subversion to automatically and
-            transparently recover Berkeley DB environments in need of
-            such recovery.  When a Subversion process attaches to a
-            repository's Berkeley DB environment, it uses some process
-            accounting mechanisms to detect any unclean disconnections
-            by previous processes, performs any necessary recovery,
-            and then continues on as though nothing happened.  This
-            doesn't completely eliminate instances of repository
-            wedging, but it does drastically reduce the amount of
-            human interaction required to recover from them.</para>
-        </note>
--->
-          <para>La version 4.4 du gestionnaire de bases de données
-            Berkeley DB permet à Subversion (version 1.4 ou plus) de
-            restaurer un environnement Berkeley DB automatiquement et de
-            manière transparente en cas de besoin. Quand un processus
-            Subversion se greffe sur l'environnement d'un dépôt
-            Berkeley DB, il utilise un mécanisme d'enregistrement pour
-            détecter d'éventuels problèmes de déconnexion antérieurs,
-            effectue les restaurations nécessaires puis passe à la suite
-            comme si de rien n'était. Cela n'élimine pas complètement
-            les plantages du dépôt, mais les actions humaines
-            nécessaires pour revenir à une situation normale sont
-            considérablement réduites.</para>
-        </note>
-
-<!--
-        <para>So while a Berkeley DB repository is quite fast and
-          scalable, it's best used by a single server process running
-          as one user&mdash;such as Apache's <command>httpd</command>
-          or <command>svnserve</command> (see <xref
-          linkend="svn.serverconfig"/>)&mdash;rather than accessing it
-          as many different users via <literal>file://</literal> or
-          <literal>svn+ssh://</literal> URLs.  If you're accessing a Berkeley
-          DB repository directly as multiple users, be sure to read
-          <xref linkend="svn.serverconfig.multimethod"/> later in this
-          chapter.</para>
--->
-        <para>Ainsi, bien qu'un dépôt Berkeley DB soit rapide et capable
-          de monter en puissance, il faut privilégier une utilisation
-          par un seul processus serveur tournant avec une identité
-          unique (comme les serveurs Apache <command>httpd</command>
-          ou <command>svnserve</command>&nbsp;: voir le <xref
-          linkend="svn.serverconfig"/>) à un accès par de
-          nombreux utilisateurs via des URL <literal>file://</literal>
-          ou <literal>svn+ssh://</literal>. Si de multiples utilisateurs
-          doivent avoir accès à un dépôt Berkeley DB, lisez
-          <xref linkend="svn.serverconfig.multimethod"/> plus loin dans
-          ce chapitre.</para>
-
-      </sect3>
-
-      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <sect3 id="svn.reposadmin.basics.backends.fsfs">
-        <title>FSFS</title>
-
-<!--
-        <para>
-          <indexterm>
-            <primary>FSFS</primary>
-          </indexterm>In mid-2004, a second type of repository storage
-          system&mdash;one that doesn't use a database at
-          all&mdash;came into being.  An FSFS repository stores the
-          changes associated with a revision in a single file, and so
-          all of a repository's revisions can be found in a single
-          subdirectory full of numbered files.  Transactions are
-          created in separate subdirectories as individual files.
-          When complete, the transaction file is renamed and moved
-          into the revisions directory, thus guaranteeing that commits
-          are atomic.  And because a revision file is permanent and
-          unchanging, the repository also can be backed up while
-          <quote>hot,</quote> just like a BDB-backed
-          repository.</para>
--->
-        <para>
-          <indexterm>
-            <primary>FSFS</primary>
-          </indexterm>Mi-2004, un deuxième type de stockage pour le
-          dépôt, qui ne fait pas appel à une base de données, a fait son
-          apparition. Un dépôt FSFS stocke les changements associés à
-          une révision dans un fichier unique, ce qui fait que
-          l'ensemble des révisions du dépôt se trouvent dans un seul
-          sous-répertoire rempli de fichiers numérotés. Les transactions
-          sont créées, en tant que fichiers individuels, dans des
-          sous-répertoires séparés. Une fois la transaction terminée, le
-          fichier de transaction est renommé et placé dans le répertoire
-          des révisions, ce qui garantit l'atomicité des propagations.
-          Et puisqu'un fichier de révision est permanent et non
-          modifiable, le dépôt peut également être sauvegardé
-          <quote>à chaud</quote> à l'instar d'un dépôt BDB.</para>
-
-        <sidebar id="svn.reposadmin.basics.backends.fsfs.revfiles">
-<!--
-          <title>Revision files and shards</title>
--->
-          <title>Répartition des fichiers stockant les révisions</title>
-
-<!--
-          <para>FSFS repositories contain files that describe the
-            changes made in a single revision, and files that contain
-            the revision properties associated with a single revision.
-            Repositories created in versions of Subversion prior to
-            1.5 keep these files in two directories&mdash;one for each
-            type of file.  As new revisions are committed to the
-            repository, Subversion drops more files into these two
-            directories&mdash;over time, the number of these files in
-            each directory can grow to be quite large.  This has been
-            observed to cause performance problems on certain
-            network-based filesystems.</para>
--->
-          <para>Les dépôts FSFS contiennent des fichiers de révision
-            qui décrivent, pour chaque révision, les modifications
-            apportées et les propriétés de la révision concernée.
-            Les dépôts créés avec des versions de Subversion antérieures
-            à 1.5 gardent ces fichiers dans deux dossiers (un dossier
-            pour chaque type de fichier). Au fur et à mesure que les
-            révisions sont propagées dans le dépôt, Subversion dépose
-            autant de fichiers dans ces dossiers. Avec le temps, le
-            nombre de fichiers dans chaque dossier peut se révéler
-            relativement important. Cela peut être la cause de chutes
-            de performances sur certains systèmes de fichiers
-            réseaux.</para>
-
-<!--
-          <para>
-            <indexterm>
-              <primary>FSFS</primary>
-              <secondary>sharding</secondary>
-            </indexterm>Subversion 1.5 creates FSFS-backed
-            repositories using a slightly modified layout in which the
-            contents of these two directories
-            are <firstterm>sharded</firstterm>, or scattered across
-            several subdirectories.  This can greatly reduce the time
-            it takes the system to locate any one of these files, and
-            therefore increases the overall performance of Subversion
-            when reading from the repository.</para>
--->
-          <para>
-            <indexterm>
-              <primary>FSFS</primary>
-              <secondary>éparpillement</secondary>
-            </indexterm>Subversion 1.5 crée des dépôts avec le magasin
-            FSFS et pour lequel le contenu des deux répertoires est
-            éparpillé ou réparti dans plusieurs
-            sous-répertoires. Cela peut réduire de manière considérable
-            le temps nécessaire au système pour trouver n'importe quel
-            fichier et ainsi améliore la performance globale de
-            Subversion lors des lectures dans le dépôt.</para>
-
-<!--
-          <para>
-            <indexterm>
-              <primary>FSFS</primary>
-              <secondary>packing</secondary>
-            </indexterm>Subversion 1.6 and later takes the sharded
-            layout one step further, allowing administrators to
-            optionally <firstterm>pack</firstterm> each of their
-            repository shards up into a single multi-revision file.
-            This can have both performance and disk usage benefits.
-            See
-            <xref linkend="svn.reposadmin.maint.diskspace.fsfspacking"/>
-            for more information.</para>
--->
-          <para>
-            <indexterm>
-              <primary>FSFS</primary>
-              <secondary>tasser</secondary>
-            </indexterm>Subversion 1.6 et plus récents poussent le
-            concept d'éparpillement un cran plus loin en autorisant les
-            administrateurs à éventuellement
-            <firstterm>tasser</firstterm> chacun des dépôts dans
-            un unique fichier multi-révisions. Voir
-            <xref linkend="svn.reposadmin.maint.diskspace.fsfspacking"/>
-            pour plus d'informations.</para>
-
-        </sidebar>
-
-<!--
-        <para>The FSFS revision files describe a revision's
-          directory structure, file contents, and deltas against files
-          in other revision trees.  Unlike a Berkeley DB database,
-          this storage format is portable across different operating
-          systems and isn't sensitive to CPU architecture.  Because
-          no journaling or shared-memory files are being used, the
-          repository can be safely accessed over a network filesystem
-          and examined in a read-only environment.  The lack of
-          database overhead also means the overall repository
-          size is a bit smaller.</para>
--->
-        <para>Les fichiers de révision FSFS décrivent la structure des
-          répertoires de révision, le contenu des fichiers et les
-          deltas vis-à-vis des autres arborescences à d'autres
-          révisions. Contrairement aux bases de données Berkeley DB, ce
-          format de stockage est portable entre différents systèmes
-          d'exploitation et est indifférent à l'architecture du
-          processeur. Comme aucun fichier de journalisation ou de
-          mémoire partagée n'est utilisé, le répertoire peut être
-          accédé sans problème depuis un système de fichiers en réseau
-          et peut être consulté dans un environnement en lecture seule.
-          L'absence de zone propre à une base de donnée permet également
-          d'obtenir une taille de dépôt légèrement plus petite.</para>
-
-<!--
-        <para>FSFS has different performance characteristics, too.
-          When committing a directory with a huge number of files,
-          FSFS is able to more quickly append directory entries.  On
-          the other hand, FSFS has a longer delay when finalizing a
-          commit while it performs tasks that the BDB backend
-          amortizes across the lifetime of the commit, which could in
-          extreme cases cause clients to time out while waiting for a
-          response.</para>
--->
-        <para>FSF diffère également du point de vue des performances.
-          Quand vous propagez un répertoire comptant un nombre de
-          fichiers très élevé, FSFS est capable d'ajouter plus
-          rapidement les éléments du répertoire. D'un autre côté, FSFS
-          est plus lent à la fin d'une propagation, faisant des tâches
-          que le magasin BDB effectue tout au long de la propagation, ce
-          qui peut conduire dans des cas extrêmes à ce que les clients
-          considèrent que la requête a expiré avant qu'ils ne recoivent
-          de réponse.</para>
-
-<!--
-        <para>The most important distinction, however, is FSFS's
-          imperviousness to wedging when something goes wrong.  If a
-          process using a Berkeley DB database runs into a permissions
-          problem or suddenly crashes, the database can be left in an
-          unusable state until an administrator recovers it.  If the
-          same scenarios happen to a process using an FSFS repository,
-          the repository isn't affected at all.  At worst, some
-          transaction data is left behind.</para>
--->
-        <para>La différence la plus importante reste quand même la
-          résistance aux plantages lorsque quelque chose va mal. Si un
-          processus qui utilise une base de données Berkeley DB
-          rencontre un problème de droits ou plante soudainement, la
-          base de données risque de se retrouver dans un état instable
-          jusqu'à ce qu'un administrateur la restaure. Si la même chose
-          arrive à un processus utilisant un dépôt FSFS, le dépôt n'est
-          en rien affecté. Au pire, quelques données de transaction sont
-          égarées.</para>
-
-      </sect3>
     </sect2>
-
   </sect1>
 
   <!-- ================================================================= -->
@@ -1651,17 +974,10 @@ conf/  db/  format  hooks/  locks/  README.txt
         justement destinée à cela (<command>svnadmin
         create</command>) &nbsp;:</para>
 
-<!--
       <informalexample>
-        <screen>
+        <screen> <!--
 $ # Create a repository
-$ svnadmin create /var/svn/repos
-$
-</screen>
-      </informalexample>
--->
-      <informalexample>
-        <screen>
+$ svnadmin create /var/svn/repos-->
 $ # Créer un dépôt
 $ svnadmin create /var/svn/depot
 $
@@ -1689,34 +1005,20 @@ $
         accepte comme argument soit <literal>fsfs</literal>,
         soit <literal>bdb</literal>.</para>
 
-<!--
       <informalexample>
-        <screen>
+        <screen><!--
 $ # Create an FSFS-backed repository
-$ svnadmin create - -fs-type fsfs /var/svn/repos
-$
-</screen>
-      </informalexample>
--->
-      <informalexample>
-        <screen>
+$ svnadmin create - -fs-type fsfs /var/svn/repos-->
 $ # Créer un dépôt FSFS
 $ svnadmin create --fs-type fsfs /var/svn/depot
 $
 </screen>
       </informalexample>
 
-<!--
       <informalexample>
-        <screen>
-# Create a Berkeley-DB-backed repository
-$ svnadmin create - -fs-type bdb /var/svn/repos
-$
-</screen>
-      </informalexample>
--->
-      <informalexample>
-        <screen>
+        <screen><!--
+# Create a legacy Berkeley-DB-backed repository
+$ svnadmin create - -fs-type bdb /var/svn/repos-->
 $ # Créer un dépôt Berkeley DB
 $ svnadmin create --fs-type bdb /var/svn/depot
 $
@@ -1803,11 +1105,11 @@ $
           repository <quote>by hand.</quote>  The
           <command>svnadmin</command> tool should be sufficient for
           any changes necessary to your repository, or you can look to
-          third-party tools (such as Berkeley DB's tool suite) for
-          tweaking relevant subsections of the repository.  Do
-          <emphasis>not</emphasis> attempt manual manipulation of your
-          version control history by poking and prodding around in
-          your repository's data store files!</para>
+          third-party tools for tweaking relevant subsections of the
+          repository.  Do <emphasis>not</emphasis> attempt manual
+          manipulation of your version control history by poking and
+          prodding around in your repository's data store
+          files!</para>
 -->
         <para>Alors que certaines parties d'un dépôt Subversion sont
           conçues pour être examinées et modifiées <quote>à la
@@ -1817,11 +1119,10 @@ $
           <quote>à la main</quote>. L'outil <command>svnadmin</command>
           est censé être suffisant pour toutes les modifications à
           apporter à votre dépôt, mais vous pouvez également vous servir
-          d'outils tiers (comme la suite d'outils Berkeley DB) pour
-          configurer les parties adéquates du dépôt. Ne tentez
-          <emphasis>surtout pas</emphasis> de manipuler manuellement
-          l'historique du suivi de versions en touchant aux
-          fichiers du magasin de données du dépôt&nbsp;!</para>
+          d'outils tiers pour configurer les parties adéquates du dépôt. Ne
+          tentez <emphasis>surtout pas</emphasis> de manipuler manuellement
+          l'historique du suivi de versions en touchant aux fichiers du
+          magasin de données du dépôt&nbsp;!</para>
       </warning>
 
     </sect2>
@@ -2036,7 +1337,8 @@ $
 <!--
         <title>Hook script environment configuration</title>
 -->
-        <title></title>
+        <title>Configuration de l'environnement des procédures
+          automatiques</title>
 
 <!--
         <para>By default, Subversion executes hook scripts with an
@@ -2114,8 +1416,8 @@ $
           fournit un exemple de fichier de configuration
           <filename>hooks-env</filename>.</para>
 
-<!--
         <example id="svn.reposadmin.hooks.configuration.ex-1">
+<!--
           <title>hooks-env (custom hook script environment
             configuration)</title>
 
@@ -2139,8 +1441,6 @@ PATH = /usr/local/synctools-1.1/bin:%(PATH)s
 </programlisting>
         </example>
 -->
-
-        <example id="svn.reposadmin.hooks.configuration.ex-1">
           <title>hooks-env (configuration personnalisée de
             l'environnement des procédures automatiques)</title>
 
@@ -2534,6 +1834,9 @@ niveau votre client à Subversion 1.5 ou ultérieur.
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.hooks.summary">
+<!--
+        <title>Finding hook scripts or rolling your own</title>
+-->
         <title>Trouver des procédures automatiques ou écrire les
           vôtres</title>
 
@@ -2564,132 +1867,51 @@ niveau votre client à Subversion 1.5 ou ultérieur.
 
 <!--
         <warning>
-          <para>While hook scripts can do almost anything, there is
-            one dimension in which hook script authors should show
-            restraint: do <emphasis>not</emphasis> modify a commit
-            transaction using hook scripts.  While it might be
-            tempting to use hook scripts to automatically correct
-            errors, shortcomings, or policy violations present in the
-            files being committed, doing so can cause problems.
-            Subversion keeps client-side caches of certain bits of
-            repository data, and if you change a commit transaction in
-            this way, those caches become indetectably stale.  This
-            inconsistency can lead to surprising and unexpected
-            behavior.  Instead of modifying the transaction, you
-            should simply <emphasis>validate</emphasis> the
-            transaction in the <filename>pre-commit</filename> hook
-            and reject the commit if it does not meet the desired
-            requirements.  As a bonus, your users will learn the value
-            of careful, compliance-minded work habits.</para>
+          <para>Hook scripts can do almost anything, but hook script
+            authors should show restraint.  It might be tempting to,
+            say, use hook scripts to automatically correct errors,
+            shortcomings, or policy violations present in the files
+            being committed.  Unfortunately, doing so can cause
+            problems.  Subversion keeps client-side caches of certain
+            bits of repository data, and if you change a commit
+            transaction in this way, those caches become indetectably
+            stale, leading to surprising and unexpected behavior.
+            While it is generally okay to add new commit transaction
+            properties via a hook script, essentially everything else
+            about a commit transaction should be considered read-only.
+            Instead of modifying a transaction to polish its payload,
+            simply <emphasis>validate</emphasis> the transaction in
+            the <filename>pre-commit</filename> hook and reject the
+            commit if it does not meet the desired requirements.  As a
+            bonus, your users will learn the value of careful,
+            compliance-minded work habits.</para>
         </warning>
 -->
         <warning>
-          <para>Bien que les procédures automatiques soient capables de
-          faire tout et n'importe quoi, leurs auteurs devraient faire
-          preuve de modération dans un domaine précis&nbsp;:
-          <emphasis>ne modifiez pas</emphasis> une transaction de
-          propagation en utilisant une procédure automatique. Bien que
-          cela soit tentant de corriger automatiquement certaines
-          erreurs, raccourcis ou violations de politique constatées dans
-          les fichiers propagés, cela peut causer des problèmes.
-          Subversion conserve en cache, côté client, certaines parties
-          des données du dépôt et si vous modifiez une transaction de
-          propagation de cette façon, ces caches seront périmés sans que
+          <para>les procédures automatiques sont capables de faire tout et
+          n'importe quoi, mais leurs auteurs doivent faire preuve de
+          modération. Il pourrait être tentant, disons, d'utiliser les
+          procédures automatiques pour corriger automatiquement des erreurs,
+          des coquilles ou des violations de la politique dans les fichiers
+          propagés. Malheureusement, une telle action peut engendrer des
+          problèmes. Subversion conserve en cache, côté client, certaines
+          parties des données du dépôt et, si vous modifiez une transaction
+          de propagation de cette façon, ces caches seront périmés sans que
           cela ne puisse être détecté. De telles incohérences peuvent
-          aboutir à des comportements surprenants et inattendus. Au lieu
-          de modifier la transaction, contentez-vous de
-          <emphasis>vérifier</emphasis> la transaction dans la procédure
-          automatique <literal>pre-commit</literal> et rejetez-la si
-          elle ne remplit pas les conditions nécessaires. Entre autre
-          avantages,vos utilisateurs prendront ainsi des habitudes de
-          travail empreintes de respect des procédures et de
-          qualité.</para>
+          aboutir à des comportements surprenants et inattendus. Autant il
+          est généralement correct d'ajouter des propriétés de transaction
+          par une procédure automatique, autant tout le reste dans une
+          transaction de propagation doit être considéré comme en lecture
+          seule. Au lieu de modifier une transaction pour la rendre plus
+          policée, contentez-vous de <emphasis>vérifier</emphasis> la
+          transaction dans la procédure automatique
+          <literal>pre-commit</literal> et rejetez-la si elle ne remplit pas
+          les conditions nécessaires. Entre autre avantages, vos utilisateurs
+          prendront ainsi des habitudes de travail empreintes de respect des
+          procédures et de qualité.</para>
         </warning>
 
       </sect3>
-    </sect2>
-
-    <!-- =============================================================== -->
-    <sect2 id="svn.reposadmin.create.bdb">
-<!--
-      <title>Berkeley DB Configuration</title>
--->
-      <title>Configuration de la base de données Berkeley DB</title>
-
-<!--
-      <para>A Berkeley DB environment is an encapsulation of one or
-        more databases, logfiles, region files, and configuration
-        files.  The Berkeley DB environment has its own set of default
-        configuration values for things such as the number of database
-        locks allowed to be taken out at any given time, the maximum
-        size of the journaling logfiles, and so on.  Subversion's
-        filesystem logic additionally chooses default values for some
-        of the Berkeley DB configuration options.  However, sometimes
-        your particular repository, with its unique collection of data
-        and access patterns, might require a different set of
-        configuration option values.</para>
--->
-      <para>Un environnement Berkeley DB peut encapsuler une ou
-        plusieurs bases de données, fichiers de journalisation, de
-        région et de configuration. L'environnement Berkeley DB a un
-        ensemble propre de valeurs configurées par défaut comme le nombre de
-        verrous autorisés à un instant donné, la taille maximum des fichiers
-        de journalisation,&nbsp;etc. La logique du système de fichiers
-        Subversion choisit des valeurs par défaut pour différentes options de
-        configuration du gestionnaire Berkeley DB. Cependant, il se peut que
-        votre dépôt nécessite une configuration différente en raison de
-        l'architecture de vos données et des méthodes d'accès.</para>
-
-<!--
-      <para>The producers of Berkeley DB understand that different
-        applications and database environments have different
-        requirements, so they have provided a mechanism for overriding
-        at runtime many of the configuration values for the Berkeley
-        DB environment.  BDB checks for the presence of a file named
-        <filename>DB_CONFIG</filename> in the environment directory
-        (namely, the repository's <filename>db</filename>
-        subdirectory), and parses the options found in that file.
-        Subversion itself creates this file when it creates the rest
-        of the repository.  The file initially contains some default
-        options, as well as pointers to the Berkeley DB online
-        documentation so that you can read about what those options do.  Of
-        course, you are free to add any of the supported Berkeley DB
-        options to your <filename>DB_CONFIG</filename> file.  Just be
-        aware that while Subversion never attempts to read or
-        interpret the contents of the file and makes no direct use of
-        the option settings in it, you'll want to avoid any
-        configuration changes that may cause Berkeley DB to behave in
-        a fashion that is at odds with what Subversion might expect.
-        Also, changes made to <filename>DB_CONFIG</filename> won't
-        take effect until you recover the database environment (using
-        <command>svnadmin recover</command>).</para>
--->
-      <para>Les concepteurs du gestionnaire de bases de données Berkeley
-        DB savent que les besoins varient entre les différentes
-        applications et environnements de bases de données, c'est
-        pourquoi ils proposent des mécanismes pour modifier, à
-        l'exécution, une grande partie des valeurs des options de
-        configuration. BDB vérifie la présence d'un fichier nommé
-        <filename>DB_CONFIG</filename> dans le répertoire
-        d'environnement (à savoir le sous-répertoire
-        <filename>db</filename> du dépôt) et en extrait les valeurs des
-        options. Subversion crée ce fichier lorsqu'il crée le reste du
-        dépôt. Initialement, le fichier contient des options par défaut
-        ainsi que des pointeurs vers la documentation en ligne de
-        Berkeley DB afin de vous renseigner sur l'utilisation de ces
-        options. Bien sûr, vous êtes libre d'ajouter n'importe quelle
-        option prise en compte par Berkeley DB dans votre fichier
-        <filename>DB_CONFIG</filename>. Soyez juste attentif au fait
-        que, bien que Subversion n'essaie jamais de lire ou interpréter
-        le contenu de ce fichier et qu'il n'en utilise pas directement
-        la configuration, les changements induits dans le comportement
-        de Berkeley DB ne doivent pas aller à l'encontre du comportement
-        attendu par Subversion. Par ailleurs, les changements effectués
-        dans <filename>DB_CONFIG</filename> ne sont pris en
-        considération qu'après avoir effectué une restauration de
-        l'environnement de la base de données avec la commande
-        <command>svnadmin recover</command>.</para>
-
     </sect2>
 
     <!-- =============================================================== -->
@@ -2697,7 +1919,7 @@ niveau votre client à Subversion 1.5 ou ultérieur.
 <!--
       <title>FSFS Configuration</title>
 -->
-      <title></title>
+      <title>Configuration de FSFS</title>
 
 <!--
       <para>As of Subversion 1.6, FSFS filesystems have several
@@ -2713,6 +1935,8 @@ niveau votre client à Subversion 1.5 ou ultérieur.
         de leurs dépôts. Vous pouvez trouver ces options (et leur
         documentation) dans le fichier <filename>db/fsfs.conf</filename>
         du dépôt.</para>
+
+      <!-- TODO: Document the fsfs.conf options herein. -->
 
     </sect2>
   </sect1>
@@ -2756,20 +1980,13 @@ niveau votre client à Subversion 1.5 ou ultérieur.
 
 <!--
       <para>Subversion provides a handful of utilities useful for
-        creating, inspecting, modifying, and repairing your repository.
-        Let's look more closely at each of those tools.  Afterward,
-        we'll briefly examine some of the utilities included in the
-        Berkeley DB distribution that provide functionality specific
-        to your repository's database backend not otherwise provided
-        by Subversion's own tools.</para>
+        creating, inspecting, modifying, and repairing your
+        repository.  Let's look more closely at each of those
+        tools.</para>
 -->
       <para>Subversion fournit une poignée d'utilitaires pour créer,
         inspecter, modifier et réparer votre dépôt. Étudions de plus
-        près chacun de ces outils. Ensuite, nous abordons rapidement
-        quelques utilitaires inclus dans le gestionnaire de bases de
-        données Berkeley DB qui fournissent des fonctionnalités
-        spécifiques au magasin de données de votre dépôt qui ne sont pas
-        assurées par les propres outils de Subversion.</para>
+        près chacun de ces outils.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.maint.tk.svnadmin">
@@ -3325,15 +2542,10 @@ $
           (found in the <filename>tools/server-side</filename>
           directory of the Subversion source distribution) is a useful
           performance tuning tool for administrators of FSFS-backed
-          Subversion repositories.  As described in the sidebar
-          <xref linkend="svn.reposadmin.basics.backends.fsfs.revfiles"/>,
-          FSFS repositories use individual files to house information
-          about each revision.  Sometimes these files all live in a
-          single directory; sometimes they are sharded across many
-          directories.  But the neat thing is that the number of
-          directories used to house these files is configurable.
-          That's where <command>fsfs-reshard.py</command> comes
-          in.</para>
+          Subversion repositories.  FSFS repositories use individual
+          files to house information about each revision.  Sometimes
+          these files all live in a single directory; sometimes they
+          are sharded across many directories.</para>
 -->
         <para>Bien qu'il ne fasse pas officiellement partie des outils
           Subversion, le script <command>fsfs-reshard.py</command>
@@ -3341,17 +2553,67 @@ $
           <filename>tools/server-side</filename> du code source de
           Subversion) est un outil particulièrement utile à
           l'administrateur pour optimiser les performances de dépôts
-          Subversion utilisant un magasin de données FSFS. Comme indiqué
-          dans la note <xref
-          linkend="svn.reposadmin.basics.backends.fsfs.revfiles"/>, les
-          dépôts FSFS contiennent des fichiers qui décrivent les
-          changements apportés dans chaque révision. Parfois ces
+          Subversion utilisant un magasin de données FSFS. Les dépôts FSFS
+          contiennent des fichiers qui décrivent les changements apportés
+          dans chaque révision. Parfois ces
           fichiers sont conservés dans un même répertoire, parfois ils
           sont répartis (<foreignphrase>sharded</foreignphrase> en
-          anglais, d'où le nom du script) dans plusieurs répertoires. La
-          bonne nouvelle, c'est que le nombre de répertoires utilisés
-          pour conserver ces fichiers est configurable. Et c'est ici que
-          <command>fsfs-reshard.py</command> joue son rôle.</para>
+          anglais, d'où le nom du script) dans plusieurs répertoires.</para>
+
+<!--
+        <para>The earliest FSFS release versions would house all the
+          revision files within a single directory that grew&mdash;one
+          file per revision&mdash;throughout the lifetime of your
+          repository.  This created problems on systems which have
+          hard limits on the number of files permitted in a given
+          directory, and was a performance burden even on systems
+          where such limits didn't exist or were set sufficiently
+          high.</para>
+-->
+          <para>Les versions anciennes de FSFS contenaient tous les
+            fichiers de révision dans un répertoire unique qui
+            grandissait (un fichier par nouvelle révision) au fur et
+            à mesure. Cela entrainait des problèmes sur les systèmes
+            qui ont des limites fixées sur le nombre maximum de
+            fichiers dans un répertoire et cela pouvait engendrer des
+            chutes de performances sur certains systèmes.</para>
+<!--
+
+        <para>Beginning in version 1.5, Subversion creates FSFS-backed
+          repositories using a slightly modified layout in which the
+          contents of the revision files directory (and other
+          always-growing directories)
+          are <firstterm>sharded</firstterm>, or scattered across
+          several subdirectories.  This can greatly reduce the time it
+          takes the system to locate any one of these files, and
+          therefore increases the overall performance of Subversion
+          when reading from the repository.</para>
+-->
+          <para>>À partir de la version 1.5, Subversion crée des dépôts
+            FSFS en utilisant une disposition légèrement modifiée dans
+            laquelle le contenu du répertoire des fichiers de révisions
+            est éparpillé (c'est-à-dire réparti dans plusieurs
+            sous-répertoires). Cela peut réduire de manière considérable
+            le temps nécessaire au système pour trouver n'importe quel
+            fichier et ainsi améliore la performance globale de
+            Subversion lors des lectures dans le dépôt.</para>
+<!--
+
+        <para>The number of files permitted to live in a given
+          subdirectory is a configurable thing (though the defaults
+          are reasonable ones for most known platforms), but changing
+          that configuration after the repository has been in use for
+          some time could cause Subversion to be unable to locate the
+          files it is looking for.  That's
+          where <command>fsfs-reshard.py</command> comes in.</para>
+-->
+          <para>Le nombre de fichiers autorisés dans un sous-répertoire
+            donné est configurable (les valeurs par défaut sont toutefois
+            raisonnables pour la pluparts des plateformes connues), mais
+            modifier cette configuration après que le dépôt a été utilisé
+            depuis quelque temps peut empêcher Subversion de retrouver
+            les fichiers qu'il cherche. C'est l'objet de la commande
+            <command>fsfs-reshard.py</command>.</para>
 
 <!--
         <para><command>fsfs-reshard.py</command> reshuffles the
@@ -3377,118 +2639,6 @@ $
           cette valeur dans un dépôt déjà réparti.</para>
 
       </sect3>
-
-      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <sect3 id="svn.reposadmin.maint.tk.bdbutil">
-<!--
-        <title>Berkeley DB utilities</title>
--->
-        <title>Utilitaires Berkeley DB</title>
-
-<!--
-        <para>If you're using a Berkeley DB repository, all of
-          your versioned filesystem's structure and data live in a set
-          of database tables within the <filename>db/</filename>
-          subdirectory of your repository.  This subdirectory is a
-          regular Berkeley DB environment directory and can therefore
-          be used in conjunction with any of the Berkeley database
-          tools, typically provided as part of the Berkeley DB
-          distribution.</para>
--->
-        <para>Si vous utilisez un dépôt avec une base Berkeley DB,
-          à la fois les données et la structure de votre système de
-          fichiers suivis en version résident dans un ensemble de
-          tables de la base de données qui sont situées dans le
-          sous-répertoire <filename>db/</filename> de votre dépôt.
-          Ce sous-répertoire est un répertoire d'environnement classique
-          de base de données Berkeley DB et n'importe quel outil de base
-          de données Berkeley, généralement fourni avec la distribution
-          Berkeley, peut y être utilisé.</para>
-
-<!--
-        <para>For day-to-day Subversion use, these tools are
-          unnecessary.  Most of the functionality typically needed for
-          Subversion repositories has been duplicated in the
-          <command>svnadmin</command> tool.  For example,
-          <command>svnadmin list-unused-dblogs</command> and
-          <command>svnadmin list-dblogs</command> perform a
-          subset of what is provided by the Berkeley
-          <command>db_archive</command> utility, and <command>svnadmin
-          recover</command> reflects the common use cases of the
-          <command>db_recover</command> utility.</para>
--->
-        <para>Pour un usage quotidien, ces outils ne sont pas
-          nécessaires. Beaucoup des fonctionnalités dont les dépôts
-          Subversion ont besoin ont été dupliquées dans l'outil
-          <command>svnadmin</command>. Par exemple,
-          <command>svnadmin list-unused-dblogs</command> et
-          <command>svnadmin list-dblogs</command> fournissent un
-          sous-ensemble des fonctionnalités offertes par l'utilitaire
-          <command>db_archive</command> de Berkeley DB et
-          <command>svnadmin recover</command> reproduit les utilisations
-          courantes de l'utilitaire
-          <command>db_recover</command>.</para>
-
-<!--
-        <para>However, there are still a few Berkeley DB utilities
-          that you might find useful.  The <command>db_dump</command>
-          and <command>db_load</command> programs write and read,
-          respectively, a custom file format that describes the keys
-          and values in a Berkeley DB database.  Since Berkeley
-          databases are not portable across machine architectures,
-          this format is a useful way to transfer those databases from
-          machine to machine, irrespective of architecture or
-          operating system.  As we describe later in this chapter, you
-          can also use <command>svnadmin dump</command> and
-          <command>svnadmin load</command> for similar purposes, but
-          <command>db_dump</command> and <command>db_load</command>
-          can do certain jobs just as well and much faster.  They can
-          also be useful if the experienced Berkeley DB hacker needs
-          to do in-place tweaking of the data in a BDB-backed
-          repository for some reason, which is something Subversion's
-          utilities won't allow.  Also, the <command>db_stat</command>
-          utility can provide useful information about the status of
-          your Berkeley DB environment, including detailed statistics
-          about the locking and storage subsystems.</para>
--->
-        <para>Cependant, il reste quelques utilitaires Berkeley DB que
-          vous pourriez trouver utiles. Les programmes
-          <command>db_dump</command> et <command>db_load</command>
-          fonctionnent avec, pour la lecture et l'écriture
-          respectivement, un format de fichier personnalisé qui décrit
-          les clés et les valeurs d'une base de données Berkeley DB.
-          Puisque les bases de données Berkeley DB ne sont pas portables
-          d'une architecture de machine à une autre, ce format est utile
-          pour transférer les bases de données entre deux machines,
-          indépendamment de l'architecture et du système d'exploitation.
-          Comme nous le décrivons plus loin dans ce chapitre, vous
-          pouvez aussi utiliser <command>svnadmin dump</command> et
-          <command>svnadmin load</command> pour faire la même chose,
-          mais <command>db_dump</command> et <command>db_load</command>
-          peuvent accomplir certaines tâches tout aussi bien et beaucoup
-          plus vite. Ils peuvent aussi être utiles si un expert Berkeley
-          DB, pour une raison ou pour une autre, doit manipuler les
-          données directement dans la base de données d'un dépôt BDB
-          (les utilitaires Subversion ne vous le permettent pas). De
-          plus, l'utilitaire <command>db_stat</command> peut fournir des
-          informations utiles sur l'état de votre environnement Berkeley
-          DB, y compris des statistiques détaillées concernant les
-          sous-systèmes de verrouillage et de stockage.</para>
-
-<!--
-        <para>For more information on the Berkeley DB tool chain,
-          visit the documentation section of the Berkeley DB section
-          of Oracle's web site, located at <ulink
-          url="http://www.oracle.com/technology/documentation/berkeley-db/db/"
-          />.</para>
--->
-        <para>Pour davantage d'informations sur la suite d'outils
-          Berkeley DB, consultez la documentation en ligne sur le site
-          Internet d'Oracle, dans la section Berkeley DB&nbsp;: <ulink
-          url="http://www.oracle.com/technology/documentation/berkeley-db/db/"
-          /> (ce site est en anglais).</para>
-
-      </sect3>
     </sect2>
 
     <!-- =============================================================== -->
@@ -3497,7 +2647,6 @@ $
       <title>Commit Log Message Correction</title>
 -->
       <title>Correction des commentaires de propagation</title>
-
 <!--
       <para>Sometimes a user will have an error in her log message (a
         misspelling or some misinformation, perhaps).  If the
@@ -3703,33 +2852,6 @@ $ svnadmin setlog mon-depot nouveau-commentaire.txt -r 388
             contenu est identique de faire référence à une seule
             instance partagée de ce contenu plutôt que chacun n'en
             conserve sa propre copie.</para>
-
-        <note>
-<!--
-          <para>Because all of the data that is subject to
-            deltification in a BDB-backed repository is stored in a
-            single Berkeley DB database file, reducing the size of the
-            stored values will not immediately reduce the size of the
-            database file itself.  Berkeley DB will, however, keep
-            internal records of unused areas of the database file and
-            consume those areas first before growing the size of the
-            database file.  So while deltification doesn't produce
-            immediate space savings, it can drastically slow future
-            growth of the database.</para>
--->
-          <para>Comme toutes les données susceptibles de faire l'objet
-            d'une différenciation dans un dépôt BDB sont stockées dans
-            un seul fichier de la base Berkeley DB, la réduction de la
-            taille des données stockées ne se répercute pas
-            immédiatement sur la taille du fichier de base de données
-            lui-même. Cependant, le gestionnaire Berkeley DB garde trace
-            en interne des enregistrements inutilisés du fichier de la
-            base de données et les consommera en premier lorsque la
-            taille de la base de données augmente. Ainsi, alors que la
-            différenciation ne produit pas instantanément de gain
-            d'espace, cela peut réduire drastiquement le rythme de
-            croissance de la base de données.</para>
-        </note>
 
       </sect3>
 
@@ -3977,155 +3099,6 @@ $
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-      <sect3 id="svn.reposadmin.maint.diskspace.bdblogs">
-<!--
-        <title>Purging unused Berkeley DB logfiles</title>
--->
-        <title>Purge des fichiers de journalisation inutilisés de
-          Berkeley DB</title>
-
-<!--
-        <para>Until recently, the largest offender of disk space usage
-          with respect to BDB-backed Subversion repositories were the
-          logfiles in which Berkeley DB performs its prewrites before
-          modifying the actual database files.  These files capture
-          all the actions taken along the route of changing the
-          database from one state to another&mdash;while the database
-          files, at any given time, reflect a particular state, the
-          logfiles contain all of the many changes along the way
-          <emphasis>between</emphasis> states.  Thus, they can grow
-          and accumulate quite rapidly.</para>
--->
-        <para>Jusqu'à il y a peu, les plus gros consommateurs d'espace
-          disque pour les dépôts Subversion basés sur BDB étaient les
-          fichiers de journalisation dans lesquels le gestionnaire
-          Berkeley DB effectue les pré-écritures avant de modifier la
-          base de données elle-même. Ces fichiers recensent toutes les
-          actions menées pour modifier la base de données, étape par
-          étape&nbsp;; alors que les fichiers de la base de données, à
-          un instant donné, ne reflètent qu'un état particulier, les
-          fichiers de journalisation contiennent l'ensemble de tous les
-          changements opérés <emphasis>entre</emphasis> chaque état
-          successif. Ainsi, ils peuvent grossir assez rapidement.</para>
-
-<!--
-        <para>Fortunately, beginning with the 4.2 release of Berkeley
-          DB, the database environment has the ability to remove its
-          own unused logfiles automatically.  Any
-          repositories created using <command>svnadmin</command>
-          when compiled against Berkeley DB version 4.2 or later
-          will be configured for this automatic logfile removal.  If
-          you don't want this feature enabled, simply pass the
-          <option>- -bdb-log-keep</option> option to the
-          <command>svnadmin create</command> command.  If you forget
-          to do this or change your mind at a later time, simply edit
-          the <filename>DB_CONFIG</filename> file found in your
-          repository's <filename>db</filename> directory, comment out
-          the line that contains the <literal>set_flags
-          DB_LOG_AUTOREMOVE</literal> directive, and then run
-          <command>svnadmin recover</command> on your repository to
-          force the configuration changes to take effect.  See <xref
-          linkend="svn.reposadmin.create.bdb"/> for more information about
-          database configuration.</para>
--->
-        <para>Heureusement, à partir de la version 4.2 de Berkeley DB,
-          l'environnement de la base de données est capable de supprimer
-          ses propres fichiers non utilisés automatiquement. Tout dépôt
-          créé en utilisant <command>svnadmin</command> compilé avec la
-          version 4.2 de Berkeley DB (ou suivantes) est configuré pour
-          supprimer automatiquement les fichiers de journalisation. Si
-          vous ne voulez pas activer cette fonctionnalité, passez
-          simplement l'option <option>--bdb-log-keep</option> à la
-          commande <command>svnadmin create</command>. Si vous oubliez
-          de le faire ou si vous changez d'avis plus tard, éditez
-          simplement le fichier <filename>DB_CONFIG</filename> qui se
-          trouve dans le répertoire <filename>db</filename> de votre
-          dépôt, commentez la ligne qui contient la directive
-          <literal>set_flags DB_LOG_AUTOREMOVE </literal> puis lancez
-          <command>svnadmin recover</command> sur votre dépôt pour que
-          le changement de configuration prenne effet. Reportez-vous à
-          <xref linkend="svn.reposadmin.create.bdb"/> pour plus
-          d'informations sur la configuration du gestionnaire de bases
-          de données.</para>
-
-<!--
-        <para>Without some sort of automatic logfile removal in
-          place, logfiles will accumulate as you use your repository.
-          This is actually somewhat of a feature of the database
-          system&mdash;you should be able to recreate your entire
-          database using nothing but the logfiles, so these files can
-          be useful for catastrophic database recovery.  But
-          typically, you'll want to archive the logfiles that are no
-          longer in use by Berkeley DB, and then remove them from disk
-          to conserve space.  Use the <command>svnadmin
-          list-unused-dblogs</command> command to list the unused
-          logfiles:</para>
--->
-        <para>Sans suppression automatique des fichiers de
-          journalisation, les journaux vont s'accumuler au fur et à
-          mesure de l'utilisation de votre dépôt. Cela peut être
-          considéré comme une fonctionnalité du gestionnaire de bases de
-          données &mdash; vous devez être capable de recréer entièrement
-          votre base de données en utilisant uniquement vos fichiers de
-          journalisation, c'est pourquoi ceux-ci sont utiles pour le
-          rétablissement de la base après une catastrophe. Mais en
-          général, vous voudrez archiver les fichiers de journalisation
-          qui ne sont plus utilisés par la base de données et ensuite
-          les enlever du disque pour conserver de l'espace libre.
-          Utilisez la commande <command>svnadmin
-          list-unused-dblogs</command> pour
-          avoir la liste des fichiers de journalisation
-          inutilisés&nbsp;:</para>
-
-        <informalexample>
-          <screen><!--
-$ svnadmin list-unused-dblogs /var/svn/repos
-/var/svn/repos/log.0000000031
-/var/svn/repos/log.0000000032
-/var/svn/repos/log.0000000033
-&hellip;
-$ rm `svnadmin list-unused-dblogs /var/svn/repos`
-## disk space reclaimed!
--->
-$ svnadmin list-unused-dblogs /var/svn/depot
-/var/svn/depot/log.0000000031
-/var/svn/depot/log.0000000032
-/var/svn/depot/log.0000000033
-&hellip;
-$ rm `svnadmin list-unused-dblogs /var/svn/depot`
-## espace disque récupéré !
-</screen>
-        </informalexample>
-
-        <warning>
-<!--
-          <para>BDB-backed repositories whose logfiles are used as
-            part of a backup or disaster recovery plan should
-            <emphasis>not</emphasis> make use of the logfile
-            autoremoval feature.  Reconstruction of a repository's
-            data from logfiles can only be accomplished only when
-            <emphasis>all</emphasis> the logfiles are available.  If
-            some of the logfiles are removed from disk before the
-            backup system has a chance to copy them elsewhere, the
-            incomplete set of backed-up logfiles is essentially
-            useless.</para> </warning>
--->
-          <para>Les dépôts BDB qui utilisent les fichiers de
-            journalisation pour les sauvegardes ou les rétablissements
-            après incident <emphasis>ne doivent pas</emphasis> activer
-            la suppression automatique des fichiers de journalisation.
-            La reconstruction des données d'un dépôt à partir des
-            fichiers de journalisation ne peut être effectuée que si
-            <emphasis>tous</emphasis> les fichiers de journalisation
-            sont accessibles. Si quelques fichiers de journalisation
-            sont supprimés du disque avant que le système de sauvegarde
-            n'ait pu les copier ailleurs, l'ensemble incomplet des
-            fichiers de journalisation est totalement
-            inutile.</para> </warning>
-
-      </sect3>
-
-      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.maint.diskspace.fsfspacking">
 <!--
         <title>Packing FSFS filesystems</title>
@@ -4133,21 +3106,30 @@ $ rm `svnadmin list-unused-dblogs /var/svn/depot`
         <title>Tasser le système de fichiers FSFS</title>
 
 <!--
-        <para>As described in the sidebar
-          <xref linkend="svn.reposadmin.basics.backends.fsfs.revfiles"/>,
-          FSFS-backed Subversion repositories create, by default, a
-          new on-disk file for each revision added to the repository.
-          Having thousands of these files present on your Subversion
-          server&mdash;even when housed in separate shard
-          directories&mdash;can lead to inefficiencies.</para>
+        <para>FSFS repositories contain files that describe the
+          changes made in a single revision, and files that contain
+          the revision properties associated with a single revision.
+          Repositories created in versions of Subversion prior to 1.5
+          keep these files in two directories&mdash;one for each type
+          of file.  As new revisions are committed to the repository,
+          Subversion drops more files into these two
+          directories&mdash;over time, the number of these files in
+          each directory can grow to be quite large.  This has been
+          observed to cause performance problems on certain
+          network-based filesystems.</para>
 -->
-        <para>Comme nous l'avons indiqué dans l'encadré
-          <xref linkend="svn.reposadmin.basics.backends.fsfs.revfiles"/>,
-          les dépôts FSFS Subversion créent, par défaut, un fichier sur
-          le disque pour chaque nouvelle révision ajoutée au dépôt. La
-          gestion de ces milliers de fichiers sur le serveur Subversion,
-          même lorsqu'ils sont répartis dans différents répertoires,
-          peut être la source de pertes de performances.</para>
+        <para>Les dépôts FSFS contiennent des fichiers de révision
+          qui décrivent, pour chaque révision, les modifications
+          apportées et les propriétés de la révision concernée.
+          Les dépôts créés avec des versions de Subversion antérieures
+          à 1.5 gardent ces fichiers dans deux dossiers (un dossier
+          pour chaque type de fichier). Au fur et à mesure que les
+          révisions sont propagées dans le dépôt, Subversion dépose
+          autant de fichiers dans ces dossiers. Avec le temps, le
+          nombre de fichiers dans chaque dossier peut se révéler
+          relativement important. Cela peut être la cause de chutes
+          de performances sur certains systèmes de fichiers
+          réseaux.</para>
 
 <!--
         <para>The first problem is that the operating system has to
@@ -4268,248 +3250,11 @@ $
     </sect2>
 
     <!-- =============================================================== -->
-    <sect2 id="svn.reposadmin.maint.recovery">
-<!--
-      <title>Berkeley DB Recovery</title>
--->
-      <title>Rétablissement de bases de données Berkeley DB</title>
-
-<!--
-      <para>As mentioned in <xref
-        linkend="svn.reposadmin.basics.backends.bdb"/>, a Berkeley DB
-        repository can sometimes be left in a frozen state if not closed
-        properly.  When this happens, an administrator needs to rewind
-        the database back into a consistent state.  This is unique to
-        BDB-backed repositories, though&mdash;if you are using
-        FSFS-backed ones instead, this won't apply to you.  And for
-        those of you using Subversion 1.4 with Berkeley DB 4.4 or
-        later, you should find that Subversion has become much more
-        resilient in these types of situations.  Still, wedged
-        Berkeley DB repositories do occur, and an administrator needs
-        to know how to safely deal with this circumstance.</para>
--->
-      <para>Comme indiqué dans <xref
-        linkend="svn.reposadmin.basics.backends.bdb"/>, un dépôt
-        Berkeley DB peut se retrouver bloqué s'il n'est pas arrêté
-        proprement. Quand cela arrive, un administrateur doit faire
-        revenir la base de données en arrière jusque dans un état
-        cohérent. Ceci ne concerne cependant que les dépôts BDB (si vous
-        utilisez FSFS, vous n'êtes pas concerné). Et pour ceux qui
-        utilisent Subversion 1.4 avec Berkeley DB version 4.4 ou plus,
-        vous constaterez que Subversion est devenu beaucoup plus
-        résilient face à ce type de problème. Certes, mais des plantages
-        de dépôts Berkeley DB arrivent encore et un administrateur doit
-        savoir comment réagir dans de telles circonstances.</para>
-
-<!--
-      <para>To protect the data in your repository, Berkeley
-        DB uses a locking mechanism.  This mechanism ensures that
-        portions of the database are not simultaneously modified by
-        multiple database accessors, and that each process sees the
-        data in the correct state when that data is being read from
-        the database.  When a process needs to change something in the
-        database, it first checks for the existence of a lock on the
-        target data.  If the data is not locked, the process locks the
-        data, makes the change it wants to make, and then unlocks the
-        data.  Other processes are forced to wait until that lock is
-        removed before they are permitted to continue accessing that
-        section of the database.  (This has nothing to do with the
-        locks that you, as a user, can apply to versioned files within
-        the repository; we try to clear up the confusion caused by
-        this terminology collision in the sidebar <xref
-        linkend="svn.advanced.locking.meanings" />.)</para>
--->
-      <para>Pour protéger les données du dépôt, le gestionnaire Berkeley
-        DB utilise un mécanisme de verrouillage. Ce mécanisme s'assure
-        que les éléments de la base de données ne sont pas modifiés en
-        même temps par plusieurs utilisateurs et que chaque processus
-        voit les données dans un état cohérent lors de la lecture de la
-        base de données. Quand un processus a besoin de modifier quelque
-        chose dans la base de données, il vérifie d'abord l'existence
-        d'un verrou sur les données concernées. Si les données ne sont
-        pas verrouillées, le processus les verrouille, effectue les
-        changements qu'il veut puis déverrouille les données. Les autres
-        processus sont obligés d'attendre que le verrou soit libéré avant
-        d'être autorisés à accéder aux données de cette zone (ceci n'a
-        rien à voir avec les verrous que vous, utilisateur, pouvez
-        appliquer sur les fichiers suivis en versions dans le
-        dépôt&nbsp;; nous essayons de lever l'ambiguïté créée par
-        l'emploi de cette terminologie commune dans l'encadré <xref
-        linkend="svn.advanced.locking.meanings" />).</para>
-
-<!--
-      <para>In the course of using your Subversion repository, fatal
-        errors or interruptions can prevent a process from having the
-        chance to remove the locks it has placed in the database.  The
-        result is that the backend database system gets
-        <quote>wedged.</quote>  When this happens, any attempts to
-        access the repository hang indefinitely (since each new
-        accessor is waiting for a lock to go away&mdash;which isn't
-        going to happen).</para>
--->
-      <para>Au cours de l'utilisation de votre dépôt Subversion, des
-        erreurs fatales ou des interruptions peuvent empêcher un
-        processus de supprimer des verrous qu'il a placés dans la base
-        de données. Cela conduit à des plantages du magasin de données.
-        Lorsque cela arrive, toutes les tentatives d'accès au dépôt se
-        soldent par un échec (puisque chaque nouvel arrivant attend que
-        le verrou se libère, ce qui n'est pas prêt d'arriver).</para>
-
-<!--
-      <para>If this happens to your repository, don't panic.  The
-        Berkeley DB filesystem takes advantage of database
-        transactions, checkpoints, and prewrite journaling to ensure
-        that only the most catastrophic of events<footnote><para>For
-        example, hard drive + huge electromagnet =
-        disaster.</para></footnote> can permanently destroy a database
-        environment.  A sufficiently paranoid repository administrator
-        will have made off-site backups of the repository data in some
-        fashion, but don't head off to the tape backup storage closet
-        just yet.</para>
--->
-      <para>Si cela arrive à votre dépôt, ne paniquez pas. Le système de
-        fichiers Berkeley DB tire parti des transactions de la base de
-        données, des points de contrôle et de la journalisation
-        préalable à toute écriture pour garantir que seuls les
-        événements les plus catastrophiques<footnote>
-          <para>Par exemple, disque dur + gros aimant à côté =
-            désastre.</para>
-        </footnote>
-        soient à même de détruire définitivement un environnement de
-        base de données. Un administrateur suffisamment paranoïaque
-        conserve des sauvegardes des données du dépôt dans un endroit
-        distinct, mais attendez un peu avant de vous diriger vers
-        l'armoire de rangement des sauvegardes.</para>
-
-<!--
-      <para>Instead, use the following recipe to attempt to
-        <quote>unwedge</quote> your repository:</para>
--->
-      <para>Appliquez plutôt la recette suivante pour tenter de
-        <quote>faire repartir</quote> votre dépôt&nbsp;:</para>
-
-      <orderedlist>
-        <listitem>
-<!--
-          <para>Make sure no processes are accessing (or
-            attempting to access) the repository.  For networked
-            repositories, this also means shutting down the Apache HTTP
-            Server or svnserve daemon.</para>
--->
-          <para>Assurez-vous qu'aucun processus n'accède au dépôt (ou ne
-            tente de le faire). Pour les dépôts en réseau, cela implique
-            d'arrêter le serveur HTTP Apache ou le démon svnserve.</para>
-        </listitem>
-        <listitem>
-<!--
-          <para>Become the user who owns and manages the repository.
-            This is important, as recovering a repository while
-            running as the wrong user can tweak the permissions of the
-            repository's files in such a way that your repository will
-            still be inaccessible even after it is
-            <quote>unwedged.</quote></para>
--->
-          <para>Prenez l'identité de l'utilisateur qui possède et gère
-            le dépôt. C'est important, puisque rétablir un dépôt avec un
-            autre utilisateur peut modifier les droits d'accès des
-            fichiers du dépôt de telle manière que votre dépôt soit
-            toujours inaccessible même après la remise en
-            service.</para>
-        </listitem>
-        <listitem>
-<!--
-          <para>Run the command <userinput>svnadmin recover
-            /var/svn/repos</userinput>.  You should see output such as
-            this:</para>
--->
-          <para>Lancez la commande <userinput>svnadmin recover
-            /var/svn/depot</userinput>. Vous devriez obtenir une sortie
-            du genre&nbsp;:</para>
-
-          <informalexample>
-            <screen> <!--
-Repository lock acquired.
-Please wait; recovering the repository may take some time...
-
-Recovery completed.
-The latest repos revision is 19.-->
-Verrou du dépôt acquis.
-Patientez ; le rétablissement du dépôt peut être long...
-
-Fin du rétablissement.
-La dernière révision du dépôt est 19
-
-</screen>
-          </informalexample>
-
-<!--
-          <para>This command may take many minutes to complete.</para>
--->
-          <para>Cette commande peut durer plusieurs minutes.</para>
-        </listitem>
-        <listitem>
-<!--
-          <para>Restart the server process.</para>
--->
-          <para>Redémarrez le processus serveur.</para>
-        </listitem>
-      </orderedlist>
-
-<!--
-      <para>This procedure fixes almost every case of repository
-        wedging.  Make sure that you run this command as the user that
-        owns and manages the database, not just as
-        <literal>root</literal>.  Part of the recovery process might
-        involve re-creating from scratch various database files (shared
-        memory regions, e.g.).  Recovering as
-        <literal>root</literal> will create those files such that they
-        are owned by <literal>root</literal>, which means that even
-        after you restore connectivity to your repository, regular
-        users will be unable to access it.</para>
--->
-      <para>Cette procédure fonctionne dans presque tous les cas de
-        plantage. Faites attention à ce qu'elle soit lancée par
-        l'utilisateur qui possède et gère la base de données, pas
-        nécessairement <literal>root</literal>. La procédure de
-        rétablissement peut impliquer de récréer en partant de zéro
-        certains fichiers de la base de données (de la mémoire partagée,
-        par exemple). Un rétablissement par <literal>root</literal>
-        créerait ces fichiers avec <literal>root</literal> comme
-        propriétaire, ce qui veut dire que même après que vous ayez
-        rétabli l'accès à votre dépôt, les utilisateurs de base n'y
-        auront pas accès.</para>
-
-<!--
-      <para>If the previous procedure, for some reason, does not
-        successfully unwedge your repository, you should do two
-        things.  First, move your broken repository directory aside
-        (perhaps by renaming it to something like
-        <filename>repos.BROKEN</filename>) and then restore your
-        latest backup of it.  Then, send an email to the Subversion
-        users mailing list (at <email>users@subversion.apache.org</email>)
-        describing your problem in detail.  Data integrity is an
-        extremely high priority to the Subversion developers.</para>
--->
-      <para>Si la procédure précédente, pour une raison ou pour une
-        autre, ne fait pas repartir votre dépôt, vous devez faire deux
-        choses. D'abord, mettez de côté votre répertoire de dépôt cassé
-        (par exemple en le renommant <filename>depot.CASSÉ</filename>)
-        puis restaurez la dernière sauvegarde de votre dépôt. Ensuite,
-        envoyez un email à la liste de diffusion des utilisateurs de
-        Subversion (<email>users@subversion.apache.org</email>) et
-        décrivez votre problème en détail. L'intégrité des données fait
-        partie des sujets à très haute priorité pour les développeurs
-        Subversion.</para>
-
-    </sect2>
-
-    <!-- =============================================================== -->
     <sect2 id="svn.reposadmin.maint.migrate">
 <!--
       <title>Migrating Repository Data Elsewhere</title>
 -->
       <title>Migration des données d'un dépôt</title>
-
 <!--
       <para>A Subversion filesystem has its data spread throughout
         files in the repository, in a fashion generally
@@ -4569,8 +3314,8 @@ La dernière révision du dépôt est 19
           <see>flux de déchargement d'un dépôt</see>
         </indexterm>
         <indexterm>
-			<primary>dump</primary>
-			<see>flux de déchargement d'un dépôt</see>
+          <primary>dump</primary>
+          <see>flux de déchargement d'un dépôt</see>
         </indexterm>
         <indexterm>
           <primary>svnadmin</primary>
@@ -5259,7 +4004,7 @@ $
           operates remotely, using the very same Repository Access
           (RA) protocols that the Subversion client does.  As such,
           you might need to provide authentication credentials.  Also,
-          your remote interations are subject to any authorization
+          your remote interactions are subject to any authorization
           limitations configured on the Subversion server.</para>
 -->
         <para>La principale différence est que vous n'avez pas besoin
@@ -5298,7 +4043,7 @@ $
             requires that the target repository have revision property
             changes enabled via the pre-revprop-change hook.  See
             <xref linkend="svn.ref.reposhooks.pre-revprop-change" /> in
-            <xref linkend="svn.ref"/> for details.</para>
+            <xref linkend="svn.ref.reposhooks"/> for details.</para>
 -->
           <para>Comme elle modifie les propriétés de révisions après
             avoir propagé les nouvelles révisions,  <command>svnrdump
@@ -5307,7 +4052,8 @@ $
             <foreignphrase>via</foreignphrase> la procédure automatique
             <literal>pre-revprop-change</literal>. Reportez-vous à
             <xref linkend="svn.ref.reposhooks.pre-revprop-change" />
-            dans <xref linkend="svn.ref"/> pour plus de détails.</para>
+            dans <xref linkend="svn.ref.reposhooks"/> pour plus de
+            détails.</para>
         </note>
 
 <!--
@@ -6068,7 +4814,7 @@ Node-path: tableur/Makefile
           source. Les seules propagations et modifications de propriétés
           de révisions qui doivent avoir lieu sur ce dépôt miroir sont
           celles effectuées par l'outil <command>svnsync</command>.</para>
-      </warning>
+        </warning>
 
 <!--
         <para>Another requirement of the target repository is that the
@@ -6108,7 +4854,7 @@ Node-path: tableur/Makefile
             its tasks while preventing other users from modifying the
             contents of your mirror repository at all.</para>
 -->
-		  <para>Il est de bon ton de mettre un place un contrôle d'accès
+          <para>Il est de bon ton de mettre un place un contrôle d'accès
             pour autoriser le processus de réplication de votre dépôt à
             faire ce qu'il a à faire tout en interdisant aux autres
             utilisateurs de modifier le contenu de votre dépôt
@@ -6363,7 +5109,7 @@ Initialize a destination repository for synchronization from
 another repository.
 &hellip;
 $ svnsync initialize http://svn.example.com/svn-mirror \
-                     http://svnbook.googlecode.com/svn \
+                     https://svn.code.sf.net/p/svnbook/source \
                      - -sync-username syncuser - -sync-password syncpass
 Copied properties for revision 0 (svn:sync-* properties skipped).
 NOTE: Normalized svn:* properties to LF line endings (1 rev-props, 0 node-props).
@@ -6496,13 +5242,13 @@ $
         <informalexample>
           <screen>
 $ svnsync help synchronize
-synchronize (sync): usage: svnsync synchronize DEST_URL
+synchronize (sync): usage: svnsync synchronize DEST_URL [SOURCE_URL]
 
 Transfer all pending revisions to the destination from the source
 with which it was initialized.
 &hellip;
 $ svnsync synchronize http://svn.example.com/svn-mirror \
-                      http://svnbook.googlecode.com/svn
+                      https://svn.code.sf.net/p/svnbook/source
 Committed revision 1.
 Copied properties for revision 1.
 Committed revision 2.
@@ -6872,7 +5618,7 @@ Print information about the synchronization destination repository
 located at DEST_URL.
 &hellip;
 $ svnsync info http://svn.example.com/svn-mirror
-Source URL: http://svnbook.googlecode.com/svn
+Source URL: https://svn.code.sf.net/p/svnbook/source
 Source Repository UUID: 931749d0-5854-0410-9456-f14be4d6b398
 Last Merged Revision: 4065
 $
@@ -6888,7 +5634,7 @@ Affiche les informations du dépôt destination d'une synchronisation
 à URL_DEST.
 &hellip;
 $ svnsync info http://svn.exemple.com/mirroir-svn
-URL source : http://svnbook.googlecode.com/svn
+URL source : https://svn.code.sf.net/p/svnbook/source
 UUID du dépôt source : 931749d0-5854-0410-9456-f14be4d6b398
 Dernière révision fusionnée : 4065
 $
@@ -7326,7 +6072,7 @@ $
         you don't have to implement these algorithms yourself, because
         the Subversion development team has already done so.  The
         <command>svnadmin hotcopy</command> command takes care of the
-        minutia involved in making a hot backup of your repository.
+        minutiae involved in making a hot backup of your repository.
         And its invocation is as trivial as the Unix
         <command>cp</command> or Windows <command>copy</command>
         operations:</para>
@@ -7361,30 +6107,6 @@ $ svnadmin hotcopy /var/svn/depot /var/svn/depot-sauvegarde
       <para>La sauvegarde générée est un dépôt Subversion totalement
         fonctionnel, capable de prendre immédiatement la place de votre
         dépôt en production si les choses tournent au vinaigre.</para>
-
-<!--
-      <para>When making copies of a Berkeley DB repository, you can
-        even instruct <command>svnadmin hotcopy</command> to purge any
-        unused Berkeley DB logfiles (see <xref
-        linkend="svn.reposadmin.maint.diskspace.bdblogs" />) from the
-        original repository upon completion of the copy.  Simply
-        provide the <option>- -clean-logs</option> option on the
-        command line.</para>
--->
-      <para>Lors de la copie d'un dépôt Berkeley DB, vous pouvez même
-        ordonner à <command>svnadmin hotcopy</command> de purger les
-        fichiers de journalisation inutilisés (voir <xref
-        linkend="svn.reposadmin.maint.diskspace.bdblogs" />) du dépôt
-        original une fois la copie terminée. Ajoutez simplement l'option
-        <option>--clean-logs</option> à la ligne de
-        commande&nbsp;:</para>
-
-      <informalexample>
-        <screen><!--
-$ svnadmin hotcopy - -clean-logs /var/svn/bdb-repos /var/svn/bdb-repos-backup -->
-$ svnadmin hotcopy --clean-logs /var/svn/depot-bdb /var/svn/depot-bdb-sauvegarde
-</screen>
-      </informalexample>
 
 <!--
       <para>Additional tooling around this command is available, too.
@@ -7435,15 +6157,15 @@ $ svnadmin hotcopy --clean-logs /var/svn/depot-bdb /var/svn/depot-bdb-sauvegarde
         command.  There is some value in these methods, in that the
         format of your backed-up information is flexible&mdash;it's
         not tied to a particular platform, versioned filesystem type,
-        or release of Subversion or Berkeley DB.  But that flexibility
-        comes at a cost, namely that restoring that data can take a
-        long time&mdash;longer with each new revision committed to
-        your repository.  Also, as is the case with so many of the
-        various backup methods, revision property changes that are
-        made to already backed-up revisions won't get picked up by a
-        nonoverlapping, incremental dump generation.  For these
-        reasons, we recommend against relying solely on dump-based
-        backup approaches.</para>
+        or release of Subversion or the libraries it uses.  But that
+        flexibility comes at a cost, namely that restoring that data
+        can take a long time&mdash;longer with each new revision
+        committed to your repository.  Also, as is the case with so
+        many of the various backup methods, revision property changes
+        that are made to already backed-up revisions won't get picked
+        up by a nonoverlapping, incremental dump generation.  For
+        these reasons, we recommend against relying solely on
+        dump-based backup approaches.</para>
 -->
       <para>Quelques administrateurs utilisent un autre mécanisme de
         sauvegarde basé sur la génération et le stockage de flux dump
@@ -7458,10 +6180,10 @@ $ svnadmin hotcopy --clean-logs /var/svn/depot-bdb /var/svn/depot-bdb-sauvegarde
         autres que le format de vos informations sauvegardées est
         flexible (il n'est pas lié à une plateforme, à un type de
         magasin de données ou à une version particulière de Subversion
-        ou de Berkeley DB). Mais cette flexibilité a un coût, à savoir
-        le temps de restauration des données, qui en plus augmente avec
-        chaque nouvelle révision propagée dans le dépôt. Aussi, comme
-        c'est le cas pour un tas d'autres méthodes de sauvegarde, les
+        ou des bibliothèques qu'il utilise). Mais cette flexibilité a un
+        coût, à savoir le temps de restauration des données, qui en plus
+        augmente avec chaque nouvelle révision propagée dans le dépôt. Aussi,
+        comme c'est le cas pour un tas d'autres méthodes de sauvegarde, les
         modifications sur les propriétés de révision qui sont effectuées
         après une sauvegarde de ladite révision ne sont pas prises en
         compte par l'utilisation de flux de dump incrémentaux ne se

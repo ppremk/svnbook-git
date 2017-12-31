@@ -129,7 +129,10 @@ Global options:
   - -username ARG           : specify a username ARG
   - -password ARG           : specify a password ARG
   - -no-auth-cache          : do not cache authentication tokens
-  - -non-interactive        : do no interactive prompting
+  - -non-interactive        : do no interactive prompting (default is to prompt
+                             only if standard input is a terminal device)
+  - -force-interactive      : do interactive prompting even if standard input
+                             is not a terminal device
   - -trust-server-cert      : accept SSL server certificates from unknown
                              certificate authorities without prompting (but only
                              with '- -non-interactive')
@@ -484,9 +487,9 @@ $
             of course, the option itself,
             and <replaceable>VALUE</replaceable> the value (if any)
             you wish to assign to the option.  For example, to
-            temporarily disable the use of the automatic property
-            setting feature,
-            use <option>- -config-option=config:miscellany:enable-auto-props=no</option>.
+            temporarily disable the use of the compression in the
+            HTTP protocol,
+            use <option>- -config-option=servers:global:http-compression=no</option>.
             You can use this option multiple times to change
             multiple option values simultaneously.</para>
 -->
@@ -504,8 +507,8 @@ $
             elle-même et <replaceable>VALEUR</replaceable> est la valeur
             (s'il y en a une) que vous voulez assigner à cette option. Par
             exemple, pour désactiver temporairement l'utilisation de la
-            configuration automatique des propriétés, utilisez
-            <option>--config-option=config:miscellany:enable-auto-props=no</option>.
+            compression dans le protocole HTTP , utilisez
+            <option>--config-option=servers:global:http-compression=no</option>.
             Vous pouvez utiliser cette option plusieurs fois pour changer
             plusieurs valeurs d'options pour la commande en cours.</para>
 
@@ -821,6 +824,19 @@ $
             intention et passer outre cette erreur, passez l'option
             <option>--force-log</option> aux sous-commandes qui prennent des
             entrées du journal de propagation comme arguments.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="svn.ref.svn.sw.force_interactive">
+        <term><option>--force-interactive</option></term>
+        <listitem>
+          <para>Forces the <command>svn</command> command-line client to run in
+            interactive mode when standard input is not a terminal device.</para>
+
+          <note>
+            <para>This option is accepted by
+              all <command>svn</command> subcommands.</para>
+          </note>
         </listitem>
       </varlistentry>
 
@@ -1163,6 +1179,12 @@ $ svn commit -m "Ils ne font pas de glace."
             est utile si vous lancez Subversion dans un script automatique et
             qu'il est préférable que Subversion s'arrête plutôt qu'il
             n'attende une entrée de l'utilisateur.</para>
+
+          <para>Beginning with Subversion 1.8, the <command>svn</command>
+            command-line client, by default, is non-interactive when standard
+            input is not a terminal device. Pass the
+            <option>--force-interactive</option> option to make the client run
+            in interactive mode.</para>
 
           <note>
 <!--
@@ -1990,6 +2012,7 @@ $ svn log -r 1729:{2002-02-17}
     <refsect1>
 <!--
       <title>Description</title>
+
 -->
       <title>Description</title>
 
@@ -3633,7 +3656,7 @@ Révision 7 propagée.
         working copy (WC) path or URL.  When copying multiple
         sources, add the copies as immediate children
         of <replaceable>DST</replaceable> (which, of course, must
-        be a directory).</para>
+        be an existing directory).</para>
 -->
       <para>Copier un ou plusieurs fichiers ou répertoires dans une copie de
         travail ou dans le dépôt.  Lors de la copie de plusieurs sources,
@@ -4005,7 +4028,9 @@ Révision 13 propagée.
         <option>- -keep-local</option> option is given.  The
         command will not remove any unversioned or modified items;
         use the <option>- -force</option> option to override this
-        behavior.</para>
+        behavior. A directory that contains unversioned or modified
+        items will not be deleted, unless the <option>- -force</option>
+        is used.</para>
 -->
       <para>Les éléments spécifiés par <replaceable>CHEMIN</replaceable>
         sont prévus pour être supprimés lors de la prochaine propagation.
@@ -6640,12 +6665,11 @@ $
         et <option>--extensions</option> (<option>-x</option>).</para>
 
 <!--
-      <para>
-        Beginning with Subversion 1.8, users can filter <command>svn log</command>
+      <para>Beginning with Subversion 1.8, users can filter <command>svn log</command>
         output using <option>- -search</option> and <option>- -search-and</option>
         options.  When using these options, a log message is shown only if a
         revision's author, date, log message text, or list of changed paths,
-        matches a search pattern. Searching by changed patch requies
+        matches a search pattern. Searching by changed patch requires
         <option>- -verbose</option> option, otherwise <command>svn log</command>
         does not show changed paths therefore they can't be filtered.</para>
 -->
@@ -6663,8 +6687,8 @@ $
         pattern) can contain regular characters and the following
         wildcard characters:</para>
 -->
-      <para>Le motif de recherche (aussi appelé glob ou motif de filtrage du
-        shell) peut contenir des caractères normaux et les caractères
+      <para>Le motif de recherche (aussi appelé glob ou motif de filtrage
+        du shell) peut contenir des caractères normaux et les caractères
         spéciaux suivants&nbsp;:</para>
 
       <variablelist>
@@ -6706,11 +6730,9 @@ $
         </varlistentry>
       </variablelist>
 <!--
-      <para>
-        Using multiple <option>- -search</option> parameters will show log messages
-        that match the pattern specified at least in one of the options.  For example:
-      </para>
-
+      <para>Using multiple <option>- -search</option> parameters will show
+        log messages that match the pattern specified at least in one of the
+        options.  For example:</para>
 -->
       <para> Si vous utilisez plusieurs paramètres <option>--search</option>,
         vous obtenez les entrées qui correspondent à au moins un motif de
@@ -6803,7 +6825,8 @@ $
           messages that match the specified pattern.  Therefore, if
           <option>- -limit</option> is used, it restricts the number
           of log messages searched, rather than restricting the
-          output to a particular number of matching log messages.</para>
+          output to a particular number of matching log messages.
+        </para>
 -->
           <para>Les options <option>--search</option> et
             <option>--search-and</option> n'effectuent pas en tant que telles
@@ -6958,7 +6981,10 @@ $
             explications.</para>
         </listitem>
         <listitem>
-          <para></para>
+<!--
+          <para>Cherrypick Merges</para>
+-->
+          <para>Fusions avec sélection à la main</para>
 <!--
           <para>The second form is called a <quote>cherry-pick</quote>
             merge and is used to merge an explicitly defined set of
@@ -9306,7 +9332,7 @@ Propriété 'icone-du-proprietaire' définie sur 'bidule.c'
       <informalexample>
 <!--
         <screen>
-$ svn info | grep URL:
+$ svn info | grep ^URL:
 URL: file:///var/svn/repos/trunk
 $
 </screen>

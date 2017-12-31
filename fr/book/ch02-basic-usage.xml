@@ -135,7 +135,8 @@
     <informalexample>
       <screen>
 $ svn help <!--
-Subversion command-line client, version 1.7.0.
+usage: svn &lt;subcommand&gt; [options] [args]
+Subversion command-line client, version 1.8.13.
 Type 'svn help &lt;subcommand&gt;' for help on a specific subcommand.
 Type 'svn - -version' to see the program version and RA modules
   or 'svn - -version - -quiet' to see just the version number.
@@ -146,7 +147,7 @@ command, it recurses on the current directory (inclusive) by default.
 
 Available subcommands:
 -->
-Client texte interactif de Subversion, version 1.7.0.
+Client texte interactif de Subversion, version 1.8.13.
 Entrer 'svn help &lt;sous-commande&gt;' pour l'aide sur une sous-commande.
 Entrer 'svn --version' pour avoir la version et les modules d'accès (RA)
     ou 'svn --version --quiet' pour la version seule.
@@ -304,7 +305,7 @@ Options globales :
 <!--
     <title>Getting Data into Your Repository</title>
 -->
-    <title>Enregistrement des données dans le dépôt</title>
+    <title>Enregistrement de données dans le dépôt</title>
 
 <!--
     <para>You can get new files into your Subversion
@@ -326,7 +327,7 @@ Options globales :
 <!--
       <title>Importing Files and Directories</title>
 -->
-      <title>Importation des fichiers et des dossiers</title>
+      <title>Importation de fichiers et de dossiers</title>
 
       <indexterm>
         <primary>svn</primary>
@@ -367,7 +368,8 @@ Adding         mytree/subdir
 Adding         mytree/subdir/quux.h
 
 Committed revision 1.-->
-$ svn import mon-arborescence http://svn.exemple.com/svn/depot/un/projet \
+$ svn import chemin/vers/mon/arborescence \
+             http://svn.exemple.com/svn/depot/un/projet \
              -m "Import initial"
 Ajout         mon-arborescence/truc.c
 Ajout         mon-arborescence/machin.c
@@ -429,42 +431,8 @@ $
     <sect2 id="svn.tour.importing.layout">
 <!--
       <title>Recommended Repository Layout</title>
-
-      <indexterm>
-        <primary>trunk</primary>
-      </indexterm>
-      <indexterm>
-        <primary>tags</primary>
-      </indexterm>
-      <indexterm>
-        <primary>branches</primary>
-      </indexterm>
-      <indexterm>
-        <primary>project root</primary>
-      </indexterm>
 -->
       <title>Organisation conseillée d'un dépôt</title>
-
-        <indexterm>
-          <primary>tronc</primary>
-        </indexterm>
-        <indexterm>
-          <primary>trunk</primary>
-          <see>tronc</see>
-        </indexterm>
-        <indexterm>
-          <primary>étiquettes</primary>
-        </indexterm>
-        <indexterm>
-          <primary>tags</primary>
-          <see>étiquettes</see>
-        </indexterm>
-        <indexterm>
-          <primary>branches</primary>
-        </indexterm>
-        <indexterm>
-          <primary>racine de projet</primary>
-        </indexterm>
 
 <!--
       <para>Subversion provides the ultimate flexibility in terms of
@@ -631,7 +599,7 @@ $
 <!--
       <title>What's In a Name?</title>
 -->
-      <title>Qu'y a-t-il dans un <emphasis>nom</emphasis>&nbsp;?</title>
+      <title>Limitations sur les <emphasis>noms</emphasis></title>
 
 <!--
       <para>Subversion tries hard not to limit the type of data you
@@ -1193,13 +1161,13 @@ $
       </informalexample>
 
 <!--
-      <para>In this case, it appears that someone checked in
+      <para>In this case, it appears that someone committed
         modifications to both <filename>foo.c</filename>
         and <filename>bar.c</filename> since the last time you
         updated, and Subversion has updated your working copy to
         include those changes.</para>
 -->
-      <para>Dans cet exemple, il se trouve que quelqu'un a apporté
+      <para>Dans cet exemple, il se trouve que quelqu'un a propagé
         des modifications à <filename>truc.c</filename> ainsi qu'à
         <filename>machin.c</filename> depuis votre dernière mise à jour
         et Subversion vient de répercuter ces modifications dans votre
@@ -1425,40 +1393,28 @@ $
 <!--
             <para>Use this to schedule the file, directory, or
               symbolic link <filename>FOO</filename> to be deleted
-              from the repository.  If <filename>FOO</filename> is a
-              file or link, it is immediately deleted from your
-              working copy.  If <filename>FOO</filename> is a
-              directory, it is not deleted, but Subversion schedules
-              it for deletion.  When you commit your
-              changes, <filename>FOO</filename> will be entirely
-              removed from your working copy and the
-              repository.<footnote><para>Of course, nothing is ever
-              totally deleted from the repository&mdash;just from
-              its <literal>HEAD</literal> revision.  You may continue
-              to access the deleted item in previous revisions.
-              Should you desire to resurrect the item so that it is
-              again present in <literal>HEAD</literal>, see
+              from the repository.  <filename>FOO</filename> is
+              immediately deleted from your working copy.
+              (Of course, nothing is ever totally deleted from the
+              repository&mdash;just from its <literal>HEAD</literal> revision.
+              You may continue to access the deleted item in previous
+              revisions).
+              <footnote><para>Should you desire to resurrect the item
+              so that it is again present in <literal>HEAD</literal>, see
               <xref linkend="svn.branchmerge.basicmerging.resurrect"
               />.</para></footnote></para>
 -->
             <para>Marque le fichier, le dossier ou le lien
               symbolique <filename>TRUC</filename> pour suppression.
-              Si <filename>TRUC</filename> est un fichier ou un lien,
-              il est immédiatement supprimé de votre copie de travail.
-              Si <filename>TRUC</filename> est un dossier, il n'est
-              pas supprimé, mais Subversion le marque pour suppression.
-              Quand vous propagez vos modifications,
-              <filename>TRUC</filename> est complètement supprimé de
-              votre copie de travail et du dépôt.
+              <filename>TRUC</filename> est immédiatement supprimé de
+              votre copie de travail. Bien sûr, rien n'est jamais
+              totalement supprimé du dépôt &mdash; seulement de la révision
+              <literal>HEAD</literal> du dépôt. Vous avez accès à
+              l'élément supprimé dans les révisions précédentes.
               <footnote>
-              <para>Bien sûr, rien n'est jamais totalement supprimé
-                du dépôt &mdash; seulement de la révision
-                <literal>HEAD</literal> du dépôt. Vous pouvez
-                récupérer tout ce que vous avez supprimé en
-                extrayant (ou en mettant à jour votre copie de
-                travail à) une révision précédente de celle dans
-                laquelle vous avez fait la suppression. Lisez
-                également <xref
+              <para>Si vous avez l'intention de recouvrer cet élément
+              afin qu'il soit de nouveau présent dans
+              <literal>HEAD</literal>, lisez <xref
                 linkend="svn.branchmerge.basicmerging.resurrect"/>.</para>
               </footnote></para>
           </listitem>
@@ -1582,7 +1538,9 @@ $
           repository URLs as well as on working copy paths.  Of
           course, as previously mentioned, <command>svn
           import</command> always makes direct changes to the
-          repository.</para>
+          repository. We discuss the ways to commit tree changes
+          without a working copy in
+          <xref linkend="svn.advanced.working-without-a-wc"/>.</para>
 -->
         <para>Dans <emphasis>certains</emphasis> cas, les
           modifications d'arborescence sont propagées immédiatement
@@ -1594,7 +1552,10 @@ $
           peuvent fonctionner avec des URL de la même manière que sur
           des chemins de la copie de travail. Et n'oubliez pas que
           <command>svn import</command> agit toujours immédiatement
-          sur le contenu du dépôt.</para>
+          sur le contenu du dépôt. Nous abordons les différentes
+          façons de propager des modifications d'arborescences sans
+          copie de travail dans <xref
+          linkend="svn.advanced.working-without-a-wc"/>.</para>
 
 <!--
         <para>There are pros and cons to performing URL-based
@@ -2596,8 +2557,8 @@ Updating '.':
 U    INSTALL
 G    README
 Conflict discovered in 'bar.c'.
-Select: (p) postpone, (df) diff-full, (e) edit,
-        (mc) mine-conflict, (tc) theirs-conflict,
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        mc) my side of conflict, (tc) their side of conflict,
         (s) show all options: -->
 $ svn update
 Mise à jour de '.' :
@@ -2668,32 +2629,35 @@ Sélectionner : (p) report, (df) diff complet, (e) édite, (m) fusion,
       <informalexample>
         <screen><!--
 &hellip;
-Select: (p) postpone, (df) diff-full, (e) edit,
-        (mc) mine-conflict, (tc) theirs-conflict,
-        (s) show all options: s
-
-  (e)  edit             - change merged file in an editor
-  (df) diff-full        - show all changes made to merged file
-  (r)  resolved         - accept merged version of file
-
-  (dc) display-conflict - show all conflicts (ignoring merged version)
-  (mc) mine-conflict    - accept my version for all conflicts (same)
-  (tc) theirs-conflict  - accept their version for all conflicts (same)
-
-  (mf) mine-full        - accept my version of entire file (even non-conflicts)
-  (tf) theirs-full      - accept their version of entire file (same)
-
-  (p)  postpone         - mark the conflict to be resolved later
-  (l)  launch           - launch external tool to resolve conflict
-  (s)  show all         - show this list
-
-Select: (p) postpone, (df) diff-full, (e) edit,
-        (mc) mine-conflict, (tc) theirs-conflict,
-        (s) show all options:-->
-&hellip;
-Select: (p) postpone, (df) show diff, (e) edit file, (m) fusion,
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
         (mc) my side of conflict, (tc) their side of conflict,
         (s) show all options: s
+
+  (e)  - change merged file in an editor  [edit]
+  (df) - show all changes made to merged file
+  (r)  - accept merged version of file
+
+  (dc) - show all conflicts (ignoring merged version)
+  (mc) - accept my version for all conflicts (same)  [mine-conflict]
+  (tc) - accept their version for all conflicts (same)  [theirs-conflict]
+
+  (mf) - accept my version of entire file (even non-conflicts)  [mine-full]
+  (tf) - accept their version of entire file (same)  [theirs-full]
+
+  (m)  - use internal merge tool to resolve conflict
+  (l)  - launch external tool to resolve conflict  [launch]
+  (p)  - mark the conflict to be resolved later  [postpone]
+  (q)  - postpone all remaining conflicts
+  (s)  - show this list (also 'h', '?')
+Words in square brackets are the corresponding - -accept option arguments.
+
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        (mc) my side of conflict, (tc) their side of conflict,
+        (s) show all options:-->
+&hellip;
+Sélectionner : (p) report, (df) diff complet, (e) édite, (m) fusion,
+               (mc) my side of conflict, (tc) their side of conflict,
+               (s) voir toutes les options:
 
   (e)  - change merged file in an editor  [edit]
   (df) - show all changes made to merged file
@@ -2730,9 +2694,9 @@ Select: (p) postpone, (df) show diff, (e) edit file, (m) fusion,
       <variablelist>
         <varlistentry>
 <!--
-          <term><computeroutput>(e)  edit</computeroutput></term>
+          <term><computeroutput>(e)  edit  [edit]</computeroutput></term>
 -->
-          <term><computeroutput>(e)  edit</computeroutput></term>
+          <term><computeroutput>(e)  edit  [edit]</computeroutput></term>
           <listitem>
 
 <!--
@@ -2749,9 +2713,9 @@ Select: (p) postpone, (df) show diff, (e) edit file, (m) fusion,
 
         <varlistentry>
 <!--
-          <term><computeroutput>(df) diff-full</computeroutput></term>
+          <term><computeroutput>(df)  diff-full</computeroutput></term>
 -->
-          <term><computeroutput>(df) diff-full</computeroutput></term>
+          <term><computeroutput>(df)  diff-full</computeroutput></term>
           <listitem>
 
 <!--
@@ -2788,9 +2752,9 @@ Select: (p) postpone, (df) show diff, (e) edit file, (m) fusion,
 
         <varlistentry>
 <!--
-          <term><computeroutput>(dc) display-conflict</computeroutput></term>
+          <term><computeroutput>(dc)  display-conflict</computeroutput></term>
 -->
-          <term><computeroutput>(dc) display-conflict</computeroutput></term>
+          <term><computeroutput>(dc)  display-conflict</computeroutput></term>
           <listitem>
 <!--
             <para>Display all conflicting regions of the file,
@@ -2804,9 +2768,9 @@ Select: (p) postpone, (df) show diff, (e) edit file, (m) fusion,
 
         <varlistentry>
 <!--
-          <term><computeroutput>(mc) mine-conflict</computeroutput></term>
+          <term><computeroutput>(mc)  mine-conflict  [mine-conflict]</computeroutput></term>
 -->
-          <term><computeroutput>(mc) mine-conflict</computeroutput></term>
+          <term><computeroutput>(mc)  mine-conflict  [mine-conflict]</computeroutput></term>
           <listitem>
 
 <!--
@@ -2825,9 +2789,9 @@ Select: (p) postpone, (df) show diff, (e) edit file, (m) fusion,
 
         <varlistentry>
 <!--
-          <term><computeroutput>(tc) theirs-conflict</computeroutput></term>
+          <term><computeroutput>(tc)  theirs-conflict  [theirs-conflict]</computeroutput></term>
 -->
-          <term><computeroutput>(tc) theirs-conflict</computeroutput></term>
+          <term><computeroutput>(tc)  theirs-conflict  [theirs-conflict]</computeroutput></term>
           <listitem>
 <!--
             <para>Discard any local changes which conflict with
@@ -2844,9 +2808,9 @@ Select: (p) postpone, (df) show diff, (e) edit file, (m) fusion,
 
         <varlistentry>
 <!--
-          <term><computeroutput>(mf) mine-full</computeroutput></term>
+          <term><computeroutput>(mf)  mine-full  [mine-full]</computeroutput></term>
 -->
-          <term><computeroutput>(mf) mine-full</computeroutput></term>
+          <term><computeroutput>(mf)  mine-full  [mine-full]</computeroutput></term>
           <listitem>
 <!--
             <para>Discard all newly received changes from the server
@@ -2861,9 +2825,9 @@ Select: (p) postpone, (df) show diff, (e) edit file, (m) fusion,
 
         <varlistentry>
 <!--
-          <term><computeroutput>(tf) theirs-full</computeroutput></term>
+          <term><computeroutput>(tf)  theirs-full  [theirs-full]</computeroutput></term>
 -->
-          <term><computeroutput>(tf) theirs-full</computeroutput></term>
+          <term><computeroutput>(tf)  theirs-full  [theirs-full]</computeroutput></term>
           <listitem>
 <!--
             <para>Discard all your local changes to the file under
@@ -2877,18 +2841,18 @@ Select: (p) postpone, (df) show diff, (e) edit file, (m) fusion,
 
         <varlistentry>
 <!--
-          <term><computeroutput>(p)  postpone</computeroutput></term>
+          <term><computeroutput>(m)  merge</computeroutput></term>
 -->
-          <term><computeroutput>(p)  postpone</computeroutput></term>
+          <term><computeroutput>(m)  fusion</computeroutput></term>
           <listitem>
 <!--
-            <para>Leave the file in a conflicted state for you to
-              resolve after your update is complete.</para>
+            <para>Launch an internal file merge tool to perform the
+              conflict resolution. The option is available starting
+              with Subversion 1.8.</para>
 -->
-            <para>Laisser le fichier en état de conflit, conflit que
-              vous devrez résoudre après la fin de la mise à
-              jour.</para>
-
+            <para>Lancer un outil interne de fusion pour traiter le
+              conflit. Cette option est disponible à partir de
+              Subversion 1.8.</para>
           </listitem>
         </varlistentry>
 
@@ -2906,6 +2870,23 @@ Select: (p) postpone, (df) show diff, (e) edit file, (m) fusion,
 -->
             <para>Lancer un programme externe pour résoudre le conflit.
               Ceci nécessite un peu de préparation en amont.</para>
+
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+<!--
+          <term><computeroutput>(p)  postpone  [postpone]</computeroutput></term>
+-->
+          <term><computeroutput>(p)  postpone  [postpone]</computeroutput></term>
+          <listitem>
+<!--
+            <para>Leave the file in a conflicted state for you to
+              resolve after your update is complete.</para>
+-->
+            <para>Laisser le fichier en état de conflit, conflit que
+              vous devrez résoudre après la fin de la mise à
+              jour.</para>
 
           </listitem>
         </varlistentry>
@@ -2977,8 +2958,8 @@ Select: (p) postpone, (df) show diff, (e) edit file, (m) fusion,
         <informalexample>
           <screen><!--
 &hellip;
-Select: (p) postpone, (df) diff-full, (e) edit,
-        (mc) mine-conflict, (tc) theirs-conflict,
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        (mc) my side of conflict, (tc) their side of conflict,
         (s) show all options: df
 - - - .svn/text-base/sandwich.txt.svn-base      Tue Dec 11 21:33:57 2007
 +++ .svn/tmp/tempfile.32.tmp     Tue Dec 11 21:34:33 2007
@@ -2991,9 +2972,9 @@ Select: (p) postpone, (df) diff-full, (e) edit,
 +&gt;&gt;&gt;&gt;&gt;&gt;&gt; .r32
 &hellip;-->
 &hellip;
-Select: (p) postpone, (df) diff-full, (e) edit,
-        (mc) mine-conflict, (tc) theirs-conflict,
-        (s) show all options: df
+Sélectionner : (p) report, (df) diff complet, (e) édite, (m) fusion,
+               (mc) my side of conflict, (tc) their side of conflict,
+               (s) voir toutes les options:df
 --- .svn/text-base/sandwich.txt.svn-base      mar. 11 déc. 2007, 21:33:57
 +++ .svn/tmp/tempfile.32.tmp     mar. 11 déc. 2007, 21:34:33
 @@ -1 +1,5 @@
@@ -3070,28 +3051,110 @@ Select: (p) postpone, (df) diff-full, (e) edit,
         <para>
           <indexterm>
 <!--
-          <primary>conflicts</primary>
-          <secondary>resolution</secondary>
-          <tertiary>interactive</tertiary>
+            <primary>conflicts</primary>
+            <secondary>resolution</secondary>
+            <tertiary>interactive</tertiary>
 -->
-          <primary>conflits</primary>
-          <secondary>résolution</secondary>
-          <tertiary>interactive</tertiary>
+            <primary>conflits</primary>
+            <secondary>résolution</secondary>
+            <tertiary>interactive</tertiary>
 <!--
-          </indexterm>There are several different ways to resolve conflicts
-          interactively&mdash;two of which allow you to selectively
-          merge and edit changes, the rest of which allow you to
-          simply pick a version of the file and move along.</para>
+          </indexterm>The main way to resolve conflicts interactively
+          is to use an internal file merge tool.  The tool asks you
+          what to do with each conflicting change and allows you to
+          selectively merge and edit changes.  However, there are
+          several other different ways to resolve conflicts
+          interactively&mdash;two of them allow you to selectively
+          merge and edit changes using external editors, the rest of
+          which allow you to simply pick a version of the file and
+          move along.  Internal merge tool combines all of the
+          available ways to resolve conflicts.</para>
 -->
-          </indexterm>Il y a plusieurs façons de résoudre un conflit avec
-          l'interface interactive&nbsp;: deux d'entre elles vous
-          permettent de fusionner et d'adapter les modifications de
-          manière interactive, les autres vous permettent simplement de
+          </indexterm>La manière la plus directe de résoudre interactivement
+          un conflit utilise un outil interne de fusion. Cet outil vous
+          demande quoi faire pour chaque modification qui pose problème
+          et permet de fusionner et d'adapter les modifications de
+          manière interactive. Cependant, il existe d'autres manières
+          de faire interactivement&mdash; deux outils peuvent fusionner
+          et adapter les modifications à l'aide d'éditeurs externes, les
+          autres vous permettent simplement de
           choisir une version du fichier parmi celles proposées et de
           passer à la suite.</para>
 
 <!--
-        <para>If you wish to choose some combination of your local
+        <para>You've already reviewed the conflicting changes, so it's
+          now time to resolve the conflicts.  The first command that
+          should help you is the <quote>merge</quote> command
+          (<userinput>m</userinput>) which is available starting with
+          Subversion 1.8.  The command displays the conflicting
+          areas and allows you to choose from a number of options to
+          resolve the conflicts area-by-area:
+         </para>
+-->
+        <para>Vous avez déjà passé en revue les modifications qui posent
+          problème, il est donc temps de résoudre ces conflits. La
+          première commande qui peut vous aider est <quote>merge</quote>
+          (<userinput>m</userinput>), disponible à partir de la version
+          1.8 de Subversion. Cette commande affiche les zones en conflit
+          et vous permet de choisir parmi différentes options pour chaque
+          zone en conflit&nbsp;:
+         </para>
+
+        <informalexample>
+          <screen><!--
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        (mc) my side of conflict, (tc) their side of conflict,
+        (s) show all options: m
+Merging 'Makefile'.
+Conflicting section found during merge:
+(1) their version (at line 24)                  |(2) your version (at line 24)
+- - - - - - - - - - - - - - - - - - - - - - - - +- - - - - - - - - - - - - -
+top_builddir = /bar                             |top_builddir = /foo
+- - - - - - - - - - - - - - - - - - - - - - - - +- - - - - - - - - - - - - -
+Select: (1) use their version, (2) use your version,
+        (12) their version first, then yours,
+        (21) your version first, then theirs,
+        (e1) edit their version and use the result,
+        (e2) edit your version and use the result,
+        (eb) edit both versions and use the result,
+        (p) postpone this conflicting section leaving conflict markers,
+        (a) abort file merge and return to main menu:
+-->
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        (mc) my side of conflict, (tc) their side of conflict,
+        (s) show all options: m
+Merging 'Makefile'.
+Conflicting section found during merge:
+(1) their version (at line 24)                  |(2) your version (at line 24)
+------------------------------------------------+------------------------------------------------
+top_builddir = /truc                             |top_builddir = /machin
+------------------------------------------------+------------------------------------------------
+Select: (1) use their version, (2) use your version,
+        (12) their version first, then yours,
+        (21) your version first, then theirs,
+        (e1) edit their version and use the result,
+        (e2) edit your version and use the result,
+        (eb) edit both versions and use the result,
+        (p) postpone this conflicting section leaving conflict markers,
+        (a) abort file merge and return to main menu:
+</screen>
+        </informalexample>
+
+<!--
+        <para>As you can see, when you use the internal file merge tool,
+          you can cycle through individual conflicting areas in the
+          file and select various resolution options or postpone
+          conflict resolution for selected conflicts.</para>
+-->
+        <para>Comme vous le constatez, en utilisant l'outil de fusion
+          interne, vous pouvez naviguer entre les différentes zones en
+          conflit dans le fichier et choisir différentes stratégies de
+          résolution, voire remettre à plus tard la résolution du
+          conflit pour certaines zones.</para>
+<!--
+
+        <para>However, if you wish to use an external editor to choose some
+          combination of your local
           changes, you can use the <quote>edit</quote> command
           (<userinput>e</userinput>) to manually edit the file with
           conflict markers in a text editor (configured per the
@@ -3102,7 +3165,8 @@ Select: (p) postpone, (df) diff-full, (e) edit,
           the <quote>resolved</quote> command
           (<literal>r</literal>).</para>
 -->
-        <para>Si vous souhaitez choisir une combinaison de vos
+        <para>Cependant, si vous souhaitez utiliser un éditeur externe pour
+          choisir une combinaison de vos
           modifications locales, vous pouvez utiliser la commande
           <quote>édite</quote> (<userinput>e</userinput>) pour
           modifier manuellement dans un éditeur de texte (configuré
@@ -3140,26 +3204,7 @@ Select: (p) postpone, (df) diff-full, (e) edit,
           <userinput>l</userinput>).</para>
 
 <!--
-        <para>If you decide that you don't need to merge any changes,
-          but just want to accept one version of the file or the
-          other, you can either choose your changes (a.k.a.
-          <quote>mine</quote>) by using the <quote>mine-full</quote>
-          command (<userinput>mf</userinput>) or choose theirs by using the
-          <quote>theirs-full</quote> command
-          (<userinput>tf</userinput>).</para>
--->
-        <para>Si vous décidez qu'il n'y a pas lieu d'effectuer de
-          fusion et si choisir l'une ou l'autre des versions
-          proposées du fichier vous convient, vous pouvez soit opter
-          pour vos changements (c'est-à-dire <quote>mien</quote>) en
-          utilisant la commande <quote>mien complet</quote>
-          (<userinput>mf</userinput>) ou opter pour la version des
-          autres collaborateurs en utilisant la commande
-          <quote>autre complet</quote>
-          (<userinput>tf</userinput>).</para>
-
-<!--
-        <para>Finally, there is also a pair of compromise options
+        <para>There is also a pair of compromise options
           available.  The <quote>mine-conflict</quote>
           (<userinput>mc</userinput>)
           and <quote>theirs-conflict</quote>
@@ -3173,7 +3218,7 @@ Select: (p) postpone, (df) diff-full, (e) edit,
           detected.</para>
 
 -->
-        <para>Enfin, il existe deux autres options qui offrent des
+        <para>Il existe deux autres options qui offrent des
           compromis. Les commandes respectivement
           <quote>mien-conflits</quote> (<userinput>mc</userinput>) et
           <quote>leur-conflits</quote> (<userinput>tc</userinput>)
@@ -3185,6 +3230,23 @@ Select: (p) postpone, (df) diff-full, (e) edit,
           modifications et les modifications en provenance du serveur
           dans les zones du fichier où il n'est pas détecté de
           conflit.</para>
+
+<!--
+        <para>Finally, if you decide that you don't need to merge any changes,
+          but just want to accept one version of the file or the
+          other, you can either choose your changes (a.k.a.
+          <quote>mine</quote>) by using the <quote>mine-full</quote>
+          command (<userinput>mf</userinput>) or choose theirs by using the
+          <quote>theirs-full</quote> command
+          (<userinput>tf</userinput>).</para>
+-->
+        <para>Enfin, si vous décidez que vous ne voulez pas fusionner
+          les modifications mais simplement conserver une version du
+          fichier ou une autre, vous pouvez choisir votre version
+          (étiquetée <quote>mine</quote>) en sélectionnant
+          la commande <quote>mine-full</quote> (<userinput>mf</userinput>)
+          ou choisir la version du dépôt en sélectionnant la commande
+          <quote>theirs-full</quote> (<userinput>tf</userinput>).</para>
 
       </sect3>
 
@@ -3199,13 +3261,13 @@ Select: (p) postpone, (df) diff-full, (e) edit,
         <para>
           <indexterm>
 <!--
-          <primary>conflicts</primary>
-          <secondary>resolution</secondary>
-          <tertiary>postponing</tertiary>
+            <primary>conflicts</primary>
+            <secondary>resolution</secondary>
+            <tertiary>postponing</tertiary>
 -->
-          <primary>conflits</primary>
-          <secondary>résolution</secondary>
-          <tertiary>remettre à plus tard</tertiary>
+            <primary>conflits</primary>
+            <secondary>résolution</secondary>
+            <tertiary>remettre à plus tard</tertiary>
 <!--
           </indexterm>This may sound like an appropriate section for avoiding
           marital disagreements, but it's actually still about
@@ -3232,6 +3294,19 @@ Select: (p) postpone, (df) diff-full, (e) edit,
           à <command>svn update</command> et les fichiers en conflit
           seront automatiquement marqués
           <computeroutput>C</computeroutput>.</para>
+
+<!--
+        <para>Beginning with Subversion 1.8, an internal file merge
+          tool allows you to postpone conflict resolution for certain
+          conflicts, but resolve other confilcts.  Therefore, you can
+          postpone conflict resolution area-by-area, not just on
+          file-to-file basis.</para>
+-->
+        <para>À partir de Subversion 1.8, un outil interne de fusion
+          vous permet de différer la résolution de conflits pour
+          certains conflits et de résoudre les autres. Ainsi, vous
+          pouvez différer la résolution des conflits zone par zone
+          et non plus uniquement fichier par fichier.</para>
 
 <!--
         <para>The <computeroutput>C</computeroutput>
@@ -3414,26 +3489,23 @@ Select: (p) postpone, (df) diff-full, (e) edit,
 $ svn update
 Updating '.':
 Conflict discovered in 'sandwich.txt'.
-Select: (p) postpone, (df) diff-full, (e) edit,
-        (mc) mine-conflict, (tc) theirs-conflict,
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        (mc) my side of conflict, (tc) their side of conflict,
         (s) show all options: p
 C    sandwich.txt
 Updated to revision 2.
 Summary of conflicts:
-  Text conflicts: 1
-$ ls -1
-sandwich.txt
-sandwich.txt.mine
-sandwich.txt.r1
-sandwich.txt.r2-->
+  Text conflicts: 1-->
 $ svn update
 Mise à jour de '.' :
 Conflit découvert dans 'sandwich.txt'.
-Select: (p) postpone, (df) diff-full, (e) edit,
-        (mc) mine-conflict, (tc) theirs-conflict,
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        (mc) my side of conflict, (tc) their side of conflict,
         (s) show all options: p
 C  sandwich.txt
 Actualisé à la révision 2.
+Résumé des conflits :
+  Text conflicts: 1
 $ ls -1
 sandwich.txt
 sandwich.txt.mine
@@ -3856,8 +3928,8 @@ $ svn commit -m "Va pour mon sandwich et au diable celui de Sally !"
 $ svn update
 Updating '.':
 Conflict discovered in 'sandwich.txt'.
-Select: (p) postpone, (df) diff-full, (e) edit,
-        (mc) mine-conflict, (tc) theirs-conflict,
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        (mc) my side of conflict, (tc) their side of conflict,
         (s) show all options: p
 C    sandwich.txt
 Updated to revision 2.
@@ -4080,11 +4152,13 @@ $
         <screen><!--
 $ svn commit -m "Add another rule"
 Sending        rules.txt
+Transmitting file data .
 svn: E155011: Commit failed (details follow):
 svn: E155011: File '/home/sally/svn-work/sandwich.txt' is out of date
 &hellip;-->
 $ svn commit -m "Ajout d'une autre règle"
 Envoi        règles.txt
+Transmission des données .
 svn: E155011: Echec de la propagation (commit), détails :
 svn: E155011: Fichier '/règles.txt' obsolète
 &hellip;
@@ -4516,7 +4590,7 @@ $
 <!--
       <para>To find information about the history of a file or
         directory, use the <command>svn log</command>
-        command. <command>svn log</command> will provide you with a
+        command.  <command>svn log</command> will provide you with a
         record of who made changes to a file or directory, at what
         revision it changed, the time and date of that revision,
         and&mdash;if it was provided&mdash;the log message that accompanied
@@ -4844,6 +4918,24 @@ $
         pratique pour visualiser à la fois les changements
         sémantiques, de haut niveau et les modifications ligne par
         ligne d'une révision.</para>
+
+<!--
+      <para>Beginning with Subversion 1.8, <command>svn log</command>
+        accepts <option>- -search</option> and <option>- -search-and</option>
+        options.  The options allow you to filter the output of
+        <command>svn log</command> based on the search pattern you
+        supply.  When using these options, a log message is shown
+        only if a revision's author, date, log message text, or list
+        of changed paths, matches the search pattern.</para>
+-->
+      <para>À partir de Subversion 1.8, <command>svn log</command>
+        reconnait les options <option>--search</option> et
+        <option>--search-and</option>. Ces options vous permettent
+        de filtrer la sortie de <command>svn log</command> en fonction
+        du motif que vous fournissez. Lorsque vous utilisez ces options,
+        le commentaire de propagation n'est affiché que si l'auteur, la
+        date, le commentaire ou la liste des chemins modifiés correspond
+        au motif fourni.</para>
 
     </sect2>
 
@@ -5423,7 +5515,7 @@ $
 <!--
       <title>Disposing of a Working Copy</title>
 -->
-      <title>Se débarrasser d'une copie de travail</title>
+      <title>Suppression d'une copie de travail</title>
 
 <!--
       <para>Subversion doesn't track either the state or the existence of
@@ -5843,12 +5935,14 @@ $
         <screen><!--
 $ svn commit -m "Small fixes"
 Sending        code/bar.c
+Transmitting file data .
 svn: E155011: Commit failed (details follow):
 svn: E155011: File '/home/svn/project/code/bar.c' is out of date
 svn: E160013: File not found: transaction '14-e', path '/code/bar.c'
 -->
 $ svn commit -m "Quelques petits changements."
 Envoi          code/machin.c
+Transmission des données .
 svn: E155011: Échec de la propagation (commit), détails :
 svn: E155011: Fichier '/home/svn/projet/code/machin.c' obsolète
 svn: E160013: Fichier non trouvé : transaction '14-e', chemin '/code/machin.c'
@@ -5991,38 +6085,11 @@ $
       </informalexample>
 
 <!--
-      <warning>
-        <para>Local edits to the file <filename>bar.c</filename>, which is
-          renamed during an update to <filename>baz.c</filename>, will
-          only be applied to <filename>bar.c</filename> if your working
-          copy of <filename>bar.c</filename> is based on the revision in
-          which it was last modified before being moved in the repository.
-          Otherwise, Subversion will resort to retreiving
-          <filename>baz.c</filename> from the repository, and will not
-          try to transfer your local modifications to it.  You will have
-          to do so manually.</para>
-      </warning>
--->
-      <warning>
-        <para>Les modifications locales du fichier
-          <filename>machin.c</filename>, qui a été renommé en
-          <filename>bidule.c</filename> au moment de la mise à jour,
-          sont appliquées sur <filename>machin.c</filename>
-          uniquement si votre copie de travail de
-          <filename>machin.c</filename> est basée sur la révision où
-          le fichier a été modifié pour la dernière fois avant
-          d'être déplacé dans le dépôt. Sinon, Subversion récupère le
-          fichier <filename>bidule.c</filename> du dépôt et n'essaie pas
-          d'y appliquer vos modifications locales. Vous devrez le faire
-          manuellement.</para>
-      </warning>
-
-<!--
       <para><command>svn info</command> shows the URLs of the items
-        involved in the conflict. The <emphasis>left</emphasis> URL
+        involved in the conflict.  The <emphasis>left</emphasis> URL
         shows the source of the local side of the conflict, while
         the <emphasis>right</emphasis> URL shows the source of the
-        incoming side of the conflict. These URLs indicate where you
+        incoming side of the conflict.  These URLs indicate where you
         should start searching the repository's history for the change
         which conflicts with your local change.</para>
 -->
@@ -6038,7 +6105,8 @@ $
         <screen><!--
 $ svn info code/bar.c
 Path: code/bar.c
--->
+Name: bar.c
+URL: http://svn.example.com/svn/repo/trunk/code/bar.c-->
 $ svn info code/machin.c
 Chemin: code/machin.c
 Nom: machin.c
