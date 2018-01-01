@@ -1069,8 +1069,12 @@ $
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.hooks.configuration">
+      <!--
         <title>Hook script environment configuration</title>
+      -->
+        <title>钩子脚本环境配置</title>
 
+      <!--
         <para>By default, Subversion executes hook scripts with an
           empty environment&mdash;that is, no environment variables
           are set at all, not even <literal>$PATH</literal>
@@ -1081,7 +1085,15 @@ $
           this problem by manually setting all the environment
           variables their hook scripts need in the scripts
           themselves.</para>
+      -->
+        <para>默认情况下, Subversion 在空环境下执行钩子脚本, 空环境指的是没有
+          设置任何环境变量的运行环境, 甚至连 <literal>$PATH</literal> (在
+          Windows 系统中则是 <literal>%PATH%</literal>) 都没有设置. 正是因为
+          这个原因, 很多管理员都曾遇到过这种问题: 自己手工执行钩子程序是没问题
+          的, 但由 Subversion 执行时却无法正常工作. 传统的解决办法是在钩子脚本
+          中手工设置钩子所需的所有环境变量.</para>
 
+      <!--
         <para>Subversion 1.8 introduces a new way to manage the
           environment of Subversion-executed hook scripts&mdash;the
           hook script environment configuration file.  If a Subversion
@@ -1091,7 +1103,15 @@ $
           applies the option names and variables found therein to the
           hook script's execution environment as environment
           variables.</para>
+      -->
+        <para>Subversion 1.8 为钩子脚本的环境管理引入了一种新方法&mdash;钩子
+          脚本环境配置文件. 如果 Subversion 服务器进程在仓库的子目录
+          <filename>conf/</filename> 内找到了一个名为
+          <filename>hooks-env</filename> 的文件, 它就把该文件当成 INI 格式的
+          配置文件进行解析, 将解析到的选项名和值作为环境变量, 添加到钩子脚本
+          的运行环境中.</para>
 
+      <!--
         <para>The syntax of the <filename>hooks-env</filename> file is
           pretty straightforward: each section name is the name of a
           hook script (such as <literal>pre-commit</literal>
@@ -1106,6 +1126,15 @@ $
           <xref linkend="svn.reposadmin.hooks.configuration.ex-1" />
           for a sample <filename>hooks-env</filename> configuration
           file.</para>
+      -->
+        <para><filename>hooks-env</filename> 的语法非常简单直观: 每一节的名字
+          就是钩子脚本的名字 (例如 <literal>pre-commit</literal> 和
+          <literal>post-revprop-change</literal>), 节内的配置项被看成是环境
+          变量的名字到值的映射. 另外还有一个特殊的 <literal>[default]</literal>
+          节, 它所配置的环境变量对所有的钩子脚本都起作用 (除非又被各节自己的
+          设置显式地覆盖了). <filename>hooks-env</filename> 配置文件的例子
+          如 <xref linkend="svn.reposadmin.hooks.configuration.ex-1" /> 所示.
+        </para>
 
         <example id="svn.reposadmin.hooks.configuration.ex-1">
           <title>hooks-env (custom hook script environment
