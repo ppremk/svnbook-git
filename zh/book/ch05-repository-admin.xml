@@ -1258,6 +1258,7 @@ PATH = /usr/local/synctools-1.1/bin:%(PATH)s
           考虑到版本号属性不属于版本控制的范畴, pre-revprop-change 在保护
           版本号属性免受破坏性修改这一点上, 非常重要.</para>
         
+      <!--
         <para>One special class of change validation that has seen
           widespread use since Subversion 1.5 was released is
           validation of the committing client software itself.  When
@@ -1276,10 +1277,24 @@ PATH = /usr/local/synctools-1.1/bin:%(PATH)s
           <xref linkend="svn.reposadmin.hooks.uses.ex-1" /> provides
           an example of a start-commit script which does precisely
           this.</para>
+      -->
+        <para>Subversion 1.5 发布后, 有一类验证用得非常广泛, 那就是验证提交
+          修改的客户端软件. Subversion 从 1.5 开始支持合并跟踪 (关于合并跟踪
+          的详细介绍, 见 <xref linkend="svn.branchmerge" />), 管理员需要提供
+          一种方法, 以便确保一旦仓库的用户开始使用新的合并跟踪特性, 那么他们
+          <emphasis>所有的</emphasis> 合并都要被跟踪. 为了避免用户向仓库提交
+          未被跟踪的合并, 管理员使用钩子 start-commit 检查客户端公示的特性字
+          符串, 如果客户端没有宣称支持合并跟踪, 那么提交就会被拒绝, 从而迫使
+          用户升级他们的客户端软件!
+          <xref linkend="svn.reposadmin.hooks.uses.ex-1" /> 展示了如何用钩子
+          start-commit 实现这个功能.</para>
 
         <example id="svn.reposadmin.hooks.uses.ex-1">
+      <!--
           <title>start-commit hook to require merge tracking
             support</title>
+      -->
+          <title>要求客户端必须支持合并跟踪的钩子 start-commit</title>
 
           <programlisting>
 #!/usr/bin/env python
@@ -1300,7 +1315,18 @@ your client to at least Subversion 1.5.0.
           <indexterm>
             <primary>properties</primary>
             <secondary>ephemeral transaction properties</secondary>
-          </indexterm>Beginning in Subversion 1.8, clients committing
+          </indexterm>
+          从 Subversion 1.8 开始, 向 Subversion 1.8 服务器提交修改的客户端,
+          除了提供它自己的特性字符串外, 还会通过
+          <firstterm>临时事务属性</firstterm>
+          (<firstterm>ephemeral transaction properties</firstterm>) 提供关于
+          它自己的额外信息. 临时事务属性本质上是版本号属性, 在提交时由客户
+          端将临时事务属性设置到提交事务上, 服务器端在事务成为最终的版本号
+          之前, 删除该属性. 查看临时事务属性的方法和查看设置在提交事务上的其
+          他非版本化属性的方法相同, 需要用到的钩子是 start-commit 和 (或)
+          pre-commit.</para>
+      <!--
+          Beginning in Subversion 1.8, clients committing
           against a Subversion 1.8 server will still provide the
           feature capabilities string, but will also provide
           additional information about themselves by way
@@ -1315,9 +1341,13 @@ your client to at least Subversion 1.5.0.
           transactions during the timeframe between which the
           start-commit and pre-commit repository hook scripts would
           operate.</para>
+      -->
 
+      <!--
         <para>The following are the ephemeral transaction properties
           which Subversion currently provides and implements:</para>
+      -->
+        <para>下面是 Subversion 当前提供并已实现的临时事务属性:</para>
 
         <variablelist>
   
