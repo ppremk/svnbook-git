@@ -1998,9 +1998,13 @@ $
 </screen>
         </informalexample>
 
+      <!--
         <para>We talk more about replicating repositories with
           <command>svnsync</command> later in this chapter (see <xref
           linkend="svn.reposadmin.maint.replication" />).</para>
+      -->
+      <para>关于如何使用 <command>svnsync</command> 复制仓库的更多内容, 我们
+        将在 <xref linkend="svn.reposadmin.maint.replication" /> 介绍.</para>
 
       </sect3>
 
@@ -2008,6 +2012,7 @@ $
       <sect3 id="svn.reposadmin.maint.tk.fsfsreshard">
         <title>fsfs-reshard.py</title>
 
+      <!--
         <para>While not an official member of the Subversion
           toolchain, the <command>fsfs-reshard.py</command> script
           (found in the <filename>tools/server-side</filename>
@@ -2017,7 +2022,15 @@ $
           files to house information about each revision.  Sometimes
           these files all live in a single directory; sometimes they
           are sharded across many directories.</para>
+      -->
+        <para>虽然脚本 <filename>fsfs-reshard.py</filename> (放在 Subversion
+          源代码目录的 <filename>tools/server-side</filename> 子目录内) 不是
+          Subversion 工具集的正式成员, 但是如果仓库使用 FSFS 作为后端存储,
+          那么管理员就可以用 <filename>fsfs-reshard.py</filename> 优化性能.
+          基于 FSFS 的仓库把版本号的相关信息记录在单独的文件里, 有时候这些
+          文件会全部存放在一个目录里, 有时候分散在多个目录里.</para>
 
+      <!--
         <para>The earliest FSFS release versions would house all the
           revision files within a single directory that grew&mdash;one
           file per revision&mdash;throughout the lifetime of your
@@ -2026,7 +2039,14 @@ $
           directory, and was a performance burden even on systems
           where such limits didn't exist or were set sufficiently
           high.</para>
+      -->
+        <para>FSFS 的早期版本把所有的版本号文件&mdash;每一个版本号都有对应的
+          一个文件&mdash;放在一个目录里, 在仓库的整个生命周期内, 目录内的文件
+          数量都在增长. 有些系统对同一目录内的文件数量限制较大, 即使是限制较
+          宽或没有限制的系统, 如果目录内的文件数量较多也会产生严重的性能问题.
+        </para>
 
+      <!--
         <para>Beginning in version 1.5, Subversion creates FSFS-backed
           repositories using a slightly modified layout in which the
           contents of the revision files directory (and other
@@ -2036,6 +2056,12 @@ $
           takes the system to locate any one of these files, and
           therefore increases the overall performance of Subversion
           when reading from the repository.</para>
+      -->
+        <para>从 Subversion 1.5 开始, 基于 FSFS 的仓库在布局上稍有变化: 存放
+          版本号文件的目录 (和其他不断增长的目录) 是
+          <firstterm>碎化地</firstterm> (<firstterm>sharded</firstterm>), 或
+          者说版本号文件分散在多个目录内. 这可以大幅减少系统定位文件的时间,
+          从而提高仓库的整体读取性能.</para>
 
         <para>The number of files permitted to live in a given
           subdirectory is a configurable thing (though the defaults
