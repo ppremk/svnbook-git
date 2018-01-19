@@ -1503,7 +1503,7 @@ baz
       <informalexample>
         <programlisting>
 [tunnels]
-rsh = rsh
+rsh = rsh --
 </programlisting>
       </informalexample>
 
@@ -1511,17 +1511,28 @@ rsh = rsh
         URL scheme that matches the name of your new variable:
         <literal>svn+rsh://host/path</literal>.  When using the new
         URL scheme, the Subversion client will actually be running the
-        command <userinput>rsh host svnserve -t</userinput> behind the
+        command <userinput>rsh -- host svnserve -t</userinput> behind the
         scenes.  If you include a username in the URL (e.g.,
         <literal>svn+rsh://username@host/path</literal>), the client
-        will also include that in its command (<userinput>rsh
-        username@host svnserve -t</userinput>).  But you can define new
-        tunneling schemes to be much more clever than that:</para>
+        will also include that in its command (<userinput>rsh --
+        username@host svnserve -t</userinput>).</para>
+
+      <warning>
+        <para>Notice that when defining an RSH-based tunnel, we've
+          added the <literal>--</literal> end-of-options argument to
+          the tunnel command line.  This is to prevent a malformed
+          hostname from being treated as another option to the tunnel
+          command.  You should do the same for other tunnel programs
+          (for example, SSH).</para>
+      </warning>
+
+      <para>But you can define new tunneling schemes to be much more
+        clever than that:</para>
 
       <informalexample>
         <programlisting>
 [tunnels]
-joessh = $JOESSH /opt/alternate/ssh -p 29934
+joessh = $JOESSH /opt/alternate/ssh -p 29934 --
 </programlisting>
       </informalexample>
 
@@ -1857,17 +1868,6 @@ arding,no-X11-forwarding,no-pty TYPE1 KEY1 harry@example.com
                 to the directory containing
                 the <filename>svnserve.conf</filename> configuration
                 file.</para>
-
-              <para>You may also specify the location of a groups file
-                which is versioned inside a Subversion repository.
-                Use a local URL (one which begins
-                with <literal>file://</literal>) to refer to an
-                absolute Subversion-versioned file.  Alternatively,
-                you may use a repository relative URL (one which
-                begins with <literal>^/</literal>) to cause
-                <command>svnserve</command> to consult for each
-                repository the group file stored at the specified
-                relative URL within that repository.</para>
 
               <para>See
                 <xref linkend="svn.reposadmin.hooks.configuration" />
@@ -2291,7 +2291,7 @@ ServerName svn.example.com
       </itemizedlist>
 
       <para>Of course, you might have already set up
-        a <filename>pre-commit</filename> hook script to prevent
+        a pre-commit hook script to prevent
         commits (see <xref linkend="svn.reposadmin.hooks" />).
         But as you read on, you'll see that it's also possible to use
         Apache's built-in methods to restrict access in specific
@@ -2366,7 +2366,7 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
           functionality, you'll need to add some more directives
           inside the <literal>&lt;Location&gt;</literal> block to tell
           Apache what type of authentication you wish to use, and just
-          how to to so:</para>
+          how to do so:</para>
 
         <informalexample>
           <programlisting>
@@ -3797,7 +3797,7 @@ CustomLog logs/access_log env=!do_not_log
             />.</para>
 
           <para>First, make sure that each slave repository has a
-            <filename>pre-revprop-change</filename> hook script which
+            pre-revprop-change hook script which
             allows remote revision property changes.  (This is
             standard procedure for being on the receiving end of
             <command>svnsync</command>.) Then log into the master
@@ -3852,7 +3852,7 @@ Copied properties for revision 2.
           </informalexample>
 
           <para>After this is done, we configure the master server's
-            <literal>post-commit</literal> hook script to invoke
+            post-commit hook script to invoke
             <command>svnsync</command> on each slave server:</para>
 
           <informalexample>
@@ -3874,8 +3874,8 @@ svnsync sync http://slave3.example.com/svn-proxy-sync \
             commands to run in the background so that the Subversion
             client isn't left waiting forever for the commit to
             finish.  In addition to this
-            <literal>post-commit</literal> hook, you'll need a
-            <literal>post-revprop-change</literal> hook as well so
+            post-commit hook, you'll need a
+            post-revprop-change hook as well so
             that when a user, say, modifies a log message, the slave
             servers get that change also:</para>
 
@@ -4133,7 +4133,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                 introduced in that version.  Most admins will not wish
                 to use this directive (which is <literal>On</literal>
                 by default), choosing instead to enjoy the performance
-                benefits that the new protocol offers.  However, whena
+                benefits that the new protocol offers.  However, when
                 configuring a server as a write-through proxy to
                 another server which does not support the new
                 protocol, set this directive's value

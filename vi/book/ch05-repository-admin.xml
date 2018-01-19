@@ -725,7 +725,7 @@ $
         <para>The syntax of the <filename>hooks-env</filename> file is
           pretty straightforward: each section name is the name of a
           hook script (such as <literal>pre-commit</literal>
-          or <literal>post-revprop-change</literal>, and the
+          or <literal>post-revprop-change</literal>), and the
           configuration items inside that section are treated as
           mappings of environment variable names to desired values.
           Additionally, there is a
@@ -962,23 +962,24 @@ your client to at least Subversion 1.5.0.
           APIs.</para>
 
         <warning>
-          <para>While hook scripts can do almost anything, there is
-            one dimension in which hook script authors should show
-            restraint: do <emphasis>not</emphasis> modify a commit
-            transaction using hook scripts.  While it might be
-            tempting to use hook scripts to automatically correct
-            errors, shortcomings, or policy violations present in the
-            files being committed, doing so can cause problems.
-            Subversion keeps client-side caches of certain bits of
-            repository data, and if you change a commit transaction in
-            this way, those caches become indetectably stale.  This
-            inconsistency can lead to surprising and unexpected
-            behavior.  Instead of modifying the transaction, you
-            should simply <emphasis>validate</emphasis> the
-            transaction in the <filename>pre-commit</filename> hook
-            and reject the commit if it does not meet the desired
-            requirements.  As a bonus, your users will learn the value
-            of careful, compliance-minded work habits.</para>
+          <para>Hook scripts can do almost anything, but hook script
+            authors should show restraint.  It might be tempting to,
+            say, use hook scripts to automatically correct errors,
+            shortcomings, or policy violations present in the files
+            being committed.  Unfortunately, doing so can cause
+            problems.  Subversion keeps client-side caches of certain
+            bits of repository data, and if you change a commit
+            transaction in this way, those caches become indetectably
+            stale, leading to surprising and unexpected behavior.
+            While it is generally okay to add new commit transaction
+            properties via a hook script, essentially everything else
+            about a commit transaction should be considered read-only.
+            Instead of modifying a transaction to polish its payload,
+            simply <emphasis>validate</emphasis> the transaction in
+            the pre-commit hook and reject the
+            commit if it does not meet the desired requirements.  As a
+            bonus, your users will learn the value of careful,
+            compliance-minded work habits.</para>
         </warning>
 
       </sect3>
@@ -1090,8 +1091,8 @@ Available subcommands:
           attempts to change the repository.  <command>svnlook</command>
           is typically used by the repository hooks for reporting the
           changes that are about to be committed (in the case of the
-          <command>pre-commit</command> hook) or that were just
-          committed (in the case of the <command>post-commit</command>
+          pre-commit hook) or that were just
+          committed (in the case of the post-commit
           hook) to the repository.  A repository administrator may use
           this tool for diagnostic purposes.</para>
             
@@ -1396,7 +1397,7 @@ $
       <para>Sometimes a user will have an error in her log message (a
         misspelling or some misinformation, perhaps).  If the
         repository is configured (using the
-        <literal>pre-revprop-change</literal> hook; see
+        pre-revprop-change hook; see
         <xref linkend="svn.reposadmin.hooks" />) to accept changes to
         this log message after the commit is finished, the user
         can <quote>fix</quote> her log message remotely using
@@ -1424,8 +1425,8 @@ $ svnadmin setlog myrepos newlog.txt -r 388
       <para>The <command>svnadmin setlog</command> command, by
         default, is still bound by the same protections against
         modifying unversioned properties as a remote client
-        is&mdash;the <literal>pre-revprop-change</literal> and
-        <literal>post-revprop-change</literal> hooks are still
+        is&mdash;the pre-revprop-change and
+        post-revprop-change hooks are still
         triggered, and therefore must be set up to accept changes of
         this nature.  But an administrator can get around these
         protections by passing the <option>--bypass-hooks</option>
@@ -1992,7 +1993,7 @@ $ svnadmin load newrepos &lt; dumpfile3
         <para>Another neat trick you can perform with this
           <option>--incremental</option> option involves appending to an
           existing dump file a new range of dumped revisions.  For
-          example, you might have a <literal>post-commit</literal> hook
+          example, you might have a post-commit hook
           that simply appends the repository dump of the single revision
           that triggered the hook.  Or you might have a script that runs
           nightly to append dump file data for all the revisions that
@@ -2562,7 +2563,7 @@ $
           that only it is doing those things.  We accomplish this by
           implementing two of the repository event
           hooks&mdash;pre-revprop-change and start-commit.  Our
-          <filename>pre-revprop-change</filename> hook script is found
+          pre-revprop-change hook script is found
           in <xref
           linkend="svn.reposadmin.maint.replication.pre-revprop-change"
           />, and basically verifies that the user attempting the
@@ -2586,7 +2587,7 @@ exit 1
         <para>That covers revision property changes.  Now we need to
           ensure that only the <literal>syncuser</literal> user is
           permitted to commit new revisions to the repository.  We do
-          this using a <filename>start-commit</filename> hook script
+          this using a start-commit hook script
           such as the one in <xref
           linkend="svn.reposadmin.maint.replication.start-commit"
           />.</para>
