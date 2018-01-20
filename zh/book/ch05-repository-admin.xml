@@ -2103,8 +2103,12 @@ $
 
     <!-- =============================================================== -->
     <sect2 id="svn.reposadmin.maint.setlog">
+      <!--
       <title>Commit Log Message Correction</title>
+      -->
+      <title>修正提交日志消息</title>
             
+      <!--
       <para>Sometimes a user will have an error in her log message (a
         misspelling or some misinformation, perhaps).  If the
         repository is configured (using the
@@ -2119,12 +2123,26 @@ $
         are not, by default, configured to allow changes to
         unversioned properties&mdash;except by an
         administrator.</para>
+      -->
+      <para>有时候, 用户可能会写错提交日志消息 (例如拼写错误, 或包含了错误的
+        信息). 如果仓库的配置允许提交结束后仍然可以对日志消息进行修改 (使用
+        钩子 pre-revprop-change, 见 <xref linkend="svn.reposadmin.hooks" />),
+        用户就可以用命令 <command>svn propset</command> (见 <xref
+          linkend="svn.ref.svn"/> 的 <xref linkend="svn.ref.svn.c.propset"/>)
+        <quote>修正</quote> 包含错误的日志消息. 然而, 这种做法可能会导致信息
+        永久丢失, 因此 Subversion 仓库的默认配置是禁止修改未版本化的属性&mdash;
+        只有管理员除外.</para>
 
+      <!--
       <para>If a log message needs to be changed by an administrator,
         this can be done using <command>svnadmin setlog</command>.
         This command changes the log message (the
         <literal>svn:log</literal> property) on a given revision of a
         repository, reading the new value from a provided file.</para>
+      -->
+      <para>如果管理员需要修改日志消息, 将会用到的命令是
+        <command>svnadmin setlog</command>. 命令从给定的文件中读取新的日志
+        消息, 覆盖掉指定的版本号的日志.</para>
 
       <informalexample>
         <screen>
@@ -2133,6 +2151,7 @@ $ svnadmin setlog myrepos newlog.txt -r 388
 </screen>
       </informalexample>
       
+      <!--
       <para>The <command>svnadmin setlog</command> command, by
         default, is still bound by the same protections against
         modifying unversioned properties as a remote client
@@ -2140,8 +2159,15 @@ $ svnadmin setlog myrepos newlog.txt -r 388
         <literal>post-revprop-change</literal> hooks are still
         triggered, and therefore must be set up to accept changes of
         this nature.  But an administrator can get around these
-        protections by passing the <option>--bypass-hooks</option>
+        protections by passing the <option>- -bypass-hooks</option>
         option to the <command>svnadmin setlog</command> command.</para>
+      -->
+      <para>默认情况下, <command>svnadmin setlog</command> 受到的限制, 与企图
+        修改未版本化属性的客户端受到的限制是一样的&mdash;钩子
+        pre-revprop-change 和 post-revprop-change 仍然会被触发, 因此命令若想
+        成功执行还要求仓库进行相应的配置. 但管理员可以通过向
+        <command>svnadmin setlog</command> 添加选项
+        <option>--bypass-hooks</option>, 绕开这条限制.</para>
  
       <warning>
         <para>Remember, though, that by bypassing the hooks, you are
