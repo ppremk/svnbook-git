@@ -2221,7 +2221,16 @@ $ svnadmin setlog myrepos newlog.txt -r 388
         <para>
           <indexterm>
             <primary>deltification</primary>
-          </indexterm>To keep the repository small, Subversion uses
+          </indexterm>
+          为了尽量降低仓库的存储空间消耗, Subversion 使用了
+          <firstterm>增量存储技术</firstterm>. 增量存储技术通过一块数据及
+          相对于它的一系列差异来表示另一块数据, 如果两块数据的差异非常小,
+          增量存储技术就可以仅保存其中一组数据以及两组数据之间的差异, 而不
+          需要同时保存两组数据, 从而节省存储空间. 采用增量存储技术的结果是
+          原本体积庞大的文件, 其所消耗的存储空间与全文保存相比, 只占很小的
+          一部分.</para>
+      <!--
+          To keep the repository small, Subversion uses
           <firstterm>deltification</firstterm> (or delta-based storage)
           within the repository itself.  Deltification involves
           encoding the representation of a chunk of data as a
@@ -2236,11 +2245,20 @@ $ svnadmin setlog myrepos newlog.txt -r 388
           be bulky&mdash;namely, the contents of versioned
           files&mdash;is stored at a much smaller size than the
           original full-text representation of that data.</para>
+      -->
 
         <para>
           <indexterm>
             <primary>representation sharing</primary>
-          </indexterm>While deltified storage has been a part of Subversion's
+          </indexterm>
+          在一开始设计 Subversion 时, 就已经包含了增量存储技术, 后来也对其进
+          行不断地改进. 从 1.4 开始, Subversion 将对全文表示的文件内容进行
+          压缩. 从 1.6 开始, 新特性 <firstterm>表示共享</firstterm>
+          (<firstterm>representations sharing</firstterm>) 为 Subversion 节
+          省了更多的空间. 该特性允许内容相同的多个文件或多个版本号, 引用
+          到一个单一的共享数据实例上, 而不是每个人都存一份自己的副本.</para>
+      <!--
+          While deltified storage has been a part of Subversion's
           design since the very beginning, there have been additional
           improvements made over the years.  Subversion repositories
           created with Subversion 1.4 or later benefit from
@@ -2251,6 +2269,7 @@ $ svnadmin setlog myrepos newlog.txt -r 388
           which allows multiple files or file revisions with identical
           file content to refer to a single shared instance of that data
           rather than each having their own distinct copy thereof.</para>
+      -->
 
       </sect3>
 
