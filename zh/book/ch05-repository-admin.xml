@@ -2275,8 +2275,12 @@ $ svnadmin setlog myrepos newlog.txt -r 388
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.maint.diskspace.deadtxns">
+      <!--
         <title>Removing dead transactions</title>
+      -->
+        <title>删除僵死的事务</title>
 
+      <!--
         <para>Though they are uncommon, there are circumstances in
           which a Subversion commit process might fail, leaving behind
           in the repository the remnants of the revision-to-be that
@@ -2289,10 +2293,21 @@ $ svnadmin setlog myrepos newlog.txt -r 388
           They don't do any real harm, other than consuming disk
           space.  A fastidious administrator may nonetheless wish to
           remove them.</para>
+      -->
+        <para>虽然不太常见, 但仍然存在提交失败的情况, 此时便会在仓库中留下
+          残骸&mdash;一个未提交的事务和与之相关的文件或目录修改. 造成提交
+          失败的原因很多, 可能是客户端操作被用户粗暴地终止, 也可能是在操作
+          执行中发生了网络错误. 不管是什么原因, 僵死事务总是有可能出现, 除
+          了占用存储空间外, 它们并不会产生实际的危害, 但一个讲究的管理员的眼
+          睛里是揉不得沙子的.</para>
 
+      <!--
         <para>You can use the <command>svnadmin lstxns</command>
           command to list the names of the currently outstanding
           transactions:</para>
+      -->
+        <para>管理员可以用命令 <command>svnadmin lstxns</command> 列出未完成
+          事务:</para>
 
         <informalexample>
           <screen>
@@ -2304,9 +2319,10 @@ $
 </screen>
         </informalexample>
 
+      <!--
         <para>Each item in the resultant output can then be used with
           <command>svnlook</command> (and its
-          <option>--transaction</option> (<option>-t</option>) option)
+          <option>- -transaction</option> (<option>-t</option>) option)
           to determine who created the transaction, when it was
           created, what types of changes were made in the
           transaction&mdash;information that is helpful in determining
@@ -2317,6 +2333,14 @@ $
           <command>svnadmin rmtxns</command> can take its input
           directly from the output of
           <command>svnadmin lstxns</command>!</para>
+      -->
+        <para>输出中的每一项都能用作 <command>svnlook</command> (添加选项
+          <option>--transaction</option> (<option>-r</option>)) 的参数, 用来
+          判断是谁, 在什么时候创建了这个事务, 在这个事务中做了哪些类型的修改.
+          这些信息有助于管理员判断该事务是否可以安全地删除. 如果确实是要删除
+          一个事务, 就把它的名字作为命令 <command>svnadmin rmtxns</command>
+          的参数. 实际上, <command>svnadmin lstxns</command> 的输出可以直接
+          作为 <command>svnadmin rmtxns</command> 的输入!</para>
 
         <informalexample>
           <screen>
