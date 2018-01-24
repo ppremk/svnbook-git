@@ -382,6 +382,7 @@ Hinzufügen     mytree/subdir
 Hinzufügen     mytree/subdir/quux.h
 
 Revision 1 übertragen.
+$
 </screen>
       </informalexample>
 
@@ -2446,7 +2447,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
         repository.  One marked with
         <computeroutput>G</computeroutput> had local changes to begin
         with, but the changes coming from the repository didn't
-        overlap with those local changes.</para>
+        conflict with those local changes.</para>
 -->
       <para>Die Codes <computeroutput>U</computeroutput> und
         <computeroutput>G</computeroutput> sind kein Grund zur
@@ -2493,27 +2494,30 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
       <informalexample>
         <screen>
 &hellip; <!--
-Select: (p) postpone, (df) diff-full, (e) edit,
-        (mc) mine-conflict, (tc) theirs-conflict,
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        (mc) my side of conflict, (tc) their side of conflict,
         (s) show all options: s
 
-  (e)  edit             - change merged file in an editor
-  (df) diff-full        - show all changes made to merged file
-  (r)  resolved         - accept merged version of file
+  (e)  - change merged file in an editor  [edit]
+  (df) - show all changes made to merged file
+  (r)  - accept merged version of file
 
-  (dc) display-conflict - show all conflicts (ignoring merged version)
-  (mc) mine-conflict    - accept my version for all conflicts (same)
-  (tc) theirs-conflict  - accept their version for all conflicts (same)
+  (dc) - show all conflicts (ignoring merged version)
+  (mc) - accept my version for all conflicts (same)  [mine-conflict]
+  (tc) - accept their version for all conflicts (same)  [theirs-conflict]
 
-  (mf) mine-full        - accept my version of entire file (even non-conflicts)
-  (tf) theirs-full      - accept their version of entire file (same)
+  (mf) - accept my version of entire file (even non-conflicts)  [mine-full]
+  (tf) - accept their version of entire file (same)  [theirs-full]
 
-  (p)  postpone         - mark the conflict to be resolved later
-  (l)  launch           - launch external tool to resolve conflict
-  (s)  show all         - show this list
+  (m)  - use internal merge tool to resolve conflict
+  (l)  - launch external tool to resolve conflict  [launch]
+  (p)  - mark the conflict to be resolved later  [postpone]
+  (q)  - postpone all remaining conflicts
+  (s)  - show this list (also 'h', '?')
+Words in square brackets are the corresponding - accept option arguments.
 
-Select: (p) postpone, (df) diff-full, (e) edit,
-        (mc) mine-conflict, (tc) theirs-conflict,
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        (mc) my side of conflict, (tc) their side of conflict,
         (s) show all options:
 -->
 Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
@@ -2552,7 +2556,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
       <variablelist>
         <varlistentry>
 <!--
-          <term><computeroutput>(e)  edit</computeroutput></term>
+          <term><computeroutput>(e)  edit  [edit]</computeroutput></term>
 -->
           <term><computeroutput>(e)  editieren</computeroutput></term>
           <listitem>
@@ -2625,7 +2629,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
         </varlistentry>
 
         <varlistentry>
-          <term><computeroutput>(mc) mine-conflict</computeroutput></term>
+          <term><computeroutput>(mc)  mine-conflict  [mine-conflict]</computeroutput></term>
           <listitem>
 
 <!--
@@ -2644,7 +2648,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
         </varlistentry>
 
         <varlistentry>
-          <term><computeroutput>(tc) theirs-conflict</computeroutput></term>
+          <term><computeroutput>(tc)  theirs-conflict  [theirs-conflict]</computeroutput></term>
           <listitem>
 <!--
             <para>Discard any local changes which conflict with
@@ -2662,7 +2666,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
 
         <varlistentry>
 <!--
-          <term><computeroutput>(mf) mine-full</computeroutput></term>
+          <term><computeroutput>(mf) mine-full  [mine-full]</computeroutput></term>
 -->
           <term><computeroutput>(mf) volle eigene Datei</computeroutput></term>
           <listitem>
@@ -2679,7 +2683,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
 
         <varlistentry>
 <!--
-          <term><computeroutput>(tf) theirs-full</computeroutput></term>
+          <term><computeroutput>(tf) theirs-full  [theirs-full]</computeroutput></term>
 -->
           <term><computeroutput>(tf) volle fremde Datei</computeroutput></term>
           <listitem>
@@ -2882,23 +2886,110 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
             <primary>conflicts</primary>
             <secondary>resolution</secondary>
             <tertiary>interactive</tertiary>
-          </indexterm>There are several different ways to resolve conflicts
-          interactively&mdash;two of which allow you to selectively
-          merge and edit changes, the rest of which allow you to
-          simply pick a version of the file and move along.</para>
+          </indexterm>The main way to resolve conflicts interactively
+          is to use an internal file merge tool.  The tool asks you
+          what to do with each conflicting change and allows you to
+          selectively merge and edit changes.  However, there are
+          several other different ways to resolve conflicts
+          interactively&mdash;two of them allow you to selectively
+          merge and edit changes using external editors, the rest of
+          which allow you to simply pick a version of the file and
+          move along.  Internal merge tool combines all of the
+          available ways to resolve conflicts.</para>
 -->
           <indexterm>
             <primary>Konflikte</primary>
             <secondary>Auflösung</secondary>
             <tertiary>interaktiv</tertiary>
-          </indexterm>Es gibt mehrere unterschiedliche Wege, um Konflikte
-          interaktiv aufzulösen &ndash; von denen Ihnen zwei erlauben,
-          Änderungen selektiv zusammenzuführen und zu editieren und
-          die restlichen, die es Ihnen erlauben, einfach eine Version
-          der Datei auszuwählen und weiterzumachen.</para>
+          </indexterm>Die übliche Vorgehensweise, um Konflikte interaktiv 
+          aufzulösen, ist die Verwendung eines internen Werkzeugs zum
+          Zusammenführen. Das Werkzeug fragt Sie, wie jede
+          konfliktbehaftete Änderung zu behandeln ist und erlaubt Ihnen,
+          Änderungen selektiv zusammenzuführen und zu bearbeiten. Jedoch
+          gibt es verschiedene andere Wege, um Konflikte interaktiv
+          aufzulösen &ndash; von denen Ihnen zwei erlauben, Änderungen
+          selektiv zusammenzuführen und zu editieren und die restlichen,
+          die es Ihnen erlauben, einfach eine Version der Datei auszuwählen
+          und weiterzumachen. Das interne Werkzeug kombiniert alle
+          verfügbaren Möglichkeiten, um Konflikte aufzulösen.</para>
 
 <!--
-        <para>If you wish to choose some combination of your local
+        <para>You've already reviewed the conflicting changes, so it's
+          now time to resolve the conflicts.  The first command that
+          should help you is the <quote>merge</quote> command
+          (<userinput>m</userinput>) which is available starting with
+          Subversion 1.8.  The command displays the conflicting
+          areas and allows you to choose from a number of options to
+          resolve the conflicts area-by-area:
+         </para>
+-->
+        <para>Sie haben die konfliktbehafteten Änderungen bereits geprüft,
+          so dass es nun an der Zeit ist, die Konflikte aufzulösen. Der
+          erste Befehl, der Ihnen helfen sollte, ist der
+          Befehl <quote>merge</quote> (<userinput>m</userinput>), der seit
+          Subversion 1.8 verfügbar ist. Der Befehl zeigt die
+          Konfliktbereiche an und erlaubt es Ihnen, eine Auswahl aus
+          Optionen zur Konfliktbeseitigung in jedem dieser Bereiche:
+         </para>
+
+        <informalexample>
+<!--
+          <screen>
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        (mc) my side of conflict, (tc) their side of conflict,
+        (s) show all options: m
+Merging 'Makefile'.
+Conflicting section found during merge:
+(1) their version (at line 24)                  |(2) your version (at line 24)
+- - - - - - - - - - - - - - - - - - - - - - - - +- - - - - - - - - - - - - - - - - - - - - - - - 
+top_builddir = /bar                             |top_builddir = /foo
+- - - - - - - - - - - - - - - - - - - - - - - - +- - - - - - - - - - - - - - - - - - - - - - - - 
+Select: (1) use their version, (2) use your version,
+        (12) their version first, then yours,
+        (21) your version first, then theirs,
+        (e1) edit their version and use the result,
+        (e2) edit your version and use the result,
+        (eb) edit both versions and use the result,
+        (p) postpone this conflicting section leaving conflict markers,
+        (a) abort file merge and return to main menu:
+</screen>
+-->
+          <screen>
+Auswahl: (p) später auflösen, (df) Änderungen anzeigen, (e) Datei bearbeiten, (m) Zusammenführung,
+        (mc) eigene Seite des Konflikts, (tc) fremde Seite des Konflikts,
+        (s) alle Optionen anzeigen: m
+Zusammenführung von »Makefile«.
+Abschnitt mit Konflikt während Zusammenführung gefunden:
+(1) fremde Version (in Zeile 24)                |(2) eigene Version (in Zeile 24)
+------------------------------------------------+------------------------------------------------
+top_builddir = /bar                             |top_builddir = /foo
+------------------------------------------------+------------------------------------------------
+Auswahl: (1) verwendet fremde Version, (2) verwendet eigene Version,
+         (12) verwendet fremde Version zuerst, dann eigene,
+         (21) verwendet eigene Version zuerst, dann fremde,
+         (e1) bearbeitet fremde Version und verwendet das Ergebnis,
+         (e2) bearbeitet eigene Version und verwendet das Ergebnis,
+         (eb) bearbeitet beide Versionen und verwendet das Ergebnis,
+         (p) Verschiebt Konfliktlösung für diesen Abschnitt und setzt Konfliktmarkierungen,
+         (a) Bricht Zusammenführung der Datei ab und kehrt zum Hauptmenü zurück:
+</screen>
+        </informalexample>
+
+<!--
+        <para>As you can see, when you use the internal file merge tool,
+          you can cycle through individual conflicting areas in the
+          file and select various resolution options or postpone
+          conflict resolution for selected conflicts.</para>
+-->
+        <para>Wie Sie sehen, können Sie bei Verwendung des internen
+          Werkzeugs zum Zusammenführen durch die individuellen
+          Konfliktbereiche der Datei gehen und verschiedene Optionen zur
+          Auflösung auswählen oder die Auflösung ausgewählter Konflikte auf
+          später verschieben.</para>
+
+<!--
+        <para>However, if you wish to use an external editor to choose some
+          combination of your local
           changes, you can use the <quote>edit</quote> command
           (<userinput>e</userinput>) to manually edit the file with
           conflict markers in a text editor (configured per the
@@ -2909,8 +3000,9 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
           the <quote>resolved</quote> command
           (<literal>r</literal>).</para>
 -->
-        <para>Falls Sie eine beliebige Kombination Ihrer lokalen
-          Änderungen auswählen wollen, können Sie den Befehl
+        <para>Falls Sie jedoch einen externen Editor verwenden wollen, um
+          eine beliebige Kombination Ihrer lokalen Änderungen auszuwählen,
+          können Sie den Befehl
           <quote>editieren</quote> (<userinput>e</userinput>)
           verwenden, um die Datei mit den Konfliktmarken manuell in
           einem Texteditor (nach den Anweisungen in <xref
@@ -2947,24 +3039,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
           linkend="svn.advanced.externaldifftools.merge"/>).</para>
 
 <!--
-        <para>If you decide that you don't need to merge any changes,
-          but just want to accept one version of the file or the
-          other, you can either choose your changes (a.k.a.
-          <quote>mine</quote>) by using the <quote>mine-full</quote>
-          command (<userinput>mf</userinput>) or choose theirs by using the
-          <quote>theirs-full</quote> command
-          (<userinput>tf</userinput>).</para>
--->
-        <para>Falls Sie entscheiden, dass Sie keine Änderungen
-          zusammenzuführen brauchen, sondern lediglich eine der beiden
-          Dateiversionen akzeptieren wollen, können Sie entweder Ihre
-          Änderungen (auch <quote>meine</quote>) mit dem
-          <quote>mine-full</quote>-Befehl (<userinput>mf</userinput>)
-          oder die der Anderen mit dem <quote>theirs-full</quote>-Befehl
-          (<userinput>tf</userinput>) auswählen.</para>
-
-<!--
-        <para>Finally, there is also a pair of compromise options
+        <para>There is also a pair of compromise options
           available.  The <quote>mine-conflict</quote>
           (<userinput>mc</userinput>)
           and <quote>theirs-conflict</quote>
@@ -2978,7 +3053,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
           detected.</para>
 
 -->
-        <para>Zum Schluss gibt es noch ein Paar von Kompromissoptionen.
+        <para>Es gibt noch ein Paar an Kompromissoptionen.
           Die Befehle <quote>mine-conflict</quote>
           (<userinput>mc</userinput>)
           und <quote>theirs-conflict</quote>
@@ -2990,6 +3065,23 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
           beide Befehle jedoch Ihre lokalen Änderungen und die
           Änderungen vom Server an den Stellen der Datei, an denen
           keine Konflikte entdeckt wurden.</para>
+
+<!--
+        <para>Finally, if you decide that you don't need to merge any changes,
+          but just want to accept one version of the file or the
+          other, you can either choose your changes (a.k.a.
+          <quote>mine</quote>) by using the <quote>mine-full</quote>
+          command (<userinput>mf</userinput>) or choose theirs by using the
+          <quote>theirs-full</quote> command
+          (<userinput>tf</userinput>).</para>
+-->
+        <para>Sollten Sie sich letztlich entscheiden, dass Sie keine Änderungen
+          zusammenzuführen brauchen, sondern lediglich eine der beiden
+          Dateiversionen akzeptieren wollen, können Sie entweder Ihre
+          Änderungen (auch <quote>meine</quote>) mit dem
+          <quote>mine-full</quote>-Befehl (<userinput>mf</userinput>)
+          oder die der Anderen mit dem <quote>theirs-full</quote>-Befehl
+          (<userinput>tf</userinput>) auswählen.</para>
 
       </sect3>
 
@@ -3038,6 +3130,19 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
           update</command> übergeben, und jede Datei mit Konflikten
           wird automatisch mit einem
           <computeroutput>C</computeroutput> gekennzeichnet.</para>
+
+<!--
+        <para>Beginning with Subversion 1.8, an internal file merge
+          tool allows you to postpone conflict resolution for certain
+          conflicts, but resolve other conflicts.  Therefore, you can
+          postpone conflict resolution area-by-area, not just on a
+          file-to-file basis.</para>
+-->        
+        <para>Beginnend mit Subversion 1.8 erlaubt Ihnen ein internes
+          Werkzeug zur Zusammenführung, die Auflösung bestimmter Konflikte
+          auf einen späteren Zeitpunkt zu verlegen, andere Konflikte jedoch
+          aufzulösen. Daher können Sie eine bereichs- anstatt
+          dateiabhängige Konfliktauflösung vornehmen.</para>
 
 <!--
         <para>The <computeroutput>C</computeroutput>
@@ -3211,13 +3316,13 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
 $ svn update
 Updating '.':
 Conflict discovered in 'sandwich.txt'.  <!--
-Select: (p) postpone, (df) diff-full, (e) edit,
-        (mc) mine-conflict, (tc) theirs-conflict,
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        (mc) my side of conflict, (tc) their side of conflict,
         (s) show all options: p
 -->
 Konflikt in »sandwich.txt« entdeckt.
-Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
-         (mc) eigene konfliktbehaftete Datei, (tc) fremde konfliktbehaftete Datei
+Auswahl: (p) später auflösen, (df) Änderungen anzeigen, (e) Datei bearbeiten, (m) Zusammenführung,
+         (mc) eigene Seite des Konflikts, (tc) fremde Seite des Konflikts
          (s) alle Optionen anzeigen: p
 C    sandwich.txt <!--
 Updated to revision 2.
@@ -3266,7 +3371,7 @@ svn: E155015: Übertragung abgebrochen: »/home/sally/svn-work/sandwich.txt« bl
           the <option>- -accept</option> option, which allows you
           specify your desired approach for resolving the conflict.
           Prior to Subversion 1.8, the <command>svn resolve</command>
-          <emphasis>required</emphasis> the use of this option.
+          command <emphasis>required</emphasis> the use of this option.
           Subversion now allows you to run the <command>svn
           resolve</command> command without that option.  When you do
           so, Subversion cranks up its interactive conflict resolution
@@ -3284,7 +3389,7 @@ svn: E155015: Übertragung abgebrochen: »/home/sally/svn-work/sandwich.txt« bl
           aufrufen. Dieser Befehl akzeptiert die Option
           <option>--accept</option>, die es Ihnen erlaubt, den von
           Ihnen gewünschten Ansatz zur Konfliktauflösung anzugeben.
-          Vor Subversion 1.8 machte <command>snn resolve</command> die
+          Vor Subversion 1.8 machte der Befehl <command>svn resolve</command> die
           Verwendung dieser Option <emphasis>erforderlich</emphasis>.
           Jetzt erlaubt Ihnen Subversion, den Befehl <command>svn
           resolve</command> ohne diese Option aufzurufen. Wenn Sie das
@@ -3616,8 +3721,8 @@ $ svn commit -m "Mach weiter mit meinem Sandwich, vergiss Sallys Änderungen."
 $ svn update
 Updating '.':
 Conflict discovered in 'sandwich.txt'.
-Select: (p) postpone, (df) diff-full, (e) edit,
-        (mc) mine-conflict, (tc) theirs-conflict,
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        (mc) my side of conflict, (tc) their side of conflict,
         (s) show all options: p
 C    sandwich.txt
 Updated to revision 2.
@@ -3635,8 +3740,8 @@ $
          <screen>
 $ svn update
 Konflikt in »sandwich.txt« entdeckt.
-Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
-         (mc) eigene konfliktbehaftete Datei, (tc) fremde konfliktbehaftete Datei
+Auswahl: (p) später auflösen, (df) Änderungen anzeigen, (e) Datei bearbeiten, (m) Zusammenführung,
+         (mc) eigene Seite des Konflikts, (tc) fremde Seite des Konflikts
          (s) alle Optionen anzeigen: p
 C    sandwich.txt
 Aktualisiert zu Revision 2.
@@ -3868,12 +3973,12 @@ svn: E155011: Datei »/home/sally/svn-work/sandwich.txt« ist veraltet
 <!--
       <para>At this point, you need to run <userinput>svn
         update</userinput>, deal with any merges or conflicts that
-        result, and attempt your commit again.</para>
+        result, and then attempt your commit again.</para>
 -->
       <para>Zu diesem Zeitpunkt müssen Sie <userinput>svn
         update</userinput> aufrufen, sich um eventuelle
         Zusammenführungen oder Konflikte kümmern und die Übergabe
-        erneut versuchen.</para>
+        dann erneut versuchen.</para>
 
 <!--
       <para>That covers the basic work cycle for using Subversion.
