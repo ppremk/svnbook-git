@@ -1132,7 +1132,7 @@ $
       <informalexample>
         <screen>
 $ svn update
-Updating '.':
+Aktualisiere ».«:
 U    foo.c
 U    bar.c <!--
 Updated to revision 2.
@@ -2072,13 +2072,13 @@ Status bezogen auf Revision:   46
         <para>Here's an example:</para>
 -->
         <para>Hier ein Beispiel:</para>
-
+<!--
         <informalexample>
           <screen>
 $ svn diff
 Index: bar.c
 ===================================================================
---- bar.c	(revision 3)
+- - bar.c	(revision 3)
 +++ bar.c	(working copy)
 @@ -1,7 +1,12 @@
 +#include &lt;sys/types.h&gt;
@@ -2095,22 +2095,65 @@ Index: bar.c
 
 Index: README
 ===================================================================
---- README	(revision 3)
+- - README	(revision 3)
 +++ README	(working copy)
 @@ -193,3 +193,4 @@
 +Note to self:  pick up laundry.
 
 Index: stuff/fish.c
 ===================================================================
---- stuff/fish.c	(revision 1)
+- - stuff/fish.c	(revision 1)
 +++ stuff/fish.c	(working copy)
 -Welcome to the file known as 'fish'.
 -Information on fish will be here soon.
 
 Index: stuff/things/bloo.h
 ===================================================================
---- stuff/things/bloo.h	(revision 8)
+- - stuff/things/bloo.h	(revision 8)
 +++ stuff/things/bloo.h	(working copy)
++Here is a new file to describe
++things about bloo.
+</screen>
+        </informalexample>
+-->
+        <informalexample>
+          <screen>
+$ svn diff
+Index: bar.c
+===================================================================
+--- bar.c	(Revision 3)
++++ bar.c	(Arbeitskopie)
+@@ -1,7 +1,12 @@
++#include &lt;sys/types.h&gt;
++#include &lt;sys/stat.h&gt;
++#include &lt;unistd.h&gt;
++
++#include &lt;stdio.h&gt;
+
+ int main(void) {
+-  printf("Sixty-four slices of American Cheese...\n");
++  printf("Sixty-five slices of American Cheese...\n");
+ return 0;
+ }
+
+Index: README
+===================================================================
+--- README	(Revision 3)
++++ README	(Arbeitskopie)
+@@ -193,3 +193,4 @@
++Note to self:  pick up laundry.
+
+Index: stuff/fish.c
+===================================================================
+--- stuff/fish.c	(Revision 1)
++++ stuff/fish.c	(Arbeitskopie)
+-Welcome to the file known as 'fish'.
+-Information on fish will be here soon.
+
+Index: stuff/things/bloo.h
+===================================================================
+--- stuff/things/bloo.h	(Revision 8)
++++ stuff/things/bloo.h	(Arbeitskopie)
 +Here is a new file to describe
 +things about bloo.
 </screen>
@@ -2422,18 +2465,19 @@ $
       <informalexample>
         <screen>
 $ svn update
-Updating '.':
+Aktualisiere ».«:
 U    INSTALL
 G    README <!--
 Conflict discovered in 'bar.c'.
-Select: (p) postpone, (df) diff-full, (e) edit,
-        (mc) mine-conflict, (tc) theirs-conflict,
-        (s) show all options: 
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        (mc) my side of conflict, (tc) their side of conflict,
+        (s) show all options:
 -->
 Konflikt in »bar.c« entdeckt.
-Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
-         (mc) eigene konfliktbehaftete Datei, (tc) fremde konfliktbehaftete Datei,
-         (s) alle Optionen anzeigen: 
+Auswahl: (p) später auflösen, (df) Änderungen anzeigen,
+         (e) Datei bearbeiten, (m) Zusammenführung,
+         (mc) eigene Seite des Konflikts,
+         (tc) fremde Seite des Konflikts, (s) alle Optionen anzeigen:
 </screen>
       </informalexample>
 
@@ -2520,29 +2564,33 @@ Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
         (mc) my side of conflict, (tc) their side of conflict,
         (s) show all options:
 -->
-Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
-         (mc) eigene konfliktbehaftete Datei, (tc) fremde konfliktbehaftete Datei,
-         (s) alle Optionen anzeigen: s
+Auswahl: (p) später auflösen, (df) Änderungen anzeigen,
+         (e) Datei bearbeiten, (m) Zusammenführung,
+         (mc) eigene Seite des Konflikts,
+         (tc) fremde Seite des Konflikts, (s) alle Optionen anzeigen: s
 
-  (e)  editieren          - zusammengeführte Datei in einem Editor ändern
-  (df) voller Diff        - alle Änderungen in der zusammengeführten Datei anzeigen
-  (r)  aufgelöst          - akzeptieren der zusammengeführten Version der Datei
-  (dc) Konflikte anzeigen - alle Konflikte anzeigen (die zusammengeführte Version
-                            ignorieren)
-  (mc) mine-conflict      - eigene Version für alle Konflikte akzeptieren (das selbe)
-  (tc) theirs-conflict    - fremde Version für alle Konflikte akzeptieren (das selbe)
+  (e)  - Bearbeitet die zusammengeführte Datei in einem Editor  [edit]
+  (df) - Zeigt alle Änderungen an der zusammengeführten Datei an
+  (r)  - Akzeptiert die zusammengeführte Version der Datei
 
-  (mf) volle eigene Datei - die eigene Version der kompletten Datei akzeptieren
-                            (selbst Nicht-Konflikte)
-  (tf) volle fremde Datei - die fremde Version der kompletten Datei akzeptieren
-                            (das selbe)
-  (p)  zurückstellen      - den Konflikt erst später auflösen
-  (l)  starten            - Starten eines externen Programms zur Konfliktauflösung
-  (s)  alle anzeigen      - diese Liste anzeigen
+  (dc) - Zeigt alle Konflikte an (ignoriert zusammengeführte Datei)
+  (mc) - Akzeptiert eigene Version für alle Konflikte (ebenso)  [mine-conflict]
+  (tc) - Akzeptiert fremde Version für alle Konflikte (ebenso)  [theirs-conflict]
 
-Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
-         (mc) eigene konfliktbehaftete Datei, (tc) fremde konfliktbehaftete Datei,
-         (s) alle Optionen anzeigen:
+  (mf) - Akzeptiert eigene Version für ganze Datei (alles, nicht nur Konflikte)  [mine-full]
+  (tf) - Akzeptiert fremde Version für ganze Datei (ebenso)  [theirs-full]
+
+  (m)  - Verwendet das interne Werkzeug zum Zusammenführen für die Konfliktlösung
+  (l)  - Startet ein externes Werkzeug zum Zusammenführen für die Konfliktlösung  [launch]
+  (p)  - Markiert den Konflikt für eine spätere Auflösung  [postpone]
+  (q)  - Alle verbleibenen Konflikte zurückstellen
+  (s)  - Gibt diese Liste aus (auch: »h«, »?«)
+Worte in eckigen Klammen geben das entsprechende Argument für die Option »--accept« an.
+
+Auswahl: (p) später auflösen, (df) Änderungen anzeigen,
+         (e) Datei bearbeiten, (m) Zusammenführung,
+         (mc) eigene Seite des Konflikts,
+         (tc) fremde Seite des Konflikts, (s) alle Optionen anzeigen:
 </screen>
       </informalexample>
 
@@ -2558,7 +2606,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
 <!--
           <term><computeroutput>(e)  edit  [edit]</computeroutput></term>
 -->
-          <term><computeroutput>(e)  editieren</computeroutput></term>
+          <term><computeroutput>(e)  bearbeiten  [edit]</computeroutput></term>
           <listitem>
 
 <!--
@@ -2577,7 +2625,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
 <!--
           <term><computeroutput>(df) diff-full</computeroutput></term>
 -->
-          <term><computeroutput>(df) voller Diff</computeroutput></term>
+          <term><computeroutput>(df) alle Änderungen anzeigen  [diff-full]</computeroutput></term>
           <listitem>
 
 <!--
@@ -2594,7 +2642,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
 <!--
           <term><computeroutput>(r)  resolved</computeroutput></term>
 -->
-          <term><computeroutput>(r)  aufgelöst</computeroutput></term>
+          <term><computeroutput>(r)  als aufgelöst erklären  [resolved]</computeroutput></term>
           <listitem>
 
 <!--
@@ -2616,7 +2664,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
 <!--
           <term><computeroutput>(dc) display-conflict</computeroutput></term>
 -->
-          <term><computeroutput>(dc) Konflikte anzeigen</computeroutput></term>
+          <term><computeroutput>(dc) Konflikte anzeigen  [display-conflict]</computeroutput></term>
           <listitem>
 <!--
             <para>Display all conflicting regions of the file,
@@ -2629,7 +2677,10 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
         </varlistentry>
 
         <varlistentry>
+<!--
           <term><computeroutput>(mc)  mine-conflict  [mine-conflict]</computeroutput></term>
+-->
+          <term><computeroutput>(mc)  eigene Version für alle Konflikte  [mine-conflict]</computeroutput></term>
           <listitem>
 
 <!--
@@ -2648,7 +2699,10 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
         </varlistentry>
 
         <varlistentry>
+<!--
           <term><computeroutput>(tc)  theirs-conflict  [theirs-conflict]</computeroutput></term>
+-->
+          <term><computeroutput>(tc)  fremde Version für alle Konflikte  [theirs-conflict]</computeroutput></term>
           <listitem>
 <!--
             <para>Discard any local changes which conflict with
@@ -2668,7 +2722,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
 <!--
           <term><computeroutput>(mf) mine-full  [mine-full]</computeroutput></term>
 -->
-          <term><computeroutput>(mf) volle eigene Datei</computeroutput></term>
+          <term><computeroutput>(mf) ganze eigene Datei  [mine-full]</computeroutput></term>
           <listitem>
 <!--
             <para>Discard all newly received changes from the server
@@ -2685,7 +2739,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
 <!--
           <term><computeroutput>(tf) theirs-full  [theirs-full]</computeroutput></term>
 -->
-          <term><computeroutput>(tf) volle fremde Datei</computeroutput></term>
+          <term><computeroutput>(tf) ganze fremde Datei  [theirs-full]</computeroutput></term>
           <listitem>
 <!--
             <para>Discard all your local changes to the file under
@@ -2700,18 +2754,18 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
 
         <varlistentry>
 <!--
-          <term><computeroutput>(p)  postpone</computeroutput></term>
+          <term><computeroutput>(m)  merge</computeroutput></term>
 -->
-          <term><computeroutput>(p)  zurückstellen</computeroutput></term>
+          <term><computeroutput>(m)  zusammenführen  [merge]</computeroutput></term>
           <listitem>
 <!--
-            <para>Leave the file in a conflicted state for you to
-              resolve after your update is complete.</para>
+            <para>Launch an internal file merge tool to perform the
+              conflict resolution.  The option is available starting
+              with Subversion 1.8.</para>
 -->
-            <para>Die Datei im Konfliktzustand lassen, um nach
-              Abschluss der Aktualisierung die Konfliktauflösung
-              durchzuführen.</para>
-
+            <para>Ein internes Werkzeug zur Zusammenführen aufrufen, um die
+              Konfliktauflösund durchzuführen. Diese Option ist ab
+              Subversion 1.8 verfügbar.</para>
           </listitem>
         </varlistentry>
 
@@ -2719,7 +2773,7 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
 <!--
           <term><computeroutput>(l)  launch</computeroutput></term>
 -->
-          <term><computeroutput>(l)  starten</computeroutput></term>
+          <term><computeroutput>(l)  externes Werkzeug starten  [launch]</computeroutput></term>
           <listitem>
 
 <!--
@@ -2735,9 +2789,26 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
 
         <varlistentry>
 <!--
+          <term><computeroutput>(p)  postpone</computeroutput></term>
+-->
+          <term><computeroutput>(p)  zurückstellen  [postpone]</computeroutput></term>
+          <listitem>
+<!--
+            <para>Leave the file in a conflicted state for you to
+              resolve after your update is complete.</para>
+-->
+            <para>Die Datei im Konfliktzustand lassen, um nach
+              Abschluss der Aktualisierung die Konfliktauflösung
+              durchzuführen.</para>
+
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+<!--
           <term><computeroutput>(s)  show all</computeroutput></term>
 -->
-          <term><computeroutput>(s)  alle anzeigen</computeroutput></term>
+          <term><computeroutput>(s)  alle Befehle anzeigen  [show all]</computeroutput></term>
           <listitem>
 
 <!--
@@ -2798,15 +2869,16 @@ Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
         <informalexample>
           <screen>
 &hellip; <!--
-Select: (p) postpone, (df) diff-full, (e) edit,
-        (mc) mine-conflict, (tc) theirs-conflict,
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        (mc) my side of conflict, (tc) their side of conflict,
         (s) show all options: df
 -->
-Auswahl: (p) zurückstellen, (df) voller Diff, (e) editieren,
-         (mc) eigene konfliktbehaftete Datei, (tc) fremde konfliktbehaftete Datei,
-         (s) alle Optionen anzeigen: df
---- .svn/text-base/sandwich.txt.svn-base      Tue Dec 11 21:33:57 2007
-+++ .svn/tmp/tempfile.32.tmp     Tue Dec 11 21:34:33 2007
+Auswahl: (p) später auflösen, (df) Änderungen anzeigen,
+         (e) Datei bearbeiten, (m) Zusammenführung,
+         (mc) eigene Seite des Konflikts,
+         (tc) fremde Seite des Konflikts, (s) alle Optionen anzeigen: df
+--- .svn/text-base/sandwich.txt.svn-base      Di 11. Dez 21:33:57 2007
++++ .svn/tmp/tempfile.32.tmp     Di 11. Dez 21:34:33 2007
 @@ -1 +1,5 @@
 -Just buy a sandwich.
 +&lt;&lt;&lt;&lt;&lt;&lt;&lt; .mine
@@ -2955,9 +3027,10 @@ Select: (1) use their version, (2) use your version,
 </screen>
 -->
           <screen>
-Auswahl: (p) später auflösen, (df) Änderungen anzeigen, (e) Datei bearbeiten, (m) Zusammenführung,
-        (mc) eigene Seite des Konflikts, (tc) fremde Seite des Konflikts,
-        (s) alle Optionen anzeigen: m
+Auswahl: (p) später auflösen, (df) Änderungen anzeigen,
+         (e) Datei bearbeiten, (m) Zusammenführung,
+         (mc) eigene Seite des Konflikts,
+         (tc) fremde Seite des Konflikts, (s) alle Optionen anzeigen: m
 Zusammenführung von »Makefile«.
 Abschnitt mit Konflikt während Zusammenführung gefunden:
 (1) fremde Version (in Zeile 24)                |(2) eigene Version (in Zeile 24)
@@ -3313,17 +3386,19 @@ Auswahl: (1) verwendet fremde Version, (2) verwendet eigene Version,
 
         <informalexample>
           <screen>
-$ svn update
+$ svn update  <!--
 Updating '.':
-Conflict discovered in 'sandwich.txt'.  <!--
+Conflict discovered in 'sandwich.txt'.
 Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
         (mc) my side of conflict, (tc) their side of conflict,
         (s) show all options: p
 -->
+Aktualisiere ».«:
 Konflikt in »sandwich.txt« entdeckt.
-Auswahl: (p) später auflösen, (df) Änderungen anzeigen, (e) Datei bearbeiten, (m) Zusammenführung,
-         (mc) eigene Seite des Konflikts, (tc) fremde Seite des Konflikts
-         (s) alle Optionen anzeigen: p
+Auswahl: (p) später auflösen, (df) Änderungen anzeigen,
+         (e) Datei bearbeiten, (m) Zusammenführung,
+         (mc) eigene Seite des Konflikts,
+         (tc) fremde Seite des Konflikts (s) alle Optionen anzeigen: p
 C    sandwich.txt <!--
 Updated to revision 2.
 Summary of conflicts:
@@ -4191,9 +4266,11 @@ svn: E155011: Datei »/home/sally/svn-work/sandwich.txt« ist veraltet
           <screen>
 $ svn diff
 Index: rules.txt
-===================================================================
---- rules.txt	(revision 3)
-+++ rules.txt	(working copy)
+=================================================================== <!--
+- - rules.txt	(revision 3)
++++ rules.txt	(working copy) -->
+--- rules.txt	(Revision 3)
++++ rules.txt	(Arbeitskopie)
 @@ -1,4 +1,5 @@
  Be kind to others
  Freedom = Responsibility
@@ -4228,9 +4305,11 @@ $
           <screen>
 $ svn diff -r 3 rules.txt
 Index: rules.txt
-===================================================================
---- rules.txt	(revision 3)
-+++ rules.txt	(working copy)
+=================================================================== <!--
+- - rules.txt	(revision 3)
++++ rules.txt	(working copy) -->
+--- rules.txt	(Revision 3)
++++ rules.txt	(Arbeitskopie)
 @@ -1,4 +1,5 @@
  Be kind to others
  Freedom = Responsibility
@@ -4266,9 +4345,11 @@ $
           <screen>
 $ svn diff -r 2:3 rules.txt
 Index: rules.txt
-===================================================================
---- rules.txt	(revision 2)
-+++ rules.txt	(revision 3)
+=================================================================== <!--
+- - rules.txt	(revision 2)
++++ rules.txt	(revision 3) -->
+--- rules.txt	(Revision 2)
++++ rules.txt	(Revision 3)
 @@ -1,4 +1,4 @@
  Be kind to others
 -Freedom = Chocolate Ice Cream
@@ -4293,9 +4374,11 @@ $
           <screen>
 $ svn diff -c 3 rules.txt
 Index: rules.txt
-===================================================================
---- rules.txt	(revision 2)
-+++ rules.txt	(revision 3)
+=================================================================== <!--
+- - rules.txt	(revision 2)
++++ rules.txt	(revision 3) -->
+--- rules.txt	(Revision 2)
++++ rules.txt	(Revision 3)
 @@ -1,4 +1,4 @@
  Be kind to others
 -Freedom = Chocolate Ice Cream
@@ -5004,12 +5087,17 @@ trunk/
 
         <informalexample>
           <screen>
-$ svn list -v http://svn.example.com/repo/project
+$ svn list -v http://svn.example.com/repo/project <!--
   23351 sally                 Feb 05 13:26 ./
   20620 harry            1084 Jul 13  2006 README
   23339 harry                 Feb 04 01:40 branches/
   23198 harry                 Jan 23 17:17 tags/
-  23351 sally                 Feb 05 13:26 trunk/
+  23351 sally                 Feb 05 13:26 trunk/ -->
+  23351 sally                 05. Feb 13:26 ./
+  20620 harry            1084 13. Jul 2006 README
+  23339 harry                 04. Feb 01:40 branches/
+  23198 harry                 23. Jan 17:17 tags/
+  23351 sally                 05. Feb 13:26 trunk/
 </screen>
         </informalexample>
 
@@ -5079,7 +5167,7 @@ $ svn list -v http://svn.example.com/repo/project
 -->
 # Lass das aktuelle Verzeichnis aussehen wie in r1729.
 $ svn update -r 1729
-Updating '.':
+Aktualisiere ».«:
 &hellip;
 $
 </screen>
