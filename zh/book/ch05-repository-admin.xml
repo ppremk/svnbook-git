@@ -2449,8 +2449,12 @@ $
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.maint.diskspace.fsfspacking">
+      <!--
         <title>Packing FSFS filesystems</title>
+      -->
+        <title>FSFS 文件系统打包</title>
 
+      <!--
         <para>FSFS repositories contain files that describe the
           changes made in a single revision, and files that contain
           the revision properties associated with a single revision.
@@ -2462,14 +2466,27 @@ $
           each directory can grow to be quite large.  This has been
           observed to cause performance problems on certain
           network-based filesystems.</para>
+      -->
+        <para>在基于 FSFS 的仓库中, 有些文件描述了在一个单独的版本号做了哪些
+          修改, 有些文件包含了与一个单独的的版本号相关的版本号属性. Subversion
+          1.5 之前创建的仓库, 把这两种文件分别放在两个目录里. 当仓库中有新的
+          版本号生成时, Subversion 就向这两个目录存放更多的文件, 随着时间的推
+          移, 目录内的文件数量将增长到非常大的规模. 人们已经发现, 这会在某些
+          基于网络的文件系统上造成严重的性能问题.</para>
 
+      <!--
         <para>The first problem is that the operating system has to
           reference many different files over a short period of time.
           This leads to inefficient use of disk caches and, as a
           result, more time spent seeking across large disks.  Because
           of this, Subversion pays a performance penalty when
           accessing your versioned data.</para>
+      -->
+        <para>第一个问题是操作系统必须在短时间内引用大量不同的文件, 这会导致
+          磁盘缓存被快速消耗, 于是操作系统会在读取磁盘上花费更多的时间, 表
+          现在 Subversion 身上, 就是在访问数据时性能低下.</para>
 
+      <!--
         <para>The second problem is a bit more subtle.  Because of the
           ways that most filesystems allocate disk space, each file
           claims more space on the disk than it actually uses.  The
@@ -2482,9 +2499,19 @@ $
           which have many small revisions, since the overhead involved
           in storing the revision file quickly outgrows the size of
           the actual data being stored.</para>
+      -->
+        <para>第二个问题比较微妙. 受到大多数文件系统的磁盘空间分配方式的影响,
+          每一个文件实际消耗的存储空间会多于它要求的存储空间. 为了管理一个文
+          件所消耗的额外存储空间在 2 KB 到 16 KB 之间, 具体的大小取决于操作
+          系统的文件系统的实现. 反映到以 FSFS 作为后端存储的仓库身上, 就是每
+          一个版本号都会产生额外的存储空间消耗. 对于含有大量小版本号的仓库
+          来说, 最明显的影响就是为了存放版本号文件而消耗的磁盘空间, 会迅速超
+          过数据的实际大小.</para>
 
+      <!--
         <para>To solve these problems, Subversion 1.6 introduced the
           <command>svnadmin pack</command> command.  By concatenating
+          ### TODO
           all the files of a completed shard into a single <quote>pack</quote> file
           and then removing the original per-revision
           files, <command>svnadmin pack</command> reduces the file
@@ -2492,6 +2519,11 @@ $
           doing so, it aids filesystem caches and reduces (to one) the
           number of times a file storage overhead penalty is
           paid.</para>
+      -->
+        <para>为了解决这 2 个问题, Subversion 1.6 增加了命令
+          <command>svnadmin pack</command>, 它的作用是把一个完整的碎片内的所
+          有文件都打包到一个单独的文件内, 然后再删除原来的文件, 从而降低因文
+          件过多而导致的空间与性能开销.</para>
 
         <para>Subversion can pack existing sharded repositories which
           have been upgraded to the 1.6 filesystem format or later (see
