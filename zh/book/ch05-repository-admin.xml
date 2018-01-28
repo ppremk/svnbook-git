@@ -2452,7 +2452,7 @@ $
       <!--
         <title>Packing FSFS filesystems</title>
       -->
-        <title>FSFS 文件系统打包</title>
+        <title>FSFS 文件系统压缩</title>
 
       <!--
         <para>FSFS repositories contain files that describe the
@@ -2525,12 +2525,20 @@ $
           有文件都打包到一个单独的文件内, 然后再删除原来的文件, 从而降低因文
           件过多而导致的空间与性能开销.</para>
 
+      <!--
         <para>Subversion can pack existing sharded repositories which
           have been upgraded to the 1.6 filesystem format or later (see
           <xref linkend="svn.ref.svnadmin.c.upgrade"/>) in
           <xref linkend="svn.ref.svnadmin"/>.  To do so, just
           run <command>svnadmin pack</command> on the
           repository:</para>
+      -->
+        <para>只要是 1.6 版及以上的文件系统格式, 都可以用 <command>svnadmin
+            pack</command> 进行压缩 (如果文件系统格式较旧, 可以用
+          <command>svnadmin upgrade</command> 对仓库进行升级, 见
+          <xref linkend="svn.ref.svnadmin"/> 的 <xref
+            linkend="svn.ref.svnadmin.c.upgrade"/>). 为了压缩文件系统, 只需要
+          对仓库执行 <command>svnadmin pack</command>:</para>
 
         <informalexample>
           <screen>
@@ -2546,14 +2554,23 @@ $
 </screen>
         </informalexample>
 
+      <!--
         <para>Because the packing process obtains the required locks
           before doing its work, you can run it on live repositories,
           or even as part of a post-commit hook.  Repacking packed
           shards is legal, but will have no effect on the disk usage
           of the repository.</para>
+      -->
+        <para>因为打包过程会事先获取所需要的锁, 所以管理员可以在活动仓库上
+          执行这个操作, 甚至可以作为钩子 post-commit 的一部分. 压缩已经压缩过
+          的碎片是合法的操作, 但不会对仓库的磁盘使用产生影响.</para>
 
+      <!--
         <para><command>svnadmin pack</command> has no effect on
           BDB-backed Subversion repositories.</para>
+      -->
+        <para>如果仓库以 BDB 作为后端存储, 则 <command>svnadmin pack</command> 
+          不会对仓库产生任何效果.</para>
 
       </sect3>
     </sect2>
