@@ -4143,28 +4143,38 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
           </varlistentry>
 
           <varlistentry>
-            <term><literal>SVNAllowBulkUpdates On|Off</literal></term>
+            <term><literal>SVNAllowBulkUpdates On|Off|Prefer</literal></term>
             <listitem>
 
-              <para>Toggles support for all-inclusive
-                responses to update-style <literal>REPORT</literal>
-                requests.  Subversion clients use
+              <para>Toggles support for all-inclusive responses to
+                update-style requests.  Subversion clients use
                 <literal>REPORT</literal> requests to get information
                 about directory tree checkouts and updates from
                 <command>mod_dav_svn</command>.  They can ask the
                 server to send that information in one of two ways:
                 with the entirety of the tree's information in one
-                massive response, or with a
+                massive (bulk) response, or with a
                 <firstterm>skelta</firstterm> (a skeletal
                 representation of a tree delta) which contains just
                 enough information for the client to know what
-                <emphasis>additional</emphasis> data to request from
-                the server.  When this directive is included with a
-                value of <literal>Off</literal>,
+                <emphasis>additional</emphasis> data to fetch from the
+                server using subsequent requests.  When this directive
+                is included with a value of <literal>Off</literal>,
                 <command>mod_dav_svn</command> will only ever respond
                 to these <literal>REPORT</literal> requests with
                 skelta responses, regardless of the type of responses
                 requested by the client.</para>
+
+              <para>The default value of this directive is
+                <literal>On</literal>, which permits the server to
+                reply to update requests using the style of response
+                (bulk or skelta) requested by the client.  As a
+                special consideration, this directive also accepts a
+                value of <literal>Prefer</literal>, which is similar
+                to <literal>On</literal> but additionally causes the
+                server to announce to clients that it
+                <emphasis>prefers</emphasis> to handle bulk update
+                requests.</para>
 
               <para>Most folks won't need to use this directive at
                 all.  It primarily exists for administrators who
@@ -4173,8 +4183,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                 files and directories needed for updates and
                 checkouts, thus leaving an audit trail of
                 <literal>GET</literal> and <literal>PROPFIND</literal>
-                requests in Apache's logs.  The default value of this
-                directive is <literal>On</literal>.</para>
+                requests in Apache's logs.</para>
 
             </listitem>
           </varlistentry>
