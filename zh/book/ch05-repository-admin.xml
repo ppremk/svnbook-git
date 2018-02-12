@@ -3206,7 +3206,7 @@ $
             better performance out of <command>svnadmin</command> in
             such situations.</para>
       -->
-          <para>如果使用 <literal>file://</literal>> 形式的 URL,
+          <para>如果使用 <literal>file://</literal> 形式的 URL,
             <command>svnrdump</command> 也能访问本地仓库, 但仍然需要借助
             Subversion 的仓库访问 (Repository Access, 简称 RA) 抽象层&mdash;
             这种情况下使用 <command>svnadmin</command> 会比较划算.</para>
@@ -3263,6 +3263,7 @@ $
         仓库中. 为了完成这些任务, 仓库数据需要向管理员提供更加容易管理和延展
         的表示形式&mdash;Subversion 仓库转储格式.</para>
 
+      <!--
       <para>As we described earlier in <xref
         linkend="svn.reposadmin.maint.migrate" />, the Subversion
         repository dump format is a human-readable representation of
@@ -3278,7 +3279,17 @@ $
         encapsulated in what is likely to be a very large dump file,
         it could take you a long, long time to manually inspect and
         modify it.</para>
+      -->
+      <para>我们已经在 <xref linkend="svn.reposadmin.maint.migrate" /> 说过,
+        Subversion 的仓库转储格式是用户提交到仓库中的修改的表示形式, 它是人类
+        可读懂的. 使用 <command>svnadmin dump</command> 或 <command>svnrdump
+          dump</command> 获取转储数据, 用 <command>svnadmin load</command>
+        或 <command>svnrdump load</command> 把转储数据加载到仓库中. 采用人类
+        可读的转储格式的最大好处是用户可以手工地查看和修改转储文件. 当然, 坏
+        处是如果转储文件非常庞大 (例如包含了三年历史的转储数据), 手工地查看和
+        修改转储文件将会非常耗时.</para>
 
+      <!--
       <para>That's where <command>svndumpfilter</command> becomes
         useful.  This program acts as a path-based filter for
         repository dump streams.  Simply give it either a list of
@@ -3287,6 +3298,12 @@ $
         filter.  The result will be a modified stream of dump data
         that contains only the versioned paths you (explicitly or
         implicitly) requested.</para>
+      -->
+      <para>所以我们需要 <command>svndumpfilter</command>. 它可以作为仓库
+        转储流的基于路径的过滤器, 用户所要做的就是向它提供希望保留或删除的路
+        径列表, 然后把仓库转储流以管道的方式输送给
+        <command>svndumpfilter</command>, 最终得到的转储数据就只会包含用户
+        (显式地或隐式地) 希望保留的路径.</para>
 
       <para>Let's look at a realistic example of how you might use this
         program.  Earlier in this chapter (see <xref
