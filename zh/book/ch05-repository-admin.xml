@@ -3812,12 +3812,18 @@ Node-path: spreadsheet/Makefile
             进程外, 不允许任何其他用户或程序修改镜像仓库.</para>
         </tip>
 
+      <!--
         <para>Let's walk through the use of <command>svnsync</command>
           in a somewhat typical mirroring scenario.  We'll pepper this
           discourse with practical recommendations, which you are free to
           disregard if they aren't required by or suitable for your
           environment.</para>
+      -->
+        <para>现在我们将介绍一个使用 <command>svnsync</command> 的典型场景,
+          如果读者觉得这里介绍的情况与自己的环境不太符合, 大可不必理会我们
+          的例子.</para>
 
+      <!--
         <para>We will be mirroring the public Subversion repository
           which houses the source code for this very book and exposing
           that mirror publicly on the Internet, hosted on a different
@@ -3833,12 +3839,24 @@ Node-path: spreadsheet/Makefile
           example, we'll be driving the replication process from a
           third machine&mdash;the one that we currently find ourselves
           using.</para>
+      -->
+        <para>我们将会对存放本书源代码的 Subversion 仓库创建镜像仓库, 并把镜
+          像仓库发布到 Internet 上, 镜像仓库将托管在与源仓库不同的主机上.
+          本书的源代码仓库允许匿名只读访问, 但修改仓库需要验证身份. (这里先
+          不介绍如何配置 Subversion 服务器, 这是 <xref
+            linkend="svn.serverconfig" /> 的主题.) 为了使例子更加有趣, 我们
+          将在第三台主机上发起复制操作&mdash;例如笔者当前正在使用的主机.</para>
 
+      <!--
         <para>First, we'll create the repository which will be our
           mirror.  This and the next couple of steps do require shell
           access to the machine on which the mirror repository will
           live.  Once the repository is all configured, though, we
           shouldn't need to touch it directly again.</para>
+      -->
+        <para>首先, 创建用作镜像的仓库. 这一步及后面的两个步骤都要求托管镜像
+          仓库的主机提供 shell 访问权限, 一旦仓库配置完成, 就不用再直接访问
+          主机.</para>
 
         <informalexample>
           <screen>
@@ -3848,6 +3866,7 @@ $
 </screen>
         </informalexample>
 
+      <!--
         <para>At this point, we have our repository, and due to our
           server's configuration, that repository is now
           <quote>live</quote> on the Internet.  Now, because we don't
@@ -3857,7 +3876,14 @@ $
           for our process.  Only commits and revision property
           modifications performed by the special username
           <literal>syncuser</literal> will be allowed.</para>
+      -->
+        <para>现在, 我们已经有了一个自己的仓库, 得益于服务器的配置, 我们可以
+          在 Internet 上访问到仓库. 因为我们不希望除了复制之外的其他过程修改
+          仓库, 所以需要把除了复制之外的其他修改操作区分出来. 为了实现这个
+          目标, 为复制过程使用一个专用的用户名, 只有使用用户名
+          <literal>syncuser</literal> 提交的修改才会被允许.</para>
 
+      <!--
         <para>We'll use the repository's hook system both to allow the
           replication process to do what it needs to do and to enforce
           that only it is doing those things.  We accomplish this by
@@ -3869,9 +3895,20 @@ $
           />, and basically verifies that the user attempting the
           property changes is our <literal>syncuser</literal> user.  If
           so, the change is allowed; otherwise, it is denied.</para>
+      -->
+        <para>我们将使用 Subversion 的钩子系统保证复制过程可以完成它需要
+          完成的操作, 并且只有它能够做这些事情. 为此我们需要实现两个钩子
+          &mdash;pre-revprop-change 和 start-commit. 钩子脚本
+          <filename>pre-revprop-change</filename> 的内容见 <xref
+            linkend="svn.reposadmin.maint.replication.pre-revprop-change" />,
+          基本思路是如果试图修改属性的用户是 <literal>syncuser</literal>, 则
+          允许; 否则禁止修改属性.</para>
 
         <example id="svn.reposadmin.maint.replication.pre-revprop-change">
+      <!--
           <title>Mirror repository's pre-revprop-change hook script</title>
+      -->
+          <title>镜像仓库的 pre-revprop-change 钩子脚本</title>
           <programlisting>
 #!/bin/sh 
 
