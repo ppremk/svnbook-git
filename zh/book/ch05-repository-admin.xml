@@ -3921,6 +3921,7 @@ exit 1
 </programlisting>
         </example>
 
+      <!--
         <para>That covers revision property changes.  Now we need to
           ensure that only the <literal>syncuser</literal> user is
           permitted to commit new revisions to the repository.  We do
@@ -3928,9 +3929,18 @@ exit 1
           such as the one in <xref
           linkend="svn.reposadmin.maint.replication.start-commit"
           />.</para>
+      -->
+      <para>上面的脚本针对的是版本号属性的修改. 现在考虑如何做到只允许用户
+        <literal>syncuser</literal> 向仓库提交新的版本号, 这需要用到钩子
+        脚本 <filename>start-commit</filename>, 如 <xref
+          linkend="svn.reposadmin.maint.replication.start-commit" /> 所示.
+      </para>
 
         <example id="svn.reposadmin.maint.replication.start-commit">
+      <!--
           <title>Mirror repository's start-commit hook script</title>
+      -->
+          <title>镜像仓库的 start-commit 钩子脚本</title>
   
           <programlisting>
 #!/bin/sh 
@@ -3944,11 +3954,17 @@ exit 1
 </programlisting>
         </example>
 
+      <!--
         <para>After installing our hook scripts and ensuring that they
           are executable by the Subversion server, we're finished with
           the setup of the mirror repository.  Now, we get to actually
           do the mirroring.</para>
+      -->
+        <para>安装了我们的钩子脚本后, 并确保 Subversion 服务器对脚本具有可
+          执行权限, 镜像仓库这边的设置就算结束了, 现在开始真正地创建镜像.
+        </para>
 
+      <!--
         <para>The first thing we need to do with
           <command>svnsync</command> is to register in our target
           repository the fact that it will be a mirror of the source
@@ -3960,6 +3976,12 @@ exit 1
           permitted.  Beginning with Subversion 1.5, though, you can
           use <command>svnsync</command> to mirror only some subtree
           of the repository, too.</para>
+      -->
+        <para>使用 <command>svnsync</command> 做的第一件事就是告诉目标仓库,
+          它是源仓库的镜像, 这会用到子命令 <command>svnsync
+            initialize</command>, 目标仓库与源仓库的 URL 将作为命令的参数.
+          Subversion 1.4 要求镜像必须是完整的, 从 Subversion 1.5 开始, 允许
+          只对仓库的子目录创建镜像.</para>
 
         <informalexample>
           <screen>
@@ -3978,11 +4000,16 @@ $
 </screen>
         </informalexample>
 
+      <!--
         <para>Our target repository will now remember that it is a
           mirror of the public Subversion source code repository.
           Notice that we provided a username and password as arguments
           to <command>svnsync</command>&mdash;that was required by the
           pre-revprop-change hook on our mirror repository.</para>
+      -->
+        <para>目标仓库现在已经记住它是本书源码仓库的镜像. 需要注意的是我们向
+          <command>svnsync</command> 提供了用户名和密码&mdash;这是镜像仓库
+          的 pre-revprop-change 钩子所要求的.</para>
 
         <note>
           <para>In Subversion 1.4, the values given to
