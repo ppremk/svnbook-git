@@ -4012,27 +4012,42 @@ $
           的 pre-revprop-change 钩子所要求的.</para>
 
         <note>
+      <!--
           <para>In Subversion 1.4, the values given to
-            <command>svnsync</command>'s <option>--username</option> and
-            <option>--password</option> command-line options were used
+            <command>svnsync</command>'s <option>- -username</option> and
+            <option>- -password</option> command-line options were used
             for authentication against both the source and destination
             repositories.  This caused problems when a user's
             credentials weren't exactly the same for both repositories,
             especially when running in noninteractive mode (with the
-            <option>--non-interactive</option> option).  This was
+            <option>- -non-interactive</option> option).  This was
             fixed in Subversion 1.5 with the introduction of two new
             pairs of options.  Use
-            <option>--source-username</option> and
-            <option>--source-password</option> to provide authentication
+            <option>- -source-username</option> and
+            <option>- -source-password</option> to provide authentication
             credentials for the source repository; use
-            <option>--sync-username</option> and
-            <option>--sync-password</option> to provide credentials for
+            <option>- -sync-username</option> and
+            <option>- -sync-password</option> to provide credentials for
             the destination repository.  (The old
-            <option>--username</option> and <option>--password</option>
+            <option>- -username</option> and <option>- -password</option>
             options still exist for compatibility, but we advise against
             using them.)</para>
+      -->
+          <para>在 Subversion 1.4, <command>svnsync</command> 选项
+            <option>--username</option> 和 <option>--password</option> 的值
+            同时用于源仓库和目标仓库的身份验证, 如果用户在两个仓库中的证书
+            不是完全一样, 就会造成问题, 尤其是命令在非交互模式下运行时
+            (通过添加选项 <option>--non-interactive</option>), Subversion 1.5
+            通过引入两对新的选项解决了这个问题. 选项
+            <option>--source-username</option> 和
+            <option>--source-username</option> 用于指定源仓库的身份验证证书;
+            选项 <option>--sync-username</option> 和
+            <option>--sync-password</option> 用于指定目标仓库的身份验证证书.
+            (为了兼容旧版本, 仍然保留旧选项 <option>--username</option> 和
+            <option>--password</option>, 但我们建议使用新选项.)</para>
         </note>
 
+      <!--
         <para>And now comes the fun part.  With a single subcommand, we
           can tell <command>svnsync</command> to copy all the
           as-yet-unmirrored revisions from the source repository to the
@@ -4054,6 +4069,18 @@ $
           the source repository's server, it begins forwarding those
           revisions to the target repository's server as new
           commits.</para>
+      -->
+        <para>现在到了最有趣的部分. 只要一个命令, 就能要求
+          <command>svnsync</command> 把源仓库中未复制的版本号, 复制到目标
+          仓库.<footnote><para>虽然阅读这段文字和例子只需要几秒钟的时间,
+              但 <command>svnsync</command> 实际消耗的时间比这长得多.</para>
+          </footnote> 子命令 <command>svnsync synchronize</command> 查看
+          存放在目标仓库中的特殊的版本号属性, 从而确定源仓库的镜像进度&mdash;
+          在这个例子里, 最近一次创建镜像的版本号是 r0. 然后
+          <command>svnsync</command> 查询源仓库, 确定源仓库最新的版本号是多少,
+          最后请求源仓库的服务器开始重放从 0 到最新版本号之间的所有版本号.
+          随着 <command>svnsync</command> 不断地从源仓库服务器获取到结果,
+          它开始把版本号作为新提交, 转发到目标仓库服务器上.</para>
 
         <informalexample>
           <screen>
