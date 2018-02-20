@@ -4113,6 +4113,7 @@ $
 </screen>
         </informalexample>
 
+      <!--
         <para>Of particular interest here is that for each mirrored
           revision, there is first a commit of that revision to the
           target repository, and then property changes follow.  This
@@ -4126,7 +4127,15 @@ $
           source repository, which also has the effect of fixing the
           author and datestamp of the revision to match that of the
           source repository.</para>
+      -->
+        <para>其中比较有趣的地方是, 对于每一个需要创建镜像的版本号, 首先向
+          目标仓库提交该版本号, 然后再修改版本号属性. 之所以需要这种两步骤
+          的复制是因为提交操作由用户 <literal>syncuser</literal> 完成, 版本
+          号的时间戳是创建时的时间, <command>svnsync</command> 接下来通过
+          一系列的属性修改操作, 使得源仓库的版本号属性与目标仓库的版本号属性
+          保持一致, 其中就包括修改版本号的作者和时间戳.</para>
 
+      <!--
         <para>Also noteworthy is that <command>svnsync</command>
           performs careful bookkeeping that allows it to be safely
           interrupted and restarted without ruining the integrity of the
@@ -4136,8 +4145,16 @@ $
           right where it left off.  In fact, as new revisions appear in
           the source repository, this is exactly what you do
           to keep your mirror up to date.</para>
+      -->
+        <para>还值得注意的一点是 <command>svnsync</command> 会记住工作的当
+          前进度, 从而允许操作被中断, 并在以后的某个时间人上次中断的地方
+          重新开始. 如果在命令执行的过程中, 网络临时断开, 只要再次执行
+          <command>svnsync synchronize</command> 即可. 实际上, 如果有新的
+          版本号出现在源仓库中, 你所需要做的也就是执行 <command>svnsync
+            synchronize</command> 而已.</para>
 
         <warning>
+      <!--
           <para>As part of its bookkeeping, <command>svnsync</command>
             records in the mirror repository the URL with which the
             mirror was initialized.  Because of this, invocations of
@@ -4149,6 +4166,14 @@ $
             <command>svnsync</command> to trust the source URL which it
             retrieves from the mirror repository, and from which it
             pulls versioned data.</para>
+      -->
+          <para>作为记账操作的一部分, <command>svnsync</command> 在镜像仓库
+            记录了源仓库的 URL. 正是因为这个原因, 在初始化后执行的
+            <command>svnsync</command> 命令不会 <emphasis>要求</emphasis>
+            在命令行上必须提供源仓库的 URL. 但是为了安全起见, 我们建议用户继
+            续在命令行上提供源仓库的 URL 参数. 取决定于具体的部署方式,
+            在镜像仓库检索源仓库信息, 或推送版本化数据时, 任凭
+            <command>svnsync</command> 信任源仓库 URL 可能不太安全.</para>
         </warning>
 
         <sidebar>
