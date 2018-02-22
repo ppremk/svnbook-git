@@ -4177,8 +4177,12 @@ $
         </warning>
 
         <sidebar>
+      <!--
           <title>svnsync Bookkeeping</title>
+      -->
+          <title>svnsync 记账</title>
 
+      <!--
           <para><command>svnsync</command> needs to be able to set and
             modify revision properties on the mirror repository because
             those properties are part of the data it is tasked with
@@ -4190,7 +4194,15 @@ $
             bookkeeping.  These properties contain information such as
             the URL and UUID of the source repository, plus some
             additional state-tracking information.</para>
+      -->
+          <para><command>svnsync</command> 必须有能力修改镜像仓库的版本号
+            属性, 因为这些属性是镜像数据的一部分. 如果版本号属性在源仓库
+            被修改了, 这些修改也要反应到镜像仓库中. 但是
+            <command>svnsync</command> 还会用到一套定制的版本号属性集合&mdash;
+            存放在镜像仓库的版本号 0 上&mdash;用作内部的记账操作. 这些属性
+            包含的信息包括源仓库的 URL 和 UUID, 还有一些状态跟踪信息.</para>
 
+      <!--
           <para>One of those pieces of state-tracking information is a
             flag that essentially just means <quote>there's a
             synchronization in progress right now.</quote> This is used
@@ -4207,11 +4219,23 @@ $
             synchronization is still in progress when, in fact, none is.
             Fortunately, recovering from this situation is easy to do.
             In Subversion 1.7, you can use the newly introduced
-            <option>--steal-lock</option> option with
+            <option>- -steal-lock</option> option with
             <command>svnsync</command>'s commands.  In previous
             Subversion versions, you need only to remove the
             <literal>svn:sync-lock</literal> property which serves as
             this flag from revision 0 of the mirror repository:</para>
+      -->
+          <para>状态跟踪信息中, 有一个标志信息用来指出 <quote>目前有同步操作
+              正在进行中</quote>, 这是为了避免多个 <command>svnsync</command>
+            往同一个目标仓库复制数据时, 产生冲突. 一般来说, 用户不用关心这些
+            属性 (这些属性全都以 <literal>svn:sync-</literal> 开始), 但在少数
+            情况下, 如果同步过程意外失败, Subversion 可能来不及删除这个状态
+            标志, 这将导致后面的同步操作失败, 因为未删除的标志表明当前同步操作
+            正在进行中 (但实际上并没有). 幸运的是, 从这种错误状态中恢复非常
+            容易, 在 Subversion 1.7, 你可以通过为 <command>svnsync</command>
+            添加新增的选项 <option>--steal-lock</option>; 如果 1.7 之前的版本,
+            只需要删除镜像仓库版本号 0 上的属性
+            <literal>svn:sync-lock</literal>:</para>
 
           <informalexample>
             <screen>
@@ -4221,6 +4245,7 @@ $
 </screen>
           </informalexample>
 
+      <!--
           <para>Also, <command>svnsync</command> stores the source
             repository URL provided at mirror initialization time in a
             bookkeeping property on the mirror repository.  Future
@@ -4242,8 +4267,23 @@ $
             for the same source repository, you can change the
             bookkeeping property which houses that information.  Users
             of Subversion 1.7 or better can use <command>svnsync init
-            --allow-non-empty</command> to reinitialize their mirrors
+            - -allow-non-empty</command> to reinitialize their mirrors
             with new source URL:</para>
+      -->
+          <para>另外, <command>svnsync</command> 还会把源仓库的 URL 存放到
+            镜像仓库的记账属性中. 如果在命令行中省略了源仓库的 URL, 后面的
+            同步操作就使用镜像仓库的特殊属性
+            <literal>svn:sync-from-url</literal> 的值, 作为源仓库的 URL.
+            同步过程按照字面意义理解并使用属性值, 所以要小心使用非完全限定的
+            域名 (例如用 <literal>svnbook</literal> 代替
+            <literal>svnbook.red-bean.com</literal>, 这种域名只有在主机直接
+            与 <literal>svnbook.red-bean.com</literal> 的网络相连时, 才能
+            正常工作); 无法解析的域名; 网络环境不同, 解析也不同的域名; 以及
+            IP 地址 (有可能发生变化). 如果用户需要把一个已存在的镜像仓库
+            映射到另一个不同的 URL (但仍然是同一个源仓库), 可以修改存放该
+            信息的记账属性. Subversion 1.7 及其新版可以使用
+            <command>svnsync init --allow-non-empty</command> 重新初始化镜像
+            仓库的源仓库 URL:</para>
 
           <informalexample>
             <screen>
