@@ -4479,15 +4479,20 @@ $
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.maint.replication.svnsync-init-nonempty">
+      <!--
         <title>A quick trick for mirror creation</title>
+      -->
+        <title>创建镜像的小窍门</title>
 
+      <!--
         <para>We mentioned previously the cost of setting up an
           initial mirror of an existing repository.  For many folks,
+          ### TODO
           the sheer cost of transmitting thousands&mdash;or
           millions&mdash;of revisions of history to a new mirror
           repository via <command>svnsync</command> is a show-stopper.
           Fortunately, Subversion 1.7 provides a workaround by way of
-          a new <option>--allow-non-empty</option> option to
+          a new <option>- -allow-non-empty</option> option to
           <command>svnsync initialize</command>.  This option allows
           you to initialize one repository as a mirror of another
           while bypassing the verification that the to-be-initialized
@@ -4499,6 +4504,16 @@ $
           source repository, where you can simply make a physical copy
           of the repository and then initialize that copy as a new
           mirror:</para>
+      -->
+        <para>前面我们已经介绍了为了给一个已存在的仓库创建镜像, 需要完成哪些
+          工作. 对于很多人而言. 幸运的是, Subversion 1.7 提供了一个变通方
+          法, 通过为 <command>svnsync initialize</command> 添加新选项
+          <option>--allow-non-empty</option>, 该选项允许用户在把仓库初始化成
+          另一个仓库的镜像时, 不去检查将被初始化的镜像仓库是否含有版本历史.
+          通过前面几次使用过程中的警告, 读者应该很快就能看出必须小心使用这个
+          选项. 但是, 如果用户拥有源仓库的管理员权限, 那么这个选项就会非常
+          方便, 因为用户可以直接复制仓库, 然后把复制出的仓库初始化成新镜像:
+        </para>
 
         <informalexample>
           <screen>
@@ -4516,9 +4531,10 @@ $
 </screen>
         </informalexample>
 
+      <!--
         <para>Admins who are running a version of Subversion prior to
           1.7 (and thus do not have access to <command>svnsync
-          initialize</command>'s <option>--allow-non-empty</option>
+          initialize</command>'s <option>- -allow-non-empty</option>
           feature) can accomplish effectively the same thing that that
           feature does through <emphasis>careful</emphasis>
           manipulation of the r0 revision properties on the copy of
@@ -4527,19 +4543,34 @@ $
           create the same bookkeeping properties
           that <command>svnsync</command> would have created
           there.</para>
+      -->
+        <para>如果管理员使用的 Subversion 版本低于 1.7 (即 <command>svnsync
+            initialize</command> 不支持选项 <option>--allow-non-empty</option>),
+          还可以通过其他手段实现相同的目的, 那就是 <emphasis>认真地</emphasis>
+          修改仓库副本 (该副本将作为源仓库的镜像) 的版本号 r0 的属性, 使得
+          r0 的属性与 <command>svnsync</command> 将会创建的记账属性相同.</para>
 
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.reposadmin.maint.replication.wrapup">
+      <!--
         <title>Replication wrap-up</title>
+      -->
+        <title>复制小结</title>
 
+      <!--
         <para>We've discussed a couple of ways to replicate revision
           history from one repository to another.  So let's look now
           at the user end of these operations.  How does replication
           and the various situations which call for it affect
           Subversion clients?</para>
+      -->
+        <para>本节讨论了几种用于复制版本号历史到其他仓库的方法, 现在从普通
+          用户的角度看待这些操作: 仓库复制和各种不同情况下的执行方式将会如
+          何影响客户端?</para>
 
+      <!--
         <para>As far as user interaction with repositories and mirrors
           goes, it <emphasis>is</emphasis> possible to have a single
           working copy that interacts with both, but you'll have to
@@ -4548,6 +4579,12 @@ $
           the same repository UUID (which is not the case by default).
           See <xref linkend="svn.reposadmin.maint.uuids" /> later in
           this chapter for more about this.</para>
+      -->
+        <para>如果用户需要同时和仓库及其镜像打交道, 那么使用一个
+          <emphasis>单独的</emphasis> 工作副本同时与多个仓库交互是有可能做到
+          的, 但要满足一些条件. 首先, 用户要确保主仓库和镜像仓库拥有相同的
+          UUID (默认情况下并不相同), 关于仓库 UUID 的更多内容, 见
+          <xref linkend="svn.reposadmin.maint.uuids" />.</para>
         
         <para>Once the two repositories have the same UUID, you can use
           <command>svn relocate</command> to point your working
