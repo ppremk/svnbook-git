@@ -4685,6 +4685,7 @@ $
         后端存储 Berkeley DB 或 FSFS 的数据). 增量备份每次记录的数据量相对
         较少: 它只备份上一次备份以来, 发生变化的仓库数据.</para>
 
+      <!--
       <para>As far as full backups go, the naïve approach might seem
         like a sane one, but unless you temporarily disable all other
         access to your repository, simply doing a recursive directory
@@ -4699,6 +4700,16 @@ $
         And its invocation is as trivial as the Unix
         <command>cp</command> or Windows <command>copy</command>
         operations:</para>
+      -->
+      <para>对于全量备份来说, 这个笨拙的方法看起来似乎很合理, 但是除非管理员
+        临时禁止对仓库的其他访问, 否则的话, 如果只是简单地复制目录, 得到的
+        备份也可能是有问题的. Berkeley DB 的文档描述了一种特定的数据库文件
+        复制顺序, 它可以保证得到备份是有效的, 类似的复制顺序同样存在于 FSFS.
+        管理员不用考虑如何实现它们所要求的复制顺序, 因为 Subversion 开发团队
+        已经帮你实现好了, 命令 <command>svnadmin hotcopy</command> 会处理好
+        仓库热拷贝涉及到的各种细枝末节, 它们调用方式就像 Unix 的
+        <command>cp</command> 或 Windows 的 <command>copy</command> 那样简单:
+      </para>
 
       <informalexample>
         <screen>
@@ -4706,10 +4717,15 @@ $ svnadmin hotcopy /var/svn/repos /var/svn/repos-backup
 </screen>
       </informalexample>
 
+      <!--
       <para>The resultant backup is a fully functional Subversion
         repository, able to be dropped in as a replacement for your
         live repository should something go horribly wrong.</para>
+      -->
+      <para>得到的备份是一个完整的 Subversion 仓库, 能够在原仓库出现故障时
+        顶替上去.</para>
 
+      <!--
       <para>Additional tooling around this command is available, too.
         The <filename>tools/backup/</filename> directory of the
         Subversion source distribution holds the
@@ -4727,6 +4743,18 @@ $ svnadmin hotcopy /var/svn/repos /var/svn/repos-backup
         (such as <command>cron</command> on Unix systems), which can
         cause it to run nightly (or at whatever granularity of time
         you deem safe).</para>
+      -->
+      <para>围绕该命令, 还有其他一些额外的工具可供使用. Subversion 源代码目录
+        <filename>tools/backup</filename> 存放了一个脚本:
+        <command>hot-backup.py</command>. <command>hot-backup.py</command>
+        在 <command>svnadmin hotcopy</command> 之上增加了一些备份管理策略,
+        允许用户只保留最近几次的仓库备份. <command>hot-backup.py</command>
+        自动管理通过备份得到的仓库目录的名字, 避免出现名字冲突, 而且会
+        <quote>轮换</quote> 旧备份, 只保留最近的几次备份. 即使管理员使用的是
+        增量备份策略, 也有使用 <command>hot-backup.py</command> 的需求. 例如
+        管理员可以在调度程序 (比如 Unix 系统中的 <command>cron</command>)
+        执行 <command>hot-backup.py</command>, 从而实现每晚运行一次 (或
+        管理员认为合适的其他时间间隔) 脚本.</para>
 
       <para>Some administrators use a different backup mechanism built
         around generating and storing repository dump data.  We
