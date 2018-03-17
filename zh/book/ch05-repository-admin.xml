@@ -4791,21 +4791,34 @@ $ svnadmin hotcopy /var/svn/repos /var/svn/repos-backup
         修改将不会体现在增量的转储数据中. 由于这些原因, 我们建议读者不要单独
         依靠基于转储的备份策略.</para>
 
+      <!--
       <para>Beginning with Subversion 1.8, <command>svnadmin hotcopy</command>
-        accepts <option>--incremental</option> option and supports incremental
+        accepts <option>- -incremental</option> option and supports incremental
         hotcopy mode for FSFS repositories.  In incremental hotcopy mode,
         revision data which has already been copied from the source to the
         destination repository will not be copied again. When
-        <option>--incremental</option> option is used with
+        <option>- -incremental</option> option is used with
         <command>svnadmin hotcopy</command>, Subversion will only copy new
         revisions, and revisions which have changed in size or had their
         modification time stamp changed since the previous hotcopy
         operation.  Moreover, unlike with <command>svnsync</command> or
-        <command>svnadmin dump --incremental</command>, performance of
-        <command>svnadmin hotcopy --incremental</command> is only limited to
+        <command>svnadmin dump - -incremental</command>, performance of
+        <command>svnadmin hotcopy - -incremental</command> is only limited to
         disk I/O.  Therefore, incremental hotcopy can be a huge
         time saver when making a backup of a large repository.</para>
+      -->
+      <para>从 Subversion 1.8 开始, <command>svnadmin hotcopy</command> 支持
+        选项 <option>--incremental</option>, 允许对 FSFS 仓库进行增量热拷贝,
+        在增量热拷贝模式下, 已经复现到目标仓库的版本号数据不会再复制一次.
+        如果 <command>svnadmin hotcopy</command> 带上选项
+        <option>--incremental</option>, Subversion 将只会复制新的版本号, 以及
+        上一次热拷贝后, 大小或时间戳发生变化的版本号. 而且, 与
+        <command>svnsync</command> 或 <command>svnadmin dump
+          --incremental</command> 有所不同的是 <command>svnadmin hotcopy
+          --incremental</command> 仅受限于磁盘的读写性能, 在备份大型仓库时,
+        增量热拷贝可以节省大量的时间.</para>
 
+      <!--
       <para>As you can see, each of the various backup types and
         methods has its advantages and disadvantages.  The easiest is
         by far the full hot backup, which will always result in a
@@ -4821,6 +4834,14 @@ $ svnadmin hotcopy /var/svn/repos /var/svn/repos-backup
         own peculiarities.  Administrators need to find the balance
         between the cost of making the backup and the cost of
         restoring it.</para>
+      -->
+      <para>可以看到, 不同的备份方式都有各自的优点和缺点, 目前最简单的选择就
+        是全量的热拷贝, 它总能得到一份可用的仓库副本, 一旦主仓库出现故障,
+        只要简单地递归复制目录, 就能从备份仓库中恢复. 不幸的是, 如果同时存
+        在多个仓库副本, 这些全量拷贝所消耗的磁盘空间将会是很可观的. 与此相对,
+        生成增量副本更快, 消耗的磁盘空间也更少, 但是复原过程就比较痛苦了,
+        经常需要应用多个增量备份. 其他几种备份方法也有各自的特点. 管理员需要
+        在备份和复原的开销之间, 找到最适合的平衡点.</para>
 
       <para>The <command>svnsync</command> program (see <xref
         linkend="svn.reposadmin.maint.replication" />) actually
