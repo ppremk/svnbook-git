@@ -4843,6 +4843,7 @@ $ svnadmin hotcopy /var/svn/repos /var/svn/repos-backup
         经常需要应用多个增量备份. 其他几种备份方法也有各自的特点. 管理员需要
         在备份和复原的开销之间, 找到最适合的平衡点.</para>
 
+      <!--
       <para>The <command>svnsync</command> program (see <xref
         linkend="svn.reposadmin.maint.replication" />) actually
         provides a rather handy middle-ground approach.  If you are
@@ -4856,7 +4857,16 @@ $ svnadmin hotcopy /var/svn/repos /var/svn/repos-backup
         might live in the physical repository directory but not
         <emphasis>inside</emphasis> the repository's virtual versioned
         filesystem are not handled by <command>svnsync</command>.</para>
+      -->
+      <para><command>svnsync</command> 见 (<xref
+          linkend="svn.reposadmin.maint.replication" />) 提供了非常方便的折衷
+        方案. 如果管理员周期性地把主仓库同步到只读的镜像仓库, 在主仓库发生
+        故障时, 镜像仓库就会是一个很好的替补. 这种方法的主要缺点是只有版本化
+        的仓库数据才会被同步&mdash;仓库的配置文件, 用户指定的仓库路径锁, 以
+        及其他存放在仓库目录中的项目, 只要它们不在仓库的版本化文件系统中,
+        就不会被 <command>svnsync</command> 处理.</para>
 
+      <!--
       <para>In any backup scenario, repository administrators need to
         be aware of how modifications to unversioned revision
         properties affect their backups.  Since these changes do not
@@ -4871,6 +4881,15 @@ $ svnadmin hotcopy /var/svn/repos /var/svn/repos-backup
         time&mdash;an incremental backup of the latest few revisions
         might not catch a property modification to a revision that was
         included as part of a previous backup.</para>
+      -->
+      <para>在任何一种备份场景下, 管理员都要注意版本号属性将如何影响他们的
+        备份. 版本号属性的修改不会产生新的版本号, 不会触发钩子 post-commit,
+        甚至也不会触发钩子 pre-revprop-change 和 post-revprop-change.
+        <footnote><para>命令 <command>svnadmin setlog</command> 可以完全旁路
+            掉钩子接口</para></footnote> 而且用户可以按照任意的时间顺序修改
+        版本号属性&mdash;在任意时刻修改任意一个版本号的属性&mdash;在增量备份
+        的情况下, 如果某个版本号已经包含在前一次备份中, 它的属性在后来被修改
+        了, 那么修改将不会包含在后面的增量备份中.</para>
 
       <para>Generally speaking, only the truly paranoid would need to
         back up their entire repository, say, every time a commit
