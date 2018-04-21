@@ -113,6 +113,7 @@
       teams just starting out with Subversion.</para>
       -->
 
+      <!--
     <para>The network protocol which <command>svnserve</command>
       speaks may also be tunneled over an SSH connection.  This
       deployment option for <command>svnserve</command> differs quite
@@ -128,39 +129,78 @@
       via <literal>file://</literal> URLs.  Path-based access control
       has no meaning, since each user is accessing the repository
       database files directly.</para>
+      -->
+    <para><command>svnserve</command> 所使用的协议还能被 SSH 包裹, 这种部署
+      形式和以传统方式部署的 <command>svnserve</command> 相比, 在特性上有很
+      大的不同. 此时 SSH 将用于加密所有的连接, 只使用 SSH 进行认证, 这就要求
+      用户在服务器主机上必须拥有真实的系统账户 (而普通的
+      <command>svnserve</command> 拥有一套自己的用户账户). 最后, 这种部署
+      配置要求每个用户都要派生一个私有的临时 <command>svnserve</command> 进程,
+      (从系统权限的角度来看) 这就相当于允许一组本地用户使用
+      <literal>file://</literal> URL 访问仓库, 基于路径的访问控制将失去意义,
+      因为用户是在直接访问仓库的数据库文件.</para>
 
+      <!--
     <para><xref linkend="svn.serverconfig.overview.tbl-1"/> provides a
       quick summary of the three typical server deployments.</para>
+      -->
+    <para><xref linkend="svn.serverconfig.overview.tbl-1"/> 总结了三种典型
+      的服务器部署方式.</para>
 
     <table id="svn.serverconfig.overview.tbl-1">
+      <!--
       <title>Comparison of Subversion server options</title>
+      -->
+      <title>各种 Subversion 服务器选项的比较</title>
       <tgroup cols="4">
         <thead>
           <row>
+      <!--
             <entry>Feature</entry>
+      -->
+            <entry>特性</entry>
             <entry>Apache + mod_dav_svn</entry>
             <entry>svnserve</entry>
+      <!--
             <entry>svnserve over SSH</entry>
+      -->
+            <entry>svnserve + SSH</entry>
           </row>
         </thead>
         <tbody>
           <row>
+      <!--
             <entry>Authentication options</entry>
             <entry>HTTP Basic or Digest auth, X.509 certificates, LDAP,
               NTLM, or any other mechanism available to Apache httpd</entry>
             <entry>CRAM-MD5 by default;  LDAP, NTLM, or any other mechanism
               available to SASL</entry>
+      -->
+            <entry>认证选项</entry>
+            <entry>HTTP Basic or Digest 认证, X.509 证书, LDAP,
+              NTLM, 或 Apache httpd 支持的其他认证机制</entry>
+            <entry>默认是 CRAM-MD5; LDAP, NTLM, 或 SASL
+              支持的其他认证机制</entry>
             <entry>SSH</entry>
           </row>
           <row>
+      <!--
             <entry>User account options</entry>
             <entry>Private <quote>users</quote> file, or other mechanisms
             available to Apache httpd (LDAP, SQL, etc.)</entry>
             <entry>Private <quote>users</quote> file, or other
               mechanisms available to SASL (LDAP, SQL, etc.)</entry>
             <entry>System accounts</entry>
+      -->
+            <entry>用户帐户选项</entry>
+            <entry>私有的 <quote>用户</quote> 文件, 或 Apache httpd 支持的
+              其他机制 (LDAP, SQL 等)</entry>
+            <entry>私有的 <quote>用户</quote> 文件, 或 SASL 支持的其他机制
+              (LDAP, SQL 等)</entry>
+            <entry>系统账户</entry>
           </row>
           <row>
+      <!--
             <entry>Authorization options</entry>
             <entry>Read/write access can be granted over the whole
               repository, or specified per path</entry>
@@ -168,12 +208,23 @@
               repository, or specified per path</entry>
             <entry>Read/write access only grantable over the whole
               repository</entry>
+      -->
+            <entry>授权选项</entry>
+            <entry>可以在整个仓库或特定的路径上授予读/写权限</entry>
+            <entry>可以在整个仓库或特定的路径上授予读/写权限</entry>
+            <entry>只能在整个仓库上授予读/写权限</entry>
           </row>
           <row>
+      <!--
             <entry>Encryption</entry>
             <entry>Available via optional SSL (https)</entry>
             <entry>Available via optional SASL features</entry>
             <entry>Inherent in SSH connection</entry>
+      -->
+            <entry>加密</entry>
+            <entry>通过可选的 SSL (https) 实现</entry>
+            <entry>通过可选的 SASL 特性实现</entry>
+            <entry>由 SSH 连接实现</entry>
           </row>
           <row>
             <entry>Logging</entry>
