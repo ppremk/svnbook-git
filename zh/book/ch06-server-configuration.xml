@@ -936,7 +936,10 @@ $ svn checkout svn://host.example.com/project1
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.invoking.inetd">
+      <!--
         <title>svnserve via inetd</title>
+      -->
+        <title>由 inetd 调用 svnserve</title>
 
         <para>
           <indexterm>
@@ -946,15 +949,25 @@ $ svn checkout svn://host.example.com/project1
           </indexterm>
           <indexterm>
             <primary>inetd</primary>
-          </indexterm>If you want <command>inetd</command> to launch the
+          </indexterm>
+          如果管理员希望由 <command>inetd</command> 启动进程, 就给
+          <command>svnserve</command> 添加选项 <option>-i</option>
+          (<option>--inetd</option>). 在下面的例子里, 我们展示了在命令行上
+          执行 <literal>svnserve -i</literal> 的输出, 但要注意的是命令实际
+          上并没有启动进程; 例子后面的内容介绍了如何配置
+          <command>inetd</command>, 使得它能够启动 <command>svnserve</command>.
+        </para>
+      <!--
+          If you want <command>inetd</command> to launch the
           process, you need to pass the <option>-i</option>
-          (<option>--inetd</option>) option.  In the following
+          (<option>- -inetd</option>) option.  In the following
           example, we've shown the output from running
           <literal>svnserve -i</literal> at the command line, but note
           that this isn't how you actually start the daemon; see the
           paragraphs following the example for how to configure
           <command>inetd</command> to start
           <command>svnserve</command>.</para>
+      -->
 
         <informalexample>
           <screen>
@@ -964,7 +977,8 @@ epth log-revprops atomic-revprops partial-replay ) ) )
 </screen>
         </informalexample>
 
-        <para>When invoked with the <option>--inetd</option> option,
+      <!--
+        <para>When invoked with the <option>- -inetd</option> option,
           <command>svnserve</command> attempts to speak with a
           Subversion client via <filename>stdin</filename> and
           <filename>stdout</filename> using a custom protocol.  This
@@ -973,6 +987,14 @@ epth log-revprops atomic-revprops partial-replay ) ) )
           for the Subversion protocol, so on a Unix-like system you
           can add lines to <filename>/etc/services</filename> such as
           these (if they don't already exist):</para>
+      -->
+        <para>如果使用选项 <option>--inetd</option> 调用
+          <command>svnserve</command>, 它会尝试使用定制化的协议, 通过
+          <filename>stdin</filename> 和 <filename>stdout</filename> 与
+          Subversion 通信, 这是由 <command>inetd</command> 所启动的程序的标准
+          行为. IANA 将端口 3690 保留给 Subversion 使用, 所以说在一个类 Unix
+          系统上, 管理员可以安全地在 <filename>/etc/services</filename> 中添
+          加以下内容 (如果原来没有):</para>
 
         <informalexample>
           <programlisting>
@@ -981,9 +1003,14 @@ svn           3690/udp   # Subversion
 </programlisting>
         </informalexample>
 
+      <!--
         <para>If your system is using a classic Unix-like
           <command>inetd</command> daemon, you can add this line to
           <filename>/etc/inetd.conf</filename>:</para>
+      -->
+        <para>如果服务器使用的是经典的类 Unix <command>inetd</command> 守护
+          进程, 就在 <filename>/etc/inetd.conf</filename> 添加下面这一行:
+        </para>
 
         <informalexample>
           <programlisting>
@@ -991,6 +1018,7 @@ svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
 </programlisting>
         </informalexample>
 
+      <!--
         <para>Make sure <quote>svnowner</quote> is a user that has
           appropriate permissions to access your repositories.  Now,
           when a client connection comes into your server on port
@@ -999,6 +1027,12 @@ svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
           course, you may also want to add <option>-r</option> to the
           configuration line as well, to restrict which repositories
           are exported.</para>
+      -->
+        <para>确保用户 <quote>svnowner</quote> 对仓库具有适当的访问权限.
+          现在, 当客户在端口 3690 上连接服务服务器时, <command>inetd</command>
+          就会派生出一个 <command>svnserve</command>, 负责处理客户端发来的
+          请求. 当然, 管理员也可以在配置文件里为 <command>svnserve</command>
+          添加选项 <option>-r</option>, 从而限制被导出的仓库.</para>
 
       </sect3>
 
