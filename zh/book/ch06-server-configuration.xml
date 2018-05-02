@@ -1038,7 +1038,10 @@ svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.invoking.xinetd">
+      <!--
         <title>svnserve via xinetd</title>
+      -->
+        <title>由 xinetd 调用 svnserve</title>
 
         <para>
           <indexterm>
@@ -1048,12 +1051,19 @@ svn stream tcp nowait svnowner /usr/bin/svnserve svnserve -i
           </indexterm>
           <indexterm>
             <primary>xinetd</primary>
-          </indexterm>Some operating systems provide the <command>xinetd</command> 
+          </indexterm>
+          某些系统提供了 <command>xinetd</command> 作为 <command>inetd</command>
+          的替代品, 幸运的是, 管理员也可以配置 <command>svnserve</command>
+          由 <command>xinetd</command> 启动. 为了实现这点, 管理员创建一个配置
+          文件 <command>/etc/xinetd.d/svn</command>, 文件的内容是:</para>
+      <!--
+          Some operating systems provide the <command>xinetd</command>
           daemon as an alternative to <command>inetd</command>.
           Fortunately, you can configure <command>svnserve</command> for
           use with <command>xinetd</command>, too.  To do so, you'll need to
           create a configuration file <filename>/etc/xinetd.d/svn</filename>
           with the following contents:</para>
+      -->
 
         <informalexample>
           <programlisting>
@@ -1073,17 +1083,28 @@ service svn
 </programlisting>
         </informalexample>
 
+      <!--
         <para>Be sure that your <filename>/etc/services</filename>
           configuration file contains the definition of the port used
           for the <literal>svn</literal> protocol (as described in
           <xref linkend="svn.serverconfig.svnserve.invoking.xinetd"
           />), otherwise the daemon will not start correctly.</para>
+      -->
+      <para>要确保 <filename>/etc/services</filename> 包含了
+        <literal>svn</literal> 协议所使用的端口 (见 <xref
+          linkend="svn.serverconfig.svnserve.invoking.inetd"/>), 否则的话,
+        守护进程将无法正常启动.</para>
 
+      <!--
         <para>In Redhat-based distributions, you then need to activate
-          the new service using <command>chkconfig --add
+          the new service using <command>chkconfig - -add
           svn</command>.  After doing so, you will be able to enable
           and disable the server using the graphical configuration
           tools.</para>
+      -->
+        <para>如果是基于 Redhat 的 Linux 发行版, 管理员需要使用
+          <command>chkconfig --add svn</command> 激活新的服务, 后面就可以用图
+          形化配置工具禁止或允许服务器程序.</para>
 
       </sect3>
 
