@@ -1110,14 +1110,32 @@ service svn
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.invoking.tunnel">
+      <!--
         <title>svnserve over a tunnel</title>
+      -->
+        <title>基于隧道的 svnserve</title>
 
         <para>
           <indexterm>
             <primary>svnserve</primary>
             <secondary>running</secondary>
             <tertiary>tunnel mode</tertiary>
-          </indexterm>Another way to invoke <command>svnserve</command> is in
+          </indexterm>
+          另一种启动方式是通过添加选项 <option>-t</option>, 以隧道模式启动
+          <command>svnserve</command>. 隧道模式假设有一个远程服务程序 (例如
+          <command>rsh</command> 或 <command>ssh</command> 已经成功地授权了
+          一个用户, 并且以该 <emphasis>用户的身份</emphasis> 启动了一个私有
+          的 <command>svnserve</command> 进程. (用户几乎没有必要在命令行
+          启动带有选项 <option>-t</option> 的 <command>svnserve</command>,
+          相反, SSH 守护进程会替用户执行这个操作) 程序
+          <command>svnserve</command> 像往常一样运行 (通过
+          <filename>stdin</filename> 和 <filename>stdout</filename> 通信),
+          它还假设网络数据可以通过某种隧道, 被自动重定向回客户端. 当隧道代理
+          以这种方式启动 <command>svnserve</command> 时, 要确保被授权的用户
+          对仓库数据库文件具有读写权限, 在本质上它和本地用户通过
+          <literal>file://</literal> URL 访问仓库的情况是一样的.</para>
+      <!--
+          Another way to invoke <command>svnserve</command> is in
           tunnel mode, using the <option>-t</option> option.  This
           mode assumes that a remote-service program such as
           <command>rsh</command> or <command>ssh</command> has
@@ -1137,34 +1155,53 @@ service svn
           full read and write access to the repository database files.
           It's essentially the same as a local user accessing the
           repository via <literal>file://</literal> URLs.</para>
+      -->
 
+      <!--
         <para>This option is described in much more detail later in
           this chapter in <xref
+          linkend="svn.serverconfig.svnserve.sshauth"/>.</para>
+      -->
+      <para>更多的细节见 <xref
           linkend="svn.serverconfig.svnserve.sshauth"/>.</para>
 
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.invoking.winservice">
+      <!--
         <title>svnserve as a Windows service</title>
+      -->
+        <title>svnserve 作为 Windows 服务</title>
 
         <para>
           <indexterm>
             <primary>svnserve</primary>
             <secondary>running</secondary>
             <tertiary>as Windows service</tertiary>
-          </indexterm>If your Windows system is a descendant of Windows NT
+          </indexterm>
+          如果服务器所用的 Windows 系统是 Windows NT 的后代 (Windows 2000 或
+          更新的版本), 管理员就能把 <command>svnserve</command> 作为一个标准
+          的 Windows 服务启动, 和独立的守护进程启动方式 (添加选项
+          <option>--daemon</option> (<option>-d</option>)) 相比, 这通常能带
+          来更好的检验. 为了以守护进程的方式启动 <command>svnserve</command>,
+          我们需要打开一个控制台, 输入命令, 然后任由控制台永远地运行下去. 然而,
+          在后台运行的 Windows 服务可以在系统引导时自动启动, 可以使用和其他
+          Windows 服务一样的管理接口, 启动或停止服务.</para>
+      <!--
+          If your Windows system is a descendant of Windows NT
           (Windows 2000 or newer), you can
           run <command>svnserve</command> as a standard Windows
           service.  This is typically a much nicer experience than
           running it as a standalone daemon with
-          the <option>--daemon</option> (<option>-d</option>) option.
+          the <option>- -daemon</option> (<option>-d</option>) option.
           Using daemon mode requires launching a console, typing a
           command, and then leaving the console window running
           indefinitely.  A Windows service, however, runs in the
           background, can start at boot time automatically, and can be
           started and stopped using the same consistent administration
           interface as other Windows services.</para>
+      -->
 
         <para>You'll need to define the new service using the
           command-line tool <command>SC.EXE</command>.  Much like
