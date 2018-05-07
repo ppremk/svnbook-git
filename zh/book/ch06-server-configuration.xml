@@ -1203,11 +1203,17 @@ service svn
           interface as other Windows services.</para>
       -->
 
+      <!--
         <para>You'll need to define the new service using the
           command-line tool <command>SC.EXE</command>.  Much like
           the <command>inetd</command> configuration line, you must
           specify an exact invocation of <command>svnserve</command>
           for Windows to run at startup time:</para>
+      -->
+        <para>为了定义一个新的 Windows 服务, 需要用到命令行工具
+          <command>SC.EXE</command>. 类似于 <command>inetd</command> 的配置
+          文件, 管理员必须准确地指定 <command>svnserve</command> 的启动方式,
+          以便 Windows 在开机时启动相应的服务:</para>
 
         <informalexample>
           <screen>
@@ -1219,23 +1225,30 @@ C:\&gt; sc create svn
 </screen>
         </informalexample>
 
+      <!--
         <para>This defines a new Windows service named
           <literal>svn</literal> which executes a particular
           <command>svnserve.exe</command> command when started (in
           this case, rooted at <filename>C:\repos</filename>).  There
           are a number of caveats in the prior example,
           however.</para>
+      -->
+        <para>上面的命令行定义了一个新的, 名为 <literal>svn</literal> 的
+          Windows 服务, 当服务启动时, 它将执行程序
+          <command>svnserve.exe</command>. 在这个例子, 有很多需要注意的地方.
+        </para>
 
+      <!--
         <para>First, notice that the <command>svnserve.exe</command>
           program must always be invoked with the
-          <option>--service</option> option.  Any other options to
+          <option>- -service</option> option.  Any other options to
           <command>svnserve</command> must then be specified on the
           same line, but you cannot add conflicting options such as
-          <option>--daemon</option>
-          (<option>-d</option>), <option>--tunnel</option>,
-          or <option>--inetd</option> (<option>-i</option>).  Options
+          <option>- -daemon</option>
+          (<option>-d</option>), <option>- -tunnel</option>,
+          or <option>- -inetd</option> (<option>-i</option>).  Options
           such as <option>-r</option>
-          or <option>--listen-port</option> are fine, though.  Second,
+          or <option>- -listen-port</option> are fine, though.  Second,
           be careful about spaces when invoking
           the <command>SC.EXE</command> command: the <literal>key=
           value</literal> patterns must have no spaces between
@@ -1246,6 +1259,19 @@ C:\&gt; sc create svn
           need escaping), place the entire inner value of
           <literal>binpath</literal> in double quotes, by escaping
           them:</para>
+      -->
+        <para>首先, 启动 <command>svnserve.exe</command> 时必须带上参数
+          <option>--service</option>, 其他选项必须出现在同一行, 不能再添加
+          会引起冲突的选项, 例如 <option>--daemon</option>
+          (<option>-d</option>), <option>--tunnel</option> 或
+          <option>--inetd</option> (<option>-i</option>), 但可以添加选项
+          <option>-r</option> 或 <option>--listen-port</option>. 第二,
+          注意命令行里的空格: 模式 <literal>key= value</literal> 中,
+          <literal>key</literal> 和 <literal>=</literal> 之间不能有空格, 而
+          <literal>key=</literal> 和 <literal>value</literal> 之间有且仅有
+          一个空格. 最后, 要注意被调用的命令行里的空格. 如果目录名含有空格
+          (或其他需要转义的字符), 就把 <literal>binpath</literal> 内的路径
+          包裹在一对双引号中, 但要对双引号进行转义:</para>
 
         <informalexample>
           <screen>
