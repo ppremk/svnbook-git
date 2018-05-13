@@ -1479,6 +1479,7 @@ $ sudo launchctl load \
           <command>svnserve</command> 进程就会终止.</para>
 
         <note>
+      <!--
           <para>Because we want <command>svnserve</command> to be a
             system-wide daemon process, we need to
             use <command>sudo</command> to manage this job as an
@@ -1487,10 +1488,20 @@ $ sudo launchctl load \
             and <literal>GroupName</literal> keys in the definition
             file are optional&mdash;if omitted, the job will run as
             the user who loaded the job.</para>
+      -->
+          <para>因为我们希望 <command>svnserve</command> 成为整个系统范围内
+            的守护进程, 所以要用 <command>sudo</command> 命令, 作为系统管理员
+            去管理作业. 定义文件内的 <literal>UserName</literal> 和
+            <literal>GroupName</literal> 是可选的&mdash;如果忽略它们, 作业的
+            所有者将是加载该作业的用户.</para>
         </note>
 
+      <!--
         <para>Deactivating the job is just as easy to do&mdash;use
           <command>launchctl unload</command>:</para>
+      -->
+        <para>禁用作业的方法也很简单&mdash;使用 <command>launchctl
+            unload</command>:</para>
 
         <informalexample>
           <screen>
@@ -1499,10 +1510,15 @@ $ sudo launchctl unload \
 </screen>
         </informalexample>
 
+      <!--
         <para><command>launchctl</command> also provides a way for you
           to query the status of jobs.  If the job is loaded, there
           will be line which matches the <literal>Label</literal>
           specified in the job definition file:</para>
+      -->
+        <para><command>launchctl</command> 也提供了查询作业状态的命令, 如果
+          作业已加载, 那么作业定义文件中, <literal>Label</literal> 所指定的
+          内容将会出现在命令的输出中:</para>
 
         <informalexample>
           <screen>
@@ -1517,7 +1533,10 @@ $
 
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.svnserve.auth">
+      <!--
       <title>Built-in Authentication and Authorization</title>
+      -->
+      <title>内建的认证与授权</title>
 
       <para>
         <indexterm>
@@ -1527,36 +1546,61 @@ $
         <indexterm>
           <primary>svnserve</primary>
           <secondary>authorization</secondary>
-        </indexterm>When a client connects to an <command>svnserve</command>
+        </indexterm>
+        当客户端连接到 <command>svnserve</command> 进程时, 将会发生以下事件:
+      </para>
+      <!--
+        When a client connects to an <command>svnserve</command>
         process, the following things happen:</para>
+      -->
 
       <itemizedlist>
         <listitem>
+      <!--
           <para>The client selects a specific repository.</para>
+      -->
+          <para>客户端选择一个特定的仓库.</para>
         </listitem>
         <listitem>
+      <!--
           <para>The server processes the repository's
             <filename>conf/svnserve.conf</filename> file and begins to
             enforce any authentication and authorization policies it
             describes.</para>
+      -->
+          <para>服务器读取仓库的 <filename>conf/svnserve.conf</filename>,
+            施加文件所描述的认证与授权策略.</para>
         </listitem>
         <listitem>
+      <!--
           <para>Depending on the defined policies, one of the
             following may occur:</para>
+      -->
+          <para>取决于具体的策略, 可能会发生下面几件事中的一件:</para>
           <itemizedlist>
             <listitem>
+      <!--
               <para>The client may be allowed to make requests
                 anonymously, without ever receiving an authentication
                 challenge.</para>
+      -->
+              <para>允许客户端以匿名的方式提出请求, 不会收到任何认证要求.</para>
             </listitem>
             <listitem>
+      <!--
               <para>The client may be challenged for authentication at
                 any time.</para>
+      -->
+              <para>客户端可能在任意时刻收到认证要求.</para>
             </listitem>
             <listitem>
+      <!--
               <para>If operating in tunnel mode, the client will
                 declare itself to be already externally authenticated
                 (typically by SSH).</para>
+      -->
+              <para>如果操作是在隧道模式下进行, 客户端将声明它已经在外部认证
+                过了 (通常是 SSH).</para>
             </listitem>
           </itemizedlist>
         </listitem>
