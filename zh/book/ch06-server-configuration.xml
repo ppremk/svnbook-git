@@ -2044,6 +2044,7 @@ use-sasl = true
           <literal>ConfFile</literal> (它的值是一个指向目录的路径, 目录内含有
           管理员创建的 <filename>svn.conf</filename> 文件).</para>
 
+      <!--
         <para>Because SASL provides so many different kinds of
           authentication mechanisms, it would be foolish (and far
           beyond the scope of this book) to try to describe every
@@ -2057,6 +2058,14 @@ use-sasl = true
           example, if your <filename>subversion.conf</filename>
           (or <filename>svn.conf</filename>) file contains the
           following:</para>
+      -->
+        <para>因为 SASL 提供了多种不同的认证机制, 描述每一种可能的服务器端
+          配置是不切实际的 (而且也超出了本书的范围), 所以我们建议读者自己去
+          阅读 SASL 源代码目录内, <filename>doc</filename> 子目录内的文档,
+          文档详细介绍了每一种认证机制, 以及如何正确地配置服务器, 以便使用
+          这些认证机制. 为了方便讨论, 我们将介绍一个配置 DIGEST-MD5 的简单
+          示例. 如果你的 <filename>subversion.conf</filename> (或
+          <filename>svn.conf</filename>) 含有以下内容:</para>
 
         <informalexample>
           <programlisting>
@@ -2067,6 +2076,7 @@ mech_list: DIGEST-MD5
 </programlisting>
         </informalexample>
 
+      <!--
         <para>you've told SASL to advertise the DIGEST-MD5
           mechanism to clients and to check user passwords against a
           private password database located
@@ -2074,6 +2084,11 @@ mech_list: DIGEST-MD5
           administrator can then use
           the <command>saslpasswd2</command> program to add or modify
           usernames and passwords in the database:</para>
+      -->
+        <para>上面的配置向客户端宣告了 DIGEST-MD5 认证机制, 使用存放在
+          <filename>/etc/my_sasldb</filename> 里的私有密码数据库检查用户
+          输入的密码的正确性. 管理员可以使用 <command>saslpasswd2</command>
+          向密码数据库添加或修改用户名和密码:</para>
 
         <informalexample>
           <screen>
@@ -2081,6 +2096,7 @@ $ saslpasswd2 -c -f /etc/my_sasldb -u realm username
 </screen>
         </informalexample>
 
+      <!--
         <para>A few words of warning: first, make sure the
           <quote>realm</quote> argument
           to <command>saslpasswd2</command> matches the same realm
@@ -2093,6 +2109,13 @@ $ saslpasswd2 -c -f /etc/my_sasldb -u realm username
           the <command>svnserve</command> program has read access to
           the file (and possibly write access as well, if you're using
           a mechanism such as OTP).</para>
+      -->
+        <para>有些地方需要注意: 首先要确保 <command>saslpasswd2</command> 的
+          <quote>领域</quote> 参数和定义在 <filename>svnserve.conf</filename>
+          里的领域是一致的, 如果它们不一致, 认证将会失败. 另外, 受限于 SASL,
+          领域必须不带空格的字符串. 最后, 如果你决定使用标准的 SASL 密码数据
+          库, 需要确保进程 <command>svnserve</command> 对数据库文件具有读
+          权限 (某些认证机制&mdash;例如 OTP&mdash;还会要求写权限).</para>
 
         <para>This is just one simple way of configuring SASL.  Many
           other authentication mechanisms are available, and passwords
