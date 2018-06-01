@@ -2300,6 +2300,7 @@ baz
         <command>svnserve</command> 进程, 当网络连接关闭时,
         <command>svnserve</command> 进程就会终止.</para>
 
+      <!--
       <para>When using <literal>svn+ssh://</literal> URLs to access a
         repository, remember that it's the <command>ssh</command>
         program prompting for authentication, and
@@ -2315,7 +2316,19 @@ baz
         use a separate SSH password-caching tool such as
         <command>ssh-agent</command> on a Unix-like system, or
         <command>pageant</command> on Windows.</para>
+      -->
+      <para>当使用 <literal>svn+ssh://</literal> URL 访问仓库时, 要记录提出
+        认证要求的程序是 <command>ssh</command>, 而 <emphasis>不是</emphasis>
+        客户端程序 <command>svn</command>, 这就意味着不会出现密码缓存 (见
+        <xref linkend="svn.serverconfig.netmodel.credcache"/>). Subversion
+        客户端经常向仓库发起多个连接, 由于密码缓存, 用户通常不会注意到这点,
+        然而, 当用户使用 <literal>svn+ssh</literal> 连接仓库时, 客户端每发起
+        一次连接, <command>ssh</command> 都会要求用户输入密码, 用户可能会对
+        些感到恼怒. 解决问题的办法是使用一个单独的 SSH 密码缓存工具, 例如
+        类 Unix 系统中的 <command>ssh-agent</command>, 或 Windows 系统中的
+        <command>pageant</command>.</para>
 
+      <!--
       <para>When running over a tunnel, authorization is primarily
         controlled by operating system permissions to the repository's
         database files; it's very much the same as if Harry were
@@ -2337,6 +2350,22 @@ baz
         such restrictions is described in
         <xref linkend="svn.serverconfig.svnserve.sshtricks.fixedcmd"
         />.</para></footnote></para>
+      -->
+      <para>在隧道模式下操作时, 授权主要由仓库数据文件的操作系统权限控制,
+        这和 Harry 使用 <literal>file://</literal> 直接访问仓库的情形基本
+        一致. 如果有多个系统用户会直接访问仓库, 管理员可能想把他们都放到
+        一个用户组里, 同时还要注意文件权限掩码 (记得阅读本章后面的
+        <xref linkend="svn.serverconfig.multimethod"/>). 即使在隧道模式下,
+        你也可以使用 <command>svnserve.conf</command> 屏蔽特定的访问方式,
+        只需要设置 <literal>auth-access = read</literal> 或
+        <literal>auth-access = none</literal>.<footnote><para>注意,
+            <command>svnserve</command> 施加的访问限制只有在以下情况中才是
+            有效的: 用户无法旁路掉 <command>svnserve</command> 限制的条件,
+            并且没有使用其他工具 (例如 <command>cd</command> 和
+            <command>vi</command>) 直接访问仓库. 关于如何实现这些访问限制,
+            见 <xref
+              linkend="svn.serverconfig.svnserve.sshtricks.fixedcmd"/>.
+      </para></footnote></para>
 
       <para>You'd think that the story of SSH tunneling would end
         here, but it doesn't.  Subversion allows you to create custom
