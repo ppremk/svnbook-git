@@ -2322,7 +2322,7 @@ baz
         客户端程序 <command>svn</command>, 这就意味着不会出现密码缓存 (见
         <xref linkend="svn.serverconfig.netmodel.credcache"/>). Subversion
         客户端经常向仓库发起多个连接, 由于密码缓存, 用户通常不会注意到这点,
-        然而, 当用户使用 <literal>svn+ssh</literal> 连接仓库时, 客户端每发起
+        然而, 当用户使用 <literal>svn+ssh://</literal> 连接仓库时, 客户端每发起
         一次连接, <command>ssh</command> 都会要求用户输入密码, 用户可能会对
         些感到恼怒. 解决问题的办法是使用一个单独的 SSH 密码缓存工具, 例如
         类 Unix 系统中的 <command>ssh-agent</command>, 或 Windows 系统中的
@@ -2367,6 +2367,7 @@ baz
               linkend="svn.serverconfig.svnserve.sshtricks.fixedcmd"/>.
       </para></footnote></para>
 
+      <!--
       <para>You'd think that the story of SSH tunneling would end
         here, but it doesn't.  Subversion allows you to create custom
         tunnel behaviors in your runtime <filename>config</filename>
@@ -2377,6 +2378,14 @@ baz
         the <literal>[tunnels]</literal> section of your
         <filename>config</filename> file, simply define it like
         this:</para>
+      -->
+      <para>读者可能以为关于 SSH 隧道的内容就此结束, 然而并没有. Subversion
+        允许用户在运行时配置文件 <filename>config</filename> (见 <xref
+          linkend="svn.advanced.confarea"/>) 里创建定制化的隧道行为. 例如使用
+        RSH, 而不是 SSH, <footnote><para>实际上我们不推荐使用 RSH, 因为它的安
+            全性远不如 SSH.</para></footnote> 具体的配置方式是在
+        <filename>config</filename> 的 <literal>[tunnels]</literal> 节添加如
+        下内容:</para>
 
       <informalexample>
         <programlisting>
@@ -2385,14 +2394,23 @@ rsh = rsh --
 </programlisting>
       </informalexample>
 
+      <!--
       <para>And now, you can use this new tunnel definition by using a
         URL scheme that matches the name of your new variable:
         <literal>svn+rsh://host/path</literal>.  When using the new
         URL scheme, the Subversion client will actually be running the
-        command <userinput>rsh -- host svnserve -t</userinput> behind the
+        command <userinput>rsh - - host svnserve -t</userinput> behind the
         scenes.  If you include a username in the URL (e.g.,
         <literal>svn+rsh://username@host/path</literal>), the client
-        will also include that in its command (<userinput>rsh --
+        will also include that in its command (<userinput>rsh - -
+        username@host svnserve -t</userinput>).</para>
+      -->
+    <para>现在, 为了使用新的隧道配置, 把访问仓库的 URL 模式更改为
+      <literal>svn+rsh://</literal>, 例如
+      <literal>svn+rsh://host/path</literal>, 此时 Subversion 客户端相当于
+      在执行 <userinput>rsh -- host svnserve -t</userinput>. 如果用户在
+      URL 中包含了用户名 (例如 <literal>svn+rsh://username@host/path</literal>,
+      则客户端也会在待执行的命令中包含用户名 (<userinput>rsh --
         username@host svnserve -t</userinput>).</para>
 
       <warning>
