@@ -2414,16 +2414,25 @@ rsh = rsh --
         username@host svnserve -t</userinput>).</para>
 
       <warning>
+      <!--
         <para>Notice that when defining an RSH-based tunnel, we've
-          added the <literal>--</literal> end-of-options argument to
+          added the <literal>- -</literal> end-of-options argument to
           the tunnel command line.  This is to prevent a malformed
           hostname from being treated as another option to the tunnel
           command.  You should do the same for other tunnel programs
           (for example, SSH).</para>
+      -->
+        <para>注意, 在定义基于 RSH 的隧道时, 我们在隧道命令行添加了选项结束
+          参数 <literal>--</literal>, 这是为了避免把一个错误的主机名当成隧道
+          命令的另一个选项, 使用其他隧道程序时也要考虑这个问题 (例如 SSH).
+        </para>
       </warning>
 
+      <!--
       <para>But you can define new tunneling schemes to be much more
         clever than that:</para>
+      -->
+      <para>不过, 你也可以定义更加灵活的隧道方案:</para>
 
       <informalexample>
         <programlisting>
@@ -2432,6 +2441,7 @@ joessh = $JOESSH /opt/alternate/ssh -p 29934 --
 </programlisting>
       </informalexample>
 
+      <!--
       <para>This example demonstrates a couple of things.  First, it
         shows how to make the Subversion client launch a very specific
         tunneling binary (the one located at
@@ -2441,7 +2451,14 @@ joessh = $JOESSH /opt/alternate/ssh -p 29934 --
         particular SSH binary with <option>-p 29934</option> as
         arguments&mdash;useful if you want the tunnel program to
         connect to a nonstandard port.</para>
+      -->
+      <para>这个例子有两点需要说明, 首先它展示了 Subversion 客户端如何启动
+        一个特定的隧道程序 (例子里是 <filename>/opt/alternate/ssh</filename>),
+        并带有特定的选项. 此时, 访问 URL <literal>svn+joessh</literal> 将启动
+        一个特定的 SSH 程序, 并带有参数 <option>-p 29934</option>&mdash;如果
+        你希望隧道程序连接到一个非标准的端口, 那么这种方法就比较方便.</para>
 
+      <!--
       <para>Second, it shows how to define a custom environment
         variable that can override the name of the tunneling program.
         Setting the <literal>SVN_SSH</literal> environment variable is
@@ -2455,6 +2472,15 @@ joessh = $JOESSH /opt/alternate/ssh -p 29934 --
         variable&mdash;<command>$JOESSH</command> would be executed
         instead of <userinput>/opt/alternate/ssh -p
         29934</userinput>.</para>
+      -->
+    <para>第二, 例子展示了如何使用环境变量去覆盖隧道程序的名字. 通过设置
+      环境变量 <literal>SVN_SSH</literal> 来覆盖默认的 SSH 隧道代理是一种
+      方便的做法, 但是如果你希望不同的服务器使用不同的变量覆盖, 甚至在连接
+      每个服务器时, 其端口和选项也不尽相同, 这时候就要用到本例所介绍的方法.
+      如果用户设置了环境变量 <literal>JOESSH</literal>, 它的值将会覆盖掉
+      变量 <literal>joessh</literal> 原来的值&mdash;Subversion 客户端将会
+      执行 <command>$JOESSH</command>, 而不是 <userinput>/opt/alternate/ssh
+        -p 29934</userinput>.</para>
 
     </sect2>
 
