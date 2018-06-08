@@ -2606,6 +2606,7 @@ joessh = $JOESSH /opt/alternate/ssh -p 29934 --
 </programlisting>
         </informalexample>
 
+      <!--
         <para>In this example, <filename>/path/to/svnserve</filename>
           might be a custom wrapper script
           around <command>svnserve</command> which sets the umask (see
@@ -2617,14 +2618,29 @@ joessh = $JOESSH /opt/alternate/ssh -p 29934 --
           system, or simply to relieve the user of having to type an
           absolute path in the <literal>svn+ssh://</literal>
           URL.</para>
+      -->
+        <para>在上面的例子里, <filename>/path/to/svnserve</filename> 可能是
+          一个定制化的 <command>svnserve</command> 包裹脚本, 脚本将会重新
+          设置文件权限掩码 (见 <xref linkend="svn.serverconfig.multimethod"/>).
+          例子还展示了如何修改 <command>svnserve</command> 的文件系统根目录,
+          当以守护进程方式运行 <command>svnserve</command> 时, 修改进程的根
+          目录是很常见的操作, 这么做可以是为了限制用户对系统目录空间的访问,
+          也可以是为了在输入 <literal>svn+ssh://</literal> URL 的路径参数时,
+          减少用户打字的工作量.</para>
 
+      <!--
         <para>It's also possible to have multiple users share a single
           account.  Instead of creating a separate system account for
           each user, generate a public/private key pair for each
           person.  Then place each public key into
           the <filename>authorized_keys</filename> file, one per
-          line, and use the <option>--tunnel-user</option>
+          line, and use the <option>- -tunnel-user</option>
           option:</para>
+      -->
+        <para>多个用户共享同一个账户也是有可能的, 方法是为每一个用户生成一对
+          公钥与私钥, 然后把每个公钥的内容都写入文件
+          <filename>authorized_keys</filename> 内, 每行一个, 并使用选项
+          <option>--tunnel-user</option>:</para>
 
         <informalexample>
           <programlisting>
@@ -2633,15 +2649,23 @@ joessh = $JOESSH /opt/alternate/ssh -p 29934 --
 </programlisting>
         </informalexample>
 
+      <!--
         <para>This example allows both Harry and Sally to connect to
           the same account via public key authentication.  Each of
           them has a custom command that will be executed;
-          the <option>--tunnel-user</option> option
+          the <option>- -tunnel-user</option> option
           tells <command>svnserve</command> to assume that the named
           argument is the authenticated user.  Without
-          <option>--tunnel-user</option>, it would appear as though
+          <option>- -tunnel-user</option>, it would appear as though
           all commits were coming from the one shared system
           account.</para>
+      -->
+        <para>上面的例子允许 Harry 和 Sally 使用相同的账户, 通过各自的公钥
+          认证来连接服务器. 每一行都指定了一条待执行的命令, 选项
+          <option>--tunnel-user</option> 告诉 <command>svnserve</command>
+          它的参数是已认证的用户, 如果没有加上 <option>--tunnel-user</option>,
+          那么 <command>svnserve</command> 会认为所有的提交都来自被共享的
+          账户.</para>
 
         <para>A final word of caution: giving a user access to the
           server via public-key in a shared account might still allow
