@@ -3269,6 +3269,7 @@ arding,no-X11-forwarding,no-pty TYPE1 KEY1 harry@example.com
       -->
       <title>Apache 基本配置</title>
 
+      <!--
       <para>Once you have all the necessary components installed on
         your system, all that remains is the configuration of Apache
         via its <filename>httpd.conf</filename> file.  Instruct Apache
@@ -3283,6 +3284,17 @@ arding,no-X11-forwarding,no-pty TYPE1 KEY1 harry@example.com
         <literal>LoadModule</literal> directive has a simple syntax,
         mapping a named module to the location of a shared library on
         disk:</para>
+      -->
+      <para>所有组件安装完毕后, 剩下的工作就是通过
+        <filename>httpd.conf</filename> 配置 Apache. 为了让 Apache 加载
+        <command>mod_dav_svn</command>, 要用到指令
+        <literal>LoadModule</literal>, 这条指令必须出现在任何与 Subversion
+        有关的配置项之前. 如果你是按照默认方式安装 Apache, 则
+        <command>mod_dav_svn</command> 是被安装在 Apache 安装位置 (通常是
+        <filename>/usr/local/apache2</filename>) 的
+        <filename>modules</filename> 子目录内. 指令
+        <literal>LoadModule</literal> 的语法非常简单, 包含模块名及其共享库
+        文件的路径:</para>
 
       <informalexample>
         <programlisting>
@@ -3290,6 +3302,7 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
 </programlisting>
       </informalexample>
 
+      <!--
       <para>Apache interprets the <literal>LoadModule</literal>
         configuration item's library path as relative to its own
         server root.  If configured as previously shown, Apache will
@@ -3298,6 +3311,12 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         how Subversion was installed on your system, you might need to
         specify a different path for this library altogether, perhaps
         even an absolute path such as in the following example:</para>
+      -->
+      <para>Apache 将 <literal>LoadModule</literal> 共享库文件的路径解释成
+        相对于服务器进程根目录的路径. 对于上面的例子而言, Apache 将会在它的
+        <filename>moduels/</filename> 子目录内搜索 Subversion DAV 模块的
+        共享库文件. 取决于 Subversion 在系统中的安装方式, 你可能需要指定
+        不同的路径, 甚至像下面这样的绝对路径:</para>
 
       <informalexample>
         <programlisting>
@@ -3305,11 +3324,17 @@ LoadModule dav_svn_module     C:/Subversion/lib/mod_dav_svn.so
 </programlisting>
       </informalexample>
 
+      <!--
       <para>Note that if <command>mod_dav</command> was compiled as a
         shared object (instead of statically linked directly to the
         <command>httpd</command> binary), you'll need a similar
         <literal>LoadModule</literal> statement for it, too.  Be sure
         that it comes before the <command>mod_dav_svn</command> line:</para>
+      -->
+      <para>如果 <command>mod_dav</command> 被编译成一个共享库文件 (而不是
+        被直接编译进 <command>httpd</command> 二进制文件里), 那么它也需要
+        一个类似的 <literal>LoadModule</literal> 指令, 注意, 它要出现在
+        <command>mod_dav_svn</command> 加载指令的前面:</para>
 
       <informalexample>
         <programlisting>
@@ -3318,6 +3343,7 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
 </programlisting>
       </informalexample>
 
+      <!--
       <para>At a later location in your configuration file, you now
         need to tell Apache where you keep your Subversion repository
         (or repositories).  The <literal>Location</literal> directive
@@ -3336,6 +3362,15 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         repository is located at
         <filename>/var/svn/repository</filename> using the
         following <filename>httpd.conf</filename> syntax:</para>
+      -->
+      <para>在配置文件的后面, 你需要把 Subversion 仓库的位置告诉给 Apache.
+        指令 <literal>Location</literal> 具有与 XML 类似的格式, 它以开标签
+        开始, 以闭标签结束, 在开标签和闭标签之间可以包含多个配置指令.
+        <literal>Location</literal> 的目的是在处理指定的 URL 及其子路径上
+        的请求时, 做一些特殊的操作. 对于 Subversion 而言, 就是希望 Apache
+        将指向 Subversion 仓库的请求交由 DAV 层进行处理. 下面的例子告诉
+        Apache, 如果 URL 的路径部分 (URL 中, 跟在服务器名和端口号后面的部分)
+        以 <filename>/repos/</filename> 开始, 就把请求交由 DAV 处理:</para>
 
       <informalexample>
         <programlisting>
