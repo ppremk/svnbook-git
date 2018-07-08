@@ -3381,6 +3381,7 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
 </programlisting>
       </informalexample>
 
+      <!--
       <para>If you plan to support multiple Subversion repositories
         that will reside in the same parent directory on your local
         disk, you can use an alternative
@@ -3393,6 +3394,13 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         <uri>http://my.server.com/svn/repos2</uri>, and so on, you
         could use the <filename>httpd.conf</filename> configuration
         syntax in the following example:</para>
+      -->
+      <para>如果你计划支持多个位于同一父目录下的 Subversion 仓库, 可以
+        使用指令 <literal>SVNParentPath</literal> 指明公共的父目录. 例如,
+        如果你将会在 <filename>/var/svn</filename> 目录下创建多个 Subversion
+        仓库, 访问这些仓库的 URL 是 <uri>http://my.server.com/svn/repos1</uri>,
+        <uri>http://my.server.com/svn/repos2</uri> 等, 那你就可以在
+        <filename>httpd.conf</filename> 里这样写:</para>
 
       <informalexample>
         <programlisting>
@@ -3405,6 +3413,7 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
 </programlisting>
       </informalexample>
 
+      <!--
       <para>Using this syntax, Apache will delegate the
         handling of all URLs whose path portions begin with
         <filename>/svn/</filename> to the Subversion DAV provider,
@@ -3414,7 +3423,15 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         convenient syntax in that, unlike the use of the
         <literal>SVNPath</literal> directive, you don't have to
         restart Apache to add or remove hosted repositories.</para>
+      -->
+      <para>利用这种语法, Apache 将会把路径部分以 <filename>/svn/</filename>
+        开始的 URL 的处理代理给 Subversion DAV, 它将假设由
+        <literal>SVNParentPath</literal> 所指定的目录内的所有项目都是
+        Subversion 仓库. 相对于 <literal>SVNPath</literal>,
+        使用 <literal>SVNParentPath</literal> 更加方便, 因为在添加或删除仓库
+        时不用重启 Apache.</para>
 
+      <!--
       <para>Be sure that when you define your new
         <literal>Location</literal>, it doesn't overlap with other
         exported locations.  For example, if your main
@@ -3429,6 +3446,18 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
         <filename>foo.c</filename> from the Subversion repository.
         The result is often an error from the server of the form
         <literal>301 Moved Permanently</literal>.</para>
+      -->
+      <para>需要注意的是在定义新的 <literal>Location</literal> 时, 不要和
+        其他已有的 <literal>Location</literal> 重叠. 比如说
+        <literal>DocumentRoot</literal> 被导出到 <filename>/www</filename>,
+        那就不要再导出 <literal>&lt;Location /www/repos&gt;</literal> 内的
+        Subversion 仓库, 因为如果 Apache 接到一个访问
+        <filename>/www/repos/foo.c</filename> 的请求, 它就没办法确认这是
+        <literal>DocumentRoot</literal> 内的
+        <filename>repos/foo.c</filename>, 还是代理给
+        <command>mod_dav_svn</command>, 并由它返回 Subversion 仓库内的
+        <filename>foo.c</filename>, 这种错误通常的结果是返回一个
+        <literal>301 Moved Permanently</literal> 响应.</para>
 
       <sidebar>
         <title>Server Names and the COPY Request</title>
