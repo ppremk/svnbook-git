@@ -3723,11 +3723,16 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
 </programlisting>
         </informalexample>
 
+      <!--
         <para>After ensuring the Apache has access to the required
           functionality, you'll need to add some more directives
           inside the <literal>&lt;Location&gt;</literal> block to tell
           Apache what type of authentication you wish to use, and just
           how to do so:</para>
+      -->
+        <para>确定 Apache 具备必需的功能后, 接下来你就可以在
+          <literal>&lt;Location&gt;</literal> 块内添加必要的配置指令, 告诉
+          Apache 你想用哪一种认证类型, 例如:</para>
 
         <informalexample>
           <programlisting>
@@ -3744,31 +3749,50 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
 </programlisting>
         </informalexample>
 
+      <!--
         <para>These directives work as follows:</para>
+      -->
+        <para>这些配置指令的意义是:</para>
 
         <itemizedlist>
           <listitem>
+      <!--
             <para><literal>AuthName</literal> is an arbitrary name
               that you choose for the authentication domain.  Most
               browsers display this name in the dialog box when
               prompting for username and password.</para>
+      -->
+            <para><literal>AuthName</literal> 是你为认证域所选定的一个任意的
+              名字, 大多数浏览器会在提示用户输入用户名与密码的对话框上显示
+              这个名字.</para>
           </listitem>
           <listitem>
+      <!--
             <para><literal>AuthType</literal> specifies the type of
               authentication to use.</para>
+      -->
+            <para><literal>AuthType</literal> 指定认证的类型.</para>
           </listitem>
           <listitem>
+      <!--
             <para><literal>AuthBasicProvider</literal> specifies the
               Basic authentication provider to use for the location.
               In our example, we wish to consult a local password
               file.</para>
+      -->
+            <para><literal>AuthBasicProvider</literal> 指定由谁来提供 Basic
+              认证, 我们的例子里写得是一个本地密码文件.</para>
           </listitem>
           <listitem>
+      <!--
             <para><literal>AuthUserFile</literal> specifies the
               location of the password file to use.</para>
+      -->
+            <para><literal>AuthUserFile</literal> 指定密码文件的路径.</para>
           </listitem>
         </itemizedlist>
 
+      <!--
         <para>However, this <literal>&lt;Location&gt;</literal> block
           doesn't yet do anything useful.  It merely tells Apache that
           <emphasis>if</emphasis> authorization were required, it
@@ -3780,6 +3804,14 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
           The simplest thing is to specify that <emphasis>all</emphasis>
           requests require authorization by adding
           <literal>Require valid-user</literal> to the block:</para>
+      -->
+        <para>然而, 这个 <literal>&lt;Location&gt;</literal> 并没有做任何有
+          用的工作, 它仅仅是告诉 Apache <emphasis>如果</emphasis> 是必须的,
+          它应该要求 Subversion 客户端提供用户名与密码. (如果有需要, Apache
+          自己也会要求认证.) 然而这里还有不完善的地方, 那就是告诉 Apache
+          哪些客户请求才需要授权, 当前的配置是所有的请求都不需要认证, 此时最
+          简单的配置就是通过添加 <literal>Require valid-user</literal> 要求
+          <emphasis>所有的</emphasis> 客户端请求都需要认证:</para>
 
         <informalexample>
           <programlisting>
@@ -3799,11 +3831,17 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
 </programlisting>
         </informalexample>
 
+      <!--
         <para>Refer to <xref linkend="svn.serverconfig.httpd.authz"/>
           for more detail on the <literal>Require</literal> directive
           and other ways to set authorization policies.</para>
+      -->
+        <para>关于配置指令 <literal>Require</literal> 的更多细节, 以及设置
+          授权策略的其他方式, 请参考 <xref
+            linkend="svn.serverconfig.httpd.authz"/>.</para>
 
         <note>
+      <!--
           <para>The default value of the
             <literal>AuthBasicProvider</literal> option is
             <literal>file</literal>, so we won't bother including
@@ -3812,6 +3850,14 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
             need to explicitly reset it to <literal>file</literal>
             within your Subversion <literal>&lt;Location&gt;</literal>
             block in order to get that behavior.</para>
+      -->
+          <para><literal>AuthBasicProvider</literal> 的默认值是
+            <literal>file</literal>, 所以我们不会在后面的例子里显式地写出
+            来. 但有一点需要注意, 如果在更广的上下文内你已经把
+            <literal>AuthBasicProvider</literal> 设置成了其他值, 那就需要在
+            Subversion 的 <literal>&lt;Location&gt;</literal> 内再显式地把
+            <literal>AuthBasicProvider</literal> 设置成
+            <literal>file</literal>.</para>
         </note>
 
       </sect3>
