@@ -3864,8 +3864,12 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.authn.digest">
+      <!--
         <title>Digest authentication</title>
+      -->
+        <title>Digest 认证</title>
 
+      <!--
         <para>Digest authentication is an improvement on Basic
           authentication which allows the server to verify a client's
           identity without sending the password over the network
@@ -3875,12 +3879,25 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
           the server and changed each time authentication is required.
           The client sends its hash to the server, and the server then
           verifies that the hashes match.</para>
+      -->
+        <para>Digest 认证比 Basic 认证更加完善, 它允许服务器验证客户客户端
+          的身份, 而不会在网络上以明文的形式传输密码. 服务器和客户端会使用
+          不可逆的 MD5 算法计算敏感信息的散列值, 敏感信息包括用户名, 密码,
+          所请求的 URI, 由服务器生成的 <firstterm>nonce</firstterm>
+          (一次性数字, 每次认证时都会变化). 客户端把散列值发给服务器, 服务器
+          验证散列值是否正确.</para>
 
+      <!--
         <para>Configuring Apache to use Digest authentication is
           straightforward.  You'll need to ensure that
           the <literal>mod_auth_digest</literal> module is available
           (instead of <literal>mod_auth_basic</literal>), and then
           make a few small variations on our prior example:</para>
+      -->
+        <para>为 Apache 配置 Digest 认证非常简单, 首先你要确保模块
+          <literal>mod_auth_digest</literal> (而不是
+          <literal>mod_auth_basic</literal>) 是可用的, 然后再在上面例子的基础
+          上做一些小改动:</para>
 
         <informalexample>
           <programlisting>
@@ -3900,6 +3917,7 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
 </programlisting>
         </informalexample>
 
+      <!--
         <para>Notice that <literal>AuthType</literal> is now set to
           <literal>Digest</literal>, and we specify a different path
           for <literal>AuthUserFile</literal>.  Digest authentication
@@ -3911,8 +3929,19 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
           Digest authentication also has the additional concept of a
           <quote>realm</quote>, which must match the value of the
           <literal>AuthName</literal> directive.</para>
+      -->
+        <para>注意到 <literal>AuthType</literal> 现在被设置成了
+          <literal>Digest</literal>, 而且指定为 <literal>AuthUserFile</literal>
+          指定了一个不同的路径. Digest 认证所使用的文件格式与 Basic 认证的
+          不同, 这种格式的文件使用 Apache 的命令行工具
+          <command>htdigest</command> <footnote><para>见
+          <ulink url="http://httpd.apache.org/docs/current/programs/htdigest.html"
+            />.</para></footnote> 创建与管理, 而不是
+          <command>htpasswd</command>. Digest 认证也有 <quote>认证域</quote>
+          的概念, 它由配置指令 <literal>AuthName</literal> 指定.</para>
 
         <note>
+      <!--
           <para>For digest authentication, the authentication provider
             is selected using the <literal>AuthDigestProvider</literal>
             as shown in the previous example.  As was the case with
@@ -3922,9 +3951,20 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
             line is not strictly required unless you need to override
             a different value thereof inherited from a broader
             configuration context.</para>
+      -->
+          <para>Digest 认证指定认证信息来源的配置指令是
+            <literal>AuthDigestProvider</literal>,
+            <literal>AuthDigestProvider</literal> 的默认值是
+            <literal>file</literal>, 所以例子里的
+            <userinput>AuthDigestProvider file</userinput> 并不是必需的,
+            除非你要覆盖从更广的配置上下文继承而来的, 与 <literal>file</literal>
+            不同的值.</para>
         </note>
 
+      <!--
         <para>The password file can be created as follows:</para>
+      -->
+        <para>可以像下面这样创建密码文件:</para>
 
         <informalexample>
           <screen>
