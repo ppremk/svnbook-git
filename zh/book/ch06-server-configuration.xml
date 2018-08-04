@@ -4049,6 +4049,8 @@ $
 </programlisting>
         </informalexample>
 
+        <!-- ### TODO -->
+      <!--
         <para>Sometimes you don't need to run such a tight ship.  For
           example, the server hosting Subversion's own source code at
           <ulink url="https://svn.apache.org/repos/asf/subversion/"/> allows
@@ -4061,7 +4063,18 @@ $
           have starting and ending tags, and you would nest them
           inside your <literal>&lt;Location&gt;</literal>
           block.</para>
+      -->
+        <para>有时候, 你并不需要这么绝对的设置. 比如说托管 Subversion 源代码
+          的服务器 (<ulink
+            url="https://svn.apache.org/repos/asf/subversion/"/>) 允许所有人
+          对仓库执行只读操作 (例如检出工作副本, 浏览仓库等), 但只允许认证
+          用户执行写操作. 配置指令 <literal>Limit</literal> 和
+          <literal>LimitExcept</literal> 可以实现这种有选择的访问限制, 和
+          配置指令 <literal>Location</literal> 一样, 前面两个配置指令也有开
+          标签和闭标签, 管理员需要把它们放在 <literal>&lt;Location&gt;</literal>
+          内部.</para>
 
+      <!--
         <para>The parameters present on the <literal>Limit</literal>
           and <literal>LimitExcept</literal> directives are HTTP
           request types that are affected by that block.  For example,
@@ -4073,6 +4086,15 @@ $
           <literal>Require valid-user</literal> directive inside the
           <literal>&lt;LimitExcept&gt;</literal> block instead of just
           inside the <literal>&lt;Location&gt;</literal> block.</para>
+      -->
+        <para><literal>Limit</literal> 和 <literal>LimitExcept</literal>
+          内的参数是 HTTP 请求类型, 这些请求类型将会受到这两个配置指令的
+          影响. 比如说为了允许匿名的只读访问, 管理员需要使用配置指令
+          <literal>LimitExcept</literal> (为指令添加请求类型参数
+          <literal>GET</literal>, <literal>PROPFIND</literal>,
+          <literal>OPTIONS</literal> 和 <literal>REPORT</literal>), 还要把
+          前面提到的配置指令 <literal>Require valid-user</literal> 写到
+          <literal>&lt;LimitExcept&gt;</literal> 内.</para>
 
         <informalexample>
           <programlisting>
@@ -4094,25 +4116,41 @@ $
 </programlisting>
         </informalexample>
 
+      <!--
         <para>These are only a few simple examples.  For more in-depth
           information about Apache access control and the
           <literal>Require</literal> directive, take a look at the
           <literal>Security</literal> section of the Apache
           documentation's tutorials collection at <ulink
           url="http://httpd.apache.org/docs-2.0/misc/tutorials.html"/>.</para>
+      -->
+      <para>前面展示的只是一些很简单的例子, 如果想知道关于 Apache 访问控制和
+        配置指令 <literal>Require</literal> 的更多细节, 可以参考 Apache
+        文档的教程集合 (<ulink
+          url="http://httpd.apache.org/docs-2.0/misc/tutorials.html"/>) 中的
+        <literal>Security</literal> 部分.</para>
 
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.authz.perdir">
+      <!--
         <title>Per-directory access control</title>
+      -->
+        <title>每个目录的访问控制</title>
 
+      <!--
         <para>It's possible to set up finer-grained permissions using
           <command>mod_authz_svn</command>.  This Apache module grabs
           the various opaque URLs passing from client to server, asks
           <command>mod_dav_svn</command> to decode them, and then
           possibly vetoes requests based on access policies defined in
           a configuration file.</para>
+      -->
+        <para>还可以使用 Apache 模块 <command>mod_authz_svn</command> 进行
+          更细致的权限设置, 该模块截取从客户端发往服务器的 URL, 然后请求
+          模块 <command>mod_dav_svn</command> 对 URL 进行解码, 根据定义在
+          配置文件里的访问策略, 可能会禁止客户端的请求.</para>
 
         <para>If you've built Subversion from source code,
           <command>mod_authz_svn</command> is automatically built
