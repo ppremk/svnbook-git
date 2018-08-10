@@ -1829,29 +1829,37 @@ $
 <!--
       <para>As you've already guessed, a repository's
         <filename>svnserve.conf</filename> file is the central
-        mechanism for controlling authentication and authorization
-        policies.  The file has the same format as other configuration
-        files (see <xref linkend="svn.advanced.confarea"/>):
-        section names are marked by square brackets
-        (<literal>[</literal> and <literal>]</literal>), comments
-        begin with hashes (<literal>#</literal>), and each section
-        contains specific variables that can be set (<literal>variable
-        = value</literal>).  Let's walk through these files and learn
-        how to use them.</para>
+        mechanism for controlling access to the repository.  When used
+        in conjunction with other supplemental files described in this
+        section, this configuration file offers an administrator a
+        complete solution for governing user authentication and
+        authorization policies.  Each of the files we'll discuss uses
+        the same format common to other configuration files (see
+        <xref linkend="svn.advanced.confarea"/>): section names are
+        marked by square brackets (<literal>[</literal>
+        and <literal>]</literal>), comments begin with hashes
+        (<literal>#</literal>), and each section contains specific
+        variables that can be set (<literal>variable =
+        value</literal>).  Let's walk through these files now and
+        learn how to use them.</para>
 -->
       <para>Wie Sie sicher bereits bemerkt haben, ist die Datei
         <filename>svnserve.conf</filename> in jedem Projektarchiv die
-        zentrale Anlaufstelle für alle Regeln im Rahmen der
-        Anwenderanmeldung und Rechtevergabe. Die Datei hat dasselbe
-        Format wie die anderen Konfigurationsdateien (siehe <xref
-          linkend="svn.advanced.confarea"/>):
-        Die Abschnittsbezeichnungen sind von eckigen Klammern
-        umschlossen (<literal>[</literal> und <literal>]</literal>),
-        Kommentare werden mit Rauten (<literal>#</literal>)
-        eingeleitet, und jeder Abschnitt enthält spezielle Variablen,
-        denen Werte zugewiesen werden (<literal>variable =
-        value</literal>).  Lassen Sie uns einen Blick in diese Dateien
-        werfen, um zu sehen wie sie verwendet werden.</para>
+        zentrale Anlaufstelle für die Zugangskontrolle zum Projektarchiv.
+        In Verbindung mit anderen in diesem Abschnitt beschriebenen
+        zusätzlichen Dateien bietet diese Konfigurationsdatei dem
+        Administrator eine vollständige Lösung zur Steuerung der
+        Authentifizierungs- und Autorisierungs-Richtlinien für Anwender.
+        Jede der zu erörternden Dateien verwendet das übliche Format wie
+        andere Konfigurationsdateien (siehe
+        <xref linkend="svn.advanced.confarea"/>): Die Bezeichnungen der
+        Abschnitte sind von eckigen Klammern umschlossen
+        (<literal>[</literal> und <literal>]</literal>), Kommentare werden
+        durch Doppelkreuze (<literal>#</literal>) eingeleitet, und jeder
+        Abschnitt enthält spezielle Variablen, denen Werte zugewiesen
+        werden (<literal>variable = value</literal>). Lassen Sie uns einen
+        Blick in diese Dateien werfen, um zu sehen wie sie verwendet
+        werden.</para>
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.auth.users">
  <!--
@@ -2283,7 +2291,7 @@ authz-db = Auth-Datei
 <!--
         <title>Authenticating with SASL</title>
 -->
-        <title>Authentifizierung mit SASL</title>
+        <title>Authentifikation mit SASL</title>
 
 <!--
         <para>To activate specific SASL mechanisms on the server,
@@ -2367,8 +2375,7 @@ use-sasl = true
           how to configure the server appropriately for each.  For the
           purposes of this discussion, we'll just demonstrate a simple
           example of configuring the DIGEST-MD5 mechanism.  For
-          example, if your <filename>subversion.conf</filename>
-          (or <filename>svn.conf</filename>) file contains the
+          example, if your <filename>svn.conf</filename> file contains the
           following:</para>
 -->
         <para>Da SASL so viele unterschiedliche Arten von
@@ -2382,8 +2389,7 @@ use-sasl = true
           entsprechende Konfiguration des Servers. Für die Erörterung
           an dieser Stelle zeigen wir ein einfaches Beispiel der
           Konfiguration des DIGEST-MD5 Mechanismus. Wenn Ihre Datei
-          <filename>subversion.conf</filename> (oder
-          <filename>svn.conf</filename>) beispielsweise folgenden
+          <filename>svn.conf</filename> beispielsweise folgenden
           Inhalt hat:</para>
 
         <informalexample>
@@ -2437,7 +2443,7 @@ $ saslpasswd2 -c -f /etc/my_sasldb -u realm username
           <command>saslpasswd2</command> demselben Bereich entspricht,
           den Sie in der Datei <filename>svnserve.conf</filename>
           Ihres Projektarchivs definiert haben; falls diese Werte nicht
-          übereinstimmen, wird die Authentifizierung fehlschlagen.
+          übereinstimmen, wird die Authentifikation fehlschlagen.
           Darüber hinaus muss aufgrund einer Unzulänglichkeit in SASL
           der gemeinsame Bereich aus einer Zeichenkette ohne
           Leerzeichen bestehen. Falls Sie sich entscheiden, die
@@ -2573,7 +2579,7 @@ max-encryption = 256
         of the project's users already have system accounts and the
         ability to <quote>SSH into</quote> the server machine.</para>
 -->
-      <para>Die eingebaute Authentifizierung (und die
+      <para>Die eingebaute Authentifikation (und die
         SASL-Unterstützung) von <command>svnserve</command> kann sehr
         praktisch sein, da es die Notwendigkeit echter Systemkonten
         vermeidet. Andererseits haben einige Administratoren bereits
@@ -2758,7 +2764,7 @@ baz
       <informalexample>
         <programlisting>
 [tunnels]
-rsh = rsh
+rsh = rsh --
 </programlisting>
       </informalexample>
 
@@ -2770,9 +2776,8 @@ rsh = rsh
         command <userinput>rsh host svnserve -t</userinput> behind the
         scenes.  If you include a username in the URL (e.g.,
         <literal>svn+rsh://username@host/path</literal>), the client
-        will also include that in its command (<userinput>rsh
-        username@host svnserve -t</userinput>).  But you can define new
-        tunneling schemes to be much more clever than that:</para>
+        will also include that in its command (<userinput>rsh - -
+        username@host svnserve -t</userinput>).</para>
 -->
       <para>Ab jetzt können Sie diese neue Tunneldefinition
         verwenden, indem Sie ein URL-Schema benutzen, welches dem
@@ -2784,14 +2789,36 @@ rsh = rsh
         angeben (z.B.
         <literal>svn+rsh://username@host/path</literal>), wird der
         Client das auch mit in seinen Befehl übernehmen
-        (<userinput>rsh username@host svnserve -t</userinput>). Sie
-        können jedoch auch viel raffiniertere neue Tunnel-Schemata
-        definieren:</para>
+        (<userinput>rsh -- username@host svnserve -t</userinput>).</para>
+
+      <warning>
+<!--
+        <para>Notice that when defining an RSH-based tunnel, we've
+          added the <literal>- -</literal> end-of-options argument to
+          the tunnel command line.  This is to prevent a malformed
+          hostname from being treated as another option to the tunnel
+          command.  You should do the same for other tunnel programs
+          (for example, SSH).</para>
+-->
+        <para>Beachten Sie, dass wir beim Definieren eines RSH-basierten
+          Tunnels das <literal>--</literal>-Optionsende-Argument der
+          Tunnel-Bwfehlszeile hinzugefügt haben. Das geschieht, um zu
+          vermeiden, dass ein falsch gebildeter Host-Name als eine weitere
+          Option des Tunnel-Befehls behandelt wird. Das gleiche sollten
+          Sie für andere Tunnel-Befehle machen (zum Beispiel SSH).</para>
+      </warning>
+
+<!--
+      <para>But you can define new tunneling schemes to be much more
+        clever than that:</para>
+-->
+        <para>Sie können jedoch auch viel raffiniertere neue
+          Tunnel-Schemata definieren:</para>
 
       <informalexample>
         <programlisting>
 [tunnels]
-joessh = $JOESSH /opt/alternate/ssh -p 29934
+joessh = $JOESSH /opt/alternate/ssh -p 29934 --
 </programlisting>
       </informalexample>
 
@@ -3736,14 +3763,14 @@ ServerName svn.example.com
 
 <!--
       <para>Of course, you might have already set up
-        a <filename>pre-commit</filename> hook script to prevent
+        a pre-commit hook script to prevent
         commits (see <xref linkend="svn.reposadmin.create.hooks"/>).
         But as you read on, you'll see that it's also possible to use
         Apache's built-in methods to restrict access in specific
         ways.</para>
 -->
       <para>Natürlich kann es sein, dass Sie schon längst ein
-        <filename>pre-commit</filename> Hook-Skript bereitgestellt
+        pre-commit-Hook-Skript bereitgestellt
         haben, um Übergaben zu verhindern (siehe
         <xref linkend="svn.reposadmin.create.hooks"/>). Sie werden
         jedoch beim Weiterlesen feststellen, dass es möglich ist, die
@@ -5989,7 +6016,7 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
 
 <!--
           <para>First, make sure that each slave repository has a
-            <filename>pre-revprop-change</filename> hook script which
+            pre-revprop-change hook script which
             allows remote revision property changes.  (This is
             standard procedure for being on the receiving end of
             <command>svnsync</command>.) Then log into the master
@@ -5999,7 +6026,7 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
 -->
           <para>Stellen Sie zunächst sicher, dass jedes
             Slave-Projektarchiv ein
-            <filename>pre-revprop-change</filename>-Hook-Skript hat,
+            pre-revprop-change-Hook-Skript hat,
             das Änderungen an Revisions-Eigenschaften aus der Ferne
             ermöglicht. (Das ist Standard, wenn von
             <command>svnsync</command> empfangen wird.) Melden Sie
@@ -6085,11 +6112,11 @@ Eigenschaften für Revision 2 kopiert.
 
 <!--
           <para>After this is done, we configure the master server's
-            <literal>post-commit</literal> hook script to invoke
+            post-commit hook script to invoke
             <command>svnsync</command> on each slave server:</para>
 -->
           <para>Nachdem das erledigt ist, wird das
-            <literal>post-commit</literal>-Hook-Skript des
+            post-commit-Hook-Skript des
             Master-Servers konfiguriert, damit
             <command>svnsync</command> auf jedem Slave-Server
             aufgerufen wird:</para>
@@ -6116,8 +6143,8 @@ svnsync sync http://slave3.example.com/svn-proxy-sync \
             commands to run in the background so that the Subversion
             client isn't left waiting forever for the commit to
             finish.  In addition to this
-            <literal>post-commit</literal> hook, you'll need a
-            <literal>post-revprop-change</literal> hook as well so
+            post-commit hook, you'll need a
+            post-revprop-change hook as well so
             that when a user, say, modifies a log message, the slave
             servers get that change also:</para>
 -->
@@ -6126,8 +6153,8 @@ svnsync sync http://slave3.example.com/svn-proxy-sync \
             auf eine leise Art und Weise im Hintergrund zu laufen, so
             dass der Subversion-Client keine Ewigkeit auf den Abschluss
             der Übergabe warten muss. Zusätzlich zu diesem
-            <literal>post-commit</literal>-Hook werden Sie außerdem
-            einen <literal>post-revprop-change</literal>-Hook
+            post-commit-Hook werden Sie außerdem
+            einen post-revprop-change-Hook
             benötigen, damit, wenn ein Anwender beispielsweise eine
             Protokollnachricht verändert, die Slave-Server diese
             Änderung ebenfalls mitbekommen:</para>
