@@ -4194,21 +4194,34 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           配置指令 <literal>AuthzSVNReposRelativeAccessFile</literal> 指定
           每个仓库的访问文件. (过一会儿, 我们就会讨论该文件的格式.)</para>
 
+      <!--
         <para>Apache is flexible, so you have the option to configure
           your block in one of three general patterns.  To begin,
           choose one of these basic configuration patterns.  (The
           following examples are very simple; look at Apache's own
           documentation for much more detail on Apache authentication
           and authorization options.)</para>
+      -->
+        <para>Apache 非常灵活, 所以你可以从 3 种通用模式中选择一种进行配置.
+          首先, 先选择一种基本配置模式. (下面介绍的例子非常简单, 关于 Apache
+          认证与授权选择的更多细节, 请参考 Apache 的文档.)</para>
 
+      <!--
         <para>The most open approach is to allow access to everyone.
           This means Apache never sends authentication challenges, and
           all users are treated as <quote>anonymous</quote>.  (See
           <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-1"
           />.)</para>
+      -->
+      <para>最开放的做法是允许所有人访问, 这意味着 Apache 从不会要求客户
+        端进行认证, 把所有的用户都当成 <quote>匿名用户</quote>. (见
+        <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-1" />.)</para>
 
         <example id="svn.serverconfig.httpd.authz.perdir.ex-1">
+      <!--
           <title>A sample configuration for anonymous access</title>
+      -->
+          <title>匿名访问的配置示例</title>
           <programlisting>
 &lt;Location /repos&gt;
   DAV svn
@@ -4222,15 +4235,24 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 </programlisting>
         </example>
 
+      <!--
         <para>On the opposite end of the paranoia scale, you can
           configure Apache to authenticate all clients.
           This block unconditionally requires authentication via the
           <literal>Require valid-user</literal> directive, and defines
           a means to authenticate valid users.  (See
           <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-2"/>.)</para>
+      -->
+        <para>相反, 你可以要求 Apache 对所有的客户端进行认证, 下面的配置
+          使用配置指令 <literal>Require valid-user</literal> 无条件地要求
+          认证, 而且还指定了用户的认证方式. (见 <xref
+            linkend="svn.serverconfig.httpd.authz.perdir.ex-2"/>.)</para>
 
         <example id="svn.serverconfig.httpd.authz.perdir.ex-2">
+      <!--
           <title>A sample configuration for authenticated access</title>
+      -->
+          <title>认证访问的配置示例</title>
           <programlisting>
 &lt;Location /repos&gt;
   DAV svn
@@ -4248,6 +4270,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 </programlisting>
         </example>
 
+      <!--
         <para>A third very popular pattern is to allow a combination
           of authenticated and anonymous access.  For example, many
           administrators want to allow anonymous users to read certain
@@ -4260,10 +4283,22 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           and <literal>Require valid-user</literal> directives.  (See
           <xref linkend="svn.serverconfig.httpd.authz.perdir.ex-3"
           />.)</para>
+      -->
+      <para>第三种常见的配置模式是同时允许认证与匿名访问. 比如说很多管理
+        员通常会允许匿名用户读取特定的仓库目录, 但较为敏感的区域仅允许
+        被认证用户访问. 在这种配置下, 所有用户首先以匿名身份访问仓库, 在
+        任意时刻, 如果你的访问控制策略要求使用真正的用户名, Apache 将向
+        客户端发起认证要求. 为了实现这种配置, 使用配置指令
+        <literal>Satisfy Any</literal> 和
+        <literal>Require valid-user</literal>. (见 <xref
+          linkend="svn.serverconfig.httpd.authz.perdir.ex-3" />.)</para>
 
         <example id="svn.serverconfig.httpd.authz.perdir.ex-3">
+      <!--
           <title>A sample configuration for mixed
             authenticated/anonymous access</title>
+      -->
+          <title>匿名/认证混合访问的配置示例</title>
           <programlisting>
 &lt;Location /repos&gt;
   DAV svn
@@ -4283,17 +4318,26 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 </programlisting>
         </example>
 
+      <!--
         <para>The next step is to create the authorization file
           containing access rules for particular paths within the
           repository.  We describe how later in this chapter, in
           <xref linkend="svn.serverconfig.pathbasedauthz"/>.</para>
+      -->
+        <para>下一步就是创建授权文件, 文件内包含了访问仓库中特定路径的规则,
+          我们将在 <xref linkend="svn.serverconfig.pathbasedauthz"/> 介绍
+          如何编写授权文件.</para>
 
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.authz.pathauthzoff">
+      <!--
         <title>Disabling path-based checks</title>
+      -->
+        <title>禁止基于路径的检查</title>
 
+      <!--
         <para>The <command>mod_dav_svn</command> module goes through a
           lot of work to make sure that data you've marked
           <quote>unreadable</quote> doesn't get accidentally leaked.
@@ -4308,6 +4352,16 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           was renamed long ago&mdash;the rename tracking will simply
           halt if one of the object's former names is determined to be
           read-restricted.</para>
+      -->
+        <para>模块 <command>mod_dav_svn</command> 会做大量的工作, 以便确保
+          被管理员标记为 <quote>unreadable</quote> 的数据不会被意外地泄漏,
+          这意味着它需要仔细地监控由客户端命令 (例如
+          <command>svn checkout</command> 和 <command>svn update</command>)
+          返回的路径和文件内容. 如果客户端命令遇到了一个它不可读的路径, 该
+          路径就会被忽略. 对于历史或重命名追溯&mdash;例如对一个早就被重命名
+          过的文件执行 <userinput>svn cat -r OLD foo.c</userinput>&mdash;
+          如果其中一个对象以前的名字被禁止读取, 那么重命名追溯就会被终止.
+        </para>
 
         <para>All of this path checking can sometimes be quite
           expensive, especially in the case of <command>svn
