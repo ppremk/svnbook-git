@@ -4354,7 +4354,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           read-restricted.</para>
       -->
         <para>模块 <command>mod_dav_svn</command> 会做大量的工作, 以便确保
-          被管理员标记为 <quote>unreadable</quote> 的数据不会被意外地泄漏,
+          被管理员标记为 <quote>不可读</quote> 的数据不会被意外地泄漏,
           这意味着它需要仔细地监控由客户端命令 (例如
           <command>svn checkout</command> 和 <command>svn update</command>)
           返回的路径和文件内容. 如果客户端命令遇到了一个它不可读的路径, 该
@@ -4363,6 +4363,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           如果其中一个对象以前的名字被禁止读取, 那么重命名追溯就会被终止.
         </para>
 
+      <!--
         <para>All of this path checking can sometimes be quite
           expensive, especially in the case of <command>svn
           log</command>.  When retrieving a list of revisions, the
@@ -4370,7 +4371,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           checks it for readability.  If an unreadable path is
           discovered, it's omitted from the list of the revision's
           changed paths (normally seen with
-          the <option>--verbose</option> (<option>-v</option>) option),
+          the <option>- -verbose</option> (<option>-v</option>) option),
           and the whole log message is suppressed.  Needless to say,
           this can be time-consuming on revisions that affect a large
           number of files.  This is the cost of security: even if you
@@ -4382,7 +4383,21 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           no idea what authorization modules have been installed, so
           all it can do is ask Apache to invoke whatever might be
           present.</para>
+      -->
+        <para>有时候这些路径检查的代价将会非常高昂, 特别是对 <command>svn
+            log</command> 而言. 当检索一个版本号列表时, 服务器查看每个版本号
+          内被修改的路径, 检查路径的可读性, 如果碰到一个不可读的路径, 它将不
+          会出现在版本号的修改路径列表里 (选项 <option>--verbose</option>
+          (<option>-v</option>) 能够显示被版本号修改的路径), 整个日志消息也不
+          会显示出来. 不管怎么说, 如果被版本号影响的文件数量非常大, 那么这种
+          检查将会非常耗时. 这就是安全的代价: 即使你根本就没有配置像
+          <command>mod_authz_svn</command> 这样的模块, 模块
+          <command>mod_dav_svn</command> 仍然会要求 Apache
+          <command>httpd</command> 对每一个路径执行授权检查. 模块
+          <command>mod_dav_svn</command> 无法知晓系统中已经安装了哪些授权模块,
+          所以它就要求 Apache 调用可能存在的任意模块.</para>
 
+      <!--
         <para>On the other hand, there's also an escape hatch of
           sorts, which allows you to trade security features for
           speed.  If you're not enforcing any sort of per-directory
@@ -4392,6 +4407,14 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           <filename>httpd.conf</filename> file, use the
           <literal>SVNPathAuthz</literal> directive as shown in
           <xref linkend="svn.serverconfig.httpd.authz.pathauthzoff.ex-1"/>.</para>
+      -->
+        <para>另一方面, 管理员还可以牺牲部分安全, 以换取速度. 如果你没有实施
+          任意类型的每个目录授权 (即没有使用 <command>mod_authz_svn</command>
+          或类似的模块), 就可以禁止这些路径检查, 禁止方式是在
+          <filename>httpd.conf</filename> 里使用配置指令
+          <literal>SVNPathAuthz</literal>, 见
+          <xref linkend="svn.serverconfig.httpd.authz.pathauthzoff.ex-1"/>
+          所示.</para>
 
         <example id="svn.serverconfig.httpd.authz.pathauthzoff.ex-1">
           <title>Disabling path checks altogether</title>
