@@ -4551,6 +4551,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
         都有可能被未授权的网络嗅探工具所拦截. 使用 SSL 加密网络流量是保护
         敏感数据不在网络上泄露的常用方法.</para>
 
+      <!--
       <para>If a Subversion client is compiled to use OpenSSL,
         it gains the ability to speak to an Apache server via
         <literal>https://</literal> URLs, so all traffic is encrypted
@@ -4558,19 +4559,34 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
         the Subversion client is not only able to verify server
         certificates, but can also supply client certificates when
         challenged by the server.</para>
+      -->
+      <para>如果 Subversion 客户端工具在编译时开启了 OpenSSL, 它就可以使用
+        <literal>https://</literal> 形式的 URL 连接 Apache 服务器, 于是所有
+        的网络流量都会使用每连接会话密钥进行加密. Subversion 客户端所使用的
+        函数库 WebDAV 不仅可以验证服务器的证书, 当服务器提出要求时, 它也可
+        以为客户端提供证书.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.ssl.server">
+      <!--
         <title>Subversion server SSL certificate configuration</title>
+      -->
+        <title>Subversion 服务器 SSL 证书配置</title>
 
+      <!--
         <para>It's beyond the scope of this book to describe how to
           generate client and server SSL certificates and how to
           configure Apache to use them.  Many other references,
           including Apache's own documentation (<ulink 
           url="http://httpd.apache.org/docs/current/ssl/"/>),
           describe the process.</para>
+      -->
+        <para>如何为客户端和服务器生成 SSL 证书, 以及如何配置 Apache 以便
+          使用这些证书, 已经超出了本书的范畴, 读者可参考 Apache 的文档
+          (<ulink url="http://httpd.apache.org/docs/current/ssl/"/>).</para>
 
         <tip>
+      <!--
           <para>SSL certificates from well-known entities generally
             cost money, but at a bare minimum, you can configure
             Apache to use a self-signed certificate generated with a
@@ -4581,30 +4597,53 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
             time), such an attack is much more difficult for a casual
             observer to pull off, compared to sniffing unprotected
             passwords.</para></footnote></para>
+      -->
+      <para>来自知名组织的 SSL 证书通常需要花钱购买, 但如果只需要满足最低
+        限度的要求, 你可以让 Apache 使用自签署的证书, 这种证书由 OpenSSL
+        生成.<footnote><para>但是, 自签署的证书仍然无法抵御 <quote>中间人
+              攻击</quote> (在客户端首次见到证书之前), 和嗅探敏感数据相比,
+            这种攻击更难防范.</para></footnote></para>
         </tip>
 
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.ssl.client">
+      <!--
         <title>Subversion client SSL certificate management</title>
+      -->
+        <title>Subversion 客户端 SSL 证书管理</title>
 
+      <!--
         <para>When connecting to Apache via <literal>https://</literal>,
           a Subversion client can receive two different types of
           responses:</para>
+      -->
+        <para>当使用 <literal>https://</literal> 形式的 URL 连接 Apache 时,
+          Subversion 客户端将会收到两个类型的响应:</para>
 
         <itemizedlist>
           <listitem>
+      <!--
             <para>A server certificate</para>
+      -->
+            <para>一个服务器证书</para>
           </listitem>
           <listitem>
+      <!--
             <para>A challenge for a client certificate</para>
+      -->
+            <para>一个针对客户端证书的请求</para>
           </listitem>
         </itemizedlist>
 
         <sect4 id="svn.serverconfig.httpd.ssl.client.servercert">
+      <!--
           <title>Server certificate</title>
+      -->
+          <title>服务器证书</title>
 
+      <!--
           <para>When the client receives a server certificate, it needs
             to verify that the server is who it claims to be. OpenSSL
             does this by examining the signer of the server certificate,
@@ -4614,6 +4653,13 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
             hostname mismatch), the Subversion command-line client will
             ask you whether you want to trust the server certificate
             anyway:</para>
+      -->
+          <para>当客户端收到服务器证书时, 它需要验证服务器身份的真实性,
+            OpenSSL 完成验证的方法是检查服务器证书的签发人, 也就是
+            <firstterm>证书颁发机构</firstterm> (<firstterm>certificate
+              authority</firstterm>, 简称 CA). 如果 OpenSSL 无法自动信任
+            CA, 或者是发生的错误 (例如认证超时或主机名不匹配), 那么 Subversion
+            客户端工具将询问用户是否要信任服务器的证书:</para>
 
           <informalexample>
             <screen>
@@ -4632,6 +4678,7 @@ Certificate information:
 </screen>
           </informalexample>
 
+      <!--
           <para>This dialogue is essentially the same question you may
             have seen coming from your web browser (which is just
             another HTTP client like Subversion).  If you choose the
@@ -4641,6 +4688,13 @@ Certificate information:
             password are cached (see <xref
             linkend="svn.serverconfig.netmodel.credcache"/>), and will
             automatically trust the certificate in the future.</para>
+      -->
+          <para>用户可能会在网页浏览器看到相同的对话框 (浏览器只是一个
+            HTTP 客户端), 如果选择 <literal>p</literal>, Subversion 将把
+            服务器证书缓存在本地的 <filename>auth/</filename> 目录内,
+            你的用户名和密码也缓存在这里 (见 <xref
+              linkend="svn.serverconfig.netmodel.credcache"/>), 今后再次
+            连接服务器时, 将会自动信任证书.</para>
 
           <para>Your runtime <filename>servers</filename> file also gives
             you the ability to make your Subversion client automatically
