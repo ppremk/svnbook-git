@@ -4732,11 +4732,16 @@ ssl-authority-files = /path/to/CAcert1.pem;/path/to/CAcert2.pem
         </sect4>
 
         <sect4 id="svn.serverconfig.httpd.ssl.client.clientcert">
+      <!--
           <title>Client certificate challenge</title>
+      -->
+          <title>客户端证书盘问</title>
 
+      <!--
           <para>If the client receives a challenge for a certificate,
             the server is asking the client to prove its identity.
             The client must send back a certificate signed by a CA
+            ### TODO
             that the server trusts, along with a <firstterm>challenge
             response</firstterm> which proves that the client owns the
             private key associated with the certificate.  The private
@@ -4744,6 +4749,14 @@ ssl-authority-files = /path/to/CAcert1.pem;/path/to/CAcert2.pem
             format on disk, protected by a passphrase.  When Subversion
             receives this challenge, it will ask you for the path to the
             encrypted file and the passphrase that protects it:</para>
+      -->
+          <para>如果客户端收到一个证书请求, 那便是服务器要求客户端提供它的
+            身份, 客户端必须提供由 CA 签名过的证书, 而该 CA 是服务器所信任
+            的, 除了证书, 还要发送一个 <firstterm>响应</firstterm>
+            (<firstterm>challenge response</firstterm>), 这个响应证明了客户
+            端拥有与证书关联的私钥. 私钥和证书通常被加密后存放在本地磁盘上,
+            被一个密码保护. 当 Subversion 客户端收到证书的盘问时, 它将询问
+            用户密钥与证书的存放路径, 以及对应的密码:</para>
 
           <informalexample>
             <screen>
@@ -4755,6 +4768,7 @@ Passphrase for '/path/to/my/cert.p12':  ********
 </screen>
           </informalexample>
 
+      <!--
           <para>Notice that the client credentials are stored in a
             <literal>.p12</literal> file.  To use a client certificate
             with Subversion, it must be in PKCS#12 format, which is a
@@ -4762,6 +4776,12 @@ Passphrase for '/path/to/my/cert.p12':  ********
             and export certificates in that format.  Another option
             is to use the OpenSSL command-line tools to convert
             existing certificates into PKCS#12.</para>
+      -->
+          <para>在上面的例子里, 客户端证书存放在 <literal>.p12</literal>
+            文件里. 为了让 Subversion 使用证书, 证书的格式必须是 PKCS#12,
+            这是一种可移植的标准格式, 大多数网页浏览器支持导入或导出这种
+            格式的证书, 除了浏览器, 还可以用 OpenSSL 命令行工具把已有的
+            证书转换成 PKCS#12 格式.</para>
 
           <para>The runtime <filename>servers</filename> file also
             allows you to automate this challenge on a per-host basis.
