@@ -4850,6 +4850,7 @@ ssl-client-cert-password = somepassword
       <sect3 id="svn.serverconfig.httpd.perf.keepalive">
         <title>KeepAlive</title>
 
+      <!--
         <para>By default, the Apache HTTP Server is configured to
           enable the re-use of a single server connection for multiple
           requests.  That's very beneficial for Subversion, because
@@ -4863,7 +4864,16 @@ ssl-client-cert-password = somepassword
           boolean flag which enables or disables this connection
           re-use facility, and as we indicated previously, by default
           its value is <literal>On</literal>.</para>
+      -->
+        <para>默认情况下, Apache HTTP 服务器允许为多个请求复用同一个连接,
+          这对于 Subversion 而言非常有好处, 因为 Subversion 在一个单独的
+          操作中, 很可能会快速产生成百上千个请求, 而重新打开一个服务器的
+          连接是一件颇费周张的事. 在连接被服务器关闭之前, Subversion 会同
+          一个连接内发送尽可能多的请求. 配置指令 <literal>KeepAlive</literal>
+          用于开启或禁止连接重用功能, 它的默认值是 <literal>On</literal>.
+        </para>
 
+      <!--
         <para>But there's another directive which limits the number of
           requests a client is allowed to submit on a single
           connection:  the <literal>MaxKeepAliveRequests</literal>
@@ -4877,6 +4887,15 @@ ssl-client-cert-password = somepassword
           you increase the value of the
           <literal>MaxKeepAliveRequests</literal> option
           to at least <literal>1000</literal>.</para>
+      -->
+        <para>但是还有另一个配置指令用于限制客户端在一个单独的连接内, 可以提交
+          的请求数量: <literal>MaxKeepAliveRequests</literal>, 它的默认值是
+          <literal>100</literal>. 对于版本较旧的 Subversion 而言, 它的默认值
+          已经足够了, 但是 Subversion 1.8 使得了不同的 HTTP 通信函数库 (称为
+          Serf), 为了获取特定的零碎信息, Serf 更倾向于发送若干个小请求, 而不是
+          请求服务器在一个单独的响应中, 传回一大块数据. 因此, 我们建议把
+          至少把 <literal>MaxKeepAliveRequests</literal> 设置为
+          <literal>1000</literal>.</para>
 
         <informalexample>
           <programlisting>
@@ -4898,8 +4917,12 @@ MaxKeepAliveRequests 1000
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.perf.bulk-updates">
+      <!--
         <title>Bulk updates</title>
+      -->
+        <title>批量更新</title>
 
+      <!--
         <para>The biggest difference between the way that Subversion
           1.8 clients and pre-1.8 clients behave is in how update-style
           operations (<command>svn checkout</command>, <command>svn
@@ -4912,6 +4935,14 @@ MaxKeepAliveRequests 1000
           and then a <literal>REPORT</literal> request with a massive
           response.  That response was the entire checkout/update
           dataset!</para>
+      -->
+        <para>Subversion 1.8 客户端和它旧版之间最大的不同点在于更新操作
+          (<command>svn checkout</command>, <command>svn update</command>,
+          <command>svn switch</command> 等) 的处理过程. 老版客户端使用
+          Neon HTTP 函数库实现通信, Neon 函数库更喜欢在一个单独的请求中, 向
+          服务器索要全部的信息. 管理员可能在他们的服务器日志里见到过这种日志:
+          先是一些握手操作, 然后是一个带有大量数据的 <literal>REPORT</literal>
+          请求, 这些数据就是整个的检出/更新数据集!</para>
 
         <para>Subversion clients which use the Serf HTTP
           library&mdash;which includes all clients built atop the
