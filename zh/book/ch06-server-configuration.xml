@@ -5618,6 +5618,7 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
 </programlisting>
         </informalexample>
 
+      <!--
         <para>In addition to the <literal>SVN-ACTION</literal>
           environment variable, <command>mod_dav_svn</command> also
           populates the <literal>SVN-REPOS</literal>
@@ -5630,7 +5631,17 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
           multiple repositories into a single log file.  For an
           exhaustive list of all actions logged, see
           <xref linkend="svn.serverconfig.operational-logging"/>.</para>
+      -->
+        <para>除了环境变量 <literal>SVN-ACTION</literal>,
+          <command>mod_dav_svn</command> 还会设置 <literal>SVN-REPOS</literal>
+          和 <literal>SVN-REPOS-NAME</literal>, 这两个环境变量分别存放仓库的
+          文件系统路径和路径的最后一个分量. 如果你想把多个仓库的日志写到同一
+          个日志文件里, 那么你可能需要把这两个环境变量包含到
+          <literal>CustomLog</literal> 格式字符串里. 可被日志记录的操作的详尽
+          列表, 见 <xref linkend="svn.serverconfig.operational-logging"/>.
+        </para>
 
+      <!--
         <para>Obviously, the more information that Apache logs about
           your Subversion activities, the more disk space on your
           server those logs consume.  It is non uncommon for
@@ -5642,7 +5653,15 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
           outside the scope of this book.  Administrators are
           encouraged to use the log rotation and archival approach
           which works best for them.</para>
+      -->
+        <para>显示, Apache 为 Subversion 所记录的日志越多, 服务器上的磁盘消耗
+          也就越多, 对于非常活跃的 Subversion 服务器而言, 每天产生数兆大小的
+          日志并不少见. 只有当日志能被有效地处理时, 它才是有价值的, 而庞大的
+          日志文件很快就会让分析难以为继. 关于如何管理 Apache HTTP 服务器日志,
+          有很多标准的做法可供参考, 介绍它们已经超出了本书的范畴, 管理员应该
+          选择一种最适合他们的日志轮转与归档方式.</para>
 
+      <!--
         <para>But what if Subversion is simply generating too much log
           information to be useful?  For example, in
           <xref linkend="svn.serverconfig.httpd.perf.bulk-updates" />,
@@ -5654,7 +5673,16 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
           might not have been).  In this case, you might consider
           using some Apache configuration magic to selectively silence
           some of that log activity.</para>
+      -->
+        <para>如果 Subversion 只是产生了太多没什么用的日志, 那又该怎么办?
+          比如说在
+          <xref linkend="svn.serverconfig.httpd.perf.bulk-updates" /> 我们
+          说过 Subversion 客户端在执行检出和其他更新操作时, 所采取的特定
+          方式将会导致服务器快速产生大量日志, 因为请求每一段数据的日志都是
+          单独记录 (Subversion 以前的版本可能不会这样做). 在这种情况下, 管理
+          员可能需要配置 Apache, 以便静默某些日志.</para>
 
+      <!--
         <para>Apache HTTP Server's
           <literal>mod_setenvif</literal> module offers
           a <literal>SetEnvIf</literal> directive which is handy for
@@ -5666,6 +5694,13 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
           to <emphasis>not</emphasis> log <literal>GET</literal>
           and <literal>PROPFIND</literal> requests aimed at private
           Subversion URLs.</para>
+      -->
+        <para>Apache HTTP 模块 <command>mod_setenvif</command> 提供了配置
+          指令 <literal>SetEnvIf</literal>, 可根据条件设置环境变量. 利用
+          <literal>SetEnvIf</literal>, 就可以让 <literal>CustomLog</literal>
+          根据环境变量的状态, 有条件地为请求记录日志. 下面的配置示例告诉
+          服务器不要为指向私有 Subversion URL 的 <literal>GET</literal> 和
+          <literal>PROPFIND</literal> 请求记录日志.</para>
 
         <informalexample>
           <programlisting>
