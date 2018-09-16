@@ -5722,6 +5722,7 @@ CustomLog logs/access_log env=!do_not_log
 </programlisting>
         </informalexample>
 
+      <!--
         <para>Using this configuration, <command>httpd</command> would
           still log <literal>GET</literal> requests aimed at public
           Subversion URLs.  These are the sorts of requests generated
@@ -5731,12 +5732,22 @@ CustomLog logs/access_log env=!do_not_log
           "private" Subversion URLs&mdash;which are the very sorts of
           requests used to fetch each and every individual file during
           a checkout operation&mdash;won't get logged.</para>
+      -->
+        <para>利用上面的配置, <command>httpd</command> 仍然会为指向公开的
+          Subversion URL 的 <literal>GET</literal> 请求记录日志, 这些请求
+          有可能是用户在网页上浏览仓库时产生的. 对于指向 <quote>private</quote>
+          的 Subversion URL 的 <literal>GET</literal> 和
+          <literal>PROPFIND</literal> 请求&mdash;这些请求可能是检出操作所
+          产生的&mdash;将不会记录日志.</para>
 
       </sect3>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.extra.writethruproxy">
+      <!--
         <title>Write-through proxying</title>
+      -->
+        <title>直写代理</title>
 
         <para>
           <indexterm>
@@ -5753,7 +5764,21 @@ CustomLog logs/access_log env=!do_not_log
             <primary>httpd</primary>
             <secondary>write-through proxies</secondary>
             <tertiary>slave</tertiary>
-          </indexterm>One of the nice advantages of using Apache as a
+          </indexterm>
+          使用 Apache 作为 Subversion 服务器的一大好处是它可以用来实现简单的
+          副本备份. 比如说, 你的团队分布在全球的四个办公室内, 而 Subversion
+          仓库只能放在其中一个办公室中, 这就意味着其他三个办公室将享受不到好
+          的访问体验&mdash;当他们更新和提交代码时, 看到的很可能是缓慢的响应
+          时间. 对于这种问题, 最有效的解决方案是搭建一套系统, 该系统由一个
+          Apache <firstterm>主</firstterm> (<firstterm>master</firstterm>)
+          服务器与若干个 <firstterm>从</firstterm>
+          (<firstterm>slave</firstterm>) 服务器组成. 如果在每一个办公室都放置
+          一个从服务器, 当用户检出工作副本时, 将从最近的服务器上检出&mdash;所
+          有的读操作都在本地的从服务器上完成, 写操作将被自动路由到主服务器.
+          当提交完成时, 主服务器自动地使用备份工具 <command>svnsync</command>,
+          把新版本号 <quote>推送</quote> 给其他所有的从服务器.</para>
+      <!--
+          One of the nice advantages of using Apache as a
           Subversion server is that it can be set up for simple
           replication.  For example, suppose that your team is
           distributed across four offices around the globe.  The
@@ -5772,6 +5797,7 @@ CustomLog logs/access_log env=!do_not_log
           then automatically <quote>pushes</quote> the new revision to
           each slave server using the <command>svnsync</command>
           replication tool.</para>
+      -->
 
         <para>This configuration creates a huge perceptual speed
           increase for your users, because Subversion client traffic
