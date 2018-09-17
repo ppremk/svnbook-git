@@ -5799,19 +5799,31 @@ CustomLog logs/access_log env=!do_not_log
           replication tool.</para>
       -->
 
+      <!--
         <para>This configuration creates a huge perceptual speed
           increase for your users, because Subversion client traffic
           is typically 80&ndash;90% read requests.  And if those
           requests are coming from a <emphasis>local</emphasis>
           server, it's a huge win.</para>
+      -->
+        <para>上面的方案可以极大地提高用户的访问速度, 因为 Subversion 客户端
+          所产生的网络流量中, 有 80&ndash;90% 都是读请求, 如果这些请求都由
+          <emphasis>本地的</emphasis> 服务器进行处理, 将是一个很大的性能提升.
+        </para>
 
+      <!--
         <para>In this section, we'll walk you through a standard setup
           of this single-master/multiple-slave system.  However, keep
           in mind that your servers must be running at least Apache
           2.2.0 (with <command>mod_proxy</command> loaded) and
           Subversion 1.5 (<command>mod_dav_svn</command>).</para>
+      -->
+        <para>本节, 我们将介绍如果搭建一个标准的一主多从服务器系统, 注意,
+          Apache 的版本至少是 2.2.0 (加载了模块 <command>mod_proxy</command>),
+          Subversion (<command>mod_dav_svn</command>) 至少是 1.5.</para>
 
         <note>
+      <!--
           <para>Ours is just one example of how you might setup a
             Subversion write-through proxy configuration.  There are
             other approaches.  For example, rather than having the
@@ -5824,11 +5836,23 @@ CustomLog logs/access_log env=!do_not_log
             of what happens in a Subversion WebDAV proxy deployment
             scenario, and then implement the specific approach that
             works best for their organization.</para>
+      -->
+          <para>我们这里所介绍的方案, 只是配置 Subversion 直写代理的众多方案
+            中的一种, 还有其他方案可供选择, 例如从服务器可以定期地从主服务器
+            上拉取修改, 而不是主服务器主动向从服务器推送修改. 又或者是主服务
+            器先将修改推送到某个从服务器, 这个从服务器再将相同的修改推送给下
+            一个从服务器, 依次类推. 管理员可以先通过本节理解当部署 Subversion
+            WebDAV 代理时, 发生了哪些事情, 然后再实现一种最适合自己的方案.
+          </para>
         </note>
 
         <sect4 id="svn.serverconfig.httpd.extra.writethruproxy.configure">
+      <!--
           <title>Configure the servers</title>
+      -->
+          <title>配置服务器</title>
 
+      <!--
           <para>First, configure your master server's
             <filename>httpd.conf</filename> file in the usual way.
             Make the repository available at a certain URI location,
@@ -5837,6 +5861,12 @@ CustomLog logs/access_log env=!do_not_log
             <quote>slave</quote> servers in the exact same way, but
             add the special <literal>SVNMasterURI</literal> directive
             to the block:</para>
+      -->
+          <para>首先, 按照通常的方式修改主服务器的
+            <filename>httpd.conf</filename>, 使得仓库能在特定的 URI 位置被
+            访问到, 按照你自己的需求, 配置认证与授权. 主服务器配置完成后,
+            按照相同的步骤配置从服务器, 不过从服务器要额外配置一个
+            <literal>SVNMasterURI</literal> 配置指令:</para>
 
           <informalexample>
             <programlisting>
@@ -5849,6 +5879,7 @@ CustomLog logs/access_log env=!do_not_log
 </programlisting>
           </informalexample>
 
+      <!--
           <para>This new directive tells a slave server to redirect
             all write requests to the master.  (This is done
             automatically via Apache's <command>mod_proxy</command>
@@ -5857,6 +5888,12 @@ CustomLog logs/access_log env=!do_not_log
             slave servers all have matching authentication and
             authorization configurations;  if they fall out of sync,
             it can lead to big headaches.</para>
+      -->
+          <para>配置指令 <literal>SVNMasterURI</literal> 告诉从服务器把所有
+            的写请求都重写向到主服务器 (写请求重定向由 Apache 模块
+            <command>mod_proxy</command> 自动完成). 然而, 普遍的读请求仍然由
+            从服务器处理. 一定要确保主服务器和从服务器都配置了相同的认证与
+            授权, 否则的话, 会非常让人头疼.</para>
 
           <para>Next, we need to deal with the problem of infinite
             recursion.  With the current configuration, imagine what
