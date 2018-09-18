@@ -5895,6 +5895,7 @@ CustomLog logs/access_log env=!do_not_log
             从服务器处理. 一定要确保主服务器和从服务器都配置了相同的认证与
             授权, 否则的话, 会非常让人头疼.</para>
 
+      <!--
           <para>Next, we need to deal with the problem of infinite
             recursion.  With the current configuration, imagine what
             will happen when a Subversion client performs a commit to
@@ -5905,13 +5906,26 @@ CustomLog logs/access_log env=!do_not_log
             Subversion client performing a commit, the slave will
             immediately attempt to proxy the incoming write request
             back to the master!  Hilarity ensues.</para>
+      -->
+          <para>接下来, 我们需要解决无限递归的问题. 根据目前的配置, 想像一下
+            当客户端向主服务器提交一个修改时, 将会发生什么现象. 当提交完成后,
+            主服务器使用 <command>svnsync</command> 将新的版本号复制给每一个
+            从服务器, 但是在从服务器看来, <command>svnsync</command> 只不过是
+            提交修改的另一个客户端而已, 于是从服务器会马上把这个写请求重定向
+            给主服务器, 这就导致了无限递归.</para>
 
+      <!--
           <para>The solution to this problem is to have the master
             push revisions to a different
             <literal>&lt;Location&gt;</literal> on the slaves.  This
             location is configured to <emphasis>not</emphasis> proxy
             write requests at all, but to accept normal commits from
             (and only from) the master's IP address:</para>
+      -->
+          <para>解决办法是让主服务器把版本号复制到从服务器上与主服务器不同的
+            <literal>&lt;Location&gt;</literal>, 这个位置
+            <emphasis>不</emphasis> 设置写请求代理, 但接受且只接受从主服务器
+            IP 地址发过来的提交:</para>
 
           <informalexample>
             <programlisting>
