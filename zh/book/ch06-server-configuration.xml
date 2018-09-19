@@ -5944,8 +5944,12 @@ CustomLog logs/access_log env=!do_not_log
         </sect4>
 
         <sect4 id="svn.serverconfig.httpd.extra.writethruproxy.replicate">
+      <!--
           <title>Set up replication</title>
+      -->
+          <title>设置备份</title>
 
+      <!--
           <para>Now that you've configured
             your <literal>Location</literal> blocks on master and
             slaves, you need to configure the master to replicate to
@@ -5953,7 +5957,13 @@ CustomLog logs/access_log env=!do_not_log
             which is covered in more detail in
             <xref linkend="svn.reposadmin.maint.replication.svnsync"
             />.</para>
+      -->
+        <para>主服务器和从服务器上的 <literal>Location</literal> 配置完毕后,
+          接下来需要配置主服务器将修改复制给所有的从服务器, 其中需要用到
+          <command>svnsync</command>, 关于该命令的详细介绍在
+          <xref linkend="svn.reposadmin.maint.replication.svnsync"/>.</para>
 
+      <!--
           <para>First, make sure that each slave repository has a
             pre-revprop-change hook script which
             allows remote revision property changes.  (This is
@@ -5962,6 +5972,12 @@ CustomLog logs/access_log env=!do_not_log
             server and configure each of the slave repository URIs to
             receive data from the master repository on the local
             disk:</para>
+      -->
+          <para>首先要确保的是从服务器上的每一个仓库都含有钩子脚本
+            pre-revprop-change, 该脚本用于开启版本号属性修改 (修改版本号属性
+            是接收端接收到 <command>svnsync</command> 结束时的标准步骤). 然后
+            登录到主服务器, 将每一个从服务器的仓库配置为从主服务器本地磁盘上
+            的仓库接收数据:</para>
 
           <informalexample>
             <screen>
@@ -6009,9 +6025,14 @@ Copied properties for revision 2.
 </screen>
           </informalexample>
 
+      <!--
           <para>After this is done, we configure the master server's
             post-commit hook script to invoke
             <command>svnsync</command> on each slave server:</para>
+      -->
+          <para>上面的命令执行完后, 修改主服务器的钩子脚本 post-commit,
+            使得在提交完成后, 调用 <command>svnsync</command> 将版本号复制
+            给每一个从服务器:</para>
 
           <informalexample>
             <programlisting>
