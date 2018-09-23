@@ -6083,6 +6083,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
 </programlisting>
           </informalexample>
 
+      <!--
           <para>The only thing we've left out here is what to do about
             user-level locks (of the <command>svn lock</command>
             variety).  Locks are enforced by the master server during
@@ -6101,12 +6102,30 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             may be a nonissue for you.  Sadly, for those teams which
             do use locks, we have no recommendations on how to
             gracefully work around this shortcoming.</para>
+      -->
+          <para>现在还未处理的就是用户级别的锁 (也就是与
+            <command>svn lock</command> 相关的锁), 在提交操作执行期间, 由主
+            服务器完成锁的施加, 但是关于锁的全部信息在读取操作 (例如由从服务器
+            负责处理的 <command>svn update</command> 和
+            <command>svn status</command>) 执行期间, 需要进行分发. 因此,
+            一个功能完善的代理设置需要把主服务器中与锁有关的信息复制到
+            从服务器上. 不幸的是, 该问题的大多数解决方案无论如何都达不到要求
+            <footnote><para><ulink
+              url="http://subversion.tigris.org/issues/show_bug.cgi?id=3457" />
+            记录了各种方案存在的问题.</para></footnote>. 很多团队根本就不使用
+            Subversion 的锁, 所以这些解决方案存在的问题并不会对你带来麻烦.
+            不过对于那些确实要用到锁的团队而言, 我们目前也无法提供有用的建议.
+          </para>
 
         </sect4>
 
         <sect4 id="svn.serverconfig.httpd.extra.writethruproxy.caveats">
+      <!--
           <title>Caveats</title>
+      -->
+          <title>警告</title>
 
+      <!--
           <para>Your master/slave replication system should now be
             ready to use.  A couple of words of warning are in order,
             however.  Remember that this replication isn't entirely
@@ -6125,6 +6144,17 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             out-of-band monitoring to notice synchronization failures
             and force <command>svnsync</command> to run when things go
             wrong.</para>
+      -->
+          <para>主从副本系统现在就可以正式工作了, 不过有些事情需要提前注意.
+            这里介绍的副本策略不能抵抗服务器或网络崩溃的情况. 举例来说, 如果
+            其中一个 <command>svnsync</command> 由于某种原因失败了, 那么从
+            服务器就会悄无声息的失败, 即使有用户声称他们已经提交了版本号 100,
+            但是后面执行 <command>svn update</command> 时, 本地从服务器将告诉
+            他们版本号 100 并不存在! 当然, 如果又有新的提交发生, 并且随后的
+            <command>svnsync</command> 都执行成功了, 那么问题就会被自动的修复
+            &mdash;<command>svnsync</command> 会复制所以未复制的版本号. 不过
+            管理员仍然想设置某种带外的监控, 以便能够侦测到失败的同步, 并强制
+            运行 <command>svnsync</command>, 修正错误.</para>
 
           <para>Another limitation of the write-through proxy
             deployment model involves version mismatches&mdash;of the
