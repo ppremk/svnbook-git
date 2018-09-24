@@ -6156,6 +6156,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             管理员仍然想设置某种带外的监控, 以便能够侦测到失败的同步, 并强制
             运行 <command>svnsync</command>, 修正错误.</para>
 
+      <!--
           <para>Another limitation of the write-through proxy
             deployment model involves version mismatches&mdash;of the
             version of Subversion which is installed, that
@@ -6165,6 +6166,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             and servers.  Since feature negotiation happens against
             the slave, it is the slave's protocol version and feature
             set which is used.  But write operations are passed
+            ### TODO
             through to the master server quite literally.  Therefore,
             there is a risk that the slave server will answer a
             feature negotiation request from the client in way that is
@@ -6172,7 +6174,17 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             master is running an older version of Subversion.  This
             could result in the client trying to use a new feature
             that the master doesn't understand, and failing.</para>
+      -->
+          <para>直写代理的另一个限制涉及到主服务器与从服务器的 Subversion
+            版本不匹配. 新发布的 Subversion 很可能为服务器与客户端之间所使用
+            的网络协议添加了新特性, 由于客户端只和从服务器进行特性协商, 因此
+            最终使用的协议版本和特性集合由从服务器的 Subversion 版本决定.
+            不过, 写操作被传递给主服务器, 因此, 如果主服务器的 Subversion
+            版本较旧, 从服务器在与客户端进行特性协商时, 可能会返回从服务器
+            支持, 而主服务器不支持的特性, 结果是客户端使得了主服务器不理解的
+            特性, 最终导致操作失败.</para>
 
+      <!--
           <para>Subversion 1.8 helps to mitigate this problem via the
             introduction of a new Apache configuration
             directive, <literal>SVNMasterVersion</literal>.  By
@@ -6182,9 +6194,17 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             running on your master server, the slave servers can more
             accurately negotiate feature support with the
             client.</para>
+      -->
+          <para>为了缓和上面的问题, Subversion 1.8 引入了一个新的 Apache 配置
+            指令&mdash;<literal>SVNMasterVersion</literal>. 在每个从服务器上,
+            把 <literal>SVNMasterVersion</literal> 都设置成主服务器的
+            Subversion 版本号, 这样从服务器在与客户端协商特性时, 就会考虑到主
+            服务器的 Subversion 版本.</para>
 
+      <!--
           <para>Unfortunately, Subversion 1.7 doesn't offer
             the <literal>SVNMasterVersion</literal> configuration
+            ### TODO
             directive and is known to have some specific problems
             along these lines.  If you are deploying a Subversion 1.7
             slave server in front of a pre-1.7 master, you'll want to
@@ -6192,16 +6212,30 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             Subversion <literal>&lt;Location&gt;</literal> block with
             the <literal>SVNAdvertiseV2Protocol Off</literal>
             directive.</para>
+      -->
+          <para>不幸的是, Subversion 1.7 不支持配置指令
+            <literal>SVNMasterVersion</literal>, 如果从服务器的版本是
+            Subversion 1.7, 而主服务器的版本比 Subversion 1.7 旧, 那么管理员
+            就需要在从服务器的 <literal>&lt;Location&gt;</literal> 配置块里
+            加上配置指令 <literal>SVNAdvertiseV2Protocol Off</literal>.</para>
 
           <tip>
+      <!--
             <para>For the best results possible, try to run the same
               version of Subversion on your master and slave
               servers.</para>
+      -->
+            <para>为了尽量减少可能的麻烦, 最好在主服务器和从服务器上运行相
+              同版本的 Subversion.</para>
           </tip>
 
           <sidebar>
+      <!--
             <title>Can We Set Up Replication with svnserve?</title>
+      -->
+            <title>是否可以用 svnserve 设置副本?</title>
 
+      <!--
             <para>If you're using <command>svnserve</command> instead
               of Apache as your server, you can certainly configure
               your repository's hook scripts to invoke
@@ -6217,6 +6251,15 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
               for creating read-only <quote>mirrors</quote> of popular
               open source projects, but it's not a transparent
               proxying system.</para>
+      -->
+            <para>如果管理员使用 <command>svnserve</command>&mdash;而不是
+              Apache&mdash;作为服务器软件,那么仍然可以使用钩子脚本执行
+              <command>svnsync</command>, 完成主服务器到从服务器的版本号复制.
+              但不幸的是, 在撰写本书时, 还没有办法让 <command>svnserve</command>
+              自动地把写请求重定向至主服务器, 这就意味着用户只能从从服务器上
+              检出只读的工作副本, 管理员必须把从服务器配置成禁止写访问. 如果
+              想创建某个开源项目的只读 <quote>镜像</quote>, 这倒是一种不错的
+              办法, 但这就不是一个透明的代理系统了.</para>
           </sidebar>
 
         </sect4>
