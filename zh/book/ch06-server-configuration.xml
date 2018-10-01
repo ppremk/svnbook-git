@@ -6417,11 +6417,17 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                 目录 (若没有则创建该目录). 该选项所指定的目录路径必须是绝对
                 路径.</para>
 
+      <!--
               <para>If specified for
                 an <literal>SVNParentPath</literal>
                 area, <command>mod_dav_svn</command> appends the
                 basename of the repository to the path specified here.
                 For example:</para>
+      -->
+              <para>如果定义了 <literal>SVNParentPath</literal>,
+                <command>mod_dav_svn</command> 就会把仓库路径的最后一个分量
+                附加到 <literal>SVNActivitiesDB</literal> 所指定的路径上,
+                例如:</para>
 
               <informalexample>
           <screen>
@@ -6446,6 +6452,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             <term><literal>SVNAdvertiseV2Protocol On|Off</literal></term>
             <listitem>
 
+      <!--
               <para>New to Subversion 1.7, this toggles
                 whether <command>mod_dav_svn</command> advertises its
                 support for the new version of its HTTP protocol also
@@ -6457,6 +6464,16 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                 another server which does not support the new
                 protocol, set this directive's value
                 to <literal>Off</literal>.</para>
+      -->
+              <para>在 Subversion 1.7 引入, 该配置指令决定
+                <command>mod_dav_svn</command> 是否应该支持 1.7 引入的新版
+                HTTP 协议. 大多数管理员都会选择禁止
+                <literal>SVNAdvertiseV2Protocol</literal> (而默认值是
+                <literal>On</literal>). 如果选择打开
+                <literal>SVNAdvertiseV2Protocol</literal>, 就能享受到新版
+                协议带来的性能提升. 然而, 如果服务器被设置为另一个服务器的
+                直写代理, 而另一个服务器并不支持新版协议, 那就要设置成
+                <literal>Off</literal>.</para>
 
             </listitem>
           </varlistentry>
@@ -6465,6 +6482,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             <term><literal>SVNAllowBulkUpdates On|Off|Prefer</literal></term>
             <listitem>
 
+      <!--
               <para>Toggles support for all-inclusive responses to
                 update-style requests.  Subversion clients use
                 <literal>REPORT</literal> requests to get information
@@ -6483,7 +6501,20 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                 to these <literal>REPORT</literal> requests with
                 skelta responses, regardless of the type of responses
                 requested by the client.</para>
+      -->
+              <para>该配置指令决定, 对于更新类型的请求, 是否支持全包含
+                (all-inclusive) 的响应. Subversion 客户端通过发送请求
+                <literal>REPORT</literal> 向服务器索取关于目录检出和更新
+                的信息, 客户端可以请求服务器以两种方式之一返回信息: 在一个
+                单独的响应中携带全部的信息, 或者是只返回一段概略性的信息,
+                然后 Subversion 客户端再根据这段信息, 向服务器请求
+                <emphasis>额外的</emphasis> 的数据. 如果
+                <literal>SVNAllowBulkUpdates</literal> 被设置成
+                <literal>Off</literal>, <command>mod_dav_svn</command> 将
+                按照第二种方式响应 <literal>REPORT</literal> 请求, 无论客户
+                端所请求的是哪一种响应类型.</para>
 
+      <!--
               <para>The default value of this directive is
                 <literal>On</literal>, which permits the server to
                 reply to update requests using the style of response
@@ -6494,6 +6525,14 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                 server to announce to clients that it
                 <emphasis>prefers</emphasis> to handle bulk update
                 requests.</para>
+      -->
+              <para><literal>SVNAllowBulkUpdates</literal> 的默认值是
+                <literal>On</literal>, 也就是说服务器会根据客户端所请求的
+                响应类型来回复请求. 从 Subversion 1.8 开始,
+                <literal>SVNAllowBulkUpdates</literal> 也可以被设置成
+                <literal>Prefer</literal>, 它和 <literal>On</literal> 类似,
+                但是服务器将向客户端宣告它 <emphasis>更喜欢</emphasis> 按
+                照第一种方式处理更新请求.</para>
 
               <para>Most folks won't need to use this directive at
                 all.  It primarily exists for administrators who
