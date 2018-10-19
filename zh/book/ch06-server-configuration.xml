@@ -7191,6 +7191,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         决定应该把特定目录的权限授予给哪些人, 不授予给哪些人. 乍看起来非常
         自然, 还可以缓解管理员过度控制仓库的欲望.</para>
 
+      <!--
       <para>Note, though, that there are often invisible (and
         visible!) costs associated with this feature.  In the visible
         category, the server needs to do a lot more work to ensure
@@ -7209,23 +7210,46 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         need to be maintained as projects develop, new users are
         added, and so on.  It's a bunch of extra work to
         maintain.</para>
+      -->
+      <para>但是, 这样做通常会产生一些可见 (和不可见) 的代价. 可见的代价是
+        服务器需要做大量的配置工作, 以便确保用户对每个特定的目录都有正确的
+        读写权限, 在某些情况下, 这会产生很明显的性能损失. 对于不可见的代价,
+        考虑一下你所创建的文化. 在大多数情况下, 特定的用户
+        <emphasis>不应该</emphasis> 向特定的仓库目录提交修改, 这种约定没必要
+        通过技术手段加以约束. 团队成员有时候会不由自主地与他们协作, 例如通过
+        向不属于他们的仓库目录提供修改, 帮助他们完成工作. 如果在服务器配置上
+        禁止了这种形式的合作, 无形中就树起了一道协作屏障. 随着着项目的发展与
+        新成员的加入, 管理员需要不停地创建新规则, 这会带来大量额外的维护工作.
+      </para>
 
+      <!--
         <para>Remember that this is a version control system!  Even if
         somebody accidentally commits a change to something she
         shouldn't, it's easy to undo the change.  And if a user
         commits to the wrong place with deliberate malice, it's a
         social problem anyway, and that the problem needs to be dealt
         with outside Subversion.</para>
+      -->
+      <para>记住, 这是一个版本控制系统! 即使有人不小心向错误的目录提交了修改,
+        这些修改也可以轻易地撤消. 如果用户故意向错误地目录提交修改, 这只能算
+        作人际问题, 这种问题要在 Subversion 外部解决.</para>
 
+      <!--
       <para>So, before you begin restricting users' access rights, ask
         yourself whether there's a real, honest need for this, or
         whether it's just something that <quote>sounds good</quote> to
         an administrator.  Decide whether it's worth sacrificing some
         server speed, and remember that there's very little risk
+        ### TODO
         involved; it's bad to become dependent on technology as a
         crutch for social problems.<footnote><para>A common theme in
         this book!</para></footnote></para>
+      -->
+  <para>所以, 在管理员限制用户的访问权限之前, 要问一下自己这是否真的有必要,
+    是否只是为了 <quote>听起来不错</quote>, 是否值得牺牲服务器的性能. 放任
+    用户的访问权限并不会带来非常大的风险, 而把.</para>
 
+      <!--
       <para>As an example to ponder, consider that the Subversion
         project itself has always had a notion of who is allowed to
         commit where, but it's always been enforced socially.  This is
@@ -7235,14 +7259,24 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         corporations, for example, certain types of data really can be
         sensitive, and access needs to be genuinely restricted to
         small groups of people.</para>
+      -->
+      <para>考虑一个例子, 假设 Subversion 项目对哪些人应该向哪些目录提交
+        有一套自己约定俗成的规则, 但这些规则总是通过社交来实施. 这是一种
+        良好地社区信任模型, 特别是对于开源项目而言. 当然, 有时候确实需要
+        基于路径的访问控制, 比如说在公司内部, 某些数据非常敏感, 只能把访问
+        权授予给少部分人员.</para>
 
     </sidebar>
 
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.pathbasedauthz.getting-started">
 
+      <!--
       <title>Getting Started with Path-Based Access Control</title>
+      -->
+      <title>基于路径的访问控制</title>
 
+      <!--
       <para>Subversion offers path-based access control in Apache via
         the <command>mod_authz_svn</command> module, which must be
         loaded using the <literal>LoadModule</literal> directive
@@ -7254,16 +7288,37 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         within the <filename>httpd.conf</filename> file) pointing to
         your own access rules file.  (For a full explanation, see
         <xref linkend="svn.serverconfig.httpd.authz.perdir"/>.)</para>
+      -->
+      <para>Subversion 通过模块 <command>mod_authz_svn</command> 向 Apache
+        提供基于路径的访问控制, 模块 <command>mod_authz_svn</command> 必须
+        在配置文件 <filename>httpd.conf</filename> 内, 使用配置指令
+        <literal>LoadModule</literal> 进行加载, 加载方式与模块
+        <command>mod_dav_svn</command> 相同. 为了让仓库能够使用这个模块,
+        在配置文件 <filename>httpd.conf</filename> 内用配置指令
+        <literal>AuthzSVNAccessFile</literal> 或
+        <literal>AuthzSVNReposRelativeAccessFile</literal> 指定访问规则文件.
+        (详细的解决见 <xref
+          linkend="svn.serverconfig.httpd.authz.perdir"/>.)</para>
 
+      <!--
       <para>To configure path-based authorization
         in <command>svnserve</command>, simply point
         the <literal>authz-db</literal> configuration variable (within
         your <filename>svnserve.conf</filename> file) to your access
         rules file.</para>
+      -->
+      <para>为了给 <command>svnserve</command> 配置基于路径的访问控制,
+        只需要把 <filename>svnserve.conf</filename> 内的配置变量
+        <literal>authz-db</literal> 的值指定成你的访问规则文件.</para>
 
+      <!--
       <para>Once your server knows where to look for your access
         rules, it's time to define those rules.</para>
+      -->
+      <para>一旦服务器知道了去哪儿查找你的访问规则文件, 接下来需要做的就是
+        定义访问规则.</para>
 
+      <!--
       <para>The syntax of the Subversion access file is the same
         familiar one used by <filename>svnserve.conf</filename> and
         the runtime configuration files.  Lines that start with a hash
@@ -7282,8 +7337,23 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         either <literal>r</literal> (read-only) or <literal>rw</literal>
         (read/write).  If the user is not mentioned at all, no access is
         allowed.</para>
+      -->
+      <para>Subversion 访问规则文件的语法与 <filename>svnserve.conf</filename>
+        和运行时配置文件的语法相同. 忽略以 <literal>#</literal> 开始的行,
+        在最简单的形式中, 文件的每一节的名字都指定了一个被版本控制的路径,
+        可能还指定了包含该路径的仓库. 换句话说, 除了少数几个被保留的节外,
+        节名只有这两种形式: 如果使用了配置指令
+        <literal>AuthzSVNAccessFile</literal>, 则要么是
+        <literal>[repos-name:path]</literal>, 要么是 <literal>[path]</literal>.
+        如果使用了配置指令 <literal>AuthzSVNReposRelativeAccessFile</literal>
+        指定了每个仓库的访问规则文件, 则只能使用 <literal>[path]</literal>
+        这种形式. 已认证的用户名是每一节的选项的名字, 选项的值描述了用户对该
+        路径的访问权限: 只读 (<literal>r</literal>) 或读写
+        (<literal>rw</literal>). 如果用户名未出现在节中, 则不具有该路径的
+        任何访问权限.</para>
 
       <note>
+      <!--
         <para>Paths used in access file sections must be specified
           using Subversion's <quote>internal style</quote>, which
           mostly just means that they are encoded in UTF-8 and use
@@ -7294,13 +7364,27 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
           represented exactly as such in access file section names
           (<literal>[repos-name:path&nbsp;with&nbsp;spaces]</literal>,
           e.g.)</para>
+      -->
+        <para>出现在访问规则文件中的路径必须使用 Subversion 的
+          <quote>内部风格</quote> 编写, 在大部分情况下, 这意味着路径使用
+          UTF-8 编码, 使用斜杠 (<literal>/</literal>) 作为路径中各个分量
+          的分隔符 (即使是 Windows 系统, 也要使用斜杠). 还要注意这些路径
+          中的字符不会进行任何形式地转义&mdash;比如说路径中的空格必须与
+          文件中的节名 (例如
+          <literal>[repos-name:path&nbsp;with&nbsp;spaces]</literal>) 完全
+          一致.</para>
       </note>
 
+      <!--
       <para>Here's a simple example demonstrating a piece of the
         access configuration which grants read access Sally, and
         read/write access to Harry, for the
         path <filename>/branches/calc/bug-142</filename> (and all its
         children) in the repository <literal>calc</literal>:</para>
+      -->
+      <para>下面是访问规则文件的一个例子, 文件把仓库 <literal>calc</literal>
+        的路径 <filename>/branches/calc/bug-142</filename> (及其子目录) 的
+        读权限授予 Sally, 把读取权限授予 Harry:</para>
 
       <informalexample>
         <programlisting>
@@ -7311,6 +7395,7 @@ sally = r
       </informalexample>
 
       <warning>
+      <!--
         <para>Prior to version 1.7, Subversion treated repository names
           and paths in a case-insensitive fashion for the purposes of
           access control, converting them to lower case internally
@@ -7318,6 +7403,11 @@ sally = r
           file.  It now does these comparisons case-sensitively.  If you
           upgraded to Subversion 1.7 from an older version, you should
           review your access files for case correctness.</para>
+      -->
+        <para>Subversion 1.7 之前的版本会把仓库名和路径都转化成小写形式后,
+          再与访问规则文件进行匹配, 因此是不区分大小写的. 但从 Subversion 1.7
+          开始不再如此. 因此, 如果你需要从较旧的版本升级到 1.7, 你应该重新
+          检查访问规则文件中的大小写是否正确.</para>
       </warning>
 
       <para>The name of a repository as evaluated by the authorization
