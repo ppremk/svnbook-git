@@ -446,6 +446,7 @@
       vielleicht <emphasis>gegen</emphasis> eine der Möglichkeiten
       sprechen.</para>
 
+    <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.choosing.svnserve">
 
 <!--
@@ -541,6 +542,7 @@
 
     </sect2>
 
+    <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.choosing.svn-ssh">
 <!--
       <title>svnserve over SSH</title>
@@ -630,6 +632,7 @@
 
     </sect2>
 
+    <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.choosing.apache">
 
 <!--
@@ -922,6 +925,7 @@
       </listitem>
       </itemizedlist>
     </sect2>
+
   </sect1>
 
   <!-- ================================================================= -->
@@ -1834,7 +1838,7 @@ $
         section, this configuration file offers an administrator a
         complete solution for governing user authentication and
         authorization policies.  Each of the files we'll discuss uses
-        the same format common to other configuration files (see
+        the format common to other configuration files (see
         <xref linkend="svn.advanced.confarea"/>): section names are
         marked by square brackets (<literal>[</literal>
         and <literal>]</literal>), comments begin with hashes
@@ -3878,19 +3882,57 @@ $
         </informalexample>
 
 <!--
-        <para>Next, add some more directives inside the
-          <literal>&lt;Location&gt;</literal> block to tell Apache how
-          to use the password file:</para>
+        <para>Next, ensure that Apache has access to the modules which
+          provide the Basic authentication and related
+          functionality:  <command>mod_auth_basic</command>,
+          <command>mod_authn_file</command>, and
+          <command>mod_authz_user</command>.  In many cases, these
+          modules are compiled into <command>httpd</command> itself,
+          but if not, you might need to explicitly load one or more of
+          them using the <literal>LoadModule</literal> directive:</para>
 -->
+        <para>Stellen Sie als nächstes sicher, dass Apache Zugriff auf die
+          Module hat, die die einfache Authentifizierung und verwandte
+          Funktionalität zur Verfügung stellen:
+          <command>mod_auth_basic</command>,
+          <command>mod_authn_file</command> und
+          <command>mod_authz_user</command>. Oft sind diese Module in
+          <command>httpd</command> selbst hineinkompiliert worden; falls
+          nicht, müssten Sie gegebenenfalls eins oder mehrere davon mittels
+          der Direktive <literal>LoadModule</literal> explizit laden:</para>
+
+        <informalexample>
+          <programlisting>
+LoadModule auth_basic_module   modules/mod_auth_basic.so
+LoadModule authn_file_module   modules/mod_authn_file.so
+LoadModule authz_user_module   moduels/mod_authz_user.so
+</programlisting>
+        </informalexample>
+
+<!--
+        <para>After ensuring the Apache has access to the required
+          functionality, you'll need to add some more directives
+          inside the <literal>&lt;Location&gt;</literal> block to tell
+          Apache what type of authentication you wish to use, and just
+          how to do so:</para>
+-->
+        <para>Wenn sichergestellt ist, dass Apache Zugriff auf die
+          benötigte Funktionalität hat, müssen Sie noch ein paar
+          zusätzliche Direktiven innerhalb des
+          <literal>&lt;Location&gt;</literal>-Blocks hinzufügen, um Apache
+          mitzuteilen, welche Art der Authentifizierung Sie zu Verwenden
+          wünschen, und wie das umgesetzt werden soll:</para>
 
         <informalexample>
           <programlisting>
 &lt;Location /svn&gt;
   DAV svn
   SVNParentPath /var/svn
+
   # Authentication: Basic
   AuthName "Subversion repository"
   AuthType Basic
+  AuthBasicProvider file
   AuthUserFile /etc/svn-auth.htpasswd
 &lt;/Location&gt;
 </programlisting>
@@ -3922,6 +3964,18 @@ $
 -->
             <para><literal>AuthType</literal> spezifiziert den Typ der
               zu verwendenden Authentifikation.</para>
+          </listitem>
+          <listitem>
+<!--
+            <para><literal>AuthBasicProvider</literal> specifies the
+              Basic authentication provider to use for the location.
+              In our example, we wish to consult a local password
+              file.</para>
+-->
+            <para><literal>AuthBasicProvider</literal> spezifiziert den zu
+              Verwendenden Provider für die Authentifizierung am Ort. In
+              unserem Beispiel wollen wir in einer lokalen Passwort-Datei
+              nachsehen.</para>
           </listitem>
           <listitem>
 <!--
@@ -3971,6 +4025,7 @@ $
   # Authentication: Basic
   AuthName "Subversion repository"
   AuthType Basic
+  AuthBasicProvider file
   AuthUserFile /etc/svn-auth.htpasswd
 
   # Authorization: Authenticated users only
@@ -3988,6 +4043,28 @@ $
           und anderen Möglichkeiten, Autorisierungsrichtlinien
           festzulegen, sehen Sie unter
           <xref linkend="svn.serverconfig.httpd.authz"/> nach.</para>
+
+        <note>
+<!--
+          <para>The default value of the
+            <literal>AuthBasicProvider</literal> option is
+            <literal>file</literal>, so we won't bother including
+            it in future examples.  Just know that if in a broader
+            context you've set this value to something else, you'll
+            need to explicitly reset it to <literal>file</literal>
+            within your Subversion <literal>&lt;Location&gt;</literal>
+            block in order to get that behavior.</para>
+-->
+          <para>Der Standardwert der Option
+            <literal>AuthBasicProvider</literal> ist
+            <literal>file</literal>, und wir werden sie künftig nicht in
+            Beispiele aufnehmen. Nehmen Sie allerdings zur Kenntnis, dass
+            Sie sie innerhalb des Subversion
+            <literal>&lt;Location&gt;</literal>-Blocks explizit auf
+            <literal>file</literal> zurücksetzen müssen, um dieses
+            Verhalten einzustellen, falls Sie in einem weiteren Kontext
+            diesen Wert auf etwas anderes gesetzt haben sollten.</para>
+        </note>
 
       </sect3>
 
@@ -4019,13 +4096,17 @@ $
 
 <!--
         <para>Configuring Apache to use Digest authentication is
-          straightforward, with only small variations on our prior
-          example:</para>
+          straightforward.  You'll need to ensure that
+          the <command>mod_auth_digest</command> module is available
+          (instead of <command>mod_auth_basic</command>), and then
+          make a few small variations on our prior example:</para>
 -->
         <para>Die Konfigurierung von Apache für die
-          Digest-Authentifizierung ist unkompliziert und nur eine
-          kleine Abweichung von unserem vorangegangenen
-          Beispiel:</para>
+          Digest-Authentifizierung ist unkompliziert. Sie müssen
+          sicherstellen, dass das Modul <command>mod_auth_digest</command>
+          verfügbar ist (anstatt <command>mod_auth_basic</command>), und
+          nur eine kleine Änderung an unserem vorangegangenen Beispiel
+          vornehmen:</para>
 
         <informalexample>
           <programlisting>
@@ -4036,6 +4117,7 @@ $
   # Authentication: Digest
   AuthName "Subversion repository"
   AuthType Digest
+  AuthDigestProvider file
   AuthUserFile /etc/svn-auth.htdigest
 
   # Authorization: Authenticated users only
@@ -4048,30 +4130,52 @@ $
         <para>Notice that <literal>AuthType</literal> is now set to
           <literal>Digest</literal>, and we specify a different path
           for <literal>AuthUserFile</literal>.  Digest authentication
-          uses a different file format than Basic authentication; it
-          is created using Apache's <command>htdigest</command>
+          uses a different file format than Basic authentication,
+          created and managed using Apache's <command>htdigest</command>
           utility<footnote><para>See
           <ulink url="http://httpd.apache.org/docs/current/programs/htdigest.html"
-          />.</para></footnote> rather
-          than <command>htpasswd</command>.  Digest authentication
-          also has the additional concept of a
+          />.</para></footnote> rather than <command>htpasswd</command>.
+          Digest authentication also has the additional concept of a
           <quote>realm</quote>, which must match the value of the
-          <literal>AuthName</literal> directive.  The password file
-          can be created as follows:</para>
+          <literal>AuthName</literal> directive.</para>
 -->
         <para>Beachten Sie, dass <literal>AuthType</literal> nun auf
           <literal>Digest</literal> gesetzt ist, und wir einen
           unterschiedlichen Pfad für <literal>AuthUserFile</literal>
           angegeben haben. Digest-Authentifizierung verwendet ein
-          unterschiedliches Dateiformat als Basic-Authentifizierung;
-          es wird mit Apaches Dienstprogramm
-          <command>htdigest</command> erzeugt<footnote><para>Siehe
+          unterschiedliches Dateiformat als Basic-Authentifizierung, das
+          mit Apaches Dienstprogramm
+          <command>htdigest</command> erzeugt und verwaltet
+          wird<footnote><para>Siehe
           <ulink url="http://httpd.apache.org/docs/current/programs/htdigest.html"
           />.</para></footnote> statt mit <command>htpasswd</command>.
           Digest-Authentifizierung besitzt auch das zusätzliche
           Konzept eines Bereichs, <quote>realm</quote>, der dem Wert
-          der Direktive <literal>AuthName</literal> entsprechen muss.
-          Die Passwortdatei kann wie folgt erzeugt werden:</para>
+          der Direktive <literal>AuthName</literal> entsprechen
+          muss.</para>
+
+        <note>
+<!--
+          <para>For Digest authentication, the authentication provider
+            is selected using the <literal>AuthDigestProvider</literal>
+            as shown in the previous example.  As was the case with
+            the <literal>AuthBasicProvider</literal> directive,
+            <literal>file</literal> is the default value of the
+            <literal>AuthDigestProvider</literal> option, so this
+            line is not strictly required unless you need to override
+            a different value thereof inherited from a broader
+            configuration context.</para>
+-->
+          <para>Für die Digest-Authentifizierung wird der
+            Authentifizierungs-Provider wie im vorangegangenen Beispiel
+            mittels <literal>AuthDigestProvider</literal> ausgewählt. Wie
+            im Fall der Direktive <literal>AuthBasicProvider</literal>, ist
+            der Standardwert der Option <literal>AuthDigestProvider</literal>
+            <literal>file</literal>, so dass diese Zeile nicht unbedingt
+            notwendig ist, es sei denn, Sie müssen einen ererbten
+            unterschiedlichen Wert aus einem weiteren Kontext
+            überschreiben.</para>
+        </note>
 
 <!--
         <informalexample>
@@ -5299,7 +5403,7 @@ http://host.example.com/repos/project/trunk/renamed-thing.txt?p=123&amp;r=21
             examples include ViewVC
             (<ulink url="http://viewvc.tigris.org"/>), Trac
             (<ulink url="http://trac.edgewall.org"/>) and WebSVN
-            (<ulink url="http://websvn.info"/>).  These third-party
+            (<ulink url="http://websvnphp.github.io"/>).  These third-party
             tools don't affect <command>mod_dav_svn</command>'s
             built-in <quote>browseability</quote>, and generally offer
             a much wider set of features, including the display of the
@@ -5318,7 +5422,7 @@ http://host.example.com/repos/project/trunk/renamed-thing.txt?p=123&amp;r=21
             Drittanbietern. Hierzu zählen beispielsweise ViewVC
             (<ulink url="http://viewvc.tigris.org"/>), Trac
             (<ulink url="http://trac.edgewall.org"/>) und WebSVN
-            (<ulink url="http://websvn.info"/>). Diese Werkzeuge von
+            (<ulink url="http://websvnphp.github.io"/>). Diese Werkzeuge von
             Drittanbietern beeinträchtigen nicht die eingebaute
             <quote>Stöberfähigkeit</quote> von
             <command>mod_dav_svn</command> und bieten im Allgemeinen
@@ -5473,7 +5577,7 @@ http://host.example.com/repos/project/trunk/renamed-thing.txt?p=123&amp;r=21
             Subversion source distribution's
             <filename>tools/xslt/</filename> directory.
             Keep in mind that the path provided to the
-            <literal>SVNIndexXSLT</literal> directory is actually a
+            <literal>SVNIndexXSLT</literal> directive is actually a
             URL path&mdash;browsers need to be able to read your
             stylesheets to make use of them!</para>
 -->
@@ -5485,7 +5589,7 @@ http://host.example.com/repos/project/trunk/renamed-thing.txt?p=123&amp;r=21
             Sie auch die Beispiel-Stylesheets aus dem Verzeichnis
             <filename>tools/xslt/</filename> des
             Subversion-Quelltextpakets verwenden. Beachten Sie, dass
-            die Pfadangabe des Verzeichnisses
+            die Pfadangabe der Direktive
             <literal>SVNIndexXSLT</literal> tatsächlich um einen
             URL-Pfad handelt &ndash; Browser müssen Ihre Stylesheets
             lesen können, um sie zu verwenden!</para>
