@@ -7296,8 +7296,8 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         <command>mod_dav_svn</command> 相同. 为了让仓库能够使用这个模块,
         在配置文件 <filename>httpd.conf</filename> 内用配置指令
         <literal>AuthzSVNAccessFile</literal> 或
-        <literal>AuthzSVNReposRelativeAccessFile</literal> 指定访问规则文件.
-        (详细的解决见 <xref
+        <literal>AuthzSVNReposRelativeAccessFile</literal> 指定访问权限配置
+        文件. (详细的解决见 <xref
           linkend="svn.serverconfig.httpd.authz.perdir"/>.)</para>
 
       <!--
@@ -7309,13 +7309,13 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
       -->
       <para>为了给 <command>svnserve</command> 配置基于路径的访问控制,
         只需要把 <filename>svnserve.conf</filename> 内的配置变量
-        <literal>authz-db</literal> 的值指定成你的访问规则文件.</para>
+        <literal>authz-db</literal> 的值指定成你的访问权限配置文件.</para>
 
       <!--
       <para>Once your server knows where to look for your access
         rules, it's time to define those rules.</para>
       -->
-      <para>一旦服务器知道了去哪儿查找你的访问规则文件, 接下来需要做的就是
+      <para>一旦服务器知道了去哪儿查找你的访问权限配置文件, 接下来需要做的就是
         定义访问规则.</para>
 
       <!--
@@ -7338,7 +7338,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         (read/write).  If the user is not mentioned at all, no access is
         allowed.</para>
       -->
-      <para>Subversion 访问规则文件的语法与 <filename>svnserve.conf</filename>
+      <para>Subversion 访问权限配置文件的语法与 <filename>svnserve.conf</filename>
         和运行时配置文件的语法相同. 忽略以 <literal>#</literal> 开始的行,
         在最简单的形式中, 文件的每一节的名字都指定了一个被版本控制的路径,
         可能还指定了包含该路径的仓库. 换句话说, 除了少数几个被保留的节外,
@@ -7346,7 +7346,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         <literal>AuthzSVNAccessFile</literal>, 则要么是
         <literal>[repos-name:path]</literal>, 要么是 <literal>[path]</literal>.
         如果使用了配置指令 <literal>AuthzSVNReposRelativeAccessFile</literal>
-        指定了每个仓库的访问规则文件, 则只能使用 <literal>[path]</literal>
+        指定了每个仓库的访问权限配置文件, 则只能使用 <literal>[path]</literal>
         这种形式. 已认证的用户名是每一节的选项的名字, 选项的值描述了用户对该
         路径的访问权限: 只读 (<literal>r</literal>) 或读写
         (<literal>rw</literal>). 如果用户名未出现在节中, 则不具有该路径的
@@ -7365,7 +7365,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
           (<literal>[repos-name:path&nbsp;with&nbsp;spaces]</literal>,
           e.g.)</para>
       -->
-        <para>出现在访问规则文件中的路径必须使用 Subversion 的
+        <para>出现在访问权限配置文件中的路径必须使用 Subversion 的
           <quote>内部风格</quote> 编写, 在大部分情况下, 这意味着路径使用
           UTF-8 编码, 使用斜杠 (<literal>/</literal>) 作为路径中各个分量
           的分隔符 (即使是 Windows 系统, 也要使用斜杠). 还要注意这些路径
@@ -7382,7 +7382,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         path <filename>/branches/calc/bug-142</filename> (and all its
         children) in the repository <literal>calc</literal>:</para>
       -->
-      <para>下面是访问规则文件的一个例子, 文件把仓库 <literal>calc</literal>
+      <para>下面是访问权限配置文件的一个例子, 文件把仓库 <literal>calc</literal>
         的路径 <filename>/branches/calc/bug-142</filename> (及其子目录) 的
         读权限授予 Sally, 把读取权限授予 Harry:</para>
 
@@ -7405,9 +7405,9 @@ sally = r
           review your access files for case correctness.</para>
       -->
         <para>Subversion 1.7 之前的版本会把仓库名和路径都转化成小写形式后,
-          再与访问规则文件进行匹配, 因此是不区分大小写的. 但从 Subversion 1.7
+          再与访问权限配置文件进行匹配, 因此是不区分大小写的. 但从 Subversion 1.7
           开始不再如此. 因此, 如果你需要从较旧的版本升级到 1.7, 你应该重新
-          检查访问规则文件中的大小写是否正确.</para>
+          检查访问权限配置文件中的大小写是否正确.</para>
       </warning>
 
       <!--
@@ -7433,7 +7433,7 @@ sally = r
         最后一个分量 <footnote><para>通过配置指令
             <literal>SVNReposName</literal>, 在 <filename>httpd.conf</filename>
             里配置的任意一个人类可读懂的仓库名, 都将被授权模块忽略. 前面已经
-            说过, 访问规则文件里的节名必须引用到对服务器敏感的仓库路径.
+            说过, 访问权限配置文件里的节名必须引用到对服务器敏感的仓库路径.
         </para></footnote>, 而 <command>svnserve</command> 则使用完整的, 相对
         于服务器根目录 (由选项 <option>--root</option> (<option>-r</option>))
         的仓库路径.</para>
@@ -7459,13 +7459,13 @@ sally = r
         <para>如果同时通过 Apache 服务器与 <command>svnserve</command> 为
           同一个仓库服务, 那么 <command>mod_dav_svn</command> 与
           <command>svnserve</command> 决定仓库名的不同之外将会带来问题.
-          通常情况下, 管理员更喜欢为两种服务器配置同一个访问规则文件, 然而,
-          为了能让访问规则文件正常工作, 管理员必须确保访问规则文件里的仓库
+          通常情况下, 管理员更喜欢为两种服务器配置同一个访问权限配置文件, 然而,
+          为了能让访问权限配置文件正常工作, 管理员必须确保访问文件里的仓库
           名对于两种服务器而言都是兼容的&mdash;例如把
           <command>svnserve</command> 的根目录配置成和
           <command>mod_dav_svn</command> 的配置指令
           <literal>SVNParentPath</literal> 相同的值, 或者为每个仓库指定一个
-          单独的访问规则文件, 这样就不用在文件里提到仓库名.</para>
+          单独的访问权限配置文件, 这样就不用在文件里提到仓库名.</para>
       </warning>
 
       <!--
@@ -7557,7 +7557,7 @@ harry =
       -->
         <para>需要记住的是最明确的路径最明确的路径总是最先被匹配. 服务器总
           是试图匹配路径本身, 然后是路径的父路径, 然后再是父路径的父路径,
-          以此类推. 这样做的影响是如果我们在访问规则文件里添加一个特定的
+          以此类推. 这样做的影响是如果我们在访问权限配置文件里添加一个特定的
           路径, 那么它的权限配置就会覆盖从父目录继承而来的权限配置.</para>
 
       <!--
@@ -7568,7 +7568,7 @@ harry =
           and the latter ignored for <literal>calc</literal>.</para>
       -->
         <para>类似的, 指定了仓库名的节的权限配置将覆盖那些没有指定仓库名的节,
-          比如说访问规则文件里同时出现了 <literal>[calc:/some/path]</literal>
+          比如说访问权限配置文件里同时出现了 <literal>[calc:/some/path]</literal>
           和 <literal>[/some/path]</literal>, 那么对于仓库
           <literal>calc</literal>, 将会使用第一种配置, 而忽略第二种.</para>
       </tip>
@@ -7582,7 +7582,7 @@ harry =
         users</quote>:</para>
       -->
     <para>在默认情况下, 任何用户对任意一个仓库都不具体访问权限, 这意味着
-      如果从头开始写访问规则文件, 你可能希望所有用户至少对仓库的根目录具有
+      如果从头开始写访问权限配置文件, 你可能希望所有用户至少对仓库的根目录具有
       只读权限. 可以通过把用户名设置成通配符 (<literal>*</literal>) 实现这
       种配置, 此时通配符 <literal>*</literal> 表示 <quote>所有用户</quote>:
     </para>
@@ -7643,8 +7643,8 @@ sally = r
         and its value is a comma-delimited list of usernames which
         are part of that group.</para>
       -->
-      <para>访问规则文件还允许管理员定义用户组, 就像 Unix 里的
-        <filename>/etc/group</filename>. 为了定义用户组, 在访问规则文件里
+      <para>访问权限配置文件还允许管理员定义用户组, 就像 Unix 里的
+        <filename>/etc/group</filename>. 为了定义用户组, 在访问权限配置文件里
         创建一个名为 <literal>groups</literal> 的节, 然后在节内描述每一个
         用户组: 变量名定义了用户组的名字, 而变量的值则是逗号分隔的, 属于该
         用户组的用户名.</para>
@@ -7741,7 +7741,7 @@ everyone = @calc-developers, @paint-developers
         却支持更复杂的用户名, 例如在一个使用了 LDAP 的认证系统中, Harry 的
         用户名可以是
         <literal>CN=Harold Hacker,OU=Engineers,DC=red-bean,DC=com</literal>.
-        如果在访问规则文件里出现这些用户名, 文件将变得非常臃肿, 这些又长又
+        如果在访问权限配置文件里出现这些用户名, 文件将变得非常臃肿, 这些又长又
         晦涩的用户名还很容易写错.</para>
 
       <!--
@@ -7750,7 +7750,7 @@ everyone = @calc-developers, @paint-developers
         type the correct complex username only once, in a statement
         which assigns to it a more easily digestable alias.</para>
       -->
-      <para>幸运的是, Subversion 1.5 为访问规则文件添加了对用户别名的支持.
+      <para>幸运的是, Subversion 1.5 为访问权限配置文件添加了对用户别名的支持.
         有了用户别名, 对于复杂的用户名, 管理员只需要在赋予别名的地方写一次
         就够了.</para>
 
@@ -7761,7 +7761,7 @@ everyone = @calc-developers, @paint-developers
         the value of those variables carrying the real Subversion
         username which is being aliased.</para>
       -->
-      <para>用户别名定义在访问规则文件的一个特殊的节&mdash;
+      <para>用户别名定义在访问权限配置文件的一个特殊的节&mdash;
         <literal>aliases</literal>, 节内的每一个变量名都定义了一个别名, 而
         变量值则是真实的用户名.</para>
 
@@ -7782,7 +7782,7 @@ joe = CN=Gerald I. Joseph,OU=Engineers,DC=red-bean,DC=com
         Simply prepend an ampersand to the alias to distinguish it from
         a regular username:</para>
       -->
-      <para>用户别名定义完成后, 在访问规则文件内, 只要是能出现真实用户名的
+      <para>用户别名定义完成后, 在访问权限配置文件内, 只要是能出现真实用户名的
         地方都能用别名替代, 唯一的区别是要在别名前添加符号
         <literal>&amp;</literal>, 以便与真实的用户名进行区分.</para>
 
@@ -7811,8 +7811,12 @@ everyone = @calc-developers, @paint-developers
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.pathbasedauthz.authclass-tokens">
 
+      <!--
       <title>Advanced Access Control Features</title>
+      -->
+      <title>访问权限控制的高级特性</title>
 
+      <!--
       <para>Beginning with Subversion 1.5, the access file syntax also
         supports some <quote>magic</quote> tokens for helping you to
         make rule assignments based on the user's authentication
@@ -7824,6 +7828,13 @@ everyone = @calc-developers, @paint-developers
         all.  Similarly employed is the <literal>$anonymous</literal>
         token, except that it matches everyone who has
         <emphasis>not</emphasis> authenticated with a username.</para>
+      -->
+      <para>从 Subversion 1.5 开始, 访问权限配置文件还支持一些
+        <quote>魔力</quote> 符号, 这些符号可以帮助管理员基于用户的认证类别来
+        制定访问规则. 其中一个符号是 <literal>$authenticated</literal>,
+        用于将权限授予给所有已认证的用户. 类似的还有
+        <literal>$anonymous</literal>, 它表示所有 <emphasis>未认证</emphasis>
+        的用户.</para>
 
       <informalexample>
         <programlisting>
@@ -7833,6 +7844,7 @@ $authenticated = rw
 </programlisting>
       </informalexample>
 
+      <!--
       <para>Another handy bit of access file syntax magic is the use
         of the tilde (<literal>~</literal>) character as an exclusion
         marker.  In your authorization rules, prefixing a username,
@@ -7841,6 +7853,12 @@ $authenticated = rw
         do <emphasis>not</emphasis> match the rule.  Though somewhat
         unnecessarily obfuscated, the following block is equivalent to
         the one in the previous example:</para>
+      -->
+      <para>访问权限配置文件语法的另一个很有用的魔力符号是波浪号
+        (<literal>~</literal>), 用于排除某些用户. 在访问权限配置文件中, 如果
+        在用户名, 用户别名, 用户组或认证类别前加上波浪号, 就表示将访问权限
+        授予给与规则 <emphasis>不匹配</emphasis> 的用户. 虽然下面的配置容易
+        让人产生不必要的困惑, 但它和上面的例子是等效的:</para>
 
       <informalexample>
         <programlisting>
@@ -7850,7 +7868,10 @@ $authenticated = rw
 </programlisting>
       </informalexample>
 
+      <!--
       <para>A less obvious example might be as follows:</para>
+      -->
+      <para>下面是一个更恰当的, 使用 <literal>~</literal> 的例子:</para>
 
       <informalexample>
         <programlisting>
@@ -7874,7 +7895,10 @@ calc = @calc-developers, @calc-owners
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.pathbasedauthz.gotchas">
 
+      <!--
       <title>Some Gotchas with Access Control</title>
+      -->
+      <title>访问权限控制的一些陷阱</title>
 
       <para>If you're using Apache as your Subversion server and have
         made certain subdirectories of your repository unreadable to
