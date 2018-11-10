@@ -227,13 +227,19 @@
             <entry>由 SSH 连接实现</entry>
           </row>
           <row>
-            <!-- ### TODO -->
+            <!--
             <entry>Logging</entry>
             <entry>High-level operational logging of Subversion
               operations plus detailed logging at the
               per-HTTP-request level</entry>
             <entry>High-level operational logging only</entry>
             <entry>High-level operational logging only</entry>
+            -->
+            <entry>日志记录</entry>
+            <entry>支持在较高的层次记录 Subversion 操作, 也支持为每一个 HTTP
+              请求记录日志</entry>
+            <entry>只支持从较高的层次记录 Subversion 操作</entry>
+            <entry>只支持从较高的层次记录 Subversion 操作</entry>
           </row>
           <row>
       <!--
@@ -7966,20 +7972,34 @@ calc = @calc-developers, @calc-owners
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.serverconfig.operational-logging">
+      <!--
     <title>High-level Logging</title>
+      -->
+    <title>高层日志记录</title>
 
+      <!--
     <para>Both the Apache <command>httpd</command>
       and <command>svnserve</command> Subversion servers provide
       support for high-level logging of Subversion operations.
       Configuring each of the server options to provide this level of
       logging is done differently, of course, but the output from each
       is designed to conform to a uniform syntax.</para>
+      -->
+    <para>Apache 的 <command>httpd</command> 和 Subversion 的
+      <command>svnserve</command> 都支持在较高的层次为 Subversion 操作记录
+      日志. 虽然这两种服务器配置高层日志的方式不太一样, 但它们输出的日志都
+      遵循相同的语法.</para>
 
+      <!--
     <para>To enable high-level logging in <command>svnserve</command>,
-      you need only use the <option>--log-file</option> command-line
+      you need only use the <option>- -log-file</option> command-line
       option when starting the server, passing as the value to the
       option the file to which <command>svnserve</command> should
       write its log output.</para>
+      -->
+    <para>为了让 <command>svnserve</command> 开启高层日志, 只需在启动
+      <command>svnserve</command> 时带上选项 <option>--log-file</option>,
+      选项的值是日志文件路径.</para>
 
     <informalexample>
       <screen>
@@ -7987,20 +8007,32 @@ $ svnserve -d -r /path/to/repositories --log-file /var/log/svn.log
 </screen>
     </informalexample>
 
+      <!--
     <para>Enabling the same in Apache is a bit more involved, but is
       essentially an extension of Apache's stock log output
       configuration mechanisms&mdash;see
       <xref linkend="svn.serverconfig.httpd.extra.logging"/> for
       details.</para>
+      -->
+    <para>在 Apache 中启用高层日志要稍微复杂一些, 但本质上就是 Apache 日志
+      输出机制的扩展, 配置方式见 <xref
+        linkend="svn.serverconfig.httpd.extra.logging"/>.</para>
 
+      <!--
     <para>The following is a list of Subversion action log messages
       produced by its high-level logging mechanism, followed by one or
       more examples of the log message as it appears in the log
       output.</para>
+      -->
+    <para>下面列出了在启用高层日志后, 服务器将为 Subversion 记录的日志消息列表,
+      还给出了具体的日志消息示例.</para>
 
     <variablelist>
       <varlistentry>
+      <!--
         <term>Checkout or export</term>
+      -->
+        <term>检出或导出</term>
         <listitem>
           <programlisting>
 checkout-or-export /path r62 depth=infinity
@@ -8008,7 +8040,10 @@ checkout-or-export /path r62 depth=infinity
         </listitem>
       </varlistentry>
       <varlistentry>
+      <!--
         <term>Commit</term>
+      -->
+        <term>提交</term>
         <listitem>
           <programlisting>
 commit harry r100
@@ -8016,7 +8051,10 @@ commit harry r100
         </listitem>
       </varlistentry>
       <varlistentry>
+      <!--
         <term>Diffs</term>
+      -->
+        <term>差异比较</term>
         <listitem>
           <programlisting>
 diff /path r15:20 depth=infinity ignore-ancestry
@@ -8025,7 +8063,10 @@ diff /path1@15 /path2@20 depth=infinity ignore-ancestry
         </listitem>
       </varlistentry>
       <varlistentry>
+      <!--
         <term>Fetch a directory</term>
+      -->
+        <term>抓取一个目录</term>
         <listitem>
           <programlisting>
 get-dir /trunk r17 text
@@ -8033,7 +8074,10 @@ get-dir /trunk r17 text
         </listitem>
       </varlistentry>
       <varlistentry>
+      <!--
         <term>Fetch a file</term>
+      -->
+        <term>抓取一个文件</term>
         <listitem>
           <programlisting>
 get-file /path r20 props
@@ -8041,7 +8085,10 @@ get-file /path r20 props
         </listitem>
       </varlistentry>
       <varlistentry>
+      <!--
         <term>Fetch a file revision</term>
+      -->
+        <term>抓取一个文件版本号</term>
         <listitem>
           <programlisting>
 get-file-revs /path r12:15 include-merged-revisions
@@ -8049,7 +8096,10 @@ get-file-revs /path r12:15 include-merged-revisions
         </listitem>
       </varlistentry>
       <varlistentry>
+      <!--
         <term>Fetch merge information</term>
+      -->
+        <term>抓取合并信息</term>
         <listitem>
           <programlisting>
 get-mergeinfo (/path1 /path2)
@@ -8057,7 +8107,10 @@ get-mergeinfo (/path1 /path2)
         </listitem>
       </varlistentry>
       <varlistentry>
+      <!--
         <term>Lock</term>
+      -->
+        <term>加锁</term>
         <listitem>
           <programlisting>
 lock /path steal
@@ -8065,7 +8118,10 @@ lock /path steal
         </listitem>
       </varlistentry>
       <varlistentry>
+      <!--
         <term>Log</term>
+      -->
+        <term>日志</term>
         <listitem>
           <programlisting>
 log (/path1,/path2,/path3) r20:90 discover-changed-paths revprops=()
@@ -8073,7 +8129,10 @@ log (/path1,/path2,/path3) r20:90 discover-changed-paths revprops=()
         </listitem>
       </varlistentry>
       <varlistentry>
+      <!--
         <term>Replay revisions (svnsync)</term>
+      -->
+        <term>重放版本号 (<command>svnsync</command>)</term>
         <listitem>
           <programlisting>
 replay /path r19
@@ -8081,7 +8140,10 @@ replay /path r19
         </listitem>
       </varlistentry>
       <varlistentry>
+      <!--
         <term>Revision property change</term>
+      -->
+        <term>修改版本号属性</term>
         <listitem>
           <programlisting>
 change-rev-prop r50 propertyname
@@ -8089,7 +8151,10 @@ change-rev-prop r50 propertyname
         </listitem>
       </varlistentry>
       <varlistentry>
+      <!--
         <term>Revision property list</term>
+      -->
+        <term>版本号属性列表</term>
         <listitem>
           <programlisting>
 rev-proplist r34
@@ -8097,7 +8162,10 @@ rev-proplist r34
         </listitem>
       </varlistentry>
       <varlistentry>
+      <!--
         <term>Status</term>
+      -->
+        <term>状态</term>
         <listitem>
           <programlisting>
 status /path r62 depth=infinity
@@ -8105,7 +8173,10 @@ status /path r62 depth=infinity
         </listitem>
       </varlistentry>
       <varlistentry>
+      <!--
         <term>Switch</term>
+      -->
+        <term>切换</term>
         <listitem>
           <programlisting>
 switch /pathA /pathB@50 depth=infinity
@@ -8113,7 +8184,10 @@ switch /pathA /pathB@50 depth=infinity
         </listitem>
       </varlistentry>
       <varlistentry>
+      <!--
         <term>Unlock</term>
+      -->
+        <term>解锁</term>
         <listitem>
           <programlisting>
 unlock /path break
@@ -8121,7 +8195,10 @@ unlock /path break
         </listitem>
       </varlistentry>
       <varlistentry>
+      <!--
         <term>Update</term>
+      -->
+        <term>更新</term>
         <listitem>
           <programlisting>
 update /path r17 send-copyfrom-args
@@ -8130,12 +8207,18 @@ update /path r17 send-copyfrom-args
       </varlistentry>
     </variablelist>
 
+      <!--
     <para>As a convenience to administrators who wish to post-process
       their Subversion high-level logging output (perhaps for
       reporting or analysis purposes), Subversion source code
       distributions provide a Python module (located at
       <filename>tools/server-side/svn_server_log_parse.py</filename>)
       which can be used to parse Subversion's log output.</para>
+      -->
+    <para>为了方便管理员对 Subversion 高层日志输出进行后期处理, Subversion
+      源代码包提供了一个 Python 模块, (位于
+      <filename>tools/server-side/svn_server_log_parse.py</filename>),
+      可用于解析 Subversion 的日志.</para>
 
   </sect1>
 
