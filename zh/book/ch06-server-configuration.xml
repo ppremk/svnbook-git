@@ -8253,8 +8253,12 @@ update /path r17 send-copyfrom-args
 
     <!-- =============================================================== -->
     <sect2 id="svn.serverconfig.optimization.caching">
+      <!--
       <title>Data Caching</title>
+      -->
+      <title>数据缓存</title>
 
+      <!--
       <para>Generally speaking, the most expensive part of a
         Subversion server's job is fetching data from the repository.
         Subversion 1.6 attempted to offset this cost by introducing
@@ -8264,15 +8268,27 @@ update /path r17 send-copyfrom-args
         operations, but also by providing in each of the available
         servers the means by which fine-tune the size and some
         behaviors of the cache.</para>
+      -->
+      <para>一般来说, Subversion 服务器代价最高的工作就是从仓库中读取数据,
+        Subversion 1.6 试图通过在内存中缓存特定种类的数据来减小这种代价.
+        Subversion 1.7 在这方面走得更远, 它不仅缓存了代价较高的操作的执行
+        结果, 还向服务器提供了调整缓存大小与行为的方法.</para>
 
+      <!--
       <para>For <command>svnserve</command>, you can specify the size
-        of the cache using the <option>--memory-cache-size</option>
+        of the cache using the <option>- -memory-cache-size</option>
         (<option>-M</option>) command-line option.  You can also
         dictate whether <command>svnserve</command> should attempt to
         cache content fulltexts and deltas via the
-        boolean <option>--cache-fulltexts</option>
-        and <option>--cache-txdeltas</option> options,
+        boolean <option>- -cache-fulltexts</option>
+        and <option>- -cache-txdeltas</option> options,
         respectively.</para>
+      -->
+      <para>对于 <command>svnserve</command>, 管理员可以通过命令行选项
+        <option>--memory-cache-size</option> (<option>-M</option>) 指定缓存
+        的大小, 还可以通过布尔选项 <option>--cache-fulltexts</option> 和
+        <option>--cache-txdeltas</option>, 分别指定是否需要缓存文件内容的
+        全文本与差异文本.</para>
 
       <informalexample>
         <screen>
@@ -8285,6 +8301,7 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para><command>mod_dav_svn</command> provides the same degree of
         cache configurability via <filename>httpd.conf</filename>
         directives.
@@ -8293,6 +8310,12 @@ $
         and <literal>SVNCacheTextDeltas</literal> directives may be
         used at the server configuration level to control Subversion's
         data cache characteristics:</para>
+      -->
+      <para><command>mod_dav_svn</command> 向 <filename>httpd.conf</filename>
+        提供了等价的缓存配置, 与上面三个 <command>svnserve</command> 命令行
+        选项对应的配置指令分别是 <literal>SVNInMemoryCacheSize</literal>,
+        <literal>SVNCacheFullTexts</literal> 和
+        <literal>SVNCacheTextDeltas</literal>:</para>
 
       <informalexample>
         <programlisting>
@@ -8305,6 +8328,7 @@ $
 </programlisting>
       </informalexample>
 
+      <!--
       <para>So what settings should you use?  Certainly you need to
         consider what resources are available on your server.  To get
         any benefit out of the cache at all, you'll probably want to
@@ -8312,18 +8336,31 @@ $
         which are most commonly accessed in your repository (for
         example, your project's <filename>trunk</filename> directory
         tree).</para>
+      -->
+      <para>那么, 应该把这些选项设置成什么值呢? 当然, 你需要考虑服务器的哪些
+        资源是可用的. 为了尽量从缓存中获益, 缓存的大小应至少能够存放仓库中最
+        常被访问的全部文件 (例如项目的主干分支 <filename>trunk</filename>).
+      </para>
 
       <tip>
+      <!--
         <para>Setting the memory cache size to <literal>0</literal>
           will disable this enhanced caching mechanism and cause
           Subversion to fall back to using the older cache mechanisms
           introduced in Subversion 1.6.</para>
+      -->
+        <para>把缓存大小设置成 <literal>0</literal> 将使得 Subversion 转而
+          使用 1.6 引入的旧的缓存机制.</para>
       </tip>
 
       <note>
+      <!--
         <para>Currently, only repositories which make use of the FSFS
           backend data store make use of this data caching
           functionality.</para>
+      -->
+        <para>到目前为止, 只有使用了 FSFS 作为后端存储的仓库才能利用本节
+          提到的缓存功能.</para>
       </note>
 
     </sect2>
