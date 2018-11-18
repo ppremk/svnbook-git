@@ -8487,6 +8487,7 @@ $
       </listitem>
     </itemizedlist>
 
+      <!--
     <para>The most common problem administrators run into is
       repository ownership and permissions.  Does every process (or
       user) in the preceding list have the rights to read and write the
@@ -8497,7 +8498,16 @@ $
       owned by that group.  But even that's not enough, because a
       process may write to the database files using an unfriendly
       umask&mdash;one that prevents access by other users.</para>
+      -->
+    <para>如果仓库要同时支持多种访问方式, 那么管理员最常遇到的问题通常与仓库
+      的所有权和权限有关. 前面列表中提到的进程 (或用户) 是否应该具有读写仓库
+      底层数据文件的权限? 假设你有一个类 Unix 系统, 一种比较简单直接的做法是
+      把所有可能使用仓库的用户都加入到名为 <literal>svn</literal> 的用户组,
+      而用户组 <literal>svn</literal> 对仓库拥有完整的所有权. 但这样做还不足够,
+      因为进程可能使用了不太友好的文件模式创建屏蔽字&mdash;该进程创建的文件
+      完全禁止了其他进程的访问.</para>
 
+      <!--
     <para>So the next step beyond setting up a common group for
       repository users is to force every repository-accessing process
       to use a sane umask.  For users accessing the repository
@@ -8508,6 +8518,14 @@ $
       <command>svnserve</command> program, and add a <userinput>umask
       002</userinput> command to Apache's own startup script,
       <filename>apachectl</filename>.  For example:</para>
+      -->
+    <para>因此, 为仓库用户创建了公共的用户组之后, 下一步是强制每一个访问仓库
+      的进程使用一个合理的文件模式创建屏蔽字. 对于直接访问仓库的用户, 你可以
+      把程序 <command>svn</command> 封装成一个脚本, 脚本首先执行
+      <userinput>umask 002</userinput>, 然后再运行真实的 <command>svn</command>
+      程序. 你也可以为 <command>svnserve</command> 程序写一个类似的封装脚本,
+      以及在 Apache 的启动脚本 <filename>apachectl</filename> 内添加一行
+      <userinput>umask 002</userinput>. 例如:</para>
 
     <informalexample>
       <screen>
