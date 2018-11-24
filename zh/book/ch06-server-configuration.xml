@@ -8558,12 +8558,18 @@ umask 002
       问题. 一种比较好的解决办法是为仓库的 <filename>db</filename> 子目录设置
       SUID, 这将使得所有新创建的日志文件都具有和父目录相同的用户组.</para>
 
+      <!--
     <para>Once you've jumped through these hoops, your repository
       should be accessible by all the necessary processes.  It may
       seem a bit messy and complicated, but the problems of having
       multiple users sharing write access to common files are classic
       ones that are not often elegantly solved.</para>
+      -->
+    <para>一旦你克服了这些困难, 此时仓库对于所有必要的进程来说, 应该都是可访问
+      的了. 虽然看起来可能有点凌乱和复杂, 但是对于如何处理多个用户共享相同文件
+      的写权限这个问题, 一直都没有一个优雅的解决办法.</para>
 
+      <!--
     <para>Fortunately, most repository administrators will never
       <emphasis>need</emphasis> to have such a complex configuration.
       Users who wish to access repositories that live on the same
@@ -8576,30 +8582,57 @@ umask 002
       repositories is likely to be more of a headache than necessary.
       We recommend that you choose a single server that best meets your
       needs and stick with it!</para>
+      -->
+    <para>幸运的是, 大多数仓库管理员 <emphasis>不必</emphasis> 进行这么复杂
+      的配置. 如果用户想访问托管在本机上的仓库, 除了
+      <literal>file://</literal>, 其实还可以使用 <literal>http://</literal> 或
+      <literal>svn://</literal>, 在填写主机名时需要写成
+      <literal>localhost</literal>. 为仓库支持多种访问方法可能比看上去更麻烦,
+      我们建议你选择一种满足自己需要的访问方式, 然后坚持用它!</para>
 
     <sidebar>
+      <!--
       <title>The svn+ssh:// Server Checklist</title>
+      -->
+      <title>svn+ssh:// 服务器检查列表</title>
 
+      <!--
       <para>It can be quite tricky to get a bunch of users with
         existing SSH accounts to share a repository without
         permissions problems.  If you're confused about all the things
         that you (as an administrator) need to do on a Unix-like
         system, here's a quick checklist that resummarizes some of the
         topics discussed in this section:</para>
+      -->
+      <para>对于已经有了 SSH 账户的用户, 为了让他们共享仓库而不会产生权限上
+        的问题, 其中的过程可能会比较麻烦. 如果你 (作为一个管理员) 对需要在类
+        Unix 系统上需要完成的工作不太清楚, 这里列出了一个检查列表, 总结了本节
+        讨论的几个主题:</para>
 
       <itemizedlist>
         <listitem>
+      <!--
           <para>All of your SSH users need to be able to read and
             write to the repository, so put all the SSH users into a
             single group.</para>
+      -->
+          <para>所有的 SSH 用户都需要仓库的读写权限, 因此要把他们都放到一个
+            用户组内.</para>
         </listitem>
         <listitem>
+      <!--
           <para>Make the repository wholly owned by that group.</para>
+      -->
+          <para>仓库完全被用户组所拥有.</para>
         </listitem>
         <listitem>
+      <!--
           <para>Set the group permissions to read/write.</para>
+      -->
+          <para>把用户组的权限设置成可读写.</para>
         </listitem>
         <listitem>
+      <!--
           <para>Your users need to use a sane umask when accessing the
             repository, so make sure <command>svnserve</command>
             (<filename>/usr/bin/svnserve</filename>, or wherever it
@@ -8607,12 +8640,22 @@ umask 002
             script that runs <userinput>umask 002</userinput> and
             executes the real <command>svnserve</command>
             binary.</para>
+      -->
+          <para>在访问仓库时, 用户需要使用合理的文件模式创建屏蔽字, 因此把
+            可执行文件 <command>svnserve</command> 包装成一个脚本, 脚本先执行
+            <userinput>umask 002</userinput>, 然后再运行真实的
+            <command>svnserve</command> 程序.</para>
         </listitem>
         <listitem>
+      <!--
           <para>Take similar measures when using
             <command>svnlook</command> and
             <command>svnadmin</command>.  Either run them with a sane
             umask or wrap them as just described.</para>
+      -->
+          <para>采取类似的方式处理 <command>svnlook</command> 和
+            <command>svnadmin</command>, 例如先设置好文件模式创建屏蔽字再执行
+            命令, 或者使用和上面一样的包装脚本.</para>
         </listitem>
       </itemizedlist>
 
