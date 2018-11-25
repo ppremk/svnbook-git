@@ -3171,10 +3171,10 @@ arding,no-X11-forwarding,no-pty TYPE1 KEY1 harry@example.com
       <ulink url="http://httpd.apache.org/docs/current/mod/directives.html"
       />.</para>
       -->
-  <para>下面将要介绍的很多内容都包含了关于 Apache 配置命令的引用, 虽然某些
-    例子用到了 Apache 的配置命令, 但完整地介绍它们已经超出了本章的范畴.
+  <para>下面将要介绍的很多内容都包含了关于 Apache 配置指令的引用, 虽然某些
+    例子用到了 Apache 的配置指令, 但完整地介绍它们已经超出了本章的范畴.
     Apache 团队维护了非常优秀的文档供用户参考, 可以到它的官网 <ulink
-      url="http://httpd.apache.org"/> 获取, 例如, 关于 Apache 配置命令的
+      url="http://httpd.apache.org"/> 获取, 例如, 关于 Apache 配置指令的
     文档在 <ulink
       url="http://httpd.apache.org/docs/current/mod/directives.html"/>.</para>
 
@@ -3195,7 +3195,7 @@ arding,no-X11-forwarding,no-pty TYPE1 KEY1 harry@example.com
     <para>另外, 在管理员修改 Apache 设置的过程中, 有可能会有错误发生, 如果你
       还不太熟悉 Apache 的日志子系统, 现在应该着手熟悉它. 文件
       <filename>httpd.conf</filename> 可以指定 Apache 所生成的访问与错误
-      日志的存放位置 (配置命令分别是 <literal>CustomLog</literal> 和
+      日志的存放位置 (配置指令分别是 <literal>CustomLog</literal> 和
       <literal>ErrorLog</literal>). Subversion 的
       <command>mod_dav_svn</command> 也用到了 Apache 的错误日志接口. 管理员
       可以通过查看这些日志文件定位问题发生的原因.</para>
@@ -3217,7 +3217,7 @@ arding,no-X11-forwarding,no-pty TYPE1 KEY1 harry@example.com
         Once you have all of those components, the process of
         networking your repository is as simple as:</para>
       -->
-      <para>为了能让用户使用 HTTP 协议访问仓库, 你需要 4 项组件, 包含了 2 个
+      <para>为了能让用户使用 HTTP 协议访问仓库, 你需要 4 项组件, 包含在 2 个
         软件包里. 你需要 Apache <command>httpd</command> 2.0 或更新的版本,
         (它包含了 <command>mod_dav</command> DAV 模块), Subversion, 以
         及随 Subversion 软件包一起发布的 <command>mod_dav_svn</command>
@@ -3293,12 +3293,12 @@ arding,no-X11-forwarding,no-pty TYPE1 KEY1 harry@example.com
       -->
       <para>所有组件安装完毕后, 剩下的工作就是通过
         <filename>httpd.conf</filename> 配置 Apache. 为了让 Apache 加载
-        <command>mod_dav_svn</command>, 要用到指令
-        <literal>LoadModule</literal>, 这条指令必须出现在任何与 Subversion
+        <command>mod_dav_svn</command>, 要用到配置指令
+        <literal>LoadModule</literal>, 这条配置指令必须出现在任何与 Subversion
         有关的配置项之前. 如果你是按照默认方式安装 Apache, 则
         <command>mod_dav_svn</command> 是被安装在 Apache 安装位置 (通常是
         <filename>/usr/local/apache2</filename>) 的
-        <filename>modules</filename> 子目录内. 指令
+        <filename>modules</filename> 子目录内. 配置指令
         <literal>LoadModule</literal> 的语法非常简单, 包含模块名及其共享库
         文件的路径:</para>
 
@@ -3432,7 +3432,7 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
       -->
       <para>利用这种语法, Apache 将会把路径部分以 <filename>/svn/</filename>
         开始的 URL 的处理代理给 Subversion DAV, 它将假设由
-        <literal>SVNParentPath</literal> 所指定的目录内的所有项目都是
+        <literal>SVNParentPath</literal> 所指定的目录内的所有子目录都是
         Subversion 仓库. 相对于 <literal>SVNPath</literal>,
         使用 <literal>SVNParentPath</literal> 更加方便, 因为在添加或删除仓库
         时不用重启 Apache.</para>
@@ -3483,7 +3483,7 @@ LoadModule dav_svn_module     modules/mod_dav_svn.so
           the <literal>ServerName</literal> directive in
           <filename>httpd.conf</filename> to accomplish this.</para>
       -->
-        <para>Subversion 利用了请求类似 <literal>COPY</literal> 来完成服务
+        <para>Subversion 使用请求类型 <literal>COPY</literal> 来完成服务器
           端的文件和目录的复制. 作为 Apache 模块完整性检查的一部分, 复制的
           源和目标必须在同一台主机上, 为了满足这个要求, 你需要把服务器的主
           机名告诉给 <command>mod_dav</command>. 在
@@ -3608,7 +3608,7 @@ ServerName svn.example.com
             latest revision simply by pointing a web browser to
             the repository URL.</para>
       -->
-          <para>任何人都可以用网页浏览器浏览仓库的最新的内容.</para>
+          <para>任何人都可以用网页浏览器浏览仓库的最新内容.</para>
         </listitem>
         <listitem>
       <!--
@@ -3642,7 +3642,8 @@ ServerName svn.example.com
       -->
         <para>认证可以阻止无效的用户直接访问仓库, 但是它无法保护有效用户
           的网络流量的隐私. 为服务器配置 SSL 加密, 可以为用户添加额外的一层
-          保护, 关于如何配置, 见 <xref linkend="svn.serverconfig.httpd.ssl"/>.
+          保护, 关于如何配置 SSL 加密, 见 <xref
+            linkend="svn.serverconfig.httpd.ssl"/>.
         </para>
       </tip>
 
@@ -3716,10 +3717,10 @@ $
           them using the <literal>LoadModule</literal> directive:</para>
       -->
         <para>然后, 确保 Apache 可以访问到提供 Basic 认证和相关功能的模块:
-          <literal>mod_auth_basic</literal>, <literal>mod_authn_file</literal>
-          和 <literal>mod_authz_user</literal>. 在大部分情况下, 这些模块本来
+          <command>mod_auth_basic</command>, <command>mod_authn_file</command>
+          和 <command>mod_authz_user</command>. 在大部分情况下, 这些模块本来
           就已经被编译进 <filename>httpd</filename>, 如果没有, 你可能需要显
-          式地使用配置命令 <literal>LoadModule</literal> 加载它们:</para>
+          式地使用配置指令 <literal>LoadModule</literal> 加载它们:</para>
 
         <informalexample>
           <programlisting>
@@ -3812,7 +3813,7 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
           <literal>Require valid-user</literal> to the block:</para>
       -->
         <para>然而, 这个 <literal>&lt;Location&gt;</literal> 并没有做任何有
-          用的工作, 它仅仅是告诉 Apache <emphasis>如果</emphasis> 是必须的,
+          用的工作, 它仅仅是告诉 Apache <emphasis>如果</emphasis> 授权是必须的,
           它应该要求 Subversion 客户端提供用户名与密码. (如果有需要, Apache
           自己也会要求认证.) 然而这里还有不完善的地方, 那就是告诉 Apache
           哪些客户请求才需要授权, 当前的配置是所有的请求都不需要认证, 此时最
@@ -3901,8 +3902,8 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
           make a few small variations on our prior example:</para>
       -->
         <para>为 Apache 配置 Digest 认证非常简单, 首先你要确保模块
-          <literal>mod_auth_digest</literal> (而不是
-          <literal>mod_auth_basic</literal>) 是可用的, 然后再在上面例子的基础
+          <command>mod_auth_digest</command> (而不是
+          <command>mod_auth_basic</command>) 是可用的, 然后再在上面例子的基础
           上做一些小改动:</para>
 
         <informalexample>
@@ -3937,7 +3938,7 @@ LoadModule authz_user_module   moduels/mod_authz_user.so
           <literal>AuthName</literal> directive.</para>
       -->
         <para>注意到 <literal>AuthType</literal> 现在被设置成了
-          <literal>Digest</literal>, 而且指定为 <literal>AuthUserFile</literal>
+          <literal>Digest</literal>, 而且为 <literal>AuthUserFile</literal>
           指定了一个不同的路径. Digest 认证所使用的文件格式与 Basic 认证的
           不同, 这种格式的文件使用 Apache 的命令行工具
           <command>htdigest</command> <footnote><para>见
@@ -4783,7 +4784,7 @@ Passphrase for '/path/to/my/cert.p12':  ********
             is to use the OpenSSL command-line tools to convert
             existing certificates into PKCS#12.</para>
       -->
-          <para>在上面的例子里, 客户端证书存放在 <literal>.p12</literal>
+          <para>在上面的例子里, 客户端证书存放在一个 <literal>.p12</literal>
             文件里. 为了让 Subversion 使用证书, 证书的格式必须是 PKCS#12,
             这是一种可移植的标准格式, 大多数网页浏览器支持导入或导出这种
             格式的证书, 除了浏览器, 还可以用 OpenSSL 命令行工具把已有的
@@ -4874,7 +4875,7 @@ ssl-client-cert-password = somepassword
         <para>默认情况下, Apache HTTP 服务器允许为多个请求复用同一个连接,
           这对于 Subversion 而言非常有好处, 因为 Subversion 在一个单独的
           操作中, 很可能会快速产生成百上千个请求, 而重新打开一个服务器的
-          连接是一件颇费周张的事. 在连接被服务器关闭之前, Subversion 会同
+          连接是一件颇费周张的事. 在连接被服务器关闭之前, Subversion 会在同
           一个连接内发送尽可能多的请求. 配置指令 <literal>KeepAlive</literal>
           用于开启或禁止连接重用功能, 它的默认值是 <literal>On</literal>.
         </para>
@@ -4997,7 +4998,7 @@ MaxKeepAliveRequests 1000
           or newer) will try to use the bulk update approach unless
           otherwise configured.</para>
       -->
-        <para>上面的做法有好有坏. 批量更新的做法虽然在服务器产生的日志更少,
+        <para>上面的做法有好有坏. 批量更新的做法虽然在服务器上产生的日志更少,
           但在操作运行的过程中, 被占用的 Apache HTTP 服务器子进程将无暇顾及
           其他工作, 而当前操作可能还需要很长时间才能完成. 非批量更新提供了
           设置内容缓存的机会 (缓存可用于提高性能), 但生成的服务器日志比批量
@@ -5009,7 +5010,7 @@ MaxKeepAliveRequests 1000
           和 <literal>Off</literal> 外, 还新增了 <literal>Prefer</literal>,
           如果 <literal>SVNAllowBulkUpdates</literal> 被设置为
           <literal>Prefer</literal>, 受支持的客户端 (1.8 或更新的版本) 将尝试
-          使批量更新, 除非另有指定.</para>
+          使用批量更新, 除非另有指定.</para>
 
       </sect3>
     </sect2>
@@ -5741,7 +5742,7 @@ CustomLog logs/access_log env=!do_not_log
       -->
         <para>利用上面的配置, <command>httpd</command> 仍然会为指向公开的
           Subversion URL 的 <literal>GET</literal> 请求记录日志, 这些请求
-          有可能是用户在网页上浏览仓库时产生的. 对于指向 <quote>private</quote>
+          有可能是用户在网页上浏览仓库时产生的. 对于指向私有
           的 Subversion URL 的 <literal>GET</literal> 和
           <literal>PROPFIND</literal> 请求&mdash;这些请求可能是检出操作所
           产生的&mdash;将不会记录日志.</para>
