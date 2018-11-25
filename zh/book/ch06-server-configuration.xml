@@ -5825,7 +5825,7 @@ CustomLog logs/access_log env=!do_not_log
           2.2.0 (with <command>mod_proxy</command> loaded) and
           Subversion 1.5 (<command>mod_dav_svn</command>).</para>
       -->
-        <para>本节, 我们将介绍如果搭建一个标准的一主多从服务器系统, 注意,
+        <para>本节, 我们将介绍如何搭建一个标准的一主多从服务器系统, 注意,
           Apache 的版本至少是 2.2.0 (加载了模块 <command>mod_proxy</command>),
           Subversion (<command>mod_dav_svn</command>) 至少是 1.5.</para>
 
@@ -5897,10 +5897,10 @@ CustomLog logs/access_log env=!do_not_log
             it can lead to big headaches.</para>
       -->
           <para>配置指令 <literal>SVNMasterURI</literal> 告诉从服务器把所有
-            的写请求都重写向到主服务器 (写请求重定向由 Apache 模块
-            <command>mod_proxy</command> 自动完成). 然而, 普遍的读请求仍然由
+            的写请求都重定向到主服务器 (写请求重定向由 Apache 模块
+            <command>mod_proxy</command> 自动完成). 然而, 普通的读请求仍然由
             从服务器处理. 一定要确保主服务器和从服务器都配置了相同的认证与
-            授权, 否则的话, 会非常让人头疼.</para>
+            授权, 否则的话会非常让人头疼.</para>
 
       <!--
           <para>Next, we need to deal with the problem of infinite
@@ -6069,7 +6069,7 @@ svnsync sync http://slave3.example.com/svn-proxy-sync \
           <para>每一行末尾的 <literal>&amp;</literal> 并非绝对必需, 添加它的
             目的是为了让命令在后台执行, 于是 Subversion 客户端就不必等待
             post-commit 脚本里的命令全部执行完毕. 除了 post-commit 钩子脚本,
-            管理员还要编写 post-revprop-change 钩子脚本, 以便用户修改了版本
+            管理员还要编写 post-revprop-change 钩子脚本, 以便在用户修改了版本
             号属性 (例如日志消息) 后, 从服务器也能接收到这个修改:</para>
 
           <informalexample>
@@ -6120,7 +6120,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             <footnote><para><ulink
               url="http://subversion.tigris.org/issues/show_bug.cgi?id=3457" />
             记录了各种方案存在的问题.</para></footnote>. 很多团队根本就不使用
-            Subversion 的锁, 所以这些解决方案存在的问题并不会对你带来麻烦.
+            Subversion 的锁, 所以这些解决方案存在的问题并不会给你带来麻烦.
             不过对于那些确实要用到锁的团队而言, 我们目前也无法提供有用的建议.
           </para>
 
@@ -6188,7 +6188,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             最终使用的协议版本和特性集合由从服务器的 Subversion 版本决定.
             不过, 写操作被传递给主服务器, 因此, 如果主服务器的 Subversion
             版本较旧, 从服务器在与客户端进行特性协商时, 可能会返回从服务器
-            支持, 而主服务器不支持的特性, 结果是客户端使得了主服务器不理解的
+            支持, 而主服务器不支持的特性, 结果是客户端使用了主服务器不理解的
             特性, 最终导致操作失败.</para>
 
       <!--
@@ -6398,7 +6398,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
               <para>必须被包含在 Subversion 仓库的 <literal>Directory</literal>
                 或 <literal>Location</literal> 配置块内.
                 <literal>DAV svn</literal> 告诉 <command>httpd</command>
-                使用 Subversion 提供的 <literal>mod_dav</literal> 后端驱动
+                使用 Subversion 提供的 <command>mod_dav</command> 后端驱动
                 处理所有的请求.</para>
 
             </listitem>
@@ -6515,7 +6515,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                 的信息, 客户端可以请求服务器以两种方式之一返回信息: 在一个
                 单独的响应中携带全部的信息, 或者是只返回一段概略性的信息,
                 然后 Subversion 客户端再根据这段信息, 向服务器请求
-                <emphasis>额外的</emphasis> 的数据. 如果
+                <emphasis>额外的</emphasis> 数据. 如果
                 <literal>SVNAllowBulkUpdates</literal> 被设置成
                 <literal>Off</literal>, <command>mod_dav_svn</command> 将
                 按照第二种方式响应 <literal>REPORT</literal> 请求, 无论客户
@@ -6580,7 +6580,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
       -->
               <para>如果配置指令的值是 <literal>On</literal>, 来自 WebDAV
                 的写请求将自动生成提交, 版本号的日志消息也是一条自动生成的
-                能用消息. 如果 <literal>SVNAutoversioning</literal> 的值是
+                消息. 如果 <literal>SVNAutoversioning</literal> 的值是
                 <literal>On</literal>, 你可能还需要设置上
                 <literal>ModMimeUsePathInfo On</literal>, 于是
                 <command>mod_mime</command> 就能自动地为文件设置正确的
@@ -6888,7 +6888,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                 值是 <literal>!svn</literal>, 绝大多数管理员从来不会用到这个
                 配置指令, 除非仓库中有存在名为 <filename>!svn</filename> 的
                 文件. 如果你在服务器投入使用后再修改此值, 那么所有已存在的
-                工作副本都将无法正确工作, 用户也会把怒火发泄到你身份.</para>
+                工作副本都将无法正确工作, 用户也会把怒火发泄到你身上.</para>
 
             </listitem>
           </varlistentry>
@@ -7107,7 +7107,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                 <literal>AuthzSVNReposRelativeAccessFile</literal> 定义的是相
                 对于仓库中的 <filename>conf/</filename> 目录的路径. 换句话说,
                 由 <filename>file-path</filename> 所指定的文件, 必须能让仓库
-                通过相对路径访问到. 在仓库的配置块内, 可以出现这个配置指令
+                通过相对路径访问到. 在仓库的配置块内, 可以出现配置指令
                 <literal>AuthzSVNReposRelativeAccessFile</literal> 或
                 <literal>AuthzSVNAccessFile</literal>, 但两者不能同时出现.
                 该配置指令在 Subversion 1.7 引进.</para>
@@ -7161,8 +7161,8 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
       people.  It's even possible to restrict access on a per file
       basis.</para>
       -->
-    <para>实际, 管理员还可以设置更加精细的访问规则. 例如允许一部分的用户写仓库中
-      的某个特定目录, 但禁止其他用户; 或者是禁止大部分用户读取某个特定的
+    <para>实际上, 管理员还可以设置更加精细的访问规则. 例如允许一部分的用户 写
+      仓库中的某个特定目录, 但禁止其他用户; 或者是禁止大部分用户读取某个特定的
       目录, 但允许少数用户读取. 访问规则的精细程度甚至可以细致到单个文件.
     </para>
 
