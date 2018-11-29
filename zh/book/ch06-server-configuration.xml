@@ -1690,10 +1690,9 @@ $
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.svnserve.auth.users">
       <!--
-           ### TODO realm
         <title>Create a users file and realm</title>
       -->
-        <title>创建一个用户文件和领域</title>
+        <title>创建一个用户文件和认证域</title>
 
       <!--
         <para>For now, the <literal>[general]</literal> section of
@@ -1704,7 +1703,7 @@ $
       -->
         <para>现在, 你所需要的所有变量都在 <filename>svnserve.conf</filename>
           的 <literal>[general]</literal> 部分. 先从修改这些变量的值开始:
-          为存放用户名和密码的文件选择一个名字; 选择一个认证领域:</para>
+          为存放用户名和密码的文件选择一个名字; 选择一个认证域:</para>
 
         <informalexample>
           <programlisting>
@@ -1764,8 +1763,8 @@ sally = barpassword
           <filename>conf/</filename> 目录内, 和
           <filename>svnserve.conf</filename> 放在一起. 另外, 多个仓库还能
           共享同一个用户文件, 在这种情况下, 文件应该放在更加开放的位置.
-          共享同一用户文件的仓库还要配置相同的领域, 因为用户名列表在本质上
-          就已经定义了一个认证领域. 无论用户文件放在何处, 都要设置好它的
+          共享同一用户文件的仓库还要配置相同的认证域, 因为用户名列表在本质上
+          就已经定义了一个认证域. 无论用户文件放在何处, 都要设置好它的
           读写权限. 如果管理员知道 <command>svnserve</command> 将以哪些用户
           身份运行, 在必要时可限制用户文件的读取权限.</para>
 
@@ -1893,7 +1892,6 @@ authz-db = authzfile
       <para>For many teams, the built-in CRAM-MD5 authentication is
         all they need from <command>svnserve</command>.  However, if
         your server (and your Subversion clients) were built with the
-        ### TODO
         Cyrus Simple Authentication and Security Layer (SASL) library,
         you have a number of authentication and encryption
         options available to you.</para>
@@ -2122,9 +2120,9 @@ $ saslpasswd2 -c -f /etc/my_sasldb -u realm username
           a mechanism such as OTP).</para>
       -->
         <para>有些地方需要注意: 首先要确保 <command>saslpasswd2</command> 的
-          <quote>领域</quote> 参数和定义在 <filename>svnserve.conf</filename>
-          里的领域是一致的, 如果它们不一致, 认证将会失败. 另外, 受限于 SASL,
-          领域必须是不带空格的字符串. 最后, 如果你决定使用标准的 SASL 密码数据
+          <quote>认证域</quote> 参数和定义在 <filename>svnserve.conf</filename>
+          里的认证域是一致的, 如果它们不一致, 认证将会失败. 另外, 受限于 SASL,
+          认证域必须是不带空格的字符串. 最后, 如果你决定使用标准的 SASL 密码数据
           库, 需要确保进程 <command>svnserve</command> 对数据库文件具有读
           权限 (某些认证机制&mdash;例如 OTP&mdash;还会要求写权限).</para>
 
@@ -4036,8 +4034,8 @@ $
       -->
         <para>你可以通过在 <literal>&lt;Location&gt;</literal> 添加
           <literal>Require valid-user</literal>, 从而允许用户对仓库执行所有
-          可能的操作. <xref linkend="svn.serverconfig.httpd.authn.digest"/>
-          的例子只允许成功认证的客户端对 Subversion 仓库执行任意的操作:</para>
+          可能的操作. 下面的例子只允许成功认证的客户端对 Subversion
+          仓库执行任意的操作:</para>
 
         <informalexample>
           <programlisting>
@@ -4056,7 +4054,6 @@ $
 </programlisting>
         </informalexample>
 
-        <!-- ### TODO -->
       <!--
         <para>Sometimes you don't need to run such a tight ship.  For
           example, the server hosting Subversion's own source code at
@@ -4071,7 +4068,7 @@ $
           inside your <literal>&lt;Location&gt;</literal>
           block.</para>
       -->
-        <para>有时候, 你并不需要这么绝对的设置. 比如说托管 Subversion 源代码
+        <para>有时候, 你并不需要这么严格的设置. 比如说托管 Subversion 源代码
           的服务器 (<ulink
             url="https://svn.apache.org/repos/asf/subversion/"/>) 允许所有人
           对仓库执行只读操作 (例如检出工作副本, 浏览仓库等), 但只允许认证
@@ -4748,7 +4745,6 @@ ssl-authority-files = /path/to/CAcert1.pem;/path/to/CAcert2.pem
           <para>If the client receives a challenge for a certificate,
             the server is asking the client to prove its identity.
             The client must send back a certificate signed by a CA
-            ### TODO
             that the server trusts, along with a <firstterm>challenge
             response</firstterm> which proves that the client owns the
             private key associated with the certificate.  The private
@@ -4759,8 +4755,8 @@ ssl-authority-files = /path/to/CAcert1.pem;/path/to/CAcert2.pem
       -->
           <para>如果客户端收到一个证书请求, 那便是服务器要求客户端提供它的
             身份, 客户端必须提供由 CA 签名过的证书, 而该 CA 是服务器所信任
-            的, 除了证书, 还要发送一个 <firstterm>响应</firstterm>
-            (<firstterm>challenge response</firstterm>), 这个响应证明了客户
+            的, 除了证书, 还要发送一个 <firstterm>回应</firstterm>
+            (<firstterm>challenge response</firstterm>), 这个回应证明了客户
             端拥有与证书关联的私钥. 私钥和证书通常被加密后存放在本地磁盘上,
             被一个密码保护. 当 Subversion 客户端收到证书的盘问时, 它将询问
             用户密钥与证书的存放路径, 以及对应的密码:</para>
@@ -6173,7 +6169,6 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             and servers.  Since feature negotiation happens against
             the slave, it is the slave's protocol version and feature
             set which is used.  But write operations are passed
-            ### TODO
             through to the master server quite literally.  Therefore,
             there is a risk that the slave server will answer a
             feature negotiation request from the client in way that is
@@ -6186,7 +6181,8 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
             版本不匹配. 新发布的 Subversion 很可能为服务器与客户端之间所使用
             的网络协议添加了新特性, 由于客户端只和从服务器进行特性协商, 因此
             最终使用的协议版本和特性集合由从服务器的 Subversion 版本决定.
-            不过, 写操作被传递给主服务器, 因此, 如果主服务器的 Subversion
+            不过, 写操作是被逐字逐句地传递给主服务器, 因此, 如果主服务器的
+            Subversion
             版本较旧, 从服务器在与客户端进行特性协商时, 可能会返回从服务器
             支持, 而主服务器不支持的特性, 结果是客户端使用了主服务器不理解的
             特性, 最终导致操作失败.</para>
@@ -6354,7 +6350,6 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         directives that administrators can use in their
         <filename>httpd.conf</filename> files to enable and configure
         their Subversion server offering, introducing each directive
-        ### TODO
         as we also introduce the functionality it toggles.  In this
         section, we'll quickly summarize <emphasis>all</emphasis> the
         configuration directives supported by both of the Apache HTTP
@@ -6363,7 +6358,8 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
       -->
       <para>在上面一节, 我们介绍了很多配置指令, 通过在
         <filename>httpd.conf</filename> 中使用这些配置指令, 管理员就可以
-        配置 Subversion 服务器的具体行为. 本节将快速总结 Subversion 提供的
+        配置 Subversion 服务器的具体行为, 以及服务器所能提供的功能. 本节将
+        快速总结 Subversion 提供的
         Apache HTTP 服务器模块的 <emphasis>所有</emphasis> 配置指令.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -7224,8 +7220,8 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         考虑一下你所创建的文化. 在大多数情况下, 特定的用户
         <emphasis>不应该</emphasis> 向特定的仓库目录提交修改, 这种约定没必要
         通过技术手段加以约束. 团队成员有时候会不由自主地与他们协作, 例如通过
-        向不属于他们的仓库目录提供修改, 帮助他们完成工作. 如果在服务器配置上
-        禁止了这种形式的合作, 无形中就树起了一道协作屏障. 随着着项目的发展与
+        向不属于他们的仓库目录提供修改, 帮助别人完成工作. 如果在服务器配置上
+        禁止了这种形式的合作, 无形中就树起了一道协作屏障. 随着项目的发展与
         新成员的加入, 管理员需要不停地创建新规则, 这会带来大量额外的维护工作.
       </para>
 
@@ -7239,7 +7235,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
       -->
       <para>记住, 这是一个版本控制系统! 即使有人不小心向错误的目录提交了修改,
         这些修改也可以轻易地撤消. 如果用户故意向错误地目录提交修改, 这只能算
-        作人际问题, 这种问题要在 Subversion 外部解决.</para>
+        作人际问题, 要在 Subversion 外部解决.</para>
 
       <!--
       <para>So, before you begin restricting users' access rights, ask
@@ -7247,14 +7243,15 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         whether it's just something that <quote>sounds good</quote> to
         an administrator.  Decide whether it's worth sacrificing some
         server speed, and remember that there's very little risk
-        ### TODO
         involved; it's bad to become dependent on technology as a
         crutch for social problems.<footnote><para>A common theme in
         this book!</para></footnote></para>
       -->
   <para>所以, 在管理员限制用户的访问权限之前, 要问一下自己这是否真的有必要,
     是否只是为了 <quote>听起来不错</quote>, 是否值得牺牲服务器的性能. 放任
-    用户的访问权限并不会带来非常大的风险, 而把.</para>
+    用户的访问权限并不会带来非常大的风险, 而且依赖技术手段来解决社交问题是
+    一种不好的做法!<footnote><para>这是本书的一个重要主题</para></footnote>
+  </para>
 
       <!--
       <para>As an example to ponder, consider that the Subversion
@@ -7271,7 +7268,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         有一套自己约定俗成的规则, 但这些规则总是通过社交来实施. 这是一种
         良好地社区信任模型, 特别是对于开源项目而言. 当然, 有时候确实需要
         基于路径的访问控制, 比如说在公司内部, 某些数据非常敏感, 只能把访问
-        权授予给少部分人员.</para>
+        权授予给少数人.</para>
 
     </sidebar>
 
@@ -7304,7 +7301,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         在配置文件 <filename>httpd.conf</filename> 内用配置指令
         <literal>AuthzSVNAccessFile</literal> 或
         <literal>AuthzSVNReposRelativeAccessFile</literal> 指定访问权限配置
-        文件. (详细的解决见 <xref
+        文件. (详细的说明见 <xref
           linkend="svn.serverconfig.httpd.authz.perdir"/>.)</para>
 
       <!--
@@ -7391,7 +7388,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
       -->
       <para>下面是访问权限配置文件的一个例子, 文件把仓库 <literal>calc</literal>
         的路径 <filename>/branches/calc/bug-142</filename> (及其子目录) 的
-        读权限授予 Sally, 把读取权限授予 Harry:</para>
+        读权限授予 Sally, 把读写权限授予 Harry:</para>
 
       <informalexample>
         <programlisting>
@@ -7427,7 +7424,6 @@ sally = r
         the <literal>SVNReposName</literal> <filename>httpd.conf</filename>
         directive will be ignored by the authorization subsystem.
         Your access control file sections must refer to repositories
-        ### TODO
         by their server-sensitive paths as previously
         described.</para></footnote>,
         while <command>svnserve</command> uses the entire relative
@@ -7467,8 +7463,8 @@ sally = r
           同一个仓库服务, 那么 <command>mod_dav_svn</command> 与
           <command>svnserve</command> 决定仓库名的不同之外将会带来问题.
           通常情况下, 管理员更喜欢为两种服务器配置同一个访问权限配置文件, 然而,
-          为了能让访问权限配置文件正常工作, 管理员必须确保访问文件里的仓库
-          名对于两种服务器而言都是兼容的&mdash;例如把
+          为了能让访问权限配置文件正常工作, 管理员必须确保访问权限配置文件里
+          的仓库名对于两种服务器而言都是兼容的&mdash;例如把
           <command>svnserve</command> 的根目录配置成和
           <command>mod_dav_svn</command> 的配置指令
           <literal>SVNParentPath</literal> 相同的值, 或者为每个仓库指定一个
@@ -7562,7 +7558,7 @@ harry =
           path in the access file will always override any permissions
           inherited from parent directories.</para>
       -->
-        <para>需要记住的是最明确的路径最明确的路径总是最先被匹配. 服务器总
+        <para>需要记住的是最明确的路径总是最先被匹配. 服务器总
           是试图匹配路径本身, 然后是路径的父路径, 然后再是父路径的父路径,
           以此类推. 这样做的影响是如果我们在访问权限配置文件里添加一个特定的
           路径, 那么它的权限配置就会覆盖从父目录继承而来的权限配置.</para>
@@ -7588,7 +7584,7 @@ harry =
         asterisk variable (<literal>*</literal>), which means <quote>all
         users</quote>:</para>
       -->
-    <para>在默认情况下, 任何用户对任意一个仓库都不具体访问权限, 这意味着
+    <para>在默认情况下, 任何用户对任意一个仓库都不具备访问权限, 这意味着
       如果从头开始写访问权限配置文件, 你可能希望所有用户至少对仓库的根目录具有
       只读权限. 可以通过把用户名设置成通配符 (<literal>*</literal>) 实现这
       种配置, 此时通配符 <literal>*</literal> 表示 <quote>所有用户</quote>:
@@ -7910,7 +7906,6 @@ calc = @calc-developers, @calc-owners
       <!--
       <para>If you're using Apache as your Subversion server and have
         made certain subdirectories of your repository unreadable to
-        ### TODO
         certain users, you need to be aware of a possible nonoptimal
         behavior with <command>svn checkout</command>.</para>
       -->
@@ -8440,7 +8435,7 @@ $
       ### TODO
       The answer is yes, provided you use a bit of foresight.</para>
       -->
-    <para>读者已经见到了访问仓库的多种方式, 但是否有可能同时以多种方式,
+    <para>读者已经见到了访问仓库的多种方式, 但是否有可能同时以多种方式
       (安全地) 访问仓库? 答案是肯定的.</para>
 
       <!--
@@ -8607,7 +8602,7 @@ umask 002
       -->
       <para>对于已经有了 SSH 账户的用户, 为了让他们共享仓库而不会产生权限上
         的问题, 其中的过程可能会比较麻烦. 如果你 (作为一个管理员) 对需要在类
-        Unix 系统上需要完成的工作不太清楚, 这里列出了一个检查列表, 总结了本节
+        Unix 系统上完成的工作不太清楚, 这里列出了一个检查列表, 总结了本节
         讨论的几个主题:</para>
 
       <itemizedlist>
