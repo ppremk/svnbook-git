@@ -802,6 +802,7 @@ REGEDIT4
           <varlistentry>
             <term><literal>mime-types-file</literal></term>
             <listitem>
+      <!--
               <para>This option, new to Subversion 1.5, specifies the
                 path of a MIME types mapping file, such as the
                 <filename>mime.types</filename> file provided by the
@@ -811,19 +812,36 @@ REGEDIT4
                 <xref linkend="svn.advanced.props.special.mime-type"
                 /> for more about Subversion's detection and use of
                 file content types.</para>
+      -->
+              <para>该选项在 Subversion 1.5 引入, 用于指定一个 MIME 类型映射
+                文件, 例如由 Apache HTTP 服务器提供的
+                <filename>mime.types</filename>. Subversion 使用 MIME 类型映射
+                文件为新增或导入的文件设置 MIME 类型. 关于 Subversion 如何
+                检测和使用文件内容类型的更多信息, 见 <xref
+                  linkend="svn.advanced.props.auto" /> 和 <xref
+                  linkend="svn.advanced.props.special.mime-type"/>.</para>
             </listitem>         
           </varlistentry>
           <varlistentry>
             <term><literal>no-unlock</literal></term>
             <listitem>
+      <!--
               <para>This Boolean option corresponds to <command>svn
-                commit</command>'s <option>--no-unlock</option>
+                commit</command>'s <option>- -no-unlock</option>
                 option, which tells Subversion not to release locks on
                 files you've just committed.  If this runtime option
                 is set to <literal>yes</literal>, Subversion will
                 never release locks automatically, leaving you to run
                 <command>svn unlock</command> explicitly.  It defaults
                 to <literal>no</literal>.</para>
+      -->
+              <para>这个选项和 <command>svn commit</command> 命令行选项
+                <option>--no-unlock</option> 相对应, 命令行选项
+                <option>--no-unlock</option> 告诉 Subversion 在提交修改后不
+                要释放文件上的锁. 如果把 <literal>no-unlock</literal> 设置
+                成 <literal>yes</literal>, Subversion 就不会自动释放锁, 为
+                了解锁, 用户必须显式地执行 <command>svn unlock</command>.
+                默认值是 <literal>no</literal>.</para>
             </listitem>         
           </varlistentry>
           <varlistentry>
@@ -834,7 +852,11 @@ REGEDIT4
                 when generating conflict filenames.  By default, the
                 list is empty.  This option is new to Subversion
                 1.5.</para>
+              <para>选项的值是由空格分隔的文件扩展名列表, 当 Subversion 生成
+                冲突文件名时必须保留这些扩展名. 选项在 Subversion 1.5 引入,
+                默认值为空.</para>
 
+      <!--
               <para>When Subversion detects conflicting file content
                 changes, it defers resolution of those conflicts to the
                 user.  To assist in the resolution, Subversion keeps
@@ -861,7 +883,24 @@ REGEDIT4
                 application configured on your system to open all
                 files whose extensions are
                 <filename>.r4231</filename>.</para>
+      -->
+              <para>当 Subversion 检测到有冲突发生时, 会把冲突的解决交由用户
+                处理. 为了帮助解决冲突, Subversion 把互相冲突的两个版本的文件
+                保存到工作副本里, 默认情况下, 这些文件的名字是原来的文件名
+                再加上一个特定的扩展名, 例如 <filename>.mine</filename> 或
+                <filename>.<replaceable>REV</replaceable></filename>
+                (<replaceable>REV</replaceable> 表示一个版本号). 这种命名方式
+                可能产生的一个问题是在某些操作系统上, 文件扩展名决定了用于打开
+                它的默认应用程序, 为文件名添加一个特定的扩展名可能会导致无法
+                使用正确的应用程序轻易地打开文件. 比如说文件
+                <filename>ReleaseNotes.pdf</filename> 有冲突发生, 冲突文件可
+                能被命名成 <filename>ReleaseNotes.pdf.mine</filename> 和
+                <filename>ReleaseNotes.pdf.r4231</filename>, 操作系统使用
+                Adobe Acrobat Reader 打开扩展名为 <filename>.pdf</filename>
+                的文件, 但是很可能没有默认程序能够打开扩展名为
+                <filename>.r4231</filename> 的文件.</para>
 
+      <!--
               <para>You can fix this annoyance by using this
                 configuration option, though.  For files with one of
                 the specified extensions, Subversion will append to
@@ -877,6 +916,18 @@ REGEDIT4
                 Because each file ends in
                 <filename>.pdf</filename>, the correct default
                 application will be used to view them.</para>
+      -->
+              <para>配置选项 <literal>preserved-conflict-file-exts</literal>
+                可以帮助用户解决这一问题. 对于扩展名和选项相匹配的文件,
+                Subversion 像往常一样在冲突文件的名字末尾加上特定的扩展名后,
+                会再次添加文件原来的扩展名. 对于前面的例子, 假设
+                <literal>preserved-conflict-file-exts</literal> 的值含有
+                <literal>pdf</literal>, 那么为
+                <filename>ReleaseNotes.pdf</filename> 所生成的冲突文件将
+                被命名成 <filename>ReleaseNotes.pdf.mine.pdf</filename> 和
+                <filename>ReleaseNotes.pdf.r4231.pdf</filename>. 因为冲突文件
+                的扩展名仍然是 <filename>.pdf</filename>, 因此在打开它们时
+                会用到正确的默认应用程序.</para>
             </listitem>         
           </varlistentry>
           <varlistentry>
