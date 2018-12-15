@@ -712,6 +712,7 @@ REGEDIT4
                 items&mdash;for example, object files that result from
                 a program's compilation&mdash;in this display.  The
                 <literal>global-ignores</literal> option is a list of
+                ### TODO
                 whitespace-delimited globs that describe the names of
                 files and directories that Subversion should not
                 display unless they are versioned.  The default value
@@ -1029,6 +1030,7 @@ $
 
         </informalexample>
 
+      <!--
         <para>Multiple matches on a file will result in
           multiple propsets for that file; however, there is no
           guarantee that auto-props will be applied in the order in
@@ -1039,14 +1041,27 @@ $
           forget to set <literal>enable-auto-props</literal> to
           <literal>yes</literal> in the <literal>miscellany</literal>
           section if you want to enable auto-props.</para>
+      -->
+        <para>如果一个文件匹配了多个模式, 它就会被设置上多个属性, 但 Subversion
+          无法保证属性会按照出现在配置文件里的顺序设置到文件上, 所以说用户不能
+          期望用一个属性设置去覆盖另一个属性设置. 用户可以在文件
+          <filename>config</filename> 里看到自动属性设置的几个示例. 如果你希望
+          开启自动属性设置, 别忘了把 <literal>[miscellany]</literal> 节的
+          <literal>enable-auto-props</literal> 选项设置成
+          <literal>yes</literal>.</para>
 
+      <!--
         <para>New to Subversion 1.8, the <literal>[working-copy]</literal>
           section is used for configuring working copies.  Valid options in
           this section are:</para>
+      -->
+        <para>Subversion 1.8 增加了一个新的 <literal>[working-copy]</literal>
+          节, 用于配置工作副本, 它包含的选项有:</para>
         <variablelist>
           <varlistentry>
             <term><literal>exclusive-locking-clients</literal></term>
             <listitem>
+      <!--
               <para>Enables exclusive SQLite locking of working copies for the
                 client, hence improving performance for working copies located
                 on network disks.  By setting this config variable to
@@ -1062,17 +1077,34 @@ $
                 exclusive locking may give a significant performance gain,
                 two or three times faster in some cases.  This option is new to
                 Subversion 1.8.</para>
+      -->
+              <para>开启工作副本的 SQLite 互斥锁, 它可用于提升位于网络磁盘上
+                的工作副本的性能. 如果把该选项设置成 <literal>svn</literal>,
+                Subversion 命令行客户端将使用互斥锁, 这会降低加锁的开销, 但
+                并不是说同一时刻只能允许一个客户端访问工作副本, 如果工作副本
+                已经被锁定了, 那么试图访问工作副本的其他客户端会阻塞 10 秒钟,
+                然后返回一个错误. 在大多数情况下, 人们更喜欢用共享锁, 但是如果
+                工作副本是在网络磁盘 (而不是本地磁盘) 上, 那么锁的开销就更值得
+                关注. 对于放在网络磁盘上的大型工作副本, 使用互斥锁会得到很大的
+                性能提升, 在某些情况下甚至能达到两三倍的提升. 该选项在
+                Subversion 1.8 引入.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>exclusive-locking</literal></term>
             <listitem>
+      <!--
               <para>Setting this config variable to <literal>true</literal>
                 enables exclusive SQLite locking of working copies for
                 all Subversion 1.8 clients.  Enabling this may cause some
                 clients to fail to work properly.  The default value for this
                 option is <literal>false</literal>. This option is new to
                 Subversion 1.8.</para>
+      -->
+              <para>如果把该选项设置成 <literal>true</literal>, 将为所有
+                Subversion 1.8 客户端开启工作副本的互斥锁, 而某些客户端可能
+                会无法正常工作. 选项的默认值是 <literal>false</literal>,
+                在 Subversion 1.8 引入.</para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -1080,8 +1112,12 @@ $
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.advanced.confarea.opts.servers">
+      <!--
         <title>Per-server configuration</title>
+      -->
+        <title>每服务器配置</title>
 
+      <!--
         <para>The <filename>servers</filename> file contains
           Subversion configuration options related to the network
           layers.  There are two special sections in this
@@ -1089,10 +1125,19 @@ $
           <literal>[global]</literal>.  The <literal>[groups]</literal>
           section is essentially a cross-reference table.  The keys in
           this section are the names of other sections in the file;
+          ### TODO
           their values are <firstterm>globs</firstterm>&mdash;textual
           tokens that possibly contain wildcard
           characters&mdash;that are compared against the hostnames of
           the machine to which Subversion requests are sent.</para>
+      -->
+        <para>文件 <filename>server</filename> 包含了与网络层有关的配置选项.
+          文件内有两个特殊的节&mdash;<literal>[groups]</literal> 和
+          <literal>[global]</literal>. <literal>[groups]</literal> 节本质上
+          是一个交叉引用表. 节内选项的名字是文件内其他节的名字, 选项的值是
+          <firstterm>文本表达式</firstterm> (<firstterm>globs</firstterm>)
+          &mdash;可能包含通配符的文本. 向服务器发送请求时, Subversion 将会把
+          服务器的主机名和这些文本表达式进行比较.</para>
 
         <informalexample>
           <programlisting>
