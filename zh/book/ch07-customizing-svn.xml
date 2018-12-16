@@ -1153,6 +1153,7 @@ collabnet = svn.collab.net
 </programlisting>
         </informalexample>
 
+      <!--
         <para>When Subversion is used over a network, it attempts to
           match the name of the server it is trying to reach with a
           group name under the <literal>[groups]</literal> section.  If
@@ -1160,7 +1161,13 @@ collabnet = svn.collab.net
           <filename>servers</filename> file whose name is the matched
           group's name.  From that section, it reads the actual network
           configuration settings.</para>
+      -->
+        <para>如果 Subversion 需要访问网络, 它将尝试把服务器的主机名和
+          <literal>[groups]</literal> 节中的选项进行匹配. 如果匹配成功,
+          Subversion 就会在 <filename>servers</filename> 里查找以选项名命名的
+          节, 然后从该节读取与这个服务器有关的配置.</para>
 
+      <!--
         <para>The <literal>[global]</literal> section contains the
           settings that are meant for all of the servers not matched
           by one of the globs under the <literal>[groups]</literal>
@@ -1169,11 +1176,17 @@ collabnet = svn.collab.net
           sections in the file (except, of course, the special
           <literal>[groups]</literal> section), and are as
           follows:</para>
+      -->
+        <para>如果服务器的主机名不与 <literal>[groups]</literal> 内的任意一
+          个文本表达式相匹配, Subversion 就从 <literal>[global]</literal> 读取
+          服务器配置. <literal>[global]</literal> 所包含的选项与其他节完全
+          相同 (当然, 除了 <literal>[groups]</literal> 节), 这些选项有:</para>
 
         <variablelist>
           <varlistentry>
             <term><literal>http-auth-types</literal></term>
             <listitem>
+      <!--
               <para>This is a semicolon-delimited list of HTTP
                 authentication types which the client will deem
                 acceptable.  Valid types
@@ -1188,6 +1201,15 @@ collabnet = svn.collab.net
                 <literal>basic</literal> from the list.  (Note that
                 this setting is only honored by Subversion's
                 Neon-based HTTP provider module.)</para>
+      -->
+              <para>选项包含了客户端支持的 HTTP 认证类型, 类型之间用分号分开.
+                有效的认证类型包括 <literal>basic</literal>,
+                <literal>digest</literal> 和 <literal>negotiate</literal>,
+                默认行为是允许所有的认证类型. 举个例子, 如果客户端要求不能以
+                明文方式传输认证证书, 可以把该选项设置成
+                <literal>digest;negotiate</literal>&mdash;忽略
+                <literal>basic</literal> 类型. (注意, 这种设置只对基于 Neon 的
+                HTTP 模块才有效.)</para>
               <!-- ### TODO: Subversion 1.7 exposed this to Serf, too,
                    and with an additional 'ntlm' auth type. -->
             </listitem>
@@ -1195,6 +1217,7 @@ collabnet = svn.collab.net
           <varlistentry>
             <term><literal>http-compression</literal></term>
             <listitem>
+      <!--
               <para>This specifies whether Subversion should
                 attempt to compress network requests made to DAV-ready
                 servers.  The default value is <literal>yes</literal>
@@ -1202,11 +1225,18 @@ collabnet = svn.collab.net
                 is compiled into the network layer).  Set this to
                 <literal>no</literal> to disable compression, such as
                 when debugging network transmissions.</para>
+      -->
+              <para>指定是否对发往 DAV 已就绪的服务器的网络数据进行压缩
+                默认值是 <literal>yes</literal> (但只有在网络层支持压缩的
+                情况下才会真正对数据进行压缩). 把选项设置成
+                <literal>no</literal> 将禁止压缩, 例如当我们需要对网络传输
+                进行调试时.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
             <term><literal>http-library</literal></term>
             <listitem>
+      <!--
               <para>The <literal>http-library</literal> runtime
                 configuration option allows users to specify
                 (generally, or in a per-server-group fashion) which of
@@ -1224,6 +1254,18 @@ collabnet = svn.collab.net
                 Subversion installed may still wish to enable the use
                 of <literal>libsvn_ra_neon</literal> for sites which
                 they access with an older version of Subversion.</para>
+      -->
+              <para>该选项允许用户指定他们更愿意使用哪种 WebDAV 访问模块
+                (通常是每服务器配置). 在 1.8 版之前, Subversion 提供了两种
+                WebDAV 访问模块: 较老的 <literal>libsvn_ra_neon</literal>
+                (对应的选项值是 <literal>neon</literal>) 和较新的
+                <literal>libsvn_ra_serf</literal> (对应的选项值是
+                <literal>serf</literal>). 从 1.8 开始, 虽然 Subversion 只支持
+                <literal>libsvn_ra_serf</literal>, 但这个配置选项还是保留了
+                下来, 因为运行时配置区域无法知晓 Subversion 的版本. 如果用户
+                的系统中安装了多种 Subversion 版本, 在使用旧版客户端访问服务
+                器时, 他们可能仍然希望为 <literal>http-library</literal>
+                设置上 <literal>libsvn_ra_neon</literal>.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
