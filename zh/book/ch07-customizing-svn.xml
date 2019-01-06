@@ -2103,6 +2103,7 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       这些选项, 大多数用户的困惑即来自于此.</para>
 
     <note>
+      <!--
       <para>The decision on when to fire off a contextual two- or
         three-way diff as part of a larger Subversion operation is
         made internally by Subversion and is affected by, among other
@@ -2114,13 +2115,25 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
         if your versioned Word documents had a configured MIME type
         that denoted that they were not human-readable (such as
         <literal>application/msword</literal>).  Fortunately, you can
-        pass the <option>--force</option> option to <command>svn
+        pass the <option>- -force</option> option to <command>svn
         diff</command> to short-circuit this MIME-related sanity check
         and force the difference to be calculated.  For more about
         MIME type settings, see
         <xref linkend="svn.advanced.props.special.mime-type"/></para>
+      -->
+      <para>什么时候决定调用差异比较工具由 Subversion 内部进行决定, 而且还
+        受到文件是否是文本文件的影响, 后者由属性
+        <literal>svn:mime-type</literal> 决定. 比如说, 即使说你有一个漂亮的,
+        可以对 Microsoft Word 文档进行差异比较和合并的工具, 但是如果 Word
+        文档的 MIME 类型是二进制文件 (例如
+        <literal>application/msword</literal>), 那么 Subversion 也不会调用该
+        工具. 幸运的是, 你可以为 <command>svn diff</command> 增加选项
+        <option>--force</option>, 强制 Subversion 对文件进行差异比较. 关于
+        MIME 类型设置的更多内容, 见 <xref
+          linkend="svn.advanced.props.special.mime-type"/></para>
     </note>
 
+      <!--
     <para>Much later, Subversion 1.5 introduced interactive resolution
       of conflicts (described in
       <xref linkend="svn.tour.cycle.resolve" />).  One of the options
@@ -2134,8 +2147,18 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       the <literal>merge-tool-cmd</literal> runtime configuration
       option.  Upon finding a configured external merge tool, it will
       invoke that tool.</para>
+      -->
+    <para>Subversion 1.5 引入了交互式的冲突解决 (见 <xref
+        linkend="svn.tour.cycle.resolve" />), 这项特性提供的选项之一是允许用户
+      交互式地调用一个第三方合并工具. 如果 Subversion 需要调用第三方合并工具,
+      它就会检查用户是否已经指定了工具, 它首先检查环境变量
+      <literal>SVN_MERGE</literal>, 如果该变量没有被设置, 它就继续检查运行时
+      配置选项 <literal>merge-tool-cmd</literal>. 一旦找到外部合并工具, 它就
+      调用该工具.</para>
 
     <note>
+      <!--
+        ### TODO
       <para>While the general purposes of the three-way differencing
         and merge tools are roughly the same (finding a way to make
         separate-but-overlapping file changes live in harmony),
@@ -2148,8 +2171,16 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
         failure of some time-sensitive Subversion operations.  It's
         the external merge tool that is intended to be invoked
         interactively.</para>
+      -->
+      <para>由于三路差异比较工具和合并工具的目标是基本相同的 (把各自的, 但
+        是互相重叠的修改和谐地合并到一起), Subversion 会根据不同的情景使用
+        它们. 在与用户交互时调用 Subversion 内建的三路差异比较引擎和它的外部
+        替代品其实是有风险的, 因为使用这些工具而耽搁的时间可能会导致某些对
+        时间比较敏感的操作失败, 这时候 Subversion 更愿意调用外部合并工具.
+      </para>
     </note>
 
+      <!--
     <para>Now, while the interface between Subversion and an external
       merge tool is significantly less convoluted than that between
       Subversion and the diff and diff3 tools, the likelihood of
@@ -2161,10 +2192,21 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       and then convert the output of your tool back into a format that
       Subversion expects.  The following sections cover the specifics
       of those expectations.</para>
+      -->
+    <para>虽然 Subversion 与外部合并工具之间的接口, 比 Subversion 与
+      <command>diff</command>, <command>diff3</command> 之间的接口要简单得多,
+      但是能够找到完全符合 Subversion 要求的外部合并工具还是没那么简单的.
+      为 Subversion 指定外部差异比较和合并工具的关键是使用包装脚本, 包装脚本
+      的功能是把 Subversion 传过来的参数转换成外部工具能够理解的参数, 然后再
+      把外部工具的输出转换成 Subversion 支持的格式. 下面几节进行了具体的介绍.
+    </para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.externaldifftools.diff">
+      <!--
       <title>External diff</title>
+      -->
+      <title>外部差异比较工具</title>
 
       <para>Subversion calls external diff programs with parameters
         suitable for the GNU diff utility, and expects only that the
