@@ -2208,10 +2208,12 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       -->
       <title>外部差异比较工具</title>
 
+      <!--
       <para>Subversion calls external diff programs with parameters
         suitable for the GNU diff utility, and expects only that the
         external program will return with a successful error code per
         the GNU diff definition thereof.  For most alternative diff
+        ### TODO
         programs, only the sixth and seventh arguments&mdash;the paths
         of the files that represent the left and right sides of the
         diff, respectively&mdash;are of interest.  Note that
@@ -2226,11 +2228,30 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
         page puts it this way: <quote>An exit status of 0 means no
         differences were found, 1 means some differences were found,
         and 2 means trouble.</quote></para></footnote></para>
+      -->
+      <para>Subversion 按照 GNU <command>diff</command> 命令的要求向外部差异
+        比较工具传递参数, 同时期望外部差异比较工具按照 GNU
+        <command>diff</command> 的要求返回正确的退出值. 对于大多数差异比较
+        工具, 它们通常只对第 6 和第 7 个参数&mdash;分别表示差异左边内容与右边
+        内容的文件路径&mdash;感兴趣. 注意, Subversion 为第一个被修改的文件
+        运行一次差异比较工具, 所以说如果你的差异比较工具是异步运行的 (或者说
+        在后台运行), 那么多个运行实例可能会同时运行. 最后, 如果差异比较工具
+        检测到了有差异, 则 Subversion 希望工具返回退出值 1, 如果没有检测到差异
+        则返回退出值 0, 若返回其他退出值则认为工具遇到了错误.<footnote><para>
+            GNU <command>diff</command> 的手册是这么说的: <quote>退出值 0
+              表示没有检测到差异, 1 表示检测到差异, 2 表示遇到了错误.</quote>
+          </para></footnote></para>
 
+      <!--
       <para><xref linkend="svn.advanced.externaldifftools.diff.ex-1"/>
         and <xref linkend="svn.advanced.externaldifftools.diff.ex-2"/>
         are templates for external diff tool wrappers in the Python
         and Windows batch scripting languages, respectively.</para>
+      -->
+      <para><xref linkend="svn.advanced.externaldifftools.diff.ex-1"/>
+        和 <xref linkend="svn.advanced.externaldifftools.diff.ex-2"/>
+        分别展示了如何使用 Python 和 Windows 批处理脚本编写外部差异比较工具
+        的包装脚本.</para>
 
       <example id="svn.advanced.externaldifftools.diff.ex-1">
         <title>diffwrap.py</title>
@@ -2282,8 +2303,12 @@ REM Any other errorcode will be treated as fatal.
 
     <!-- =============================================================== -->
     <sect2 id="svn.advanced.externaldifftools.diff3">
+      <!--
       <title>External diff3</title>
+      -->
+      <title>外部三路差异比较工具</title>
 
+      <!--
       <para>Subversion invokes three-way differencing programs to
         perform non-interactive merges.  When configured to use an
         external three-way differencing program, it executes that
@@ -2295,6 +2320,7 @@ REM Any other errorcode will be treated as fatal.
         into the appropriate version-controlled file).  For most
         alternative merge programs, only the ninth, tenth, and
         eleventh arguments, the paths of the files which represent
+        ### TODO
         the <quote>mine</quote>, <quote>older</quote>,
         and <quote>yours</quote> inputs, respectively, are of
         interest.  Note that because Subversion depends on the output
@@ -2304,12 +2330,31 @@ REM Any other errorcode will be treated as fatal.
         merge was successful, or 1 if unresolved conflicts remain in
         the output&mdash;any other error code is considered a fatal
         error.</para>
+      -->
+      <para>当 Subversion 要执行非交互式的合并时就会调用三路差异比较程序,
+        如果被调用的是外部工具, 那么 Subversion 就会按照 GNU
+        <command>diff3</command> 的要求向外部工具传递参数, 并且期望外部工具
+        以表示成功的值退出, 而合并完成后的全部文件内容是打印到标准输出
+        (这样的话 Subversion 就能把它们重定向到任意一个文件). 对于大多数可
+        供选择的合并工具, 它们通常只对第 9, 第 10 和第 11 个参数感兴趣, 这
+        3 个参数分别表示 <quote>自己的</quote>, <quote>较老的</quote> 和
+        <quote>你的</quote> 文件路径. 注意, 由于 Subversion 依赖合并工具所
+        产生的输出, 因此你的脚本必须等到工具的输出全部都传递给 Subversion
+        后才能退出. 当脚本最终退出时, 如果合并成功, 那它应该以 0 作为退出值,
+        如果还有未解决的冲突, 那就以 1 作为退出值, 除了 0 和 1 之外的其他值
+        都被视为发生了严重的错误.</para>
 
+      <!--
       <para><xref linkend="svn.advanced.externaldifftools.diff3.ex-1"/> 
         and <xref linkend="svn.advanced.externaldifftools.diff3.ex-2"/> are
         templates for external three-way differencing tool wrappers in
         the Python and Windows batch scripting languages,
         respectively.</para>
+      -->
+      <para><xref linkend="svn.advanced.externaldifftools.diff3.ex-1"/>
+        和 <xref linkend="svn.advanced.externaldifftools.diff3.ex-2"/> 是
+        外部合并工具包装的模板, 分别用 Python 和 Windows 批处理脚本编写.
+      </para>
 
       <example id="svn.advanced.externaldifftools.diff3.ex-1">
         <title>diff3wrap.py</title>
