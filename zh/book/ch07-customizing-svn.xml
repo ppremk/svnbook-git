@@ -18,7 +18,7 @@
     configured locale, and so on.</para>
       -->
   <para>版本控制是一个很复杂的主题, 它提供了完成任务的无数种方法. 本书已经
-    介绍了 Subversion 命令行客户端的各个子命令, 以及它们各自的子项, 本章将
+    介绍了 Subversion 命令行客户端的各个子命令, 以及它们各自的选项, 本章将
     介绍更多的定制 Subversion 的方法, 包括 Subversion 运行时配置, 外部程序,
     Subversion 与操作系统本地化的交互等.</para>
 
@@ -131,7 +131,7 @@
         覆盖每用户配置区域的设置. 对于类 Unix 系统, 全局配置区域在
         <filename>/etc/subversion</filename>; 对于 Windows 系统, 全局配置区域
         在 <filename>Application Data</filename> (同样, 它的确切位置由系统注
-        表决定) <filename>Subversion</filename> 目录内. 与每用户配置区域不
+        册表决定) <filename>Subversion</filename> 目录内. 与每用户配置区域不
         同的是 <command>svn</command> 不会在启动时尝试创建全局配置区域.</para>
       <!--
         In addition to the per-user configuration area, Subversion
@@ -258,8 +258,8 @@
       <para>Subversion 在注册表的
         <literal>HKEY_LOCAL_MACHINE\Software\Tigris.org\Subversion</literal>
         里搜索全局配置, 例如选项 <literal>global-ignores</literal> 在文件
-        <filename>config</filename> 里的位置是在 <literal>miscellany</literal>
-        节内, 对应的注册表位置是
+        <filename>config</filename> 里的位置是在
+        <literal>[miscellany]</literal> 节内, 对应的注册表位置是
         <literal>HKEY_LOCAL_MACHINE\Software\Tigris.org\Subversion\Config\Miscellany\global-ignores</literal>.
         每用户的配置在
         <literal>HKEY_CURRENT_USER\Software\Tigris.org\Subversion</literal>.</para>
@@ -339,7 +339,7 @@
       <para>客户端命令行工具 <command>svn</command> 从来不会修改 Windows
         系统注册表, 也不会在首次运行时在注册表内创建默认配置, 用户需要自己
         使用 Windows 工具 <command>REGEDIT</command> 创建所需的键. 另外, 用户
-        也可以创建一个 <filename>.reg</filename> 文件 (例如 <xref
+        也可以自己编写一个 <filename>.reg</filename> 文件 (例如 <xref
           linkend="svn.advanced.confarea.windows-registry.ex-1" /> 所展示的
         那样), 然后在文件浏览器内双击该文件的图标, 这将导致文件内的数据被合并
         到系统注册表内.</para>
@@ -856,7 +856,7 @@ REGEDIT4
                 1.5.</para>
       -->
               <para>选项的值是由空格分隔的文件扩展名列表, 当 Subversion 生成
-                冲突文件名时必须保留这些扩展名. 选项在 Subversion 1.5 引入,
+                冲突文件名时必须保留这些扩展名. 该选项在 Subversion 1.5 引入,
                 默认值为空.</para>
 
       <!--
@@ -1137,7 +1137,7 @@ $
           是一个交叉引用表. 节内选项的名字是文件内其他节的名字, 选项的值是
           <firstterm>文本表达式</firstterm> (<firstterm>globs</firstterm>)
           &mdash;可能包含通配符的文本. 向服务器发送请求时, Subversion 将会把
-          服务器的主机名和这些文本表达式进行比较.</para>
+          服务器的主机名和这些文本表达式进行匹配.</para>
 
         <informalexample>
           <programlisting>
@@ -1226,7 +1226,7 @@ collabnet = svn.collab.net
                 <literal>no</literal> to disable compression, such as
                 when debugging network transmissions.</para>
       -->
-              <para>指定是否对发往 DAV 已就绪的服务器的网络数据进行压缩
+              <para>指定是否对发往 DAV 已就绪的服务器的网络数据进行压缩,
                 默认值是 <literal>yes</literal> (但只有在网络层支持压缩的
                 情况下才会真正对数据进行压缩). 把选项设置成
                 <literal>no</literal> 将禁止压缩, 例如当我们需要对网络传输
@@ -1535,7 +1535,7 @@ collabnet = svn.collab.net
                 <literal>yes</literal> 或 <literal>no</literal>, 将分别允许
                 或禁止以明文方式缓存密码. 默认值是 <literal>ask</literal>,
                 于是 Subversion 每当遇到一个 <emphasis>新的</emphasis> 密码时,
-                都会询问用户是否以明文方式, 把它缓存到
+                都会询问用户是否以明文方式把它缓存到
                 <filename>~/.subversion/auth/</filename>.</para>
             </listitem>
           </varlistentry>
@@ -1879,7 +1879,7 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
         <para>解决办法之一是使用一种 <emphasis>可以</emphasis> 表示所有 UTF-8
           字符的本地语言. 或者是修改仓库中的文件名和日志消息 (别忘了和你的日本
           同事打声招呼&mdash;应该提前决定好项目所使用的语言, 这样的话所有的
-          参与者都能使用相同的本地语言.</para>
+          参与者都能使用相同的本地语言).</para>
       </sidebar>
 
     </sect2>
@@ -1934,7 +1934,7 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       (<option>-F</option>) 就可以工作得很好. 如果你还没有把日志消息写到一个
       文件里, 那你可以通过选项 <option>--message</option> (<option>-m</option>)
       把日志消息写到命令行上, 不幸的是, 如果你想在命令行上输入多于一行的日志
-      消息就会比较困难. 用户希望更灵活的输入形式&mdash;多行文本, 不受约束的
+      消息就会比较困难. 用户希望更灵活的输入形式&mdash;多行文本和不受约束的
       日志消息编辑.</para>
 
       <!--
@@ -2006,7 +2006,7 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       Subversion 会在命令行的后面加上一个空格, 然后再加上一个临时文件的路径.
       所以说, 为了能被 Subversion 使用, 所指定的编辑器必须支持它的最后一个命令
       行参数是待编辑的文件, 而且在保存文件时不能更改路径, 编辑器成功退出时
-      必须以 0 作为退出值.</para>
+      必须返回 0.</para>
 
       <!--
     <para>As noted, external editors can be used to provide commit log
@@ -2044,7 +2044,7 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       <!--
     <title>Using External Differencing and Merge Tools</title>
       -->
-    <title>使用外部差异和合并工具</title>
+    <title>使用外部差异比较与合并工具</title>
 
       <!--
     <para>The interface between Subversion and external two- and three-way
@@ -2098,7 +2098,7 @@ svn: E000022: Can't convert string from 'UTF-8' to native encoding:
       <command>diff</command> 和 <command>diff3</command>, 那当然也可以使用
       其他的差异比较工具, 毕竟 Subversion 并不知道它所调用的工具到底是不是
       GNU 的差异比较工具. 不过, 在使用这些外部工具时, 唯一可配置的地方就是它
-      们在系统中的位置&mdash;而非选项, 参数的顺序等. Subversion 仍然会像往常
+      们在系统中的路径&mdash;而非选项或参数的顺序等. Subversion 仍然会像往常
       一样把 GNU 工具的选项传递给你所指定的外部差异比较工具, 无论它们理不理解
       这些选项, 大多数用户的困惑即来自于此.</para>
 
@@ -2443,10 +2443,12 @@ REM remain in the result.  Any other errorcode will be treated as fatal.
         冲突的文件的工作副本路径 (相对于合并操作的原始目标). 如果执行成功,
         合并工具应该返回 0, 如果发生错误则返回 1.</para>
 
+      <!--
       <para><xref linkend="svn.advanced.externaldifftools.merge.ex-1"/> 
         and <xref linkend="svn.advanced.externaldifftools.merge.ex-2"/> are
         templates for external merge tool wrappers in the Python
         and Windows batch scripting languages, respectively.</para>
+      -->
       <para><xref linkend="svn.advanced.externaldifftools.merge.ex-1"/>
         和 <xref linkend="svn.advanced.externaldifftools.merge.ex-2"/> 是
         外部合并工具的包装脚本模板, 分别用 Python 和 Windows 批处理脚本编写.
