@@ -1,7 +1,10 @@
 <!-- -*- sgml -*- -->
 
 <chapter id="svn.developer">
+      <!--
   <title>Embedding Subversion</title>
+      -->
+  <title>嵌入 Subversion</title>
   
   <para>
     <indexterm>
@@ -10,7 +13,15 @@
     <indexterm>
       <primary>application programming interface</primary>
       <see>API</see>
-    </indexterm>Subversion has a modular design: it's implemented as a
+    </indexterm>
+    Subversion 具有模块化的设计: 它由众多由 C 编写而成的库函数实现. 每一个
+    库函数都有一个定义良好的目标和应用程序编程接口 (Application Programming
+    Interface, API), 这种接口不仅可以被 Subversion 使用, 还能被任意一个希望
+    通过编程接口控制 Subversion 的软件使用. 另外, Subversion 的 API 不仅能被
+    C 程序使用, 也能被其他高级语言编写的程序使用, 例如 Python, Perl, Java 和
+    Ruby.</para>
+      <!--
+    Subversion has a modular design: it's implemented as a
     collection of libraries written in C.  Each library has a
     well-defined purpose and application programming interface (API),
     and that interface is available not only for Subversion itself to
@@ -19,8 +30,11 @@
     API is available not only to other C programs, but also to
     programs written in higher-level languages such as Python, Perl,
     Java, and Ruby.</para>
+      -->
 
+      <!--
   <para>This chapter is for those who wish to interact with Subversion
+    ### TODO: language binding
     through its public API or its various language bindings.  If you
     wish to write robust wrapper scripts around Subversion
     functionality to simplify your own life, are trying to develop
@@ -31,18 +45,37 @@
     at such a level, feel free to skip this chapter with the
     confidence that your experience as a Subversion user will not be
     affected.</para>
+      -->
+  <para>本章的目标读者是那些希望通过 Subversion API 或它的各种语言绑定来控制
+    Subversion 的人. 如果你希望围绕 Subversion 功能编写健壮的包装脚本来简化
+    你的工作, 或者正在开发 Subversion 与其他软件之间更加复杂的集成, 或者仅仅
+    是对 Subversion 的库函数感到好奇, 那你应该认真阅读本章. 但是如果你觉得
+    自己没必要从开发的层次上使用 Subversion, 那你完全可以跳过本章, 这并不会
+    影响到你作为一个 Subversion 普通用户的体验.</para>
 
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.developer.layerlib">
+      <!--
     <title>Layered Library Design</title>
+      -->
+    <title>层次化的函数库设计</title>
 
     <para>
       <indexterm>
         <primary>API</primary>
         <secondary>layers</secondary>
-      </indexterm>Each of Subversion's core libraries can be said to
+      </indexterm>
+      Subversion 的每一个核心函数库都隶属于三个层次之一&mdash;仓库层, 仓库访问
+      (Repository Access, RA) 层和客户端层 (见 <xref
+        linkend="svn.intro.architecture.dia-1" />). 我们将会简单地介绍这些层次,
+      但是在这之前, 先简单地总结一下 Subversion 的各个函数库. 为了保持一致,
+      我们把函数库的名字写成删除了扩展名后, 在 Unix 中的库文件名 (例如
+      <filename>libsvn_fs</filename>, <filename>libsvn_wc</filename>,
+      <filename>mod_dav_svn</filename> 等).</para>
+      <!--
+      Each of Subversion's core libraries can be said to
       exist in one of three main layers&mdash;the Repository layer,
       the Repository Access (RA) layer, or the Client layer (see
       <xref linkend="svn.intro.architecture.dia-1" /> in the Preface).
@@ -52,37 +85,56 @@
       extensionless Unix library names
       (<filename>libsvn_fs</filename>, <filename>libsvn_wc</filename>,
       <filename>mod_dav_svn</filename>, etc.).</para>
+      -->
 
     <variablelist>
       <varlistentry>
         <term>libsvn_client</term> 
+      <!--
         <listitem><para>Primary interface for client
           programs</para></listitem>
+      -->
+        <listitem><para>客户端程序的主要接口</para></listitem>
       </varlistentry>
       <varlistentry>
         <term>libsvn_delta</term>
+      <!--
         <listitem><para>Tree and byte-stream differencing
           routines</para></listitem>
+      -->
+        <listitem><para>目录树和字节流差异比较例程</para></listitem>
       </varlistentry>
       <varlistentry>
         <term>libsvn_diff</term>
+      <!--
         <listitem><para>Contextual differencing and merging
           routines</para></listitem>
+      -->
+        <listitem><para>文件内容差异比较和合并例程</para></listitem>
       </varlistentry>
       <varlistentry>
         <term>libsvn_fs</term>
+      <!--
         <listitem><para>Filesystem commons and module
           loader</para></listitem>
+      -->
+        <listitem><para>文件系统公共函数和模块加载例程</para></listitem>
       </varlistentry>
       <varlistentry>
         <term>libsvn_fs_base</term>
+      <!--
         <listitem><para>The Berkeley DB filesystem
           backend</para></listitem>
+      -->
+        <listitem><para>Berkeley DB 文件系统后端</para></listitem>
       </varlistentry>
       <varlistentry>
         <term>libsvn_fs_fs</term>
+      <!--
         <listitem><para>The native filesystem (FSFS)
           backend</para></listitem>
+      -->
+        <listitem><para>原生文件系统 (FSFS) 后端</para></listitem>
       </varlistentry>
       <varlistentry>
         <term>libsvn_ra</term>
