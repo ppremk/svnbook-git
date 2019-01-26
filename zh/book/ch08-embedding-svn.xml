@@ -282,14 +282,26 @@
 
     <!-- =============================================================== -->
     <sect2 id="svn.developer.layerlib.repos">
+      <!--
       <title>Repository Layer</title>
+      -->
+      <title>仓库层</title>
 
       <para>
         <indexterm>
           <primary>API</primary>
           <secondary>layers</secondary>
           <tertiary>Repository Layer</tertiary>
-        </indexterm>When referring to Subversion's Repository layer, we're
+        </indexterm>
+        当说到 Subversion 仓库层时, 我们通常谈论的是两个基本概念&mdash;版本化
+        文件系统的实现 (通过 <filename>libsvn_fs</filename> 函数库访问, 它依赖
+        <filename>libsvn_fs_base</filename> 和 <filename>libsvn_fs_fs</filename>
+        这两个函数库), 以及围绕它的仓库逻辑 (在
+        <filename>libsvn_repos</filename> 里实现). 这些函数库为版本化数据的各
+        个版本提供了存储和报告机制. 仓库层通过仓库访问层连接到客户端层, 从
+        Subversion 用户的角度来看, 仓库层是 <quote>线段的另一端</quote></para>
+      <!--
+        When referring to Subversion's Repository layer, we're
         generally talking about two basic concepts&mdash;the versioned
         filesystem implementation (accessed via
         <filename>libsvn_fs</filename>, and supported by its
@@ -302,12 +314,28 @@
         the Client layer via the Repository Access layer, and is, from
         the perspective of the Subversion user, the stuff at the
         <quote>other end of the line.</quote></para>
+      -->
 
       <para>
         <indexterm>
           <primary>repositories</primary>
           <secondary>filesystem</secondary>
-        </indexterm>The Subversion filesystem is not a kernel-level filesystem
+        </indexterm>
+        Subversion 文件系统并不是在操作系统内核态实现的文件系统 (在内核态实现
+        的文件系统有 Linux ext2 或 NTFS 等), 它是一个虚拟文件系统,
+        <quote>文件</quote> 和 <quote>目录</quote> 不是以真实的文件和目录的
+        形式 (真实的文件和目录就是你在 shell 中能够看到的那些文件和目录) 存放
+        到磁盘上, 而是使用了两种抽象存储后端&mdash;Berkeley DB 或一个平坦文件
+        系统 (关于这两种存储后端的更多信息, 见 <xref
+          linkend="svn.reposadmin.basics.backends"/>). Subversion 开发团队甚至
+        在考虑为 Subversion 支持更多类型的后端数据库系统, 他们或许会通过 ODBC
+        (Open Database Connectivity, 开放数据库连接) 实现这一特性. 实际上,
+        Google 代码托管 (Google Code Project Hosting) 服务已经做过类似的工作:
+        Google 在 2006 年中期宣称他们的开源团队已经开发了一个私有的 Subversion
+        文件系统插件, 该插件允许 Subversion 使用 Google Bigtable 数据库作为
+        存储后端.</para>
+      <!--
+        The Subversion filesystem is not a kernel-level filesystem
         that one would install in an operating system (such as the
         Linux ext2 or NTFS), but instead is a virtual filesystem.
         Rather than storing <quote>files</quote> and
@@ -327,12 +355,22 @@
         members of its open source team had written a new proprietary
         Subversion filesystem plug-in that used Google's ultra-scalable
         Bigtable database for its storage.</para>
+      -->
 
       <para>
         <indexterm>
           <primary>repositories</primary>
           <secondary>filesystem tree</secondary>
-        </indexterm>The filesystem API exported by
+        </indexterm>
+        其他文件系统 API 所能提供的功能, <filename>libsvn_fs</filename> 的 API
+        也能提供&mdash;你可以创建或删除文件和目录, 复制或移动, 修改文件内容等.
+        除此之外, <filename>libsvn_fs</filename> 还提供了不太常见的功能, 例如
+        在文件和目录上添加, 修改和删除元数据 (<quote>属性</quote>). 更重要的是,
+        Subversion 的文件系统是一个版本化的文件系统, 这意味着在你修改目录树时,
+        Subversion 记住了目录树被修改前的样子, 以及上次修改前的样子, 上上次
+        修改前的样子, 可以一直追溯到文件系统被创建的时候.</para>
+      <!--
+        The filesystem API exported by
         <filename>libsvn_fs</filename> contains the kinds of
         functionality you would expect from any other filesystem
         API&mdash;you can create and remove files and directories,
@@ -347,30 +385,49 @@
         And the previous ones.  And so on, all the way back through
         versioning time to (and just beyond) the moment you first
         started adding things to the filesystem.</para>
+      -->
 
+      <!--
       <para>All the modifications you make to your tree are done
         within the context of a Subversion commit transaction.  The
         following is a simplified general routine for modifying your
         filesystem:</para>
+      -->
+      <para>针对目录树的所有修改都是在一个 Subversion 提交事务的上下文中完成,
+        下面是修改文件系统的简化过程:</para>
 
       <orderedlist>
         <listitem>
+      <!--
           <para>Begin a Subversion commit transaction.</para>
+      -->
+          <para>开始一个 Subversion 提交事务.</para>
         </listitem>
         <listitem>
+      <!--
           <para>Make your changes (adds, deletes, property
             modifications, etc.).</para>
+      -->
+          <para>执行修改 (添加, 删除, 修改属性等).</para>
         </listitem>
         <listitem>
+      <!--
           <para>Commit your transaction.</para>
+      -->
+          <para>提交事务.</para>
         </listitem>
       </orderedlist>
 
+      <!--
       <para>Once you have committed your transaction, your filesystem
         modifications are permanently stored as historical artifacts.
         Each of these cycles generates a single new revision of your
         tree, and each revision is forever accessible as an immutable
         snapshot of <quote>the way things were.</quote></para>
+      -->
+      <para>事务一旦提交, 文件系统的修改就已经作为历史财产持久化地保存下来.
+        每次轮回都会产生一个新的版本号, 每个版本号都是一个永远可访问的只读
+        快照.</para>
 
       <sidebar>
         <title>The Transaction Distraction</title>
