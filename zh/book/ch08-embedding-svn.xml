@@ -774,6 +774,7 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>The public API exported by the RA layer contains
         functionality necessary for sending and receiving versioned
         data to and from the repository.  And each of the available RA
@@ -784,7 +785,15 @@ $
         Subversion server module; <filename>libsvn_ra_svn</filename>
         speaks a custom network protocol with the
         <command>svnserve</command> program; and so on.</para>
+      -->
+      <para>RA 层导出的 API 包含了用于发送和接收版本化数据的必要功能, 而且每
+        一个 RA 插件都可以使用一种特定的协议完成这些任务, 例如
+        <filename>libsvn_ra_serf</filename> 使用 HTTP/WebDAV (还可以选择使用
+        SSL 加密) 与运行着 <filename>mod_dav_svn</filename> 模块的 Apache
+        HTTP 服务器通信; <filename>libsvn_ra_svn</filename> 使用一种 Subversion
+        特有的协议与 <command>svnserve</command> 服务器通信.</para>
 
+      <!--
       <para>For those who wish to access a Subversion repository
         using still another protocol, that is precisely why the
         Repository Access layer is modularized!  Developers can simply
@@ -795,19 +804,35 @@ $
         (IPC) calls, or&mdash;let's get crazy, shall we?&mdash;you
         could even implement an email-based protocol.  Subversion
         supplies the APIs; you supply the creativity.</para>
+      -->
+      <para>RA 层使用了模块化的设计, 因为 Subversion 开发人员考虑到人们可能
+        还想使用其他协议访问 Subversion 仓库, 这就使得新协议的开发更加方便.
+        开发人员仅仅需要写一个实现了 RA 接口的函数库, 新的函数库可以使用已
+        有的网络协议或你自己发明的新协议, 你甚至可以使用进程间通信 (IPC) 或
+        基于电子邮件的协议. Subversion 提供了 API, 而你则提供创造性.
+      </para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.developer.layerlib.client">
+      <!--
       <title>Client Layer</title>
+      -->
+      <title>客户端层</title>
       
       <para>
         <indexterm>
           <primary>API</primary>
           <secondary>layers</secondary>
           <tertiary>Client Layer</tertiary>
-        </indexterm>On the client side, the Subversion working copy is where
+        </indexterm>
+        在客户端, 工作副本是所有操作发生的地方, 客户端实现的所有功能都是为
+        了更好地管理工作副本&mdash;包含了众多文件与子目录的目录, 作为一个
+        或多个仓库在本地的, 可编辑的 <quote>映射</quote>&mdash;并且向仓库
+        访问层发送或接收修改.</para>
+      <!--
+        On the client side, the Subversion working copy is where
         all the action takes place.  The bulk of functionality
         implemented by the client-side libraries exists for the sole
         purpose of managing working copies&mdash;directories full of
@@ -815,11 +840,21 @@ $
         editable <quote>reflection</quote> of one or more repository
         locations&mdash;and propagating changes to and from the
         Repository Access layer.</para>
+      -->
 
       <para>
         <indexterm>
           <primary>administrative directory</primary>
-        </indexterm>Subversion's working copy library,
+        </indexterm>
+        Subversion 工作副本函数库 <filename>libsvn_wc</filename> 负责管理工作
+        副本的数据, 为了完成这个任务, 函数库把工作副本有关的管理信息都存放在
+        一个特殊的子目录内, 这个子目录的名字是 <filename>.svn</filename>, 每
+        个工作副本都有这个目录, 目录内包含了用于记录工作副本状态的各种文件与
+        目录, 为管理性的操作提供了一个私有工作空间. 如果读者熟悉 CVS, 就会发
+        现 <filename>.svn</filename> 的功能与 CVS 工作副本里的
+        <filename>CVS</filename> 非常类似.</para>
+      <!--
+        Subversion's working copy library,
         <filename>libsvn_wc</filename>, is directly responsible for
         managing the data in the working copies.  To accomplish this,
         the library stores administrative information about the
@@ -831,6 +866,7 @@ $
         CVS, this <filename>.svn</filename> subdirectory is similar in
         purpose to the <filename>CVS</filename> administrative
         directories found in CVS working copies.</para>
+      -->
 
       <para>The Subversion client library,
         <filename>libsvn_client</filename>, has the broadest
