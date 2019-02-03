@@ -492,6 +492,7 @@
 
       </sidebar>
 
+      <!--
       <para>Most of the functionality the filesystem
         interface provides deals with actions that occur on individual
         filesystem paths.  That is, from outside the filesystem, the
@@ -502,7 +503,14 @@
         favorite shell program.  You add new files and directories by
         passing their paths-to-be to the right API functions.  You
         query for information about them by the same mechanism.</para>
+      -->
+      <para>文件系统接口提供的大多数功能都是针对文件系统中的路径进行操作, 也
+        就是说从文件系统外部看来, 描述与访问文件版本号的主要机制都要通过路径
+        字符串 (例如 <filename>/foo/bar</filename>) 实施, 类似于在 shell 程序
+        中处理文件与目录. 你可以用路径参数调用正确的函数来创建新文件与目录,
+        也可以用其他函数查询文件信息.</para>
 
+      <!--
       <para>Unlike most filesystems, though, a path alone is not
         enough information to identify a file or directory in
         Subversion.  Think of a directory tree as a two-dimensional
@@ -511,12 +519,22 @@
         subdirectories represents a downward motion.  <xref
         linkend="svn.developer.layerlib.repos.dia-1"/> shows a typical
         representation of a tree as exactly that.</para>
+      -->
+      <para>与大多数文件系统不同的是, 仅仅依靠路径无法在 Subversion 中唯一
+        地识别一个文件或目录. 把目录树看成是一个二维系统, 结点的兄弟代表了
+        一种横向移动, 而进入结点的子目录则是一种纵向移动. <xref
+          linkend="svn.developer.layerlib.repos.dia-1"/> 展示了一个目录树的
+        典型表示.</para>
 
       <figure id="svn.developer.layerlib.repos.dia-1">
+      <!--
         <title>Files and directories in two dimensions</title>
+      -->
+        <title>二维坐标系下的文件与目录</title>
         <graphic fileref="images/ch08dia1.png"/>
       </figure>
 
+      <!--
       <para>The difference here is that the Subversion filesystem has
         a nifty third dimension that most filesystems do not
         have&mdash;Time!<footnote><para>We understand that this may
@@ -537,12 +555,28 @@
         linkend="svn.developer.layerlib.repos.dia-2"/> shows revision
         history as an added dimension to the Subversion filesystem
         universe.</para>
+      -->
+      <para>Subversion 文件系统的不同点在于它还有第三个维度&mdash;时间
+        <footnote><para>某些科幻迷可能会感到震惊, 因为他们一直以来都认为时间
+            是第 <emphasis>四</emphasis> 个维度, 对此造成的情感创伤我们表示
+            道歉.</para></footnote> Subversion 文件系统提供的函数如果需要一
+        个 <parameter>path</parameter> 参数, 那么很可能也会需要一个
+        <parameter>root</parameter> 参数, 这个 <literal>svn_fs_root_t</literal>
+        类型的参数或者描述了一个版本号, 或者描述了一个 Subversion 事务 (完成中
+        的版本号), 它所提供的第三个维度可用于区分不同版本号下的
+        <filename>/foo/bar</filename>. <xref
+          linkend="svn.developer.layerlib.repos.dia-2"/> 展示了增加了第三个
+        维度后, 目录树的三维表示.</para>
 
       <figure id="svn.developer.layerlib.repos.dia-2">
+      <!--
         <title>Versioning time&mdash;the third dimension!</title>
+      -->
+        <title>Subversion 目录树的三维表示</title>
         <graphic fileref="images/ch08dia2.png"/>
       </figure>
 
+      <!--
       <para>As we mentioned earlier, the
         <filename>libsvn_fs</filename> API looks and feels like any
         other filesystem, except that it has this wonderful versioning
@@ -553,7 +587,14 @@
         and directory versioning support, Subversion wants
         more&mdash;and that is where <filename>libsvn_repos</filename>
         comes in.</para>
+      -->
+      <para>我们前面已经说过, <filename>libsvn_fs</filename> API 类似于其他
+        文件系统, 不同点是它提供了版本控制的功能, 不仅限于 Subversion, 任何
+        对版本化文件系统感兴趣的程序都能使用它的接口. 虽然文件系统 API 对于
+        基本的文件与目录的版本控制已经提供了足够的支持, 但 Subversion 的要求
+        不仅于此, 所以就有了 <filename>libsvn_repos</filename>.</para>
 
+      <!--
       <para>The Subversion repository library
         (<filename>libsvn_repos</filename>) sits (logically speaking)
         atop the <filename>libsvn_fs</filename> API, providing
@@ -565,59 +606,109 @@
         commit of Subversion transactions and the modification of
         revision properties.  These particular events are wrapped by
         the repository layer because they have hooks associated with
+        ### TODO
         them.  A repository hook system is not strictly related to
         implementing a versioning filesystem, so it lives in the
         repository wrapper library.</para>
+      -->
+      <para>Subversion 仓库函数库 <filename>libsvn_repos</filename> 从逻辑上
+        讲处于 <filename>libsvn_fs</filename> 之上, 在下层版本化文件系统的
+        基础上提供了更多的功能. <filename>libsvn_repos</filename> 只封装了
+        文件系统的某些接口, 包括 Subversion 事务的创建与提交, 版本号属性的修改,
+        之所以要封装这些接口是因为仓库层为它们关联了钩子. 仓库的钩子系统
+        并不要求一定要关联到一个版本化文件系统, 因此它们位于仓库函数库.</para>
       
+      <!--
       <para>The hooks mechanism is but one of the reasons for the
         abstraction of a separate repository library from the rest of
         the filesystem code.  The <filename>libsvn_repos</filename>
         API provides several other important utilities to Subversion.
         These include the abilities to:</para>
+      -->
+      <para>钩子机制是把仓库函数库与文件系统函数库分开的原因之一.
+        <filename>libsvn_repos</filename> 还提供了以下功能:</para>
 
       <itemizedlist>
         <listitem>
+      <!--
           <para>Create, open, destroy, and perform recovery steps on a
             Subversion repository and the filesystem included in that
             repository.</para>
+      -->
+          <para>创建, 打开, 销毁和恢复 Subversion 仓库 (包括仓库里的文件系统).
+          </para>
         </listitem>
         <listitem>
+      <!--
           <para>Describe the differences between two filesystem
             trees.</para>
+      -->
+          <para>描述两个文件系统树之间的差异.</para>
         </listitem>
         <listitem>
+      <!--
           <para>Query for the commit log messages associated with all
             (or some) of the revisions in which a set of files was
             modified in the filesystem.</para>
+      -->
+          <para>查询全部 (或部分) 版本号的提交日志消息, 在每个版本号中
+            都有一些文件系统中的文件与目录被修改.</para>
         </listitem>
         <listitem>
+      <!--
           <para>Generate a human-readable <quote>dump</quote> of the
             filesystem&mdash;a complete representation of the revisions in
             the filesystem.</para>
+      -->
+          <para>生成一个人类可读懂的文件系统 <quote>转储</quote> 文件&mdash;
+            它是文件系统中版本号的完整表示.</para>
         </listitem>
         <listitem>
+      <!--
           <para>Parse that dump format, loading the dumped revisions
             into a different Subversion repository.</para>
+      -->
+          <para>解析转储文件, 把转储后的版本号加载到另一个 Subversion 仓库里.
+          </para>
         </listitem>
       </itemizedlist>
 
+      <!--
       <para>As Subversion continues to evolve, the repository library
         will grow with the filesystem library to offer increased
         functionality and configurable option support.</para>
+      -->
+      <para>随着 Subversion 的不断演变, 仓库函数库将与文件系统函数库共同成长,
+        提供越来越丰富的功能.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.developer.layerlib.ra">
+      <!--
       <title>Repository Access Layer</title>
+      -->
+      <title>仓库访问层</title>
 
       <para>
         <indexterm>
           <primary>API</primary>
           <secondary>layers</secondary>
           <tertiary>Repository Access (RA) Layer</tertiary>
-        </indexterm>If the Subversion Repository layer is at <quote>the other
+          </indexterm>
+          如果说 Subversion 仓库层是 <quote>线段的另一端</quote>, 那么仓库
+          访问层 (Repository Access, 简称 RA) 就是线段本身. 仓库访问层充满了
+          客户端函数库与仓库函数库之间互相传递的数据. 仓库访问层包含的
+          函数库有模块加载库 <filename>libsvn_ra</filename>, 仓库访问模块本身
+          (目前的访问模块有 <filename>libsvn_ra_local</filename>,
+          <filename>libsvn_ra_serf</filename> 和
+          <filename>libsvn_ra_svn</filename>), 以及仓库访问模块所需的其他
+          函数库 (例如 <filename>mod_dav_svn</filename> 或
+          <filename>svnserve</filename>).</para>
+      <!--
+          If the Subversion Repository layer is at <quote>the other
         end of the line,</quote> the Repository Access (RA) layer is
+      ### TODO
         the line itself.  Charged with marshaling data between the
         client libraries and the repository, this layer includes the
         <filename>libsvn_ra</filename> module loader library, the RA
@@ -629,11 +720,21 @@
         the <filename>mod_dav_svn</filename> Apache module or
         <filename>libsvn_ra_svn</filename>'s server,
         <command>svnserve</command>).</para>
+      -->
 
       <para>
         <indexterm>
           <primary>repository URL</primary>
-        </indexterm>Since Subversion uses URLs to identify its repository
+        </indexterm>
+        Subversion 使用 URL 标识仓库资源, URL 的协议部分 (通常是
+        <literal>file://</literal>, <literal>http://</literal>,
+        <literal>https://</literal>, <literal>svn://</literal> 或
+        <literal>svn+ssh://</literal>) 决定了使用哪种仓库访问模块处理请求.
+        每个仓库访问模块都它认识的协议, 于是 RA 加载函数就能在运行时决定
+        使用哪个模块. 用户可以执行 <userinput>svn --version</userinput> 查看
+        可用的 RA 模块及其所支持的协议:</para>
+      <!--
+        Since Subversion uses URLs to identify its repository
         resources, the protocol portion of the URL scheme (usually
         <literal>file://</literal>, <literal>http://</literal>,
         <literal>https://</literal>, <literal>svn://</literal>, or
@@ -644,7 +745,8 @@
         to use for the task at hand.  You can determine which RA
         modules are available to the Subversion command-line client,
         and what protocols they claim to support, by running
-        <userinput>svn --version</userinput>:</para>
+        <userinput>svn - -version</userinput>:</para>
+      -->
 
       <informalexample>
         <screen>
