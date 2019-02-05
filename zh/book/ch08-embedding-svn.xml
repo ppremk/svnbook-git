@@ -868,6 +868,7 @@ $
         directories found in CVS working copies.</para>
       -->
 
+      <!--
       <para>The Subversion client library,
         <filename>libsvn_client</filename>, has the broadest
         responsibility; its job is to mingle the functionality of the
@@ -882,7 +883,17 @@ $
         into the working copy library, which then writes a full
         working copy to disk (<filename>.svn</filename> directories
         and all).</para>
+      -->
+      <para>Subversion 客户端函数库 <filename>libsvn_client</filename>
+        所负责的工作是最广泛的, 它负责混合工作副本函数库与仓库访问层函数
+        库的功能, 进而向应用程序提供最高层次的 API, 允许应用程序执行最一
+        般的版本控制操作. 例如函数 <function>svn_client_checkout</function>
+        接收一个 URL 作为参数, 它将 URL 传递给 RA 层, 并打开一个关联到特定
+        仓库的已认证会话, 然后函数向仓库请求一个特定的目录树, 并将此目录树
+        发送给工作副本函数库, 最终在磁盘上得到一个完整的工作副本 (包括目录
+        <filename>.svn</filename>).</para>
 
+      <!--
       <para>The client library is designed to be used by any
         application.  While the Subversion source code includes a
         standard command-line client, it should be very easy to write
@@ -897,10 +908,23 @@ $
         <filename>tools/examples/minimal_client.c</filename>) that
         exemplifies how to wield the Subversion API to create a simple
         client program.</para>
+      -->
+      <para>客户端函数库被设计成可被任意的应用程序使用, Subversion 源代码
+        包已经包含了一个命令行客户端, 不过基于客户端函数库写出一个 GUI 客户
+        端并没有多大的难度. 新的客户端没必要封装已有的命令行客户端&mdash;
+        它们完全可以通过 <filename>libsvn_client</filename> API 获得相同的
+        功能, 数据和回调机制. 实际上, Subversion 源代码包包含了一个最小化的
+        客户端实现 (代码在
+        <filename>tools/examples/minimal_client.c</filename>), 展示了如何使
+        用 Subversion API 实现一个简单的客户端程序.</para>
 
       <sidebar>
+      <!--
         <title>Binding Directly&mdash;A Word About Correctness</title>
+      -->
+        <title>直接绑定&mdash;关于正确性的一些话</title>
 
+      <!--
         <para>Why should your GUI program bind directly with a
           <filename>libsvn_client</filename> instead of acting as a
           wrapper around a command-line program?  Besides simply being
@@ -913,7 +937,15 @@ $
           display all of the information harvested from the API or may
           combine bits of information for compact
           representation.</para>
+      -->
+        <para>为什么你的 GUI 程序应该使用 <filename>libsvn_client</filename>
+          开发, 而不是直接封装一个命令行程序? 前者除了效率更高之外, 也更
+          加正确. 基于客户端函数库开发的命令行程序 (例如 Subversion 所提供的)
+          需要把 C 类型的反馈或请求数据高效地翻译成人类可读懂的格式, 这种
+          翻译是有损的, 也就是说程序可能无法呈现从 API 获取到的所有信息,
+          或者为了紧凑显示而与其他信息进行组合.</para>
 
+      <!--
         <para>If you wrap such a command-line program with yet another
           program, the second program has access only to
           already interpreted (and as we mentioned, likely incomplete)
@@ -923,7 +955,15 @@ $
           original data is potentially tainted more and more, much
           like the result of making a copy of a copy (of a copy&hellip;)
           of a favorite audio or video cassette.</para>
+      -->
+        <para>如果你的程序建立在命令行程序的封装之上, 那么程序只能访问到已
+          被翻译过的信息 (上面我们刚说过, 信息可能是不完整的), 而这些信息
+          将被 <emphasis>再次</emphasis> 翻译成
+          <emphasis>程序自己的</emphasis> 的表示格式. 每一次封装, 原始数据
+          的完整性被破坏的就越多, 类似于拷贝音频或视频磁带的拷贝 (的拷贝
+          &hellip;).</para>
  
+      <!--
         <para>But the most compelling argument for binding directly to
           the APIs instead of wrapping other programs is that the
           Subversion project makes compatibility promises regarding
@@ -937,6 +977,13 @@ $
           compatibility promises do not exist for Subversion
           command-line program output, which is subject to change from
           release to release.</para>
+      -->
+        <para>基于 API 进行开发, 而不是封装其他程序的另一大原因是 Subversion
+          保证了 API 的兼容性. 在次版本号不同的 API 之间 (例如 1.3 和
+          1.4), 其函数原型不会发生变化, 也就是说在升级 Subversion 时, 不
+          必升级你自己的程序. 特定的一些函数可能不再赞成使用, 但它们仍然可
+          以正常工作, 这就给了你一定的缓冲时间升级到最新的 API. 然而
+          Subversion 命令行程序的输出无法保证这种兼容性.</para>
 
       </sidebar>
 
@@ -947,8 +994,12 @@ $
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.developer.usingapi">
+      <!--
     <title>Using the APIs</title>
+      -->
+    <title>使用 API</title>
 
+      <!--
     <para>Developing applications against the Subversion library APIs
       is fairly straightforward.  Subversion is primarily a set of C
       libraries, with header (<filename>.h</filename>) files that live
@@ -961,6 +1012,16 @@ $
       Subversion developer community is meticulous about ensuring that
       the public API is well documented&mdash;refer directly to the
       header files for that documentation.</para>
+      -->
+    <para>基于 Subversion 函数库 API 开发应用程序是一件相对比较直截了当
+      的事. Subversion 主要由 C 函数库组成, 它们的头文件
+      (<filename>.h</filename>) 在源代码包的
+      <filename>subversion/include</filename> 目录内. 如果你从源代码编译
+      安装了 Subversion, 这些头文件就会被复制到你的系统目录中 (例如
+      <filename>/usr/local/include</filename>). 这些头文件代表了能够被
+      用户访问到的 Subversion 函数库的全部函数与类型. Subversion 开发
+      社区非常注重 API 的文档&mdash;头文件里已经包含了关于如何 API 的
+      完整文档.</para>
 
     <para>When examining the public header files, the first thing you
       might notice is that Subversion's datatypes and functions are
