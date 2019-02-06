@@ -1023,6 +1023,7 @@ $
       社区非常注重 API 的文档&mdash;头文件里已经包含了关于如何 API 的
       完整文档.</para>
 
+      <!--
     <para>When examining the public header files, the first thing you
       might notice is that Subversion's datatypes and functions are
       namespace-protected.  That is, every public Subversion symbol
@@ -1041,7 +1042,21 @@ $
       <literal>static</literal>.  Of course, a compiler isn't
       interested in these naming conventions, but they help to clarify
       the scope of a given function or datatype.</para>
+      -->
+    <para>浏览头文件时, 你注意到的第一件事可能是 Subversion 的数据类型
+      和函数是被名字空间保护起来的, 详细地说, 每一个公开的 Subversion 符号
+      名都以 <literal>svn_</literal> 开始, 然后是表示该符号定义所在的
+      函数库的编码 (例如 <literal>wc</literal>, <literal>client</literal>,
+      <literal>fs</literal> 等), 然后是一个下划线 (<literal>_</literal>),
+      然后是符号名剩下的部分. 半公开的函数 (只被单个函数库的源文件们使用,
+      在该函数库外无法使用, 而且这些半公开函数的定义位于能使用它们的库函数
+      目录内) 使用不同的命名模式, 在函数库编码后面是两个连续的下划线
+      (<literal>_&thinsp;_</literal>), 而非一个下划线. 源文件内的私有函数
+      没有特定的前缀, 它们都被声明为 <literal>static</literal>. 当然, 这些
+      命名规范对编译器没什么意义, 但却有助于开发人员理解函数和数据类型的
+      作用域.</para>
 
+      <!--
     <para>Another good source of information about programming against
       the Subversion APIs is the project's own hacking guidelines,
       which you can find at
@@ -1052,11 +1067,22 @@ $
       Subversion as a set of third-party
       libraries.<footnote><para>After all, Subversion uses
       Subversion's APIs, too.</para></footnote></para>
+      -->
+    <para>学习如何使用 Subversion API 进行开发的另一个信息来源是官网的
+      编程文档 (<ulink
+        url="http://subversion.apache.org/docs/community-guide/"/>).
+      这篇文档主要针对 Subversion 开发人员, 但对于把 Subversion 用作第
+      三方函数库的开发人员来说同样有用.<footnote><para>毕竟 Subversion
+          也使用了 Subversion 的 API.</para></footnote></para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.developer.usingapi.apr">
+      <!--
       <title>The Apache Portable Runtime Library</title>
+      -->
+      <title>Apache 可移植运行库</title>
 
+      <!--
       <para>Along with Subversion's own datatypes, you will see many
         references to datatypes that begin with
         <literal>apr_</literal>&mdash;symbols from the Apache Portable
@@ -1073,7 +1099,20 @@ $
         client compiles and runs anywhere that the Apache HTTP Server
         does.  Currently, this list includes all flavors of Unix,
         Win32, BeOS, OS/2, and Mac OS X.</para>
+      -->
+      <para>除了 Subversion 自己的数据类型, 你还会看到很多以
+        <literal>apr_</literal> 开始的数据类型&mdash;这些类型来自
+        Apache 可移植运行库 (Apache Portable Runtime, 简称 APR). APR
+        是 Apache 开发的可移植库, 最初是为了将服务器代码中与操作系统
+        相关的代码和不相关的代码分离开, 最终产生了一个提供通用 API 的
+        函数库, 这些 API 隐藏的操作系统之间的差异. 虽然 Apache HTTP 服务
+        器是 APR 的第一个用户, 但 Subversion 开发团队很快就意识到了 APR
+        的价值. 使用 APR 库意味着在 Subversion 代码中不存在依赖操作系统版
+        本的代码, 同时还意味着只要操作系统能编译和运行 Apache HTTP 服务器,
+        那它就能够编译和运行 Subversion 客户端程序, 目前 APR 支持的操作系统
+        包括所有的 Unix 系统, Win32, BeOS, OS/2 和 Mac OS X.</para>
 
+      <!--
       <para>In addition to providing consistent implementations of
         system calls that differ across operating
         systems,<footnote><para>Subversion uses ANSI system calls and
@@ -1098,15 +1137,41 @@ $
         using <function>svn_pool_create()</function>,
         <function>svn_pool_clear()</function>, and
         <function>svn_pool_destroy()</function>.</para>
+      -->
+      <para>除了为不同的操作系统提供一致的系统调用实现外,<footnote>
+          <para>Subversion 尽可能使用 ANSI 规定的系统调用和数据类型.
+        </para></footnote> APR 还提供了许多定制化的数据类型, 例如动态数
+        组和哈希表, 这些数据类型在 Subversion 中用得非常广泛, 其中出现
+        得最多的类型是 <literal>apr_pool_t</literal>&mdash;APR 内存池&mdash;
+        它几乎出现在每一个 Subversion API 函数原型中. Subversion 使用
+        内存池完成所有内部的内存分配, (除非外部的函数库为它的参数指定了
+        一个不同的内存管理机制 <footnote><para>Berkeley DB 就是这样一种
+            函数库.</para></footnote>) 不过并不要求 Subversion API 的用户
+        也要用 APR 内存池完成内存管理, 他只需要向 Subversion API 提供一
+        个内存池参数即可. 这就要求 Subversion API 用户必须在编译时链接
+        APR, 必须调用 <function>apr_initialize()</function> 初始化 APR 子
+        系统, 然后调用 <function>svn_pool_create()</function>,
+        <function>svn_pool_clear()</function> 和
+        <function>svn_pool_destroy()</function> 完成内存池的创建和管理.
+      </para>
 
       <sidebar>
+      <!--
         <title>Programming with Memory Pools</title>
+      -->
+        <title>面向内存池编程</title>
 
         <para>
           <indexterm>
             <primary>API</primary>
             <secondary>memory pools</secondary>
-          </indexterm>Almost every developer who has used the C programming
+          </indexterm>
+          几乎每一个用过 C 语言做过开发的程序员都会对内存管理感到畏惧.
+          分配足够多的内存, 跟踪内存的分配, 不再使用时释放内存&mdash;
+          这些工作可以变得非常复杂. 如果处理不当, 很可能会导致程序&mdash;
+          甚至整个操作系统&mdash;崩溃.</para>
+      <!--
+          Almost every developer who has used the C programming
           language has at some point sighed at the daunting task of
           managing memory usage.  Allocating enough memory to use,
           keeping track of those allocations, freeing the memory when
@@ -1114,7 +1179,9 @@ $
           complex.  And of course, failure to do those things properly
           can result in a program that crashes itself, or worse,
           crashes the computer.</para>
+      -->
 
+      <!--
         <para>Higher-level languages, on the other hand, either take
           the job of memory management away from you completely or
           make it something you toy with only when doing extremely
@@ -1123,7 +1190,15 @@ $
           allocating memory for objects when needed, and automatically
           freeing that memory when the object is no longer in
           use.</para>
+      -->
+        <para>另一方面, 高级程序设计语言要么把内存管理的工作从程序员的
+          手中完成解放出来, 要么只有在非常有必要的情况下 (例如极致的内存
+          优化) 才由程序员来管理内存. 例如 Java 和 Python 使用了
+          <firstterm>垃圾收集</firstterm> (<firstterm>garbage
+            collection</firstterm>), 当需要时为对象分配内存, 以及当对象
+          不再被使用时释放内存.</para>
 
+      <!--
         <para>APR provides a middle-ground approach called
           <firstterm>pool-based memory management</firstterm>.  It
           allows the developer to control memory usage at a lower
@@ -1141,6 +1216,19 @@ $
           in a pool whose lifetime (the time between the pool's
           creation and its deletion) matches the object's
           needs.</para>
+      -->
+        <para>APR 提供了一种介于两者之间的方法, 称为
+          <firstterm>基于池的内存管理</firstterm> (<firstterm>pool-based
+            memory management</firstterm>), 内存池允许程序员使用一种比较
+          粗糙的粒度控制内存的使用&mdash;关注内存的每一大块 (或
+          <quote>池</quote>), 而非每一个分配的对象. 不是使用
+          <function>malloc()</function> 及其亲友来分配内存, 而是调用
+          APR 库函数从内存池中分配内存. 如果从内存池中分配而来的对象都
+          已使用完毕, 你就可能销毁整个内存池, 同时也销毁了从该内存池中
+          分配的 <emphasis>所有</emphasis> 对象. 于是, 你的程序不用再跟踪
+          将被释放的单个对象, 只需要考虑这些对象普遍的生命周期, 然后从
+          生命周期 (内存池被创建和销毁的时间) 匹配的内存池中分配这些对象.
+        </para>
 
       </sidebar>
     </sect2>
