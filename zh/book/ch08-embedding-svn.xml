@@ -1235,13 +1235,24 @@ $
 
     <!-- =============================================================== -->
     <sect2 id="svn.developer.usingapi.funcsbatons">
+      <!--
       <title>Functions and Batons</title> 
+      -->
+      <title>函数与不透明数据</title>
 
       <para>
         <indexterm>
           <primary>API</primary>
           <secondary>batons</secondary>
-        </indexterm>To facilitate <quote>streamy</quote> (asynchronous) behavior
+        </indexterm>
+        为了充分利用异步化的行为, 以及向 Subversion API 用户提供钩子函数,
+        以便按照定制化的方式处理数据, 许多函数都接受这样一对参数: 一个
+        指向回调函数的指针以及一个指向不透明数据 (称为
+        <firstterm>baton</firstterm>) 的指针, baton 携带了回调函数所需的
+        各种信息. Baton 通常就是一个 C 语言结构体, 它带有回调函数所需的额外
+        信息, 而这些信息对于调用回调函数的代码来说是不透明的.</para>
+      <!--
+        To facilitate <quote>streamy</quote> (asynchronous) behavior
         and provide consumers of the Subversion C API with hooks for
         handling information in customizable ways, many functions in
         the API accept pairs of parameters: a pointer to a callback
@@ -1251,13 +1262,18 @@ $
         C structures with additional information that the callback
         function needs but which is not given directly to the callback
         function by the driving API function.</para>
+      -->
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.developer.usingapi.urlpath">
+      <!--
       <title>URL and Path Requirements</title>
+      -->
+      <title>URL 和路径要求</title>
 
+      <!--
       <para>With remote version control operation as the whole point
         of Subversion's existence, it makes sense that some attention
         has been paid to internationalization (i18n) support.  After
@@ -1280,7 +1296,24 @@ $
         suite of functions (see
         <filename>subversion/include/svn_utf.h</filename>) that 
         any program can use to do these conversions.</para>
+      -->
+      <para>由于远程版本控制操作是 Subversion 存在的最重要理由, 因此我们
+        需要注意对国际化 (i18n) 的支持. 毕竟 <quote>远程</quote> 不仅意味
+        着 <quote>跨越办公室</quote>, 它还可能意味着 <quote>跨越国界</quote>.
+        为了支持国际化, Subversion 所有接受路径参数的公共接口都要求这些路径
+        是规范化的&mdash;可通过调用函数
+        <function>svn_dirent_canonicalize()</function> 和
+        <function>svn_uri_canonicalize()</function> 分别得到规范化的本地
+        文件系统路径和 URL&mdash;而且是 UTF-8 编码. 举个例子, 任意一个使用
+        <filename>libsvn_client</filename> 的客户端程序在把路径传递给
+        Subversion 函数库之前, 都要先把本地编码的路径转换成 UTF-8 编码.
+        在得到 Subversion 产生的路径之后, 要先把这些路径转换成本地编码,
+        然后再交给非 Subversion 函数进行处理. 幸运的是, Subversion 提供了
+        一套函数 (见
+        <filename>subversion/include/svn_utf.h</filename>) 用于完成这些
+        编码转换.</para>
 
+      <!--
       <para>Also, Subversion APIs require all URL parameters to be
         properly URI-encoded.  So, instead of passing
         <uri>file:///home/username/My&nbsp;File.txt</uri> as the URL of a
@@ -1289,24 +1322,49 @@ $
         Subversion supplies helper functions that your application can
         use&mdash;<function>svn_path_uri_encode()</function> and
         <function>svn_path_uri_decode()</function>, for URI encoding
-        and decoding, respectively.</para> </sect2>
+        and decoding, respectively.</para>
+      -->
+      <para>另外, Subversion API 要求所有的 URL 参数必须符合 URI 编码
+        规则. 比如说你不能把文件 <filename>My&nbsp;File.txt</filename>
+        的 URL 写成 <uri>file:///home/username/My&nbsp;File.txt</uri>,
+        而应该写成 <uri>file:///home/username/My%20File.txt</uri>. 同样,
+        Subversion 提供了函数 <function>svn_path_uri_encode()</function>
+        和 <function>svn_path_uri_decode()</function> 分别用于 URI 的编码
+        和解码.</para>
+    </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.developer.usingapi.otherlangs">
+      <!--
       <title>Using Languages Other Than C and C++</title> 
+      -->
+      <title>使用除了 C 和 C++ 之外的语言</title>
 
+      <!--
       <para>If you are interested in using the Subversion libraries in
         conjunction with something other than a C program&mdash;say, a
         Python or Perl script&mdash;Subversion has some support for this
         via the Simplified Wrapper and Interface Generator (SWIG).  The
         SWIG bindings for Subversion are located in
+        ### TODO (binding)
         <filename>subversion/bindings/swig</filename>.  They are still
         maturing, but they are usable.  These bindings allow you
         to call Subversion API functions indirectly, using wrappers that
         translate the datatypes native to your scripting language into
         the datatypes needed by Subversion's C libraries.</para>
+      -->
+      <para>如果你希望使用除了 C 之外的程序&mdash;例如 Python 或 Perl
+        脚本&mdash;调用 Subversion 函数库, 对此, Subversion 通过 SWIG
+        (Simplified Wrapper and Interface Generator) 提供了一些支持.
+        Subversion 的 SWIG 绑定位于
+        <filename>subversion/bindings/swig</filename>, 虽然它们还在不断
+        成熟中, 但是现在已经是可用的了. 这些绑定通过封装脚本, 把脚本语言
+        的数据类型翻译成 Subversion C 函数库所需的数据类型, 从而允许你
+        间接调用 Subversion API.</para>
 
+      <!--
       <para>Significant efforts have been made toward creating
+        ### TODO (SWIG-generated)
         functional SWIG-generated bindings for Python, Perl, and Ruby.
         To some extent, the work done preparing the SWIG interface
         files for these languages is reusable in efforts to generate
@@ -1317,7 +1375,16 @@ $
         translating between languages.  For more information on SWIG
         itself, see the project's web site at <ulink
         url="http://www.swig.org/"/>.</para>
+      -->
+    <para>Subversion 开发团队已经花了很多精力为 Python, Perl 和 Ruby
+      开发功能齐全的 SWIG 绑定, 在一定程度上, 为这些脚本语言准备 SWIG
+      接口所做的准备工作可以重用到 SWIG 支持的其他语言上 (包括 C#, Guile,
+      Java, MzScheme, OCaml, PHP, Tcl 等). 然而, 如果接口过于复杂, SWIG
+      在不同语言之间翻译还需要帮助时, 那么开发人员还需要付出额外的开发工作.
+      关于 SWIG 的详细信息, 见官网 <ulink url="http://www.swig.org/"/>.
+    </para>
 
+      <!--
       <para>Subversion also has language bindings for Java.  The
         javahl bindings (located in
         <filename>subversion/bindings/java</filename> in the
@@ -1326,7 +1393,15 @@ $
         Subversion client-side APIs and is specifically targeted at
         implementors of Java-based Subversion clients and IDE
         integrations.</para>
+      -->
+      <para>Subversion 还拥有针对 Java 的语言绑定. Javahl 绑定 (位于
+        <filename>subversion/bindings/java</filename>) 不是基于 SWIG,
+        而是 Java 和手工编写的 JNI 的混合物. Javahl 涵盖了 Subversion
+        客户端的大部分 API, 它主要面对基于 Java 的 Subversion 客户端实现
+        和 IDE 集成.</para>
 
+      <!-- ### TODO -->
+      <!--
       <para>Subversion's language bindings tend to lack the level of
         developer attention given to the core Subversion modules, but
         can generally be trusted as production-ready.  A number of
@@ -1334,6 +1409,11 @@ $
         and other third-party tools are successfully using
         Subversion's language bindings today to accomplish their
         Subversion integrations.</para>
+      -->
+      <para>Subversion 的语言绑定倾向于让用户相信这些绑定已经是生产就绪
+        的了, 而不是让他们把注意力放在 Subversion 核心模块上. 有大量的脚本
+        和应用程序, Subversion GUI 客户端和其他第三方工具都已经成功地把
+        Subversion 语言绑定应用到它们的 Subversion 集成中.</para>
 
       <para>It's worth noting here that there are other options for
         interfacing with Subversion using other languages:  alternative
