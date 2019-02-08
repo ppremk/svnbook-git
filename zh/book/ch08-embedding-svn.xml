@@ -1249,8 +1249,8 @@ $
         以便按照定制化的方式处理数据, 许多函数都接受这样一对参数: 一个
         指向回调函数的指针以及一个指向不透明数据 (称为
         <firstterm>baton</firstterm>) 的指针, baton 携带了回调函数所需的
-        各种信息. Baton 通常就是一个 C 语言结构体, 它带有回调函数所需的额外
-        信息, 而这些信息对于调用回调函数的代码来说是不透明的.</para>
+        各种上下文信息. Baton 通常就是一个 C 语言结构体, 它带有回调函数所需
+        的额外信息, 而这些信息对于调用回调函数的代码来说是不透明的.</para>
       <!--
         To facilitate <quote>streamy</quote> (asynchronous) behavior
         and provide consumers of the Subversion C API with hooks for
@@ -1661,6 +1661,7 @@ make_new_directory(const char *repos_path,
 </programlisting>
       </example>
 
+      <!--
       <para>Note that in <xref
         linkend="svn.developer.layerlib.repos.ex-1" />, the code could
         just as easily have committed the transaction using
@@ -1677,15 +1678,35 @@ make_new_directory(const char *repos_path,
         <function>svn_repos_fs_commit_txn()</function>.  (For more
         information regarding Subversion's repository hooks, see <xref
         linkend="svn.reposadmin.hooks" />.)</para>
+      -->
+    <para>注意到在 <xref
+        linkend="svn.developer.layerlib.repos.ex-1" /> 里, 代码本可以简单
+      地调用 <function>svn_fs_commit_txn()</function> 来提交事务, 但文件
+      系统 API 对于仓库函数库的钩子机制一无所知. 如果你希望每次提交完一个
+      事务后, Subversion 仓库都会自动执行一些非 Subversion 任务 (例如发送
+      一封描述了事务所做的修改的邮件到邮件列表), 你需要使用
+      <filename>libsvn_repos</filename> 包装后的函数&mdash;在上面的例子里
+      就是 <function>svn_repos_fs_commit_txn()</function>&mdash;这些函数添
+      加了钩子触发功能. (关于 Subversion 钩子机制的更多内容, 见 <xref
+        linkend="svn.reposadmin.hooks" />.)</para>
 
+      <!--
       <para>Now let's switch languages.  <xref
         linkend="svn.developer.usingapi.otherlangs.ex-1" /> is a
         sample program that uses Subversion's SWIG Python bindings to
         recursively crawl the youngest repository revision, and to
         print the various paths reached during the crawl.</para>
+      -->
+      <para>现在换另一种语言. <xref
+          linkend="svn.developer.usingapi.otherlangs.ex-1" /> 使用了
+        Subversion 的 SWIG Python 绑定来递归地搜索仓库最新的版本号, 并打印
+        出在搜索过程中达到的不同路径.</para>
 
       <example id="svn.developer.usingapi.otherlangs.ex-1">
+      <!--
         <title>Using the repository layer with Python</title>
+      -->
+        <title>使用 Python 访问仓库层</title>
 
         <programlisting>
 #!/usr/bin/python
@@ -1754,6 +1775,7 @@ if __name__ == "__main__":
 </programlisting>
       </example>
 
+      <!--
       <para>This same program in C would need to deal with APR's
         memory pool system.  But Python handles memory usage
         automatically, and Subversion's Python bindings adhere to that
@@ -1767,7 +1789,17 @@ if __name__ == "__main__":
         layer) takes care of mapping those custom datatypes into the
         native datatypes of the target language.  This provides a more
         intuitive interface for users of that language.</para>
+      -->
+      <para>同样的程序如果用 C 语言实现, 那就需要考虑 APR 的内存池子系统,
+        但是 Python 自动处理内存的分配与释放. 在 C 语言里, 你需要考虑各种
+        定制化数据类型 (例如 APR 函数库提供的数据类型), 这些数据类型用于
+        表示哈希项和路径列表, 但是 Python 内建了用于表示哈希 (Python 将其
+        称为 <quote>字典</quote>) 和列表的数据类型, 而且提供了丰富的函数
+        用来管理这些数据结构. 于是 SWIG (在 Subversion 语言绑定层的某些
+        定制化修改的帮助下) 负责把这些定制化的数据类型映射到目标语言的本
+        地类型, 用户就能更加直观地使用目标语言.</para>
 
+      <!--
       <para>The Subversion Python bindings can be used for working
         copy operations, too.  In the previous section of this
         chapter, we mentioned the <filename>libsvn_client</filename>
@@ -1777,9 +1809,19 @@ if __name__ == "__main__":
         example of how that library can be accessed via the SWIG
         Python bindings to re-create a scaled-down version of the
         <command>svn status</command> command.</para>
+      -->
+      <para>Subversion 的 Python 绑定也能运用到工作副本的操作中. 在本章的
+        前一节里, 我们提到了 <filename>libsvn_client</filename> 接口, 以及
+        它存在的唯一目标就是简化 Subversion 客户端程序的开发. <xref
+          linkend="svn.developer.usingapi.otherlangs.ex-2" /> 展示了如何使用
+        SWIG Python 绑定访问 <filename>libsvn_client</filename> 函数库, 来
+        实现一个简化版的 <command>svn status</command> 命令.</para>
 
       <example id="svn.developer.usingapi.otherlangs.ex-2">
+      <!--
         <title>A Python status crawler</title>
+      -->
+        <title>用 Python 实现 svn status</title>
 
         <programlisting>
 #!/usr/bin/env python
@@ -1878,12 +1920,18 @@ if __name__ == '__main__':
 </programlisting>
       </example>
 
+      <!--
       <para>As was the case in
         <xref linkend="svn.developer.usingapi.otherlangs.ex-1" />,
         this program is pool-free and uses, for the most part, normal
         Python datatypes.</para>
+      -->
+      <para>和 <xref linkend="svn.developer.usingapi.otherlangs.ex-1" />
+        一样, 上面的程序不使用内存池, 大部分情况下都是用的 Python 内建的
+        数据类型.</para>
 
       <warning>
+      <!--
         <para>Run user-provided paths
           through the appropriate canonicalization function
           (<function>svn_dirent_canonicalize()</function> or
@@ -1892,8 +1940,15 @@ if __name__ == '__main__':
           assertions in the underlying Subversion C library which
           translate into rather immediate and unceremonious program
           abortion.</para>
+      -->
+        <para>先把用户提供的路径参数转化成规范化形式 (调用
+          <function>svn_dirent_canonicalize()</function> 或
+          <function>svn_uri_canonicalize()</function>), 然后再传递给其他
+          API, 否则的话可能会导致 Subversion C 库函数断言失败, 引起程序
+          异常退出.</para>
       </warning>
 
+      <!--
       <para>Of particular interest to users of the Python flavor of
         Subversion's API is the implementation of callback functions.
         As previously mentioned, Subversion's C API makes liberal use
@@ -1911,6 +1966,19 @@ if __name__ == '__main__':
         access to the user-provided prefix string because that
         variable falls into the scope of the function
         automatically.</para>
+      -->
+      <para>使用 Python 调用 Subversion API 的用户可能对回调函数在 Python
+        中的实现比较感兴趣. 前面已经说过, Subversion C API 对编程范式
+        回调函数/baton 的使用非常广泛, C 函数如果接受一个回调函数和 baton,
+        那么 在 Python 中将只接受一个回调函数, 那么主调函数如何向回调函数
+        传递任意的上下文信息呢? 在 Python 里, 这是通过作用域规则和参数的
+        默认值来实现的. 你可以从 <xref
+          linkend="svn.developer.usingapi.otherlangs.ex-2" /> 看到具体的
+        例子, 函数 <function>svn_client_status2()</function> 得到了一个
+        回调函数 (<function>_status_callback()</function>), 但却没有
+        baton&mdash;函数 <function>_status_callback()</function> 能够访问
+        到用户提供的前缀字符串是因为变量 <literal>prefix</literal> 自动落
+        到了函数的作用域内.</para>
 
     </sect2>
   </sect1>
@@ -1919,15 +1987,25 @@ if __name__ == '__main__':
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.developer.summary">
+      <!--
     <title>Summary</title>
+      -->
+    <title>小结</title>
 
+      <!--
     <para>One of Subversion's greatest features isn't something you
       get from running its command-line client or other tools.  It's
       the fact that Subversion was designed modularly and provides a
       stable, public API so that others&mdash;like yourself,
       perhaps&mdash;can write custom software that drives Subversion's
       core logic.</para>
+      -->
+    <para>Subversion 最伟大的特性之一并不是从它的命令行客户端或其他工具中
+      得到, 而是 Subversion 以模块化的方式进行设计, 提供了稳定而公开的
+      API, 于是其他人&mdash;例如你&mdash;就可以自己开发驱动 Subversion 的
+      软件.</para>
 
+      <!--
     <para>In this chapter, we took a closer look at Subversion's
       architecture, examining its logical layers and describing that
       public API, the very same API that Subversion's own layers use
@@ -1935,8 +2013,15 @@ if __name__ == '__main__':
       interesting uses for the Subversion API, from simple repository
       hook scripts, to integrations between Subversion and some other
       application, to completely different version control systems.
+      ### TODO
       What unique itch will <emphasis>you</emphasis> scratch with
       it?</para>
+      -->
+    <para>本章, 我们从更底层地角度介绍了 Subversion 的架构和逻辑层, 并描述
+      了它的公共 API, 以及类似的用于各层之间通信的 API. 许多开发人员都发现
+      了 Subversion API 的有趣用法, 从简单的仓库钩子脚本, 到 Subversion 与
+      其他应用程序的集成, 再到完全不同的版本控制系统. 你还能想到更奇妙的用
+      法吗?</para>
 
   </sect1>
 
