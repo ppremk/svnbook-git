@@ -16,8 +16,8 @@
     </indexterm>
     Subversion 具有模块化的设计: 它由众多由 C 编写而成的库函数实现. 每一个
     库函数都有一个定义良好的目标和应用程序编程接口 (Application Programming
-    Interface, API), 这种接口不仅可以被 Subversion 使用, 还能被任意一个希望
-    通过编程接口控制 Subversion 的软件使用. 另外, Subversion 的 API 不仅能被
+    Interface, 简称 API), 这种接口不仅可以被 Subversion 使用, 还能被任意一个希
+    望通过编程接口控制 Subversion 的软件使用. 另外, Subversion 的 API 不仅能被
     C 程序使用, 也能被其他高级语言编写的程序使用, 例如 Python, Perl, Java 和
     Ruby.</para>
       <!--
@@ -47,7 +47,7 @@
     affected.</para>
       -->
   <para>本章的目标读者是那些希望通过 Subversion API 或它的各种语言绑定来控制
-    Subversion 的人. 如果你希望围绕 Subversion 功能编写健壮的包装脚本来简化
+    Subversion 的人. 如果你希望围绕 Subversion 编写健壮的包装脚本来简化
     你的工作, 或者正在开发 Subversion 与其他软件之间更加复杂的集成, 或者仅仅
     是对 Subversion 的库函数感到好奇, 那你应该认真阅读本章. 但是如果你觉得
     自己没必要从开发的层次上使用 Subversion, 那你完全可以跳过本章, 这并不会
@@ -68,7 +68,7 @@
         <secondary>layers</secondary>
       </indexterm>
       Subversion 的每一个核心函数库都隶属于三个层次之一&mdash;仓库层, 仓库访问
-      (Repository Access, RA) 层和客户端层 (见 <xref
+      (Repository Access, 简称 RA) 层和客户端层 (见 <xref
         linkend="svn.intro.architecture.dia-1" />). 我们将会简单地介绍这些层次,
       但是在这之前, 先简单地总结一下 Subversion 的各个函数库. 为了保持一致,
       我们把函数库的名字写成删除了扩展名后, 在 Unix 中的库文件名 (例如
@@ -226,8 +226,8 @@
     <para>在上面的介绍中, <quote>各种</quote> 这个词只出现了一次, 这是一个
       好现象, 因为 Subversion 开发团队总是尽量将功能放到正确的层次和函数库
       中实现. 站在开发人员的角度来看, 模块化设计最大的好处可能是降低了复杂
-      度, 于是你就可以快速地勾勒出 <quote>整体面貌</quote>, 更加容易地功能
-      的位置.</para>
+      度, 于是你就可以快速地勾勒出 <quote>整体面貌</quote>, 更加容易地决定
+      功能所属的位置.</para>
 
       <!--
     <para>Another benefit of modularity is the ability to replace a
@@ -250,7 +250,7 @@
     <para>模块化设计的另一个好处是允许我们重新实现给定的模块, 只要保持 API 兼容
       性, 就不会影响其他模块. 在某种意义上, Subversion 已经在这样做了. 函数库
       <filename>libsvn_ra_local</filename>, <filename>libsvn_ra_serf</filename>
-      和 <filename>libsvn_ra_svn</filename> 各自都实现的一套相同的接口, 它们都
+      和 <filename>libsvn_ra_svn</filename> 各自都实现了一套相同的接口, 它们都
       是作为 <filename>libsvn_ra</filename> 的插件与仓库访问层通信&mdash;
       <filename>libsvn_ra_local</filename> 与仓库直接通信, 另外两个通过网络与
       仓库通信. <filename>libsvn_fs_base</filename> 和
@@ -606,7 +606,6 @@
         commit of Subversion transactions and the modification of
         revision properties.  These particular events are wrapped by
         the repository layer because they have hooks associated with
-        ### TODO
         them.  A repository hook system is not strictly related to
         implementing a versioning filesystem, so it lives in the
         repository wrapper library.</para>
@@ -730,7 +729,7 @@
         <literal>file://</literal>, <literal>http://</literal>,
         <literal>https://</literal>, <literal>svn://</literal> 或
         <literal>svn+ssh://</literal>) 决定了使用哪种仓库访问模块处理请求.
-        每个仓库访问模块都它认识的协议, 于是 RA 加载函数就能在运行时决定
+        每个仓库访问模块都注册了它支持的协议, 于是 RA 加载函数就能在运行时决定
         使用哪个模块. 用户可以执行 <userinput>svn --version</userinput> 查看
         可用的 RA 模块及其所支持的协议:</para>
       <!--
@@ -852,7 +851,7 @@ $
         个工作副本都有这个目录, 目录内包含了用于记录工作副本状态的各种文件与
         目录, 为管理性的操作提供了一个私有工作空间. 如果读者熟悉 CVS, 就会发
         现 <filename>.svn</filename> 的功能与 CVS 工作副本里的
-        <filename>CVS</filename> 非常类似.</para>
+        <filename>CVS</filename> 目录非常类似.</para>
       <!--
         Subversion's working copy library,
         <filename>libsvn_wc</filename>, is directly responsible for
@@ -959,7 +958,7 @@ $
         <para>如果你的程序建立在命令行程序的封装之上, 那么程序只能访问到已
           被翻译过的信息 (上面我们刚说过, 信息可能是不完整的), 而这些信息
           将被 <emphasis>再次</emphasis> 翻译成
-          <emphasis>程序自己的</emphasis> 的表示格式. 每一次封装, 原始数据
+          <emphasis>程序自己的</emphasis> 表示格式. 每一次封装, 原始数据
           的完整性被破坏的就越多, 类似于拷贝音频或视频磁带的拷贝 (的拷贝
           &hellip;).</para>
  
@@ -1105,7 +1104,7 @@ $
         Apache 可移植运行库 (Apache Portable Runtime, 简称 APR). APR
         是 Apache 开发的可移植库, 最初是为了将服务器代码中与操作系统
         相关的代码和不相关的代码分离开, 最终产生了一个提供通用 API 的
-        函数库, 这些 API 隐藏的操作系统之间的差异. 虽然 Apache HTTP 服务
+        函数库, 这些 API 隐藏了操作系统之间的差异. 虽然 Apache HTTP 服务
         器是 APR 的第一个用户, 但 Subversion 开发团队很快就意识到了 APR
         的价值. 使用 APR 库意味着在 Subversion 代码中不存在依赖操作系统版
         本的代码, 同时还意味着只要操作系统能编译和运行 Apache HTTP 服务器,
@@ -1224,7 +1223,7 @@ $
           <quote>池</quote>), 而非每一个分配的对象. 不是使用
           <function>malloc()</function> 及其亲友来分配内存, 而是调用
           APR 库函数从内存池中分配内存. 如果从内存池中分配而来的对象都
-          已使用完毕, 你就可能销毁整个内存池, 同时也销毁了从该内存池中
+          已使用完毕, 你就可以销毁整个内存池, 同时也销毁了从该内存池中
           分配的 <emphasis>所有</emphasis> 对象. 于是, 你的程序不用再跟踪
           将被释放的单个对象, 只需要考虑这些对象普遍的生命周期, 然后从
           生命周期 (内存池被创建和销毁的时间) 匹配的内存池中分配这些对象.
@@ -1470,7 +1469,6 @@ $
           ways.  First, while SVNKit is developed as open source
           software just like Subversion, SVNKit's license is more
           restrictive than that of
-          ### TODO (footnote)
           Subversion.<footnote><para>Redistributions in any form must
           be accompanied by information on how to obtain complete
           source code for the software that uses SVNKit and any
@@ -1490,7 +1488,11 @@ $
           事实上 SVNKit 与 Subversion 没有共享一行代码, 但是人们还是很容易
           混淆 SVNKit 和 javahl, 甚至搞不清楚自己正在用的是哪个函数库. 读者
           必须清醒地认识到 SVNKit 和 javahl 在某些方面非常不同, 首先, SVNKit
-          和 Subversion 一样都是开源软件, 但 SVNKit 的授权更加严格. 然后,
+          和 Subversion 一样都是开源软件, 但 SVNKit 的授权更加严格. <footnote>
+            <para>如果软件用到了 SVNKit, 或者用到了使用了 SVNKit 的软件, 那么
+              任意形式的二次发布必须带有如何获取软件完整源代码的信息. 详细
+              的授权见 <ulink url="http://svnkit.com/license.html" />.
+            </para></footnote> 然后,
           SVNKit 的目标是完全用 Java 实现, 因此在复制 Subversion 的功能时,
           既要跟上官方 Subversion 的脚步, 也要考虑用 Java 实现相同功能的可
           行性. 例如 SVNKit 无法通过 <literal>file://</literal> 协议访问
@@ -1969,7 +1971,8 @@ if __name__ == '__main__':
       -->
       <para>使用 Python 调用 Subversion API 的用户可能对回调函数在 Python
         中的实现比较感兴趣. 前面已经说过, Subversion C API 对编程范式
-        回调函数/baton 的使用非常广泛, C 函数如果接受一个回调函数和 baton,
+        &mdash;回调函数/baton&mdash;的使用非常广泛, C 函数如果接受一个回调
+        函数和 baton,
         那么 在 Python 中将只接受一个回调函数, 那么主调函数如何向回调函数
         传递任意的上下文信息呢? 在 Python 里, 这是通过作用域规则和参数的
         默认值来实现的. 你可以从 <xref
