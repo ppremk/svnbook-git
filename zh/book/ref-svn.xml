@@ -2623,13 +2623,20 @@ $
       <para>现在, 接下来你的选择有: 撤消全部或部分的本地 <quote>修改</quote>,
         提交这些修改, 或继续修改你的工作副本. </para>
 
+      <!--
       <para>This feature is especially useful for performing
+        ### TODO
         in-place imports of unversioned directory trees.  By first
         importing the tree into the repository, and then checking
         out new repository location atop the unversioned tree with
-        the <option>--force</option> option, you effectively
+        the <option>- -force</option> option, you effectively
         transform the unversioned tree into a working
         copy.</para>
+      -->
+      <para>这个特性很适合用来在位地导入未被版本控制的目录树. 首先把目录树
+        导入仓库中, 然后带上选项 <option>--force</option> 把工作副本检出到
+        一个未被版本控制的目录树中, 在效果上等价于把未被版本控制的目录树转换
+        成一个工作副本.</para>
 
       <informalexample>
         <screen>
@@ -2676,7 +2683,10 @@ $
 
     <refnamediv>
       <refname>svn cleanup</refname>
+      <!--
       <refpurpose>Recursively clean up the working copy</refpurpose>
+      -->
+      <refpurpose>递归地清理工作副本</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -2685,28 +2695,51 @@ $
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>Recursively clean up the working copy, removing
         working copy locks and resuming unfinished operations.  If
         you ever get a <literal>working copy locked</literal>
         error, run this command to remove stale locks and get your
         working copy into a usable state again.</para>
+      -->
+      <para>递归地清理工作副本, 删除所有的工作副本锁, 并恢复未完成的操作. 如果
+        用户看到了一个 <literal>working copy locked</literal> 错误, 就执行
+        <command>svn cleanup</command> 删除所有过期的锁, 然后工作副本就能恢复
+        到一个可用的状态.</para>
 
+      <!--
+      ### TODO
       <para>If, for some reason, an <command>svn update</command>
         fails due to a problem running an external diff program
         (e.g., user input or network failure), pass the
-        <option>--diff3-cmd</option> to allow the cleanup process
+        <option>- -diff3-cmd</option> to allow the cleanup process
         to complete any required merging using your external diff
         program.  You can also specify any configuration directory
-        with the <option>--config-dir</option> option, but you
+        with the <option>- -config-dir</option> option, but you
         should need these options extremely infrequently.</para>
+      -->
+      <para>假设由于某种原因 (例如用户输入或网络连接断开), <command>svn
+          update</command> 在执行一个外部差异比较工具时报错退出, 那么我们可
+        以在执行 <command>svn cleanup</command> 时带上选项
+        <option>--diff3-cmd</option>, 此时 Subversion 在清理工作副本时就
+        会使用外部差异比较工具继续完成未完成的合并. 用户还可以用选项
+        <option>--config-dir</option> 为 <command>svn cleanup</command> 指定
+        任意的配置文件目录, 不过选项 <option>--config-dir</option> 和
+        <option>--diff3-cmd</option> 的使用频率应该会很低.</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
 
       <informalexample>
         <screen>
@@ -2718,12 +2751,20 @@ $
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
 
+      <!--
       <para>Well, there's not much to the examples here, as
         <command>svn cleanup</command> generates no output.  If
         you pass no <replaceable>PATH</replaceable>, then
         <quote><filename>.</filename></quote> is used:</para>
+      -->
+      <para>这里的例子不是很多, 因为 <command>svn cleanup</command> 不会产生
+        什么输出. 如果没有指定参数 <replaceable>PATH</replaceable>, 命令将会
+        使用 <filename>.</filename>:</para>
 
       <informalexample>
         <screen>
@@ -2748,7 +2789,10 @@ $ svn cleanup /var/svn/working-copy
 
     <refnamediv>
       <refname>svn commit (ci)</refname>
+      <!--
       <refpurpose>Send changes from your working copy to the repository.</refpurpose>
+      -->
+      <refpurpose>把工作副本里的修改发送到仓库中.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -2757,24 +2801,40 @@ $ svn cleanup /var/svn/working-copy
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>Send changes from your working copy to the repository.
         If you do not supply a log message with your commit by
-        using either the <option>--file</option>
-        (<option>-F</option>) or <option>--message</option>
+        using either the <option>- -file</option>
+        (<option>-F</option>) or <option>- -message</option>
         (<option>-m</option>) option,
         <command>svn</command> will launch your editor for you
         to compose a commit message.  See the
         <literal>editor-cmd</literal> list entry in <xref
         linkend="svn.advanced.confarea.opts.config"/>.</para>
+      -->
+    <para>把工作副本里的修改发送到仓库中. 如果用户没有用选项
+      <option>--file</option> (<option>-F</option>) 或
+      <option>--message</option> (<option>-m</option>) 提供日志消息,
+      <command>svn</command> 将打开一个文本编辑器供用户编写提交日志, 见
+      <xref linkend="svn.advanced.confarea.opts.config"/>.</para>
 
+      <!--
       <para><command>svn commit</command> will send any lock
         tokens that it finds and will release locks on all
         <replaceable>PATH</replaceable>s committed (recursively)
-        unless <option>--no-unlock</option> is passed.</para>
+        unless <option>- -no-unlock</option> is passed.</para>
+      -->
+      <para>如果没有带上选项 <option>--no-unlock</option>, <command>svn
+          commit</command> 会把所有已提交的 <replaceable>PATH</replaceable>
+        上的锁令牌 (如果有的话) 发送给仓库, 并在提交完成后解锁.</para>
 
       <tip>
+      <!--
         <para>If you begin a commit and Subversion launches your
           editor to compose the commit message, you can still
           abort without committing your changes.  If you want to
@@ -2782,13 +2842,22 @@ $ svn cleanup /var/svn/working-copy
           your commit message and Subversion will prompt you to
           either abort the commit, continue with no message, or
           edit the message again.</para>
+      -->
+        <para>如果用户已经开始提交并且 Subversion 已经启动了一个文本编辑器
+          等待用户输入提交日志, 此时仍然可以中止提交. 如果用户希望中止提交,
+          只需要不保存提交日志并退出编辑器, 此时 Subversion 将会询问用户是
+          想中止提交, 还是不输入日志直接提交, 还是重新打开编辑器编写日志.
+        </para>
       </tip>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
 
       <informalexample>
         <screen>
@@ -2810,12 +2879,19 @@ $ svn cleanup /var/svn/working-copy
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
 
+      <!--
       <para>Commit a simple modification to a file with the
         commit message on the command line and an implicit
         target of your current directory
         (<quote><filename>.</filename></quote>):</para>
+      -->
+      <para>把提交日志直接写在命令行上, 如果没有指定目标文件, 则默认提交的是
+        当前目录 (<quote><filename>.</filename></quote>) 下的所有修改:</para>
 
       <informalexample>
         <screen>
@@ -2826,10 +2902,14 @@ Committed revision 3.
 </screen>
       </informalexample>
 
+      <!--
       <para>Commit a modification to the file
         <filename>foo.c</filename> (explicitly specified on the
         command line) with the commit message in a file named
         <filename>msg</filename>:</para>
+      -->
+      <para>提交 <filename>foo.c</filename> 的修改, 并从文件
+        <filename>msg</filename> 读取提交日志:</para>
 
       <informalexample>
         <screen>
@@ -2840,10 +2920,15 @@ Committed revision 5.
 </screen>
       </informalexample>
 
+      <!--
       <para>If you want to use a file that's under version control
-        for your commit message with <option>--file</option>
+        for your commit message with <option>- -file</option>
         (<option>-F</option>), you need to pass the
-        <option>--force-log</option> option:</para>
+        <option>- -force-log</option> option:</para>
+      -->
+      <para>如果选项 <option>--file</option> (<option>-F</option>) 所指定的
+        文件处于版本控制中, 而你的确想从该文件中读取提交日志, 就要额外加上
+        选项 <option>--force-log</option>:</para>
 
       <informalexample>
         <screen>
@@ -2857,7 +2942,10 @@ Committed revision 6.
 </screen>
       </informalexample>
 
+      <!--
       <para>To commit a file scheduled for deletion:</para>
+      -->
+      <para>提交一个将被删除的文件:</para>
 
       <informalexample>
         <screen>
