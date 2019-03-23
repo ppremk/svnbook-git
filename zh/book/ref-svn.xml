@@ -3393,7 +3393,8 @@ $
 </screen>
       </informalexample>
 
-      <para>Use the <option>--keep-local</option> option to
+      <!--
+      <para>Use the <option>- -keep-local</option> option to
         override the default <command>svn delete</command>
         behavior of also removing the target file that was
         scheduled for versioned deletion.  This is helpful when
@@ -3401,6 +3402,11 @@ $
         addition of a file that you need to keep around in your
         working copy, but which shouldn't have been added to
         version control.</para>
+      -->
+      <para>加上选项 <option>--keep-local</option> 后, 被 <command>svn
+          delete</command> 删除的文件将保留在本地. 这个选项在处理下面这种
+        情况时很有用: 用户不小心把一个本不应该提交的文件提交到了仓库中,
+        现在他想从仓库中删除该文件, 但又想把它留在工作副本里.</para>
 
       <informalexample>
         <screen>
@@ -3418,13 +3424,19 @@ $
       </informalexample>
 
       <note>
-        <para>The behavior of the <option>--keep-local</option>
+      <!--
+        <para>The behavior of the <option>- -keep-local</option>
           option does not propagate to other working copies which
           contain the items you've scheduled for deletion.  If you
           commit the deletion of those items they will remain in
           your working copy, but they will be deleted from other
           working copies which contain them when those working
           copies are then updated.</para>
+      -->
+        <para>选项 <option>--keep-local</option> 的效果不会扩展到其他工作
+          副本, 也就是说如果用户提交了删除操作, 这些文件虽然会保留在你的
+          工作副本里, 但是在更新其他工作副本里, 其他工作副本里的文件仍然会
+          被删除.</para>
       </note>
       
     </refsect1>
@@ -3443,7 +3455,10 @@ $
 
     <refnamediv>
       <refname>svn diff (di)</refname>
+      <!--
       <refpurpose>This displays the differences between two revisions or paths.</refpurpose>
+      -->
+      <refpurpose>显示两个版本号或路径之间的差异.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -3455,19 +3470,31 @@ $
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>Display the differences between two paths.  You can
         use <command>svn diff</command> in the following ways:</para>
+      -->
+      <para>显示两个路径之间的差异, 用户可以按照如下方式使用 <command>svn
+          diff</command>:</para>
 
       <itemizedlist>
 
         <listitem>
+      <!--
           <para>Use just <command>svn diff</command> to display local
             modifications in a working copy.</para>
+      -->
+          <para>直接执行 <userinput>svn diff</userinput> 来查看工作副本的
+            本地修改.</para>
         </listitem>
 
         <listitem>
+      <!--
           <para>Display the changes made to
             <replaceable>TARGET</replaceable>s as they are seen in
             <replaceable>REV</replaceable> between two revisions.
@@ -3485,9 +3512,24 @@ $
             M-1</literal>.  Using <literal>-c -M</literal> does the
             reverse: <literal>-r M:N</literal> where <literal>N =
             M-1</literal>.</para>
+      -->
+        <para>显示限定版本号为 <replaceable>REV</replaceable> 时,
+          <replaceable>TARGET</replaceable> 在两个版本号之间的变化.
+          <replaceable>TARGET</replaceable> 可以全是工作副本路径或
+          <replaceable>URL</replaceable>. 如果 <replaceable>TARGET</replaceable>
+          是工作副本路径, 则 <replaceable>N</replaceable> 默认是
+          <literal>BASE</literal>, <replaceable>M</replaceable> 默认是工作副本.
+          如果 <replaceable>TARGET</replaceable> 是
+          <replaceable>URL</replaceable>, 则用户必须指定
+          <replaceable>N</replaceable>, 而 <replaceable>M</replaceable> 默认
+          是 <literal>HEAD</literal>. 选项 <literal>-c M</literal> 等价于
+          <literal>-r N:M</literal>, 其中 <literal>N = M-1</literal>;
+          而 <literal>-c -M</literal> 正好相反, 它等价于
+          <literal>-r M:N</literal>, 其中 <literal>N = M-1</literal>.</para>
         </listitem>
 
         <listitem>
+      <!--
           <para>Display the differences between
             <replaceable>OLD-TGT</replaceable> as it was seen in
             <replaceable>OLDREV</replaceable> and
@@ -3509,55 +3551,110 @@ $
             <replaceable>N</replaceable> and
             <replaceable>NEWREV</replaceable> default to
             <replaceable>M</replaceable>.</para>
+      -->
+          <para>显示限定版本号为 <replaceable>OLDREV</replaceable> 的
+            <replaceable>OLD-TGT</replaceable> 和限定版本号
+            <replaceable>NEWREV</replaceable> 的
+            <replaceable>NEW-TGT</replaceable> 之间的差异. 如果指定了相对于
+            <replaceable>OLD-TGT</replaceable> 和
+            <replaceable>NEW-TGT</replaceable> 的
+            <replaceable>PATH</replaceable>, 那么输出的就是这些路径的差异.
+            <replaceable>OLD-TGT</replaceable> 和
+            <replaceable>NEW-TGT</replaceable> 可以是工作副本路径或
+            <replaceable>URL[@REV]</replaceable>. 如果没有指定
+            <replaceable>NEW-TGT</replaceable>, 那么它默认就是
+            <replaceable>OLD-TGT</replaceable>. <literal>-r N</literal> 使得
+            <replaceable>OLDREV</replaceable> 默认是 <literal>N</literal>;
+            <literal>-r N:M</literal> 使得 <replaceable>OLDREV</replaceable>
+            默认是 <replaceable>N</replaceable>,
+            <replaceable>NEWREV</replaceable> 默认是
+            <replaceable>M</replaceable>.</para>
         </listitem>
 
       </itemizedlist>
 
+      <!--
       <para><userinput>svn diff OLD-URL[@OLDREV]
         NEW-URL[@NEWREV]</userinput> is shorthand for <userinput>svn
+        diff - -old=OLD-URL[@OLDREV]
+        - -new=NEW-URL[@NEWREV].</userinput></para>
+      -->
+      <para><userinput>svn diff OLD-URL[@OLDREV]
+        NEW-URL[@NEWREV]</userinput> 是 <userinput>svn
         diff --old=OLD-URL[@OLDREV]
-        --new=NEW-URL[@NEWREV].</userinput></para>
+        --new=NEW-URL[@NEWREV]</userinput> 的缩写形式.</para>
 
+      <!--
       <para><userinput>svn diff -r N:M URL</userinput> is shorthand
-        for <userinput>svn diff -r N:M --old=URL
-        --new=URL</userinput>.</para>
+        for <userinput>svn diff -r N:M - -old=URL
+        - -new=URL</userinput>.</para>
+      -->
+      <para><userinput>svn diff -r N:M URL</userinput> 是
+        <userinput>svn diff -r N:M --old=URL
+        --new=URL</userinput> 的缩写形式.</para>
 
+      <!--
       <para><userinput>svn diff [-r N[:M]] URL1[@N]
         URL2[@M]</userinput> is shorthand for <userinput>svn diff [-r
-        N[:M]] --old=URL1 --new=URL2</userinput>.</para>
+        N[:M]] - -old=URL1 - -new=URL2</userinput>.</para>
+      -->
+      <para><userinput>svn diff [-r N[:M]] URL1[@N]
+        URL2[@M]</userinput> 是 <userinput>svn diff [-r
+        N[:M]] --old=URL1 --new=URL2</userinput> 的缩写形式.</para>
 
+      <!--
       <para>If <replaceable>TARGET</replaceable> is a URL, then
         revs <literal>N</literal> and <literal>M</literal> can be
         given either via the
-        <option>--revision</option> (<option>-r</option>) option
+        <option>- -revision</option> (<option>-r</option>) option
         or by using the
         <quote>@</quote> notation as described earlier.</para>
+      -->
+      <para>如果 <replaceable>TARGET</replaceable> 是一个 URL, 那么
+        <replaceable>N</replaceable> 和 <replaceable>M</replaceable> 可以
+        用选项 <option>--revision</option> (<option>-r</option>) 指定,
+        或者用以前介绍过的 <quote>@</quote> 记号.</para>
 
+      <!--
       <para>If <replaceable>TARGET</replaceable> is a working copy
         path, the default behavior (when no
-        <option>--revision</option> (<option>-r</option>) option
+        <option>- -revision</option> (<option>-r</option>) option
         is provided) is to display the differences between the
         base and working copies
         of <replaceable>TARGET</replaceable>.  If a
-        <option>--revision</option> (<option>-r</option>) option
+        <option>- -revision</option> (<option>-r</option>) option
         is specified in this scenario, though, it means:</para>
+      -->
+      <para>如果 <replaceable>TARGET</replaceable> 是一个工作副本路径, 那么
+        命令的默认行为 (没有指定选项 <option>--revision</option>
+        (<option>-r</option>)) 就是显示 <replaceable>TARGET</replaceable>
+        的 <literal>BASE</literal> 与工作副本之间的差异. 如果指定了选项
+        <option>--revision</option> (<option>-r</option>), 这意味着:</para>
 
       <variablelist>
 
         <varlistentry>
           <term><option>--revision N:M</option></term>
           <listitem>
+      <!--
             <para>The server compares <replaceable>TARGET@N</replaceable>
               and <replaceable>TARGET@M</replaceable>.</para>
+      -->
+            <para>服务器将比较 <replaceable>TARGET@N</replaceable> 和
+              <replaceable>TARGET@M</replaceable>.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
           <term><option>--revision N</option></term>
           <listitem>
+      <!--
             <para>The client compares
               <replaceable>TARGET@N</replaceable>
               against the working copy.</para>
+      -->
+            <para>客户端将比较 <replaceable>TARGET@N</replaceable> 和工作
+              副本.</para>
           </listitem>
         </varlistentry>
 
