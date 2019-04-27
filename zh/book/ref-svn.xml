@@ -7309,8 +7309,11 @@ property 'owner-pic' set on 'moo.c'
 
     <refnamediv>
       <refname>svn relocate</refname>
+      <!--
       <refpurpose>Relocate the working copy to point to a
         different repository root URL.</refpurpose>
+      -->
+      <refpurpose>修改工作副本所映射的仓库的根 URL.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -7320,8 +7323,12 @@ property 'owner-pic' set on 'moo.c'
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>Sometimes an administrator might change the location
         (or apparent location, from the client's perspective) of a
         repository.  The content of the repository doesn't change,
@@ -7340,7 +7347,18 @@ property 'owner-pic' set on 'moo.c'
         the <command>svn relocate</command> command, which 
         <quote>rewrites</quote> the working copy's administrative
         metadata to refer to the new repository location.</para>
+      -->
+      <para>有时候, 管理员可能会改变仓库的存放位置, 虽然仓库的内容并没有发生
+        变化, 但是它的根 URL 变了. 例如由于更换了托管服务器, 所以仓库的主机
+        名发生了变化, 又或者说修改了仓库的访问协议, 由原来的普通 HTTP
+        (<literal>http://</literal> 改成了 SSL (<literal>https://</literal>).
+        导致仓库根 URL 发生变化的原因还有很多, 但是仓库位置的变化不应该导致
+        现有的工作副本失效, 幸运的是 Subversion 早就考虑到了这一问题. 当仓库
+        的根 URL 发生变化时, 用户不必再重新检出一份工作副本, 而是可以用命令
+        <command>svn relocate</command> <quote>重写</quote> 工作副本的元数据,
+        使其指向新的仓库根 URL.</para>
 
+      <!--
       <para>The first <command>svn relocate</command> syntax
         allows you to update one or more working copies by what
         essentially amounts to a find-and-replace within the
@@ -7355,31 +7373,55 @@ property 'owner-pic' set on 'moo.c'
         pointing, and the new URL of that repository.
         (You can use <command>svn info</command> to determine
         the former.)</para>
+      -->
+      <para>命令的第一种形式本质上是在给工作副本中记录的仓库根 URL 做一次
+        <quote>搜索并替换</quote> 操作. Subversion 把 URL 中的子字符串
+        <replaceable>FROM-PREFIX</replaceable> 替换成
+        <replaceable>TO-PREFIX</replaceable>. 这些 URL 子字符串可以任意地
+        长或任意地短, 只要能够反它们区分出来即可. 显然, 为了使用这种语法,
+        用户必须同时知道工作副本当前的仓库根 URL 和新的仓库根 URL. (可以使用
+        命令 <command>svn info</command> 得到工作副本当前的仓库根 URL.)</para>
 
+      <!--
       <para>The second syntax does not require that you know the
         current repository root URL with which the working copy is
         associated at all&mdash;only the new repository URL
         (<replaceable>TO-URL</replaceable>) to which it should be
         pointing.  In this syntax form, only one working copy may
         be relocated at a time.</para>
+      -->
+      <para>命令的第二种形式只要求用户知道新的仓库根 URL, 但一次只能更新一个
+        工作副本.</para>
 
       <warning>
+      <!--
         <para>Users often get confused about the difference
           between <command>svn switch</command> and <command>svn
           relocate</command>.  Here's the rule of thumb:</para>
+      -->
+      <para>用户常常搞不清楚 <command>svn switch</command> 和 <command>svn
+          relocate</command> 之间的区别, 这里有 2 条经验规则:</para>
         
         <itemizedlist>
           <listitem>
+      <!--
             <para>If the working copy needs to reflect a new
               directory <emphasis>within</emphasis> the
               repository, use <command>svn
               switch</command>.</para>
+      -->
+          <para>如果工作副本需要映射到 <emphasis>仓库内</emphasis> 另一个目录
+            上, 就用 <command>svn switch</command>.</para>
           </listitem>
           <listitem>
+      <!--
             <para>If the working copy still reflects the
               same repository directory, but the location of the
               repository itself has changed, use <command>svn
               relocate</command>.</para>
+      -->
+          <para>如果工作副本仍然需要映射到相同的仓库目录, 但仓库的位置发生了
+            变化, 就用 <command>svn relocate</command>.</para>
           </listitem>
         </itemizedlist>
       </warning>
@@ -7388,7 +7430,10 @@ property 'owner-pic' set on 'moo.c'
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
 
       <informalexample>
         <screen>
@@ -7399,10 +7444,16 @@ property 'owner-pic' set on 'moo.c'
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
 
+      <!--
       <para>Let's start with a working copy that reflects a local
         repository URL:</para>
+      -->
+      <para>假设开始时工作副本是映射到一个本地仓库的 URL:</para>
 
       <informalexample>
         <screen>
@@ -7412,10 +7463,14 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>One day the administrator decides to rename the
         on-disk repository directory.  We missed the memo, so we
         see an error the next time we try to update our working
         copy.</para>
+      -->
+      <para>突然有一天, 管理员决定重命名本地的仓库目录, 但是他忘记把这件事
+        通知给大家, 于是我们在下一次更新工作副本时出错了.</para>
 
       <informalexample>
         <screen>
@@ -7425,12 +7480,17 @@ svn: E180001: Unable to connect to a repository at URL 'file:///var/svn/repos/tr
 </screen>
       </informalexample>
 
+      <!--
       <para>After cornering the administrator over by the vending
         machines, we learn about the repository being moved and
         are told the new URL.  Rather than checkout a new working
         copy, though, we simply ask Subversion to rewrite the
         working copy metadata to point to the new repository
         location.</para>
+      -->
+      <para>向管理员咨询后得知仓库已经更换了位置, 并得到了仓库新的 URL. 我们不
+        想重新检出工作副本, 而是让 Subversion 更新现有工作副本的元数据, 以便
+        映射到新的仓库根 URL.</para>
 
       <informalexample>
         <screen>
@@ -7439,10 +7499,15 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>Subversion doesn't tell us much about what it did, but
         hey&mdash;error-free operation is really all we need,
         right?  Our working copy is functional for online
         operations again.</para>
+      -->
+      <para>在命令执行期间 Subversion 不会输出什么信息, 但我们要的不就是这
+        种不会出错的命令吗? 现在我们的工作副本已经准备好再次执行
+        <command>svn up</command>.</para>
 
       <informalexample>
         <screen>
@@ -7456,17 +7521,26 @@ M    src/headers.h
       </informalexample>
 
       <note>
+      <!--
         <para>Once again, this type of relocation
           affects <emphasis>working copy metadata only</emphasis>.
           It will not change your versioned or unversioned file
           contents, perform any version control operations (such
           as commits or updates), and so on.</para>
+      -->
+        <para>再次强调, <command>svn relocate</command> 只会影响工作副本的
+          元数据, 不会修改任何被版本控制或不被版本控制的文件, 更不会执行
+          版本控制操作 (例如提交或更新).</para>
       </note>
 
+      <!--
       <para>A few months later, we're told that the company is
         moving development to separate machines and that we'll be
         using HTTP to access the repository.  So we relocate our
         working copy again.</para>
+      -->
+      <para>几个月后, 我们又被告知公司将为代码托管设立单独的服务器, 开发人员
+        必须使用 HTTP 访问仓库, 于是我们又要更新工作副本的仓库根 URL.</para>
 
       <informalexample>
         <screen>
@@ -7475,16 +7549,26 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>Now, each time we perform a relocation of this sort,
         Subversion contacts the repository&mdash;at its new URL,
         of course&mdash;to verify a few things.</para>
+      -->
+      <para>我们每次执行 <command>svn relocate</command> 时, Subversion 都
+        会使用新的 URL 与仓库通信, 以便确认以下几:</para>
 
+      <!--
       <para>First, it wants to compare the UUID of the repository
         against what is stored in the working copy.  If these UUIDs
         don't match, the working copy relocation is disallowed.
         Maybe this isn't the same repository (just in a new
         location) after all?</para>
+      -->
+      <para>首先, Subversion 将仓库的 UUID 和存放在工作副本中的仓库 UUID
+        进行比较, 如果这两个 UUID 不相同, Subversion 将禁止修改工作副本的
+        仓库根 URL. 这样做的考虑是避免工作副本映射到一个不同的仓库上.</para>
 
+      <!--
       <para>Secondly, Subversion wants to ensure that the updated
         working copy metadata jives with respect to the directory
         location <emphasis>inside</emphasis> the repository.
@@ -7493,6 +7577,11 @@ $
         different branch in the same repository.  (That's
         what <command>svn switch</command>, described in
         <xref linkend="svn.ref.svn.c.switch" />, is for.)</para>
+      -->
+      <para>第二, Subversion 需要确认元数据更新后的工作副本仍然映射到仓库
+        内的相同目录上. 这样做的考虑是避免用户不小心把工作副本映射到一个不
+        同的目录上 (这本是 <command>svn switch</command> 的工作, 见
+        <xref linkend="svn.ref.svn.c.switch" />).</para>
 
       <para>Also, Subversion will not allow you to relocate a
         subtree of the working copy.  If you're going to relocate
