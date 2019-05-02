@@ -7583,6 +7583,7 @@ $
         同的目录上 (这本是 <command>svn switch</command> 的工作, 见
         <xref linkend="svn.ref.svn.c.switch" />).</para>
 
+      <!--
       <para>Also, Subversion will not allow you to relocate a
         subtree of the working copy.  If you're going to relocate
         the working copy at all, you must relocate the whole
@@ -7590,7 +7591,14 @@ $
         copy metadata and behavior as a whole.  (And really, you'd
         be hard pressed to come up with a compelling reason to
         relocate only a piece of your working copy anyway.)</para>
+      -->
+      <para>另外, Subversion 不允许对工作副本的子目录执行 <command>svn
+          relocate</command>, 如果你想修改工作副本的仓库根目录, 就必须整个
+        工作副本一起修改. 这是为了保护工作副本元数据和行为的一致性. (而且
+        在实际工作中, 你很难找到一个信服的理由来为工作副本的子目录执行
+        <command>svn relocate</command>)</para>
 
+      <!--
       <para>Let's look at one final relocation opportunity.  After
         using HTTP access for some time, the company moves to
         SSL-only access.  Now, the only change to the repository
@@ -7600,6 +7608,12 @@ $
         different ways that we could make our working copy reflect
         ths change.  The first is to do exactly as we've done
         before and relocate to the new repository URL.</para>
+      -->
+      <para>最后再介绍一个使用 <command>svn relocate</command> 的场景. 在使用
+        了 HTTP 一段时间后, 公司决定切换到 SSL. 而仓库 URL 唯一变化的部分是从
+        <literal>http://</literal> 变成了 <literal>https://</literal>, 更新工
+        作副本的仓库根 URL 的做法有两种, 第一种和之前的做法相同, 就直接让工作
+        副本指向新的仓库根 URL:</para>
 
       <informalexample>
         <screen>
@@ -7608,9 +7622,12 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>But we have another option here, too.  We could simply
         ask Subversion to swap out the changed prefixes of the
         URL.</para>
+      -->
+      <para>第二种做法是中替换新旧 URL 中不同的部分:</para>
 
       <informalexample>
         <screen>
@@ -7619,15 +7636,23 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>Either approach leaves us a working copy whose
         metadata has been updated to point to the right repository
         location.</para>
+      -->
+      <para>上面两种做法中的任意一种都能让工作副本指向新的仓库:</para>
 
+      <!--
       <para>By default, <command>svn relocate</command> will
         traverse any external working copies nested within your
         working copy and attempt relocation of those working
-        copies, too.  Use the <option>--ignore-externals</option>
+        copies, too.  Use the <option>- -ignore-externals</option>
         option to disable this behavior.</para>
+      -->
+      <para>默认情况下, <command>svn relocate</command> 将会遍历所有的外部
+        工作副本并更新它们的仓库根 URL, 选项
+        <option>--ignore-externals</option> 将禁止这一行为.</para>
 
     </refsect1>
   </refentry>
@@ -7645,8 +7670,11 @@ $
 
     <refnamediv>
       <refname>svn resolve</refname>
+      <!--
       <refpurpose>Resolve conflicts on working copy files or
         directories.</refpurpose>
+      -->
+      <refpurpose>解决工作副本里的冲突.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -7655,26 +7683,45 @@ $
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>Resolve <quote>conflicted</quote> state on working
         copy files or directories.  This routine does not
         semantically resolve conflict markers; however, it
         replaces the conflicted item with the version specified
-        (interactively or via the <option>--accept</option>
+        (interactively or via the <option>- -accept</option>
         argument) and then removes conflict-related artifact
         files.  This allows <replaceable>PATH</replaceable> to be
         committed again&mdash;that is, it tells Subversion that
         the conflicts have been <quote>resolved.</quote></para>
+      -->
+      <para>解决工作副本里的 <quote>冲突</quote> 状态. <command>svn
+          resolve</command> 不会从语义上解决冲突标记, 而是把发生冲突的项目替换
+        成指定的版本 (交互式地或通过选项 <option>--accept</option> 指定),
+        然后再删除与冲突有关的辅助文件. <command>svn resolve</command> 将允许
+        <replaceable>PATH</replaceable> 被提交, 也就是告诉 Subversion
+        <replaceable>PATH</replaceable> 上的冲突已经被 <quote>解决</quote> 了.
+      </para>
 
+      <!--
       <para>See <xref linkend="svn.tour.cycle.resolve" /> for an
         in-depth look at resolving conflicts.</para>
+      -->
+      <para>关于冲突解决的更多信息, 见 <xref
+          linkend="svn.tour.cycle.resolve" />.</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
 
       <informalexample>
         <screen>
@@ -7689,12 +7736,19 @@ $
     
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
       
+      <!--
       <para>Here's an example where, after a postponed conflict
         resolution during update, <command>svn resolve</command>
         replaces the all conflicts in
         file <filename>foo.c</filename> with your edits:</para>
+      -->
+      <para>下面的例子推迟了冲突的解决, 然后 <command>svn resolve</command>
+        用用户的内容替换掉所有的冲突:</para>
 
       <informalexample>
         <screen>
@@ -7730,9 +7784,13 @@ $
 
     <refnamediv>
       <refname>svn resolved</refname>
+      <!--
       <refpurpose><emphasis>Deprecated</emphasis>.
         Remove <quote>conflicted</quote> state on working copy
         files or directories.</refpurpose>
+      -->
+      <refpurpose><emphasis>不再推荐使用</emphasis>. 删除工作副本项目上的
+        <quote>冲突</quote> 状态.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -7741,14 +7799,24 @@ $
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>This command has been deprecated in favor of
-        running <userinput>svn resolve --accept
+        running <userinput>svn resolve - -accept
         working <replaceable>PATH</replaceable></userinput>.  See
         <xref linkend="svn.ref.svn.c.resolve"/> in the preceding
         section for details.</para>
+      -->
+      <para>已不再推荐使用该命令, 而应该使用 <userinput>svn resolve --accept
+          working <replaceable>PATH</replaceable></userinput>. 关于
+        <command>svn resolve</command>, 见前面的 <xref
+          linkend="svn.ref.svn.c.resolve"/>.</para>
 
+      <!--
       <para>Remove <quote>conflicted</quote> state on working copy
         files or directories.  This routine does not semantically
         resolve conflict markers; it merely removes
@@ -7757,11 +7825,22 @@ $
         that is, it tells Subversion that the conflicts have been
         <quote>resolved.</quote>  See <xref
         linkend="svn.tour.cycle.resolve"/> for an in-depth look at
-        resolving conflicts.</para> </refsect1>
+        resolving conflicts.</para>
+      -->
+      <para><command>svn resolved</command> 删除工作副本项目上的
+        <quote>冲突</quote> 状态. 命令不会从语义上解决冲突标记, 它仅仅是删除
+        与冲突有关的辅助文件, 并允许 <replaceable>PATH</replaceable> 被提交
+        到仓库中, 也就是告诉 Subversion 冲突已经被 <quote>解决了</quote>.
+        关于冲突解决的更多信息, 见 <xref linkend="svn.tour.cycle.resolve"/>.
+      </para>
+  </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
 
       <informalexample>
         <screen>
@@ -7775,10 +7854,17 @@ $
     
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
       
+      <!--
       <para>If you get a conflict on an update, your working
         copy will sprout three new files:</para>
+      -->
+      <para>如果你在更新 <filename>foo.c</filename> 时发生了冲突, 工作副本里
+        将会出现 3 个新文件:</para>
 
       <informalexample>
         <screen>
@@ -7797,18 +7883,28 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>Once you've resolved the conflict and
         <filename>foo.c</filename> is ready to be committed, run
         <command>svn resolved</command> to let your working copy
         know you've taken care of everything.</para>
+      -->
+      <para>一旦你已经解决了冲突, 文件 <filename>foo.c</filename> 就已经
+        准备好提交, 执行 <command>svn resolved</command> 告诉 Subversion 你
+        已经处理好了所有问题.</para>
 
       <warning>
+      <!--
         <para>You <emphasis>can</emphasis> just remove the
           conflict files and commit, but <command>svn
           resolved</command> fixes up some bookkeeping data
           in the working copy administrative area in addition
           to removing the conflict files, so we recommend that
           you use this command.</para>
+      -->
+        <para>用户 <emphasis>可以</emphasis> 直接删除与冲突有关的辅助文件,
+          然后提交, 但是 <command>svn resolved</command> 还会在工作副本管理区
+          内更新一些薄记数据, 所以我们建议用户使用命令, 而不是手工操作.</para>
       </warning>
 
     </refsect1>
