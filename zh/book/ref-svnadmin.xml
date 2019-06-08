@@ -702,6 +702,7 @@ $
       -->
       <title>描述</title>
 
+      <!--
       <para>Dump the contents of the filesystem to <filename>stdout</filename> in a
         <quote>dump file</quote> portable format, sending feedback
         to <filename>stderr</filename>.  Dump revisions
@@ -711,7 +712,18 @@ $
         <replaceable>LOWER</replaceable> is given, dump that one
         revision tree.  See <xref linkend="svn.reposadmin.maint.migrate"/>
         for a practical use.</para>
+      -->
+      <para>按照可移植的 <quote>转储文件</quote> 格式, 把文件系统的内容转储
+        到 <filename>stdout</filename>, 把错误信息打印到
+        <filename>stderr</filename>. 按照从版本号
+        <replaceable>LOWER</replaceable> 到 <replaceable>UPPER</replaceable>
+        的顺序进行转储. 如果没有指定版本号, <command>svnadmin dump</command>
+        将会转储所有的版本号, 如果只指定了版本号
+        <replaceable>LOWER</replaceable>, 则只转储单个版本号. 关于
+        <command>svnadmin dump</command> 的实际用途, 见 <xref
+          linkend="svn.reposadmin.maint.migrate"/>.</para>
 
+      <!--
       <para>By default, the Subversion dump stream contains a
         single revision (the first revision in the requested
         revision range) in which every file and directory in the
@@ -723,10 +735,17 @@ $
         full-text representation of its contents, as well as all of
         its properties, are presented in the dump file; for a
         directory, all of its properties are presented.</para>
+      -->
+      <para>默认情况下, 转储流的第一个版本号 (即指定版本号范围的起始版本号)
+        相当于把该版本号下的所有文件和目录一次性添加到仓库中, 后面的版本号
+        (起始版本号之后的版本号) 只包含了在版本号内被修改的文件和目录. 对于
+        被修改的文件, 转储流保存了该文件的全文本内容和属性; 对于被修改的目录,
+        转储流保存了该目录的所有属性.</para>
 
+      <!--
       <para>Two useful options modify the dump file
         generator's behavior.  The first is the
-        <option>--incremental</option> option, which simply causes
+        <option>- -incremental</option> option, which simply causes
         that first revision in the dump stream to contain only
         the files and directories modified in that revision,
         instead of being presented as the addition of a new tree,
@@ -735,8 +754,16 @@ $
         a relatively small dump file to be loaded into another
         repository that already has the files and directories
         that exist in the original repository.</para>
+      -->
+      <para>有 2 个选项可以修改 <command>svnadmin</command> 在生成转储文件时
+        的行为. 选项 <option>--incremental</option> 使得转储流的第一个版本号
+        只包含在该版本号内被修改的文件和目录, 而不是该版本号下的整个目录树,
+        联系上一段可以看到, 这和后面的版本号在转储流中的表示格式是完全相同的.
+        如果目标仓库已经包含了源仓库的文件与目录, 那么该选项就能生成相对更小
+        的转储文件.</para>
 
-      <para>The second useful option is <option>--deltas</option>.
+      <!--
+      <para>The second useful option is <option>- -deltas</option>.
         This option causes <command>svnadmin dump</command> to,
         instead of emitting full-text representations of file
         contents and property lists, emit only deltas of those
@@ -748,21 +775,37 @@ $
         not to compress as well as their nondeltified counterparts
         when using third-party tools such as <command>gzip</command>
         and <command>bzip2</command>.</para>
+      -->
+      <para>第二个选项是 <option>--deltas</option>, 它使得 <command>svnadmin
+          dump</command> 在转储每个版本号时, 只输出该版本号相对于前一个版本号
+        的差异部分, 而不是全文本的文件和属性. 这种做法可以减小 (在某些情况下
+        可以极大地减小) 转储文件的大小. 然而, 选项 <option>--deltas</option>
+        也有不好的地方&mdash;它会耗费更多的 CPU 资源, 而且使用第三方工具 (例如
+        <command>gzip</command> 和 <command>bzip2</command>) 对转储文件进行
+        压缩时, 和不加选项 <option>--deltas</option> 生成的转储文件相比, 其
+        压缩效果也不如它们.</para>
 
       <tip>
+      <!--
         <para>Beginning with Subversion 1.8,
           <command>svndumpfilter</command> can operate on deltified
           dump streams.  Prior to this release,
           <command>svndumpfilter</command> would not work with dump
-          streams created using <option>--deltas</option>
+          streams created using <option>- -deltas</option>
           option.</para>
+      -->
+        <para>从 Subversion 1.8 开始, <command>svndumpfilter</command>
+          开始支持通过选项 <option>--deltas</option> 创建的转储流.</para>
       </tip>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
 
       <informalexample>
         <screen>
@@ -777,9 +820,15 @@ $
     
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
 
+      <!--
       <para>Dump your whole repository:</para>
+      -->
+      <para>转储整个仓库:</para>
 
       <informalexample>
         <screen>
@@ -791,8 +840,11 @@ $ svnadmin dump /var/svn/repos &gt; full.dump
 </screen>
       </informalexample>
 
+      <!--
       <para>Incrementally dump a single transaction from your
         repository:</para>
+      -->
+      <para>按照增量的格式转储一个单独的版本号:</para>
 
       <informalexample>
         <screen>
@@ -817,7 +869,10 @@ $ svnadmin dump /var/svn/repos -r 21 --incremental &gt; incr.dump
 
     <refnamediv>
       <refname>svnadmin freeze</refname>
+      <!--
       <refpurpose>Prevent commits to the repository while running an arbitary program.</refpurpose>
+      -->
+      <refpurpose>在执行某个程序期间, 禁止向仓库提交.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -827,8 +882,12 @@ $ svnadmin dump /var/svn/repos -r 21 --incremental &gt; incr.dump
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>This subcommand prevents concurrent commits to the repository
         <replaceable>REPOS_PATH</replaceable> (i.e. it freezes the
         repository) while running <replaceable>PROGRAM</replaceable> with
@@ -837,17 +896,34 @@ $ svnadmin dump /var/svn/repos -r 21 --incremental &gt; incr.dump
         available again.  The subcommand is intended for backup purposes so
         that third-party backup tools such as <command>rsync</command> can
         be safely used on a live repository.</para>
+      -->
+      <para><command>svnadmin freeze</command> 禁止在程序
+        <replaceable>PROGRAM</replaceable> (带有参数
+        <replaceable>ARG</replaceable>) 运行期间, 向仓库
+        <replaceable>REPOS_PATH</replaceable> 提交修改 (即冻结仓库). 如果客户
+        端在仓库冻结期间向仓库提交修改, 提交将会阻塞, 直到仓库解除冻结.
+        <command>svnadmin freeze</command> 的目的是让第三方备份工具 (例如
+        <command>rsync</command>) 可以安全地对在线仓库进行备份.</para>
 
-      <para>If <option>--file</option> option is used, then all repositories
+      <!--
+      <para>If <option>- -file</option> option is used, then all repositories
         listed in <replaceable>FILENAME</replaceable> will froze.  The
         file format is a list of <replaceable>REPOS_PATH</replaceable>
         separated by newlines.  Repositories freeze in the
         same order as they are listed in the file.</para>
+      -->
+      <para>如果添加了选项 <option>--file</option>, 文件
+        <replaceable>FILENAME</replaceable> 中列出的所有仓库都会被冻结. 文件
+        的格式是每行一个 <replaceable>REPOS_PATH</replaceable>, 仓库被冻结的
+        顺序和它们在文件中的顺序相同.</para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
 
       <informalexample>
         <screen>
@@ -857,10 +933,16 @@ $ svnadmin dump /var/svn/repos -r 21 --incremental &gt; incr.dump
     </refsect1>
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
 
+      <!--
       <para>Freeze the repository and run <command>rsync</command> to
         make its backup:</para>
+      -->
+      <para>冻结仓库, 然后执行 <command>rsync</command> 对仓库进行备份:</para>
 
       <informalexample>
         <screen>
@@ -885,7 +967,10 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
 
     <refnamediv>
       <refname>svnadmin help (h, ?)</refname>
+      <!--
       <refpurpose>Help!</refpurpose>
+      -->
+      <refpurpose>帮助!</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -894,11 +979,18 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>This subcommand is useful when you're trapped on a
         desert island with neither a Net connection nor a copy of
         this book.</para>
+      -->
+      <para>如果既无法上网, 手上也没有这本书, 那你就只能依靠这个子命令了.
+      </para>
     </refsect1>
 
   </refentry>
@@ -916,7 +1008,10 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
 
     <refnamediv>
       <refname>svnadmin hotcopy</refname>
+      <!--
       <refpurpose>Make a hot copy of a repository.</refpurpose>
+      -->
+      <refpurpose>对仓库进行在线备份.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -925,36 +1020,60 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>This subcommand makes a <quote>hot</quote> backup
         of your repository, including all hooks, configuration
         files, and, of course, database files.  You can run this command at any
         time and make a safe copy of the repository, regardless of
         whether other processes are using the repository.</para>
+      -->
+      <para><command>svnadmin hotcopy</command> 为仓库生成一份
+        <quote>在线</quote> 副本, 包括所有的钩子, 配置文件和数据库文件. 你可以
+        在任何时候执行这个命令, 而不用担心是否还有其他进程在访问仓库.</para>
 
+      <!--
       <para>Prior to Subversion 1.8, <command>svnadmin hotcopy</command> always
         made a full hot copy of the source repository.  Beginning with
         Subversion 1.8 it supports incremental copy to the existing
         destination copy of the same source repository.  By passing the
-        <option>--incremental</option> option to
+        <option>- -incremental</option> option to
         <command>svnadmin hotcopy</command>, you can instruct Subversion to
         copy only new revisions and revisions which have changed in size or had
         timestamp modifications.  The UUID of the hotcopy destination
         repository must match the UUID of the hotcopy source repository.
         Incremental hotcopy mode is supported for FSFS repositories
         only.</para>
+      -->
+      <para>在 Subversion 1.8 之前, <command>svnadmin hotcopy</command> 总是
+        生成一份完整的仓库在线副本. 从 Subversion 1.8 开始, <command>svnadmin
+          hotcopy</command> 开始支持增量备份. 添加选项
+        <option>--incremental</option> 后, Subversion 将只复制新的版本号和
+        大小或时间戳发生变化的版本号. 目标仓库的 UUID 和源仓库的 UUID 必须
+        完全相同. 增量的在线备份只支持使用 FSFS 作为后端存储的仓库.</para>
 
-      <para>If you pass the <option>--clean-logs</option> option,
+      <!--
+      <para>If you pass the <option>- -clean-logs</option> option,
         <command>svnadmin</command> will perform a hot copy of your
         repository, and then remove unused Berkeley DB logs from
         the original repository.</para>
+      -->
+      <para>如果添加了选项 <option>--clean-logs</option>, <command>svnadmin
+          hotcopy</command> 在执行完在线备份后, 将会删除源仓库中不再使用的
+        Berkeley DB 日志.</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
 
       <informalexample>
         <screen>
@@ -964,12 +1083,18 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
       </informalexample>
 
       <warning>
+      <!--
         <para>As described in <xref
           linkend="svn.berkeleydb.limitations.architectural"/>, hot-copied
           Berkeley DB repositories are <emphasis>not</emphasis>
           portable across operating systems, nor will they work on
           machines with a different <quote>endianness</quote> than
           the machine where they were created.</para>
+      -->
+        <para>在 <xref
+            linkend="svn.berkeleydb.limitations.architectural"/> 提到,
+          在线备份的, 以 Berkeley DB 作为后端存储的仓库在不同的操作系统之间
+          是不可移植的, 在大小端不同的系统之间也不可移植.</para>
       </warning>
 
       </refsect1>
@@ -989,9 +1114,12 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
 
     <refnamediv>
       <refname>svnadmin list-dblogs</refname>
+      <!--
       <refpurpose>Ask Berkeley DB which logfiles exist for a
         given Subversion repository (applies only to repositories
         using the <literal>bdb</literal> backend).</refpurpose>
+      -->
+      <refpurpose>列出所有的 Berkeley DB 日志文件.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -1000,7 +1128,10 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
       <para>Berkeley DB creates logs of all changes to the
         repository, which allow it to recover in the face of
