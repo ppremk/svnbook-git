@@ -1133,6 +1133,7 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
       -->
       <title>描述</title>
 
+      <!--
       <para>Berkeley DB creates logs of all changes to the
         repository, which allow it to recover in the face of
         catastrophe.  Unless you enable
@@ -1141,6 +1142,11 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
         deleted to reclaim disk space.  See <xref
         linkend="svn.reposadmin.maint.diskspace"/> for more
         information.</para>
+      -->
+      <para>Berkeley DB 为仓库的所有修改创建日志, 用于灾备恢复. 除非开启了
+        <literal>DB_LOG_AUTOREMOVE</literal>, 否则的话日志文件会不断累积,
+        即使它们在的大部分都不会再被用到, 把它们删除有助于节省硬盘空间. 更
+        多的信息见 <xref linkend="svn.reposadmin.maint.diskspace"/>.</para>
     </refsect1>
 
   </refentry>
@@ -1158,9 +1164,13 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
 
     <refnamediv>
       <refname>svnadmin list-unused-dblogs</refname>
+      <!--
       <refpurpose>Ask Berkeley DB which logfiles can be safely
       deleted (applies only to repositories using the
       <literal>bdb</literal> backend).</refpurpose>
+      -->
+    <refpurpose>询问 Berkeley DB 哪些日志文件可以被安全地删除 (该子命令只
+      适用于以 <literal>bdb</literal> 作为后端存储的仓库).</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -1169,8 +1179,12 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>Berkeley DB creates logs of all changes to the
         repository, which allow it to recover in the face of
         catastrophe.  Unless you enable
@@ -1179,13 +1193,24 @@ $ svnadmin freeze /var/svn/repos -- rsync -av /var/svn/repos /backup/repos
         deleted to reclaim disk space.  See <xref
         linkend="svn.reposadmin.maint.diskspace"/> for more
         information.</para>
+      -->
+      <para>Berkeley DB 为仓库的所有修改创建日志, 用于灾备恢复. 除非开启了
+        <literal>DB_LOG_AUTOREMOVE</literal>, 否则的话日志文件会不断累积,
+        即使它们在的大部分都不会再被用到, 把它们删除有助于节省硬盘空间. 更
+        多的信息见 <xref linkend="svn.reposadmin.maint.diskspace"/>.</para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
       
+      <!--
       <para>Remove all unused logfiles from the repository:</para>
+      -->
+      <para>删除仓库中不会再被用到的日志文件:</para>
 
       <informalexample>
       <screen>
@@ -1214,9 +1239,13 @@ $ svnadmin list-unused-dblogs /var/svn/repos | xargs rm
     </indexterm>
 
     <refnamediv>
-      <refname>svnadmin load</refname> <refpurpose>Read a
+      <refname>svnadmin load</refname>
+      <!--
+      <refpurpose>Read a
         repository dump stream from
         <filename>stdin</filename>.</refpurpose>
+      -->
+      <refpurpose>从 <filename>stdin</filename> 读取仓库的转储流.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -1225,32 +1254,55 @@ $ svnadmin list-unused-dblogs /var/svn/repos | xargs rm
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>Read a repository dump stream from
         <filename>stdin</filename>, committing new revisions
         into the repository's filesystem.  Progress
         feedback is sent to <filename>stdout</filename>.  If
         no revisions are given, read and commit all revisions.  But
-        if <option>--revision</option> is provided, read and commit
+        if <option>- -revision</option> is provided, read and commit
         revisions <replaceable>LOWER</replaceable> rev through
         <replaceable>UPPER</replaceable> rev only.  If only
         <replaceable>LOWER</replaceable> is given, load that one
         revision.</para>
+      -->
+      <para>从 <filename>stdin</filename> 读取仓库的转储流, 把新的版本号提交
+        到仓库的文件系统中. 进度信息被打印到 <filename>stdout</filename>.
+        如果没有指定版本号, <command>svnadmin load</command> 将读取并提交所有
+        的版本号; 如果添加了选项 <option>--revision</option>
+        (<option>-r</option>), <command>svnadmin load</command> 将只读取并
+        提交从 <replaceable>LOWER</replaceable> 到
+        <replaceable>UPPER</replaceable> 的版本号; 如果只指定了
+        <replaceable>LOWER</replaceable>, 则只加载这一个版本号.</para>
 
+      <!--
       <para>Prior to Subversion 1.8, <command>svnadmin load</command>
         was limited to reading all revisions that the dump stream
         contains, but now <command>svnadmin load</command> accepts
-        <option>--revision</option> option that acts as a filter for
+        <option>- -revision</option> option that acts as a filter for
         dump stream revisions.  This allows you to incrementally load
         only a range of revisions from a single dump stream making
         some repository maintenance and reorganization tasks much
         easier.</para>
+      -->
+      <para>在 Subversion 1.8 之前, <command>svnadmin load</command> 只能加
+        载转储流中包含的 <emphasis>全部</emphasis> 版本号, 但是现在可以通过
+        选项 <option>--revision</option> (<option>-r</option>), 从转储流中
+        加载指定的版本号. 这就允许管理员从一个单一的转储流中增量地加载一段
+        版本号范围, 从而让仓库的维护任务变得更加轻松.</para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
 
       <informalexample>
         <screen>
@@ -1269,11 +1321,18 @@ $ svnadmin list-unused-dblogs /var/svn/repos | xargs rm
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
 
+      <!--
       <para>This shows the beginning of loading a repository from
         a backup file (made, of course, with <command>svnadmin
         dump</command>):</para>
+      -->
+    <para>下面的例子展示了把转储文件加载到仓库中的输出信息的开始部分 (当然,
+      转储文件是通过命令 <command>svnadmin dump</command> 创建的):</para>
 
       <informalexample>
         <screen>
@@ -1285,7 +1344,10 @@ $ svnadmin load /var/svn/restored &lt; repos-backup
 </screen>
       </informalexample>
 
+      <!--
       <para>Or if you want to load into a subdirectory:</para>
+      -->
+      <para>还可以把转储流加载到一个子目录内:</para>
 
       <informalexample>
         <screen>
@@ -1298,6 +1360,7 @@ $ svnadmin load --parent-dir new/subdir/for/project \
 </screen>
       </informalexample>
 
+      <!--
       <para>Newer versions of Subversion have grown more strict
         regarding the format of the values of Subversion's own
         built-in properties.  Of course, properties created with
@@ -1313,8 +1376,18 @@ $ svnadmin load --parent-dir new/subdir/for/project \
         manually tweak the dump stream itself to fix those
         property values.  Finally, if you'd rather not deal with
         the problem right now, use the
-        <option>--bypass-prop-validation</option> option
+        <option>- -bypass-prop-validation</option> option
         with <command>svnadmin load</command>.</para>
+      -->
+      <para>新版 Subversion 对内建属性的值会提出越来越严格的格式要求, 当然,
+        由旧版 Subversion 创建的属性无法从这种严格的要求中得到任何好处, 却
+        有可能导致属性值被不正确地格式化. 转储流原模原样地保存属性值, 因此
+        Subversion 1.8 在加载属性值格式不正确的转储流时, 默认情况下会触发一
+        个验证性错误. 有几种办法可以避免出现这种问题, 第一种是在源仓库中手动
+        地修正格式不正确的属性值, 然后重新创建转储流; 或者是手动修改转储流文件
+        中的属性值; 最后, 如果你想在加载后再去修正属性值, 可以为
+        <command>svnadmin load</command> 添加选项
+        <option>--bypass-prop-validation</option>.</para>
 
     </refsect1>
   </refentry>
@@ -1332,7 +1405,10 @@ $ svnadmin load --parent-dir new/subdir/for/project \
 
     <refnamediv>
       <refname>svnadmin lock</refname>
+      <!--
       <refpurpose>Lock path in the repository directly.</refpurpose>
+      -->
+      <refpurpose>直接在仓库中为一个路径加锁.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -1343,14 +1419,23 @@ $ svnadmin load --parent-dir new/subdir/for/project \
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>Lock <replaceable>PATH-IN-REPOS</replaceable> in the
         repository, assigning ownership of the lock
         to <replaceable>USERNAME</replaceable> and using the contents
         of <replaceable>FILE</replaceable> as comments associated with
         the created lock.  If provided,
         use <replaceable>TOKEN</replaceable> as lock token.</para>
+      -->
+      <para>加载仓库中的路径 <replaceable>PATH-IN-REPOS</replaceable>,
+        把锁的持有者设置为 <replaceable>USERNAME</replaceable>, 使用文件
+        <replaceable>FILE</replaceable> 的内容作为锁的注释. 如果提供了
+        <replaceable>TOKEN</replaceable>, 它将作为锁的令牌.</para>
 
     </refsect1>
 
@@ -1378,7 +1463,10 @@ $ svnadmin load --parent-dir new/subdir/for/project \
 
     <refnamediv>
       <refname>svnadmin lslocks</refname> 
+      <!--
       <refpurpose>Print descriptions of all locks.</refpurpose>
+      -->
+      <refpurpose>打印所有锁的描述.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -1389,6 +1477,7 @@ $ svnadmin load --parent-dir new/subdir/for/project \
     <refsect1>
       <title>Description</title>
 
+      <!--
       <para>Print descriptions of all locks in
         repository <replaceable>REPOS_PATH</replaceable>
         underneath the
@@ -1396,22 +1485,40 @@ $ svnadmin load --parent-dir new/subdir/for/project \
         If <replaceable>PATH-IN-REPOS</replaceable> is not
         provided, it defaults to the root directory of the
         repository.</para>
+      -->
+      <para>打印仓库 <replaceable>REPOS_PATH</replaceable> 在路径
+        <replaceable>PATH-IN-REPOS</replaceable> 下的所有锁的描述. 如果没有
+        指定 <replaceable>PATH-IN-REPOS</replaceable>, 默认是仓库的根目录.
+      </para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
       
+      <!--
       <para>None</para>
+      -->
+      <para>无</para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
 
 
+      <!--
       <para>This lists the one locked file in the repository at
         <filename>/var/svn/repos</filename>:</para>
+      -->
+      <para>列出仓库 <filename>/var/svn/repos</filename> 所有的锁 (只有一个):
+      </para>
 
       <informalexample>
         <screen>
@@ -1440,7 +1547,10 @@ Rework the uppermost branches on the bald cypress in the foreground.
 
     <refnamediv>
       <refname>svnadmin lstxns</refname>
+      <!--
       <refpurpose>Print the names of all uncommitted transactions.</refpurpose>
+      -->
+      <refpurpose>输出所有未提交的事务的名字.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -1449,20 +1559,34 @@ Rework the uppermost branches on the bald cypress in the foreground.
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>Print the names of all uncommitted transactions.  See
         <xref linkend="svn.reposadmin.maint.diskspace.deadtxns" />
         for information on how uncommitted transactions are
         created and what you should do with them.</para>
+      -->
+      <para>输出所有未提交的事务的名字. 关于未提交的事务是如何出现的, 以及
+        如何处理它们, 见 <xref
+          linkend="svn.reposadmin.maint.diskspace.deadtxns" />.</para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
 
+      <!--
       <para>List all outstanding transactions in a
         repository:</para>
+      -->
+      <para>所有仓库中所有未完成的事务:</para>
 
       <informalexample>
         <screen>
@@ -1487,8 +1611,12 @@ $ svnadmin lstxns /var/svn/repos/
     
     <refnamediv>
       <refname>svnadmin pack</refname>
+      <!--
       <refpurpose>Possibly compact the repository into a more
       efficient storage model.</refpurpose>
+      -->
+    <refpurpose>如果有可能的话, 把仓库压缩成一个效率更高的存储模式.
+    </refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -1497,11 +1625,18 @@ $ svnadmin lstxns /var/svn/repos/
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>See
       <xref linkend="svn.reposadmin.maint.diskspace.fsfspacking"
       /> for more information.</para>
+      -->
+      <para>见 <xref
+          linkend="svn.reposadmin.maint.diskspace.fsfspacking"/>.</para>
     </refsect1>
 
     <!-- =============================================================== -->
@@ -1526,11 +1661,17 @@ $ svnadmin lstxns /var/svn/repos/
     <refnamediv>
       <refname>svnadmin recover</refname>
 
+      <!--
       <refpurpose>Bring a repository database back into a
       consistent state (applies only to repositories using the
       <literal>bdb</literal> backend).  In addition, if
       <filename>repos/conf/passwd</filename> does not exist, it
       will create a default passwordfile .</refpurpose>
+      -->
+    <refpurpose>把仓库数据库恢复到一个一致的状态 (该命令只适用于以
+      <literal>bdb</literal> 作为后端存储的仓库). 另外, 如果
+      <filename>repos/conf/passwd</filename> 不存在, 命令将自动创建一个默认
+      的密码文件.</refpurpose>
 
     </refnamediv>
 
@@ -1540,15 +1681,24 @@ $ svnadmin lstxns /var/svn/repos/
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>Run this command if you get an error indicating that
         your repository needs to be recovered.</para>
+      -->
+      <para>如果你得到一条说明仓库需要复原的错误, 就执行这个命令.</para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
       <informalexample>
         <screen>
 <xref linkend="svn.ref.svnadmin.sw.wait" />
@@ -1558,9 +1708,15 @@ $ svnadmin lstxns /var/svn/repos/
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
       
+      <!--
       <para>Recover a hung repository:</para>
+      -->
+      <para>复原一个挂起的仓库:</para>
 
       <informalexample>
         <screen>
@@ -1573,11 +1729,17 @@ The latest repos revision is 34.
 </screen>
       </informalexample>
 
+      <!--
       <para>Recovering the database requires an exclusive lock on
         the repository. (This is a <quote>database lock</quote>;
         see the sidebar <xref linkend="svn.advanced.locking.meanings"/>.)
         If another process is accessing the repository,
         then <command>svnadmin recover</command> will error:</para>
+      -->
+      <para>复原数据库要求获得仓库的排斥性锁. (这是一个
+        <quote>数据库锁</quote>; 见 <xref
+          linkend="svn.advanced.locking.meanings"/>) 如果有其他进程正在访问
+        仓库, <command>svnadmin recover</command> 将会报错:</para>
 
       <informalexample>
         <screen>
@@ -1588,9 +1750,13 @@ $
 </screen>
       </informalexample>
 
-      <para>The <option>--wait</option> option, however, will
+      <!--
+      <para>The <option>- -wait</option> option, however, will
         cause <command>svnadmin recover</command> to wait
         indefinitely for other processes to disconnect:</para>
+      -->
+      <para>选项 <option>--wait</option> 使得 <command>svnadmin
+          recover</command> 会一直等到其他进程不再访问仓库:</para>
 
       <informalexample>
         <screen>
@@ -1624,8 +1790,11 @@ The latest repos revision is 34.
 
     <refnamediv>
       <refname>svnadmin rmlocks</refname>
+      <!--
       <refpurpose>Unconditionally remove one or more locks from a
       repository.</refpurpose>
+      -->
+    <refpurpose>无条件地从仓库中移除一个或多个锁.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -1634,24 +1803,45 @@ The latest repos revision is 34.
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
+
+      <!--
       <para>Remove one or more locks from each <replaceable>LOCKED_PATH</replaceable>.</para>
+      -->
+      <para>从仓库中删除一个或多个锁.</para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>          
+      -->
+      <title>选项</title>          
+      <!--
       <para>None</para>
+      -->
+      <para>无</para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
 
+      <!--
       <para>This deletes the locks on
         <filename>tree.jpg</filename> and
         <filename>house.jpg</filename> in the repository at
         <filename>/var/svn/repos</filename>:</para>
+      -->
+      <para>下面的例子把仓库 <filename>/var/svn/repos</filename> 的文件
+        <filename>tree.jpg</filename> 和 <filename>house.jpg</filename> 上
+        的锁删除:</para>
 
       <informalexample>
         <screen>
@@ -1677,7 +1867,10 @@ Removed lock on '/house.jpg.
 
     <refnamediv>
       <refname>svnadmin rmtxns</refname>
+      <!--
       <refpurpose>Delete transactions from a repository.</refpurpose>
+      -->
+      <refpurpose>从仓库中删除事务.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
