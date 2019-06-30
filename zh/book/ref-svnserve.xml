@@ -1,7 +1,10 @@
 <!-- -*- sgml -*- -->
 
 <reference id="svn.ref.svnserve">
+      <!--
   <title>svnserve Reference&mdash;Custom Subversion Server</title>
+      -->
+  <title>svnserve 参考手册&mdash;定制化的 Subversion 服务器</title>
 
   <!-- ================================================================= -->
   <!-- ================================================================= -->
@@ -14,8 +17,12 @@
 
     <refnamediv>
       <refname>svnserve</refname>
+      <!--
       <refpurpose>Serve Subversion repositories via Subversion's
         custom network protocol</refpurpose>
+      -->
+      <refpurpose>通过 Subversion 定制化的网络协议向仓库提供网络访问服务.
+      </refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -24,12 +31,20 @@
 
     <!-- =============================================================== -->
     <refsect1 id="svn.ref.svnserve.re.desc">
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para><command>svnserve</command> allows access to Subversion
         repositories using Subversion's custom network
         protocol.</para>
+      -->
+      <para><command>svnserve</command> 允许客户端使用 Subversion 定制化的
+        网络协议访问仓库.</para>
 
+      <!--
       <para>You can run <command>svnserve</command> as a standalone
         server process (for clients that are using the
         <literal>svn://</literal> access method); you can have a
@@ -38,8 +53,17 @@
         for <literal>svn://</literal>), or you can have
         <command>sshd</command> launch it on demand for the
         <literal>svn+ssh://</literal> access method.</para>
+      -->
+      <para><command>svnserve</command> 可以作为一个独立进程运行 (客户端
+        将使用 <literal>svn://</literal> 形式的 URL), 也可以在需要时通过
+        <command>inetd</command> 或 <command>xinetd</command> 调用
+        <command>svnserve</command> (此时客户端还是使用
+        <literal>svn://</literal>); 还可以需要时通过 <command>sshd</command>
+        调用 <command>svnserve</command> (此时客户端用的是
+        <literal>svn+ssh</literal> 形式的 URL).</para>
 
-      <para>Unless the <option>--config-file</option> option was specified on
+      <!--
+      <para>Unless the <option>- -config-file</option> option was specified on
         the command line, once the client has selected a repository by
         transmitting its URL, <command>svnserve</command> reads a file named
         <filename>conf/svnserve.conf</filename> in the repository
@@ -48,51 +72,79 @@
         policies to apply.  See
         <xref linkend="svn.serverconfig.svnserve"/> for details of the
         <filename>svnserve.conf</filename> file.</para>
+      -->
+      <para>除非添加了选项 <option>--config-file</option>, 否则的话一旦客户
+        端通过 URL 选择了一个仓库, <command>svnserve</command> 将从仓库目录
+        内的 <filename>conf/svnserve.conf</filename> 文件读取仓库的配置信息,
+        例如认证数据库文件的位置和授权策略. 关于
+        <filename>svnserve.conf</filename> 的详细信息, 见
+        <xref linkend="svn.serverconfig.svnserve"/>.</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1 id="svn.ref.svnserve.re.options">
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
     
+      <!--
       <para>Unlike the previous commands we've
         described, <command>svnserve</command> has no
         subcommands&mdash;it is controlled exclusively by
         options.</para>
+      -->
+      <para>和前面介绍的命令有所不同, <command>svnserve</command> 没有子命令
+        &mdash;只有选项.</para>
 
       <variablelist>
 
         <varlistentry id="svn.ref.svnserve.sw.cache_fulltexts">
           <term><option>--cache-fulltexts</option> <replaceable>ARG</replaceable></term>
           <listitem>
+      <!--
             <para>Toggles support for fulltext file content caching (in
               FSFS repositories only).</para>
+      -->
+            <para>开启或关闭文件内容的全文本缓存 (只支持以 FSFS 作为后端存储
+              的仓库).</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.cache_txdeltas">
           <term><option>--cache-txdeltas</option> <replaceable>ARG</replaceable></term>
           <listitem>
+      <!--
             <para>Toggles support for file content delta caching (in
               FSFS repositories only).</para>
+      -->
+            <para>开启或关闭文件内容的差异缓存 (只支持以 FSFS 作为后端存储
+              的仓库).</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.compression">
           <term><option>--compression</option> <replaceable>LEVEL</replaceable></term>
           <listitem>
+      <!--
             <para>Specifies the level of compression used for wire
               transmissions as an integer beween 0 and 9, inclusive.
               A value of <literal>9</literal> offers the best
               compression, <literal>5</literal> is the default value,
               and <literal>0</literal> disables compression
               altogether.</para>
+      -->
+            <para>指定网络传输时的压缩级别, 在 0 到 9 之间.
+              <literal>9</literal> 提供最大的压缩比, <literal>5</literal>
+              是默认值, <literal>0</literal> 将禁止压缩.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.config_file">
           <term><option>--config-file</option> <replaceable>FILENAME</replaceable></term>
           <listitem>
+      <!--
             <para>When specified, <command>svnserve</command> reads
               <replaceable>FILENAME</replaceable> once at program startup and
               caches the <command>svnserve</command> configuration.  The
@@ -102,77 +154,122 @@
               <filename>conf/svnserve.conf</filename> files when this option is
               used.  See the <xref linkend="svn.serverconfig.svnserve"/> for
               details of the file format for this option.</para>
+      -->
+            <para>如果添加了该选项, <command>svnserve</command> 将在启动时
+              读取一次 <filename>FILENAME</filename>, 并把配置信息缓存到内存
+              中. 来自文件的密码和授权配置在 <command>svnserve</command> 收到
+              一个新的连接时, 都会从文件中读取一次. 指定该选项后,
+              <command>svnserve</command> 将不会再去读取仓库目录内的
+              <filename>conf/svnserve.conf</filename>. 关于
+              <filename>FILENAME</filename> 的格式, 见 <xref
+                linkend="svn.serverconfig.svnserve"/>.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.daemon">
           <term><option>--daemon</option> (<option>-d</option>)</term>
           <listitem>
+      <!--
             <para>Causes <command>svnserve</command> to run in daemon
               mode.  <command>svnserve</command> backgrounds itself
               and accepts and serves TCP/IP connections on
               the <literal>svn</literal> port (3690, by
               default).</para>
+      -->
+            <para>使得 <command>svnserve</command> 以守护进程模式运行.
+              <command>svnserve</command> 把自己放到后台运行, 接受从端口
+              3690 (默认端口) 到来的 TCP/IP 连接请求.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.foreground">
           <term><option>--foreground</option></term>
           <listitem>
+      <!--
             <para>When used together with <option>-d</option>,
               causes <command>svnserve</command> to stay in the
               foreground.  This is mainly useful for debugging.</para>
+      -->
+            <para>和选项 <option>--daemon</option> (<option>-d</option>) 一起
+              使用时, <command>svnserve</command> 将保持在前台运行, 通常情况
+              下是为了调试.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.inetd">
           <term><option>--inetd</option> (<option>-i</option>)</term>
           <listitem>
+      <!--
             <para>Causes <command>svnserve</command> to use the
               <filename>stdin</filename> and <filename>stdout</filename> file descriptors, as is appropriate for a
               daemon running out of <command>inetd</command>.</para>
+      -->
+            <para>使用 <command>inetd</command> 模式, 在这种模式下
+              <command>svnserve</command> 将会被 <command>inetd</command>
+              调用运行.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.help">
           <term><option>--help</option> (<option>-h</option>)</term>
           <listitem>
+      <!--
             <para>Displays a usage summary and exits.</para>
+      -->
+            <para>输出帮助信息.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.listen_host">
           <term><option>--listen-host</option> <replaceable>HOST</replaceable></term>
           <listitem>
+      <!--
             <para>Causes <command>svnserve</command> to listen on the
               interface specified by <replaceable>HOST</replaceable>,
               which may be either a hostname or an IP address.</para>
+      -->
+            <para>使得 <command>svnserve</command> 只接受来自
+              主机 <replaceable>HOST</replaceable> 的请求,
+              <replaceable>HOST</replaceable> 可以是一个 IP 地址或主机名.
+            </para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.listen_once">
           <term><option>--listen-once</option> (<option>-X</option>)</term>
           <listitem>
+      <!--
             <para>Causes <command>svnserve</command> to accept one
               connection on the <literal>svn</literal> port, serve it,
               and exit.  This option is mainly useful for
               debugging.</para>
+      -->
+            <para>使得 <command>svnserve</command> 在服务完一次连接后就
+              退出, 这主要用于调试.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.listen_port">
           <term><option>--listen-port</option> <replaceable>PORT</replaceable></term>
           <listitem>
+      <!--
             <para>Causes <command>svnserve</command> to listen on
               <replaceable>PORT</replaceable> when run in daemon mode.
               (FreeBSD daemons listen only on tcp6 by default&mdash;this
               option tells them to also listen on tcp4.)</para>
+      -->
+            <para>当 <command>svnserve</command> 以守护进程模式运行时, 让它
+              监听端口 <replaceable>PORT</replaceable>. (如果是 FreeBSD 系统,
+              则 <command>svnserve</command> 默认只监听 tcp6 的端口, 加上该
+              选择后, <command>svnserve</command> 还会同时监听 tcp4 的端口)
+            </para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.log_file">
           <term><option>--log-file</option> <replaceable>FILENAME</replaceable></term>
           <listitem>
+      <!--
             <para>Instructs <command>svnserve</command> to create (if
               necessary) and use the file located
               at <replaceable>FILENAME</replaceable> for Subversion
@@ -180,106 +277,167 @@
               that <command>mod_dav_svn</command> generates.  See
               <xref linkend="svn.serverconfig.operational-logging" />
               for details.</para>
+      -->
+            <para>告诉 <command>svnserve</command> 在必要时创建文件
+              <replaceable>FILENAME</replaceable>, 并把 Subversion 的
+              操作性日志输出到此文件中, 这些日志和
+              <command>mod_dav_svn</command> 所生成的日志属于同一类型. 更
+              多的信息见 <xref
+                linkend="svn.serverconfig.operational-logging" />.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.memory_cache_size">
           <term><option>--memory-cache-size</option> (<option>-M</option>) <replaceable>ARG</replaceable></term>
           <listitem>
+      <!--
             <para>Configures the size (in Megabytes) of the extra
               in-memory cache used to minimize redundant operations.
               The default value is <literal>16</literal>.  (This cache
               is used for FSFS-backed repositories only.)</para>
+      -->
+            <para>配置额外的内存缓存大小 (以 MB 为单位), 这些缓存用于减少
+              冗余操作, 默认值是 <literal>16</literal> (该选项只适用于以
+              FSFS 作为后端存储的仓库).</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.pid_file">
           <term><option>--pid-file</option> <replaceable>FILENAME</replaceable></term>
           <listitem>
+      <!--
             <para>Causes <command>svnserve</command> to write its
               process ID to <replaceable>FILENAME</replaceable>, which
               must be writable by the user under
               which <command>svnserve</command> is running.</para>
+      -->
+            <para>告诉 <command>svnserve</command> 把进程 ID 写到文件
+              <replaceable>FILENAME</replaceable> 里, 进程
+              <command>svnserve</command> 的用户必须对文件具有写权限.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.prefer_ipv6">
           <term><option>--prefer-ipv6</option> (<option>-6</option>)</term>
           <listitem>
+      <!--
             <para>When resolving the listen hostname, prever an IPv6
               answer over an IPv4 one.  IPv4 is preferred by
               default.</para>
+      -->
+            <para>在解析监听的主机名时, 优先使用 IPv6, 默认情况下是优先使用
+              IPv4.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.quiet">
           <term><option>--quiet</option></term>
           <listitem>
+      <!--
             <para>Disables progress notifications.  Error output will
               still be printed.</para>
+      -->
+            <para>只输出与错误有关的信息.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.root">
           <term><option>--root</option> (<option>-r</option>) <replaceable>ROOT</replaceable></term>
           <listitem>
+      <!--
             <para>Sets the virtual root for repositories served by
               <command>svnserve</command>.  The pathname in URLs
               provided by the client will be interpreted relative to
               this root and will not be allowed to escape this
               root.</para>
+      -->
+            <para>为仓库设置一个虚拟根目录, 设置后, 由客户端在 URL 中指定的
+              路径将被解释成相对于根目录的路径, 并能不能超出根目录所限定的
+              文件系统范围.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.threads">
           <term><option>--threads</option> (<option>-T</option>)</term>
           <listitem>
+      <!--
             <para>When running in daemon mode, causes
               <command>svnserve</command> to spawn a thread instead of
               a process for each connection (e.g., for when running on
               Windows).  The <command>svnserve</command> process still
               backgrounds itself at startup time.</para>
+      -->
+            <para>以守护进程模式运行时, 告诉 <command>svnserve</command>
+              为每一个连接创建一个线程, 而不是创建一个进程. 但是
+              <command>svnserve</command> 进程本身仍然会在启动时把自己放
+              到后台运行.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.tunnel">
           <term><option>--tunnel</option> (<option>-t</option>)</term>
           <listitem>
+      <!--
             <para>Causes <command>svnserve</command> to run in tunnel
               mode, which is just like the <command>inetd</command>
               mode of operation (both modes serve one connection over
               <filename>stdin</filename>/<filename>stdout</filename>, and then exit), except that the connection
               is considered to be preauthenticated with the username
               of the current UID.  This flag is automatically passed
+              ### TODO
               for you by the client when running over a tunnel agent
               such as <command>ssh</command>.  That means there's
               rarely any need for <emphasis>you</emphasis> to pass
               this option to <command>svnserve</command>.  So, if you
               find yourself
-              typing <literal>svnserve --tunnel</literal> on the
+              typing <literal>svnserve - -tunnel</literal> on the
               command line and wondering what to do next, see
               <xref linkend="svn.serverconfig.svnserve.sshauth"/>.</para>
+      -->
+            <para>使得 <command>svnserve</command> 以隧道模式运行, 和
+              <command>inetd</command> 模式基本相同 (两种模式都是在
+              <filename>stdin</filename>/<filename>stdout</filename> 上为新
+              连接提供服务, 服务完成后退出), 唯一的不同点是在隧道模式下,
+              新连接会预先用当前 UID 的用户名进行认证. 如果
+              <command>svnserve</command> 运行在一个隧道代理 (例如
+              <command>ssh</command>) 之上, 那么客户端会自动添加该选项, 也
+              就是说用户几乎不用亲自为 <command>svnserve</command> 添加选项
+              <option>--tunnel</option> (<option>-t</option>). 如果你发现自己
+              自己在命令行输入了 <literal>svnserve --tunnel</literal>, 并且想
+              知道接下来该做什么, 见 <xref
+                linkend="svn.serverconfig.svnserve.sshauth"/>.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.tunnel_user">
           <term><option>--tunnel-user</option> <replaceable>NAME</replaceable></term>
           <listitem>
-            <para>Used in conjunction with the <option>--tunnel</option>
+      <!--
+            <para>Used in conjunction with the <option>- -tunnel</option>
               option, tells <command>svnserve</command> to assume that
               <replaceable>NAME</replaceable> is the authenticated
               user, rather than the UID of the <command>svnserve</command>
               process.  This is useful for users wishing to share a single
               system account over SSH, but to maintain separate commit
               identities.</para>
+      -->
+            <para>该选项和 <option>--tunnel</option> (<option>-t</option>)
+              一起使用, 告诉 <command>svnserve</command> 使用用户
+              <replaceable>NAME</replaceable> 作为认证用户, 而不是
+              <command>svnserve</command> 进程的用户. 如果管理员希望共享同一
+              SSH 系统账户, 而且单独管理提交用户的身份, 那么这个选项就会很
+              有用.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry id="svn.ref.svnserve.sw.version">
           <term><option>--version</option></term>
           <listitem>
+      <!--
             <para>Displays version information and a list of repository
             backend modules available, and then exits.</para>
+      -->
+          <para>显示版本信息, 以及支持的后端存储模块.</para>
           </listitem>
         </varlistentry>
 
