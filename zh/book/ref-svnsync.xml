@@ -1,64 +1,104 @@
 <!-- -*- sgml -*- -->
 
 <reference id="svn.ref.svnsync">
+      <!--
   <title>svnsync Reference&mdash;Subversion Repository Mirroring</title>
+      -->
+  <title>svnsync 参考手册&mdash;Subversion 仓库镜像工具</title>
     
   <partintro>
+      <!--
     <para><command>svnsync</command> is the Subversion remote
       repository mirroring tool.  Put simply, it allows you to replay
       the revisions of one repository into another one.</para>
+      -->
+    <para><command>svnsync</command> 是 Subversion 的远程仓库镜像工具, 简单
+      地说, 它允许你在仓库中重放另一个仓库的版本号.</para>
 
+      <!--
     <para>In any mirroring scenario, there are two repositories: the
+                                            ### TODO
       source repository, and the mirror (or <quote>sink</quote>)
       repository.  The source repository is the repository from which
       <command>svnsync</command> pulls revisions.  The mirror
       repository is the destination for the revisions pulled from the
       source repository.  Each of the repositories may be local or
       remote&mdash;they are only ever addressed by their URLs.</para>
+      -->
+    <para>在做镜像时, 总是存在两个仓库: 源仓库和镜像仓库.
+      <command>svnsync</command> 从源仓库获取版本号, 再到镜像仓库中重放版本
+      号. 任意一个仓库都可以是远程的或本地的&mdash;<command>svnsync</command>
+      只是通过 URL 对它们进行寻址.</para>
 
+      <!--
     <para>The <command>svnsync</command> process requires only read
       access to the source repository; it never attempts to modify it.
       But obviously, <command>svnsync</command> requires both read and
       write access to the mirror repository.</para>
+      -->
+    <para><command>svnsync</command> 只要求对源仓库具有读取权限, 它不会试图
+      去修改源仓库的任何数据. 当然, <command>svnsync</command> 要求对镜像
+      仓库具有读写权限.</para>
 
     <warning>
+      <!--
       <para><command>svnsync</command> is very sensitive to changes
         made in the mirror repository that weren't made as part of a
         mirroring operation.  To prevent this from happening, it's
         best if the <command>svnsync</command> process is the only
         process permitted to modify the mirror repository.</para>
+      -->
+      <para><command>svnsync</command> 对于不是由镜像操作产生的修改非常
+        敏感, 因此最好的做法是仅允许 <command>svnsync</command> 对镜像
+        仓库进行修改.</para>
     </warning>
 
+      <!--
     <para>Options in <command>svnsync</command> are global, just
       as they are in <command>svn</command> and
       <command>svnadmin</command>:</para>
+      -->
+    <para><command>svnsync</command> 的选项都是全局的:</para>
 
     <variablelist id="svn.ref.svnsync.sw">
+      <!--
       <title>svnsync Options</title>
+      -->
+      <title>svnsync 选项</title>
 
       <varlistentry id="svn.ref.svnsync.sw.allow_non_empty">
         <term><option>--allow-non-empty</option></term>
         <listitem>
+      <!--
           <para>Disables the verification (which <command>svnsync
             initialize</command> performs by default) that the
             repository being initialized is empty of history
             version.</para>
+      -->
+          <para>不去核实被初始化的仓库是否是一个版本历史为空的仓库
+            (默认情况下, <command>svnsync initialize</command> 会去核实).
+          </para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.config_dir">
         <term><option>--config-dir</option> <replaceable>DIR</replaceable></term>
         <listitem>
+      <!--
           <para>Instructs Subversion to read configuration
             information from the specified directory instead of the
             default location (<filename>.subversion</filename> in
             the user's home directory).</para>
+      -->
+          <para>告诉 Subversion 从指定的目录中读取配置信息, 而不是从默认目录
+            (用户家目录里的 <filename>.subversion</filename>) 中读取.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.config_option">
         <term><option>--config-option</option> <replaceable>CONFSPEC</replaceable></term>
         <listitem>
+      <!--
           <para>Sets, for the duration of the command, the value of
             a runtime configuration
             option.  <replaceable>CONFSPEC</replaceable> is a string
@@ -76,96 +116,147 @@
             you wish to assign to the option.  For example, to
             temporarily disable the use of the compression in the
             HTTP protocol,
-            use <option>--config-option=servers:global:http-compression=no</option>.
+            use <option>- -config-option=servers:global:http-compression=no</option>.
             You can use this option multiple times to change
             multiple option values simultaneously.</para>
+      -->
+          <para>在命令运行期间, 设置运行时配置选项的值.
+            <replaceable>CONFSPEC</replaceable> 是一个字符串, 指定了运行时
+            配置选项的名字空间, 选项名和选项值, 格式是
+            <replaceable>FILE</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALUE</replaceable>].
+            其中, <replaceable>FILE</replaceable> 和
+            <replaceable>SECTION</replaceable> 分别是运行时配置文件
+            (<filename>config</filename> 或 <filename>servers</filename>)
+            和节, 它们包含了用户希望修改的选项.
+            <replaceable>OPTION</replaceable> 是选项名,
+            <replaceable>VALUE</replaceable> 是选项值 (如果有的话). 例如,
+            为了临时禁止 HTTP 压缩, 可以写成
+            <option>--config-option=servers:global:http-compression=no</option>.
+            选项 <option>--config-option</option> 可以在命令行上出现多次,
+            从而同时修改多个选项.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.disable_locking">
         <term><option>--disable-locking</option></term>
         <listitem>
+      <!--
           <para>Causes <command>svnsync</command> to bypass its own
             exclusive access mechanisms and operate on the
             assumption that its exclusive access to the mirror
             repository is being guaranteed through some other,
             out-of-band mechanism.</para>
+      -->
+          <para>告诉 <command>svnsync</command> 不要使用自己的互斥访问机制,
+            而是假定镜像仓库的互斥访问已经通过其他带外机制实现了.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.no_auth_cache">
         <term><option>--no-auth-cache</option></term>
         <listitem>
+      <!--
           <para>Prevents caching of authentication information
             (e.g., username and password) in the Subversion
             runtime configuration directories.</para>
+      -->
+          <para>禁止在 Subversion 运行时配置目录中缓存认证信息
+            (例如用户名和密码).</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.non_interactive">
         <term><option>--non-interactive</option></term>
         <listitem>
+      <!--
           <para>In the case of an authentication failure or
             insufficient credentials, prevents prompting for
             credentials (e.g., username or password).  This is useful
             if you're running Subversion inside an automated
             script and it's more appropriate to have Subversion fail
             than to prompt for more information.</para>
+      -->
+          <para>如果认证失败, 或者证书不充分, 将不再提示输入证书 (例如
+            用户名和密码). 如果在一个自动化运行的脚本中使用 Subversion,
+            那么这个选项就会很有用, 当遇到错误时, 更好的做法是立刻失败退出,
+            而不是请求输入更多的数据.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.quiet">
         <term><option>--quiet</option> (<option>-q</option>)</term>
         <listitem>
+      <!--
           <para>Requests that the client print only essential
             information while performing an operation.</para>
+      -->
+          <para>只输出重要的信息.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.revision">
         <term><option>--revision</option> (<option>-r</option>) <replaceable>ARG</replaceable></term>
         <listitem>
+      <!--
           <para>Used by <command>svnsync copy-revprops</command> to
             specify a particular revision or revision range on which
             to operate.</para>
+      -->
+          <para>为 <command>svnsync copy-revprops</command> 指定版本号或
+            版本号范围.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.source_password">
         <term><option>--source-password</option> <replaceable>PASSWD</replaceable></term>
         <listitem>
+      <!--
           <para>Specifies the password for the Subversion server
             from which you are syncing.  If not provided, or if
             incorrect, Subversion will prompt you for this
             information as needed.</para>
+      -->
+          <para>指定源仓库的密码, 如果没有指定或者密码不正确, Subversion
+            在需要时会提示用户输入密码.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.source_prop_encoding ">
         <term><option>--source-prop-encoding <replaceable>ARG</replaceable></option></term>
         <listitem>
+      <!--
           <para>Instructs <command>svnsync</command> to assume that
             translatable Subversion revision properties found in the
             source repository are stored using the character
             encoding <replaceable>ARG</replaceable> and to transcode
             those into UTF-8 when copying them into the mirror
             repository.</para>
+      -->
+          <para>告诉 <command>svnsync</command> 在源仓库发现的版本号属性,
+            如果它是可翻译的, 则假定属性使用的字符编码是
+            <replaceable>ARG</replaceable>, 把这些属性复制到镜像仓库时,
+            把字符编码转换成 UTF-8.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.source_username">
         <term><option>--source-username</option> <replaceable>NAME</replaceable></term>
         <listitem>
+      <!--
           <para>Specifies the username for the Subversion server
             from which you are syncing.  If not provided, or if
             incorrect, Subversion will prompt you for this
             information as needed.</para>
+      -->
+          <para>指定源仓库的用户名, 如果没有指定或用户名不正确, Subversion
+            在需要时会提示用户输入用户名.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.steal_lock">
         <term><option>--steal-lock</option></term>
         <listitem>
+      <!--
           <para>Causes <command>svnsync</command> to steal, as
             necessary, the lock which it uses on the mirror
             repository to ensure exclusive repository access.  (This
@@ -174,34 +265,52 @@
             is, when you are certain that there are no
             other <command>svnsync</command> processes accessing
             that repository.)</para>
+      -->
+          <para>使得 <command>svnsync</command> 在必要时去窃取锁, 从而保证对
+            镜像仓库的互斥访问. (用户应该只在以下情况下才去使用该选项&mdash;
+            锁在镜像仓库中存在, 并且不再新鲜了, 即没有其他
+            <command>svnsync</command> 进程正在访问仓库.)</para>
         </listitem>
       </varlistentry>
       
       <varlistentry id="svn.ref.svnsync.sw.sync_password">
         <term><option>--sync-password</option> <replaceable>PASSWD</replaceable></term>
         <listitem>
+      <!--
           <para>Specifies the password for the Subversion server to
             which you are syncing.  If not provided, or if
             incorrect, Subversion will prompt you for this
             information as needed.</para>
+      -->
+          <para>指定镜像仓库的密码. 如果没有指定或者密码不正确, Subversion
+            在需要时会提示用户输入密码.</para>
         </listitem>
       </varlistentry>
       
       <varlistentry id="svn.ref.svnsync.sw.sync_username">
         <term><option>--sync-username</option> <replaceable>NAME</replaceable></term>
         <listitem>
+      <!--
           <para>Specifies the username for the Subversion server to
             which you are syncing.  If not provided, or if
             incorrect, Subversion will prompt you for this
             information as needed.</para>
+      -->
+          <para>指定镜像仓库的用户名, 如果没有指定或用户名不正确, Subversion
+            在需要时会提示用户输入用户名.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnsync.sw.trust_server_cert">
         <term><option>--trust-server-cert</option></term>
         <listitem>
-          <para>Used with <option>--non-interactive</option> to accept
+      <!--
+          <para>Used with <option>- -non-interactive</option> to accept
             any unknown SSL server certificates without prompting.</para>
+      -->
+          <para>和 <option>--non-interactive</option> 一起使用, 告诉
+            Subversion 接受任意一个未知的 SSL 服务器证书, 不要向用户提示.
+          </para>
         </listitem>
       </varlistentry>
 
