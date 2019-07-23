@@ -1,9 +1,13 @@
 <!-- -*- sgml -*- -->
 
 <reference id="svn.ref.svnrdump">
+      <!--
   <title>svnrdump Reference&mdash;Remote Subversion Repository Data Migration</title>
+      -->
+  <title>svnrdump 参考手册&mdash;Subversion 远程仓库数据迁移</title>
 
   <partintro>
+      <!--
     <para><command>svnrdump</command> joined the Subversion tool chain
       in the Subversion 1.7 release.  It is best described as a
       network-aware version of the <command>svnadmin dump</command>
@@ -13,27 +17,45 @@
       both <command>svnadmin</command>
       and <command>svnrdump</command>&mdash; in
       <xref linkend="svn.reposadmin.maint.migrate" />.</para>
+      -->
+    <para><command>svnrdump</command> 在 Subversion 1.7 引入, 它相当于
+      <command>svnadmin dump</command> 和 <command>svnadmin load</command>
+      的网络版, 作为一个单独的程序被发布出来. 我们在 <xref
+        linkend="svn.reposadmin.maint.migrate" /> 介绍了如何使用
+      <command>svnadmin</command> 和 <command>svnrdump</command> 转储和加载
+      仓库数据.</para>
 
+      <!--
     <para>Options in <command>svnrdump</command> are global, just
       as they are in <command>svn</command> and
       <command>svnadmin</command>:</para>
+      -->
+    <para><command>svnrdump</command> 的选项都是全局的:</para>
 
     <variablelist id="svn.ref.svnrdump.sw">
+      <!--
       <title>svnrdump Options</title>
+      -->
+      <title>svnrdump 选项</title>
 
       <varlistentry id="svn.ref.svnrdump.sw.config_dir">
         <term><option>--config-dir</option> <replaceable>DIR</replaceable></term>
         <listitem>
+      <!--
           <para>Instructs Subversion to read configuration
             information from the specified directory instead of the
             default location (<filename>.subversion</filename> in
             the user's home directory).</para>
+      -->
+          <para>告诉 Subversion 从指定的目录内读取配置信息, 而不是从默认的目录
+            (用户家目录中的 <filename>.subversion</filename>) 中读取.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.config_option">
         <term><option>--config-option</option> <replaceable>FILE</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALUE</replaceable>]</term>
         <listitem>
+      <!--
           <para>Sets, for the duration of the command, the value of
             a runtime configuration
             option.  <replaceable>FILE</replaceable>
@@ -47,85 +69,133 @@
             you wish to assign to the option.  For example, to
             temporarily disable the use of the compression in the HTTP
             protocol,
-            use <option>--config-option=servers:global:http-compression=no</option>.
+            use <option>- -config-option=servers:global:http-compression=no</option>.
             You can use this option multiple times to change
             multiple option values simultaneously.</para>
+      -->
+          <para>在命令运行期间, 设置运行时配置选项的值.
+            <replaceable>CONFSPEC</replaceable> 是一个字符串, 指定了运行时
+            配置选项的名字空间, 选项名和选项值, 格式是
+            <replaceable>FILE</replaceable>:<replaceable>SECTION</replaceable>:<replaceable>OPTION</replaceable>=[<replaceable>VALUE</replaceable>].
+            其中, <replaceable>FILE</replaceable> 和
+            <replaceable>SECTION</replaceable> 分别是运行时配置文件
+            (<filename>config</filename> 或 <filename>servers</filename>)
+            和节, 它们包含了用户希望修改的选项.
+            <replaceable>OPTION</replaceable> 是选项名,
+            <replaceable>VALUE</replaceable> 是选项值 (如果有的话). 例如,
+            为了临时禁止 HTTP 压缩, 可以写成
+            <option>--config-option=servers:global:http-compression=no</option>.
+            选项 <option>--config-option</option> 可以在命令行上出现多次,
+            从而同时修改多个选项.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.incremental">
         <term><option>--incremental</option></term>
         <listitem>
+      <!--
+           ### TODO
           <para>Dump a revision or revision range only as a diff
             against the previous revision, instead of the default,
             which is begin a dumped revision range with a complete
             expansion of all contents of the repository as of that
             revision.</para>
+      -->
+          <para>按照增量格式转储版本号.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.no_auth_cache">
         <term><option>--no-auth-cache</option></term>
         <listitem>
+      <!--
           <para>Prevents caching of authentication information
             (e.g., username and password) in the Subversion
             runtime configuration directories.</para>
+      -->
+          <para>禁止在 Subversion 运行时配置目录中缓存认证信息
+            (例如用户名和密码).</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.non_interactive">
         <term><option>--non-interactive</option></term>
         <listitem>
+      <!--
           <para>In the case of an authentication failure or
             insufficient credentials, prevents prompting for
             credentials (e.g., username or password).  This is useful
             if you're running Subversion inside an automated
             script and it's more appropriate to have Subversion fail
             than to prompt for more information.</para>
+      -->
+          <para>如果认证失败, 或者证书不充分, 将不再提示输入证书 (例如
+            用户名和密码). 如果在一个自动化运行的脚本中使用 Subversion,
+            那么这个选项就会很有用, 当遇到错误时, 更好的做法是立刻失败退出,
+            而不是请求输入更多的数据.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.password">
         <term><option>--password</option> <replaceable>PASSWD</replaceable></term>
         <listitem>
+      <!--
           <para>Specifies the password to use when authenticating
             against a Subversion server.  If not provided, or if
             incorrect, Subversion will prompt you for this
             information as needed.</para>
+      -->
+          <para>指定 Subversion 用户密码, 如果没有指定密码, 或者密码不正确,
+            在必要时 Subversion 将会提示用户再次输入密码.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.quiet">
         <term><option>--quiet</option> (<option>-q</option>)</term>
         <listitem>
+      <!--
           <para>Requests that the client print only essential
             information while performing an operation.</para>
+      -->
+          <para>在执行过程中, 只打印重要的信息.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.revision">
         <term><option>--revision</option> (<option>-r</option>) <replaceable>ARG</replaceable></term>
         <listitem>
+      <!--
           <para>Specifies a particular revision or revision range on
             which to operate.</para>
+      -->
+          <para>指定待操作的版本号或版本号范围.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.trust_server_cert">
         <term><option>--trust-server-cert</option></term>
         <listitem>
-          <para>Used with <option>--non-interactive</option> to accept
+      <!--
+          <para>Used with <option>- -non-interactive</option> to accept
             any unknown SSL server certificates without prompting.</para>
+      -->
+          <para>和 <option>--non-interactive</option> 一起使用, 告诉
+            Subversion 接受任意一个未知的 SSL 服务器证书, 不要向用户提示.
+          </para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svnrdump.sw.username">
         <term><option>--username</option> <replaceable>NAME</replaceable></term>
         <listitem>
+      <!--
           <para>Specifies the username to use when authenticating
             against a Subversion server.  If not provided, or if
             incorrect, Subversion will prompt you for this
             information as needed.</para>
+      -->
+          <para>指定 Subversion 用户名, 如果没有指定或用户名不正确, Subversion
+            在必要时会提示用户重新输入.</para>
         </listitem>
       </varlistentry>
 
@@ -155,22 +225,34 @@
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>Dump&mdash;that is, generate a repository dump stream
         of&mdash;revisions of the repository item located
         at <replaceable>SOURCE_URL</replaceable>, printing the
         information to standard output.  By default, the entire
         history will be included in the dump stream, but the scope
         of the operation can be limited via the use of
-        the <option>--revision</option> (<option>-r</option>)
+        the <option>- -revision</option> (<option>-r</option>)
         option.</para>
+      -->
+      <para>把位于 <replaceable>SOURCE_URL</replaceable> 的仓库的版本号
+        转储到标准输出中. 除非用选项 <option>--revision</option>
+        (<option>-r</option>) 指定了待转储的版本号或版本号范围, 否则的话,
+        <command>svnrdump dump</command> 将转储全部的版本号.</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
 
       <informalexample>
         <screen>
@@ -190,11 +272,18 @@
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
 
+      <!--
       <para>Generate a dump stream of the full history of a remote
         repository (assuming that the user as who this runs has
         authorization to read all paths in the repository).</para>
+      -->
+      <para>下面的例子展示了如何转储一个远程仓库的全部历史 (假设执行该
+        命令的用户对仓库的全部路径都具有读取权限).</para>
 
       <informalexample>
         <screen>
@@ -206,8 +295,11 @@ $ svnrdump dump http://svn.example.com/repos/calc &gt; full.dump
 </screen>
       </informalexample>
 
+      <!--
       <para>Incrementally dump a single revision from that same
         repository:</para>
+      -->
+      <para>仍然是同一个仓库, 但这次是增量地转储一个单独的版本号:</para>
 
       <informalexample>
         <screen>
@@ -234,7 +326,7 @@ $
 
     <refnamediv>
       <refname>svnrdump help</refname>
-      <refpurpose>Help!</refpurpose>
+      <refpurpose>帮助!</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -243,19 +335,30 @@ $
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>Use this to get help.  Well, certain kinds of help.
         Need white lab coat and straightjackets kind of help?
         There's a whole different protocol for that sort of
         thing.</para>
+      -->
+      <para>如果既无法上网, 手上也没有这本书, 那你就只能依靠这个子命令来学习
+        如何使用 <command>svnrdump</command>.</para>
         
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
       <para>None</para>
+      -->
+      <title>选项</title>
+      <para>无</para>
     </refsect1>
 
   </refentry>
@@ -282,18 +385,28 @@ $
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>Read from standard input revision information
         described in a Subversion repository dump stream, and load
         that information into the repository located
         at <replaceable>DEST_URL</replaceable>.</para>
+      -->
+      <para>从标准输入读取转储流, 并加载到位于
+        <replaceable>DEST_URL</replaceable> 的仓库中.</para>
 
     </refsect1>
     
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
 
       <informalexample>
         <screen>
@@ -311,12 +424,19 @@ $
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
 
+      <!--
       <para>Dump the contents of a local repository, and
         use <command>svnrdump load</command> to transfer that
         revision information into an existing remote
         repository:</para>
+      -->
+      <para>在转储一个本地仓库的同时, 用 <command>svnrdump load</command>
+        把转储流加载到一个远程仓库中:</para>
 
       <informalexample>
         <screen>
@@ -330,12 +450,18 @@ $ svnadmin dump -q /var/svn/repos/new-project | \
       </informalexample>
 
       <note>
+      <!--
         <para>To operate properly <command>svnrdump load</command>
           requires that the target repository have revision
           property modification enabled via the pre-revprop-change
           hook.  For details about that hook, see
           <xref linkend="svn.ref.reposhooks.pre-revprop-change"
           />.</para>
+      -->
+      <para>为了保证 <command>svnrdump load</command> 能正常运行, 要求
+        目标仓库允许修改版本号属性, 这要通过钩子脚本 pre-revprop-change
+        加以实现, 关于钩子脚本 pre-revprop-change 的更多信息, 见
+        <xref linkend="svn.ref.reposhooks.pre-revprop-change" />.</para>
       </note>
 
     </refsect1>
