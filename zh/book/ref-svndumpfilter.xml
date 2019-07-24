@@ -1,74 +1,111 @@
 <!-- -*- sgml -*- -->
 
 <reference id="svn.ref.svndumpfilter">
+      <!--
   <title>svndumpfilter Reference&mdash;Subversion History Filtering</title>
+      -->
+  <title>svndumpfilter 参考手册&mdash;Subversion 历史过滤工具</title>
   
   <partintro>
     
+      <!--
     <para><command>svndumpfilter</command> is a command-line utility
       for removing history from a Subversion dump file by either
       excluding or including paths beginning with one or more named
       prefixes.  For details, see
       <xref linkend="svn.reposadmin.maint.tk.svndumpfilter"/>.</para>
+      -->
+    <para><command>svndumpfilter</command> 是一个命令行工具, 用于从 Subversion
+      的转储文件中移除某些历史 (即版本号), 方法是排除或包含具有给定前缀的路径,
+      关于 <command>svndumpfilter</command> 的更多信息, 见
+      <xref linkend="svn.reposadmin.maint.tk.svndumpfilter"/>.</para>
 
+      <!--
     <para>Options in <command>svndumpfilter</command> are global, just
       as they are in <command>svn</command> and
       <command>svnadmin</command>:</para>
+      -->
+    <para><command>svndumpfilter</command> 的选项都是全局的:</para>
 
     <variablelist id="svn.ref.svndumpfilter.sw">
+      <!--
       <title>svndumpfilter Options</title>
+      -->
+      <title>svndumpfilter 选项</title>
 
       <varlistentry id="svn.ref.svndumpfilter.sw.drop_empty_revs">
         <term><option>--drop-empty-revs</option></term>
         <listitem>
+      <!--
           <para>If the current filtering invocation causes any revision to be
             empty (i.e., the revision causes no change to the repository),
             removes these revisions from the final dump file.
           </para>
+      -->
+          <para>如果当前的 <command>svndumpfilter</command> 调用导致某个
+            版本号为空 (即版本号不会对仓库产生修改), 则从最终的转储文件中
+            删除该版本号.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svndumpfilter.sw.drop_all_empty_revs">
         <term><option>--drop-all-empty-revs</option></term>
         <listitem>
+      <!--
           <para>Removes all empty revisions found in the dumpstream from the
             final dump file (except revision 0).</para>
+      -->
+          <para>从最终的转储文件中删除所有的空版本号 (除了版本号 0).</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svndumpfilter.sw.pattern">
         <term><option>--pattern</option></term>
         <listitem>
+      <!--
           <para>Treat the path prefixes provided to the filtering
+                          ### TODO
             commands as file glob patterns rather than explicit path
             substrings.</para>
+      -->
+          <para>把命令行上所指定的路径前缀看成是文件名通配符模式, 而不是显式的
+            路径子字符串.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svndumpfilter.sw.renumber_revs">
         <term><option>--renumber-revs</option></term>
         <listitem>
+      <!--
           <para>Renumbers revisions that remain after
             filtering.</para>
+      -->
+          <para>对过滤后的版本号进行重新编号.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svndumpfilter.sw.skip_missing_merge_sources">
         <term><option>--skip-missing-merge-sources</option></term>
         <listitem>
+      <!--
           <para>Skips merge sources that have been removed as part of
             the filtering.  Without this
             option, <command>svndumpfilter</command> will exit with
             an error if the merge source for a retained path is
             removed by filtering.</para>
+      -->
+          <para>忽略由于过滤而被删除的合并源. 如果没有加上这个选项, 并且保留
+            下来的路径的合并源由于过滤被删除了, 那么
+            <command>svndumpfilter</command> 就会报错退出.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svndumpfilter.sw.preserve_revprops">
         <term><option>--preserve-revprops</option></term>
         <listitem>
+      <!--
           <para>If all nodes in a revision are removed by filtering
-            and <option>--drop-empty-revs</option> is not passed,
+            and <option>- -drop-empty-revs</option> is not passed,
             the default behavior of <command>svndumpfilter</command>
             is to remove all revision properties except for the date
             and the log message (which will merely indicate that the
@@ -76,12 +113,22 @@
             existing revision properties (which may or may not make
             sense since the related content is no longer present in
             the dump file).</para>
+      -->
+          <para>如果版本号内的所有路径都由于过滤而被删除了, 并且没有指定
+            选项 <option>--drop-empty-revs</option>, 则
+            <command>svndumpfilter</command> 的默认行为是删除除了日期和日志
+            消息外的所有版本号属性 (仅仅是为了表明该版本号是空的). 添加
+            选项 <option>--preserve-revprops</option> 后,
+            <command>svndumpfilter</command> 将会保留所有已存在的版本号属性
+            (由于与版本号相关的路径已经从转储文件中删除了, 所以这样做可能没
+            什么意义).</para>
         </listitem>
       </varlistentry>
 
       <varlistentry id="svn.ref.svndumpfilter.sw.targets">
         <term><option>--targets</option> <replaceable>FILENAME</replaceable></term>
         <listitem>
+      <!--
           <para>Instructs <command>svndumpfilter</command> to read
             additional path prefixes&mdash;one per line&mdash;from
             the file located at <replaceable>FILENAME</replaceable>.
@@ -89,13 +136,21 @@
             operations which require more prefixes than the
             operating system allows to be specified on a single
             command line.</para>
+      -->
+          <para>告诉 <command>svndumpfilter</command> 从文件
+            <replaceable>FILENAME</replaceable> 内读取额外的路径前缀&mdash;
+            每行一个. 如果过滤操作非常复杂, 复杂到难以在命令行上直接写出
+            全部的路径前缀, 那么这个选项将会非常有用.</para>
         </listitem>
       </varlistentry>
       
       <varlistentry id="svn.ref.svndumpfilter.sw.quiet">
         <term><option>--quiet</option></term>
         <listitem>
+      <!--
           <para>Does not display filtering statistics.</para>
+      -->
+          <para>不要打印与过滤有关的统计信息.</para>
         </listitem>
       </varlistentry>
 
@@ -116,7 +171,10 @@
 
     <refnamediv>
       <refname>svndumpfilter exclude</refname>
+      <!--
       <refpurpose>Filter out nodes with given prefixes from the dump stream.</refpurpose>
+      -->
+      <refpurpose>从转储流中删除含有指定前缀的路径.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -125,16 +183,26 @@
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>This can be used to exclude nodes that begin with one or
         more <replaceable>PATH_PREFIX</replaceable>es from a
         filtered dump file.</para>
+      -->
+      <para>从转储流中删除以 <replaceable>PATH_PREFIX</replaceable> 开始的
+        路径. 可以指定多个 <replaceable>PATH_PREFIX</replaceable>.</para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
 
       <informalexample>
         <screen>
@@ -152,13 +220,21 @@
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
 
+      <!--
       <para>If we have a dump file from a repository with a number
         of different picnic-related directories in it, but we want
         to keep everything <emphasis>except</emphasis>
         the <filename>sandwiches</filename> part of the
         repository, we'll exclude only that path:</para>
+      -->
+      <para>假设我们有了一个仓库的转储文件, 里面包含了与野餐有关的各种目录,
+        但是人们不喜欢吃三明治 (sandwiches), 因此我们打算删除以
+        <filename>sandwiches</filename> 开始的路径:</para>
 
       <informalexample>
         <screen>
@@ -178,6 +254,7 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>Beginning in Subversion 1.7,
         <command>svndumpfilter</command> can optionally treat
         the <replaceable>PATH_PREFIX</replaceable>s not merely as
@@ -185,6 +262,11 @@ $
         for example, if you wished to filter out paths which ended
         with <filename>.OLD</filename>, you would do the
         following:</para>
+      -->
+      <para>从 Subversion 1.7 开始, <command>svndumpfilter</command>
+        不仅可以把 <replaceable>PATH_PREFIX</replaceable> 看成显式的子字符串,
+        还能看成是文件通配符模式. 例如, 如果用户想排除所有以
+        <filename>.OLD</filename> 结尾的路径, 则可以写成:</para>
 
       <informalexample>
         <screen>
@@ -222,8 +304,11 @@ $
 
     <refnamediv>
       <refname>svndumpfilter include</refname>
+      <!--
       <refpurpose>Filter out nodes without given prefixes from
         dump stream.</refpurpose>
+      -->
+      <refpurpose>从转储流中删除不含有指定前缀的路径.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -234,14 +319,22 @@ $
     <refsect1>
       <title>Description</title>
 
+      <!--
       <para>Can be used to include nodes that begin with one or
         more <replaceable>PATH_PREFIX</replaceable>es in a
         filtered dump file (thus excluding all other paths).</para>
+      -->
+      <para>可以用于选出那些以 <replaceable>PATH_PREFIX</replaceable> 开始的
+        路径 (从而排除掉其他路径), 可以指定多个
+        <replaceable>PATH_PREFIX</replaceable>.</para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
+      -->
+      <title>选项</title>
 
       <informalexample>
         <screen>
@@ -259,12 +352,19 @@ $
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Example</title>
+      -->
+      <title>示例</title>
 
+      <!--
       <para>If we have a dump file from a repository with a number of
         different picnic-related directories in it, but want to
         keep only the <filename>sandwiches</filename> part of the
         repository, we'll include only that path:</para>
+      -->
+      <para>假设我们有了一个仓库的转储文件, 里面包含了与野餐有关的各种目录,
+        但是我们只想留下三明治 (sandwiches):</para>
 
       <informalexample>
         <screen>
@@ -295,6 +395,7 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>Beginning in Subversion 1.7,
         <command>svndumpfilter</command> can optionally treat
         the <replaceable>PATH_PREFIX</replaceable>s not merely as
@@ -302,6 +403,11 @@ $
         for example, if you wished to include only paths which ended
         with <filename>ks</filename>, you would do the
         following:</para>
+      -->
+      <para>从 Subversion 1.7 开始, <command>svndumpfilter</command>
+        不仅可以把 <replaceable>PATH_PREFIX</replaceable> 看成显式的子字符串,
+        还能看成是文件通配符模式. 例如, 如果用户想留下所有以
+        <filename>ks</filename> 结尾的路径, 则可以写成:</para>
 
       <informalexample>
         <screen>
@@ -347,7 +453,10 @@ $
 
     <refnamediv>
       <refname>svndumpfilter help</refname>
+      <!--
       <refpurpose>Help!</refpurpose>
+      -->
+      <refpurpose>帮助!</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -356,19 +465,30 @@ $
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>Displays the help message
         for <command>svndumpfilter</command>.  Unlike other help
         commands documented in this chapter, there is no witty
         commentary for this help command.  The authors of this
         book deeply regret the omission.</para>
+      -->
+      <para>如果既无法上网, 手上也没有这本书, 那你就只能依靠这个子命令来学习
+        如何使用 <command>svndumpfilter</command>.</para>
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Options</title>
       <para>None</para>
+      -->
+      <title>选项</title>
+      <para>无</para>
     </refsect1>
 
   </refentry>
