@@ -83,7 +83,7 @@
         revision.</para>
       -->
       <para>利用 <command>svnmucc</command>, 用户可以在没有工作副本的情况下向
-        仓库提交修改. 它允许用户基于 URL, 直接操作仓库. 每一次调用
+        仓库提交修改. 它允许用户基于 URL 直接操作仓库. 每一次调用
         <command>svnmucc</command> 都可以执行一个或多个
         <replaceable>ACTION</replaceable>, 并且操作产生的所有修改都是在同一个
         版本号中完成提交.</para>
@@ -187,8 +187,8 @@
               位于 <replaceable>URL</replaceable> 的已经存在的文件, 命令把
               本地文件 <replaceable>SRC-FILE</replaceable> 的内容复制到新
               文件或已有的文件上. 如果 <replaceable>SRC-FILE</replaceable>
-              是 <literal>-</literal>, <command>svnmucc</command> 将从标准
-              输入中读取文件内容.</para>
+              是单连字符 <literal>-</literal>, <command>svnmucc</command>
+              将从标准输入中读取文件内容.</para>
           </listitem>
         </varlistentry>
 
@@ -336,8 +336,8 @@
       -->
             <para>从文件 <replaceable>ARGFILE</replaceable> 读取额外的命令行
               参数, 每行一个. 如果 <replaceable>ARGFILE</replaceable> 是
-              <literal>-</literal>, <command>svnmucc</command> 将从标准输入
-              中读取额外的命令行参数.</para>
+              单连字符 <literal>-</literal>, <command>svnmucc</command>
+              将从标准输入中读取额外的命令行参数.</para>
           </listitem>
         </varlistentry>
 
@@ -405,6 +405,7 @@
           <term><option>--revision</option> (<option>-r</option>)
             <replaceable>REV</replaceable></term>
           <listitem>
+      <!--
             <para>Use revision <replaceable>REV</replaceable> as the
               baseline revision for all changes made via
               the <command>svnmucc</command> actions.  This is an
@@ -412,6 +413,12 @@
               whenever modifying existing versioned items to avoid
               inadvertently undoing contemporary changes made by
               fellow team members.</para>
+      -->
+            <para>把版本号 <replaceable>REV</replaceable> 作为
+              <command>svnmucc</command> 操作所导致的所有修改的基础版本号.
+              如果用户需要使用 <command>svnmucc</command> 修改已存在的版本
+              化数据, 那么你应该习惯性地使用该选项, 从而避免在无意间撤消
+              其他同事几乎在同一时间提交的修改.</para>
           </listitem>
         </varlistentry>
 
@@ -419,13 +426,23 @@
           <term><option>--root-url</option> (<option>-U</option>)
             <replaceable>ROOT-URL</replaceable></term>
           <listitem>
+      <!--
             <para>Use <replaceable>ROOT-URL</replaceable> as a base
               URL to which all other URL targets are relative.  This
               URL need not be the repository's root URL (such
               as might be reported by <command>svn info</command>).
+              ### TODO
               It can be any URL common to the various targets which
               are specified in the <command>svnmucc</command>
               actions.</para>
+      -->
+            <para>把 <replaceable>ROOT-URL</replaceable> 作为其他 URL 目标
+              的基础 URL, 其他 URL 目标将被看作是相对于
+              <replaceable>ROOT-URL</replaceable> 的路径.
+              <replaceable>ROOT-URL</replaceable> 并不一定就是仓库的根 URL
+              (例如由 <command>svn info</command> 输出的仓库根 URL), 它可以
+              是任意的 URL, 只要它是 <command>svnmucc</command> 命令行上所
+              指定的 URL 目标的公共部分即可.</para>
           </listitem>
         </varlistentry>
 
@@ -433,10 +450,14 @@
           <term><option>--password</option> (<option>-p</option>)
             <replaceable>PASSWD</replaceable></term>
           <listitem>
+      <!--
             <para>Use <replaceable>PASSWD</replaceable> as the
               password when authenticating against a Subversion
               server.  If not provided, or if incorrect, Subversion
               will prompt you for this information as needed.</para>
+      -->
+          <para>指定 Subversion 用户密码, 如果没有指定密码, 或者密码不正确,
+            在必要时 Subversion 将会提示用户再次输入密码.</para>
           </listitem>
         </varlistentry>
 
@@ -444,18 +465,25 @@
           <term><option>--username</option>
             <replaceable>NAME</replaceable></term>
           <listitem>
+      <!--
             <para>Use <replaceable>USERNAME</replaceable> as the
               username when authenticating against a Subversion
               server.  If not provided, or if incorrect, Subversion
               will prompt you for this information as needed.</para>
+      -->
+          <para>指定 Subversion 用户名, 如果没有指定或用户名不正确, Subversion
+            在必要时会提示用户重新输入.</para>
           </listitem>
         </varlistentry>
       
         <varlistentry>
           <term><option>--version</option></term>
           <listitem>
+      <!--
             <para>Display the program's version information and
               exit.</para>
+      -->
+            <para>输出程序的版本信息, 然后退出.</para>
           </listitem>
         </varlistentry>
 
@@ -463,10 +491,14 @@
           <term><option>--with-revprop</option>
             <replaceable>NAME</replaceable>=<replaceable>VALUE</replaceable></term>
           <listitem>
+      <!--
             <para>Set the value of the revision property
               <replaceable>NAME</replaceable> to
               <replaceable>VALUE</replaceable> on the committed
               revision.</para>
+      -->
+            <para>把版本号属性 <replaceable>NAME</replaceable> 的值设置成
+              <replaceable>VALUE</replaceable>.</para>
           </listitem>
         </varlistentry>
 
@@ -475,12 +507,20 @@
 
     <!-- =============================================================== -->
     <refsect1 id="svn.ref.svnmucc.re.examples">
+      <!--
       <title>Examples</title>
+      -->
+      <title>示例</title>
 
+      <!--
       <para>To (safely) modify a file's contents without using a
         working copy, use <command>svn cat</command> to fetch the
         current contents of the file, and <command>svnmucc
         put</command> to commit the edited contents thereof.</para>
+      -->
+    <para>为了在没有工作副本的情况下安全地修改文件, 我们可以这样做: 先用
+      <command>svn cat</command> 把文件的当前内容下载到本地, 然后再用
+      <command>svnmucc put</command> 把更新后的文件提交到仓库中.</para>
 
       <informalexample>
         <screen>
@@ -501,11 +541,16 @@ $ rm /tmp/README.tmpfile
 </screen>
       </informalexample>
 
+      <!--
       <para>Apply a similar approach to change a file or directory
         property.  Simply use <command>svn propget</command>
         and <command>svnmucc propsetf</command> instead
         of <command>svn cat</command> and <command>svnmucc
         put</command>, respectively.</para>
+      -->
+    <para>使用类似的思路修改文件或目录的属性, 只不过这次要把命令换成
+      <command>svn propget</command> 和 <command>svnmucc propsetf</command>.
+    </para>
 
       <informalexample>
         <screen>
@@ -526,13 +571,21 @@ $ rm /tmp/prop.tmpfile
 </screen>
       </informalexample>
 
+      <!--
       <para>Let's look now at some multi-operation examples.</para>
+      -->
+      <para>下面再看看如何在一次调用中完成多个操作.</para>
 
+      <!--
       <para>To implement a <quote>moving tag</quote>, where a single
         tag name is recycled to point to different snapshots (for
         example, the current latest stable version) of a codebase,
         use <command>svnmucc rm</command> and <command>svnmucc
         cp</command>:</para>
+      -->
+    <para>为了实现 <quote>移动标签</quote> (重复使用同一个标签名, 指向
+      代码的不同版本, 例如总是指向当前最新的稳定版), 可以使用
+      <command>svnmucc rm</command> 和 <command>svnmucc cp</command>:</para>
 
       <informalexample>
         <screen>
@@ -545,17 +598,27 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>In the previous example, we slyly introduced the use of
-        the <option>--root-url (-U)</option> option.  Use this
+        the <option>- -root-url (-U)</option> option.  Use this
         option to specify a base URL to which all other operand URLs
         are treated as relative (and save yourself some
         typing).</para>
+      -->
+      <para>在上面的例子里, 我们通过使用选项 <option>--root-url</option>
+        (<option>-U</option>) 指定了一个基础 URL, 其他参数中的 URL 将被当
+        成相对 URL, 从而减少打字工作.</para>
 
+      <!--
       <para>The following shows an example of using
         <command>svnmucc</command> to, in a single revision, create
         a new tag of your project which includes a newly created
         descriptive file and which lacks a directory which shouldn't
         be included in, say, a release tarball.</para>
+      -->
+      <para>下面的例子展示了如何使用 <command>svnmucc</command> 创建一个新
+        标签, 这个标签删除了在发布版中不需要的一个目录, 同时还添加了一个
+        用于描述发布版的文件:</para>
 
       <informalexample>
         <screen>
@@ -580,14 +643,22 @@ $
 </screen>
       </informalexample>
 
+      <!--
       <para>The previous example demonstrates not only how to do
         several different things in a single <command>svnmucc</command>
         invocation, but also the use of standard input as the source
-        of new file contents.  Note the presence of <literal>--</literal>
+        of new file contents.  Note the presence of <literal>- -</literal>
         to indicate that no more options follow on the command line.
         This is required so that the bare <literal>-</literal> used
         in the <command>svnmucc put</command> action won't be
         flagged as a malformed option indicator.</para>
+      -->
+      <para>上面的例子不仅展示了如何在 <command>svnmucc</command> 的一次调用
+        中完成多种不同的操作, 还展示了如何从标准输入读取文件的内容. 注意我
+        们还在命令行中使用了双连字符 <literal>--</literal>, 用于告诉
+        <command>svnmucc</command> 在 <literal>--</literal> 的右边已经没有
+        更多的选项了, 从而避免右边的单连字符 <literal>-</literal> 被
+        <command>svnmucc</command> 当成选项开始的标志.</para>
 
     </refsect1>
 
