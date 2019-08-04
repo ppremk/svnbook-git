@@ -1,17 +1,27 @@
 <!-- -*- sgml -*- -->
 
 <reference id="svn.ref.reposhooks">
+      <!--
   <title>Subversion Repository Hook Reference</title>
+      -->
+  <title>Subversion 仓库钩子参考手册</title>
 
   <partintro>
 
+      <!--
     <para>Subversion repositories provide a number of event hooks
       which are essentially opportunities for administrators to extend
       Subversion's functionality at key moments of key operations.
       Repository hooks are implemented as programs executed by
       Subversion itself at those key moments&mdash;before and after a
       commit, before and after a user locks a file, and so on.</para>
+      -->
+    <para>Subversion 仓库提供了很多事件钩子, 利用这些钩子, 管理员可以在
+      特定操作的特定时间点扩展 Subversion 的功能. 仓库钩子被实现成由
+      Subversion 在特定时间点执行的程序, 这些时间点包括在提交之前或之后,
+      用户锁定文件之前或之后, 等等.</para>
     
+      <!--
     <para>For each hook it provides, Subversion will attempt to
       execute the program of that hook's name which is found in
       the <filename>hooks/</filename> subdirectory of the repository's
@@ -24,11 +34,25 @@
       named <filename>START-COMMIT.EXE</filename>
       or <filename>START-COMMIT.BAT</filename> instead of
       simply <filename>start-commit</filename>.</para>
+      -->
+    <para>对于每一种钩子, Subversion 都会尝试去执行以钩子命名的程序, 这些
+      程序文件位于仓库目录的 <filename>hooks/</filename> 子目录内. 例如, 在
+      一个 Unix 系统中, 钩子 start-commit 对应的程序文件是
+      <filename><replaceable>REPOS_PATH</replaceable>/hooks/start-commit</filename>
+      这可以是一个二进制可执行程序, shell 脚本 或 Python 脚本等. 在 Windows
+      系统中, 钩子 start-commit 对应的程序文件仍然在相同的目录内, 但文件的名
+      字变成了 <filename>START-COMMIT.EXE</filename> 或
+      <filename>START-COMMIT.BAT</filename>, 而不是 Unix 中的
+      <filename>start-commit</filename>.</para>
 
+      <!--
     <para>This reference guide describes the various hooks which
       Subversion offers to administrators, detailing when the hook is
       invoked, its input parameters, and how its behavior affects the
       Subversion workflow.</para>
+      -->
+    <para>本章介绍 Subversion 提供的各种钩子, 包括这些钩子何时被调用, 钩子
+      的输入参数, 以及钩子的行为将会如何影响 Subversion 的工作流.</para>
 
   </partintro>
 
@@ -44,7 +68,10 @@
 
     <refnamediv>
       <refname>start-commit</refname>
+      <!--
       <refpurpose>Notification of the beginning of a commit.</refpurpose>
+      -->
+      <refpurpose>开始一个新提交的通知.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -57,8 +84,12 @@
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
       
+      <!--
       <para>The start-commit hook is run immediately after the
         commit transaction is created and its initial properties
         set.  It is typically used as an early termination
@@ -66,21 +97,38 @@
         which would eventually fail at a later phase anyway due to a
         user's lack of commit privileges or some other commit
         metadata validation failure.</para>
+      -->
+      <para>提交事务创建完, 并且初始属性设置完成后, 紧接着就开始执行钩子
+        start-commit. 它的典型用法是作为早期的终止机制, 避免浪费大量的
+        时间等待一个已经确定最终会失败的提交结束, 提交失败的原因可能是用户
+        缺少提交权限, 或者是某些提交元数据验证失败.</para>
 
+      <!--
       <para>If the start-commit hook program returns a nonzero exit
         value, the commit process is stopped, the commit transaction
         is destroyed, and anything printed to
         <filename>stderr</filename> is marshalled back to the
         client.</para>
+      -->
+      <para>如果钩子 start-commit 的退出值不为零, 提交过程就会中止, 提交
+        事务也会被销毁, 任何打印到 <filename>stderr</filename> 的信息
+        都会返回给客户端.</para>
 
+      <!--
       <para>The start-commit hook is not a suitable place to
         evaluate the substance of a particular commit, as it is
         invoked before any file or directory change information has
         been transmitted.  Use the pre-commit hook script (which is
         described in <xref linkend="svn.ref.reposhooks.pre-commit"
         /> elsewhere in this reference) for that purpose.</para>
+      -->
+    <para>钩子 start-commit 并非是评价特定提交的实质内容的合适地方,
+      因为它在传送文件或目录的修改信息之前被调用, 此时管理员应该使用
+      钩子 pre-commit (见本章的 <xref linkend="svn.ref.reposhooks.pre-commit"
+        />).</para>
 
       <note>
+      <!--
         <para>Prior to Subversion 1.8, the Subversion invoked the
           start-commit hook <emphasis>before</emphasis> creating the
           commit transaction.  Failure of the script resulted in that
@@ -89,46 +137,82 @@
           start-commit hook access to the transaction's properties,
           which can include (among other things) the revision log
           associated with the commit.</para>
+      -->
+        <para>在 Subversion 1.8 之前, Subversion 是在创建提交事务
+          <emphasis>之前</emphasis> 调用钩子 start-commit, 如果钩子返回
+          失败, 提交事务就不会被创建. 从 Subversion 1.8 开始不再如此,
+          这是为了让钩子 start-commit 能够访问事务的属性, 事务的属性包括
+          提交的日志消息等.</para>
       </note>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Input Parameter(s)</title>
+      -->
+      <title>输入参数</title>
 
+      <!--
       <para>The command-line arguments passed to the hook program,
         in order, are:</para>
+      -->
+      <para>传递给钩子程序的命令行参数, 按照出现的顺序来说, 有:</para>
       
       <orderedlist>
         <listitem>
+      <!--
           <para>Repository path</para>
+      -->
+          <para>仓库路径</para>
         </listitem>
         <listitem>
+      <!--
           <para>Authenticated username attempting the commit</para>
+      -->
+          <para>尝试向仓库提交的已认证的用户名</para>
         </listitem>
         <listitem>
+      <!--
           <para>Colon-separated list of
             capabilities that a client passes to the server,
             including <literal>depth</literal>,
             <literal>mergeinfo</literal>, and
             <literal>log-revprops</literal> (new in Subversion 1.5)</para>
+      -->
+          <para>以冒名分隔的特性 (capabilities) 列表, 这些特性由客户端传递
+            给服务器, 包括 <literal>depth</literal>,
+            <literal>mergeinfo</literal> 和 <literal>log-revprops</literal>
+            (<literal>log-revprops</literal> 在 Subversion 1.5 引入)</para>
         </listitem>
         <listitem>
+      <!--
           <para>Commit transaction name (new in Subversion 1.8)</para>
+      -->
+          <para>提交事务名 (在 Subversion 1.8 引入)</para>
         </listitem>
       </orderedlist>
     </refsect1>
     
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Common uses</title>
+      -->
+      <title>常见用法</title>
 
+      <!--
       <para>Access control (e.g., temporarily lock out commits for
         some reason).</para>
+      -->
+      <para>访问控制 (例如临时禁止向仓库提交修改).</para>
 
+      <!--
       <para>A means to allow access only from clients that have
         certain capabilities.</para>
+      -->
+      <para>只允许支持某些特性的客户端向仓库提交修改.</para>
     </refsect1>
 
   </refentry>
@@ -145,7 +229,10 @@
 
     <refnamediv>
       <refname>pre-commit</refname>
+      <!--
       <refpurpose>Notification just prior to commit completion.</refpurpose>
+      -->
+      <refpurpose>提交即将完成的通知.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -156,8 +243,12 @@
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>The <literal>pre-commit</literal> hook is run just
         before a commit transaction is promoted to a new revision.
         Typically, this hook is used to protect against commits that
@@ -165,27 +256,49 @@
         site might require that all commits to a certain branch
         include a ticket number from the bug tracker, or that the
         incoming log message is nonempty).</para>
+      -->
+      <para>钩子 pre-commit 在提交事务即将生成一个新的版本号之前被调用.
+        它的典型用法是禁止内容不符合要求的提交 (例如你的公司可能要求所有
+        的提交日志消息都要包含来自问题跟踪系统的单号, 或者要求日志消息不
+        能为空).</para>
 
+      <!--
       <para>If the <literal>pre-commit</literal> hook program
         returns a nonzero exit value, the commit is aborted, the
         commit transaction is removed, and anything printed to
         <filename>stderr</filename> is marshalled back to the client.</para>
+      -->
+      <para>如果钩子 pre-commit 的退出值不为零, 提交过程就会中止, 提交事务
+        也会被销毁, 任何打印到 <filename>stderr</filename> 的信息都会返回
+        给客户端.</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Input parameter(s)</title>
+      -->
+      <title>输入参数</title>
 
+      <!--
       <para>The command-line arguments passed to the hook program,
         in order, are:</para>
+      -->
+      <para>传递给钩子程序的命令行参数, 按照出现的顺序来说, 有:</para>
 
       <orderedlist>
         <listitem>
+      <!--
           <para>Repository path</para>
+      -->
+          <para>仓库路径</para>
         </listitem>
         <listitem>
+      <!--
           <para>Commit transaction name</para>
+      -->
+          <para>提交事务名</para>
         </listitem>
       </orderedlist>
 
