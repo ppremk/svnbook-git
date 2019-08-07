@@ -302,6 +302,7 @@
         </listitem>
       </orderedlist>
 
+      <!--
       <para>Additionally, Subversion passes any lock tokens provided
         by the committing client to the hook script via standard
         input.  When present, these are formatted as a single line
@@ -312,13 +313,24 @@
         repository filesystem path associated with the lock,
         followed by the pipe (<literal>|</literal>) separator
         character, and finally the lock token string.</para>
+      -->
+      <para>此外, Subversion 还会把客户端可能提供的所有锁令牌通过标准输入
+        <filename>stdin</filename> 传递给钩子程序. 如果提供了锁令牌, 它们
+        的格式将会是这样: 首先是一行 <literal>LOCK-TOKENS</literal>, 接下
+        来是锁令牌, 每个锁令牌占据单独的一行. 每个锁令牌行都包含了以下这
+        信息: 与锁有关的仓库文件系统路径, 这些路径已经是经过转码的后的 URI;
+        然后是管道符 (<literal>|</literal>); 最后是锁令牌字符串.</para>
 
     </refsect1>
     
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Common uses</title>
       <para>Change validation and control</para>
+      -->
+      <title>常见用法</title>
+      <para>控制和检查修改</para>
     </refsect1>
   
   </refentry>
@@ -335,7 +347,10 @@
 
     <refnamediv>
       <refname>post-commit</refname>
+      <!--
       <refpurpose>Notification of a successful commit.</refpurpose>
+      -->
+      <refpurpose>成功提交的通知.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -347,49 +362,84 @@
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>The <literal>post-commit</literal> hook is run after the
         transaction is committed and a new revision is created.  Most
         people use this hook to send out descriptive emails about
         the commit or to notify some other tool (such as an issue
         tracker) that a commit has happened.  Some configurations
         also use this hook to trigger backup processes.</para>
+      -->
+      <para>事务提交并且新的版本号生成后, Subversion 就会执行钩子
+        post-commit. 大多数管理员都会利用 start-commit 向团队成员发送关
+        于新提交的邮件, 或者通知其他工具 (例如一个问题跟踪系统) 有新的提交
+        生成. 有些管理员还会用 post-commit 触发备份操作.</para>
 
+      <!--
       <para>If the <literal>post-commit</literal> hook returns a
         nonzero exit status, the commit <emphasis>will
         not</emphasis> be aborted since it has already
         completed.  However, anything that the hook printed
         to <filename>stderr</filename> will be marshalled back to the
         client, making it easier to diagnose hook failures.</para>
+      -->
+      <para>如果钩子 post-commit 的退出值不为零, 提交过程将
+        <emphasis>不会</emphasis> 中止, 因此这时候提交已经完成了. 但是,
+        钩子打印到 <filename>stderr</filename> 的信息都会返回给客户端, 以
+        便分析钩子失败的原因.</para>
             
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Input parameter(s)</title>
+      -->
+      <title>输入参数</title>
 
+      <!--
       <para>The command-line arguments passed to the hook program,
         in order, are:</para>
+      -->
+      <para>传递给钩子程序的命令行参数, 按照出现的顺序来说, 有:</para>
       
       <orderedlist>
         <listitem>
+      <!--
           <para>Repository path</para>
+      -->
+          <para>仓库路径</para>
         </listitem>
         <listitem>
+      <!--
           <para>Revision number created by the commit</para>
+      -->
+          <para>新版号的整数编号</para>
         </listitem>
         <listitem>
+      <!--
           <para>Name of the transaction that has become the revision triggering
             the post-commit hook.</para>
+      -->
+          <para>已经变成版本号的事务名, 正是该版本号触发了本次钩子的运行.
+          </para>
         </listitem>
       </orderedlist>
     </refsect1>
     
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Common uses</title>
       <para>Commit notification; tool integration</para>
+      -->
+      <title>常见用法</title>
+      <para>提交通知; 工具集成</para>
     </refsect1>
   
   </refentry>
@@ -406,8 +456,11 @@
 
     <refnamediv>
       <refname>pre-revprop-change</refname>
+      <!--
       <refpurpose>Notification of a revision property change
         attempt.</refpurpose>
+      -->
+      <refpurpose>版本号属性即将被修改的通知.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -421,8 +474,12 @@
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>The <literal>pre-revprop-change</literal> hook is run
         immediately prior to the modification of a revision property
         when performed outside the scope of a normal commit.  Unlike
@@ -430,52 +487,93 @@
         the proposed action.  The hook must actually exist and
         return a zero exit value before a revision property
         modification can happen.</para>
+      -->
+      <para>钩子 pre-revprop-change 在版本号属性即将被修改之前调用, 这
+        里所说的版本号修改不是通常提交的一部分. 和其他钩子不同的是,
+        pre-revprop-change 的默认行为是禁止修改版本号属性. 为了允许修改
+        版本号属性, pre-revprop-change 必须显式地以零作为退出值.</para>
 
+      <!--
       <para>If the <literal>pre-revprop-change</literal> hook doesn't
         exist, isn't executable, or returns a nonzero exit value, no
         change to the property will be made, and anything printed
         to <filename>stderr</filename> is marshalled back to the
         client.</para>
+      -->
+      <para>如果 pre-revprop-change 没有退出, 或者不可执行, 或者退出值不
+        为零, Subversion 将禁止修改版本号属性, 钩子打印到
+        <filename>stderr</filename> 的信息都会返回给客户端.</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Input parameter(s)</title>
+      -->
+      <title>输入参数</title>
 
+      <!--
       <para>The command-line arguments passed to the hook program,
         in order, are:</para>
+      -->
+      <para>传递给钩子程序的命令行参数, 按照出现的顺序来说, 有:</para>
 
       <orderedlist>
         <listitem>
+      <!--
           <para>Repository path</para>
+      -->
+          <para>仓库路径</para>
         </listitem>
         <listitem>
+      <!--
           <para>Revision whose property is about to be modified</para>
+      -->
+          <para>即将被修改的版本号的整数编号</para>
         </listitem>
         <listitem>
+      <!--
           <para>Authenticated username attempting the property change</para>
+      -->
+          <para>试图修改版本号属性的已认证的用户名</para>
         </listitem>
         <listitem>
+      <!--
           <para>Name of the property changed</para>
+      -->
+          <para>即将被修改的版本号属性的名字</para>
         </listitem>
         <listitem>
+      <!--
           <para>Change description: <literal>A</literal> (added),
             <literal>D</literal> (deleted), or <literal>M</literal>
             (modified)</para>
+      -->
+          <para>用于描述修改类型的字符: <literal>A</literal> (新增的),
+            <literal>D</literal> (被删除的), 或 <literal>M</literal>
+            (被修改的)</para>
         </listitem>
       </orderedlist>
 
+      <!--
       <para>Additionally, Subversion passes the intended new value
          of the property to the hook program via standard
          input.</para>
+      -->
+       <para>此外, Subversion 还会把版本号属性的新值通过标准输入
+         <filename>stdin</filename> 传递给钩子程序.</para>
 
     </refsect1>
     
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Common uses</title>
       <para>Access control; change validation and control</para>
+      -->
+      <title>常见用法</title>
+      <para>访问控制; 控制和检查修改</para>
     </refsect1>
   
   </refentry>
@@ -492,8 +590,11 @@
 
     <refnamediv>
       <refname>post-revprop-change</refname>
+      <!--
       <refpurpose>Notification of a successful revision property 
         change.</refpurpose>
+      -->
+      <refpurpose>版本号属性被成功修改的通知.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -507,7 +608,10 @@
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
       <para>The <literal>post-revprop-change</literal> hook is run
         immediately after the modification of a revision property
