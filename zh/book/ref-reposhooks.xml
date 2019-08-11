@@ -38,8 +38,8 @@
     <para>对于每一种钩子, Subversion 都会尝试去执行以钩子命名的程序, 这些
       程序文件位于仓库目录的 <filename>hooks/</filename> 子目录内. 例如, 在
       一个 Unix 系统中, 钩子 start-commit 对应的程序文件是
-      <filename><replaceable>REPOS_PATH</replaceable>/hooks/start-commit</filename>
-      这可以是一个二进制可执行程序, shell 脚本 或 Python 脚本等. 在 Windows
+      <filename><replaceable>REPOS_PATH</replaceable>/hooks/start-commit</filename>,
+      它可以是一个二进制可执行程序, shell 脚本 或 Python 脚本等. 在 Windows
       系统中, 钩子 start-commit 对应的程序文件仍然在相同的目录内, 但文件的名
       字变成了 <filename>START-COMMIT.EXE</filename> 或
       <filename>START-COMMIT.BAT</filename>, 而不是 Unix 中的
@@ -181,7 +181,7 @@
             <literal>mergeinfo</literal>, and
             <literal>log-revprops</literal> (new in Subversion 1.5)</para>
       -->
-          <para>以冒名分隔的特性 (capabilities) 列表, 这些特性由客户端传递
+          <para>以冒号分隔的特性 (capabilities) 列表, 这些特性由客户端传递
             给服务器, 包括 <literal>depth</literal>,
             <literal>mergeinfo</literal> 和 <literal>log-revprops</literal>
             (<literal>log-revprops</literal> 在 Subversion 1.5 引入)</para>
@@ -318,7 +318,7 @@
         <filename>stdin</filename> 传递给钩子程序. 如果提供了锁令牌, 它们
         的格式将会是这样: 首先是一行 <literal>LOCK-TOKENS</literal>, 接下
         来是锁令牌, 每个锁令牌占据单独的一行. 每个锁令牌行都包含了以下这
-        信息: 与锁有关的仓库文件系统路径, 这些路径已经是经过转码的后的 URI;
+        信息: 与锁有关的仓库文件系统路径, 这些路径已经是经过转码后的 URI;
         然后是管道符 (<literal>|</literal>); 最后是锁令牌字符串.</para>
 
     </refsect1>
@@ -376,7 +376,7 @@
         also use this hook to trigger backup processes.</para>
       -->
       <para>事务提交并且新的版本号生成后, Subversion 就会执行钩子
-        post-commit. 大多数管理员都会利用 start-commit 向团队成员发送关
+        post-commit. 大多数管理员都会利用 post-commit 向团队成员发送关
         于新提交的邮件, 或者通知其他工具 (例如一个问题跟踪系统) 有新的提交
         生成. 有些管理员还会用 post-commit 触发备份操作.</para>
 
@@ -389,7 +389,7 @@
         client, making it easier to diagnose hook failures.</para>
       -->
       <para>如果钩子 post-commit 的退出值不为零, 提交过程将
-        <emphasis>不会</emphasis> 中止, 因此这时候提交已经完成了. 但是,
+        <emphasis>不会</emphasis> 中止, 因为这时候提交已经完成了. 但是,
         钩子打印到 <filename>stderr</filename> 的信息都会返回给客户端, 以
         便分析钩子失败的原因.</para>
             
@@ -613,6 +613,7 @@
       -->
       <title>描述</title>
 
+      <!--
       <para>The <literal>post-revprop-change</literal> hook is run
         immediately after the modification of a revision property
         when performed outside the scope of a normal commit.  As you can
@@ -622,13 +623,25 @@
         the <literal>pre-revprop-change</literal> hook is
         implemented.  It is typically used to send email
         notification of the property change.</para>
+      -->
+      <para>钩子 post-revprop-change 在版本号属性被修改完成后立即执行, 这
+        里所说的版本号修改不是通常提交的一部分. 从前面对钩子
+        pre-revprop-change 的介绍读者应该可以很容易推断出, 除非提供了
+        pre-revprop-change, 否则的话 post-revprop-change 根本没机会执行.
+        这个钩子的典型用途是发邮件通知版本号属性被修改了.</para>
 
+      <!--
       <para>If the <literal>post-revprop-change</literal> hook returns a
         nonzero exit status, the change <emphasis>will
         not</emphasis> be aborted since it has already
         completed.  However, anything that the hook printed
         to <filename>stderr</filename> will be marshalled back to the
         client, making it easier to diagnose hook failures.</para>
+      -->
+      <para>如果钩子 post-revprop-change 的退出值不为零, 那么针对版本号属性
+        的修改将 <emphasis>不会</emphasis> 被中止, 因为这时候修改已经完成了.
+        但是, 钩子打印到 <filename>stderr</filename> 的信息都会返回给客户端,
+        以便分析钩子失败的原因.</para>
 
     </refsect1>
 
@@ -636,38 +649,66 @@
     <refsect1>
       <title>Input parameter(s)</title>
 
+      <!--
       <para>The command-line arguments passed to the hook program,
         in order, are:</para>
+      -->
+      <para>传递给钩子程序的命令行参数, 按照出现的顺序来说, 有:</para>
       
       <orderedlist>
         <listitem>
+      <!--
           <para>Repository path</para>
+      -->
+          <para>仓库路径</para>
         </listitem>
         <listitem>
+      <!--
           <para>Revision whose property was modified</para>
+      -->
+          <para>属性即将被修改的版本号的整数编号</para>
         </listitem>
         <listitem>
+      <!--
           <para>Authenticated username of the person making the change</para>
+      -->
+          <para>修改版本号属性的已认证的用户名</para>
         </listitem>
         <listitem>
+      <!--
           <para>Name of the property changed</para>
+      -->
+          <para>被修改的版本号属性的名字</para>
         </listitem>
         <listitem>
+      <!--
           <para>Change description: <literal>A</literal> (added),
             <literal>D</literal> (deleted), or <literal>M</literal>
             (modified)</para>
+      -->
+          <para>用于描述修改类型的字符: <literal>A</literal> (新增的),
+            <literal>D</literal> (被删除的), 或 <literal>M</literal>
+            (被修改的)</para>
         </listitem>
       </orderedlist>
 
+      <!--
       <para>Additionally, Subversion passes to the hook program, via
         standard input, the previous value of the property.</para>
+      -->
+       <para>此外, Subversion 还会把版本号属性的旧值通过标准输入
+         <filename>stdin</filename> 传递给钩子程序.</para>
 
     </refsect1>
     
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Common uses</title>
       <para>Property change notification</para>
+      -->
+      <title>常见用法</title>
+      <para>通知人们有版本号属性被修改了</para>
     </refsect1>
   
   </refentry>
@@ -684,7 +725,10 @@
 
     <refnamediv>
       <refname>pre-lock</refname>
+      <!--
       <refpurpose>Notification of a path lock attempt.</refpurpose>
+      -->
+      <refpurpose>有人试图锁定某一路径的通知.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -698,8 +742,12 @@
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>The <literal>pre-lock</literal> hook runs whenever
         someone attempts to lock a path.  It can be used to prevent
         locks altogether or to create a more complex policy
@@ -707,19 +755,34 @@
         particular paths.  If the hook notices a preexisting lock,
         it can also decide whether a user is allowed
         to <quote>steal</quote> the existing lock.</para>
+      -->
+      <para>每当有人尝试对某个路径进行锁定时, 就会触发钩子 pre-lock. 它可以
+        用于禁止锁定, 或者根据策略来决定哪些用户可以锁定特定的路径. 如果钩子
+        发现路径已经被其他人锁定了, 它还可以决定用户是否可以
+        <quote>窃取</quote> 其他人的锁.</para>
 
+      <!--
       <para>If the <literal>pre-lock</literal> hook program returns
         a nonzero exit value, the lock action is aborted and
         anything printed to <filename>stderr</filename> is
         marshalled back to the client.</para>
+      -->
+      <para>如果钩子 pre-lock 的退出值不为零, 锁定操作将被中止, 任何打印到
+        <filename>stderr</filename> 的信息都会返回给客户端.</para>
 
+      <!--
       <para>The hook program may optionally dictate the lock token
         which will be assigned to the lock by printing the desired
         lock token to standard output.  Because of this,
         implementations of this hook should carefully avoid
         unexpected output sent to standard output.</para>
+      -->
+      <para>钩子 pre-lock 可以口述锁令牌, 方法是把锁令牌打印到标准输出中,
+        这个锁令牌将会被分配给锁. 正因为如此, 在实现钩子 pre-lock 时, 注意
+        不要往标准输出中打印不必要的信息.</para>
 
       <warning>
+      <!--
         <para>If the <literal>pre-lock</literal> script takes
           advantage of lock token dictation feature, the
           responsibility of generating a <emphasis>unique</emphasis>
@@ -727,43 +790,74 @@
           generate unique lock tokens may result in
           undefined&mdash;and very likely,
           undesired&mdash;behavior.</para>
+      -->
+        <para>如果钩子 pre-lock 往标准输出中打印了锁令牌, 那么钩子程序自己
+          要负责保证生成的锁令牌是 <emphasis>独一无二</emphasis> 的. 如果
+          不能生成独一无二的锁令牌, 那么将导致未定义的&mdash;很可能是不希望
+          看到的&mdash;行为.</para>
       </warning>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Input parameter(s)</title>
+      -->
+      <title>输入参数</title>
 
+      <!--
       <para>The command-line arguments passed to the hook program,
         in order, are:</para>
+      -->
+      <para>传递给钩子程序的命令行参数, 按照出现的顺序来说, 有:</para>
       
       <orderedlist>
         <listitem>
+      <!--
           <para>Repository path</para>
+      -->
+          <para>仓库路径</para>
         </listitem>
         <listitem>
+      <!--
           <para>Versioned path that is to be locked</para>
+      -->
+          <para>将被锁定的路径</para>
         </listitem>
         <listitem>
+      <!--
           <para>Authenticated username of the person attempting the 
             lock</para>
+      -->
+          <para>尝试加锁的已认证的用户名</para>
         </listitem>
         <listitem>
+      <!--
           <para>Comment provided when the lock was created</para>
+      -->
+          <para>由用户提供的锁注释</para>
         </listitem>
         <listitem>
+      <!--
           <para><literal>1</literal> if the user is attempting to
             steal an existing lock; <literal>0</literal>
             otherwise</para>
+      -->
+          <para><literal>1</literal> (如果用户试图窃取一个已存在的锁) 或
+            <literal>0</literal> (用户不想窃取锁)</para>
         </listitem>
       </orderedlist>
     </refsect1>
     
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Common uses</title>
       <para>Access control</para>
+      -->
+      <title>常见用法</title>
+      <para>访问控制</para>
     </refsect1>
   
   </refentry>
@@ -780,7 +874,10 @@
 
     <refnamediv>
       <refname>post-lock</refname>
+      <!--
       <refpurpose>Notification of a successful path lock.</refpurpose>
+      -->
+      <refpurpose>路径被成功锁定的通知.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -791,47 +888,80 @@
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>The <literal>post-lock</literal> hook runs after one or
         more paths have been locked.  It is typically used to send
         email notification of the lock event.</para>
+      -->
+      <para>钩子 post-lock 在一个或多个路径被成功锁定后执行, 它的典型用法
+        是发送路径被锁定的通知邮件.</para>
 
+      <!--
       <para>If the <literal>post-lock</literal> hook returns a
         nonzero exit status, the lock <emphasis>will
         not</emphasis> be aborted since it has already
         completed.  However, anything that the hook printed
         to <filename>stderr</filename> will be marshalled back to the
         client, making it easier to diagnose hook failures.</para>
+      -->
+      <para>如果钩子 post-lock 的退出值不为零, 那么锁定操作将
+        <emphasis>不会</emphasis> 被中止, 因此这时候锁定操作已经完成了,
+        但是钩子程序打印到 <filename>stderr</filename> 的所有信息都会返回
+        给客户端, 以便分析钩子失败的原因.</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Input parameter(s)</title>
+      -->
+      <title>输入参数</title>
 
+      <!--
       <para>The command-line arguments passed to the hook program,
         in order, are:</para>
+      -->
+      <para>传递给钩子程序的命令行参数, 按照出现的顺序来说, 有:</para>
       
       <orderedlist>
         <listitem>
+      <!--
           <para>Repository path</para>
+      -->
+          <para>仓库路径</para>
         </listitem>
         <listitem>
+      <!--
           <para>Authenticated username of the person who locked the 
             paths</para>
+      -->
+          <para>锁定路径的已认证的用户名</para>
         </listitem>
       </orderedlist>
 
+      <!--
       <para>Additionally, the list of paths locked is passed to the
         hook program via standard input, one path per line.</para>
+      -->
+      <para>另外, 被锁定的路径列表将通过标准输入传递给钩子程序, 每行一个.
+      </para>
 
     </refsect1>
     
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Common uses</title>
       <para>Lock notification</para>
+      -->
+      <title>常见用法</title>
+      <para>路径被锁定的通知</para>
     </refsect1>
   
   </refentry>
@@ -848,7 +978,10 @@
 
     <refnamediv>
       <refname>pre-unlock</refname>
+      <!--
       <refpurpose>Notification of a path unlock attempt.</refpurpose>
+      -->
+      <refpurpose>有人试图解锁某一路径的通知.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -862,8 +995,12 @@
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>The <literal>pre-unlock</literal> hook runs whenever
         someone attempts to remove a lock on a file.  It can be used
         to create policies that specify which users are allowed to
@@ -872,47 +1009,82 @@
         file, is user B allowed to break the lock?  What if the lock
         is more than a week old?  These sorts of things can be
         decided and enforced by the hook.</para>
+      -->
+      <para>如果有人试图解决某一路径, 就会触发钩子 pre-unlock. 它可以用于
+        决定哪些用户可以解锁特定的路径, 尤其是决定锁的破坏策略, 例如当用户
+        A 已经锁定了一个文件时, 这时候是否应该允许用户 B 破坏锁? 如果锁已经
+        持有一周了呢? 这些考虑都可以放在钩子 pre-unlock 里实现.</para>
 
+      <!--
       <para>If the <literal>pre-unlock</literal> hook program
         returns a nonzero exit value, the unlock action is aborted
         and anything printed to <filename>stderr</filename> is marshalled back to the
         client.</para>
+      -->
+      <para>如果钩子 pre-unlock 的退出值不为零, 解锁操作将被中止, 任何打印到
+        <filename>stderr</filename> 的信息都会返回给客户端.</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Input parameter(s)</title>
+      -->
+      <title>输入参数</title>
 
+      <!--
       <para>The command-line arguments passed to the hook program,
         in order, are:</para>
+      -->
+      <para>传递给钩子程序的命令行参数, 按照出现的顺序来说, 有:</para>
       
       <orderedlist>
         <listitem>
+      <!--
           <para>Repository path</para>
+      -->
+          <para>仓库路径</para>
         </listitem>
         <listitem>
+      <!--
           <para>Versioned path which is to be unlocked</para>
+      -->
+          <para>将被解锁的路径</para>
         </listitem>
         <listitem>
+      <!--
           <para>Authenticated username of the person attempting the 
             unlock</para>
+      -->
+          <para>试图解锁路径的已认证的用户名</para>
         </listitem>
         <listitem>
+      <!--
           <para>Lock token associated with the lock which is to be
             removed</para>
+      -->
+          <para>与锁有关的锁令牌</para>
         </listitem>
         <listitem>
+      <!--
           <para><literal>1</literal> if the user is attempting to
             break the lock; <literal>0</literal> otherwise</para>
+      -->
+          <para><literal>1</literal> (如果用户试图破坏锁); <literal>0</literal>
+            (用户不想破坏锁)</para>
         </listitem>
       </orderedlist>
     </refsect1>
     
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Common uses</title>
       <para>Access control</para>
+      -->
+      <title>常见用法</title>
+      <para>访问控制</para>
     </refsect1>
   
   </refentry>
@@ -929,7 +1101,10 @@
 
     <refnamediv>
       <refname>post-unlock</refname>
+      <!--
       <refpurpose>Notification of a successful path unlock.</refpurpose>
+      -->
+      <refpurpose>路径被成功解锁的通知.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -940,47 +1115,80 @@
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Description</title>
+      -->
+      <title>描述</title>
 
+      <!--
       <para>The <literal>post-unlock</literal> hook runs after one
         or more paths have been unlocked.  It is typically used to
         send email notification of the unlock event.</para>
+      -->
+      <para>钩子 post-unlock 在一个或多个路径被成功解锁后执行, 它的典型用法
+        是发送路径被解锁的通知邮件.</para>
 
+      <!--
       <para>If the <literal>post-unlock</literal> hook returns a
         nonzero exit status, the unlock <emphasis>will
         not</emphasis> be aborted since it has already
         completed.  However, anything that the hook printed
         to <filename>stderr</filename> will be marshalled back to the
         client, making it easier to diagnose hook failures.</para>
+      -->
+      <para>如果钩子 post-unlock 的退出值不为零, 那么解锁操作将
+        <emphasis>不会</emphasis> 被中止, 因此这时候解锁操作已经完成了,
+        但是钩子程序打印到 <filename>stderr</filename> 的所有信息都会返回
+        给客户端, 以便分析钩子失败的原因.</para>
 
     </refsect1>
 
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Input parameter(s)</title>
+      -->
+      <title>输入参数</title>
 
+      <!--
       <para>The command-line arguments passed to the hook program,
         in order, are:</para>
+      -->
+      <para>传递给钩子程序的命令行参数, 按照出现的顺序来说, 有:</para>
       
       <orderedlist>
         <listitem>
+      <!--
           <para>Repository path</para>
+      -->
+          <para>仓库路径</para>
         </listitem>
         <listitem>
+      <!--
           <para>Authenticated username of the person who unlocked the 
             paths</para>
+      -->
+          <para>解锁路径的已认证的用户名</para>
         </listitem>
       </orderedlist>
 
+      <!--
       <para>Additionally, the list of paths unlocked is passed to the
         hook program via standard input, one path per line.</para>
+      -->
+      <para>另外, 被解锁的路径列表将通过标准输入传递给钩子程序, 每行一个.
+      </para>
 
     </refsect1>
     
     <!-- =============================================================== -->
     <refsect1>
+      <!--
       <title>Common uses</title>
       <para>Unlock notification</para>
+      -->
+      <title>常见用法</title>
+      <para>解锁通知</para>
     </refsect1>
   
   </refentry>
