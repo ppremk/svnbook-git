@@ -148,7 +148,7 @@ A    subversion/build.conf
       -->
     <para>上面的命令在当前工作目录中创建了一个工作副本目录
       <filename>subversion</filename>, 工作副本里存放的是当前最新 (未发布) 的
-      Subversion 源代码, 你可以按照自己的需要修改检出后的工作副本目录名. 检出
+      Subversion 源代码, 你可以按照自己的需求修改检出后的工作副本目录名. 检出
       后, 无论你的工作副本目录叫什么名字, 你都拥有了一份最新的 Subversion
       源代码. 当然, 为了构建 Subversion, 你还要下载一些函数库 (例如 apr,
       apr-util 等)&mdash;具体的细节见工作副本顶层目录中的
@@ -167,29 +167,50 @@ A    subversion/build.conf
     <title>快速入门教程</title>
 
     <blockquote>
+      <!--
       <para><quote>Please make sure your seat backs are in their full,
         upright position and that your tray tables are stored.  Flight
         attendants, prepare for take-off&hellip;.</quote></para>
+      -->
+    <para><quote>旅客朋友们, 请检查你们的座椅靠背是否完好, 方向是否竖直, 杂物
+      桌是否已经固定. 空乘人员, 现在准备起飞&hellip;.</quote></para>
         </blockquote>
 
+      <!--
     <para>What follows is a quick tutorial that walks you through some
       basic Subversion configuration and operation.  When you finish
       it, you should have a general understanding of Subversion's
       typical usage.</para>
+      -->
+    <para>接下来的内容是 Subversion 的快速入门教程, 在这个教程里我们将为
+      读者介绍最基本的 Subversion 配置与操作. 阅读后, 读者应该对 Subversion
+      的典型用法具备了最基本的了解.</para>
 
     <note>
+      <!--
       <para>The examples used in this appendix assume that you have
         <command>svn</command>, the Subversion command-line client,
         and <command>svnadmin</command>, the administrative tool,
         ready to go on a Unix-like operating system.  (This tutorial
         also works at the Windows command-line prompt, assuming you
         make some obvious tweaks.)  We also assume you are using
-        Subversion 1.2 or later (run <userinput>svn --version</userinput>
+        Subversion 1.2 or later (run <userinput>svn - -version</userinput>
         to check).</para>
+      -->
+      <para>本附录内的例子假定读者的类 Unix 系统已经安装了
+        <command>svn</command> 和 <command>svnadmin</command>, 它们分别是
+        Subversion 命令行客户端工具和管理工具. (本附录内的例子对 Windows 同
+        样适用, 不过要做一些小调整.) 我们假设读者使用的是 Subversion 1.2 或
+        更新的版本 (可能通过执行 <userinput>svn --version</userinput> 查看
+        Subversion 的版本).</para>
     </note>
 
+      <!--
     <para>Subversion stores all versioned data in a central
       repository.  To begin, create a new repository:</para>
+      -->
+    <para>Subversion 把所有的版本化数据都存放在一个中央仓库中. 为了开始我
+      们的教程, 首先创建一个新仓库:</para>
 
     <informalexample>
       <screen>
@@ -201,6 +222,7 @@ $
 </screen>
     </informalexample>
 
+      <!--
     <para>This command creates a Subversion repository in the directory
       <filename>/var/svn/repos</filename>, creating
       the <filename>repos</filename> directory itself if it doesn't
@@ -209,7 +231,15 @@ $
       files if you peek inside.  For more information about repository
       creation and maintenance, see
       <xref linkend="svn.reposadmin"/>.</para>
+      -->
+    <para>上面的命令在目录 <filename>/var/svn/repos</filename> 创建了一
+      个 Subversion 仓库, 如果目录 <filename>repos</filename> 事先不存在,
+      <command>svnadmin</command> 将自动创建该目录. 这个目录含有一个数据
+      库文件集合 (以及其他文件), 你不会在目录中直接看到那些版本化文件.
+      关于仓库创建和维护的更多信息, 见 <xref
+        linkend="svn.reposadmin"/>.</para>
 
+      <!--
     <para>Subversion has no concept of a <quote>project.</quote> The
       repository is just a virtual versioned filesystem, a large tree
       that can hold anything you wish.  Some administrators prefer to
@@ -223,7 +253,17 @@ $
       projects throughout this book, keep in mind that we're only ever
       talking about some directory (or collection of directories) in
       the repository.</para>
+      -->
+    <para>Subversion 没有 <quote>项目</quote> (project) 这个概念, 仓库仅
+      仅是一个虚拟的版本化文件系统, 它可以存放你希望的任何数据. 有些管理员
+      喜欢在一个仓库中只存放一个项目, 而其他管理员则喜欢在一个仓库中存放多个
+      项目, 我们在 <xref linkend="svn.reposadmin.projects.chooselayout"/>
+      讨论了各种仓库组织方式的利弊. 无论采用何种组织方式, 仓库都只是在管理
+      文件和目录, 因此是否要将某些目录解释成 <quote>项目</quote> 完全取决于
+      用户. 因此, 本附录在谈到项目时, 请记住我们只是在谈论仓库里的目录 (或
+      目录集合).</para>
 
+      <!--
     <para>In this example, we assume you already have some sort
       of project (a collection of files and directories) that you wish
       to import into your newly created Subversion repository.  Begin
@@ -236,6 +276,15 @@ $
       <filename>trunk</filename> directory should contain all of your
       data, and the <filename>branches</filename> and
       <filename>tags</filename> directories should be empty:</para>
+      -->
+    <para>在下面的例子里, 我们假设读者已经准备好了可以被导入到新仓库中的
+      项目 (文件和目录的集合). 在开始前把项目里的文件和目录都放到一个名
+      为 <filename>myproject</filename> (或其他你喜欢的名字) 的目录中,
+      由于 <xref linkend="svn.branchmerge"/> 介绍的原因, 你的项目内包含了
+      3 个顶层目录, <filename>branches</filename>, <filename>tags</filename>
+      和 <filename>trunk</filename>. 目录 <filename>trunk</filename> 应该
+      包含了项目的所有数据, 而 <filename>branches</filename> 和
+      <filename>tags</filename> 则是空目录:</para>
 
     <informalexample>
       <literallayout>
@@ -251,14 +300,23 @@ $
 </literallayout>
     </informalexample>
 
+      <!--
     <para>The <filename>branches</filename>, <filename>tags</filename>,
       and <filename>trunk</filename> subdirectories aren't actually
       required by Subversion.  They're merely a popular convention
       that you'll most likely want to use later on.</para>
+      -->
+    <para>Subversion 并不要求仓库顶层目录下必须是 <filename>branches</filename>,
+      <filename>tags</filename> 和 <filename>trunk</filename> 这 3 个子目录,
+      但这是最流行的仓库目录布局.</para>
 
+      <!--
     <para>Once you have your tree of data ready to go, import it into
       the repository with the <command>svn import</command> command
       (see <xref linkend="svn.tour.importing"/>):</para>
+      -->
+    <para>项目数据一旦准备好, 接下来就可以用命令 <command>svn import</command>
+      (见 <xref linkend="svn.tour.importing"/>) 把它们都导入到仓库中:</para>
 
     <informalexample>
       <screen>
@@ -276,13 +334,20 @@ $
 </screen>
     </informalexample>
 
+      <!--
     <para>Now the repository contains this tree of data.  As mentioned
       earlier, you won't see your files by directly peeking into the
       repository;  they're all stored within a database.  But the
       repository's imaginary filesystem now contains a top-level
       directory named <filename>myproject</filename>, which in turn
       contains your data.</para>
+      -->
+    <para>现在, 仓库中就已经包含了项目的初始数据. 前面已经说过, 用户无法
+      在仓库目录中直接看到导入的那些数据, 它们都存放在一个数据库中. 不过,
+      仓库的虚拟文件系统已经包含了一个名为 <filename>myproject</filename>
+      的顶层目录, 导入的项目数据就存放在这个目录里.</para>
 
+      <!--
     <para>Note that the original <filename>/tmp/myproject</filename>
       directory is unchanged; Subversion is unaware of it.  (In fact,
       you can even delete that directory if you wish.)  To
@@ -291,6 +356,14 @@ $
       workspace.  Ask Subversion to <quote>check out</quote> a working
       copy of the <filename>myproject/trunk</filename> directory in
       the repository:</para>
+      -->
+    <para>注意, 被导入的原始目录 <filename>/tmp/myproject</filename> 没有发
+      生任何变化, Subversion 不会对它做出任何修改. (实际上, 在导入完成后你
+      甚至可以把它删除.) 在开始操作仓库的数据之前, 你需要创建一个
+      <quote>工作副本</quote> (working copy), 它是用户的一个私有工作空间.
+      下面的命令请求 Subversion 为仓库中的目录
+      <filename>myproject/trunk</filename> <quote>检出</quote> (check out)
+      一个工作副本:</para>
 
     <informalexample>
       <screen>
@@ -304,37 +377,66 @@ $
 </screen>
     </informalexample>
 
+      <!--
     <para>Now you have a personal copy of part of the repository in a
       new directory named <filename>myproject</filename>.  You can edit
       the files in your working copy and then commit those changes
       back into the repository.</para>
+      -->
+    <para>现在你就有了一份仓库部分数据的个人拷贝, 即新创建的目录
+      <filename>myproject</filename>. 你可以编辑工作副本里的文件, 然后把
+      它们提交到仓库中.</para>
 
     <itemizedlist>
       <listitem>
+      <!--
         <para>Enter your working copy and edit a file's
           contents.</para>
+      -->
+        <para>进入工作副本并修改文件.</para>
       </listitem>
       <listitem>
+      <!--
         <para>Run <userinput>svn diff</userinput> to see unified diff
           output of your changes.</para>
+      -->
+        <para>执行 <userinput>svn diff</userinput> 查看修改的标准差异输出.
+        </para>
       </listitem>
       <listitem>
+      <!--
         <para>Run <userinput>svn commit</userinput> to commit the new
           version of your file to the repository.</para>
+      -->
+        <para>执行 <userinput>svn commit</userinput> 把修改后的文件提交到
+          仓库中.</para>
       </listitem>
       <listitem>
+      <!--
         <para>Run <userinput>svn update</userinput> to bring your working
           copy <quote>up to date</quote> with the repository.</para>
+      -->
+        <para>执行 <userinput>svn update</userinput>, 把工作副本
+          <quote>更新</quote> 到仓库的最新版本.</para>
       </listitem>
     </itemizedlist>
 
+      <!--
     <para>For a full tour of all the things you can do with your
       working copy, read <xref linkend="svn.tour"/>.</para>
+      -->
+    <para>至于用户能在工作副本中完成哪些工作, 见 <xref linkend="svn.tour"/>.
+    </para>
 
+      <!--
     <para>At this point, you have the option of making your repository
       available to others over a network.  See <xref
       linkend="svn.serverconfig"/> to learn about the different sorts of
       server processes available and how to configure them.</para>
+      -->
+    <para>到这里为止, 你可以选择把自己的仓库通过网络共享给其他人, 阅读 <xref
+        linkend="svn.serverconfig"/>, 查看有哪些服务器进程可供使用, 以及
+      如何配置它们.</para>
 
     <!-- ### TODO: Let's make this into a full tutorial, rather than
              simply referring off to other sections. ### -->
