@@ -123,39 +123,69 @@
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.forcvs.directories">
+      <!--
     <title>Directory Versions</title>
+      -->
+    <title>目录的版本</title>
     
+      <!--
     <para>Subversion tracks tree structures, not just file contents.
       It's one of the biggest reasons Subversion was written to
       replace CVS.</para>
+      -->
+    <para>Subversion 跟踪的是整棵目录树的变化, 而不仅仅是文件的内容, 这是
+      用 Subversion 替换 CVS 的一个重大理由.</para>
 
+      <!--
     <para>Here's what this means to you, as a former CVS user:</para>
+      -->
+    <para>对于前 CVS 用户而言, 能够对目录进行版本控制意味着:</para>
 
     <itemizedlist>
       <listitem>
+      <!--
         <para>The <command>svn add</command> and <command>svn
           delete</command> commands work on directories now, just as
           they work on files.  So do <command>svn copy</command> and
           <command>svn move</command>.  However, these commands do
           <emphasis>not</emphasis> cause any kind of immediate change
+                              ### TODO
           in the repository.  Instead, the working items are simply
           <quote>scheduled</quote> for addition or deletion.  No
           repository changes happen until you run <userinput>svn
           commit</userinput>.</para>
+      -->
+      <para>命令 <command>svn add</command> 和 <command>svn delete</command>
+        可以对目录进行操作, 就像它们操作普通文件那样, <command>svn
+          copy</command> 和 <command>svn move</command> 同样如此. 但是这些
+        命令 <emphasis>不会</emphasis> 导致仓库马上被修改, 只有在执行完
+        <command>svn commit</command> 后, 仓库才会发生变化.</para>
       </listitem>
       <listitem>
+      <!--
         <para>Directories aren't dumb containers anymore; they have
           revision numbers like files.  (Or more properly, it's
           correct to talk about <quote>directory
           <filename>foo/</filename> in revision 5.</quote>)</para>
+      -->
+      <para>目录不再是一个哑容器, 它和文件一样具有版本号. (因此我们可以
+        放心地说 <quote>在版本号为 5 时, 目录 <filename>foo/</filename>.
+      </quote>)</para>
       </listitem>
     </itemizedlist>
 
+      <!--
     <para>Let's talk more about that last point.  Directory versioning
       is a hard problem; because we want to allow mixed-revision
       working copies, there are some limitations on how far we can
       abuse this model.</para>
+      -->
+    <para>关于最后一点我们再多说一些. 对目录进行版本控制是一件很麻烦的
+      事, 因为我们希望工作副本能够支持混合的版本号, 这就使得我们在对目录
+      进行版本控制时有些限制需要遵循.</para>
 
+    <!-- ### TODO -->
+      <!--
     <para>From a theoretical point of view, we define <quote>revision
       5 of directory <filename>foo</filename></quote> to mean a
       specific collection of directory entries and properties.  Now
@@ -167,7 +197,17 @@
       that would be a lie too; there may be other changes to
       <filename>foo</filename> we haven't yet received, because we
       haven't updated yet.</para>
+      -->
+    <para>从理论上讲, 我们把 <quote>在版本号为 5 时, 目录
+        <filename>foo</filename></quote> 定义成目录项和属性的特定集合. 现在
+      假设我们从目录 <filename>foo</filename> 里添加并删除了一些文件, 然后
+      提交, 这时候如果我们再说 <quote>版本号为 5 时, 目录
+        <filename>foo</filename></quote> 是不对的. 然而, 如果把目录
+      <filename>foo</filename> 的版本号更新到最新版, 这时候再说 <quote>版本号
+        为 5 时, 目录 <filename>foo</filename></quote> 仍然是不对的, 因为
+      目录中可能还有其他一些文件的更新没有收到.</para>
     
+      <!--
     <para>Subversion deals with this problem by quietly tracking
       committed adds and deletes in the <filename>.svn</filename>
       area.  When you eventually run <userinput>svn update</userinput>,
@@ -177,7 +217,15 @@
       say that you have a <quote>perfect</quote> revision of a
       directory.</emphasis> Most of the time, your working copy will
       contain <quote>imperfect</quote> directory revisions.</para>
+      -->
+    <para>Subversion 解决该问题的方法是在目录 <filename>.svn</filename> 内
+      安静地跟踪已提交的添加和删除. 当用户最终执行 <userinput>svn
+        update</userinput> 时, 所有的信息都将与仓库同步, 目录的新版本号也
+      会被正确地设置. <emphasis>因此, 只有在更新后才能放心地说你已经拥有了
+        一个具有 <quote>完美</quote> 版本号的目录.</emphasis> 在大多数时候,
+      你的工作目录总是存在 <quote>不完美</quote> 的目录版本号.</para>
     
+      <!--
     <para>Similarly, a problem arises if you attempt to commit
       property changes on a directory.  Normally, the commit would
       bump the working directory's local revision number.  But again,
@@ -186,6 +234,11 @@
       <emphasis>Therefore, you are not allowed to commit
       property changes on a directory unless the directory is
       up to date.</emphasis></para>
+      -->
+  <para>类似的, 当你试图提交目录的属性修改时可能会引起另一个问题. 通常情况
+    下, 提交操作将会更新目录的本地版本号, 但这仍然是在撒谎, 因为还未执行更新
+    操作, 因此可能存在目录项的添加和删除未在目录中体现出来. <emphasis>因此,
+      只有在目录完全更新之后, 你才能提交目录的属性修改.</emphasis></para>
 
     <para>For more discussion about the limitations of directory
       versioning, see <xref linkend="svn.basic.in-action.mixedrevs"/>.</para>
@@ -197,25 +250,43 @@
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.forcvs.disconnected">
+      <!--
     <title>More Disconnected Operations</title>
+      -->
+    <title>更多的无连接操作</title>
 
+      <!--
     <para>In recent years, disk space has become outrageously cheap
       and abundant, but network bandwidth has not.  Therefore, the
       Subversion working copy has been optimized around the scarcer
       resource.</para>
+      -->
+    <para>最近几年, 磁盘的存储空间越来越大, 价格也更加便宜, 但网络带宽却
+      并非如此, 因此 Subversion 的工作副本专门针对贫乏的网络资源进行了优化.
+    </para>
 
+      <!--
     <para>The <filename>.svn</filename> administrative directory
       serves the same purpose as the <filename>CVS</filename>
       directory, except that it also stores read-only,
       <quote>pristine</quote> copies of your files.  This allows you
       to do many things offline:</para>
+      -->
+    <para>Subversion 工作副本的管理目录 <filename>.svn</filename> 与 CVS
+      的管理目录 <filename>CVS</filename> 具有相同的目的, 但有所不同的是
+      <filename>.svn</filename> 还存放着文件的只读 <quote>原始</quote> 副本,
+      这就允许用户在离线的情况下执行多种操作:</para>
     
     <variablelist>
       
       <varlistentry>
         <term><command>svn status</command></term>
         <listitem>
+      <!--
           <para>Shows you any local changes you've made (see <xref
+            linkend="svn.tour.cycle.examine.status"/>)</para>
+      -->
+        <para>显示本地修改 (见 <xref
             linkend="svn.tour.cycle.examine.status"/>)</para>
         </listitem>
       </varlistentry>
@@ -223,7 +294,11 @@
       <varlistentry>
         <term><command>svn diff</command></term>
         <listitem>
+      <!--
           <para>Shows you the details of your changes (see <xref
+            linkend="svn.tour.cycle.examine.diff"/>)</para>
+      -->
+        <para>显示本地修改的细节 (见 <xref
             linkend="svn.tour.cycle.examine.diff"/>)</para>
         </listitem>
       </varlistentry>
@@ -231,22 +306,38 @@
       <varlistentry>
         <term><command>svn revert</command></term>
         <listitem>
+      <!--
           <para>Removes your local changes (see <xref
             linkend="svn.tour.cycle.revert"/>)</para>
+      -->
+        <para>撤消本地修改 (见 <xref linkend="svn.tour.cycle.revert"/>)</para>
         </listitem>
       </varlistentry>
 
     </variablelist>
 
+      <!--
     <para>Also, the cached pristine files allow the Subversion client
       to send differences when committing, which CVS cannot do.</para>
+      -->
+    <para>另外, 缓存在本地的原始文件允许 Subversion 客户端在提交时只发送
+      差异部分, 而这是 CVS 所不支持的.</para>
 
+      <!--
     <para>The last subcommand in the list&mdash;<command>svn
+                           ### TODO
       revert</command>&mdash;is new.  It will not only remove local
       changes, but also unschedule operations such as adds and
       deletes.  Although deleting the file and then running <userinput>svn
       update</userinput> will still work, doing so distorts the true
+                           ### TODO
       purpose of updating.  And, while we're on this subject&hellip;</para>
+      -->
+    <para>相对于 CVS, 列表中的最后一个子命令&mdash;<command>svn
+        revert</command>&mdash;是一条全新的子命令. 它不仅可以撤消本地修改,
+      还能撤消未提交的添加和删除. 虽然在删除后再执行 <userinput>svn
+        update</userinput> 可以达到同样的效果, 但是这样做实际上已经曲解了
+      命令 <command>svn update</command> 的目的.</para>
 
   </sect1>
 
@@ -254,12 +345,20 @@
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.forcvs.status-vs-update">
+      <!--
     <title>Distinction Between Status and Update</title>
+      -->
+    <title>状态与更新的区别</title>
 
+      <!--
     <para>Subversion attempts to erase a lot of the confusion
       between the <command>cvs status</command> and
       <command>cvs update</command> commands.</para>
+      -->
+    <para>Subversion 尽最大的努力去消除 <command>cvs status</command> 与
+      <command>cvs update</command> 之间的混乱关系.</para>
 
+      <!--
     <para>The <command>cvs status</command> command has two purposes:
       first, to show the user any local modifications in the working
       copy, and second, to show the user which files are out of date.
@@ -271,50 +370,87 @@
       the <option>-n</option> option, this has the side effect of
       merging repository changes they may not be ready to deal
       with.</para>
+      -->
+    <para>命令 <command>cvs status</command> 包含 2 个目的: 第一是显示工作
+      副本里的本地修改, 第二是显示哪些文件是过时的. 但不幸的是, 由于
+      <command>cvs status</command> 的输出信息难以阅读, 因此很多用户根本不
+      会用它, 而是渐渐地养成了一种习惯, 那就是用 <command>cvs update</command>
+      或 <command>cvs -n update</command> 来替代 <command>cvs status</command>.
+      如果用户忘记加上选项 <option>-n</option>, 那么 <command>cvs
+        update</command> 将会把仓库中的修改合并到本地, 而用户此时可能还没有
+      准备好合并.</para>
 
+      <!--
     <para>Subversion removes this muddle by making the output of
       <command>svn status</command> easy to read for both humans and
       parsers.  Also, <command>svn update</command> prints only
       information about files that are updated,
       <emphasis>not</emphasis> local modifications.</para>
+      -->
+    <para>为消除这种混乱的状况, Subversion 让 <command>svn status</command>
+      的输出信息既容易被人阅读, 也容易被程序解析. 而且 <command>svn
+        update</command> 只打印被更新的文件信息, <emphasis>不再</emphasis>
+      输出与本地修改有关的信息.</para>
 
     <sect2 id="svn.forcvs.status-vs-update.status">
+      <!--
       <title>Status</title>
+      -->
+      <title>状态</title>
 
+      <!--
       <para><command>svn status</command> prints all files that have
         local modifications.  By default, the repository is not
         contacted.  While this subcommand accepts a fair number of
         options, the following are the most commonly used ones:</para>
+      -->
+      <para><command>svn status</command> 会输出所有的具有本地修改的文件,
+        而且在默认情况下, 它不会去访问仓库. 该命令可授受的选项比较多, 但
+        其中最常用的选项有以下这些:</para>
 
       <variablelist>
         <varlistentry>
           <term><option>-u</option></term>
           <listitem>
+      <!--
             <para>Contact the repository to determine, and then display,
               out-of-dateness information.</para>
+      -->
+            <para>访问仓库, 从而判断出工作副本中的哪些文件已经过时了, 并
+              输出这些过时的文件.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
           <term><option>-v</option></term>
           <listitem>
+      <!--
             <para>Show <emphasis>all</emphasis> entries under
               version control.</para>
+      -->
+            <para>显示 <emphasis>所有的</emphasis>, 被版本控制的项目.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
           <term><option>-N</option></term>
           <listitem>
+      <!--
             <para>Run nonrecursively (do not descend into
               subdirectories).</para>
+      -->
+            <para>非递归执行 (即不要对子目录执行操作).</para>
           </listitem>
         </varlistentry>
       </variablelist>
 
+      <!--
       <para>The <command>svn status</command> command has two output
         formats.  In the default <quote>short</quote> format, local
         modifications look like this:</para>
+      -->
+      <para>命令 <command>svn status</command> 的输出格式有 2 种, 默认是
+        <quote>短</quote> 格式, 此时含有本地修改的文件将显示成:</para>
 
       <informalexample>
         <screen>
@@ -324,9 +460,13 @@ M       bar/baz.c
 </screen>
       </informalexample>
 
-      <para>If you specify the <option>--show-updates</option>
+      <!--
+      <para>If you specify the <option>- -show-updates</option>
         (<option>-u</option>) option, a longer output format is
         used:</para>
+      -->
+      <para>如果添加了选项 <option>--show-updates</option>
+        (<option>-u</option>), 将使用 <quote>长</quote> 格式:</para>
 
       <informalexample>
         <screen>
@@ -339,6 +479,7 @@ Status against revision:   1066
 </screen>
       </informalexample>
 
+      <!--
       <para>In this case, two new columns appear.  The second column
         contains an asterisk if the file or directory is out of date.
         The third column shows the working copy's revision number of the
@@ -348,28 +489,57 @@ Status against revision:   1066
         the repository.  (The absence of any revision number next to
         <filename>bloo.png</filename> means that it doesn't yet exist in
         the working copy.)</para>
+      -->
+      <para>在上面的例子中新出现了两列. 如果文件或目录已经过时, 那么输出中的第
+        2 列将显示一个星号; 第 3 列是项目在工作副本中的版本号. 从输出中可以看
+        到, 如果我们更新工作副本, <filename>faces.html</filename> 将会被更新,
+        而 <filename>bloo.png</filename> 则是仓库中新增的一个文件.
+        (<filename>bloo.png</filename> 的左边没有出现版本号明该文件在工作副本
+        中还不存在.)</para>
 
+      <!--
       <para>For a more detailed discussion of <command>svn
         status</command>, including an explanation of the status codes
         shown in the previous example, see
         <xref linkend="svn.tour.cycle.examine.status" />.</para>
+      -->
+      <para>关于 <command>svn status</command> 的更多介绍, 包括如何理解
+        输出信息中的状态码, 见 <xref linkend="svn.tour.cycle.examine.status"/>.
+      </para>
 
     </sect2>
 
     <sect2 id="svn.forcvs.status-vs-update.update">
+      <!--
       <title>Update</title>
+      -->
+      <title>更新</title>
 
+      <!--
       <para><command>svn update</command> updates your working copy,
         and prints only information about files that it updates.</para>
+      -->
+      <para>命令 <command>svn update</command> 会更新你的工作副本, 并输出
+        与被更新文件有关的信息.</para>
 
+      <!--
       <para>Subversion has combined CVS's <literal>P</literal> and
         <literal>U</literal> codes into just <literal>U</literal>.  When
         a merge or conflict occurs, Subversion simply prints
         <literal>G</literal> or <literal>C</literal>, rather than a
         whole sentence about it.</para>
+      -->
+      <para>Subversion 把 CVS 的 <literal>P</literal> 和 <literal>U</literal>
+        这两个状态码合并成一个状态码, <literal>U</literal>. 如果在更新时发生
+        合并或冲突, Subversion 将只打印状态码 <literal>G</literal> 或
+        <literal>C</literal>, 而不是一整句话.</para>
 
+      <!--
       <para>For a more detailed discussion of <command>svn
         update</command>, see <xref linkend="svn.tour.cycle.update" />.</para>
+      -->
+    <para>关于 <command>svn update</command> 的更多介绍, 见 <xref
+        linkend="svn.tour.cycle.update" />.</para>
 
     </sect2>
 
@@ -379,16 +549,26 @@ Status against revision:   1066
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.forcvs.branches-and-tags">
+      <!--
     <title>Branches and Tags</title>
+      -->
+    <title>分支与标签</title>
 
+      <!--
     <para>Subversion doesn't distinguish between filesystem space and
       <quote>branch</quote> space; branches and tags are ordinary
       directories within the filesystem.  This is probably the single
       biggest mental hurdle that a CVS user will need to cross.  Read
       all about it in <xref linkend="svn.branchmerge"/>.</para>
+      -->
+    <para>Subversion 并不区分文件系统空间与 <quote>分支</quote> 空间, 分支与
+      标签仅仅是文件系统中的普通目录而已. 这大概是 CVS 用户需要跨越的最大的
+      心理障碍. 关于分支与标签的更多信息, 见 <xref
+        linkend="svn.branchmerge"/>.</para>
 
     <warning>
 
+      <!--
       <para>Since Subversion treats branches and tags as ordinary
         directories, your project's various lines of development
         probably live in subdirectories of the main project directory.
@@ -400,6 +580,13 @@ Status against revision:   1066
         content for each and every one of its branches and tags.
         <footnote><para>That is, providing you don't run out of disk
         space before your checkout finishes.</para></footnote></para>
+      -->
+  <para>由于 Subversion 把分支和标签当成普通的目录看待, 项目的各个开发
+    线通常位于项目根目录的子目录内, 因此用户在为特定的开发线进行开发时,
+    需要使用开发线对应的子目录 URL 进行检出, 而不是项目的根 URL. 如果
+    用户不小心检出了项目的根目录, 那么用户将得到一个具有项目全部内容的
+    工作副本, 其中包括了所有的分支与标签.<footnote><para>假设在检出完成
+        前, 磁盘的存储空间不会被耗尽.</para></footnote></para>
     </warning>
 
   </sect1>
@@ -409,20 +596,36 @@ Status against revision:   1066
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.forcvs.properties">
+      <!--
     <title>Metadata Properties</title>
+      -->
+    <title>元数据属性</title>
 
+      <!--
     <para>A new feature of Subversion is that you can attach arbitrary
       metadata (or <quote>properties</quote>) to files and
       directories.  Properties are arbitrary name/value pairs
       associated with files and directories in your working
       copy.</para>
+      -->
+    <para>相对于 CVS, Subversion 的一项新特性是允许用户在文件和目录上添加
+      任意的元数据 (或者说 <quote>属性</quote>). 属性是一对任意的 名字/值
+      组合, 它们可以被关联到工作副本的文件与目录上.</para>
     
+      <!--
     <para>To set or get a property name, use the <command>svn
       propset</command> and <command>svn propget</command>
       subcommands.  To list all properties on an object, use
       <command>svn proplist</command>.</para>
+      -->
+    <para>为了设置或获取一个属性的值, 要用到命令 <command>svn propset</command>
+      和 <command>svn propget</command>. 为了得到某个文件或目录上的所有属性,
+      使用 <command>svn proplist</command>.</para>
 
+      <!--
     <para>For more information, see <xref linkend="svn.advanced.props"/>.</para>
+      -->
+    <para>关于属性的更多信息, 见 <xref linkend="svn.advanced.props"/>.</para>
 
   </sect1>
 
@@ -430,8 +633,12 @@ Status against revision:   1066
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.forcvs.conflicts">
+      <!--
     <title>Conflict Resolution</title>
+      -->
+    <title>冲突解决</title>
 
+      <!--
     <para>CVS marks conflicts with inline <quote>conflict
       markers,</quote> and then prints a <literal>C</literal> during
       an update or merge operation.  Historically, this has caused
@@ -440,7 +647,14 @@ Status against revision:   1066
       by on their terminal.  They often forget that the conflict
       markers are even present, and then accidentally commit files
       containing those conflict markers.</para>
+      -->
+    <para>CVS 使用内联的 <quote>冲突标记</quote> 来标记冲突, 并在更新或
+      合并过程中打印状态码 <literal>C</literal>. 从历史角度来看, 这种做法
+      造成了很多问题, 因为 CVS 做得还不够多. 很多用户会忘记 (或者根本不看)
+      在终端上匆匆闪过的 <literal>C</literal>, 导致文件里的冲突标记还没被
+      清除就把文件给提交了.</para>
 
+      <!--
     <para>Subversion solves this problem in a pair of ways.  First,
       when a conflict occurs in a file, Subversion records the fact
       that the file is in a state of conflict, and won't allow you to
@@ -450,6 +664,13 @@ Status against revision:   1066
       instead of having to go back and do so after the update or merge
       operation completes.  See <xref linkend="svn.tour.cycle.resolve"
       /> for more about conflict resolution in Subversion.</para>
+      -->
+  <para>Subversion 通过两种方式解决这一问题. 首先, 如果文件发生了冲突,
+    Subversion 将把文件置于冲突状态下, 除非用户显式地清除文件的冲突状态,
+    否则的话 Subversion 将禁止用户提交修改. 第二, Subversion 提供了交互式的
+    冲突解决过程, 它允许用户在冲突发生时就开始处理冲突, 而不是在更新与合并
+    全部做完后, 再回过头来处理冲突. 关于冲突解决的更多信息, 见
+    <xref linkend="svn.tour.cycle.resolve"/>.</para>
 
   </sect1>
 
@@ -457,8 +678,12 @@ Status against revision:   1066
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.forcvs.binary-and-trans">
+      <!--
     <title>Binary Files and Translation</title>
+      -->
+    <title>二进制文件与转换</title>
 
+      <!--
     <para>In the most general sense, Subversion handles binary files
       more gracefully than CVS does.  Because CVS uses RCS, it can
       only store successive full copies of a changing binary file.
@@ -466,12 +691,24 @@ Status against revision:   1066
       binary differencing algorithm, regardless of whether they
       contain textual or binary data.  That means all files are
       stored differentially (compressed) in the repository.</para>
+      -->
+    <para>在通常情况下, 与 CVS 相比, Subversion 能够更加高效地处理二进制文件,
+      因为 CVS 使用了 RCS, 它只能存放被修改的二进制文件的完整副本. 而对于
+      Subversion 而言, 无论文件是否包含二进制数据, 它都能使用二进制差异算法
+      表示文件之间的差异, 这就意味着所有被修改的文件在仓库中都只存放差异
+      部分 (而且还是压缩过的).</para>
     
+      <!--
     <para>CVS users have to mark binary files with
       <option>-kb</option> flags to prevent data from being
       garbled (due to keyword expansion and line-ending translations).
       They sometimes forget to do this.</para>
+      -->
+    <para>为了防止二进制文件发生错乱 (由于关键字展开和行结束符转换), CVS
+      用户必须为它们指定选项 <option>-kv</option>, 但用户有时候会忘记这件
+      事.</para>
 
+      <!--
     <para>Subversion takes the more paranoid route.  First, it never
       performs any kind of keyword or line-ending translation unless
       you explicitly ask it to do so (see
@@ -480,14 +717,29 @@ Status against revision:   1066
       details).  By default, Subversion treats all file data as
       literal byte strings, and files are always stored in the
       repository in an untranslated state.</para>
+      -->
+    <para>Subversion 采取了更为偏执的路线. 首先, 除非用户显式地要求
+      Subversion, 否则的话它不会执行任何关键字展开或行结束符转换 (更多的
+      信息见 <xref linkend="svn.advanced.props.special.keywords"/> 和
+      <xref linkend="svn.advanced.props.special.eol-style"/>). 默认情况下,
+      Subversion 把所有文件的内容都看成是字节序列, 而且在把文件存放到仓库
+      中时不会做任何转换.</para>
 
+      <!--
     <para>Second, Subversion maintains an internal notion of whether a
       file is <quote>text</quote> or <quote>binary</quote> data, but
       this notion is <emphasis>only</emphasis> extant in the working
       copy.  During an <command>svn update</command>, Subversion will
       perform contextual merges on locally modified text files, but
       will not attempt to do so for binary files.</para>
+      -->
+    <para>第二, 对于某个文件是 <quote>文本</quote> 文本, 还是
+      <quote>二进制</quote> 文件, Subversion 有它自己的一套内部概念, 但这套
+      概念 <emphasis>只在</emphasis> 工作副本中才会显现出来. 执行 <command>svn
+        update</command> 时, Subversion 将为含有本地修改的文本文件执行基于上下
+      文的合并, 但不会对含有本地修改的二进制文件做相同的合并操作.</para>
 
+      <!--
     <para>To determine whether a contextual merge is possible,
       Subversion examines the <literal>svn:mime-type</literal>
       property.  If the file has no <literal>svn:mime-type</literal>
@@ -501,6 +753,17 @@ Status against revision:   1066
       <literal>svn:mime-type</literal> property on the file being
       added.  (If Subversion guesses wrong, the user can always remove
       or hand-edit the property.)</para>
+      -->
+    <para>为了判断是否可以对某个文件执行基于上下文的合并, Subversion 将查看
+      文件的 <literal>svn:mime-type</literal> 属性. 如果文件没有设置属性
+      <literal>svn:mime-type</literal>, 或者属性值表示文件的 MIME 类型是
+      文本的 (例如 <literal>text/*</literal>), Subversion 就会认为它是个文本
+      文件; 否则的话则认为它是二进制文件. 当用户执行 <command>svn
+        import</command> 和 <command>svn add</command> 时, Subversion 也会
+      通过自己的二进制检测算法来判断文件的 MIME 类型, 如果 Subversion 猜出
+      了文件的 MIME 类型, 它 (可能) 会自动地为新增的文件设置
+      <literal>svn:mime-type</literal> 属性值. (如果 Subversion 猜错了,
+      用户总是可以删除或手动设置 <literal>svn:mime-type</literal> 属性.)</para>
 
   </sect1>
 
