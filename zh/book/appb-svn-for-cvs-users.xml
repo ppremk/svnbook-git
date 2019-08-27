@@ -26,7 +26,7 @@
     break habits&mdash;ones that you forgot were odd to begin
     with.</para>
       -->
-  <para>虽然 Subversion 目标是完全取代 CVS, 但是为了克服 CVS 的某些
+  <para>虽然 Subversion 的目标是完全取代 CVS, 但是为了克服 CVS 的某些
     <quote>缺陷</quote>, 新的特性和设计上的变化要求 CVS 用户必须改掉某些
     习惯.</para>
 
@@ -60,7 +60,7 @@
       looked after the 54th commit).</para>
       -->
     <para>而在 Subversion 中, 仓库看起来像是一个单一的文件系统, 每次提交
-      都会生成一颗全新的文件系统树, 从本质上讲仓库就是文件系统树组成的数
+      都会生成一棵全新的文件系统树, 从本质上讲仓库就是文件系统树组成的数
       组. 每一棵文件系统树都由一个单一的版本号进行标记, 当人们在谈论
       <quote>版本号 54</quote> 时, 其实他们谈论的是一棵特定的文件系统树
       (或者说在第 54 次提交后的文件系统).</para>
@@ -240,8 +240,12 @@
     操作, 因此可能存在目录项的添加和删除未在目录中体现出来. <emphasis>因此,
       只有在目录完全更新之后, 你才能提交目录的属性修改.</emphasis></para>
 
+      <!--
     <para>For more discussion about the limitations of directory
       versioning, see <xref linkend="svn.basic.in-action.mixedrevs"/>.</para>
+      -->
+    <para>关于对目录进行版本控制而产生的限制, 其更详细的讨论见
+      <xref linkend="svn.basic.in-action.mixedrevs"/>.</para>
 
   </sect1>
 
@@ -333,7 +337,7 @@
                            ### TODO
       purpose of updating.  And, while we're on this subject&hellip;</para>
       -->
-    <para>相对于 CVS, 列表中的最后一个子命令&mdash;<command>svn
+    <para>相对于 CVS, 上面列表中的最后一个子命令&mdash;<command>svn
         revert</command>&mdash;是一条全新的子命令. 它不仅可以撤消本地修改,
       还能撤消未提交的添加和删除. 虽然在删除后再执行 <userinput>svn
         update</userinput> 可以达到同样的效果, 但是这样做实际上已经曲解了
@@ -772,16 +776,29 @@ Status against revision:   1066
   <!-- ================================================================= -->
   <sect1 id="svn.forcvs.modules">
 
+      <!--
     <title>Versioned Modules</title>
+      -->
+    <title>版本化的模块</title>
 
+      <!--
     <para>Unlike CVS, a Subversion working copy is aware that it has
       checked out a module.  That means if somebody changes the
       definition of a module (e.g., adds or removes components), a
       call to <command>svn update</command> will update the working
       copy appropriately, adding and removing components.</para>
+      -->
+    <para>与 CVS 不同, Subversion 的工作副本能够意识到它是否检出了一个
+      模块, 这就意味着如果有人修改了模块的定义 (例如添加或删除了某些组件),
+      执行 <command>svn update</command> 将使得工作副本相应地添加或删除那些
+      组件.</para>
 
+      <!--
     <para>Subversion defines modules as a list of directories within a
       directory property; see <xref linkend="svn.advanced.externals"/>.</para>
+      -->
+    <para>Subversion 把模块定义成目录属性内的一系列目录列表, 见 <xref
+        linkend="svn.advanced.externals"/>.</para>
 
   </sect1>
 
@@ -790,8 +807,12 @@ Status against revision:   1066
   <!-- ================================================================= -->
   <sect1 id="svn.forcvs.auth">
 
+      <!--
     <title>Authentication</title>
+      -->
+    <title>认证</title>
 
+      <!--
     <para>With CVS's pserver, you are required to log in to the server
       (using the <command>cvs login</command> command) before
       performing any read or write operation&mdash;you sometimes even
@@ -804,17 +825,37 @@ Status against revision:   1066
       are username and password, a client certificate, or even both).
       So if your repository is world-readable, you will not be
       required to authenticate at all for read operations.</para>
+      -->
+    <para>由于 CVS pserver 的要求, 用户在读写仓库&mdash;甚至包括匿名操作&mdash;
+      前必须先登录服务器 (使用命令 <command>cvs login</command>). 而 Subversion
+      使用的服务器程序是 Apache <command>httpd</command> 或
+      <command>svnserve</command>, 在一开始用户不用提供任何凭证, 只有在用户的
+      操作要求认证时, 服务器才会要求用户提供凭证 (这些凭证可以是用户名和密码,
+      客户端证书, 或两者都要提供). 所以说如果你的仓库对外是可读的, 那你在执行
+      读操作时就不必认证.</para>
 
+      <!--
     <para>As with CVS, Subversion still caches your credentials on
       disk (in your <filename>~/.subversion/auth/</filename>
       directory) unless you tell it not to by using the
-      <option>--no-auth-cache</option> option.</para>
+      <option>- -no-auth-cache</option> option.</para>
+      -->
+    <para>和 CVS 一样, Subversion 仍然会在本地 (具体的位置是
+      <filename>~/.subversion/auth/</filename>) 缓存用户的证书, 除非用户显式
+      地用选项 <option>--no-auth-cache</option> 告诉 Subversion 禁止缓存
+      证书.</para>
 
+      <!--
     <para>The exception to this behavior, however, is in the case of
       accessing an <command>svnserve</command> server over an SSH
       tunnel, using the <literal>svn+ssh://</literal> URL scheme.  In
       that case, the <command>ssh</command> program unconditionally
       demands authentication just to start the tunnel.</para>
+      -->
+    <para>然而这里有个例外. 如果 <command>svnserve</command> 运行在 SSH 隧道
+      之上, 访问仓库的 URL 模式将会变成 <literal>svn+ssh://</literal>, 这时候
+      <command>ssh</command> 程序将会无条件地要求用户认证, 仅仅是为了启动隧道.
+    </para>
 
   </sect1>
 
@@ -823,11 +864,16 @@ Status against revision:   1066
   <!-- ================================================================= -->
   <sect1 id="svn.forcvs.convert">
 
+      <!--
     <title>Converting a Repository from CVS to Subversion</title>
+      -->
+    <title>把 CVS 仓库转换成 Subversion 仓库</title>
 
+      <!--
     <para>Perhaps the most important way to familiarize CVS users with
       Subversion is to let them continue to work on their projects
       using the new system.  And while that can be somewhat
+      ### TODO
       accomplished using a flat import into a Subversion repository of
       an exported CVS repository, the more thorough solution involves
       transferring not just the latest snapshot of their data, but all
@@ -838,7 +884,16 @@ Status against revision:   1066
       among other complications.  Still, a handful of tools claim
       to at least partially support the ability to convert
       existing CVS repositories into Subversion ones.</para>
+      -->
+    <para>为了让 CVS 用户熟悉 Subversion, 或许最重要的方法就是让他们使用
+      Subversion 继续原来的工作. 虽然可以简单地把 CVS 仓库中的最新数据直接
+      导入到 Subversion 仓库里, 但最好的做法是同时也把全部的修改历史导入到
+      Subversion 仓库. 这种问题解决起来非常困难, 因为它涉及到在缺少原子性
+      的前提下推断出变更集, 而且还要在两种完全正交的分支策略之间完成转换,
+      其中还会出现各种复杂的情况. 不过, 仍然存在一些工具可以部分支持从 CVS
+      仓库到 Subversion 仓库的转换.</para>
 
+      <!--
     <para>The most popular (and mature) conversion tool is
       cvs2svn (<ulink url="http://cvs2svn.tigris.org/"/>), a Python
       program originally created by members of Subversion's own
@@ -848,6 +903,13 @@ Status against revision:   1066
       finishes, the result is either a Subversion repository or a
       portable Subversion dump file representing your code's history.
       See the web site for detailed instructions and caveats.</para>
+      -->
+    <para>最流行 (并且最成熟) 的转换工具是 cvs2svn (<ulink
+        url="http://cvs2svn.tigris.org/"/>), 它由 Subversion 社区成员使用
+      Python 开发而成. 这个工具只需运行一次: 它会多次扫描 CVS 仓库, 尽最大
+      的努力去推断出提交, 分支和标签. 命令执行结束后, 最终得到的是一个
+      Subversion 仓库或可移植的 Subversion 转储文件. 关于命令的详细用法
+      和注意事项, 请浏览官网.</para>
 
   </sect1>
 
