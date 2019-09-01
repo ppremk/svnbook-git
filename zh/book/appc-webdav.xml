@@ -172,6 +172,7 @@
       实现. DeltaV 规范中的很多内容对 Subversion 没什么用, 于是
       <command>mod_dav_svn</command> 就没有实现它们.</para>
 
+      <!--
     <para>A long-held debate in the Subversion developer community
       about whether it was worthfile to remedy either of these
       situations eventually reached closure, with the Subversion
@@ -187,6 +188,7 @@
       work will be done to increase coverage of the
       specification&mdash;Subversion is intentionally moving away from
       strict DeltaV as its primary HTTP-based protocol.</para>
+      -->
     <para>对于是否要去纠正上面所说的两种结果, Subversion 开发者社区最终达成
       了一致, 他们正式宣布放弃完全支持 DeltaV 的计划. 在 Subversion 1.7,
       客户端和服务器引入了大量的, 不标准的 DeltaV 简化实现<footnote><para>
@@ -202,17 +204,28 @@
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.webdav.autoversioning">
+      <!--
     <title>Autoversioning</title>
+      -->
+    <title>自动版本控制</title>
 
     <para>
       <indexterm>
         <primary>WebDAV</primary>
         <secondary>autoversioning</secondary>
-      </indexterm>While the Subversion client is not a full DeltaV client, and
+      </indexterm>
+      虽然 Subversion 客户端和服务器都不是一个完整的 DeltaV 客户端和服务器,
+      但仍然存在值得人们高兴的 WebDAV 互操作性:
+      <firstterm>自动版本控制</firstterm>
+      (<firstterm>autoversioning</firstterm>).</para>
+      <!--
+      While the Subversion client is not a full DeltaV client, and
       the Subversion server is not a full DeltaV server, there's still a
       glimmer of WebDAV interoperability to be happy about:
       <firstterm>autoversioning</firstterm>.</para>
+      -->
 
+      <!--
     <para>Autoversioning is an optional feature defined in the DeltaV
       standard.  A typical DeltaV server will reject an ignorant
       WebDAV client attempting to do a <literal>PUT</literal> to a
@@ -227,7 +240,19 @@
       versioning requests, performing a commit under the hood.  In
       other words, it allows a DeltaV server to interoperate with
       ordinary WebDAV clients that don't understand versioning.</para>
+      -->
+    <para>自动版本控制是 DeltaV 标准定义的可选功能. 如果客户端尝试在一个
+      被版本控制的文件上执行 <literal>PUT</literal> 操作, 一个典型的 DeltaV
+      服务器将会拒绝这个操作. 为了修改被版本控制的文件, 服务器希望收到一系列
+      合理的版本控制请求, 就像 <literal>MKACTIVITY</literal>,
+      <literal>CHECKOUT</literal>, <literal>PUT</literal> 和
+      <literal>CHECKIN</literal>. 但是, 如果 DeltaV 服务器支持自动版本控制,
+      来自 WebDAV 客户端的写请求将会被接受, 服务器的表现就像是客户端
+      <emphasis>已经</emphasis> 发送了一系列的版本控制请求, 并且在底层执行
+      了提交操作. 换句话说, 自动版本控制允许 DeltaV 服务器与普通的, 不了解
+      版本控制的 WebDAV 客户端实现互操作.</para>
 
+      <!--
     <para>Because so many operating systems already have integrated
       WebDAV clients, the use case for this feature can be incredibly
       appealing to administrators working with non-technical users.
@@ -239,12 +264,27 @@
       versioning everything.  Any administrator (or knowledgeable
       user) can still use a Subversion client to search history and
       retrieve older versions of data.</para>
+      -->
+    <para>由于很多操作系统已经内建了 WebDAV 客户端, 因此自动版本控制对于
+      经常和非技术用户打交道的管理员来说非常有吸引力. 假设在一个由普通人组成
+      的办公室中, 人们都是使用 Microsoft Windows 和 Mac OS, 每个人都
+      <quote>挂载</quote> 了 Subversion 仓库, 看起来就是一个普通的网络共享
+      目录, 他们可以按照和原来一样的步骤使用共享目录: 打开文件, 编辑文件,
+      然后保存. 同时, 版本控制将由服务器自动完成. 管理员 (或懂得技术的用户)
+      仍然可以使用 Subversion 客户端来搜索修改历史和检索数据的旧版本.</para>
 
+      <!--
     <para>This scenario isn't fiction&mdash;it's real and it works.
       To activate autoversioning in <command>mod_dav_svn</command>,
       use the <literal>SVNAutoversioning</literal> directive within
       the <filename>httpd.conf</filename> <literal>Location</literal>
       block, like so:</para>
+      -->
+    <para>上面所说的场景并非虚构&mdash;它是真实存在的, 而且工作得很好. 为了
+      开启 <command>mod_dav_svn</command> 的自动版本控制功能, 在 Apache
+      配置文件 <filename>httpd.conf</filename> 的
+      <literal>Location</literal> 配置块里, 加上配置指令
+      <literal>SVNAutoversioning</literal>, 就像:</para>
 
     <informalexample>
       <programlisting>
@@ -256,11 +296,16 @@
 </programlisting>
     </informalexample>
 
+      <!--
     <para>When Subversion autoversioning is active, write requests
       from WebDAV clients result in automatic commits.  A generic log
       message is automatically generated and attached to each
       revision.</para>
+      -->
+    <para>当 Subversion 的自动版本控制功能开启后, 来自 WebDAV 客户端的写
+      请求将会生成自动的提交, 其日志消息也是自动生成.</para>
 
+      <!--
     <para>Before activating this feature, however, understand what
       you're getting into.  WebDAV clients tend to do
       <emphasis>many</emphasis> write requests, resulting in a huge
@@ -271,7 +316,16 @@
       file-write results in two separate commits.  Also consider that
       many applications auto-save every few minutes, resulting in even
       more commits.</para>
+      -->
+    <para>在开启自动版本控制之前, 管理员需要明白这会导致什么后果. WebDAV
+      客户端倾向于执行 <quote>很多</quote> 写请求, 这会产生更多的自动提交.
+      例如, 保存文件时, 许多 WebDAV 客户端将先做一次空文件的
+      <literal>PUT</literal> 操作 (为了占住文件名), 接下来再为真正的文件
+      内容做另一次 <literal>PUT</literal> 操作, 一次单独的写操作将生成两
+      次分开的提交. 同时还要考虑到很多应用程序每隔几分钟, 就会自动保存一次,
+      这会产生更多的自动提交.</para>
 
+      <!--
     <para>If you have a post-commit hook program that sends email, you
       may want to disable email generation either altogether or on
       certain sections of the repository; it depends on whether you
@@ -282,7 +336,15 @@
       The trick is to look for a revision property
       named <literal>svn:autoversioned</literal>.  If present, the
       commit was made by a generic WebDAV client.</para>
+      -->
+    <para>如果管理员使用钩子 post-commit 来发送邮件, 那么他可能想要完全
+      或者只在仓库的某些部分上禁止邮件通知, 这取决于管理员是否还觉得大量
+      涌入的通知邮件仍然值得阅读. 另外, 一个聪明的 post-commit 应该能够
+      区分某个提交是由自动版本控制生成的, 还是由通常的 Subversion 提交操作
+      生成的, 区分的技巧是查看版本号属性 <literal>svn:autoversioned</literal>,
+      如果该属性存在, 则说明该版本号是由 WebDAV 客户端导致的.</para>
 
+      <!--
     <para>Another feature that may be a useful complement for
       Subversion's autoversioning comes from Apache's
       <command>mod_mime</command> module.  If a WebDAV client adds a
@@ -297,6 +359,17 @@
       tasks.  Instead, you can use the
       <literal>ModMimeUsePathInfo</literal> directive in your
       Subversion <literal>&lt;Location&gt;</literal> block:</para>
+      -->
+    <para>为了使 Subversion 的自动版本控制更加完整, 需要用到 Apache 的
+      <command>mod_mime</command> 模块. 如果 WebDAV 客户端为仓库添加了一个
+      新文件, 用户将没有机会设置新文件的 <literal>svn:mime-type</literal>
+      属性, 这可能会导致当用户在 WebDAV 共享目录中浏览文件时, 文件的图标
+      是一个通用图标, 不与任何打开程序关联. 一种解决办法是由管理员 (或懂得
+      技术的用户) 检出一个工作副本, 然后手工修改文件的
+      <literal>svn:mime-type</literal> 属性. 但这种做法似乎很麻烦, 特别是当
+      文件数量特别巨大时, 更好的做法是在 Apache 配置文件
+      <filename>httpd.conf</filename> 的 <literal>Location</literal> 配置块里,
+      加上配置指令 <literal>ModMimeUsePathInfo</literal>:</para>
 
     <informalexample>
       <programlisting>
@@ -311,6 +384,7 @@
 </programlisting>
     </informalexample>
 
+      <!--
     <para>This directive allows <command>mod_mime</command> to attempt
       automatic deduction of the MIME type on new files that enter the
       repository via autoversioning.  The module looks at the file's
@@ -318,6 +392,12 @@
       matches some common patterns, the
       file's <literal>svn:mime-type</literal> property will be set
       automatically.</para>
+      -->
+    <para>当新文件通过自动版本控制被添加到仓库中时, 配置指令
+      <literal>ModMimeUsePathInfo</literal> 允许 <command>mod_mime</command>
+      模块去尝试推导新文件的 MIME 类型. 为了推导文件的 MIME 类型,
+      <command>mod_mime</command> 模块会去查看文件的推展名和内容, 如果符合
+      某种常见模式, 将自动设置 <literal>svn:mime-type</literal> 属性.</para>
 
   </sect1>
 
