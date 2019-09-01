@@ -1,31 +1,55 @@
 <!-- -*- sgml -*- -->
 
 <appendix id="svn.webdav">
+      <!--
   <title>WebDAV and Autoversioning</title>
+      -->
+  <title>WebDAV 与自动版本控制</title>
 
+      <!--
   <para>WebDAV is an extension to HTTP, and it is growing more
     and more popular as a standard for file sharing.  Today's
     operating systems are becoming extremely web-aware, and many now
     have built-in support for mounting <quote>shares</quote> exported
     by WebDAV servers.</para>
+      -->
+  <para>WebDAV 是一个 HTTP 扩展, 作为一种文件共享标准, 它正变得越来越流行.
+    现在的操作系统越来越注重网络方面的支持, 并且很多系统都把挂载 WebDAV
+    服务器导出的目录作为内建功能.</para>
 
+      <!--
   <para>If you use Apache as your Subversion network server, to
     some extent you are also running a WebDAV server.  This appendix
     gives some background on the nature of this protocol, how
     Subversion uses it, and how well Subversion interoperates with
     other software that is WebDAV-aware.</para>
-
+      -->
+  <para>如果你使用 Apache 作为 Subversion 的服务器, 那么这同时也意味着
+    你使用了 WebDAV 服务器. 本附录将介绍 WebDAV 协议的背景知识, Subversion
+    如何使用它, 以及 Subversion 如何与支持 WebDAV 的其他软件进行交互操作.
+  </para>
 
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.webdav.basic">
+      <!--
     <title>What Is WebDAV?</title>
+      -->
+    <title>什么是 WebDAV?</title>
 
     <para>
       <indexterm>
         <primary>WebDAV</primary>
-      </indexterm><firstterm>DAV</firstterm> stands
+      </indexterm>
+      <firstterm>DAV</firstterm> 表示 <quote>分布式创作与版本控制</quote>
+      (Distributed Authoring and Versioning). RFC 2518 为 HTTP 1.1 定义了
+      一系列的概念和相应的扩展, 使用 Web 成为一个更加通用的读写媒介. RFC
+      2518 的基本思想是支持 WebDAV 的服务器看起来就像是一个普通的文件服务器,
+      客户端可以 <quote>挂载</quote> 基于 HTTP 协议的共享目录, 这些共享目录
+      就像其他网络文件系统那样 (例如 NFS 和 SMB).</para>
+      <!--
+      <firstterm>DAV</firstterm> stands
       for <quote>Distributed Authoring and Versioning.</quote> RFC
       2518 defines a set of concepts and accompanying extension
       methods to HTTP 1.1 that make the Web a more universal
@@ -33,13 +57,20 @@
       web server can act like a generic file server; clients
       can <quote>mount</quote> shared folders over HTTP that behave
       much like other network filesystems (such as NFS or SMB).</para>
+      -->
 
+      <!--
     <para>The tragedy, though, is that despite the acronym, the RFC
       specification doesn't actually describe any sort of version
       control.  Basic WebDAV clients and servers assume that only one
       version of each file or directory exists, and that it can be
       repeatedly overwritten.</para>
+      -->
+    <para>但不幸的是, 撇开名字不说, RFC 2518 并没有介绍任何形式的版本控制,
+      最基本的 WebDAV 客户端和服务器假设文件或目录只存在一个版本, 而且可以
+      被重复写入.</para>
 
+      <!--
     <para>Because RFC 2518 left out versioning concepts, another
       committee was left with the responsibility of writing RFC 3253 a
       few years later.  The new RFC adds versioning concepts to
@@ -48,9 +79,17 @@
       WebDAV/DeltaV clients and servers are often called just
       <quote>DeltaV</quote> programs, since DeltaV implies the
       existence of basic WebDAV.</para>
+      -->
+    <para>由于 RFC 2518 没有介绍与版本控制相关的内容, 几年后, 另一个委员会
+      开始负责起草 RFC 3253. 新的 RFC 为 WebDAV 添加了与版本控制相关的内容,
+      在 <quote>DAV</quote> 后面加上了 <quote>V</quote>&mdash;于是有了术语
+      <quote>DeltaV</quote>. WebDAV/DeltaV 客户端和服务器经常被称作
+      <quote>DeltaV</quote> 程序, 因为 DeltaV 是 WebDAV 的超集.</para>
 
+      <!--
     <para>The original WebDAV standard has been widely successful.
       Every modern computer operating system has a general WebDAV
+                       ### TODO
       client built in (details to follow), and a number of popular
       standalone applications are also able to speak
       WebDAV&mdash;Microsoft Office, Dreamweaver, and Photoshop, to
@@ -59,7 +98,14 @@
       de facto open source standard.  Several other
       commercial WebDAV servers are available, including Microsoft's own
       IIS.</para>
+      -->
+    <para>原始的 WebDAV 标准获得了广泛的支持. 每一个现代化的操作系统都自带了
+      一个通用的 WebDAV 客户端 (后面会谈到细节), 还有很多流行的独立应用程序
+      都支持 WebDAV&mdash;Microsoft Office, Dreamweaver, 和 Photoshop.
+      在服务器端, Apache HTTP 服务器从 1998 年起就开始提供 WebDAV 服务, 除
+      了开源软件, 还有商业 WebDAV 服务器可供使用, 例如 Microsoft 的 II.</para>
 
+      <!--
     <para>DeltaV, unfortunately, has not been so successful.  It's
       very difficult to find any DeltaV clients or servers.  The few
       that do exist are relatively unknown commercial products, and
@@ -72,7 +118,15 @@
       users.  Finally, some believe that DeltaV remains unpopular
       because there's still no open source server product that
       implements it well.</para>
+      -->
+    <para>但不幸的是, DeltaV 就没这么成功. 支持 DeltaV 的客户端或服务器
+      非常少, 即使有, 也是不怎么知名的商业产品, 而且在不同产品之间进行互操作非
+      常困难. DeltaV 如此不受待见的原因不是非常清楚, 但有人觉得这是因为规范实
+      在太复杂了, 还有人觉得是 WebDAV 的功能已经足够吸引人了 (即使是最不懂技术
+      的用户也非常喜欢网络文件共享功能), 对于大多数用户而已, 版本控制功能并
+      不是非常有必要, 还有人觉得是因为还出现支持 DeltaV 的开源服务器.</para>
 
+      <!--
     <para>When Subversion was still in its design phase, it seemed
       like a great idea to use Apache as a network server.  It already
       had a module to provide WebDAV services.  DeltaV was a
@@ -82,20 +136,41 @@
       Unfortunately, DeltaV has a very specific versioning model that
       doesn't quite line up with Subversion's model.  Some concepts
       were mappable; others were not.</para>
+      -->
+    <para>当 Subversion 还处于设计阶段时, 设计人员就觉得把 Apache 作为网络
+      服务器是一个好主意, 那时它已经具备了一个可以提供 WebDAV 服务的模块.
+      DeltaV 在当时是一个相对较新的规范, 开发人员希望 Subversion 的服务器
+      模块 (<command>mod_dav_svn</command>) 最终可以演变成 DeltaV 的开源实现.
+      但不幸的是, DeltaV 有一个非常明确的版本控制模型, 而这个模型与 Subversion
+      并非完全契合, 有些概念可以互相映射, 但有些不行.</para>
 
+      <!--
     <para>What does this mean, then?</para>
+      -->
+    <para>那么这会导致什么后果?</para>
 
+      <!--
     <para>First, the Subversion client is not a fully implemented
       DeltaV client.  It needs certain types of things from the server
       that DeltaV itself cannot provide, and thus is largely dependent
       on a number of Subversion-specific
       HTTP <literal>REPORT</literal> requests that
       only <command>mod_dav_svn</command> understands.</para>
+      -->
+    <para>首先, Subversion 客户端并非是一个 DeltaV 客户端的完整实现. DeltaV
+      无法提供 Subversion 客户端所需的某些特定信息, 后者非常依赖于 Subversion
+      特有的 HTTP <literal>REPORT</literal> 请求, 而这些请求只有
+      <command>mod_dav_svn</command> 能够支持.</para>
 
+      <!--
     <para>Second, <command>mod_dav_svn</command> is not a
       fully realized DeltaV server.  Many portions of the DeltaV
       specification were irrelevant to Subversion, and thus were left
       unimplemented.</para>
+      -->
+    <para>然后, <command>mod_dav_svn</command> 也不是一个 DeltaV 服务器的完整
+      实现. DeltaV 规范中的很多内容对 Subversion 没什么用, 于是
+      <command>mod_dav_svn</command> 就没有实现它们.</para>
 
     <para>A long-held debate in the Subversion developer community
       about whether it was worthfile to remedy either of these
@@ -112,6 +187,14 @@
       work will be done to increase coverage of the
       specification&mdash;Subversion is intentionally moving away from
       strict DeltaV as its primary HTTP-based protocol.</para>
+    <para>对于是否要去纠正上面所说的两种结果, Subversion 开发者社区最终达成
+      了一致, 他们正式宣布放弃完全支持 DeltaV 的计划. 在 Subversion 1.7,
+      客户端和服务器引入了大量的, 不标准的 DeltaV 简化实现<footnote><para>
+          Subversion 开发人员把这种 DeltaV 标准的变体非正式地称为
+          <quote>HTTPv2</quote>.</para></footnote> 以后可能还会出现更多的
+      定制化实现. 新版 Subversion 仍然会继续提供旧版 Subversion 已有的 DeltaV
+      功能, 但不会继续增加对 DeltaV 标准规范的支持&mdash;Subversion 已经放弃
+      把严格的 DeltaV 作为它的主要的, 基于 HTTP 的协议.</para>
 
   </sect1>
 
