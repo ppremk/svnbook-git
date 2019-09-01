@@ -1,3 +1,4 @@
 include ../tools/Makefile.base
-FO_XSLTPROC_OPTS = --param fop1.extensions 1
+HTML_XSLTPROC_OPTS = --stringparam l10n.gentext.language zh_cn
+FO_XSLTPROC_OPTS = --param fop1.extensions 1 --stringparam l10n.gentext.language zh_cn
 L10N_REVISION = r

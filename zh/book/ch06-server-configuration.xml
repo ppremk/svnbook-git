@@ -666,8 +666,8 @@
             or <command>svnserve</command> configured with SASL.</para>
       -->
           <para>如果管理员想把已有的身份系统 (LDAP, Active Directory, NTLM,
-            X.509 等) 集成到 Subversion 服务器中, 那就必须选择基于 Apache
-            的服务器, 或配有 SASL 的 <command>svnserve</command>.</para>
+            X.509 等) 集成到 Subversion 服务器中, 那就必须选择 Apache
+            服务器, 或配有 SASL 的 <command>svnserve</command>.</para>
         </listitem>
 
         <listitem>
@@ -1135,7 +1135,8 @@ service svn
           启动带有选项 <option>-t</option> 的 <command>svnserve</command>,
           相反, SSH 守护进程会替用户执行这个操作) 程序
           <command>svnserve</command> 像往常一样运行 (通过
-          <filename>stdin</filename> 和 <filename>stdout</filename> 通信),
+          <filename>stdin</filename> 和 <filename>stdout</filename> 与其它
+          进程通信),
           它还假设网络数据可以通过某种隧道, 被自动重定向回客户端. 当隧道代理
           以这种方式启动 <command>svnserve</command> 时, 要确保被授权的用户
           对仓库数据库文件具有读写权限, 在本质上它和本地用户通过
@@ -1193,7 +1194,7 @@ service svn
           来更好的体验. 为了以守护进程的方式启动 <command>svnserve</command>,
           我们需要打开一个控制台, 输入命令, 然后任由控制台永远地运行下去. 然而,
           在后台运行的 Windows 服务可以在系统引导时自动启动, 可以使用和其他
-          Windows 服务一样的管理接口, 启动或停止服务.</para>
+          Windows 服务一样的管理接口来启动或停止服务.</para>
       <!--
           If your Windows system is a descendant of Windows NT
           (Windows 2000 or newer), you can
@@ -1703,7 +1704,7 @@ $
       -->
         <para>现在, 你所需要的所有变量都在 <filename>svnserve.conf</filename>
           的 <literal>[general]</literal> 部分. 先从修改这些变量的值开始:
-          为存放用户名和密码的文件选择一个名字; 选择一个认证域:</para>
+          为存放用户名和密码的文件选择一个名字, 以及选择一个认证域:</para>
 
         <informalexample>
           <programlisting>
@@ -1925,12 +1926,13 @@ authz-db = authzfile
           the package maintainer as to whether SASL support was
           compiled in.</para>
       -->
-        <para>Cyrus Simple Authenticated and Security Layer 是卡耐基梅隆
+        <para>Cyrus Simple Authenticated and Security Layer (简称 SASL)
+          是卡耐基梅隆
           大学开发的一款开源软件, 可以给任意一种网络协议添加通用的认证和
           授权功能, 从 Subversion 1.5 开始, <command>svnserve</command>
           服务器和 <command>svn</command> 客户端开始支持 SASL. 不过 SASL
           并非总是可用, 如果 Subversion 是你自己编译安装的, 为了利用 SASL,
-          系统中至少要安装 SASL 2.1 版, 并且在 Subversion 构建过程能够检测
+          系统中至少要安装 SASL 2.1 版, 并且在 Subversion 构建过程中能够检测
           到 SASL 的存在. 执行 <userinput>svn --version</userinput> 时,
           Subversion 客户端命令行工具将报告 Cyrus SASL 是否可用. 如果你安装
           的是已经编译好了的二进制包, 那你就要检查 SASL 是否被编译到了安装
@@ -4568,7 +4570,7 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
       <para>如果 Subversion 客户端工具在编译时开启了 OpenSSL, 它就可以使用
         <literal>https://</literal> 形式的 URL 连接 Apache 服务器, 于是所有
         的网络流量都会使用每连接会话密钥进行加密. Subversion 客户端所使用的
-        函数库 WebDAV 不仅可以验证服务器的证书, 当服务器提出要求时, 它也可
+        WebDAV 函数库不仅可以验证服务器的证书, 当服务器提出要求时, 它也可
         以为客户端提供证书.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -4848,7 +4850,7 @@ ssl-client-cert-password = somepassword
         Subversion 服务争取更高的性能. 本节将介绍几种比较重要的配置修改,
         但是需要注意的某些 <filename>httpd.conf</filename> 配置选项将会影响
         Apache 服务器的整体表现, 而不仅仅是 Subversion 服务, 因此管理员在
-        修改配置时, 需要考虑对其他服务器的影响.</para>
+        修改配置时, 需要考虑对其他服务的影响.</para>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
       <sect3 id="svn.serverconfig.httpd.perf.keepalive">
@@ -4895,7 +4897,7 @@ ssl-client-cert-password = somepassword
         <para>但是还有另一个配置指令用于限制客户端在一个单独的连接内, 可以提交
           的请求数量: <literal>MaxKeepAliveRequests</literal>, 它的默认值是
           <literal>100</literal>. 对于版本较旧的 Subversion 而言, 它的默认值
-          已经足够了, 但是 Subversion 1.8 使得了不同的 HTTP 通信函数库 (称为
+          已经足够了, 但是 Subversion 1.8 使用了不同的 HTTP 通信函数库 (称为
           Serf), 为了获取特定的零碎信息, Serf 更倾向于发送若干个小请求, 而不是
           请求服务器在一个单独的响应中, 传回一大块数据. 因此, 我们建议把
           至少把 <literal>MaxKeepAliveRequests</literal> 设置为
@@ -5076,7 +5078,7 @@ MaxKeepAliveRequests 1000
             <command>mod_dav_svn</command> 将返回最新的版本, 这种做法最大的
             好处是你可以把 Subversion URL (例如某篇文档的 URL) 发给其他同事,
             而这些 URL 将始终指向文档的最新版. 当然, 你也可以把这些 URL 作
-            为超链接, 放到网站上.</para>
+            为超链接放到网站上.</para>
 
       <!--
           <para>As of Subversion 1.6, <command>mod_dav_svn</command>
@@ -5097,8 +5099,8 @@ MaxKeepAliveRequests 1000
       -->
           <para>从 Subversion 1.6 开始, <command>mod_dav_svn</command> 支持
             一种用于查看旧版本文件与目录的 URL 语法. 这种语法使用 URL 的查询
-            字符串部分指定挂勾版本号和 (或) 实施版本号, Subversion 将会把这些
-            版本号对应的文件与目录显示到网页浏览器上. 为了指定挂勾版本号, 在
+            字符串部分指定限定版本号和 (或) 实施版本号, Subversion 将会把这些
+            版本号对应的文件与目录显示到网页浏览器上. 为了指定限定版本号, 在
             URL 的查询字符串部分添加
             <literal>p=<replaceable>PEGREV</replaceable></literal> 形式的
             名字/值 对 (其中, <replaceable>PEGREV</replaceable> 是一个版本号);
@@ -5144,7 +5146,7 @@ http://host.example.com/repos/project/trunk/README.txt?r=1234
             peg revision is handy:</para>
       -->
           <para>如果你想查看的文件在最新版中已经被删除了, 那又该怎么办? 这
-            时候就要用到挂勾版本号:</para>
+            时候就要用到限定版本号:</para>
 
           <informalexample>
             <programlisting>
@@ -5157,7 +5159,7 @@ http://host.example.com/repos/project/trunk/deleted-thing.txt?p=321
             operative revision specifiers to fine-tune the exact item
             you wish to view:</para>
       -->
-          <para>当然, 你还可以结合使用挂勾版本号和实施版本号, 更精细地指定待
+          <para>当然, 你还可以结合使用限定版本号和实施版本号, 更精细地指定待
             查看的项目:</para>
 
           <informalexample>
@@ -5177,7 +5179,7 @@ http://host.example.com/repos/project/trunk/renamed-thing.txt?p=123&amp;r=21
       -->
           <para>上面的 URL 将显示对象在版本号 21 时的内容, 这个对象在版本
             号为 123 时, 位于 <filename>/trunk/renamed-thing.txt</filename>.
-            关于 <quote>挂勾版本号</quote> 和 <quote>实施版本号</quote> 的详细
+            关于 <quote>限定版本号</quote> 和 <quote>实施版本号</quote> 的详细
             介绍, 见 <xref linkend="svn.advanced.pegrevs" />, 理解它们可能会
             让你感到有点头晕.</para>
 
@@ -5209,7 +5211,7 @@ http://host.example.com/repos/project/trunk/renamed-thing.txt?p=123&amp;r=21
       -->
           <para>通常情况下, 关键字替换是作为工作副本管理工作的一部分, 在客户
             端执行, 所以说在不使用工作副本的情况下, 让服务器递送一份关键字被
-            替换后的文件, 是一件非常方便的事件.</para>
+            替换后的文件是一件非常方便的事情.</para>
 
       <!--
           <para>For example, if you wish to see the latest version of a
@@ -5372,7 +5374,7 @@ http://host.example.com/repos/project/trunk/README.txt?kw=1
             的目录列表, 此时用户可能会觉得目录列表的外观过于简单, 缺乏美感
             (或者说无法引起人们的兴趣). 为了允许对目录列表的外观进行修改,
             Subversion 提供了一个 XML 索引特性. 在仓库的
-            <filename>httpd.conf</filename> 的 <literal>Location</literal>
+            <filename>httpd.conf</filename> <literal>Location</literal>
             配置块里, 如果增加一个配置指令 <literal>SVNIndexXSLT</literal>,
             <command>mod_dav_svn</command> 在显示目录列表时, 将生成一个 XML
             输出, 并引用到用户所选择的 XSLT 样式表:</para>
@@ -5451,8 +5453,8 @@ http://host.example.com/repos/project/trunk/README.txt?kw=1
       -->
           <para>如果某个用户在浏览器上打开了 URL
             <literal>http://host.example.com/svn/</literal>, 他将会看所有的
-            位于 <filename>/var/svn</filename> 目录内的 Subversion 仓库. 显然,
-            这样做不太安全, 所以 <literal>SVNListParentPath</literal> 的默认
+            位于 <filename>/var/svn</filename> 目录内的 Subversion 仓库. 这样
+            做显然不太安全, 所以 <literal>SVNListParentPath</literal> 的默认
             值是 <literal>off</literal>.</para>
 
         </sect4>
@@ -5521,7 +5523,7 @@ http://host.example.com/repos/project/trunk/README.txt?kw=1
           难的工作&mdash;大多数操作看起来就像是一系列神秘的
           <literal>PROPPATCH</literal>, <literal>GET</literal>,
           <literal>PUT</literal> 和 <literal>REPORT</literal> 请求. 更为严重
-          的是, 很多客户端操作发送的是几乎相同的请求序列, 这就使得分离这些
+          的是, 很多客户端操作发送的是几乎相同的请求序列, 这就使得分辨这些
           请求变得更加困难.</para>
 
       <!--
@@ -5663,7 +5665,7 @@ CustomLog logs/svn_logfile "%t %u %{SVN-ACTION}e" env=SVN-ACTION
           日志并不少见. 只有当日志能被有效地处理时, 它才是有价值的, 而庞大的
           日志文件很快就会让分析难以为继. 关于如何管理 Apache HTTP 服务器日志,
           有很多标准的做法可供参考, 介绍它们已经超出了本书的范畴, 管理员应该
-          选择一种最适合他们的日志轮转与归档方式.</para>
+          选择一种最适合他们的日志轮换与归档方式.</para>
 
       <!--
         <para>But what if Subversion is simply generating too much log
@@ -7441,8 +7443,8 @@ sally = r
             里配置的任意一个人类可读懂的仓库名, 都将被授权模块忽略. 前面已经
             说过, 访问权限配置文件里的节名必须引用到对服务器敏感的仓库路径.
         </para></footnote>, 而 <command>svnserve</command> 则使用完整的, 相对
-        于服务器根目录 (由选项 <option>--root</option> (<option>-r</option>))
-        的仓库路径.</para>
+        于服务器根目录 (由命令行选项 <option>--root</option>
+        (<option>-r</option>) 指定) 的仓库路径.</para>
 
       <warning>
       <!--
