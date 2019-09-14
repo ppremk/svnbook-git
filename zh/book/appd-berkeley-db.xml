@@ -301,8 +301,12 @@ $
   <!-- ================================================================= -->
   <!-- ================================================================= -->
   <sect1 id="svn.berkeleydb.maintenance">
+      <!--
     <title>Maintaining Berkeley DB Repositories</title>
+      -->
+    <title>维护 Berkeley DB 仓库</title>
 
+      <!--
     <para>In theory, the maintenance of a BDB-backed repository
       involves essentially the same steps used to maintain an
       FSFS-backed repository.  Historically, though, Berkeley DB
@@ -310,11 +314,19 @@ $
       loving care, Baby.</para></footnote> in order to stay
       operational.  This section will cover some of the unique aspects
       of Berkeley DB administration.</para>
+      -->
+    <para>从理论上讲, 基于 BDB 的仓库的维护步骤和基于 FSFS 的仓库是一样的,
+      但是从历史上看, 基于 BDB 的仓库需要一点额外的关怀才能保持运转. 本节
+      将介绍管理 Berkeley DB 的独特之处.</para>
 
     <!-- =============================================================== -->
     <sect2 id="svn.berkeleydb.maintenance.recovery">
+      <!--
       <title>Berkeley DB Recovery</title>
+      -->
+      <title>Berkeley DB 恢复</title>
 
+      <!--
       <para>As mentioned in
         <xref linkend="svn.berkeleydb.limitations.faulttolerance" />,
         a Berkeley DB repository can sometimes be left in a frozen
@@ -328,7 +340,16 @@ $
         Still, wedged Berkeley DB repositories do occur, and an
         administrator needs to know how to safely deal with this
         circumstance.</para>
+      -->
+      <para>在 <xref linkend="svn.berkeleydb.limitations.faulttolerance" />
+        提到过, 如果未被恰当地关闭, 基于 Berkeley DB 的仓库可能会处于无法
+        访问的状态. 如果发生了这种情况, 管理员需要把数据库回滚到一个一致的
+        状态. 这是基于 BDB 的仓库特有的问题&mdash;如果仓库的后端存储是 FSFS,
+        则根本不会出现这种问题. 从 1.4 (Berkeley DB 版本是 4.4) 开始,
+        Subversion 对异常情况的适应能力越来越强, 但还是有可能出现仓库
+        被卡住的情况, 这时候管理必须知道如何安全地处理这种状况.</para>
 
+      <!--
       <para>To protect the data in your repository, Berkeley
         DB uses a locking mechanism.  This mechanism ensures that
         portions of the database are not simultaneously modified by
@@ -345,7 +366,17 @@ $
         the repository; we try to clear up the confusion caused by
         this terminology collision in the sidebar <xref
         linkend="svn.advanced.locking.meanings" />.)</para>
+      -->
+    <para>为了保护仓库里的数据, Berkeley DB 使用了锁机制. 锁机制保证了数据库
+      的各个部分不会被多个访问者同时修改, 并且每个进程从数据库中读取时都能
+      看到处于正确状态的数据. 当一个进程需要修改数据库时的某个数据时, 它首先
+      查看目标数据上是否存在锁, 如果目标数据未被锁定, 进程将会锁定数据, 然后
+      修改数据, 最后放锁. 其他进程将一直等待, 直到持锁的进程放锁后, 它们才能
+      继续访问目标数据. (这和仓库内的版本化文件上的锁一点关系也没有, 我们已
+      在 <xref linkend="svn.advanced.locking.meanings" /> 专门向读者解释过.)
+    </para>
 
+      <!--
       <para>In the course of using your Subversion repository, fatal
         errors or interruptions can prevent a process from having the
         chance to remove the locks it has placed in the database.  The
@@ -354,7 +385,14 @@ $
         access the repository hang indefinitely (since each new
         accessor is waiting for a lock to go away&mdash;which isn't
         going to happen).</para>
+      -->
+      <para>在使用 Subversion 仓库的过程中, 致命的错误或中断会使得进程没
+        有机会去移除数据库上锁, 由此造成的结果是后端数据库系统被
+        <quote>卡住</quote> 了. 这种情况一旦发生, 任何试图访问仓库的进程
+        都会被无限期地挂起 (因为每个进程都在等待解锁, 但原本要去解锁的进程
+        已经不存在了).</para>
 
+      <!--
       <para>If this happens to your repository, don't panic.  The
         Berkeley DB filesystem takes advantage of database
         transactions, checkpoints, and prewrite journaling to ensure
@@ -368,24 +406,44 @@ $
 
       <para>Instead, use the following recipe to attempt to
         <quote>unwedge</quote> your repository:</para>
+      <para>
+      -->
+      <para>如果你的仓库的后端数据库被卡住了, 不要惊慌. Berkeley DB 文件
+        系统利用数据库事务, 检查点和预写日志来保证只有最具灾难性的事件
+        才会造成数据库环境被永久地损坏. 一个谨慎的仓库管理员会经常对仓库
+        进行备份, 但现在还不用去存储柜那儿取备份, 而是先按照下面的步骤
+        来尝试恢复仓库:</para>
    
       <orderedlist>
         <listitem>
+      <!--
           <para>Make sure no processes are accessing (or
             attempting to access) the repository.  For networked
             repositories, this also means shutting down the Apache HTTP
             Server or svnserve daemon.</para>
+      -->
+          <para>先确保没有进程正在访问 (或试图访问) 仓库, 对于连接到网络上
+            的仓库, 这还意味着要关闭 Apache HTTP 服务器或 svnserve 守护进程.
+          </para>
         </listitem>
         <listitem> 
+      <!--
           <para>Become the user who owns and manages the repository.
             This is important, as recovering a repository while
             running as the wrong user can tweak the permissions of the
             repository's files in such a way that your repository will
             still be inaccessible even after it is 
             <quote>unwedged.</quote></para>
+      -->
+          <para>切换到拥有仓库的用户账号. 这一步很重要, 如果账号不正确, 在
+            恢复仓库时可能会改变仓库内文件的权限, 使得即使仓库恢复后也无法
+            被其他人访问.</para>
         </listitem>
         <listitem>
+      <!--
           <para>Run the <command>svnadmin recover</command> command:</para>
+      -->
+          <para>执行命令 <command>svnadmin recover</command>:</para>
           <informalexample>
             <screen>
 $ svnadmin recover /var/svn/repos
@@ -397,13 +455,20 @@ The latest repos revision is 19.
 $
 </screen>
           </informalexample>
+      <!--
           <para>This command may take many minutes to complete.</para>
+      -->
+          <para>命令可能会花好几分钟才会结束.</para>
         </listitem>
         <listitem>
+      <!--
           <para>Restart the server process.</para>
+      -->
+          <para>重启服务器进程.</para>
         </listitem>
       </orderedlist>
             
+      <!--
       <para>This procedure fixes almost every case of repository
         wedging.  Make sure that you run this command as the user that
         owns and manages the database, not just as
@@ -414,13 +479,24 @@ $
         are owned by <literal>root</literal>, which means that even
         after you restore connectivity to your repository, regular
         users will be unable to access it.</para>
+      -->
+      <para>上面的步骤能够解决导致仓库卡住的大部分问题. 要确保在执行命令时
+        的身份是拥有仓库的用户, 而是不是简单地切换到 <literal>root</literal>
+        用户. 在恢复过程中可能会从头开始创建各种数据库文件 (例如共享内存区).
+        如果以 <literal>root</literal> 身份执行命令, 将导致新建的文件只属于
+        <literal>root</literal>, 这就意味着即使仓库重新上线, 普通用户也没
+        办法访问.</para>
 
     </sect2>
 
     <!-- =============================================================== -->
     <sect2 id="svn.berkeleydb.maintenance.bdblogs">
+      <!--
       <title>Purging unused Berkeley DB logfiles</title>
+      -->
+      <title>清除不再有用的 Berkeley DB 日志文件</title>
 
+      <!--
       <para>Prior to the release of Berkeley DB 4.2, the largest
         offender of disk space usage with respect to BDB-backed
         Subversion repositories were the logfiles in which Berkeley DB
@@ -432,7 +508,16 @@ $
         many changes along the way
         <emphasis>between</emphasis> states.  Thus, they can grow
         and accumulate quite rapidly.</para>
+      -->
+      <para>在 Berkeley DB 4.2 发布之前, 对于基于 BDB 的 Subversion 仓库
+        而言, 消耗磁盘最多的罪魁祸首就是 Berkeley DB 的日志文件, 这些日志
+        文件是 Berkeley DB 在修改真正地数据库文件之前所写的预写日志. 预写
+        日志记录了数据库从一个状态到另一个状态过程中所产生的所有活动, 而
+        数据库文件都任意一个时刻都代表了一个特定的状态, 日志文件包含了
+        状态 <emphasis>之间</emphasis> 的所有修改, 因此日志会增长地非常
+        迅速, 消耗的磁盘存储空间也很可观.</para>
 
+      <!--
       <para>Fortunately, beginning with the 4.2 release of Berkeley
         DB, the database environment has the ability to remove its
         own unused logfiles automatically.  Any
@@ -440,7 +525,7 @@ $
         when compiled against Berkeley DB version 4.2 or later
         will be configured for this automatic logfile removal.  If
         you don't want this feature enabled, simply pass the
-        <option>--bdb-log-keep</option> option to the
+        <option>- -bdb-log-keep</option> option to the
         <command>svnadmin create</command> command.  If you forget
         to do this or change your mind at a later time, simply edit
         the <filename>DB_CONFIG</filename> file found in your
@@ -449,7 +534,19 @@ $
         DB_LOG_AUTOREMOVE</literal> directive, and then run
         <command>svnadmin recover</command> on your repository to
         force the configuration changes to take effect.</para>
+      -->
+      <para>幸运的是, 从 Berkeley DB 4.2 开始, 数据库环境开始支持自动删除
+        不再有用的日志文件. 如果 <command>svnadmin</command> 的 Berkeley DB
+        版本大于或等于 4.2, 那么由它创建的仓库都会把自动删除日志作为默认
+        配置. 如果管理员不希望日志文件被自动删除, 只需要为 <command>svnadmin
+          create</command> 加上选项 <option>--bdb-log-keep</option>. 如果
+        管理员忘记加上选项, 或者是后面又改变了心意, 只需要打开仓库子目录
+        <filename>db</filename> 里的 <filename>DB_CONFIG</filename> 文件,
+        注释掉含有 <literal>set_flags DB_LOG_AUTOREMOVE</literal> 的那一行,
+        然后对仓库执行 <command>svnadmin recover</command>, 使得修改的配置
+        生效.</para>
 
+      <!--
       <para>Without some sort of automatic logfile removal in
         place, logfiles will accumulate as you use your repository.
         This is actually somewhat of a feature of the database
@@ -461,6 +558,14 @@ $
         to conserve space.  Use the <command>svnadmin
         list-unused-dblogs</command> command to list the unused
         logfiles:</para>
+      -->
+      <para>如果不支持日志文件的自动删除, 随着人们不断地使用仓库, 日志文件
+        会不断累积. 保留日志文件也可以算作数据库系统的一项特性&mdash;管理员
+        应该能够在只有日志文件情况下恢复整个数据库, 所以日志文件对于数据库
+        的灾备恢复非常有用. 但是在典型情况下, 管理员希望归档不再被 Berkeley
+        DB 使用的日志文件, 然后从磁盘上删除它们, 以便节省磁盘空间.  命令
+        <command>svnadmin list-unused-dblogs</command> 可以列出不再使用的
+        日志文件:</para>
 
       <informalexample>
         <screen>
@@ -475,6 +580,7 @@ $ rm `svnadmin list-unused-dblogs /var/svn/repos`
       </informalexample>
 
       <warning>
+      <!--
         <para>BDB-backed repositories whose logfiles are used as
           part of a backup or disaster recovery plan should
           <emphasis>not</emphasis> make use of the logfile
@@ -485,6 +591,12 @@ $ rm `svnadmin list-unused-dblogs /var/svn/repos`
           backup system has a chance to copy them elsewhere, the
           incomplete set of backed-up logfiles is essentially
           useless.</para>
+      -->
+        <para>如果基于 BDB 的仓库把日志文件用作备份或灾备恢复计划的一部分,
+          那么我们就 <emphasis>不能</emphasis> 允许自动删除日志文件. 根据
+          日志文件来恢复仓库要求 <emphasis>所有的</emphasis> 的日志都必须
+          留着. 如果在备份系统复制日志文件之前, 日志文件被自动删除了, 那么
+          不完整的日志文件集合对恢复仓库而言起不到半点作用.</para>
       </warning>
 
     </sect2>
