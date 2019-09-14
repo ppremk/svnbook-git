@@ -410,9 +410,10 @@ $
       -->
       <para>如果你的仓库的后端数据库被卡住了, 不要惊慌. Berkeley DB 文件
         系统利用数据库事务, 检查点和预写日志来保证只有最具灾难性的事件
-        才会造成数据库环境被永久地损坏. 一个谨慎的仓库管理员会经常对仓库
-        进行备份, 但现在还不用去存储柜那儿取备份, 而是先按照下面的步骤
-        来尝试恢复仓库:</para>
+        才会造成数据库环境被永久地损坏<footnote><para>例如用一个巨大的
+            电磁铁去接近硬盘.</para></footnote>. 一个谨慎的仓库管理员会
+        经常对仓库进行备份, 但现在还不用去存储柜那儿取备份, 而是先按照下面
+        的步骤来尝试恢复仓库:</para>
    
       <orderedlist>
         <listitem>
@@ -603,8 +604,12 @@ $ rm `svnadmin list-unused-dblogs /var/svn/repos`
 
     <!-- =============================================================== -->
     <sect2 id="svn.berkeleydb.maintenance.bdbutil">
+      <!--
       <title>Berkeley DB Utilities</title>
+      -->
+      <title>Berkeley DB 实用工具</title>
 
+      <!--
       <para>If you're using a Berkeley DB repository, all of
         your versioned filesystem's structure and data live in a set
         of database tables within the <filename>db/</filename>
@@ -613,7 +618,14 @@ $ rm `svnadmin list-unused-dblogs /var/svn/repos`
         be used in conjunction with any of the Berkeley database
         tools, typically provided as part of the Berkeley DB
         distribution.</para>
+      -->
+      <para>如果仓库的后端数据库是 Berkeley DB, 那么版本化文件系统的
+        所有结构和数据都存放在一系列数据库表中, 而这些数据库表位于仓库
+        的 <filename>db/</filename> 子目录内. <filename>db/</filename> 是一
+        个普通的 Berkeley DB 环境目录, 因此可以用 Berkeley DB 数据库工具
+        访问目录, 数据库工具通常由 Berkeley DB 发行版提供.</para>
 
+      <!--
       <para>For day-to-day Subversion use, these tools are
         unnecessary.  Most of the functionality typically needed for
         Subversion repositories has been duplicated in the
@@ -624,7 +636,17 @@ $ rm `svnadmin list-unused-dblogs /var/svn/repos`
         <command>db_archive</command> utility, and <command>svnadmin
         recover</command> reflects the common use cases of the
         <command>db_recover</command> utility.</para>
+      -->
+      <para>在日常工作中使用 Subversion 时, 这些数据库工具都不会被用到,
+        Subversion 仓库所需的大部分维护工作都可以由
+        <command>svnadmin</command> 完成, 例如 Berkeley DB 实用工具
+        <command>db_archive</command> 的部分功能可以由 <command>svnadmin
+          list-unused-dblogs</command> 和 <command>svnadmin
+          list-dblogs</command> 完成, 而 <command>svnadmin recover</command>
+        则反映了 Berkeley DB 实用工具 <command>db_recover</command> 的常见
+        用例.</para>
             
+      <!--
       <para>However, there are still a few Berkeley DB utilities
         that you might find useful.  The <command>db_dump</command>
         and <command>db_load</command> programs write and read,
@@ -645,12 +667,31 @@ $ rm `svnadmin list-unused-dblogs /var/svn/repos`
         utility can provide useful information about the status of
         your Berkeley DB environment, including detailed statistics
         about the locking and storage subsystems.</para>
+      -->
+      <para>然而, 还是存在几个 Berkeley DB 实用工具可能对你有用.
+        <command>db_dump</command> 和 <command>db_load</command> 分别用于
+        读写具有定制化格式的文件, 该文件描述了 Berkeley DB 数据库的键值对.
+        由于 Berkeley DB 数据库在不同的体系结构之间是不可移植的, 利用这种
+        格式的文件管理员就可以实现在不同的主机之间传输数据库, 而不是考虑体系
+        结构或操作系统的差异. 虽然我们也能用 <command>svnadmin
+          dump</command> 和 <command>svnadmin load</command> 完成类似的工作,
+        但 <command>db_dump</command> 和 <command>db_load</command> 做得也
+        很好, 而且快得多. 有时候, 经验丰富的 Berkeley DB 用户还能利用这两个
+        命令在位地对仓库里的数据进行调整, 而这是 Subversion 工具做不到的.
+        另外, <command>db_stat</command> 还能输出关于 Berkeley DB 环境的
+        状态信息, 包括详细的, 关于锁和存储子系统的统计信息.</para>
 
+      <!--
       <para>For more information on the Berkeley DB tool chain,
         visit the documentation section of the Berkeley DB section
         of Oracle's web site, located at <ulink
         url="http://www.oracle.com/technology/documentation/berkeley-db/db/"
         />.</para>
+      -->
+    <para>关于 Berkeley DB 工具链的更多信息, 见 Oracle 维护的 Berkeley DB
+      文档 <ulink
+        url="https://docs.oracle.com/cd/E17275_01/html/api_reference/C/utilities.html"/>.
+    </para>
 
     </sect2>
 
