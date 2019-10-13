@@ -488,7 +488,6 @@ $ svn log -r {2006-11-20}:{2006-11-29}
       control system shouldn't get in the way of your doing these
       things with your version-controlled files and directories,
       either.  Subversion's file management support is quite
-      TODO
       liberating, affording almost as much flexibility for versioned
       files as you'd expect when manipulating your unversioned ones.
       But that flexibility means that across the lifetime of your
@@ -500,7 +499,8 @@ $ svn log -r {2006-11-20}:{2006-11-29}
     -->
     <para>我们经常在自己的系统中对文件和目录进行复制, 移动, 重命名和替换,
       但是版本控制系统不能按照相同的方式操作它所管理的文件与目录. Subversion
-      的文件管理非常灵活, 但是这种灵活性也意味着在仓库的生命周期中, 一个版本
+      的文件管理非常灵活, 几乎和操作未版本化的文化一样灵活.
+      但是这种灵活性也意味着在仓库的生命周期中, 一个版本
       控制对象可能会有多个路径, 而一个路径在不同时间可能表示完全不同的版本控制
       对象, 当用户同这些路径与对象交互时会产生一定的复杂度.</para>
 
@@ -2265,7 +2265,6 @@ from '/site':
             those two properties are the end of the story.  Look for more
             features to be built with inherited properties in future
             releases of Subversion&mdash;a log message templating mechanism
-            TODO
             comes to mind.  In the meantime feel free to use the feature
             however you'd like.  Any piece of versioned metadata you want
             to apply to your whole repository (or large subsections
@@ -2277,7 +2276,8 @@ from '/site':
           <para>目前可继承的属性中起主要作用的是 <literal>svn:auto-props
             </literal> 和 <literal>svn:global-ignores</literal>, 但这并不意味
             着故事就此结束. 在 Subversion 未来的版本里, 我们期待继承属性能加
-            入更多的特性, 例如日志消息模版. 用户想要应用到整个仓库的任意一段
+            入更多的特性, 例如日志消息模版, 与此同时, 请尽情按照你自己的喜好
+            去使用继续属性. 用户想要应用到整个仓库的任意一段
             版本化元数据 (或仓库中的某个较大的部分) 都可以轻易地存放到仓库的
             根目录 (或适当的子目录) 的属性上. 我们相信某些用户和管理员使用
             继承属性的方式可能连我们都未必想像得到.</para>
@@ -4228,8 +4228,9 @@ $ svn status calc
       工作副本里还有一些未被版本控制的项目: 刚从源代码编译出的 <filename>
         calculator</filename> 程序, 一个叫做 <filename>data.c</filename> 的
       源代码文件, 还有几个用于调试的日志文件. 假设用户已经知道编译系统总是会
-      输出一个目标文件 <filename>calculator</filename><footnote><para>这是否就
-          是编译系统的全部功能?</para></footnote>, 而且测试程序总是会留下一些
+      输出一个目标文件 <filename>calculator</filename>
+      <footnote><para>这难道不是构建系统的全部意义吗?</para></footnote>,
+      而且测试程序总是会留下一些
       调试日志文件, 除了用户自己的工作副本, 该项目所有的工作副本都有可能出现
       这些文件. 用户非常清楚地知道, 当他执行 <command>svn status</command> 时,
       并不想看到这些他不感兴趣的文件, 而且他也相信其他人也对它们不感兴趣. 于是,
@@ -5645,7 +5646,8 @@ $
       就会很麻烦, 必须多次切换目录. 另一种选择是利用稀疏目录特性, 检出一个只
       包含了感兴趣的模块的工作副本. 首先为模块的公共父目录检出一个深度为
       <literal>empty</literal> 的工作副本, 然后按照深度 <literal>infinity
-    </literal> 更新感兴趣的模块目录, 就像我们在上一个例子中展示的那样.</para>
+    </literal> 更新感兴趣的模块目录, 就像我们在上一个例子中展示的那样.
+    可以把稀疏目录看成是工作副本中项目的选入系统.</para>
 
     <!--
     <para>The original (Subversion 1.5) implementation of shallow
@@ -5710,7 +5712,6 @@ $ svn update --set-depth infinity many-dirs/wanted-dir-3
     </informalexample>
 
     <!--
-    TODO
     <para>This could be quite tedious, especially since you don't even
       have stubs of these directories in your working copy to deal
       with.  Such a working copy would also have another
@@ -5719,8 +5720,9 @@ $ svn update --set-depth infinity many-dirs/wanted-dir-3
       you won't receive those when you update your working
       copy.</para>
     -->
-    <para>这可能会非常枯燥, 另一个问题是如果有人提交了一个新的子目录, 当
-      你更新工作副本时将看不到这个新的子目录, 这应该不是你想要的效果.</para>
+    <para>这可能会非常枯燥, 尤其是工作副本中还不存在存根目录供用户处理.
+      另一个问题是如果有人在顶层目录下创建了一个新的子目录, 当用户更新
+      工作副本时将看不到这个新的子目录, 这应该不是你想要的效果.</para>
 
     <!--
     <para>Beginning with Subversion 1.6, you can take a different
@@ -6965,15 +6967,14 @@ $
         Subversion can do in this situation&mdash;at the end of the
         day, there's simply no substitution for good interpersonal
         communication.<footnote><para>Except, perhaps, a classic
-        TODO
         Vulcan mind-meld.</para></footnote></para>
     -->
   <para>不幸的是, 这种机制并非毫无缺点. 即使文件设置了属性
     <literal>svn:needs-lock</literal>, 只读提醒也可能不会起作用. 有时候应用
     程序不够规范, 会 <quote>劫持</quote> 只读文件, 然后悄无声息地允许用户修改并
     保存文件. Subversion 对这种情况无能为力&mdash;目前为止还没有什么方法可以
-    完全替代人与人之间的交流<footnote><para>Except, perhaps, a classic Vulcan
-        mind-meld.</para></footnote></para>
+    完全替代人与人之间的交流<footnote><para>除非我们可以像瓦肯人那样做到心灵
+        融合.</para></footnote></para>
 
 
     </sect2>
@@ -7746,8 +7747,9 @@ $
       overlap, modifying different files in the same module, or even
       modifying different lines in the same file.</para>
     -->
-    <para>对开发人员来说, 同时在多个不同版本的代码上工作是一件很平常的事情, 这
-      不一定是因为计划有问题, 因为开发人员常常在阅读某一部分的代码时, 发现另
+    <para>对开发人员而言, 有时候可能会遇到这样一种情况: 在某些代码上完成
+      多个不同的修改.
+      这并非由于糟糕的工作计划, 因为开发人员常常在阅读某一部分的代码时, 发现另
       一部分代码的问题, 又或许是开发人员把一个大修改拆分成几个逻辑性更强的小
       修改, 而这几个小修改还没有全部完成. 很多时候, 这些小修改不能完全包含在一
       个模块里, 修改之间也不能安全地隔开, 修改可能有重叠, 或修改了同一模块
@@ -7787,8 +7789,9 @@ $
       的用户界面技巧. 很多 Web 2.0 网站也提供了类似的机制, 比如 
       <ulink url="http://www.youtube.com/">YouTube</ulink> 和
       <ulink url="http://www.flickr.com/">Flickr</ulink> 的 <quote>标签</quote>
-      (tag), 以及博文的 <quote>类别</quote> (categories). 旧的 <quote>文件与
-        文件夹</quote> 范式对某些应用程序来说过于刻板.</para>
+      (tag), 以及博文的 <quote>类别</quote> (categories). 人们已经明白数据的
+      组织方式非常重要, 但是如何对数据进行组织应该是一个很灵活的概念.
+      旧的 <quote>文件与文件夹</quote> 范式对某些应用程序来说过于刻板.</para>
     <!--
       Subversion provides a <firstterm>changelists</firstterm>
       feature that adds yet another method to the mix.  Changelists
@@ -7807,7 +7810,6 @@ $
       such as <ulink url="http://www.youtube.com/">YouTube</ulink> and
       <ulink url="http://www.flickr.com/">Flickr</ulink>,
       <quote>categories</quote> applied to blog posts, and so on.
-      TODO
       Folks understand today that organization of data is critical,
       but that how that data is organized needs to be a flexible
       concept.  The old files-and-folders paradigm is too rigid for
@@ -8616,7 +8618,8 @@ Store password unencrypted (yes/no)?
     -->
         <para>如果用户贪图方便, 不想每次都输入密码, 那就输入 <literal>yes
           </literal>. 如果用户担心以明文的方式缓存密码不太安全, 而且不想每次
-          都被询问是否要缓存密码, 你可以永久地禁止密码明文缓存.</para>
+          都被询问是否要缓存密码, 你可以永久地禁止密码明文缓存, 或者根据不
+          同的服务器采取不同的策略.</para>
 
         <warning>
       <!--
@@ -9319,7 +9322,10 @@ $
       <para>说明选项 <option>--revision</option> (<option>-r</option>) 重要性
         的最好方式是展示如何正确地使用命令 <command>svnmucc put</command>.
         假设 Harry 想在没有工作副本的情况下修改仓库里的文件
-        <filename>README</filename>, 他要确定的第一件事是针对文件的哪个版本进行
+        <filename>README</filename> (仅针对修改 <filename>README</filename>
+        这个操作而言, 我们假设使用工作副本不会带来其他额外的价值, 例如在提交
+        前执行工作副本里的一个脚本, 以保证 Harry 的修改是符合要求的),
+        他要确定的第一件事是针对文件的哪个版本进行
         修改. 在典型的情况下, 用户总是想修改文件的最新版, 于是 Harry 查询文件
         最后一次被提交的版本号, 并把该版本号对应的文件内容抓取到本地的一个临时
         文件中.</para>
