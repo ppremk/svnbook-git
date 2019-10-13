@@ -45,4 +45,22 @@
       </l:context>
     </l:l10n>
   </l:i18n>
+
+  <xsl:attribute-set name="verbatim.properties">
+    <xsl:attribute name="space-before.minimum">-1em</xsl:attribute>
+    <xsl:attribute name="space-before.optimum">-1em</xsl:attribute>
+    <xsl:attribute name="space-before.maximum">-1em</xsl:attribute>
+    <xsl:attribute name="space-after.minimum">-1.5em</xsl:attribute>
+    <xsl:attribute name="space-after.optimum">-1.5em</xsl:attribute>
+    <xsl:attribute name="space-after.maximum">-1.5em</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="informal.object.properties">
+    <xsl:attribute name="space-before.minimum">-1em</xsl:attribute>
+    <xsl:attribute name="space-before.optimum">-1em</xsl:attribute>
+    <xsl:attribute name="space-before.maximum">-1em</xsl:attribute>
+    <xsl:attribute name="space-after.minimum">-1.5em</xsl:attribute>
+    <xsl:attribute name="space-after.optimum">-1.5em</xsl:attribute>
+    <xsl:attribute name="space-after.maximum">-1.5em</xsl:attribute>
+  </xsl:attribute-set>
 </xsl:stylesheet>
