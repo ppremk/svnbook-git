@@ -1134,7 +1134,7 @@ service svn
           启动带有选项 <option>-t</option> 的 <command>svnserve</command>,
           相反, SSH 守护进程会替用户执行这个操作) 程序
           <command>svnserve</command> 像往常一样运行 (通过
-          <filename>stdin</filename> 和 <filename>stdout</filename> 与其它
+          <filename>stdin</filename> 和 <filename>stdout</filename> 与其他
           进程通信),
           它还假设网络数据可以通过某种隧道, 被自动重定向回客户端. 当隧道代理
           以这种方式启动 <command>svnserve</command> 时, 要确保被授权的用户
@@ -3218,7 +3218,8 @@ arding,no-X11-forwarding,no-pty TYPE1 KEY1 harry@example.com
       -->
       <para>为了能让用户使用 HTTP 协议访问仓库, 你需要 4 项组件, 包含在 2 个
         软件包里. 你需要 Apache <command>httpd</command> 2.0 或更新的版本,
-        (它包含了 <command>mod_dav</command> DAV 模块), Subversion, 以
+        DAV 模块 <command>mod_dav</command> (包含在 <command>httpd</command>
+        软件包里), Subversion, 以
         及随 Subversion 软件包一起发布的 <command>mod_dav_svn</command>
         模块. 这些组件一旦准备完毕, 为仓库添加 HTTP 网络访问能力的步骤就简单
         了:</para>
@@ -3294,9 +3295,9 @@ arding,no-X11-forwarding,no-pty TYPE1 KEY1 harry@example.com
         <filename>httpd.conf</filename> 配置 Apache. 为了让 Apache 加载
         <command>mod_dav_svn</command>, 要用到配置指令
         <literal>LoadModule</literal>, 这条配置指令必须出现在任何与 Subversion
-        有关的配置项之前. 如果你是按照默认方式安装 Apache, 则
-        <command>mod_dav_svn</command> 是被安装在 Apache 安装位置 (通常是
-        <filename>/usr/local/apache2</filename>) 的
+        有关的配置项之前. 如果你是按照默认的布局来安装 Subversion, 则
+        <command>mod_dav_svn</command> 会被安装到 Apache 安装目录 (通常是
+        <filename>/usr/lib64/httpd/</filename>) 的
         <filename>modules</filename> 子目录内. 配置指令
         <literal>LoadModule</literal> 的语法非常简单, 包含模块名及其共享库
         文件的路径:</para>
@@ -4626,20 +4627,20 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
           responses:</para>
       -->
         <para>当使用 <literal>https://</literal> 形式的 URL 连接 Apache 时,
-          Subversion 客户端将会收到两个类型的响应:</para>
+          Subversion 客户端将会收到两种类型的响应:</para>
 
         <itemizedlist>
           <listitem>
       <!--
             <para>A server certificate</para>
       -->
-            <para>一个服务器证书</para>
+            <para>服务器证书</para>
           </listitem>
           <listitem>
       <!--
             <para>A challenge for a client certificate</para>
       -->
-            <para>一个针对客户端证书的请求</para>
+            <para>针对客户端证书的请求</para>
           </listitem>
         </itemizedlist>
 
@@ -6818,7 +6819,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
               <para>控制基于路径的授权检查, 控制方式包括允许子请求 (
                 <literal>On</literal>), 禁止子请求 (<literal>Off</literal>, 见
                 <xref linkend="svn.serverconfig.httpd.authz.pathauthzoff"/>),
-                或者直接访问 <command>mod_authz_svn</command> (
+                或者直接询问 <command>mod_authz_svn</command> (
                 <literal>short_circuit</literal>). 默认值是
                 <literal>On</literal>.</para>
 
@@ -6884,7 +6885,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
       -->
               <para>为特殊的 Subversion 资源指定 URI 分量 (名字空间). 默认
                 值是 <literal>!svn</literal>, 绝大多数管理员从来不会用到这个
-                配置指令, 除非仓库中有存在名为 <filename>!svn</filename> 的
+                配置指令, 除非仓库中存在名为 <filename>!svn</filename> 的
                 文件. 如果你在服务器投入使用后再修改此值, 那么所有已存在的
                 工作副本都将无法正确工作, 用户也会把怒火发泄到你身上.</para>
 
@@ -7004,8 +7005,8 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                 present, but not both.</para>
       -->
               <para>在路径为 <filename>file-path</filename> 的文件中查找访问
-                规则, 访问规则描述了 Subversion 仓库中的路径的权限. 在
-                Subversion 仓库的配置块内, 可以出现这个配置指令或
+                权限配置, 访问权限配置描述了 Subversion 仓库中的路径的
+                访问权限. 在 Subversion 仓库的配置块内, 可以出现这个配置指令或
                 <literal>AuthzSVNReposRelativeAccessFile</literal>, 但不能同
                 时出现.</para>
 
@@ -7101,8 +7102,8 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
                 This option is available as of Subversion 1.7.</para>
       -->
               <para>在路径为 <filename>file-path</filename> 的文件中查找访问
-                规则, 访问规则描述了 Subversion 仓库中的路径的权限. 和
-                <literal>AuthzSVNAccessFile</literal> 不同的是,
+                权限配置, 访问权限配置描述了 Subversion 仓库中的路径的
+                访问权限. 和 <literal>AuthzSVNAccessFile</literal> 不同的是,
                 <literal>AuthzSVNReposRelativeAccessFile</literal> 定义的是相
                 对于仓库中的 <filename>conf/</filename> 目录的路径. 换句话说,
                 由 <filename>file-path</filename> 所指定的文件, 必须能让仓库
@@ -7161,9 +7162,9 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
       people.  It's even possible to restrict access on a per file
       basis.</para>
       -->
-    <para>实际上, 管理员还可以设置更加精细的访问规则. 例如允许一部分的用户 写
+    <para>实际上, 管理员还可以设置更加精细的访问权限. 例如允许一部分的用户 写
       仓库中的某个特定目录, 但禁止其他用户; 或者是禁止大部分用户读取某个特定的
-      目录, 但允许少数用户读取. 访问规则的精细程度甚至可以细致到单个文件.
+      目录, 但允许少数用户读取. 访问权限的精细程度甚至可以细致到单个文件.
     </para>
 
       <!--
@@ -7174,7 +7175,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
       authorization.</para>
       -->
     <para>Apache 和 <command>svnserve</command> 使用相同的文件格式描述基于
-      路径的访问规则. 本节我们将介绍文件的格式, 以及如何配置 Subversion 服务
+      路径的访问权限. 本节我们将介绍文件的格式, 以及如何配置 Subversion 服务
       器, 以便利用规则文件管理基于路径的授权.</para>
 
     <sidebar>
@@ -7304,7 +7305,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         <command>mod_dav_svn</command> 相同. 为了让仓库能够使用这个模块,
         在配置文件 <filename>httpd.conf</filename> 内用配置指令
         <literal>AuthzSVNAccessFile</literal> 或
-        <literal>AuthzSVNReposRelativeAccessFile</literal> 指定访问权限配置
+        <literal>AuthzSVNReposRelativeAccessFile</literal> 来指定访问权限配置
         文件. (详细的说明见 <xref
           linkend="svn.serverconfig.httpd.authz.perdir"/>.)</para>
 
@@ -7324,7 +7325,7 @@ svnsync copy-revprops http://slave3.example.com/svn-proxy-sync \
         rules, it's time to define those rules.</para>
       -->
       <para>一旦服务器知道了去哪儿查找你的访问权限配置文件, 接下来需要做的就是
-        定义访问规则.</para>
+        定义访问权限.</para>
 
       <!--
       <para>The syntax of the Subversion access file is the same
@@ -7485,8 +7486,8 @@ sally = r
         directive, however, it's fine to provide only paths in your
         sections&mdash;after all, there's only one repository.</para>
       -->
-      <para>如果你使用了配置指令 <literal>SVNParentPath</literal>, 在访问规则
-        文件的节名中指定仓库名就非常重要, 因为如果省略了仓库名, 例如把节名写
+      <para>如果你使用了配置指令 <literal>SVNParentPath</literal>, 在访问权限
+        配置文件的节名中指定仓库名就非常重要, 因为如果省略了仓库名, 例如把节名写
         成 <literal>[/home/dir]</literal>, 那么该节将匹配
         <emphasis>每个</emphasis> 仓库中的 <filename>/some/dir</filename>.
         然而, 如果使用了配置指令 <literal>SVNPath</literal>, 那么在节名中
@@ -7838,7 +7839,7 @@ everyone = @calc-developers, @paint-developers
       -->
       <para>从 Subversion 1.5 开始, 访问权限配置文件还支持一些
         <quote>魔力</quote> 符号, 这些符号可以帮助管理员基于用户的认证类别来
-        制定访问规则. 其中一个符号是 <literal>$authenticated</literal>,
+        制定访问权限. 其中一个符号是 <literal>$authenticated</literal>,
         用于将权限授予给所有已认证的用户. 类似的还有
         <literal>$anonymous</literal>, 它表示所有 <emphasis>未认证</emphasis>
         的用户.</para>
